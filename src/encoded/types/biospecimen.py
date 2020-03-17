@@ -61,6 +61,31 @@ class Biospecimen(Item):
     def ihc(self, request, ihc):
         return paths_filtered_by_status(request, ihc)
 
+    matrix = {
+        'y': {
+            'facets': [
+                'status',
+                'collection_type',
+                'processing_type',
+                'tissue_type',
+                'anatomic_site',
+                'biolibrary.nucleic_acid_term_name',
+                'biolibrary.biofile.file_format',
+                'biolibrary.biofile.output_type',                
+            ],
+            'group_by': ['collection_type', 'processing_type'],
+            'label': 'collection',
+        },
+        'x': {
+            'facets': [
+                
+                'anatomic_site',
+            ],
+            'group_by': 'anatomic_site',
+            'label': 'anatomic_site',
+        },
+    }
+
 
 
 

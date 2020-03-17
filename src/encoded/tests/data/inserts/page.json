@@ -45,37 +45,7 @@
             ]
         }
     },
-    {
-        "uuid": "c70c9785-b20b-4730-8180-4d0be681d5d7",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "name": "367-modern-datasets-released",
-        "news": true,
-        "news_excerpt": "367 modERN datasets released",
-        "title": "367 modERN Datasets Released",
-        "status": "released",
-        "award": "U41HG007355",
-        "date_created": "2016-07-06T16:48:27.199407+00:00",
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p>Data release: 367 modERN datasets</p>\n\n<p>We are pleased to announced that a whopping <a href=\"/search/?type=Experiment&amp;status=released&amp;award.project=modERN&amp;month_released=July%2C+2016\">367 modERN datasets</a> have just been released in the ENCODE portal.</p>"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    },
+
     {
         "name": "test-section",
         "title": "Test Section",
@@ -202,226 +172,422 @@
             ]
         }
     },
+
     {
-        "uuid": "d5a19f2d-5279-44c9-a58d-c4557a19cac7",
+        "name": "help",
+        "title": "Help",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "d28df7c5-a2eb-4451-a0ca-29b447a56f78",
         "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&date_released=2016-08-25\">111 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.<br />\n<br />\n"
-                }
-            ],
             "rows": [
                 {
                     "cols": [
                         {
-                            "blocks": [
-                                "#block1"
-                            ]
+                            "className": "col-md-12 class_override",
+                            "blocks": ["#block1"]
                         }
                     ]
                 }
-            ]
-        },
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "name": "release-annotation-file-sets",
-        "news": true,
-        "title": "Release of Annotation File Sets",
-        "status": "released",
-        "news_excerpt": "111 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
-        "news_keywords": ["RNA binding", "Transcription"],
-        "date_created": "2016-08-26T16:14:06.471431+00:00"
-    },
-    {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "17ac540c-ef0a-4f99-940c-daf03cd04fd8",
-        "title": "336 Annotation File Sets Released",
-        "award": "ENCODE2",
-        "news": true,
-        "status": "released",
-        "name": "336-annotation-file-sets-released",
-        "news_excerpt": "With collaborations from the DAC (Data Analysis Center), a total of 336 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
-        "news_keywords": ["Proteomics"],
-        "date_created": "2016-08-03T16:28:11.258613+00:00",
-        "layout": {
+            ],
             "blocks": [
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<p>With collaborations from the DAC (Data Analysis Center), a total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Annotation&amp;encyclopedia_version=3&amp;month_released=August%2C+2016\">336 Annotation File Sets</a>&nbsp;of promoter-like and enhancer-like regions have been released! More information on how the DAC called these enhancer-like&nbsp;and promoter-like regions can be found under <a href=\"/data/annotations/#middle\">Encyclopedia, about page</a>. You can also go directly to the DAC websites: <a href=\"http://zlab-annotations.umassmed.edu/enhancers/methods\">Methods for calling Enhancer-like Regions</a> and <a href=\"http://zlab-annotations.umassmed.edu/promoters/methods\">Methods for calling Promoter-like Regions</a>.</p>\n\n<p>The DAC&#39;s code repository for promoter-like and enhancer-like regions are found <a href=\"https://github.com/weng-lab/encyclopedia_v3/tree/master/pipeline\">here</a>. Huge thank you to Michael Purcaro and Jill Moore for the help.</p>\n"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
+                    "body": "<h1>Help</h1>"
                 }
             ]
         }
     },
     {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "6f4fa374-7867-4db3-a39e-8343e5e799a9",
-        "title": "Mouse e10.5 Histone ChIP-seq Dataset",
-        "news": true,
+        "parent": "/help",
+        "name": "project-overview",
+        "title": "Project overview",
         "status": "released",
-        "name": "mouse-histone-chip-seq-dataset",
-        "news_excerpt": "Mouse e10.5\u00a0histone ChIP-seq dataset\u00a0from from the Ren lab available.",
-        "news_keywords": ["DNA binding", "Genotyping"],
-        "date_created": "2016-07-20T16:44:05.457718+00:00",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "c6568e16-0b9e-46ef-a4cf-e71873800d5e",
         "layout": {
             "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p>Mouse e10.5&nbsp;histone ChIP-seq dataset&nbsp;from from the Ren lab available on the portal&nbsp;<a href=\"http://bit.ly/29Uma1K\">here</a>.</p>\n"
-                }
+              {
+                "@id": "#block1",
+                "body": "<h2>About the Kidney Cancer Explorer</h2>\n\n<p> Kidney Cancer Explorer (KCE) aims to provide researchers with the necessary tools to explore and analyze cross-platform biomedical data generated by the Kidney Cancer Program. It achieves this goal by connecting a comprehensive self-updating database of curated clinical-pathological patient data with integrated genomic analyses and research samples.</p>\n\n<p>Kidney Cancer Explorer (KCE) seamlessly integrates up-to-date clinical-pathological data with high-dimensional genomics and research samples into a unified database that supports powerful analytical tools for integrative studies. Data are extracted using automatic queries run monthly from multiple warehouses (EPIC, Co-PATH, Tumor Registry, Mosaic, and Cancer Gene Connect). Raw and patient level data are available through a password-protected system. Exome-seq or RNA-seq is available for over 500 specimens. Information can be linked to an extensive biobank including possibly the largest collection of live tumor samples and kidney cancer tumorgrafts. The database has been designed as a scalable engine to meet the complex and increasing demands of biomedical research. </p>\n\n<p>KCE is the result of a fruitful collaboration between the <a href=\"http://www.utsouthwestern.edu/departments/bioinformatics/\"> Department of Bioinformatics</a>  and the <a href=\"http://www.utsouthwestern.edu/research/kidney-cancer/\"> Kidney Cancer Program</a> at UT Southwestern. The project is supported by a <a href=\"http://www.cprit.state.tx.us/files/funded-grants/RP150596.pdf\">CPRIT</a> grant and through a Specialized Program of Research Excellence Award (<a href=\"http://www.utsouthwestern.edu/research/kidney-cancer/awards/\">SPORE</a>) from the National Cancer Institute. UT Southwestern, is <a href=\"https://trp.cancer.gov/spores/kidney.htm\">one of two institutions</a> in the US to receive a prestigious SPORE.  </p>\n\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              },
+              {
+                "@id": "#block2",
+                "body": "<center>\n<h4>Project overview | <a href=\"/help/getting-started/\">Using the portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data organization</a> </h4>\n</center>",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              }
             ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block2",
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "getting-started",
+        "title": "Using the portal",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "665cc658-6a6f-4f19-9356-53c85b169383",
+        "layout": {
+            "blocks": [
+              {
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ],
+                "@id": "#block1",
+                "body": "<style type=\"text/css\">.icon i {\n    display: inline-block;\n    font-family: FontAwesome;\n    font-style: normal;\n    font-weight: 400;\n    line-height: 1;\n    -webkit-font-smoothing: antialiased;\n    -moz-osx-font-smoothing: grayscale;\n}\n</style>\n<h2><a id=\"use\" name=\"use\">Using the Portal</a></h2>\n\n<center>\n<h4><a href=\"#browse\">Browse for data</a> | <a href=\"#viz\">Visualize data</a> | <a href=\"#download\">Download files</a></h4>\n</center>\n\n<h3 style=\"border-bottom:1px solid #BFBFBF\"><a id=\"browse\" name=\"browse\">Browse and filter experiments</a></h3>\n\n<p>Clicking the <a href=\"/search/?type=Experiment&amp;status=released\">&ldquo;Search&rdquo; option</a> located in the &ldquo;Data&rdquo; toolbar menu located in the upper left corner brings up a list of all available experiments that have been used to generate ENCODE data.&nbsp;By default, search results are pre-filtered to experiments of status &quot;released&quot; (notice that in Figure 1, the facet term &quot;released&quot; is already highlighted). However, &quot;archived&quot; and &quot;revoked&quot; experiments are also publicly viewable. Explore the <a href=\"/help/getting-started/status-terms/\">status terminology page</a> for more information on what each status means.</p>\n\n<figure class=\"fig fig-align-center\" style=\"width:90%\"><img src=\"/images/2f2ef3dd-0d45-44fc-befa-c851cd04ecd7/@@download/attachment/search-page.jpg\" />\n<figcaption style=\"margin:0.5em\">Figure 1. The search page. Use the facets along the left to filter the results, or use one of the Report, Matrix, or Summary buttons to change the view (see below), then click on a link to <a href=\"#exptpage\">an experiment page</a> to view it individually. You can also <a href=\"#search\">use the Search box</a> to search for keywords. Also of note is the &ldquo;Download&rdquo; button to the right which allows users to <a href=\"#download\">batch download files</a>. The <a href=\"#viz\">&ldquo;Visualize&rdquo; button</a> also appears to the right once facets have been selected to filter the number of results to 100 or fewer. The &quot;Add experiment to cart&quot; button is part of the Portal&#39;s cart feature, described in detail <a href=\"/help/cart/\">here</a>. More information about JSON format is available on the <a href=\"/help/rest-api/\">REST API page</a>.</figcaption>\n</figure>\n\n<p>These results can be filtered by selecting one or more values in a metadata category, also referred to as a &quot;facet,&quot; on the left hand side of the page. Multiple facet values, in the same or different categories, can be selected at any one time to generate more specific queries. To exclude a facet value, click the <i class=\"icon icon-minus-circle\" style=\"color:#FF0000\"> </i> exclusion icon which appears to the right of each facet value when the cursor is hovered above it. A tutorial demonstrating how to filter experiments is <a href=\"/?walkme=19-393460\" target=\"_blank\">available here</a> (link opens in new tab).</p>\n\n<figure class=\"fig fig-align-center\" style=\"width:70%\"><img src=\"/images/1b054633-4034-4a45-975c-6a25364624a9/@@download/attachment/facet%20select_190429.png\" />\n<figcaption style=\"margin:0.5em\">Figure 2. Facets are the simplest way to filter and find experiments of interest. The filtered results from the image above could be described in words as: &quot;Experiments targeting <strong>H3K4me3</strong> <em>and</em> performed on <strong>in vitro differentiated cell</strong> samples <em>and</em> originating from <strong>human</strong> <em>or</em> <strong>mouse</strong> donors <em>and not</em> <strong>tissue</strong> samples.&quot;&nbsp;</figcaption>\n</figure>\n\n<p>Users can also change the way search results are displayed depending on their needs. The Search page shows the results in List view by default, but clicking one of the three buttons along the top of the page will bring users to another view:</p>\n\n<figure class=\"fig fig-align-center fig-width-75\"><img src=\"/images/b38dcaf2-718d-48c1-b719-c4fccf7646ae/@@download/attachment/different%20views_190515.jpg\" />\n<figcaption style:=\"\">Figure 3. The same search results can be displayed in four different views.</figcaption>\n</figure>\n\n<ul>\n\t<li><a href=\"/search/?type=Experiment&amp;status=released\">List view</a>: displays results in a list. Each experiment is labeled with a summary of assay and biosample used.</li>\n\t<li><a href=\"/report/?type=Experiment&amp;status=released\">Report view</a>: displays results in tabular format, with a default selection of metadata properties as the columns.</li>\n\t<li>\n\t<p><a href=\"/matrix/?type=Experiment&amp;status=released\">Matrix view</a>: displays results in a matrix, organized with biosamples along the y-axis and assay type along the x-axis.&nbsp;</p>\n\t</li>\n\t<li><a href=\"/summary/?type=Experiment&amp;status=released\">Summary view</a>: displays a general overview of the data in chart form based on the labs, assays, and status of the experiment.</li>\n</ul>\n\n<p>A tutorial that introduces each of the views is <a href=\"/?walkme=19-400282\" target=\"_blank\">available here</a> (link opens in new tab).</p>\n\n<h3><a id=\"query\" name=\"query\">Query building</a></h3>\n\n<p>Faceting is a user-friendly way to generate queries, which are URLs appended with specific parameters. With each selected facet, a parameter is added to your query based on the property and the desired value of that property. For example, in Figure 2, the selection of the H3K4me3 target adds <code>target.label=H3K4me3</code> to your URL:</p>\n\n<pre>\nhttps://www.encodeproject.org/search/?type=Experiment&amp;<strong>target.label=H3K4me3</strong></pre>\n\n<p>Users can use any valid property of an object as a parameter, beyond those listed as facets. Generally, a query will be in the following format:</p>\n\n<pre>\nhttps://www.encodeproject.org/search/?type=<strong>Object_type</strong>&amp;<strong>property_1</strong>=<strong>value_1</strong>&amp;<strong>property_2</strong>=<strong>value_2</strong>&amp;...</pre>\n\n<p>Below are some useful tips for query building:</p>\n\n<ul>\n\t<li>Wildcard (<code>*</code> or <code>%2A</code>) is accepted as a valid property value.</li>\n\t<li>Not equals (<code>!=</code> or <code>%21=</code>) can be used for negation.</li>\n\t<li>Multiple parameters are joined with an <code>&amp;</code>.</li>\n\t<li>To access a sub-property, the sub-property name can be joined to the property name with a <code>.</code>, as in <code>target.label</code>.</li>\n</ul>\n\n<p>Object types and their properties are fully documented in the <a href=\"/profiles/?\">object schemas</a>. It is also helpful to understand the ENCODE Portal&#39;s <a href=\"/help/data-organization\">data model</a>.</p>\n\n<p>An example of an advanced query utilizing the above query building features is the below search, which filters for experiments (<code>type=Experiment</code>) that are released (<code>status=released</code>), not a control (<code>target.label%21=Control</code>), and are part of the ENTEx collaboration (<code>internal_tags=ENTEx</code>).&nbsp;</p>\n\n<pre>\nhttps://www.encodeproject.org/search/?type=Experiment&amp;status=released&amp;target.label%21=Control&amp;internal_tags=ENTEx\n</pre>\n\n<p>More information and interactive examples of query building can be found on <a href=\"https://app.swaggerhub.com/apis-docs/encodeproject/api/basic_search#/\">Swagger</a>.</p>\n\n<h3><a id=\"search\" name=\"search\">Search by keyword</a></h3>\n\n<p>The website can be searched by entering a search term in the search box located in the upper right hand corner in the toolbar (see Figure 1), which appears on every page. This returns relevant results of any object type&nbsp;(such as Experiments, Antibodies, Publications, or others). Due to the number of objects stored on the Portal, only a subset of key properties, which are documented in the <a href=\"/profiles/?\">Schemas</a> for each object type, are searchable with this method.</p>\n\n<p>The search results can be narrowed by object type by selecting an item in the &quot;Data Type&quot;&nbsp;facet&nbsp;on the left hand side of the page, and then further filtered using the displayed facets&nbsp;(refer to the <a href=\"#browse\">&quot;Browse and filter data&quot;</a> section above).&nbsp;</p>\n\n<p>Example search terms include a biosample (e.g.<a href=\"/search/?searchTerm=skin\">&quot;skin&quot;</a>), an assay name (e.g. <a href=\"/search/?searchTerm=ChIP-seq\">&quot;ChIP-seq&quot;</a>), or a protein target of an antibody (e.g. <a href=\"/search/?searchTerm=CTCF\">&quot;CTCF&quot;</a>).</p>\n\n<h3><a id=\"region\" name=\"region\">Search by region</a></h3>\n\n<p>It is possible to search for experiments by region using <a href=\"/region-search/\">Region Search</a>, located in the &quot;Data&quot; drop down menu. It accepts coordinates and gene names among other forms of region identifiers and returns experiments for which the input region intersects regions specified in the peaks file.</p>\n\n<h3><a id=\"exptpage\" name=\"exptpage\">Viewing experiment pages</a></h3>\n\n<p>After searching for experiments, clicking on a link to a specific experiment will bring you to the experiment summary page:</p>\n\n<figure class=\"fig fig-align-center\" style=\"width:90%\"><img src=\"/images/20ac7c1e-6800-4421-bda1-b492a5e62801/@@download/attachment/exptpage_gettingstarted_1909.jpg\" />\n<figcaption>Figure 4. The experiment page for <a href=\"/ENCSR887LYD/\">ENCSR887LYD</a>. By default, the experiment page displays the Association Graph in the Files section of the page. To view the file table as shown here instead, please click on the &ldquo;File details&rdquo; tab. Many of the buttons shown here are relevant to <a href=\"#viz\">visualization</a> or <a href=\"#download\">file download</a> features, both described below. Click on the file accessions to view each file individually, or click on the &quot;Expand audits&quot; button to see more details about the experiment&#39;s <a href=\"/data-standards/audits/\">audits</a>.</figcaption>\n</figure>\n\n<p>The experiment summary page displays metadata about the experiment in question and the raw and processed data from the experiment, as well as protocols, materials used, audits, the lab that conducted the experiment, and other useful information.</p>\n\n<p>A tutorial showing the different sections of an experiment page is <a href=\"/?walkme=19-393365\" target=\"_blank\">available here</a> (link opens in new tab).</p>\n\n<p align=\"right\"><strong><a href=\"#use\">Back to top</a></strong></p>\n\n<h3 style=\"border-bottom:1px solid #BFBFBF\"><a id=\"viz\" name=\"viz\">Visualize data</a></h3>\n\n<p>Results in bigBed or bigWig file format can be directly exported to and displayed on a genome browser. To visualize a single experiment, navigate to the experiment&#39;s page and click the &quot;Genome browser&quot; tab of the Files section to view tracks with the embedded Valis genome browser.</p>\n\n<figure class=\"fig fig-align-center fig-width-75\"><img src=\"/images/1ad1c7fe-bc38-47bb-a068-743a77f452b7/@@download/attachment/Visualize_1908_valis.jpg\" />\n<figcaption>Figure 5. Visit the &quot;Genome browser&quot; tab to visualize tracks in the embedded Valis browser.</figcaption>\n</figure>\n\n<p>Alternatively, switch to the Files details tab (see Fig. 6) to launch an external genome browser.&nbsp;The process is also shown in <a href=\"/?walkme=19-401359\" target=\"_blank\">this tutorial</a> (link opens in new tab).</p>\n\n<p>To change the assembly, use the assembly selector in the upper right corner of the File details tab. Towards the right, there is also a browser selector, which will allow you to choose between UCSC, Ensembl, or Juicebox genome browsers. Files must be in bigBed or bigWig file format to be visualized as a track hub, or hic format to be visualized using Juicebox. Click the &quot;Visualize&quot; button to open the external genome browser.</p>\n\n<figure class=\"fig fig-align-center fig-width-75\"><img src=\"/images/c183d4fe-f86b-4c8c-910b-7c92b626c0da/@@download/attachment/Visualize_1908_external.png\" />\n<figcaption>Figure 6. Use the Assembly and Browser selectors in the File details tab and then click Visualize to go to a new tab with applicable files from the experiment loaded as tracks in the genome browser.</figcaption>\n</figure>\n\n<p>The &quot;Visualize&quot; button also appears on Search and Matrix view pages (see Fig.&nbsp;1) once filtered to a maximum of 100 experiments, provided there are released experiments with visualizable files&nbsp;within that set, as shown in <a href=\"/?walkme=19-401327\" target=\"_blank\">this tutorial</a> (link opens in new tab). By clicking &quot;Visualize&quot; from a search page, you can open a genome browser view with track hubs for each experiment in the search results, allowing you to visualize data from multiple experiments simultaneously.</p>\n\n<p align=\"right\"><strong><a href=\"#use\">Back to top</a></strong></p>\n\n<h3 style=\"border-bottom:1px solid #BFBFBF\"><a id=\"download\" name=\"download\">Download files</a></h3>\n\n<p>Links to download individual files are available beside each file accession listed in the file section of each experiment page (see above in Fig. 4), as well as on each file&#39;s individual page. Files can be downloaded directly from the web page. Alternatively, the link can be copied to be downloaded using the command line, as in the below examples:</p>\n\n<p>Via the wget command:</p>\n\n<pre>\n &gt; wget https://www.encodeproject.org/files/ENCFF002CTW/@@download/ENCFF002CTW.bed.gz</pre>\n\n<p>Or via the curl command:</p>\n\n<pre>\n &gt; curl -O -L https://www.encodeproject.org/files/ENCFF002CTW/@@download/ENCFF002CTW.bed.gz</pre>\n\n<p>There are multiple options for downloading more than one file. While browsing through experiments (see &quot;<a href=\"#browse\">Browse and filter data</a>&quot;), a &quot;Download&quot; button appears near the top of the page (see Fig. 2), which brings up a batch download pop-up window with instructions on how to download the files of all experiments found with the current query. A tutorial going over <a href=\"?walkme=19-401304\" target=\"_blank\">batch download</a> is available (link opens in new tab.) The cart feature, described below, can also be helpful.</p>\n\n<p>Please note that if ENCODE data is used in your publication or talk, the accessions of the datasets used should be cited, along with the most recent ENCODE Consortium publication. Complete guidelines are available on the <a href=\"/help/citing-encode/\">Citing ENCODE page</a>.</p>\n\n<h3><a id=\"cart\" name=\"cart\">Cart</a></h3>\n\n<p>The Portal has a cart function, which allows users to select and group together arbitrary experiments. Carts can be shared with colleagues; it is also possible to batch download all the files of the experiments placed in the cart. When viewing the cart, the file selectors located in the sidebar can be used to filter for only files meeting certain conditions, such as assembly used or file format, prior to performing a batch download.&nbsp;Detailed information on how to use the cart is located on the <a href=\"/help/cart/\">Cart page</a>, and Cart basics are demonstrated in <a href=\"/?walkme=19-402187\" target=\"_blank\">this tutorial</a> (link opens in new tab).</p>\n\n<h3><a id=\"programmatic\" name=\"programmatic\">Programmatic access to the Portal</a></h3>\n\n<p>In addition to web-based browsing and searching, the ENCODE Portal can be accessed programmatically via the REST API. Instructions on how to browse and search for ENCODE data programmatically are provided in the <a href=\"/help/rest-api\">REST API help document</a>. In brief, all queries (see <a href=\"#query\">Query building</a>) that can be performed via the web can be used as programmatic queries. Programmatic access provides additional methods to download files by retrieving direct URLs of files from JSON data objects.</p>\n\n<p align=\"right\"><strong><a href=\"#use\">Back to top</a></strong></p>\n"
+              },
+              {
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ],
+                "@id": "#block2",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project overview</a> | Using the portal | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data organization</a>  | <a href=\"/help/submission/\">Data submission</a> | <a href=\"/data/annotations/\">Encyclopedia</a></h4>\n</center>\n"
+              },
+              {
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ],
+                "@id": "#block3",
+                "body": "<h2><b>Introduction to the Portal</b></h2>\n\n<p>Welcome to the ENCODE Portal! The ENCODE Portal, developed and maintained by the Data Coordination Center (ENCODE DCC), is the canonical source for all experimental metadata and data from ENCODE and <a href=\"/help/collaborations/\">associated projects</a>. The ENCODE Portal contains raw and ground-level analysis data generated by participating mapping centers using a wide-range of assays (integrative analysis data are available at the <a href=\"http://screen.encodeproject.org/\">SCREEN portal</a>. The Portal also stores records of the materials and methods used to perform the assays and subsequent analysis. No account is needed to view or download released data.</p>\n\n<h2><a id=\"info\" name=\"info\">Portal quick links</a></h2>\n\n<p>The ENCODE Portal contains the following types of data generated by the ENCODE Consortium:</p>\n\n<ul>\n\t<li>Data from a <a href=\"/search/?type=Experiment&amp;status=released\">wide-range of assays</a>, as well as protocol documents for each experiment</li>\n\t<li><a href=\"/search/?type=AntibodyLot&amp;status=released\">Antibody characterizations</a> that are performed as part of the <a href=\"/help/antibody_characterization_process/\">antibody characterization process</a> defined by the consortium</li>\n\t<li><a href=\"/data-standards/reference-sequences/\">Reference filesets</a> used in the ENCODE uniform processing pipelines</li>\n</ul>\n\n<p>Additional information about the activities of the ENCODE Consortium are provided on the Portal:</p>\n\n<ul>\n\t<li>Publications from<a href=\"/search/?type=Publication&amp;published_by=ENCODE\">&nbsp;consortium members</a></li>\n\t<li>Publications from community members using<a href=\"/search/?type=Publication&amp;published_by=community\"> ENCODE data</a></li>\n\t<li><a href=\"/help/citing-encode\">Citation guidelines for ENCODE data</a> used in your publication</li>\n\t<li><a href=\"/software/\">Software tools </a>that have been used by the ENCODE Consortium to process and analyze assays and predict functional regions</li>\n\t<li><a href=\"/about/experiment-guidelines\">Experimental guidelines </a>and <a href=\"/data-standards\">data standards</a> for generating the data</li>\n\t<li><a href=\"/help/events\">Outreach events, tutorials, and workshops</a> that have been organized</li>\n</ul>\n"
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block2"
+                    ]
+                  }
+                ]
+              },
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block3",
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "rest-api",
+        "title": "The KCE REST API",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "489953c7-5808-47ed-aba6-8372966b9183",
+        "layout": {
+            "blocks": [
+              {
+                "@id": "#block1",
+                "body": "<h2>Introduction</h2>\n\n<p>Direct interaction with the ENCODE DCC metadata database is typically done through scripts you write and execute on your own Mac, PC or server. Your scripts interact with the database through an industry-standard, Hypertext-Transfer-Protocol-(HTTP)-based, Representational-state-transfer (RESTful) application programming interface (API). Data objects exchanged with the server conform to the standard JavaScript Object Notation (JSON) format. JSON is a defined data interchange format that is used web-wide. If you&rsquo;re familiar with JavaScript&rsquo;s object literal notation or Python&rsquo;s dictionary datatype, then JSON-formatted text will look familiar. You will almost certainly use libraries for your language of choice to handle the network connection and parse the objects returned (<a href=\"http://docs.python-requests.org/en/latest/\">requests</a> and <a href=\"http://docs.python.org/3/library/json.html\">json</a> for Python, for example). We have written example scripts you can look at <a href=\"https://github.com/ENCODE-DCC/submission_sample_scripts\">here</a>.</p>\n\n<hr />\n<h2>Quickstart examples</h2>\n\n<p>While getting objects from the database can often be done in just a few lines of code, here are some quick ways of testing your connection and exploring the ENCODE data objects without writing any code.</p>\n\n<h3>Prerequisites</h3>\n\n<ol>\n\t<li>A JSON pretty-printer plugin for your web browser, such as JSONView (for <a href=\"https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc?hl=en\">Chrome</a> or <a href=\"https://addons.mozilla.org/en-us/firefox/addon/jsonview/\">Firefox</a>) or json-lite&nbsp;(for <a href=\"https://github.com/rfletcher/safari-json-formatter/downloads\">Safari</a>)</li>\n\t<li>The <code>curl</code> command, which ships with Mac OSX and all major LINUX/UNIX implementations. If you don&#39;t have <code>curl</code>, an executable can be downloaded from <a href=\"http://curl.haxx.se/dlwiz/?type=bin\">here</a>. Make sure you get the SSL and SSH aware version. You will find <code>curl</code> useful later for debugging your scripts (it always works), so if you don&#39;t already have it, you&#39;ll want to get it.</li>\n</ol>\n\n<h3><a id=\"json-in-browser\" name=\"json-in-browser\">ENCODE JSON in your browser</a></h3>\n\n<p>Look at biosample ENCBS000AAA at <a class=\"\\&quot;url\\&quot;\" href=\"/biosamples/ENCBS000AAA/\">https://www.encodeproject.org/biosamples/ENCBS000AAA/</a>.</p>\n\n<p><img class=\"fig-align-center fig-width-50\" src=\"/images/366b6881-afe0-4001-a22c-3e0803ecfcbf/@@download/attachment/rest_api_page.png\" style=\"width: 700px; height: 347px;\" /></p>\n\n<p>By clicking the JSON button, which looks like <code>{;}</code>, you should see the page viewed as JSON. Alternatively,&nbsp;you can manually add the following parameter to the URL: <code>/?format=json</code></p>\n\n<p><img class=\"fig-align-left fig-width-50\" src=\"/images/7aaac70e-de90-4546-ae7f-60be5e376512/@@download/attachment/json_browser_hires.png\" style=\"width: 400px; height: 375px;\" /></p>\n\n<p>By adding the <code>/?format=json</code> parameter, you&#39;ve instructed the ENCODE webserver to send you the raw contents of the database record for ENCBS000AAA, in JSON format. Rather than being rendered in your browser, you see the native JSON object as it is stored in the ENCODE database. This is a biosample object, and you will see all the properties and their values for this object. You need a JSON pretty printer (see prerequisites above) in order to make sense of the JSON. Notice that many of the object&rsquo;s properties contain other (nested) objects.</p>\n\n<p>Notice also that the object has its own URL, and that the URL corresponds to the object&rsquo;s accession number. This always works to access ENCODE objects. <em>In fact, because accession numbers are unique, you can construct a URL from the accession number alone and the server will return your object.</em> For example, the resource <a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/ENCBS000AAA\">https://www.encodeproject.org/ENCBS000AAA</a>&nbsp;maps to the same object&nbsp;identified by the longer URL&nbsp;<a class=\"\\&quot;url\\&quot;\" href=\"/biosamples/ENCBS000AAA/\">https://www.encodeproject.org/biosamples/ENCBS000AAA/</a></p>\n\n<p>As you learn more about the ENCODE REST API, you&rsquo;ll see that when you retrieve objects (using the HTTP &ldquo;GET&rdquo; method) from the server, they always come back as JSON.</p>\n\n<h3><a id=\"json-command-line\" name=\"json-command-line\">A simple command-line GET</a></h3>\n\n<p>Try this in a terminal window:</p>\n\n<pre>\n$ curl -H &quot;Accept: application/json&quot; https://www.encodeproject.org/biosamples/ENCBS000AAA/</pre>\n\n<p>You should see lots of text that starts with something like &quot;{&quot;system_slims&quot;: [], &quot;accession&quot;: &quot;ENCBS000AAA&quot;, ...&quot;.</p>\n\n<p><img class=\"fig-align-center fig-width-75\" src=\"/images/354f5ee9-7989-43ef-808f-08692dd24da7/@@download/attachment/curl_json.png\" style=\"width: 700px; height: 213px;\" /></p>\n\n<p>Your command instructs <code>curl</code> to download the database record for the ENCODE biosample ENCBS000AAA in JSON format (it&#39;s the same object rendered above and at <a href=\"/biosamples/ENCBS000AAA/\">https://www.encodeproject.org/biosamples/ENCBS000AAA/</a>). In fact, the ENCODE server sees that the request is coming from something other than a web browser running the ENCODE web app, so it returns the object in JSON format. All <code>curl</code> is really doing is downloading the &quot;web page&quot; that corresponds to that ENCODE record. Transport is by HTTP, just like a web browser.</p>\n\n<p>This sort of JSON-formatted text is sometimes referred to as a &quot;JSON document&quot;. You can redirect the output to a file:</p>\n\n<pre>\n$ curl -L -H &quot;Accept: application/json&quot; <a href=\"https://www.encodeproject.org/biosamples/ENCBS000AAA/\">https://www.encodeproject.org/biosamples/ENCBS000AAA/</a> &gt; ENCBS000AAA.json\n$ less ENCBS000AAA.json</pre>\n\n<p>In this example, the <code>-L</code> option tells <code>curl</code> to follow redirects. While not necessary in this example, <code>-L</code> is necessary for identifiers, like aliases, that get redirected to another resource. In cases like that, without <code>-L</code> you may see something like:</p>\n\n<pre>\n{&quot;status&quot;: &quot;error&quot;, &quot;code&quot;: 301, &quot;description&quot;: &quot;Moved Permanently&quot; ... }</pre>\n\n<p>If in doubt, use <code>curl -L</code>.</p>\n\n<p>If you supply an invalid identifier (like an accession number that doesn&#39;t refer to anything), you&#39;ll see something like:</p>\n\n<pre>\n{&quot;status&quot;: &quot;error&quot;, &quot;code&quot;: 404, &quot;description&quot;: &quot;The resource could not be found.&quot; ... }</pre>\n\n<p>You can see that even error responses come back in JSON format. This makes parsing the results of your queries much easier.</p>\n\n<p>To pretty-print JSON on the command line, you can use the&nbsp;<code>jq</code> utility, available <a href=\"https://stedolan.github.io/jq/download/\">here</a>. To use it with the&nbsp;output of <code>curl</code>, you can simply pipe its output to <code>jq</code>:</p>\n\n<pre>\ncurl -H &quot;Accept: application/json&quot; <a href=\"https://www.encodeproject.org/biosamples/ENCBS000AAA/\">https://www.encodeproject.org/biosamples/ENCBS000AAA/</a> | jq\n</pre>\n\n<h3>REST, JSON and curl in perspective</h3>\n\n<p>As you develop your scripts, curl can be a valuable testing tool. If you can get an object with a curl command, you should be able to get it with your script.</p>\n\n<p>The important thing to remember is that each ENCODE object is accessible via a simple URL containing an identifier (like an accession number) for that object. That&#39;s all curl does, that&#39;s all your browser does, and that&#39;s all your scripts will do. The resource you GET, using that URL, will be in JSON format. You will then use a library to parse the JSON and construct a native data structure (like a Python dictionary).</p>\n\n<h2>The ENCODE REST API</h2>\n\n<p>The ENCODE REST API uses GET to transport JSON-formatted information between the server and your scripts.</p>\n\n<h3>Prerequisites</h3>\n\n<ol>\n\t<li>A library or module for your language of choice that supports HTTP. The <code>requests</code> library <a href=\"http://docs.python-requests.org/en/latest/\" rel=\"nofollow\">here</a> for Python is good, and will be used for examples in this documentation.</li>\n\t<li>A library or module for parsing JSON-structured text and building native data structures. The Python <code>json</code>&nbsp;library <a href=\"http://docs.python.org/3/library/json.html\" rel=\"nofollow\">here</a> is good.</li>\n</ol>\n\n<h3><a id=\"json-script\" name=\"json-script\">GET</a></h3>\n\n<p>The HTTP GET request&nbsp;is used to retrieve objects from the ENCODE server. GET will work without a username and password to fetch publicly-released ENCODE objects. Sending a GET request&nbsp;is accomplished here by using the <code>requests.get()</code> method.</p>\n\n<pre>\nimport requests, json\n&nbsp;\n<em># Force return from the server in JSON format</em>\nheaders = {&#39;accept&#39;: &#39;application/json&#39;}\n&nbsp;\n<em># This URL locates the ENCODE biosample with accession number ENCBS000AAA</em>\nurl = &#39;https://www.encodeproject.org/biosample/ENCBS000AAA/?frame=object&#39;\n&nbsp;\n<em># GET the object</em>\nresponse = requests.get(url, headers=headers)\n&nbsp;\n<em># Extract the JSON response as a Python dictionary</em>\nbiosample = response.json()\n\n# Print the Python object\nprint(json.dumps(biosample, indent=4))\n</pre>\n\n<p>This script GET&#39;s the JSON representation of ENCODE biosample ENCBS000AAA. The ENCODE server&#39;s JSON response is extracted as a Python dictionary using the <code>response.json()</code> method. The dictionary is then dumped back to a string and pretty-printed with useful indentation.</p>\n\n<p>The output should look something like:</p>\n\n<pre>\n{\n    &quot;biosample_ontology&quot;: &quot;/biosample-types/cell_line_EFO_0001203/&quot;,\n    &quot;description&quot;: &quot;mammary gland, adenocarcinoma&quot;,\n    &quot;donor&quot;: &quot;/human-donors/ENCDO000AAE/&quot;,\n    &quot;passage_number&quot;: 5,\n    &quot;lab&quot;: &quot;/labs/richard-myers/&quot;,\n    &quot;accession&quot;: &quot;ENCBS000AAA&quot;,\n    &quot;parent_of&quot;: [],\n    &quot;@type&quot;: [\n        &quot;Biosample&quot;,\n        &quot;Item&quot;\n    ],\n    &quot;url&quot;: &quot;http://www.atcc.org/Products/All/HTB-22.aspx&quot;,\n    &quot;status&quot;: &quot;released&quot;,\n    &quot;uuid&quot;: &quot;56e94f2b-25ac-4c58-9828-f63b66220999&quot;\n    &quot;notes&quot;: &quot;(PMID: 4357757)&quot;,\n    &quot;award&quot;: &quot;/awards/U54HG004576/&quot;,\n    &quot;age_display&quot;: &quot;69 year&quot;,\n    &quot;product_id&quot;: &quot;HTB-22&quot;,\n    &quot;culture_harvest_date&quot;: &quot;2012-04-10&quot;,\n    &quot;applied_modifications&quot;: [],\n    &quot;dbxrefs&quot;: [\n        &quot;UCSC-ENCODE-cv:MCF-7&quot;\n    ],\n    &quot;@id&quot;: &quot;/biosamples/ENCBS000AAA/&quot;,\n    &quot;culture_start_date&quot;: &quot;2012-03-16&quot;,\n    &quot;life_stage&quot;: &quot;adult&quot;,\n    &quot;organism&quot;: &quot;/organisms/human/&quot;,\n    &quot;aliases&quot;: [\n        &quot;richard-myers:MCF7-003&quot;\n    ],\n    &quot;health_status&quot;: &quot;breast cancer (adenocarcinoma)&quot;,\n    &quot;internal_tags&quot;: [],\n    &quot;references&quot;: [],\n    &quot;age_units&quot;: &quot;year&quot;,\n    &quot;characterizations&quot;: [],\n    &quot;submitted_by&quot;: &quot;/users/df9f3c8e-b819-4885-8f16-08f6ef0001e8/&quot;,\n    &quot;date_created&quot;: &quot;2013-12-12T05:50:02.101495+00:00&quot;,\n    &quot;alternate_accessions&quot;: [],\n    &quot;source&quot;: &quot;/sources/atcc/&quot;,\n    &quot;age&quot;: &quot;69&quot;,\n    &quot;summary&quot;: &quot;Homo sapiens MCF-7 cell line&quot;,\n    &quot;genetic_modifications&quot;: [],\n    &quot;schema_version&quot;: &quot;24&quot;,\n    &quot;sex&quot;: &quot;female&quot;,\n    &quot;treatments&quot;: [],\n    &quot;documents&quot;: [\n        &quot;/documents/984071d4-9149-476a-b353-93592c6f48f3/&quot;\n    ]\n}</pre>\n\n<p>The important point is that the response object has been cast into a native Python dict datastructure. For example, documents is an array of document identifiers and so you can loop over that array.</p>\n\n<p>Adding the following code to the example script above loops through the documents array, GET&#39;s each document object, and prints its description:</p>\n\n<pre>\n<strong>for</strong> doc_uri <strong>in</strong> biosample[&#39;documents&#39;]:\n\tdoc_response = requests.get(&#39;https://www.encodeproject.org/&#39; + doc_uri, headers=headers)\n\tdocument = doc_response.json()\n\t<strong>print</strong> document[&#39;description&#39;]</pre>\n\n<p>Which prints:</p>\n\n<pre>\nMCF-7 Cell Culture and 4-hydroxytamoxifen treatment\n</pre>\n\n<h2><a id=\"programmatic-search\" name=\"programmatic-search\">Programmatic search</a></h2>\n\n<p>In the GET example above, we use the ENCODE REST API to retrieve an individual object using its ENCODE accession number. You can also search for objects programmatically and get the search result back in JSON format. The ENCODE web app is a good place to start to see an example. Enter the string &quot;bone chip&quot; in the search box at the top right of the page at&nbsp;<a href=\"https://www.encodeproject.org/\">https://www.encodeproject.org/</a>. The result are those ENCODE objects that match that string. Note that these results are by default&nbsp;not restricted to experiments, but include other object types as well. The object&nbsp;types of the&nbsp;results, among other properties, can be filtered using the facets to the left of the results.</p>\n\n<h3>Search URL format</h3>\n\n<p>The same URL that returns the search results to the web app can be used in a script. This script does the same search and returns the results in JSON format:</p>\n\n<pre>\nimport requests, json\n\n# Force return from the server in JSON format\nheaders = {&#39;accept&#39;: &#39;application/json&#39;}\n\n# This searches the ENCODE database for the phrase &quot;bone chip&quot;\nurl = &#39;https://www.encodeproject.org/search/?searchTerm=bone+chip&amp;frame=object&#39;\n\n# GET the search result\nresponse = requests.get(url, headers=headers)\n\n# Extract the JSON response as a python dictionary\nsearch_results = response.json()\n\n# <i>Print the object</i>\nprint(json.dumps(search_results, indent=4))\n</pre>\n\n<p>The structure of the response will be as follows. Keys with array values are denoted with <code>[...]</code> and keys with object values are denoted with <code>{...}</code>:</p>\n\n<pre>\n{\n    &quot;notification&quot;: &quot;Success&quot;,\n    &quot;title&quot;: &quot;Search&quot;,\n    &quot;@id&quot;: &quot;/search/?searchTerm=bone+chip&quot;,\n    &quot;clear_filters&quot;: &quot;/search/?searchTerm=bone+chip&quot;,\n    &quot;columns&quot;: {...},\n    &quot;all&quot;: &quot;/?searchTerm=bone+chip&amp;limit=all&quot;,\n    &quot;facets&quot;: [...],\n    &quot;@context&quot;: &quot;/terms/&quot;,\n    &quot;@type&quot;: [...],\n    &quot;total&quot;: 180,\n    &quot;filters&quot;: [...],\n    &quot;@graph&quot;: [...]\n}</pre>\n\n<p>The <code>@graph</code> property in the response script contains the array of search results, it should look something like this:</p>\n\n<pre>\n[\n    {\n        &quot;authors&quot;: &quot;Johnson ME, Deliard S, Zhu F, Xia Q, Wells AD, Hankenson KD, Grant SF&quot;,\n        &quot;identifiers&quot;: [\n            &quot;PMID:24337390&quot;\n        ],\n        &quot;title&quot;: &quot;A ChIP-seq-defined genome-wide map of MEF2C binding reveals inflammatory pathways associated with its role in bone density determination.&quot;,\n        &quot;@id&quot;: &quot;/publications/03e13868-6090-4f61-b4f1-b4a22a6e833a/&quot;,\n        &quot;issue&quot;: &quot;4&quot;,\n        &quot;data_used&quot;: &quot;ENCODE TF ChIP used throughout, Figures 1-2&quot;,\n        &quot;journal&quot;: &quot;Calcified tissue international&quot;,\n        &quot;volume&quot;: &quot;94&quot;,\n        &quot;date_created&quot;: &quot;2014-08-13T01:26:28.846038+00:00&quot;,\n        &quot;@type&quot;: [\n            &quot;Publication&quot;,\n            &quot;Item&quot;\n        ],\n        &quot;date_published&quot;: &quot;2014 Apr&quot;,\n        ...\n    },\n    {\n     &quot;biosample_ontology&quot;: {\n            &quot;term_name&quot;: &quot;bone marrow&quot;,\n            &quot;classification&quot;: &quot;tissue&quot;\n        },\n        &quot;replicates&quot;: [\n            {\n                &quot;antibody&quot;: {\n                    &quot;accession&quot;: &quot;ENCAB000ADX&quot;\n                },\n                &quot;biological_replicate_number&quot;: 1,\n                &quot;technical_replicate_number&quot;: 1,\n                &quot;@id&quot;: &quot;/replicates/8ca96774-c0d1-4f62-b7d3-f2988d406de2/&quot;,\n                &quot;library&quot;: {\n                    &quot;biosample&quot;: {\n                        &quot;age_units&quot;: &quot;week&quot;,\n                        &quot;life_stage&quot;: &quot;adult&quot;,\n                        &quot;organism&quot;: {\n                            &quot;scientific_name&quot;: &quot;Mus musculus&quot;\n                        },\n                        &quot;accession&quot;: &quot;ENCBS130ENC&quot;,\n                        &quot;age&quot;: &quot;8&quot;\n&nbsp;                   }\n&nbsp;               }\n&nbsp;           },\n&nbsp;           ...\n&nbsp;       ]\n&nbsp;   }, \n    ...\n]</pre>\n\n<p>Whereas before, when we retrieved a single object, the @graph property was a list with only one element. Now @graph is a multi-element list, with each object that satisfies the search condition represented as one entry. Note that there are multiple types of objects returned by the query because we did not specify a <code>type</code>.</p>\n\n<p>The&nbsp;objects returned contain only a subset of the properties. These are the properties that the server returns to the web app to render the search results page. To get the full objects back, add&nbsp;<code>&amp;frame=object</code> to the query. The query URL looks like:</p>\n\n<pre>\nurl = &#39;https://www.encodeproject.org/search/?searchTerm=bone+chip&amp;frame=object&amp;format=json&#39;</pre>\n\n<p>This returns the full objects, with all their properties and values. Here is the <code>@graph</code> array in the response:</p>\n\n<pre>\n[\n&nbsp; &nbsp; {\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;data_used&quot;: &quot;ENCODE TF ChIP used throughout, Figures 1-2&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;categories&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;basic biology&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;status&quot;: &quot;released&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;volume&quot;: &quot;94&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;@type&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;Publication&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;Item&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;uuid&quot;: &quot;03e13868-6090-4f61-b4f1-b4a22a6e833a&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;submitted_by&quot;: &quot;/users/ce2bde01-07ec-4b8a-b179-554ef95b71dd/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;@id&quot;: &quot;/publications/03e13868-6090-4f61-b4f1-b4a22a6e833a/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;page&quot;: &quot;396-402&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;issue&quot;: &quot;4&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;authors&quot;: &quot;Johnson ME, Deliard S, Zhu F, Xia Q, Wells AD, Hankenson KD, Grant SF&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;published_by&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;community&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;date_created&quot;: &quot;2014-08-13T01:26:28.846038+00:00&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;supplementary_data&quot;: [],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;identifiers&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;PMID:24337390&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; ...\n&nbsp; &nbsp; },\n&nbsp; &nbsp; {\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;biosample_ontology&quot;: &quot;/biosample-types/tissue_UBERON_0002371/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;aliases&quot;: [],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;status&quot;: &quot;released&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;files&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;/files/ENCFF001JXO/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;/files/ENCFF001JXP/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;/files/ENCFF001JXQ/&quot;,\n            ...,\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;uuid&quot;: &quot;2ed470f3-a57a-4ca4-83fe-d0bfa7022a36&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;documents&quot;: [],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;@id&quot;: &quot;/experiments/ENCSR000CAG/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;description&quot;: &quot;H3K4me1 ChIP-seq on 8-week mouse bone marrow&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;replicates&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;/replicates/8ca96774-c0d1-4f62-b7d3-f2988d406de2/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;/replicates/0cb223fe-4893-4068-aaad-43b0398bc5da/&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; ...\n&nbsp; &nbsp; },\n&nbsp; &nbsp; ...\n]\n</pre>\n\n<p>Embedded objects can be fully expanded in the search results with <code>&amp;frame=embedded</code> so that the query would look like:</p>\n\n<pre>\nurl = &#39;https://www.encodeproject.org/search/?searchTerm=bone+chip&amp;frame=embedded&amp;format=json&#39;</pre>\n\n<p>The <code>@graph</code> of the response should start with something like:</p>\n\n<pre>\n[\n&nbsp; &nbsp; {\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;supplementary_data&quot;: [],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;authors&quot;: &quot;Johnson ME, Deliard S, Zhu F, Xia Q, Wells AD, Hankenson KD, Grant SF&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;lab&quot;: &quot;/labs/encode-consortium/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;volume&quot;: &quot;94&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;published_by&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;community&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;data_used&quot;: &quot;ENCODE TF ChIP used throughout, Figures 1-2&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;identifiers&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;PMID:24337390&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;categories&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;basic biology&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;journal&quot;: &quot;Calcified tissue international&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;page&quot;: &quot;396-402&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;date_published&quot;: &quot;2014 Apr&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;award&quot;: &quot;/awards/ENCODE/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;submitted_by&quot;: &quot;/users/ce2bde01-07ec-4b8a-b179-554ef95b71dd/&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;date_created&quot;: &quot;2014-08-13T01:26:28.846038+00:00&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;@type&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;Publication&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;Item&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; ...\n&nbsp; &nbsp; },\n&nbsp; &nbsp; {\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;date_submitted&quot;: &quot;2011-06-24&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;superseded_by&quot;: [],\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;assay_term_name&quot;: &quot;ChIP-seq&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &quot;lab&quot;: {\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;name&quot;: &quot;bing-ren&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;status&quot;: &quot;current&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;title&quot;: &quot;Bing Ren, UCSD&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;address2&quot;: &quot;9500 Gilman Drive, Room 231&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;@type&quot;: [\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;Lab&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;Item&quot;\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ],\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;state&quot;: &quot;CA&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &quot;pi&quot;: &quot;/users/ea5e2bd6-be7a-4b18-a2e8-dee86005422f/&quot;,\n&nbsp;           ...,\n&nbsp; &nbsp; &nbsp; &nbsp; },\n&nbsp; &nbsp; &nbsp; &nbsp; ...\n&nbsp; &nbsp; },\n&nbsp; &nbsp; ...\n]\n</pre>\n\n<p>Note, for example, the <code>lab</code> properties&nbsp;of results in the second query are&nbsp;objects, whereas in the previous search with <code>frame=object</code> they were simply paths to <code>lab</code> objects on the portal.</p>\n\n<p><a id=\"search-examples\" name=\"search-examples\"><span style=\"color: rgb(0, 0, 0); font-family: inherit; font-size: 1.7rem; font-weight: 700;\">Additional search examples</span></a></p>\n\n<p>Note:&nbsp;the last four&nbsp;examples&nbsp;here&nbsp;return a lot of data, so the <code>format=json</code> parameter has been omitted so as to avoid attempting to render it using an in-browser JSON formatter.</p>\n\n<ol>\n\t<li>Every object that matches the string &ldquo;CTCF&rdquo;:<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?searchTerm=CTCF&amp;format=json&amp;frame=object\">https://www.encodeproject.org/search/?searchTerm=CTCF&amp;format=json&amp;frame=object</a></li>\n\t<li>A file with a particular MD5 7b9f8ccd15fea0bda867e042db2b6f5a:<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=File&amp;md5sum=7b9f8ccd15fea0bda867e042db2b6f5a&amp;format=json\">https://www.encodeproject.org/search/?type=File&amp;md5sum=7b9f8ccd15fea0bda867e042db2b6f5a&amp;format=json</a></li>\n\t<li>All the file objects from a particular experiment ENCSR000AKS (with links to embedded objects):<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=File&amp;dataset=/experiments/ENCSR000AKS/&amp;format=json&amp;frame=object&amp;limit=all\">https://www.encodeproject.org/search/?type=File&amp;dataset=/experiments/ENCSR000AKS/&amp;format=json&amp;frame=object&amp;limit=all</a></li>\n\t<li>All the fastq files from a particular experiment ENCSR000AKS:<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=File&amp;dataset=/experiments/ENCSR000AKS/&amp;file_format=fastq&amp;format=json&amp;frame=object&amp;limit=all\">https://www.encodeproject.org/search/?type=File&amp;dataset=/experiments/ENCSR000AKS/&amp;file_format=fastq&amp;format=json&amp;frame=object&amp;limit=all</a></li>\n\t<li>All the replicates for a particular experiment ENCSR000AKS:<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=Replicate&amp;experiment.accession=ENCSR000AKS&amp;format=json&amp;limit=all\">https://www.encodeproject.org/search/?type=Replicate&amp;experiment.accession=ENCSR000AKS&amp;format=json&amp;limit=all</a></li>\n\t<li>The same query as above but with embedded objects expanded:<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=Replicate&amp;experiment.accession=ENCSR000AKS&amp;format=json&amp;frame=embedded&amp;limit=all\">https://www.encodeproject.org/search/?type=Replicate&amp;experiment.accession=ENCSR000AKS&amp;format=json&amp;frame=embedded&amp;limit=all</a></li>\n\t<li>All biosamples (abbreviated metadata):<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=Biosample&amp;limit=all\">https://www.encodeproject.org/search/?type=Biosample&amp;limit=all</a></li>\n\t<li>All biosamples (full metadata with object references):<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=Biosample&amp;frame=object&amp;limit=all\">https://www.encodeproject.org/search/?type=Biosample&amp;frame=object&amp;limit=all</a></li>\n\t<li>All experiments that are not ChIP-seq (note the use of <code>!=</code> in the query):<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=Experiment&amp;assay_title!=ChIP-seq&amp;frame=object&amp;limit=all\">https://www.encodeproject.org/search/?type=Experiment&amp;assay_title!=ChIP-seq&amp;frame=object&amp;limit=all</a></li>\n\t<li>All treated biosamples (note the use of <font color=\"#c7254e\" face=\"Menlo, Monaco, Consolas, Courier New, monospace\"><span style=\"font-size: 12.6px; white-space: nowrap; background-color: rgb(249, 242, 244);\">*</span></font>&nbsp;in the query):<br />\n\t<a class=\"\\&quot;url\\&quot;\" href=\"https://www.encodeproject.org/search/?type=Biosample&amp;treatments=*&amp;frame=object&amp;limit=all\">https://www.encodeproject.org/search/?type=Biosample&amp;treatments=*&amp;frame=object&amp;limit=all</a></li>\n</ol>\n\n<h3><a id=\"search-features\" name=\"search-features\">Summary of search features</a></h3>\n\n<ul>\n\t<li>If you do not specify <code>frame=something</code>, you will get a subset of object properties as defined by the webapp. If what you need is in that subset (like accession, maybe), it&rsquo;s a relatively fast way of getting back a long list of objects.</li>\n\t<li>If you specify <code>frame=embedded</code> you will get all the object properties, with selected embedded objects expanded.</li>\n\t<li><code>frame=object</code> will always give you all of the properties, with embedded objects referred to by an identifier. So it&rsquo;s consistent, and it&rsquo;s faster. Which embedded objects are expanded by <code>frame=embedded</code> may change in the future as our requirements for search change. Also, the depth of expansion is chosen to support search and might change&nbsp;as well. So, for the most robust code you might choose to use <code>frame=object</code> and then GET only the embedded objects you need.</li>\n\t<li>You do not need to specify <code>frame=embedded</code> in order to search within embedded objects. For example, the query paramater <code>lab.state=CA</code> would work when searching with&nbsp;<code>frame=object</code></li>\n\t<li>All of the results from search can be visualized within the web app by opening the URL in your browser, omitting <code>format=json</code>. Not all objects have fancy rendered collections or pages, but you will always get back a clickable list.</li>\n\t<li><code>limit=all</code> is not strictly necessary but without it your result will contain only the first 25 hits (or all if &lt; 25 hits). We plan to implement a mechanism to return very large searches in batches, but for now <code>limit=all</code> can generate large result sets.</li>\n\t<li>Giving <code>searchTerm=somestring</code> will often return multiple object types. You can look into the <code>@type</code> property of each returned object for its data type.</li>\n\t<li>To make a search specifying that a property is NOT equal to a value (negation), use the <code>!=</code> operator (see example 9 above)</li>\n\t<li>The <code>*</code> character can be used as a wildcard, matching any value. This is useful when you would like to check the existence or non-existence of a property. Specifing <code>property=*</code> will return objects for which the property is both present and non-empty. It can be used with <code>!=</code> as well to search for objects where a property is missing or empty.</li>\n</ul>\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              },
+              {
+                "@id": "#block2",
+                "body": "<h2>Quick Links</h2>\n\n<p><a href=\"https://app.swaggerhub.com/apis-docs/encodeproject/api/basic_search\">Swagger Interactive API Documentation</a> (opens external link)</p>\n\n<p><a href=\"https://app.swaggerhub.com/apis-docs/encodeproject/api/advanced_search\">Advanced Swagger Interactive API Documentation</a> (opens external link)</p>\n\n<p><a href=\"#json-in-browser\">Browser example</a></p>\n\n<p><a href=\"#json-command-line\">Command line example</a></p>\n\n<p><a href=\"#json-script\">Scripting example</a></p>\n\n<p><a href=\"#programmatic-search\">Programmatic search example</a></p>\n\n<p><a href=\"#search-examples\">Example search queries</a></p>\n\n<p><a href=\"#search-features\">Search features</a></p>\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              },
+              {
+                "@id": "#block3",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project overview</a> | <a href=\"/help/getting-started/\">Using the portal</a> | REST API | <a href=\"/help/data-organization\">Data organization</a> | <a href=\"/help/submission/\">Data submission</a>  | <a href=\"/data/annotations/\">Encyclopedia</a></h4>\n</center>\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block3"
+                    ]
+                  }
+                ]
+              },
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block2",
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "cart",
+        "title": "Guide to Cohort",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "87a5cc92-a5cd-4534-890d-3c1a4b64de48",
+        "layout": {
+            "blocks": [
+              {
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ],
+                "@id": "#block1",
+                "body": "<style type=\"text/css\">.iframe-container {\n      overflow: hidden;\n      padding-top: 56.25%;\n      position: relative;\n    }\n    \n    .iframe-container iframe {\n       border: 0;\n       height: 100%;\n       left: 0;\n       position: absolute;\n       top: 0;\n       width: 100%;\n    }\n    \n    hr {\n        border-color: #c0c0c0;\n    }\n    \n    @media screen and (min-width: 960px) {\n        hr {\n            margin-left: -10%;\n            margin-right: -10%;\n        }\n    }\n    \n    \n    h2 {\n        font-size: 1.8rem;\n    }\n    \n    h3 {\n        font-size: 1.4rem;\n    }\n    \n    h4 {\n        font-size: 1.1rem;\n    }\n    \n    .richtextblock.block.clearfix {\n        padding-top: 40px;\n        padding-bottom: 40px;\n    }\n    \n    blockquote {\n        margin: 40px 5% 40px 5% !important;\n        padding: 10px !important;\n        background-color: #f0f0f0;\n    }\n    \n    .img-wrapper {\n        margin: 4em auto 5em;\n    }\n    \n    .img-wrapper figcaption {\n        width: 100%;\n        text-align: center;\n    }\n    \n    .img-wrapper img {\n        display: block;\n        width: 100%;\n    }\n    \n    .selecting-experiment-search-results {\n        width: 100%;\n    }\n    \n    @media screen and (min-width: 768px) {\n        .selecting-experiment-search-results {\n            width: 50%;\n        }\n    }\n    \n    .image-80 {\n        width: 100%;\n    }\n    \n    @media screen and (min-width: 768px) {\n        .image-80 {\n            width: 80%;\n        }\n    }\n    \n    .cart-menu-logged-in-and-not {\n        width: 100%;\n    }\n    \n    @media screen and (min-width: 768px) {\n        .cart-menu-logged-in-and-not {\n            width: 80%;\n        }\n    }\n    \n    .file-type-selector {\n        width: 100%;\n    }\n    \n    @media screen and (min-width: 768px) {\n        .file-type-selector {\n            width: 60%;\n        }\n    }\n    \n    .add-to-cart {\n        width: 100%;\n    }\n    \n    @media screen and (min-width: 768px) {\n        .add-to-cart {\n            width: 50%;\n        }\n    }\n    \n    .share-cart-menu {\n        width: 100%;\n    }\n    \n    @media screen and (min-width: 768px) {\n        .share-cart-menu {\n            width: 40%;\n        }\n    }\n    \n    .directory {\n        text-align: center;\n        font-size: 1.2rem;\n    }\n</style>\n<h4 class=\"directory\"><a href=\"#basic-carts\">Basic cart usage</a> | <a href=\"#saved-carts\">Saving and sharing carts</a> | <a href=\"#managing-multiple-carts\">Managing multiple carts</a> | <a href=\"#tutorial-video\">Tutorial video</a></h4>\n\n<hr />\n<h2 id=\"basic-carts\">Basic cart usage</h2>\n\n<p>ENCODE portal carts allow you to group an arbitrary set of experiments into a container. As with search-result pages, you can easily generate a list of downloadable URLs for all files in all experiments in your cart along with experimental metadata for all files you download.</p>\n\n<p>Let&rsquo;s start with the most basic form of carts in which they only exist in your browser window&rsquo;s memory. Later we&rsquo;ll look at logging in with a user account to save carts and share them with others.</p>\n\n<h3>Adding many experiments to your cart.</h3>\n\n<p>The search-results page has a convenient way to add many experiments to your cart at once.</p>\n\n<figure class=\"img-wrapper selecting-experiment-search-results\"><img alt=\"Select experiment search results with the Search item under the Data menu\" src=\"/images/3599ae8c-064a-4878-aeee-9ac096023f31/@@download/attachment/selecting-experiment-search-results.png\" />\n<figcaption>Selecting experiment search results</figcaption>\n</figure>\n\n<p>Any experiments in your search results displays a cart button to its right. Carts cannot include other types of items &mdash; non-experiment items do not have a cart button to their right.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/fe4afebe-4be4-4990-91f6-016ac94a468e/@@download/attachment/experiment-search-results.png\" />\n<figcaption>View of experiment search results with cart button highlighted</figcaption>\n</figure>\n\n<p>Carts can contain up to 4000 experiments, but a large number of experiments in your cart can cause certain operations to take a long time to complete. Filtering your experiments down to as small a set as possible helps keep the performance of cart operations high. The following example has the &ldquo;eCLIP&rdquo; filter selected which reduces the number of search results to 469 experiments.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/a0233689-7eb3-4c4c-b5ff-8a62a2009e85/@@download/attachment/experiments-added-to-cart.png\" />\n<figcaption>After adding multiple experiments to a cart</figcaption>\n</figure>\n\n<p>With these 469 experiments selected, clicking the &ldquo;Add all items to cart&rdquo; button adds them to your cart, and a cart menu that shows the number of items in your cart appears next to the Help menu.</p>\n\n<h3>Viewing your cart</h3>\n\n<p>Choosing &ldquo;View cart&rdquo; from the cart menu takes you to the Cart page with the https://www.encodeproject.org/cart-view/ URL. Unlike most ENCODE portal URLs, this URL only shows your cart contents in this web browser window, and other people going to the same URL don&rsquo;t see your cart but might see their own cart contents, and you don&rsquo;t see these cart contents in a different browser window.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/80e83f81-c2b1-453d-a8aa-b3ec27d21a56/@@download/attachment/cart_view_190612.jpg\" />\n<figcaption>View of cart</figcaption>\n</figure>\n\n<p>The main portion of the Cart page displays a list of the experiments in your cart. You only see 25 experiments at a time, and the experiment pager lets you move between the pages of 25 experiments.</p>\n\n<p>Unlike the similarly appearing search-result pages, the file selectors do <em>not</em> filter your list of experiments in your cart. Instead, they select the files you download based on the specified properties. Having nothing selected causes all files associated with all the experiments in your cart to download. Selecting for one or more properties, such as an assembly of &quot;GRCh38&quot; shown in the image above, causes only the files with the chosen properties associated with all the experiments in your cart to download. Currently, files for download can be filtered by their output type, file type, genome assembly, lab, and status. As you choose different combinations of properties, you can see the number of files selected for download above the file selectors.</p>\n\n<p>A large number of experiments in your cart can cause the file selectors to take a long time to appear.</p>\n\n<h3>Downloading files</h3>\n\n<p>The &ldquo;Download&rdquo; button, much like the Download button on search-result pages, pops up a dialog box that gives you information about downloading all the selected files in all the experiments in your cart.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/dfd26f96-d1cf-4a93-934a-69258b3bde68/@@download/attachment/download-dialog.png\" />\n<figcaption>File download dialog</figcaption>\n</figure>\n\n<p>Once you click the &ldquo;Download&rdquo; button in the dialog box, a file called &ldquo;files.txt&rdquo; gets downloaded that contains the URLs of all the selected files, as well as a line to generate and download a &ldquo;metadata.tsv&rdquo; file that contains a listing of the same files along with their experimental metadata.</p>\n\n<p>If you have more than 500 experiments in your cart, you also see the warning in red. Clicking the Download button when you have a large number of experiments in your cart can result in a long delay before the &ldquo;files.txt&rdquo; file begins downloading. During this delay, you can still use the portal, but buttons that modify your cart appear dimmed until &ldquo;files.txt&rdquo; has finished downloading.</p>\n\n<h3>Adding and removing individual experiments</h3>\n\n<p>In addition to adding multiple experiments to your cart and clearing your cart, you can also add and remove individual experiments.</p>\n\n<p>As mentioned before, the search-results page shows a cart button to the right of experiments. This button appears filled in for experiments currently in your cart, and as an outline for experiments not in your cart. Clicking the cart button of an experiment in your cart removes it from the cart, and the button appears as an outline. Clicking the cart button of an experiment <em>not</em> in your cart adds it to your cart, and the button appears filled in.</p>\n\n<p>You can also add and remove experiments on individual experiment pages using a button above the summary.</p>\n\n<figure class=\"img-wrapper add-to-cart\"><img src=\"/images/012b27ed-4bbe-44fe-b63b-1b967da29d30/@@download/attachment/add-to-cart.png\" width=\"200\" />\n<figcaption><i>Add to cart</i> button on an experiment</figcaption>\n</figure>\n\n<h3>Clearing your cart</h3>\n\n<p>Once you no longer need your cart, click the &ldquo;Clear cart&rdquo; button on your cart page. You get a chance to back out of this action, or to continue. Once you clear your cart, you cannot bring its contents back.</p>\n\n<p>Another way to clear your cart involves clearing your browser window&rsquo;s memory by reloading the browser or visiting another website while you have items in your cart. When you do this, you see a generic alert that lets you back out of clearing your browser window&rsquo;s memory in case you do this by accident.</p>\n\n<hr />\n<h2 id=\"saved-carts\">Saving and sharing carts with user accounts</h2>\n\n<p>Carts have more abilities when you have logged in with your user account on the ENCODE portal, including:</p>\n\n<ul>\n\t<li>Saving your carts so they can be recalled</li>\n\t<li>Sharing saved carts with others</li>\n\t<li>Adding more than 4000 items to your carts, with a corresponding performance penalty on the cart page as you add more items</li>\n</ul>\n\n<p>The following sections describe additional cart abilities when you have logged in.</p>\n\n<p>Please contact our <a href=\"mailto:encode-help@lists.stanford.edu\" title=\"Email encode-help@lists.stanford.edu\">Help Desk</a> if you need an account, or if your old account does not work.</p>\n\n<h3>Saving your cart</h3>\n\n<p>Once you have logged in with your ENCODE portal user account, carts automatically get saved to the ENCODE portal as you add and remove items &mdash; you don&rsquo;t need to specifically save your cart. You can view your carts on different browsers and computers, and you don&rsquo;t lose this cart by reloading the browser window or going to a different website.</p>\n\n<h3>Sharing your cart</h3>\n\n<p>You can share your cart with others through the &ldquo;Share cart&rdquo; item in your cart menu.</p>\n\n<figure class=\"img-wrapper image-80\"><img src=\"/images/32d9142f-266d-4c59-b746-37122e03d99b/@@download/attachment/share-cart-menu.png\" />\n<figcaption>Selecting <em>Share cart</em> menu, including your default cart name</figcaption>\n</figure>\n\n<p>Selecting this item brings up a dialog box that lets you copy the unique URL to your cart. Others who visit this URL can see the contents of your cart, though they cannot modify your cart &mdash; only you can modify your own cart.</p>\n\n<p>Notice this cart also has a name &mdash; &ldquo;Lorem Ipsum cart&rdquo; in this case for the user &ldquo;Lorem Ipsum.&rdquo; We&rsquo;ll look at cart names in more detail below.</p>\n\n<hr />\n<h2 id=\"managing-multiple-carts\">Managing multiple carts</h2>\n\n<p>Logged-in users can have up to 30 independent carts, each containing its own set of experiments that can overlap with your other carts&rsquo; sets of experiments. You set one of your carts as the &ldquo;current cart,&rdquo; and all of the operations described above apply to that cart until you set another of your carts as the current cart.</p>\n\n<p>Each cart has a name that must be unique among all your carts. You can also optionally assign an identifier to each cart that you can use in the URL for your cart when you share it. This identifier must be unique among all carts in the system, even if they belong to other users.</p>\n\n<p>Every user gets one cart initially with a name starting with that user&rsquo;s name. In the example given below, user &ldquo;Lorem Ipsum&rdquo; has an initial cart called &ldquo;Lorem Ipsum cart.&rdquo;</p>\n\n<h3>Cart Manager</h3>\n\n<p>When logged in, choose the &ldquo;Cart manager&rdquo; option from the cart menu which brings up a page showing a list of all the carts belonging to you.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/282adad1-b8de-42e3-aa1b-e6d066460bc9/@@download/attachment/cart-manager-initial.png\" />\n<figcaption>The cart manager as it appears with the initial cart</figcaption>\n</figure>\n\n<h3>Adding a new cart</h3>\n\n<p>To add new carts, click the <em>New cart</em> button at the upper-right corner of the list. This brings up a modal that lets you specify the name and optional identifier for the new cart.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/ec213455-f3e9-4d0f-8dfc-f2dd84a782c8/@@download/attachment/new-cart-dialog.png\" />\n<figcaption><em>New cart</em> dialog box</figcaption>\n</figure>\n\n<p>The notes below each field describe the limitations for the name and identifier. The arrow button in the middle lets you toggle automatic-transfer mode, so clicking it enables the automatic transfer of the name you enter to the identifier (the button appears with a dark background) and clicking this button again disables automatic transfer. While you have automatic transfer enabled, anything you type into the name field gets copied to the identifier field but modified to work better as a part of a URL, so spaces get converted to dashes, and anything not a standard letter or number gets converted to dashes or ignored depending on what those characters are. You can also type directly into the identifier field, with the same limitations on the kinds of characters you can enter.</p>\n\n<p>Once you feel satisfied with the name and optional identifier, click the <em>New cart</em> button to create this cart, and you then see your new cart in your list of carts. If you had left the identifier field blank, the new cart has all the same abilities as any other cart but it gets an automatically assigned identifier.</p>\n\n<h3>Setting the current cart</h3>\n\n<p>You only work with one cart at a time, so you need to set one of your carts as the &ldquo;current cart.&rdquo; You do this in the cart manager by clicking the button in the <em>Current</em> column on the right side of the cart&rsquo;s line in the list of carts, which also highlights that cart in blue. Once you do that, all cart operations &mdash; adding to the cart, viewing the cart, downloading the cart&rsquo;s files, etc. &mdash; apply to that cart.</p>\n\n<p>While all your carts and their contents are part of the ENCODE database, your web browser keeps track of the current cart. If you switch to a different browser or a different computer, you could see a different cart set as the current cart.</p>\n\n<figure class=\"img-wrapper\"><img src=\"/images/8a3030f4-a8f6-418e-92a3-646745b94595/@@download/attachment/current-cart-display.png\" />\n<figcaption>The current cart selected and reflected in the cart menu</figcaption>\n</figure>\n\n<h3>Renaming, sharing, and deleting carts</h3>\n\n<p>The <em>Actions</em> column of the cart manager has the three operations you can perform on a cart: rename, share, and delete.</p>\n\n<p>Renaming a cart brings up the same dialog box as creating a new cart and gives you the same options.</p>\n\n<p>Sharing a cart brings up the same dialog box as sharing a cart from the cart menu. However, you can share <em>any</em> cart with the cart manager whether the current cart or other carts.</p>\n\n<p>When you delete a cart and confirm that you mean to delete it, you can no longer retrieve that cart. Deleting a cart also frees its identifier if it had one &mdash; its identifier becomes available for other carts. You cannot delete the current cart; to delete a cart you have to set a different cart as the current cart first.</p>\n\n<h3 id=\"auto-save-carts\">Auto Save carts</h3>\n\n<p>If you haven&rsquo;t logged in and you start collecting items into a cart and then you log in, those items automatically get saved to a special cart called &ldquo;Auto Save&rdquo; that appears in yellow in the cart manager. This cart has no identifier, and you cannot rename it, share it from the cart manager, or set it as the current cart.</p>\n\n<p>You can merge the auto-save cart&rsquo;s contents into your current cart. To do this, go to the cart manager and make sure you have set the cart you want to merge the auto-save cart&rsquo;s items into as the current cart. Then click the &ldquo;Auto Save&rdquo; cart&rsquo;s link in the list to view the auto-save cart&rsquo;s contents. Above the contents you find the &ldquo;Add to current cart&rdquo; button. When you click this button, all the contents of the auto-save cart get merged into the current cart, without duplicates.</p>\n\n<p>You never have more than one auto-save cart, so if you already have one and you log in again with items in the logged-out cart, those new items get merged into your existing auto-save cart&rsquo;s items.</p>\n\n<hr />\n<h2 id=\"tutorial-video\">Tutorial video</h2>\n\n<div class=\"iframe-container\"><iframe allowfullscreen=\"\" frameborder=\"0\" src=\"https://www.youtube.com/embed/98jVfXIbiLk\"></iframe></div>\n"
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "citing-kce",
+        "title": "Citing KCE",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "fdf3b352-6079-4a58-96e2-33936a49e97d",
+        "layout": {
+            "blocks": [
+              {
+                "body": "<style type=\"text/css\">.rules-header li{\nfont-size: 12pt;\n}\n\n.examples li{\nfont-size: 10.5pt;\n}\n</style>\n<h2>Data Use Policy for External Users</h2>\n\n<p><br />\n<strong>External data users may freely download, analyze and publish results based on any ENCODE data without restrictions. </strong>This applies to all datasets, regardless of type or size, and includes no grace period for ENCODE data producers, either as individual members or as part of the Consortium. Researchers using unpublished ENCODE data are encouraged to contact the data producers to discuss possible coordinated publications; however, this is optional. The Consortium will continue to publish the results of its own analysis efforts in independent publications.</p>\n\n<p>We request that researchers who use ENCODE datasets (published or unpublished) in publications and presentations cite the ENCODE Consortium in <u><strong>all</strong></u> of the following ways:&nbsp;</p>\n\n<ol class=\"rules-header\">\n\t<li><strong>Cite the Consortium&#39;s most recent publications:</strong>\n\n\t<ul class=\"examples\" style=\"margin: 0em 0em -1em 0em\">\n\t\t<li>ENCODE integrative analysis (PMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/22955616\">22955616</a>; PMCID: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3439153/\">PMC3439153</a>)</li>\n\t\t<li>ENCODE portal (PMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/29126249\">29126249</a>; PMCID: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5753278/\">PMC5753278</a>)</li>\n\t</ul>\n\t</li>\n\t<li><strong>Acknowledge the ENCODE Consortium and the ENCODE production laboratory(s) generating the particular dataset(s)</strong></li>\n\t<li><strong>Reference the ENCODE accession numbers of the datasets (ENCSR...) and files (ENCFF...) used</strong>\n\t<ul class=\"examples\">\n\t\t<li>Supplemental table example:<br />\n\t\tKazachenka et al. [<a href=\"#citation-1\">1</a>] included a table of ENCODE accessions for datasets and file(s) as <a href=\"https://ars.els-cdn.com/content/image/1-s2.0-S0092867418312558-mmc3.pdf\">Supplementary Table 6</a>.</li>\n\t\t<li>Inline citation example:<br />\n\t\tInoue et al. [<a href=\"#citation-2\">2</a>] included a list of the file accessions inline:\n\t\t<blockquote style=\"border:1px solid #e0e0e0; background-color:#f8f8f8; border-radius: 3px; padding: 5px; margin: 10px 0px 0px 0px\">We downloaded the call sets from the ENCODE portal (Sloan et al. 2016) (https://www.encodeproject.org/) with the following identifiers: ENCFF001SWK, ENCFF002CKI, ENCFF002CKJ, ENCFF002CKK, ENCFF002CKN, ENCFF002CKY, ENCFF002CUS, ENCFF002CTX, ENCFF002CUU, ENCFF002CKV, and ENCFF002CUN.</blockquote>\n\t\t</li>\n\t</ul>\n\t</li>\n</ol>\n\n<h5>References</h5>\n\n<p><cite>[<a id=\"citation-1\" name=\"citation-1\">1</a>]&nbsp;Kazachenka A, Bertozzi TM, Sjoberg-Herrera MK, et al. Identification, Characterization, and Heritability of Murine Metastable Epialleles: Implications for Non-genetic Inheritance.&nbsp;<i>Cell</i>. 2018;175(5):1259-1271.e13.&nbsp;PMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/30454646/\">30454646</a>; PMCID: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6242299/\" rel=\"nofollow\">PMC6242299</a></cite></p>\n\n<p><cite>[<a id=\"citation-2\" name=\"citation-2\">2</a>]&nbsp;Inoue F, Kircher M, Martin B, et al. A systematic comparison reveals substantial differences in chromosomal versus episomal encoding of enhancer activity.&nbsp;<i>Genome Res</i>. 2017;27(1):38-52.&nbsp;PMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27831498/\">27831498</a>; PMCID:&nbsp;<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5204343/\">PMC5204343</a></cite></p>\n\n<p><em>Updated&nbsp;January 30, 2019.</em></p>\n",
+                "@id": "#block1",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "contacts",
+        "title": "Contact",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "c2c47d4e-3d87-4c90-a36c-79906eb81e7f",
+        "layout": {
+            "blocks": [
+              {
+                 "body": "<h2>Contact</h2>\n\n<p>For questions about the KCE Portal or KCE data, please email&nbsp;<a href=\"mailto:bicf@utsouthwestern.edu\">bicf@utsouthwestern.edu</a></p>\n\n<h2>Current team members</h2>\n\n<ul>\n\t<li><strong>Payal Kapur, M.D.</strong>, KCE Project Leader</li>\n\t<li><strong>Alana Christie, M.S.</strong>, Database Curator</li>\n\t<li><strong>Phillip Reeder,M.S.</strong>, Database Analyst</li>\n\t<li><strong>Venkat Malladi, M.S.</strong>, BICF Core Director</li>\n\t<li><strong>Mingzhu Nie, Ph.D.</strong>, Scientific programmer I</li>\n\t<li><strong>Mingjie Li, M.S.</strong>, Computational biologist II</li>\n</ul>\n\n<h2>Acknowledgments</h2>\n\n<ul>\n\t<li><strong>Yang Xie, Ph.D.</strong>, Director Bioinformatics Core</li>\n\t<li><strong>Ellen Araj, M.D.</strong>, Clinical Fellow / CoPath NLP</li>\n\t<li><strong>Min Soo Kim, M.S.</strong>, Former KCE Project Co-Lead</li>\n\t<li><strong>Qinbo Zhou, Ph.D.</strong>, Former Primary Web Developer</li>\n\t<li><strong>Xin Luo, Ph.D.</strong>, Database Curator</li>\n\t<li><strong>Bo Yao, Ph.D.</strong>, Web Developer</li>\n</ul>\n\n",              
+
+                "@id": "#block2",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block2"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "file-formats",
+        "title": "Common File Formats Used by KCE",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "d8421759-e8f9-4d7c-9488-9826d46a2508",
+        "layout": {
+            "blocks": [
+              {
+                "body": "<h2>Overview</h2>\n\n<p>The ENCODE consortium uses several file formats to store, display, and disseminate data:</p>\n\n<ul>\n\t<li><a href=\"#fastq\">FASTQ</a>: a text-based format for storing nucleotide sequences (reads) and their quality scores. [<a href=\"#ref1\">1</a>]</li>\n\t<li><a href=\"#bam\">BAM:</a> The Sequence Alignment/Mapping (SAM) format is a text-based format for storing read alignments against reference sequences and it is interconvertible with the binary BAM format. [<a href=\"#ref1\">2</a>]</li>\n\t<li><a href=\"#bigwig\">bigWig:</a> The bigWig format is an indexed binary format for rapid display of continuous and dense data in the UCSC Genome Browser.</li>\n\t<li><a href=\"#bigbed\">bigBed:</a> The bigBed format is also an indexed binary format for rapid display of annotation items such as a linked collection of exons or the binding peaks of a transcription factor.</li>\n\t<li><a href=\"#hic\">hic</a>: The hic format is a binary format for storing contact matrices and annotations of chromatin structural features generated from Hi-C or other proximity mapping assays.</li>\n</ul>\n\n<p>These file formats were originally designed to be generic and flexible. As the ENCODE consortium is a collaborative effort, the consortium has made several specifications on the file formats to facilitate data archival, presentation, and distribution, as well as integrative analysis on the data. The consortium considers FASTQ as the basic file format for archival purpose and thus the FASTQ format&#39;s specifications aim to preserve the raw sequence data. In comparison, the other file formats are geared towards data visualization and dissemination, thus their specifications aim to facilitate user-friendliness. Additional information about the file formats can be viewed at the <a href=\"http://genome.ucsc.edu/FAQ/FAQformat.html#ENCODE\">UCSC Genome Browser ENCODE-specific File Formats</a>.</p>\n\n<h2><a id=\"fastq\" name=\"fastq\">FASTQ</a></h2>\n\n<h3>FASTQ file content</h3>\n\n<p>FASTQ files are submitted as they come off the sequencing instrument to allow for maximal decision making of downstream users. The files are accompanied by documentation detailing how the sequencing libraries were constructed to inform the end-user about how they might want to process the data, the strengths and limitations of the various options of data processing, and how these may apply according to the user&#39;s biological questions of interest.</p>\n\n<p>ENCODE produces replicate data for most experiments to quantify reliability. Biological replicates involve different biological samples, e.g., different tissue preparations for cell growth and expansion when cell lines are used. Biological replicates are contrasted with technical replicates, for which different sequencing libraries are prepared from the same sample, or different sequencing lanes for the same library. Reads from different replicates are stored in separate files and should include flow cell and lane ID. If multiple lanes are used for the same biological or technical replicate, they are stored in the same file (after a QC check to eliminate failed lanes), with information on flow cell and lane ID included. For experiments that produce paired-end reads, the two reads in each pair are stored in two separate files, with the reads in the same order in the two files.</p>\n\n<p>The reads in FASTQ files are unfiltered, i.e., barcodes, adapter sequences, and spike-ins remain in the files. For Illumina sequencing, the barcodes that are in the so-called third read position should not be present in the sequence. Spike-in reads are kept. For bisulfite sequencing experiments, the raw FASTQ files are presented, wherein most unmethylated cytosines are converted to thymines.</p>\n\n<p>Reads are not &quot;clipped&quot; (no bases are removed). For example, in the case of small RNAs that are shorter than the read-length, there may be adapters flanking these reads&mdash;these adapter sequences remain in the FASTQ file. Some libraries are constructed in a way such that the barcode is read out in the sequence (CSHL small RNAs were made this way during phase II of ENCODE) and will appear in the FASTQ. Even though these barcodes would need to be trimmed off prior to mapping, they are still included in the FASTQ file because different users may choose different trimming algorithms.</p>\n\n<h3>FASTQ sequencing quality</h3>\n\n<p>FASTQ uses four lines for each sequence with the fourth line denoting the sequencing quality in each position. The consortium reports the Phred quality score from 0 to 93 using ASCII 33 to 126, i.e., Phred score plus 33. This is used by the newest versions of the Illumina pipeline, Sanger and SRA. The Phred score of a base[<a href=\"#ref3\">3</a>][<a href=\"#ref4\">4</a>] is defined as -10 log10 (<em>e</em>) where <em>e</em> is the estimated probability for a base to be erroneous.</p>\n\n<p><a href=\"http://en.wikipedia.org/wiki/FASTQ_format\">Introductory information on the FASTQ format</a></p>\n\n<h2><a id=\"bam\" name=\"bam\">BAM</a></h2>\n\n<h3>BAM file content</h3>\n\n<p>When sequence reads are mapped to reference sequences, the resulting alignments are stored in BAM files (SAMtools are used to convert between SAM and BAM files). Mapping algorithms (e.g., Bowtie, BWA, STAR, etc.) use many parameters, such as the version of a reference genome, the total number of mismatches allowed during mapping, the maximal number of times a read is allowed to map to the reference, etc. Furthermore, SAMtools may change the content while converting a SAM file to a BAM file. For example, the user may allow both unique-mapping and multiple-mapping reads during the mapping and then decide to retain only unique-mapping reads in the BAM file. Therefore the consortium documents the parameters used by the mapping algorithm and SAMtools in the header of the BAM files.</p>\n\n<p>For experiments that generate paired-end reads, the paired reads are stored in the same BAM file. The consortium also retains unmapped reads and spike-ins (whenever appropriate). Because spike-in reads are &quot;non-chromosomal&quot;, they need to be filtered out before downstream processing. The quality scores for unmapped reads are stored in the same format as in FASTQ files, i.e., Phred+33. Biological replicates are stored in separate BAM files. Multiple lanes of the same library are pooled into a single BAM, with read names containing lane information so that it is possible to decompose the pooled BAM file into individual BAM files by lane.</p>\n\n<p>At the present time, the consortium only releases one BAM file for each FASTQ file (or for each pair of FASTQ files in the case of paired-end datasets). However in the future the consortium may allow multiple BAM files for the same FASTQ file, potentially for different mapping algorithms (e.g., Bowtie and STAR for RNA-seq data) or for mapping to different reference genomes (e.g., personalized genomes). In that case, the consortium will provide clear guidelines for usage.</p>\n\n<h3>BAM mapping parameters</h3>\n\n<p>Due to the diverse data types used in ENCODE, the choice of mapping algorithms and the parameters used are data type dependent. These parameters include how many mismatches are allowed, whether seed matching is used (only the prefix of each read is used for mapping while the low-quality suffix is discarded), whether reads that map to many locations in the reference are allowed, etc. The consortium aims to specify the settings of these parameters for each individual data type, and these specifications will be released in the future versions of this document. Nonetheless, the settings of all tunable parameters are specified in the header of each BAM file.</p>\n\n<p><a href=\"http://en.wikipedia.org/wiki/BAM_format\">Introductory information on the SAM/BAM format</a></p>\n\n<h2><a id=\"bigwig\" name=\"bigwig\">bigWig</a></h2>\n\n<h3>bigWig file content</h3>\n\n<p>In order to visualize the number of reads that are mapped to a reference genome as a continuous signal in the UCSC genome browser, a user can convert a BAM file to a bigWig file (via the intermediate bedGraph format, using computer programs provided by the UCSC Genome Browser).</p>\n\n<p>Stranded data are stored in two bigWig files, one file for the plus genomic strand and the other file for the minus strand. The data on the two strands are displayed as two separate UCSC tracks by default and can also be displayed in different colors as a single overlayed track (without changing the two bigWig files). For unstranded data, signals on the plus and minus strands are summed and only one bigWig file is needed.</p>\n\n<p>Data from biological replicates are stored in individual bigWig files and can be viewed as separate UCSC tracks; however, this may cease to be necessary after the user has concluded that the replicates are highly reproducible. Thus the consortium also provides one bigWig file for each experiment with the reads in all biological replicates pooled and used this file to define the default track for the experiment.</p>\n\n<h3>Generation of bigWig files</h3>\n\n<p>To facilitate the comparison across datasets, ENCODE bigWig files are automatically generated by ENCODE uniform processing pipelines which contain appropriate parameters for data normalization and filtering. The version and key parameters of the pipeline that have been used to generate a bigWig file are provided.</p>\n\n<p><a href=\"http://genome.ucsc.edu/goldenPath/help/bigWig.html\">Introductory information on the bigWig format</a></p>\n\n<h2><a id=\"bigbed\" name=\"bigbed\">bigBed</a></h2>\n\n<h3>bigBed file content</h3>\n\n<p>Analyses of ENCODE data produce annotation files, e.g., genomic regions that are enriched in ChIP-seq signal of transcription factors (ChIP-seq peaks), splice junctions detected using RNA-seq data, or differentially methylated regions detected using bisulfite sequencing data. Such annotation files can be visualized in the UCSC genome browser using the bigBed format. Related to and interconvertible with the text-based Bed format, bigBed is an indexed binary format designed for rapid visualization. For each element in an ENCODE bigBed file, the consortium specifies its chromosome, start, end, genomic strand when applicable, and a color score that denotes average signal enrichment for the region.</p>\n\n<p><a href=\"http://genome.ucsc.edu/goldenPath/help/bigBed.html\">Introductory information on the bigBed format</a></p>\n\n<h2><a id=\"hic\" name=\"hic\">hic</a></h2>\n\n<h3>hic file content</h3>\n\n<p>Proximity mapping assays, like Hi-C, measure long-range chromatin interactions between pairs of loci in the genome. Reads are sequenced and aligned to a reference genome using the juicer and hictools software to generate hic files, which are highly compressed binary files containing the contact matrices and normalization vectors at several different resolutions. These files include annotations of chromatin structural features, including loops, loop anchor motifs, contact domains, and compartments[<a href=\"#ref5\">5</a>]. From the ENCODE portal, hic files are visualized using the Juicebox software. See&nbsp;<a href=\"/experiments/ENCSR545YBD/\">ENCSR545YBD</a> as an example.</p>\n\n<p><a href=\"https://github.com/aidenlab/juicer/wiki/Data\">Introductory information on the hic format</a></p>\n\n<h2>References</h2>\n\n<p><a id=\"ref1\" name=\"ref1\">[1]</a>&nbsp;Cock PJ, Fields CJ, Goto N, Heuer ML, Rice PM.&nbsp;<a href=\"http://nar.oxfordjournals.org/cgi/pmidlookup?view=long&amp;pmid=20015970\">The Sanger FASTQ file format for sequences with quality scores, and the Solexa/Illumina FASTQ variants</a>.&nbsp;<em>Nucleic Acids Res</em>. 2010 Apr;38(6):1767-71. PMID:&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/20015970\">20015970</a>; PMC:&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2847217\">PMC2847217</a></p>\n\n<p><a id=\"ref2\" name=\"ref2\">[2]</a>&nbsp;Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, Marth G, Abecasis G, Durbin R, 1000 Genome Project Data Processing Subgroup.&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/19505943\">The Sequence Alignment/Map format and SAMtools</a>.&nbsp;<em>Bioinformatics</em>. 2009 Aug 15;25(16):2078-9. PMID:&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/19505943\">19505943</a>; PMC:&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2723002\">PMC2723002</a></p>\n\n<p><a id=\"ref3\" name=\"ref3\">[3]</a>&nbsp;Ewing B, Hillier L, Wendl MC, Green P.&nbsp;<a href=\"http://genome.cshlp.org/cgi/pmidlookup?view=long&amp;pmid=9521921\">Base-calling of automated sequencer traces using phred. I. Accuracy assessment</a>.&nbsp;<em>Genome Res</em>. 1998 Mar;8(3):175-85. PMID:&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/9521921\">9521921</a></p>\n\n<p><a id=\"ref4\" name=\"ref4\">[4]&nbsp;</a>Ewing B, Green P.&nbsp;<a href=\"http://genome.cshlp.org/cgi/pmidlookup?view=long&amp;pmid=9521922\">Base-calling of automated sequencer traces using phred. II. Error probabilities</a>.&nbsp;<em>Genome Res</em>. 1998 Mar;8(3):186-94. PMID:&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/9521922\">9521922</a></p>\n\n<p><a id=\"ref5\" name=\"ref5\">[5]&nbsp;</a>Durand NC, Shamim MS, Machol I, Rao SSP, Huntley MH, Lander ES, Aiden EL. <a href=\"https://www.cell.com/cell-systems/fulltext/S2405-4712(16)30219-8\">Juicer Provides a One-Click System for Analyzing Loop-Resolution Hi-C Experiments.</a>&nbsp;<em>Cell Systems</em>. 2016 Jul;3: 95-98. PMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27467249\">27467249</a></p>\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ],
+                "@id": "#block1"
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "parent": "/help",
+        "name": "data-organization",
+        "title": "Data Organization",
+        "status": "released",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "2f0fefc1-0c09-46c2-b6b1-ec05feebc8b9",
+        "layout": {
+            "blocks": [
+              {
+                "@id": "#block1",
+                "body": "<h2>Metadata</h2>\n\n<p>The KCE project has defined a set of metadata used to describe the patients, biosamples, and genomics.</p>\n\n<h3>Data model</h3>\n\n<p>Metadata for experimental assays and computational analyses are organized as <a href=\"https://www.json.org/\">JSON objects</a>. Each object represents a specific component of the assay or analysis. A schema profile for each object type outlines the set of properties for a given object of that type. For example, a patient is represented by a Patient object, the sample collected from a patient is represented by a Biospecimen object. For a complete list of these schemas, click &quot;Materials &amp; Methods&quot; -&gt; &quot;<a href=\"/profiles/?\">Schemas</a>&quot; at the top of any page.</p>\n\n<p>A property for a given object can &ldquo;link&rdquo; or &ldquo;point&rdquo; to another object on the KCE Portal. For example, an Experiment object has the property <em>replicates</em>, a list containing the Replicate objects associated with that assay. The properties of each Replicate object are embedded directly in the experiment JSON. Each Replicate has properties of additional objects embedded within it as well, including the Library, Biosample, and Donor objects associated with that Replicate (Figure 1). These object relationships form the basis of the core data model for the KCE Portal. For details on viewing the JSON of objects on the Portal and accessing properties of objects programmatically, please see the introduction to our <a href=\"/help/rest-api/\">REST API</a>.</p>\n\n<pre style=\"width:50%;margin-left:25%\">\n{\n<font color=\"#4B7EE5\">    replicates:[\n        {\n            biological_replicate_number: 1,\n            status: &quot;released&quot;,</font>\n            <font color=\"#F45128\">library: {\n&nbsp;               nucleic_acid_term_name: &quot;RNA&quot;,\n&nbsp;               size_range: &quot;&gt;200&quot;,</font>\n                <font color=\"#25af29\">biosample: {\n&nbsp;                   </font><font color=\"#25af29\">biosample_ontology: {...},\n&nbsp;                   </font><font color=\"#25af29\">treatments: [...],\n                    </font><font color=\"#FDB232\">donor: {\n&nbsp;                       age: 15,\n&nbsp;                       sex: &quot;female&quot;\n&nbsp;                   }</font>\n                <font color=\"#25af29\">}</font>\n            <font color=\"#F45128\">}</font>\n        <font color=\"#4B7EE5\">},\n        {...}\n    ]</font>\n}\n</pre>\n\n<center>\n<p style=\"font-size:9pt; color:gray\">Figure 1. Embedded properties of an example experiment JSON describing associated replicate, library, biosample, and donor objects.</p>\n</center>\n\n<h3>Accessions</h3>\n\n<p>The KCE creates accessions for metadata that can be reused to ensure that the exact patient or biospecimen is being referred to when being discussed or analyzed. Below are some examples of accessions given to certain types of metadata:</p>\n\n<ul>\n\t<li><strong>A biospecimen</strong>: An biospecimen accession refers to a tube or sample of that biological material used in an assay. For example, the following would each be given a biospecimen accession: (1) a batch of a cell line grown on a specific day, (2) the isolation of a primary cell culture on a specific day, or (3) the dissection of a tissue sample on a specific day.</li>\n\t<li><strong>A patient</strong>: Every patient is given a patient accession. This accession allows multiple biospecimens obtained from a single patient to be grouped together. </li>\n\t<li><strong>A library</strong>: Each unique library that can be resequenced is given an accession. This accession ensures the correct files are associated with the nucleic acid material created from the biospecimen.</li>\n\t<li><strong>A file</strong>: Each data file available for download is given an accession. The file accession and file format are included in the name of the file itself.</li>\n</ul>\n\n<h3><strong>Dependencies and Audits</strong></h3>\n\n<p>In order to ensure metadata accuracy, each schema has a set of dependencies to enforce proper modeling when related metadata are submitted.&nbsp;For example, if a FASTQ file is posted, a dependency requires an additional property indicating whether that file is single-ended or paired-ended. If paired-ended is selected, an additional dependency requires the ID of the paired file is included as well. These safeguards ensure that the appropriate metadata are in place prior to the submission of a new object.</p>\n\n<p>After submission, a system of audits are used to identify inconsistencies in the data. While dependencies enforce metadata <em>within</em> an object, audits typically check metadata <em>between</em> linked objects. For example, these data audits include checks that ensure that a ChIP-seq Experiment lists control Experiments with matching biosample metadata and that spike-ins are used for RNA-seq assays. These audits are also used to communicate details of KCE data, such as data quality relative to standards, to the public. Each audit is designated a color depending on its severity, and is displayed on the search page and individual object pages.</p>\n\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              },
+              {
+                "@id": "#block2",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project overview</a> | <a href=\"/help/getting-started/\">Using the portal</a> | <a href=\"/help/rest-api/\">REST API</a> | Data organization</h4>\n</center>\n",
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ]
+              }
+            ],
+            "rows": [
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block2",
+                      "#block1"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+    },
+    {
+        "name": "about",
+        "title": "About",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "39350bd7-a476-43fe-b79f-ce2a91ca8e37",
+        "layout": {
             "rows": [
                 {
                     "cols": [
                         {
-                            "blocks": [
-                                "#block1"
-                            ]
+                            "className": "col-md-12 class_override",
+                            "blocks": ["#block1"]
                         }
                     ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>About</h1>"
                 }
             ]
         }
     },
     {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "10fef431-d687-47cc-bda7-520de881fca4",
-        "title": "191 ENCODE Experiments Released",
-        "news": true,
+        "parent": "/about",
+        "name": "data-use-policy",
+        "title": "Data Use, Software, and Analysis Release Policies",
         "status": "released",
-        "name": "191-encode-experiments-released",
-        "news_excerpt": "191 new ENCODE experiments released in July!",
-        "news_keywords": ["DNA accessibility"],
-        "date_created": "2016-08-01T16:33:38.726440+00:00",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "16c62c85-d467-4a6d-a771-4637ba56d1ec",
         "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p>191 new ENCODE experiments released in July! Check them all out <a href=\"http://bit.ly/2apudlh\" title=\"Listing of ENCODE3 experiments released during July 2016\">here</a>."
-                }
-            ],
             "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
+              {
+                "cols": [
+                  {
+                    "blocks": [
+                      "#block1"
                     ]
-                }
+                  }
+                ]
+              }
+            ],
+            "blocks": [
+              {
+                "@type": [
+                  "richtextblock",
+                  "block"
+                ],
+                "@id": "#block1",
+                "body": "<p>The goal of the Encyclopedia of DNA Elements (ENCODE) Project is to build a comprehensive catalog of candidate functional elements in the genome. The catalog includes genes (protein-coding and non-protein coding), transcribed regions, and regulatory elements, as well as information about the tissues, cell types and conditions where they are found to be active. The current phase of ENCODE (2016-2019) greatly expands the number of cell types, data types and assays and includes the study of both the human and mouse genomes.</p>\n\n<p>Like the Human Genome Project, the ENCODE Project seeks rapid data dissemination and use by the entire scientific community. Accordingly, to encourage the widest possible use of the datasets, all data produced will be available for unrestricted use immediately upon release to public databases, eliminating the nine-month moratorium&nbsp;used previously in earlier phases of&nbsp;ENCODE. For guidelines&nbsp;on how to cite ENCODE data in your publications, please visit the <a href=\"/help/citing-encode\">Citing ENCODE</a> page.</p>\n\n<p>&nbsp;</p>\n\n<h3><strong>Software and Analysis Release Policy for ENCODE Consortium Members</strong></h3>\n\n<h4><strong>Overview</strong></h4>\n\n<p>The ENCODE Project aims to enhance biomedical research by generating community resources of genomics data, software, tools and methods for genomics data analysis, and products resulting from data analyses and interpretations.</p>\n\n<p>As outlined in the ENCODE FOAs, NHGRI expects that the major resources resulting from this project, including data, software, and analyses, generated by the ENCODE awards will be made freely available to the research community. Timely release of software and analyses is a central part of ENCODE&rsquo;s mission, to help to maximize the value of our work in the broader community, and enhance the reproducibility of our research.</p>\n\n<p>We hope that the tools, methods, and standards developed by ENCODE will continue to have a lasting impact on the field. In particular, the software produced by ENCODE is likely to be an important legacy of the project. Software packages are often important community contributions, and may be extremely widely used and highly cited. Thus we strongly encourage ENCODE-funded labs to provide useable, documented software and associated publications, for the mutual benefit of the publishing labs and the consortium.</p>\n\n<p>This document outlines policy for software and analysis release for ENCODE-funded research by all members of the ENCODE Consortium.</p>\n\n<h4><strong>Software </strong></h4>\n\n<p>Developers of significant new ENCODE-related software will make their programs, including source code, freely available. Examples include data processing pipelines and implementations of statistical, visualization, and modeling tools developed to process or analyze ENCODE data.</p>\n\n<ul>\n\t<li><strong><em>What to release: </em></strong>ENCODE <strong><em>requires </em></strong>the release of analysis pipelines used for major ENCODE products such as the ENCODE Encyclopedia. ENCODE <strong><em>strongly encourages </em></strong>release of software tools and pipelines used for major analyses in planned ENCODE publications, and other software likely to be useful to multiple groups either within ENCODE or in the broader community.</li>\n\t<li><strong><em>When to release software: </em></strong>The decision of when software should be released should balance the benefit to the community against the labor involved in software release and maintenance. Major software tools should be released as soon as they are sufficiently stable, and no later than the time they are first used in publications.</li>\n\t<li><strong><em>How to release software: </em></strong>Software should be released by version controlled public repositories (e.g Github). These repositories should be linked via the ENCODE DCC. Software should be well-documented and there should be a contact person for questions. Software development should continue through version-controlled deposition, and the software version used to generate each dataset should be documented.</li>\n\t<li><strong><em>Accompanying publications: </em></strong>In addition to the release of well-documented code, we strongly encourage developers to publish citable descriptions of their software. We recommend that authors describe their software in methodological papers so that they can receive credit for their work. These can be published in conventional journals, and/or disseminated pre-publication through pre-print servers (e.g. bioRxiv).&nbsp;</li>\n\t<li><strong><em>Dissemination of more complex pipelines. </em></strong>For most complex analyses, multiple software components are routinely combined to generate intermediate datasets. For reproducibility of these results, analysts should document all software components used, and the specific software versions utilized. We encourage (1) documenting these components; (2) providing scripts that reproduce key figures in ENCODE publications; (3) establishing reusable, publicly accessible analysis pipelines (e.g. Galaxy, virtual machines, Docker, DNA Nexus sessions); and (4) linking these through the DCC website.</li>\n\t<li><strong><em>Current and Future Support for Released Software:</em></strong> Software that will be released for publication and to repositories (e.g., Github) should state the types and degree of support users can expect for them to download, run and troubleshoot the available software as well as whether or not updates and &ldquo;fixes&rdquo; should be expected.</li>\n</ul>\n\n<h4>&nbsp;</h4>\n\n<h4><strong>Dissemination of Intermediate Data Analysis Results </strong></h4>\n\n<p>All analysis results and data analysis products generated by the ENCODE consortium that will be of broad use to the community must be registered at the DCC under unique accession numbers as soon as they are stable, and certainly no later than the time of manuscript acceptance.</p>\n\n<p><strong><em>What to release</em></strong>. Examples of types of analysis results to be released include:</p>\n\n<p>&nbsp; &nbsp; &nbsp;1. Elements in the ENCODE Encyclopedia</p>\n\n<p>&nbsp; &nbsp; &nbsp;2. Other major maps of gene regulatory elements, key genomic features or predictions, and gene regulatory network models.</p>\n\n<p>&nbsp; &nbsp; &nbsp;3. Other analyses that are significant elements of planned publications.</p>\n\n<p>When possible, analysis results should be released using standard ENCODE <a href=\"/help/file-formats/\">file formats</a>. Analyses comprising major ENCODE deliverables (e.g. the Encyclopedia) may be subject to pre-release vetting by consortium members.</p>\n\n<p>Analyses should be released in an unrestricted manner via the DCC when they are free of personally identifiable information (to current standards). When IRB rules apply, analysis products should be release via controlled access (such as dbGaP) using the appropriate sharing mechanism.</p>\n\n<p>Analyses should be accompanied by written documentation, ideally in the form of a publication or a pre-print (e.g. bioRxiv), with clearly specified contact author. The release should specify and provide links to: (1) the datasets used, (2) the software used and the specific version, and (3) the specific pipelines used and their specific versions.</p>\n\n<p><strong><em>Good Software Design Practices: </em></strong>We recommend (1) using strict versioning and version control; (2) providing easy installation and compilation steps; (3) including simple test input datasets with matched output, and small unit tests for software with multiple components; (4) including realistic &ldquo;production&rdquo; tests, possibly matching publication figures; (5) specifying any unusual hardware requirements (e.g. CPU, RAM, disk).</p>\n\n<p>&nbsp;</p>\n\n<p><em><strong>Updated as of January 9, 2019</strong></em></p>\n"
+              }
             ]
-        }
+          }
     },
     {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "4677b033-b52b-4a46-a8b8-38a60dc9cd84",
-        "title": "Latest GGR release from the Reddy Lab",
-        "news": true,
-        "status": "released",
-        "name": "latest-ggr-release-reddy-lab",
-        "news_excerpt": "Check out the latest GGR release from the Reddy lab.",
-        "news_keywords": ["DNA methylation"],
-        "date_created": "2016-07-21T16:37:40.681507+00:00",
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p>Check out the latest GGR release from the Reddy lab, <a href=\"http://bit.ly/2adtFmF\" title=\"Listing of GGR experiments from Reddy lab\">here</a> on the portal, 84 ChIP-seq expts in A549 +/- dex treatment.</p>"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "c2d1cf13-b415-4630-8113-ca0aad0846ff",
-        "title": "Abstract Deadline for ENCODE Users Meeting",
-        "news": true,
-        "status": "released",
-        "name": "abstract-deadline-encode-users-meeting",
-        "news_excerpt": "Don’t miss the abstract deadline for ENCODE Users Meeting.",
-        "news_keywords": ["Conferences", "Encyclopedia"],
-        "date_created": "2016-04-15T16:37:40.681507+00:00",
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p>Abstract deadline for talk consideration at the 2016 ENCODE Users Meeting is May 16, 2016. Register and submit abstract <a href=\"http://www.encode2016.org/\">here</a>!</p>"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "50629a51-0209-4a20-8712-6ab3cb039d01",
-        "title": "2016 ENCODE Users Meeting",
-        "news": true,
-        "status": "released",
-        "name": "2016-encode-users-meeting",
-        "news_excerpt": "We’re happy to announce the second annual ENCODE Users Meeting.",
-        "news_keywords": ["Conferences"],
-        "date_created": "2016-04-15T16:37:40.681507+00:00",
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<p>We are happy to announce that the second annual ENCODE Users Meeting will be held at Stanford University on June 8th-10th, 2016.</p><p>More details at <a href=\"http://www.encode2016.org/\">www.encode2016.org</a></p>"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "title": "January 2017 Data Release Overview",
+        "title": "hif2 resistance shows kidney cancer dependency",
         "news": true,
         "layout": {
             "blocks": [
@@ -431,7 +597,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that <a href=\"/matrix/?type=Experiment&amp;status=released&amp;month_released=January%2C+2017\"> 393 new datasets</a> were released in the month of January. The assays range from ChIP-seq, ATAC-seq, and various forms of RNA-seq; these datasets come from human (<a href=\"/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens\">264</a>), mouse (<a href=\u201c/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus\u201d>43</a>), and fruit fly (<a href=\u201c/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster\u201d>86</a>).</p>\n\n<p>These datasets&nbsp;are free and accessible for download&nbsp;on the ENCODE portal, no logins required.</p>"
+                    "body": "<p>In a <a href=\"https://clincancerres.aacrjournals.org/content/early/2019/11/13/1078-0432.CCR-19-1459\">study</a> published in Clinical Cancer Research, KCP investigators uncovered the first core dependency in clear cell RCC (ccRCC), the most common type of kidney cancer. Through analyses of tumor samples from patients enrolled in a clinical trial of a first-in-class HIF-2 inhibitor (PT2385), Kevin Courtney, M.D., Ph.D., and colleagues report the identification of an acquired resistance mutation that developed in the HIF-2α protein in response to the drug. The mutation reveals a fundamental dependency of kidney cancer on HIF-2. The finding is a telling indicator that other strategies targeting HIF-2 are likely to be effective in treating kidney cancer.</p>"
                 }
             ],
             "rows": [
@@ -446,63 +612,18 @@
                 }
             ]
         },
-        "date_created": "2017-02-03T21:53:28.679346+00:00",
+        "date_created": "2020-02-21T21:53:28.679346+00:00",
         "news_keywords": [
-            "DNA accessibility",
-            "DNA binding",
-            "Transcription"
+            "Publications"
         ],
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "status": "released",
-        "news_excerpt": "393 new datasets were released in the month of January",
-        "uuid": "af6a6e7f-eb79-4605-bbca-ea9a80533fa4",
-        "name": "2017-02-03-january-release"
+        "news_excerpt": "In a study published in Clinical Cancer Research, KCP investigators uncovered the first core dependency in clear cell RCC (ccRCC)",
+        "uuid": "56c2ff7d-936b-49e8-bed8-b043f1e0ece8",
+        "name": "2020-02-21-kcp-publication"
     },
     {
-        "award": "/awards/U41HG007355/",
-        "news_keywords": [
-            "DNA accessibility",
-            "DNA binding",
-            "Transcription"
-        ],
-        "news": true,
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "status": "released",
-        "news_excerpt": "We are pleased to announce that the Garber Lab, under the GGR project, has released 66 new dendritic cell datasets.",
-        "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that the Garber Lab, under the <a href=\"/awards/U01HG007910/\">Genomics of Gene Regulation project</a>, has released <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;month_released=January%2C+2017\">66 new dendritic cell datasets</a>. These datasets come from ATAC-seq, RNA-seq, and ChIP-seq, providing great look into the genomic and transcriptomic landscape of the dendritic cell. Eleven of these are mouse, 55 are human datasets.&nbsp;</p>\n\n<p>The ENCODE DCC would like to remind all that these <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;month_released=January%2C+2017&amp;limit=all\">66 datasets</a> are free and accessible for use here on the ENCODE portal, no logins required.</p>\n"
-                }
-            ]
-        },
-        "date_created": "2017-01-20T23:02:58.968100+00:00",
-        "name": "2017-01-20-garber-lab-release",
-        "lab": "/labs/barbara-wold/",
-        "title": "Data Release: 66 new dendritic cell datasets from the Garber Lab"
-    },
-    {
-        "award": "/awards/U41HG007355/",
-        "news_keywords": [
-            "DNA binding"
-        ],
-        "date_created": "2017-01-11T23:35:45.593848+00:00",
+        "title": "KCP hosts 3rd annual retreat for trainees",
         "news": true,
         "layout": {
             "blocks": [
@@ -512,7 +633,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the <a href=\"/about/contributors/#modERN\">modERN project</a> has released <a href=\"/search/?type=Experiment&amp;month_released=January%2C+2017&amp;replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster&award.rfa=modERN&amp;limit=all\">86 new Drosophila melanogaster ChIP-seq data</a> (includes control experiments). Their processed files have been visualized in both dm3 and dm6 genome references, and includes the processing pipelines, steps, and QC metrics.</p>\n\n<p>Please contact us at&nbsp;<a href=\"mailto:encode-help@lists.stanford.edu\">encode-help@lists.stanford.edu</a>&nbsp;for any questions regarding these datasets.</p>\n"
+                    "body": "The 3rd Annual Kidney Cancer Program Retreat, held at the UT Southwestern Faculty Club, brought together more than 30 medical students, interns, and residents to learn about research opportunities available with the KCP. The retreat, which was organized by Drs. Alex Bowman, Xiaosong Meng, and Roy Elias, featured presentations by early stage faculty who were previous KCP trainees and highlighted resources available through the Program. Sherwin Kelekar, an M.D., Ph.D. student in Dr. Ralph DeBerardinis' lab, and Dr. Alexander Kenigsberg, a 3rd-year urology resident, received a $1,000 prize for best poster in the medical student and resident categories, respectively. "
                 }
             ],
             "rows": [
@@ -527,372 +648,20 @@
                 }
             ]
         },
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "d3c14e74-6392-4eda-9e92-56ceb08e55c1",
-        "lab": "/labs/kevin-white/",
-        "news_excerpt": "We are pleased to announce that the modERN project has released 86 new Drosophila ChIP-seq data.",
-        "title": "Data Release: 86 Drosophila ChIP-seq data",
-        "status": "released",
-        "name": "2017-01-11-modern-drosophila-chipseq"
-    },
-    {
-        "uuid": "6d24ad59-2247-4e5e-8e00-2fe0b6ecfad8",
-        "news_excerpt": "We are pleased to announce that the Reddy Lab has released 48 new ChIP-seq experiments. ",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "name": "2016-12-20-new-chipseq-data",
-        "award": "/awards/U01HG007900/",
-        "news": true,
-        "date_created": "2016-12-21T00:06:46.395305+00:00",
-        "title": "December releases: 48 ChIP-seq from the Reddy Lab",
-        "lab": "/labs/tim-reddy/",
-        "layout": {
-            "blocks": [
-                {
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that the Reddy Lab has released <a href=\"/search/?type=Experiment&amp;month_released=December%2C+2016&amp;lab.title=Tim+Reddy%2C+Duke&amp;status=released&amp;limit=all\">48 new ChIP-seq experiments</a>. These ChIP-seq experiments were assayed on immortalized cell ine A549, treated with dexamethasone, and each transcription factor has a control per time treatment.&nbsp;</p>\n\n<p>Treatment Time Series<br />\nCTCF:&nbsp;<a href=\"/treatment-time-series/ENCSR738NGQ/\">ENCSR738NGQ</a><br />\nJUN: <a href=\"/treatment-time-series/ENCSR588JLN/\">ENCSR588JLN</a><br />\nJUNB: <a href=\"/treatment-time-series/ENCSR483SDK/\">ENCSR483SDK</a><br />\nControl: <a href=\"/treatment-time-series/ENCSR678VDY/\">ENCSR678VDY</a></p>\n",
-                    "@id": "#block1"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "status": "released",
-        "news_keywords": [
-            "DNA binding"
-        ]
-    },
-    {
-        "title": "Regarding new eCLIP processed data",
-        "lab": "/labs/gene-yeo/",
-        "news": true,
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>The Yeo Lab and the ENCODE DCC have released new <a href=\"/search/?type=Experiment&amp;assay_title=eCLIP&amp;files.file_type=bed+narrowPeak&amp;files.file_type=bigBed+narrowPeak&amp;files.file_type=bigWig\">eCLIP processed files</a>. These new bed, bigBed, and bigWig files include a supersedes property within its metadata to indicate which file it has replaced. <a href=\"http://yeolab.github.io/eric-van-nostrand/\">Dr. Eric Van Nostrad</a> (Yeo Lab) has provided the following statement in regards to the replacement:</p>\n\n<p>&ldquo;We improved the peak calling background detection to avoid issues of false negatives at a specific class of RNAs with short introns. There are very few old peaks that are not found in the new version (i.e., were few false positives in the old set); but there are some datasets with substantially increased number of peaks.&quot;</p>\n\n<p>Please contact the <a href=\"mailto:encode-help@lists.stanford.edu\">ENCODE DCC help desk</a> for any questions.</p>\n"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "date_created": "2016-12-07T21:15:33.915803+00:00",
-        "news_keywords": [
-            "RNA binding"
-        ],
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "status": "released",
-        "news_excerpt": "The Yeo Lab and the ENCODE DCC have released new eCLIP processed files.",
-        "uuid": "2c965d34-ce2c-41f2-85f8-ee8770b449c8",
-        "name": "2016-12-07-new-eclip-data"
-    },
-    {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news_keywords": [
-            "Conferences"
-        ],
-        "news": true,
-        "status": "released",
-        "uuid": "3a73ed7f-3153-4efe-94e3-85ca4b83a349",
-        "news_excerpt": "ENCODE Users Meeting 2016 presentations are on youtube.",
-        "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>Happy Monday!</p>\n\n<p>We are excited to announce that the ENCODE Users Meeting presentations have been uploaded onto the NHGRI Youtube channel. See all of them <strong><a href=\"https://www.youtube.com/watch?v=AU3ac8i2PHk&amp;list=PL1ay9ko4A8snaLk1jEzlhodmsFE1siU2V\">HERE</a></strong>. The ENCODE DCC Outreach group will also contact all users who partook in this event to direct them to the videos, and will link each presentation to their respective tutorials in our <strong><a href=\"https://www.encodeproject.org/tutorials/encode-meeting-2016/\">tutorials page</a></strong>.</p>\n\n<p>Cheers,<br />\nENCODE DCC</p>\n\n<p>*Note: Dr. Freedman requested the ENCODE Consortium to not put his own slides or presentation in our tutorial page.</p>\n"
-                }
-            ]
-        },
-        "title": "ENCODE Users Meeting presentations",
-        "name": "2016-11-07-encode-users-presentations",
-        "date_created": "2016-11-07T18:05:52.467197+00:00"
-    },
-    {
-        "award": "/awards/U54HG007004/",
-        "news_excerpt": "72 ChIP-seq experiments from the Reddy Lab (Genomics of Gene Regulation project) have been released to the public.",
-        "name": "2016-10-27-ggr-chipseq",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news": true,
-        "date_created": "2016-10-28T00:43:29.278724+00:00",
-        "title": "72 GGR ChIP-seq from the Reddy Lab released!",
-        "news_keywords": [
-            "DNA binding"
-        ],
-        "layout": {
-            "blocks": [
-                {
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that 72 ChIP-seq experiments from the Reddy Lab (Duke University), part of the&nbsp;Genomics of Gene Regulation project, have been released to the public. All ChIP-seq experiments were done on&nbsp;A549 cell line biosamples and 66 were treated with dexamethasone. You can explore all of them <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Tim+Reddy%2C+Duke&amp;assay_title=ChIP-seq&amp;month_released=October%2C+2016&amp;biosample_ontology.term_name=A549&amp;assay_title=ChIP-seq\">here.</a>&nbsp;For more information about the Genomics of Gene Regulation, <a href=\"https://www.genome.gov/27561317/genomics-of-gene-regulation/\">read here</a>. For more information about the Reddy Lab, <a href=\"http://reddylab.org/\">read here</a>.</p>\n",
-                    "@id": "#block1"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "status": "released"
-    },
-    {
-        "award": "/awards/U41HG007355/",
-        "news_excerpt": "modERN ChIP-seq datasets from fly and worm",
-        "name": "2016-09-30-modern-chipseq-released",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news": true,
-        "date_created": "2016-09-30",
-        "title": "81 new modERN ChIP-seq experiments released",
-        "news_keywords": [
-            "DNA binding"
-        ],
-        "uuid": "44eded52-0dea-4ac5-89a8-638915824b4f",
-        "layout": {
-            "blocks": [
-                {
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;assay_title=ChIP-seq&amp;month_released=September%2C+2016\">81</a>&nbsp;new modERN ChIP-seq experiments released today on the ENCODE portal, 46 in&nbsp;<a href=\"http://bit.ly/2dfJNVI\">fly</a>&nbsp;and 35 in&nbsp;<a href=\"http://bit.ly/2dcVkEu\">worm</a>.&nbsp;</p>\n",
-                    "@id": "#block1"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "status": "released"
-    },
-    {
-        "news_excerpt": "Includes ChIP-seq, ATAC-seq, RNA-seq data, and more",
-        "name": "2016-06-29-182-total-datasets",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news": true,
-        "date_created": "2016-06-29",
-        "title": "182 new datasets were released this June",
-        "news_keywords": [
-            "DNA binding",
-            "DNA accessibility",
-            "Transcription",
-            "3D chromatin structure",
-            "DNA methylation"
-        ],
-        "uuid": "482bda6a-6ed6-4e59-aa77-a1ef7eb68842",
-        "layout": {
-            "blocks": [
-                {
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/matrix/?type=Experiment&amp;month_released=April%2C+2016\">ENCODE Portal</a>:&nbsp;</p>\n\n<table id=\"fixedheight\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td><strong>Human:</strong>\n\n\t\t\t<ul>\n\t\t\t\t<li>127&nbsp;ChIP-seq</li>\n\t\t\t\t<li>19 ATAC-seq</li>\n\t\t\t\t<li>16 shRNA followed by RNA-seq</li>\n\t\t\t\t<li>12 RNA-seq</li>\n\t\t\t\t<li>5 ChIA-pet</li>\n\t\t\t\t<li>2 DNase-seq</li>\n\t\t\t\t<li>1 WGBS</li>\n\t\t\t</ul>\n\n\t\t\t<p>Check them all out&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;status=released&amp;month_released=June%2C+2016\">here</a></p>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n",
-                    "@id": "#block1"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "status": "released"
-    },
-    {
-        "award": "/awards/U41HG007355/",
-        "news_excerpt": "Totaling to 198 modERN experiments released in May",
-        "name": "2016-05-24-celegans-chipseq",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news": true,
-        "date_created": "2016-05-24",
-        "title": "50 more modERN experiments",
-        "news_keywords": [
-            "DNA binding"
-        ],
-        "uuid": "6479c07e-0e2b-4d3a-997e-7bda055d96cf",
-        "layout": {
-            "blocks": [
-                {
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce 50 more modERN C. elegans&nbsp;ChIP-seq experiments ENCODE portal, with now great total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;month_released=May%2C+2016\">198 experiments</a>&nbsp;released this month.</p>\n",
-                    "@id": "#block1"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "status": "released"
-    },
-    {
-        "title": "First Hi-C data for the ENCODE Project",
-        "name": "2016-05-13-hic-datasets-3d-chromatin-structure",
-        "news_keywords": [
-            "3D chromatin structure"
-        ],
-        "date_created": "2016-05-13",
-        "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "blocks": [
-                {
-                    "body": "<p>We are pleased to announce the first release on the ENCODE portal of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;assay_title=Hi-C&amp;status=released\">Hi-C&nbsp;data</a>, from Job Dekker&#39;s lab. &nbsp;We have released the fastq files and associated metadata, and look forward to hosting analysis and visualization files soon. &nbsp;</p>\n",
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ]
-                }
-            ]
-        },
-        "status": "released",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news_excerpt": "12 Hi-C experiments have been released from the Dekker lab",
-        "uuid": "61ab1382-4b19-4893-8b6e-797c83fcc30a",
-        "news": true
-    },
-    {
-        "news": true,
-        "title": "Second annual ENCODE Users Meeting",
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p><strong>We are happy to announce that the second annual ENCODE Users Meeting will be held at Stanford University on June 8th-10th, 2016.</strong></p>\n\n<p><br />\n<strong>More details at&nbsp;<a href=\"http://www.encode2016.org/\">www.encode2016.org</a></strong></p>\n"
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "date_created": "2016-03-22",
+        "date_created": "2019-12-16T21:53:28.679346+00:00",
         "news_keywords": [
             "Conferences"
         ],
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "status": "released",
-        "news_excerpt": "The second annual ENCODE Users Meeting will be held at Stanford University!",
-        "uuid": "3d0233c5-55b8-446d-87e4-47dba86d9867",
-        "name": "2016-03-22-users-meeting"
+        "news_excerpt": "The 3rd Annual Kidney Cancer Program Retreat, held at the UT Southwestern Faculty Club, brought together more than 30 medical students, interns, and residents to learn about research opportunities available with the KCP.",
+        "uuid": "22ddca64-baba-4f39-a75a-2fd511af31c1",
+        "name": "2019-12-16-kcp-retreat"
     },
     {
-        "award": "/awards/U01ES017155/",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news_keywords": [
-            "DNA accessibility",
-            "Transcription",
-            "DNA methylation",
-            "DNA binding"
-        ],
+        "title": "Novel classification of kidney cancer refines diagnosis",
         "news": true,
-        "status": "released",
-        "uuid": "f5fc4601-d7d4-4146-9a94-93fefad0c87c",
-        "news_excerpt": "The Roadmap Epigenomics Mapping Consortium (Roadmap) metadata has been fully incorporated into this site including the standardization of terms and ontologies.",
         "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ],
             "blocks": [
                 {
                     "@id": "#block1",
@@ -900,37 +669,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>The&nbsp;<a href=\"http://www.roadmapepigenomics.org/\">Roadmap Epigenomics Mapping Consortium (Roadmap)&nbsp;</a>metadata has been fully incorporated into this site including the standardization of terms and ontologies. The experimental metadata can now be searched and explored alongside the ENCODE data. However, the raw data is still housed at&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/gapl\">dbGAP</a>&nbsp;and the hg19 processed data is housed at&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/geo/\">GEO</a>. Each Roadmap experiment has a link to the corresponding GEO submission.</p>\n\n<p>We are pleased to announce that&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;award.project=Roadmap\">3127 Roadmap experiments&nbsp;</a>have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>&nbsp;including:</p>\n\n<ul>\n\t<li><strong>ChIP-seq:</strong>&nbsp;1884 experiments</li>\n\t<li><strong>Dnase-seq:</strong>&nbsp;373 experiments</li>\n\t<li><strong>RNA-seq:</strong>&nbsp;345 experiments</li>\n\t<li><strong>shotgun bisulfite-seq assay (WGBS):</strong>&nbsp;145 experiments</li>\n</ul>\n"
-                }
-            ]
-        },
-        "date_created": "2015-10-06",
-        "name": "2015-10-06-roadmap",
-        "title": "Roadmap Epigenomics metadata integrated"
-    },
-    {
-        "news_excerpt": "Includes RNA Bind-n-Seq, ChIP-seq, RNA-seq, and WGBS assays",
-        "name": "2015-06-23-data-release",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news": true,
-        "date_created": "2015-06-23",
-        "title": "Data release: 3 human and 91 mouse datasets",
-        "news_keywords": [
-            "RNA binding",
-            "DNA binding",
-            "Transcription",
-            "DNA methylation"
-        ],
-        "uuid": "5726d4e3-5525-4370-b722-76fc428c6f0b",
-        "layout": {
-            "blocks": [
-                {
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;3 RNA Bind-n-Seq ssays</li>\n\t<li><strong>Mouse:</strong>&nbsp;64 ChIP-Seq, 15 RNA-seq, 12 whole genome bisulfite sequencing ssays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-06-23\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n",
-                    "@id": "#block1"
+                    "body": "UT Southwestern investigators have developed an innovative framework for classifying renal cancer. Based on extensive analyses of tumor architecture, cytology, and microenvironment, Dr. Payal Kapur and colleagues defined 33 parameters for clear cell RCC (ccRCC) according to which they developed a classification for nine subtypes of the disease. The findings, published in EBioMedicine, represent the first comprehensive catalog of ccRCC, the most common type of kidney cancer. By applying mathematical models and a co-occurring matrix with superimposed vectorial processes based on tumor size and grade, investigators developed the first morphology-driven evolutionary model of the disease. <a href=\"https://www.utsouthwestern.edu/newsroom/articles/year-2019/catalog-map-kidney-cancer-tumors.html\">Press Release</a>"
                 }
             ],
             "rows": [
@@ -945,27 +684,110 @@
                 }
             ]
         },
+        "date_created": "2019-12-02T21:53:28.679346+00:00",
+        "news_keywords": [
+            "Publications"
+        ],
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released",
+        "news_excerpt": "UT Southwestern investigators have developed an innovative framework for classifying renal cancer.",
+        "uuid": "defcbf82-61f8-4107-aeca-c0923dd38ed7",
+        "name": "2019-12-02-kcp-publication"
+    },
+    {
+        "title": "Tumor dependency on HIF-2 pathway may prove Achilles heel for kidney cancer",
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "In a <a href=\"https://clincancerres.aacrjournals.org/content/early/2019/11/13/1078-0432.CCR-19-1459\">study</a> published in Clinical Cancer Research, KCP investigators uncovered the first core dependency in clear cell RCC (ccRCC), the most common type of kidney cancer. Through analyses of tumor samples from patients enrolled in a clinical trial of a first-in-class HIF-2 inhibitor (PT2385), Kevin Courtney, M.D., Ph.D., and colleagues report the identification of an acquired resistance mutation that developed in the HIF-2α protein in response to the drug. The mutation reveals a fundamental dependency of kidney cancer on HIF-2. The finding is a telling indicator that other strategies targeting HIF-2 are likely to be effective in treating kidney cancer."
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "date_created": "2019-11-14T21:53:28.679346+00:00",
+        "news_keywords": [
+            "Publications"
+        ],
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released",
+        "news_excerpt": "In a study published in Clinical Cancer Research, KCP investigators uncovered the first core dependency in clear cell RCC (ccRCC), the most common type of kidney cancer.",
+        "uuid": "a8566841-426a-4d78-8875-3ed3c1edafaf",
+        "name": "2019-11-14-kcp-publication"
+    },
+    {
+        "title": "Kidney Cancer Program recognized among North Texas' leading innovators",
+        "date_created": "2019-11-11T21:53:28.679346+00:00",
+        "name": "2019-11-11-kcp-award",
+        "news_excerpt": "The Kidney Cancer Program was named a finalist for the Innovation in Healthcare Award as part of D Magazine and D CEO's inaugural Innovation Awards.",
+        "uuid": "24cd507e-61fc-48f3-89c7-04d6f5ea7079",
+        "news_keywords": [
+            "Awards"
+        ],
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "The Kidney Cancer Program was named a finalist for the Innovation in Healthcare Award as part of D Magazine and D CEO's inaugural Innovation Awards. The awards recognize companies, entrepreneurs, and other North Texas leaders who are redefining their industries. Blue Cross Blue Shield of Texas and three others join the KCP as the five finalists named in the healthcare category. Other notable finalists among the 13 award categories include Capital One, Samsung Electronics America, Mary Kay, and Veridesk. Winners of the 2020 Innovation Awards will be announced on January 7 at a ceremony hosted at The Tower Club in downtown Dallas. All of the finalists will be featured in the January/February issue of D CEO magazine, as well as online at DallasInnovates.com."
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "status": "released"
+        
+        
     },
     {
-        "award": "/awards/U01ES017155/",
-        "news_excerpt": "To improve transparency about the changes to the objects that comprise the ENCODE metadata schema, we are publishing changelogs for each object",
-        "name": "2015-05-28-changelogs",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "title": "New BOLD initiative to spur kidney cancer innovation",
+        "date_created": "2019-11-08T21:53:28.679346+00:00",
+        "name": "2019-11-08-kcp-program",
+        "news_excerpt": "Drawing on its collective talent and resources, the Kidney Cancer Program has launched a new initiative to bring KCP faculty together each month to brainstorm kidney cancer projects and ideas.",
+        "uuid": "a18c1d90-fe18-43af-a590-d8ccb22244d5",
+        "news_keywords": [
+            "Programs"
+        ],
         "news": true,
-        "date_created": "2015-05-28",
-        "title": "Changelogs",
-        "news_keywords": [],
-        "uuid": "6038ecfd-ec47-430d-9660-d9f31a4ba3c0",
         "layout": {
             "blocks": [
                 {
+                    "@id": "#block1",
                     "@type": [
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>A key feature of the ENCODE Portal is the ability to programmatically query metadata and URLs to files via the&nbsp;<a href=\"https://www.encodeproject.org/help/rest-api/\">REST API</a>. To improve transparency about the changes to the objects that comprise the ENCODE metadata schema, we are publishing changelogs for each object. To view the changelog, replace the following URL with the object name:</p>\n\n<pre>\nhttps://www.encodeproject.org/profiles/changelogs/[object_name].md\n</pre>\n\n<p>For example, viewing the changelog for the file.json object would be</p>\n\n<pre>\nhttps://www.encodeproject.org/profiles/changelogs/file.md</pre>\n",
-                    "@id": "#block1"
+                    "body": "Drawing on its collective talent and resources, the Kidney Cancer Program has launched a new initiative to bring KCP faculty together each month to brainstorm kidney cancer projects and ideas. Dubbed \"BOLD,\" the informal monthly program platform is meant to foster, explore, and capture bold, impactful, and innovative new ways of thinking about and treating kidney cancer."
                 }
             ],
             "rows": [
@@ -980,14 +802,21 @@
                 }
             ]
         },
+
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "status": "released"
+        
+        
     },
     {
+        "title": "Kidney Cancer Program earns Leaders in Clinical Excellence Award",
+        "date_created": "2019-11-06T21:53:28.679346+00:00",
+        "name": "2019-11-06-kcp-award",
+        "news_excerpt": "The Kidney Cancer Program was honored with the Leaders in Clinical Excellence 2019 Program Development Award.",
+        "uuid": "58b70207-a07a-4bb0-8378-96301d4ad16b",
         "news_keywords": [
-            "Transcription",
-            "RNA binding"
+            "Awards"
         ],
-        "date_created": "2015-04-13",
         "news": true,
         "layout": {
             "blocks": [
@@ -997,7 +826,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>16 RAMPAGE, 12 RNA Bind-n-Seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-04-13\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n"
+                    "body": "The Kidney Cancer Program was honored with the Leaders in Clinical Excellence 2019 Program Development Award. The award recognizes a group of clinical faculty and staff who have partnered to create, develop, and sustain an innovative program that significantly advances patient care. Marking its second year, the Leaders in Clinical Excellence awards program was established in 2018 by UT Southwestern Medical Center's Board of Directors to celebrate the innovation and collaboration that are foundational to UTSW's success. "
                 }
             ],
             "rows": [
@@ -1012,128 +841,19 @@
                 }
             ]
         },
+
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "608ea22b-dd2d-4b9c-b322-63e0b36eea40",
-        "news_excerpt": "Includes RAMPAGE and RNA Bind-n-Seq assays",
-        "title": "Data release: 28 human datasets",
-        "status": "released",
-        "name": "2015-04-13-human-rampage-rna-bind-n-seq"
+        "status": "released"       
     },
     {
-        "title": "Data release: 4 human datasets",
-        "status": "released",
-        "uuid": "03b9efa3-f1e9-4c7f-9b3a-cc7690122e37",
-        "news_excerpt": "Four human DNase-seq assays released",
-        "name": "2015-03-15-dnaseseq",
-        "date_created": "2015-03-15",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "title": "KCP recognized at World Affairs Council award dinner",
+        "date_created": "2019-11-01T21:53:28.679346+00:00",
+        "name": "2019-11-01-kcp-award",
+        "news_excerpt": "Recognized for its pioneering research and international team of physicians and scientists, the Kidney Cancer Program was recognized at the Dallas-Fort Worth World Affairs Council's H. Neil Mallon Award dinner. ",
+        "uuid": "57f7d13e-2fc6-4141-8f50-ee5a33c8a428",
         "news_keywords": [
-            "DNA accessibility"
+            "Awards"
         ],
-        "news": true,
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;4 DNase-seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-03-31\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ]
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news_keywords": [
-            "DNA binding",
-            "RNA binding"
-        ],
-        "news": true,
-        "status": "released",
-        "uuid": "00456b8e-42b5-4a86-9ead-76e0eaa84013",
-        "news_excerpt": "Includes ChIP-seq and RNA Bind-n-Seq assays",
-        "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;1 ChIP-seq assay (control)</li>\n\t<li><strong>Mouse:</strong>&nbsp;3 RNA Bind-n-Seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-02-12\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n"
-                }
-            ]
-        },
-        "title": "Data release: 1 human and 3 mouse datasets",
-        "name": "2015-02-12-encode-data-release",
-        "date_created": "2015-02-12"
-    },
-    {
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news_keywords": [
-            "Transcription"
-        ],
-        "news": true,
-        "status": "released",
-        "uuid": "507afeca-5852-4b6e-9cd4-aa21d1dcf9ef",
-        "news_excerpt": "Eight RNA-seq datasets",
-        "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ],
-                    "body": "<p>We are pleased to announce that the following datasets that are part of the&nbsp;<a href=\"https://www.encodeproject.org/publications/4004dc8e-b7af-4e1d-9cdd-e49cc4dd816e/\">Lin S, et al. (2014)&nbsp;<i>Proc Natl Acad Sci U S A</i>&nbsp;48:17224</a>&nbsp;publication have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;5&nbsp;RNA-seq assays</li>\n\t<li><strong>Mouse:</strong>&nbsp;3 RNA-seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-01-08\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n"
-                }
-            ]
-        },
-        "title": "Data release: 5 human and 3 mouse datasets",
-        "name": "2015-01-08-rnaseq",
-        "date_created": "2015-01-08"
-    },
-    {
-        "news_keywords": [
-            "Transcription",
-            "DNA binding"
-        ],
-        "date_created": "2014-12-08",
         "news": true,
         "layout": {
             "blocks": [
@@ -1143,7 +863,7 @@
                         "richtextblock",
                         "block"
                     ],
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;10 RNA-seq</li>\n\t<li><strong>Mouse:</strong>&nbsp;10 RNA-seq, 15 ChIP-seq</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2014-12-08\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n\n<p>Read the&nbsp;<a href=\"https://www.encodeproject.org/about/data-access\">new data release policy</a>.</p>\n"
+                    "body": "Recognized for its pioneering research and international team of physicians and scientists, the Kidney Cancer Program was recognized at the Dallas-Fort Worth World Affairs Council's H. Neil Mallon Award dinner. The Mallon Award, which honors a prominent North Texas business or civic leader, was presented to former Dallas Mayor Mike Rawlings. The KCP's award-winning program was spotlighted for its global talent and nationally recognized discoveries that are moving the needle in cancer care. In 2013, Mayor Rawlings inaugurated the KCP at UT Southwestern, and six years later it has grown to be one of the country's leading centers for kidney cancer research and treatment."
                 }
             ],
             "rows": [
@@ -1158,71 +878,29 @@
                 }
             ]
         },
+
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "uuid": "abd9e3ce-e737-439c-bcda-53be2f3bd772",
-        "news_excerpt": "10 human RNA-seq and 25 mouse RNA- and ChIP-seq",
-        "title": "35 Total Released Datasets",
-        "status": "released",
-        "name": "2014-12-08-data-release"
+        "status": "released"       
     },
     {
-        "title": "Mouse ENCODE Consortium papers published",
-        "status": "released",
-        "uuid": "4ace4f9b-9952-4d43-b34f-64851b03a2fa",
-        "news_excerpt": "Recent findings from the mouse ENCODE Consortium are now published",
-        "name": "2014-11-19-mouse-publications",
-        "date_created": "2014-11-19",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "news_keywords": [],
-        "news": true,
-        "layout": {
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "body": "<p>Recent findings from the mouse ENCODE Consortium investigating the genomic elements in the mouse model organism and its comparison to human are&nbsp;<a href=\"http://www.genome.gov/27559596\">now published</a>. The list of publications and data used in these publications are detailed on the&nbsp;<a href=\"http://mouseencode.org/\">supplemental website</a>.</p>\n",
-                    "@type": [
-                        "richtextblock",
-                        "block"
-                    ]
-                }
-            ],
-            "rows": [
-                {
-                    "cols": [
-                        {
-                            "blocks": [
-                                "#block1"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    },
-    {
-        "title": "Data release: 23 human and 5 mouse datasets",
-        "status": "released",
-        "uuid": "e74a86c3-a6a8-4662-aee5-e591d989b01b",
-        "news_excerpt": "These datasets are from ChIP-seq, iCLIP, RAMPAGE, RNA-seq, and WGBS assays",
-        "name": "2014-09-12-data-release",
-        "date_created": "2014-09-12",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "title": "Discovery of metabolic vulnerabilities in kidney tumors earns award for UTSW investigator",
+        "date_created": "2019-10-15T21:53:28.679346+00:00",
+        "name": "2019-10-15-kcp-award",
+        "news_excerpt": "The Kidney Cancer Association has awarded Dr. Akash Kaushik the 2019 Young Investigator Award for his discoveries on glutamine metabolism in kidney cancer.",
+        "uuid": "6bb3db3a-43fa-4817-b989-e6c477328377",
         "news_keywords": [
-            "DNA binding",
-            "RNA binding",
-            "Transcription",
-            "DNA methylation"
+            "Awards"
         ],
         "news": true,
         "layout": {
             "blocks": [
                 {
                     "@id": "#block1",
-                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human</strong>: 16 ChIP-seq, 4 iCLIP, and 3 RAMPAGE</li>\n\t<li><strong>Mouse:</strong>&nbsp;4 RNA-seq and 1 Shotgun Bisulfite-seq</li>\n</ul>\n\n<p>This release includes a new assay:</p>\n\n<ul>\n\t<li><strong>iCLIP</strong>&nbsp;(individual-nucleotide resolution UV-cross-linking and immunoprecipitation): identifies the binding site of RNA-binding proteins at individual nucleotide resolution (<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/20601959/\">PMID: 20601959</a>,&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21559008/\">PMID: 2155900</a>)</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;month_released=September,%202014\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n\n<p>Read the&nbsp;<a href=\"http://encodeproject.org/ENCODE/terms.html\">new data release policy</a>.</p>\n",
                     "@type": [
                         "richtextblock",
                         "block"
-                    ]
+                    ],
+                    "body": "The Kidney Cancer Association has awarded Dr. Akash Kaushik the 2019 Young Investigator Award for his discoveries on glutamine metabolism in kidney cancer. Dr. Kaushik - a post-doctoral researcher in the lab of Dr. Ralph DeBerardinis, Co-Leader of the Kidney Cancer Program (KCP) - showed that renal cancers use glutamine to drive important cellular processes like the Krebs cycle, which is required for the growth of cancer cells. <a href=\"https://cri.utsw.edu/cri-postdoctoral-researcher-receives-kidney-cancer-associations-2019-young-investigator-award/\">Press Release</a>"
                 }
             ],
             "rows": [
@@ -1236,6 +914,51 @@
                     ]
                 }
             ]
-        }
+        },
+
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released"       
+    },
+    {
+        "title": "Annual patient conference highlights latest in kidney cancer treatments, clinical trials, and UTSW discoveries",
+        "date_created": "2019-09-22T21:53:28.679346+00:00",
+        "name": "2019-09-22-kcp-conference",
+        "news_excerpt": "For the nearly 300 people in attendance, the 6th annual KCP patient conference was an opportunity to learn about the latest in kidney cancer treatments, research, and clinical trials, and engage in one-on-one conversations with the more than 30 UT Southwestern clinicians and research scientists in attendance.",
+        "uuid": "e35bb793-2469-46a7-a49b-002a3b39e622",
+        "news_keywords": [
+            "Conferences"
+        ],
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "For the nearly 300 people in attendance, the 6th annual KCP patient conference was an opportunity to learn about the latest in kidney cancer treatments, research, and clinical trials, and engage in one-on-one conversations with the more than 30 UT Southwestern clinicians and research scientists in attendance. In addition to an expert-led, multidisciplinary panel discussion of a complex patient case, this year's General Session included a keynote address by Dr. James Willson, Chief Scientific Officer of the Cancer Prevention and Research Institute of Texas, as well as a presentation by Dr. Alex Bowman on a novel radiology test developed by the KCP to identify patients most likely to respond to immunotherapy. Breakout session topics ranged from genetics and risk factors to the latest developments in imaging, radiation and targeted therapies, and artificial intelligence. "
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released"       
     }
+
+    
 ]
+
+
+
