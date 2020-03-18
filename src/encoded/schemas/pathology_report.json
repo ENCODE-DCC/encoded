@@ -400,8 +400,8 @@
             "description": "The report comes from",
             "type": "string",
             "enum": [
-                "Pathology report",
-                "Tumor registery"
+                "Pathology Report",
+                "Tumor Registery"
             ]
         },
         "tumor_sequence_number": {
