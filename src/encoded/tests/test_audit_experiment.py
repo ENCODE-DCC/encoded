@@ -1544,6 +1544,10 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'mixed read lengths'
                for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'eCLIP'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'mixed read lengths'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp,
