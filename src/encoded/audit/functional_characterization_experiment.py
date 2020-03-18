@@ -9,7 +9,6 @@ from .experiment import (
     audit_experiment_replicates_biosample,
     audit_experiment_replicates_with_no_libraries,
     audit_experiment_technical_replicates_same_library,
-    audit_experiment_with_uploading_files,
     create_files_mapping
 )
 from .formatter import (
@@ -134,7 +133,6 @@ function_dispatcher_without_files = {
 }
 function_dispatcher_with_files = {
     'audit_no_processed_data': audit_experiment_no_processed_data,
-    'audit_uploading_files': audit_experiment_with_uploading_files,
 }
 
 

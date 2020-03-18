@@ -120,6 +120,24 @@ def test_audit_experiment_missing_modification(
     )
 
 
+def test_audit_experiment_released_with_unreleased_files(
+    testapp, base_fcc_experiment, file_fastq
+):
+    testapp.patch_json(
+        base_fcc_experiment['@id'],
+        {'status': 'released', 'date_released': '2016-01-01'}
+    )
+    testapp.patch_json(
+        file_fastq['@id'],
+        {'dataset': base_fcc_experiment['@id'], 'status': 'in progress'}
+    )
+    res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'mismatched file status'
+        for error in collect_audit_errors(res)
+    )
+
+
 def test_audit_experiment_replicate_with_archived_file(
     testapp, file_fastq, base_fcc_experiment, base_replicate
 ):
