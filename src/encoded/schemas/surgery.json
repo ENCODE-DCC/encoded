@@ -78,11 +78,14 @@
         "tumor_size_range": {
             "title": "Tumor Size"
         },
-        "pathology_report.t_stage": {
-            "title": "Pathological T stage"
+        "pathology_report.ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "pathology_report.n_stage": {
+            "title": "pN stage"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "TNM Stage"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
@@ -153,11 +156,14 @@
         "tumor_size_range": {
             "title": "Tumor Size"
         },
-        "pathology_report.t_stage": {
-            "title": "Pathological T stage"
+        "pathology_report.ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "pathology_report.n_stage": {
+            "title": "pN stage"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "TNM Stage"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
@@ -210,7 +216,8 @@
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
         "tumor_size_range": 1.0,
-        "pathology_report.t_stage": 1.0,
+        "pathology_report.ajcc_p_stage": 1.0,
+        "pathology_report.n_stage": 1.0,
         "pathology_report.ajcc_tnm_stage": 1.0,
         "pathology_report.ajcc_version": 1.0,
         "pathology_report.laterality":1.0, 

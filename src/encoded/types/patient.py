@@ -365,6 +365,61 @@ class Patient(Item):
                 surgery_summary = "No Treatment Received"
             return surgery_summary
 
+    matrix = {
+        'y': {
+            'facets': [
+                'status',
+                'gender',
+                'race',
+                'ethnicity',
+                'surgery_summary',
+                'radiation_summary',
+                'medications.name',
+                'surgery.surgery_procedure.surgery_type',
+                'surgery.hospital_location',
+                'sur_path_tumor_size',
+                'surgery.pathology_report.t_stage',
+                'germline_summary',
+                'ihc.antibody',
+                'ihc.result',
+                
+            ],
+            'group_by': ['race', 'gender'],
+            'label': 'race',
+        },
+        'x': {
+            'facets': [
+                
+                'surgery.pathology_report.histology',
+            ],
+            'group_by': 'surgery.pathology_report.histology',
+            'label': 'histology',
+        },
+    }
+
+    summary_data = {
+        'y': {
+            'facets': [
+
+                'status',
+                'gender',
+                'race',
+                'radiation_summary',
+
+            ],
+            'group_by': ['gender', 'radiation_summary'],
+            'label': 'Gender',
+        },
+        'x': {
+            'facets': [
+                'race',
+            ],
+            'group_by': 'race',
+            'label': 'Race',
+        },
+        'grouping': ['gender', 'status'],
+    }
+
 
 
     @calculated_property(condition='surgery', schema={
@@ -587,3 +642,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+

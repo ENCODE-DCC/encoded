@@ -596,7 +596,7 @@ class PathologyComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Tumor Size:</strong>{result.tumor_size}</div>
+        <div><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>
                         <div><strong>Laterality: </strong>{result.laterality}</div>
                         <div><strong> Focality:</strong>{result.focality}</div>
                     </div>

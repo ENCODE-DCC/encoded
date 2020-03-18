@@ -85,4 +85,16 @@
     height: 180px;
     width: 100%;
     margin-bottom: 20px;
-}  
+}
+.pr-column {
+    float:left;
+    widows: 50%;
+    padding:10px;
+    height:300px
+}
+.pr-row {
+    float:left;
+    widows: 50%;
+    padding:10px;
+    height:300px
+}

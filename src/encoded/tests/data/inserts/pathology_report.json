@@ -12,7 +12,7 @@
     "focality": "Not applicable",
     "histology": "SDH deficient RCC",
     "sarcomatoid": "Present",
-    "sarcomatoid_percentage": 30,
+    "sarcomatoid_percentage": "30",
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "3",
@@ -34,8 +34,12 @@
     "ajcc_version": "6th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "2",
-    "report_source": "Pathology report",
+    "report_source": "Pathology Report",
     "path_source_procedure": "path_nephrectomy",
+    "metasis_details":{
+      "site":"Bone",
+      "type": "Regional"
+    },
     "uuid": "b5644d7a-46d7-11ea-b77f-2e728ce88125"
   },
   {
@@ -51,7 +55,7 @@
     "focality": "Not applicable",
     "histology": "Sarcomatoid,NOS",
     "sarcomatoid": "Present",
-    "sarcomatoid_percentage": 30,
+    "sarcomatoid_percentage": "30",
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "3",
@@ -73,8 +77,12 @@
     "ajcc_version": "6th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "2",
-    "report_source": "Pathology report",
+    "report_source": "Pathology Report",
     "path_source_procedure": "path_nephrectomy",
+    "metasis_details":{
+      "site":"Other",
+      "type": "Distant"
+    },
     "uuid": "7d0ef92b-33da-4ae0-ada8-9013e3c195f4"
   },
   {
@@ -89,7 +97,7 @@
     "focality": "Not applicable",
     "histology": "ccPRCC",
     "sarcomatoid": "Present",
-    "sarcomatoid_percentage": 30,
+    "sarcomatoid_percentage": "30",
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "3",
@@ -111,7 +119,7 @@
     "ajcc_version": "6th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "2",
-    "report_source": "Pathology report",
+    "report_source": "Pathology Report",
     "path_source_procedure": "path_nephrectomy",
     "uuid": "9575a49b-feb0-4831-a74e-02546f0c27be"
   },
@@ -127,7 +135,7 @@
     "focality": "Unifocal",
     "histology": "collecting duct carcinoma(CDC)",
     "sarcomatoid": "Present",
-    "sarcomatoid_percentage": 70,
+    "sarcomatoid_percentage": "70",
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "1",
@@ -149,8 +157,12 @@
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "3A",
-    "report_source": "Pathology report",
+    "report_source": "Pathology Report",
     "path_source_procedure": "path_nephrectomy",
+    "metasis_details":{
+      "site":"Other",
+      "type": "Distant"
+    },
     "uuid": "b56454b4-46d7-11ea-b77f-2e728ce88125"
   },
   {
@@ -165,7 +177,7 @@
     "focality": "Multifocal",
     "histology": "Metanephric adenoma",
     "sarcomatoid": "Present",
-    "sarcomatoid_percentage": 10,
+    "sarcomatoid_percentage": "10",
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "Not available",
@@ -187,7 +199,7 @@
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "1A",
-    "report_source": "Pathology report",
+    "report_source": "Pathology Report",
     "path_source_procedure": "path_nephrectomy",
     "uuid": "b5645964-46d7-11ea-b77f-2e728ce88125"
   },
@@ -203,7 +215,7 @@
     "focality": "Unifocal",
     "histology": "RON,favor RO",
     "sarcomatoid": "Present",
-    "sarcomatoid_percentage": 90,
+    "sarcomatoid_percentage": "90",
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "1",
@@ -225,8 +237,12 @@
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "3C",
-    "report_source": "Tumor registery",
+    "report_source": "Tumor Registery",
     "path_source_procedure": "path_nephrectomy",
+    "metasis_details":{
+      "site":"Liver",
+      "type": "Distant"
+    },
     "uuid": "b56466f2-46d7-11ea-b77f-2e728ce88125"
   }
 ]

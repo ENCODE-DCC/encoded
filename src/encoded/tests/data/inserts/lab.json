@@ -619,5 +619,47 @@
         "status": "current",
         "title": "ENCODE Processing Pipeline",
         "uuid": "44324de6-c057-451f-a8f1-1d9a6cb9875d"
+    },
+    {
+        "address1": "Lyda Hill Department of Bioinformatics",
+        "address2": "5323 Harry Hines Blvd.",
+        "awards": [
+            "Kidney-SPORE"
+        ],
+        "city": "Dallas",
+        "country": "USA",
+        "fax": "000-000-0000",
+        "institute_label": "UTSW",
+        "institute_name": "UT Southwestern Medical Center",
+        "name": "venkat-malladi",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "pi": "vsmalladi@gmail.com",
+        "postal_code": "75390-8852",
+        "state": "TX",
+        "status": "current",
+        "title": "Venkat S. Malladi, UTSW",
+        "uuid": "ab38effe-b7a9-430d-b08c-1f653cc7a81a"
+    },
+    {
+        "address1": "Internal Medicine",
+        "address2": "5323 Harry Hines Blvd.",
+        "awards": [
+            "Kidney-SPORE"
+        ],
+        "city": "Dallas",
+        "country": "USA",
+        "fax": "000-000-0000",
+        "institute_label": "UTSW",
+        "institute_name": "UT Southwestern Medical Center",
+        "name": "james-brugarolas",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "pi": "skiffeur@rohandoge.ml",
+        "postal_code": "75390-8852",
+        "state": "TX",
+        "status": "current",
+        "title": "James Brugarolas, UTSW",
+        "uuid": "faa3407f-1bf5-4bc0-bbc2-2a94d8249782"
     }
 ]
