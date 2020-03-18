@@ -666,4 +666,22 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.at(1).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000552');
         });
     });
+    describe('Test FactorBook', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['FactorBook:ENCSR343RJH', 'FactorBook:ENCSR614HHL']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR343RJH');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR614HHL');
+        });
+    });
 });

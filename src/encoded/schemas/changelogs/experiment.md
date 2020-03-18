@@ -6,6 +6,7 @@
 * Removed *month_released* calculated property.
 * Added *analyses* property.
 * Added *protein_tags* calculated property that specifies the protein tags introduced through genetic modification of the biosamples investigated in the experiment.
+* *FactorBook* can now be linked to an experiment under external resources (dbxrefs).
 
 ### Schema version 28
 
