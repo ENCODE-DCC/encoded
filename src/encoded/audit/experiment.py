@@ -4003,6 +4003,8 @@ def audit_experiment_no_processed_data(value, system, files_structure):
 
 def audit_experiment_inconsistent_analyses_files(value, system, files_structure):
     processed_data = files_structure.get('processed_data')
+    files_not_in_analysis = []
+    files_not_in_processed_data = []
     if processed_data and 'analyses' in value:
         analysis_outputs = set()
         for analysis in value['analyses']:
@@ -4012,32 +4014,32 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
             if processed_file_id in analysis_outputs:
                 continue
             if processed_file_id not in analysis_outputs:
-                files_not_in_analysis = []
                 files_not_in_analysis.append(processed_file_id)
-            files_not_in_analysis_links = [audit_link(path_to_text(file), file) for file in files_not_in_analysis]
-            detail = ('Experiment {} '
-                    'contains processed file(s) {} '
-                    'not in an analysis'.format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        ', '.join(files_not_in_analysis_links)
-                    )
-                )
-            yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
         for analysis_file_id in analysis_outputs:
             if analysis_file_id in processed_data:
                 continue
             if analysis_file_id not in processed_data:
-                files_not_in_processed_data = []
                 files_not_in_processed_data.append(analysis_file_id)
-            files_not_in_processed_data_links = [audit_link(path_to_text(file), file) for file in files_not_in_processed_data]
-            detail = ('Experiment {} '
-                    'contains file(s) in an analysis {} '
-                    'not in processed data'.format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        ', '.join(files_not_in_processed_data_links)
-                    )
+    if len(files_not_in_analysis) > 0:
+        files_not_in_analysis_links = [audit_link(path_to_text(file), file) for file in files_not_in_analysis]
+        detail = ('Experiment {} '
+                'contains processed file(s) {} '
+                'not in an analysis'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    ', '.join(files_not_in_analysis_links)
                 )
-            yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
+            )
+        yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
+    if len(files_not_in_processed_data) > 0:
+        files_not_in_processed_data_links = [audit_link(path_to_text(file), file) for file in files_not_in_processed_data]
+        detail = ('Experiment {} '
+                'contains file(s) in an analysis {} '
+                'not in processed data'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    ', '.join(files_not_in_processed_data_links)
+                )
+            )
+        yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
 
 
 #######################
