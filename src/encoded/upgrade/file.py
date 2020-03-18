@@ -623,3 +623,13 @@ def file_16_17(value, system):
             value.pop('read_length', None)
             value.pop('run_type', None)
     return
+
+
+@upgrade_step('file', '17', '18')
+def file_17_18(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5087
+    output_type = value.get('output_type', None)
+
+    if output_type == "subreads" and 'assembly' in value:
+        value.pop('assembly', None)
+    return

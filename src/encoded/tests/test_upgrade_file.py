@@ -204,6 +204,17 @@ def file_16(file_base):
     return item
 
 
+@pytest.fixture
+def file_17(file_base):
+    item = file_base.copy()
+    item.update({
+        'assembly': 'hg19',
+        'output_type': 'subreads',
+        'schema_version': '17'
+    })
+    return item
+
+
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -327,3 +338,9 @@ def test_file_upgrade_16_to_17(upgrader, file_16):
     assert value['schema_version'] == '17'
     assert 'run_type' not in value
     assert 'read_length' not in value
+
+
+def test_file_upgrade_17_to_18(upgrader, file_17):
+    value = upgrader.upgrade('file', file_17, current_version='17', target_version='18')
+    assert value['schema_version'] == '18'
+    assert 'assembly' not in value
