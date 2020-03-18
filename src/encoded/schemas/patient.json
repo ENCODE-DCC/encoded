@@ -87,11 +87,11 @@
         "race": {
             "title": "Race"
         },
-       
+
         "medical_imaging.type" : {
           "title": "Medical Imaging"
         },
-       
+
         "surgery_summary": {
             "title": "Surgery Treatment Status"
         },
@@ -109,24 +109,33 @@
         },
 
         "sur_nephr_robotic_assist":{
-            "title": "Nephrectomy Robotic Assist" 
+            "title": "Nephrectomy Robotic Assist"
         },
         "sur_path_tumor_size":{
-            "title": "Tumor Size" 
+            "title": "Tumor Size"
 
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-       
+
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
         "surgery.pathology_report.ajcc_p_stage": {
-            "title": " Pathological T stage"
+            "title": "pT stage"
+        },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " AJCC TNM Stage"
+            "title": " TNM Stage"
+        },
+        "ihc.antibody": {
+            "title": "IHC/FISH (Clinical lab)"
+        },
+        "ihc.result": {
+            "title": "IHC/FISH results"
         },
         "medications.name":{
             "title":"Medication Name"
@@ -137,9 +146,6 @@
         "germline_summary": {
             "title": "Germline Mutation"
         },
-
-      
-        
         "radiation_summary": {
             "title": "Radiation Treatment Status"
         },
@@ -170,7 +176,7 @@
         "biospecimen.distributed": {
             "title": "Biospecimen Distribution Status"
         },
-       
+
         "status": {
             "title": "Status"
         }
@@ -198,24 +204,33 @@
             "title": "Status"
         },
         "sur_nephr_robotic_assist":{
-            "title": "Nephrectomy Robotic Assist" 
+            "title": "Nephrectomy Robotic Assist"
         },
         "sur_path_tumor_size":{
-            "title": "Tumor Size" 
+            "title": "Tumor Size"
 
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-       
+
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
-        "surgery.pathology_report.t_stage": {
-            "title": " Pathological T stage"
+        "surgery.pathology_report.ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " AJCC TNM Stage"
+        },
+        "ihc.antibody": {
+            "title": "IHC/FISH (Clinical lab)"
+        },
+        "ihc.result": {
+            "title": "IHC/FISH results"
         }
     },
     "boost_values": {
@@ -227,8 +242,13 @@
         "germline.significance": 1.0,
         "radiation.site_general": 1.0,
         "radiation.treatment_intention": 1.0,
-        
-        "medications.name":1.0
+        "medications.name":1.0,
+        "ihc.antibody":1.0,
+        "ihc.result":1.0,
+        "medications.name":1.0,
+        "surgery.pathology_report.ajcc_p_stage": 1.0,
+        "surgery.pathology_report.n_stage": 1.0,
+        "surgery.pathology_report.ajcc_tnm_stage": 1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
 }

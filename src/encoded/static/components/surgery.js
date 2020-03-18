@@ -58,7 +58,7 @@ class Surgery extends React.Component {
                             <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
                         </div>
                         <div data-test="surgery date">
-                            <dt>Surgery date</dt>
+                            <dt>Surgery Date</dt>
                             <dd>{context.date}</dd>
                         </div>
                         <div data-test="hospital">
