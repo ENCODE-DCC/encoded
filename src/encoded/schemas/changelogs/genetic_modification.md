@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 9
+
+* Added *disruption*, *inhibition*, and *knockout* as enums in *category* for use with CRISPR screen data.
+
 ### Schema version 9
 
 * Several underused *purpose* enum were combined: *activation* and *overexpression* are remapped to *expression*, and *analysis* and *screening* are remapped to *characterization*.

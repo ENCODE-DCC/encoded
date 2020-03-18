@@ -72,6 +72,16 @@
                         "purpose": {
                                 "enum": ["repression", "characterization"]
                         }
+                    },
+                    "not": {
+                        "properties": {
+                            "method": {
+                                "enum": ["CRISPR"]
+                            },
+                            "purpose": {
+                                "enum": ["characterization"]
+                            }
+                        }
                     }
                 },
                 {
@@ -87,7 +97,7 @@
                             "enum": ["characterization"]
                         },
                         "category": {
-                            "enum": ["interference", "activation"]
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -185,21 +195,34 @@
                 {
                     "oneOf": [
                         {
-                             "required": ["modified_site_by_coordinates"]
+                            "required": ["modified_site_by_coordinates"]
                         },
                         {
-                             "required": ["modified_site_by_target_id"]
+                            "required": ["modified_site_by_target_id"]
                         },
                         {
-                             "required": ["modified_site_by_sequence"]
+                            "required": ["modified_site_by_sequence"]
                         },
                         {
                             "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
                         }
                     ],
                     "properties": {
                         "category": {
                             "enum": ["deletion"]
+                        }
+                    },
+                    "not": {
+                        "properties": {
+                            "method": {
+                                "enum": ["CRISPR"]
+                            },
+                            "purpose": {
+                                "enum": ["characterization"]
+                            }
                         }
                     }
                 },
@@ -230,7 +253,7 @@
                 {
                     "properties": {
                         "category": {
-                            "enum": ["interference", "activation"]
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
                         },
                         "method": {
                             "enum": ["CRISPR"]
@@ -249,24 +272,28 @@
                     }
                 },
                 {
-                    "anyOf": [
-                        {
-                            "required": ["treatments", "modified_site_nonspecific"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["mutagenesis", "site-specific recombination"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["treatments"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["mutagenesis"]
-                                }
-                            }
+                    "required": ["treatments"],
+                    "properties": {
+                        "category": {
+                            "enum": ["mutagenesis"]
                         }
-                    ]
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["knockout"]
+                        },
+                        "method": {
+                            "enum": ["site-specific recombination"]
+                        },
+                        "purpose": {
+                            "enum": ["repression"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
+                    }
                 }
             ]
         },
@@ -513,7 +540,10 @@
                 "mutagenesis",
                 "replacement",
                 "episome",
-                "activation"
+                "activation",
+                "knockout",
+                "disruption",
+                "inhibition"
             ]
         },
         "purpose":{
