@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import Pager from '../libs/ui/pager';
 import * as globals from './globals';
-import { AlternateAccession } from './objectutils';
+import { requestFiles, AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 
@@ -544,4 +545,194 @@ BiosampleCharacterizationTable.defaultProps = {
     limit: 0,
     total: 0,
     title: '',
+};
+
+
+// Columns to display in Deriving/Derived From file tables.
+const derivingCols = {
+    accession: {
+        title: 'Accession',
+        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+        sorter: false,
+    },
+    dataset: {
+        title: 'Dataset',
+        display: (file) => {
+            const datasetAccession = globals.atIdToAccession(file.dataset);
+            return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
+        },
+        sorter: false,
+    },
+    file_format: { title: 'File format', sorter: false },
+    output_type: { title: 'Output type', sorter: false },
+    title: {
+        title: 'Lab',
+        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        sorter: false,
+    },
+    assembly: { title: 'Mapping assembly', sorter: false },
+    status: {
+        title: 'File status',
+        display: item => <Status item={item} badgeSize="small" inline />,
+        sorter: false,
+    },
+};
+
+
+const PAGED_FILE_TABLE_MAX = 50; // Maximnum number of files per page
+const PAGED_FILE_CACHE_MAX = 10; // Maximum number of pages to cache
+
+
+/**
+ * Calculates the number of pages of files given the total number of files.
+ * @param {number} count Total number of files in array
+ *
+ * @return {number} Total number of pages to hold these files
+ */
+const getTotalPages = count => parseInt(count / PAGED_FILE_TABLE_MAX, 10) + (count % PAGED_FILE_TABLE_MAX ? 1 : 0);
+
+
+/**
+ * Calculate array of complete file objects or file @ids to be displayed on the current page of
+ * files, given the complete set of files and the current page number.
+ * @param {array} files File @ids or complete file objects
+ *
+ * @return {array} File @ids displayed on the current page
+ */
+const getPageFiles = (files, pageNo) => {
+    if (files.length > 0) {
+        const start = pageNo * PAGED_FILE_TABLE_MAX;
+        return files.slice(start, start + PAGED_FILE_TABLE_MAX);
+    }
+    return [];
+};
+
+
+/**
+ * Display a panel containing a table of files given an array of file @ids or complete file
+ * objects, performing fetches of the complete file objects for the former. If the number of files
+ * exceeds PAGED_FILE_TABLE_MAX, the user can use a pager to scroll between pages of files.
+ */
+export const FileTablePaged = ({ fileIds, files, title }) => {
+    // Initialize or load the page cache. Keyed by `currentPageNum`.
+    const pageCache = React.useRef({});
+    // Calculate the total number of pages given the array of files.
+    const totalPages = React.useMemo(() => getTotalPages(fileIds ? fileIds.length : files.length), [fileIds, files]);
+    // Current page of a multi-page table, zero-based.
+    const [currentPageNum, setCurrentPageNum] = React.useState(0);
+    // Array of file objects displayed for the current page.
+    const [currentPageFiles, setCurrentPageFiles] = React.useState(files ? getPageFiles(files, currentPageNum) : []);
+
+    // Called when the user selects a new page of files using the pager.
+    const updateCurrentPage = React.useCallback((newCurrentPageNum) => {
+        // For fetched files, cache the current page of files to keep it from getting GC'd if it's
+        // not already cached.
+        if (fileIds) {
+            if (!pageCache.current[currentPageNum]) {
+                // Save the current page's array of fetched complete file objects to the cache.
+                pageCache.current[currentPageNum] = currentPageFiles;
+
+                // To save memory, see if we can lose a reference to a page so that it gets GC'd. Need
+                // to convert cache page number keys to strings because numeric keys always become
+                // strings.
+                const cachedPageNos = Object.keys(pageCache.current).map(pageNo => parseInt(pageNo, 10));
+                if (cachedPageNos.length > PAGED_FILE_CACHE_MAX) {
+                    // Our cache has filled. Find the cache entry with a page farthest from the current
+                    // and kick it out. A bit complicated because it finds both the maximum page-number
+                    // difference as well as its page number.
+                    let maxDiff = 0;
+                    let maxDiffPageNo;
+                    cachedPageNos.forEach((pageNo) => {
+                        const diff = Math.abs(currentPageNum - pageNo);
+                        if (diff > maxDiff) {
+                            maxDiff = diff;
+                            maxDiffPageNo = pageNo;
+                        }
+                    });
+
+                    // Dump a page from the cache.
+                    delete pageCache.current[maxDiffPageNo];
+                }
+            }
+
+            // Trigger a rerender if we get a cache hit for the new page of files.
+            if (pageCache.current[newCurrentPageNum]) {
+                setCurrentPageFiles(pageCache.current[newCurrentPageNum]);
+            }
+        } else {
+            // Extract the new current page of files from the existing array of file objects and
+            // immediately trigger a rerender.
+            setCurrentPageFiles(getPageFiles(files, newCurrentPageNum));
+        }
+
+        // Update the current page number for all cases.
+        setCurrentPageNum(newCurrentPageNum);
+    }, [currentPageNum, currentPageFiles, fileIds, files]);
+
+    React.useEffect(() => {
+        if (fileIds && !pageCache.current[currentPageNum]) {
+            // Send a request for the file objects for the current page and save the resulting full
+            // file objects in state for rendering in the table.
+            const pageFileIds = getPageFiles(fileIds, currentPageNum);
+            if (pageFileIds.length > 0) {
+                // Fetch the non-cached page's files and re-render once retrieved.
+                requestFiles(pageFileIds).then((pageFiles) => {
+                    setCurrentPageFiles(pageFiles || []);
+                });
+            }
+        }
+    }, [fileIds, currentPageNum]);
+
+    // Rendering portion of component.
+    if (currentPageFiles.length > 0) {
+        const headerTitle = typeof title === 'string' ? <h4>{title}</h4> : title;
+        const fileCount = fileIds ? fileIds.length : files.length;
+        const fileCountDisplay = <div className="file-table-paged__count">{`${fileCount} file${fileCount === 1 ? '' : 's'}`}</div>;
+
+        // If we have more than one page of files to display, render a pager component in the
+        // footer.
+        const pager = totalPages > 1 ? <Pager total={totalPages} current={currentPageNum} updateCurrentPage={updateCurrentPage} /> : null;
+
+        return (
+            <SortTablePanel title={headerTitle} subheader={fileCountDisplay} css="file-table-paged">
+                <SortTable
+                    list={currentPageFiles}
+                    columns={derivingCols}
+                    footer={pager}
+                />
+            </SortTablePanel>
+        );
+    }
+    return null;
+};
+
+/**
+ * Custom PropType validator to have either `fileIds` or `files` but not both, and either must be
+ * an array.
+ */
+const testFileTablePagedProps = (props, propName, componentName) => {
+    if (!(props.fileIds || props.files) || (props.fileIds && props.files)) {
+        return new Error(`Props 'fileIds' or 'files' but not both required in '${componentName}'.`);
+    }
+    if (props[propName] && (typeof props[propName] !== 'object' || !Array.isArray(props[propName]))) {
+        return new Error(`Prop '${propName}' in '${componentName}' must be an array.`);
+    }
+    return null;
+};
+
+FileTablePaged.propTypes = {
+    /** Array of all file @ids to include in table on all pages */
+    fileIds: testFileTablePagedProps,
+    /** Alternative array of file objects to include in table on all pages */
+    files: testFileTablePagedProps,
+    /** Title for the panel containing the table of files */
+    title: PropTypes.oneOfType([
+        PropTypes.element, // Title is a React component
+        PropTypes.string, // Title is an unformatted string
+    ]).isRequired,
+};
+
+FileTablePaged.defaultProps = {
+    fileIds: null,
+    files: null,
 };

@@ -66,7 +66,7 @@ import { Panel, PanelHeading } from '../libs/ui/panel';
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 export const SortTablePanel = (props) => {
-    const { title, header, css, noDefaultClasses } = props;
+    const { title, header, subheader, css, noDefaultClasses } = props;
 
     return (
         <Panel addClasses={`table-sort${noDefaultClasses ? '' : ' table-panel'}${css ? ` ${css}` : ''}`} noDefaultClasses={noDefaultClasses}>
@@ -77,6 +77,8 @@ export const SortTablePanel = (props) => {
             : (header ?
                 <PanelHeading key="heading">{props.header}</PanelHeading>
             : null)}
+
+            {subheader ? <>{subheader}</> : null}
 
             <div className="table__scrollarea" key="table">
                 {props.children}
@@ -89,13 +91,15 @@ SortTablePanel.propTypes = {
     /** Title to display in tabel panel header. `title` overrides `header` */
     title: PropTypes.oneOfType([
         PropTypes.string, // When title is a simple string
-        PropTypes.object, // When title is JSX
+        PropTypes.element, // When title is JSX
     ]),
     /** CSS class string to add to <Panel> classes */
     css: PropTypes.string,
     /** React component to render inside header */
-    header: PropTypes.object,
-    /** T to skip default <Panel> classes */
+    header: PropTypes.element,
+    /** React component to render above the table below the header */
+    subheader: PropTypes.element,
+    /** React component to render below the table inside the panel */
     noDefaultClasses: PropTypes.bool,
     /** Table components within a SortTablePanel */
     children: PropTypes.node,
@@ -105,6 +109,7 @@ SortTablePanel.defaultProps = {
     title: '',
     css: '',
     header: null,
+    subheader: null,
     noDefaultClasses: false,
     children: null,
 };

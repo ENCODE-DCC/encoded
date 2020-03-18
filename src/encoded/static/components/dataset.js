@@ -18,7 +18,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged } from './typeutils';
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
@@ -374,8 +374,7 @@ const PublicationDataComponent = (props, reactContext) => {
                 </PanelBody>
             </Panel>
 
-            {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={globals.encodeVersion(context)} showReplicateNumber={false} hideGraph />
+            <FileTablePaged fileIds={context.files} title="Files" />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -400,12 +399,46 @@ const PublicationData = auditDecor(PublicationDataComponent);
 globals.contentViews.register(PublicationData, 'PublicationData');
 
 
+// Columns to display in Deriving/Derived From file tables.
+const fileCols = {
+    accession: {
+        title: 'Accession',
+        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+    },
+    dataset: {
+        title: 'Dataset',
+        display: (file) => {
+            const datasetAccession = globals.atIdToAccession(file.dataset);
+            return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
+        },
+        sorter: (aId, bId) => {
+            const aAccession = globals.atIdToAccession(aId);
+            const bAccession = globals.atIdToAccession(bId);
+            return aAccession < bAccession ? -1 : (aAccession > bAccession ? 1 : 0);
+        },
+    },
+    file_format: { title: 'File format' },
+    output_type: { title: 'Output type' },
+    title: {
+        title: 'Lab',
+        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+    },
+    assembly: { title: 'Mapping assembly' },
+    status: {
+        title: 'File status',
+        display: item => <Status item={item} badgeSize="small" inline />,
+        sorter: (aStatus, bStatus) => (aStatus < bStatus ? -1 : (aStatus > bStatus ? 1 : 0)),
+    },
+};
+
+
 // Display Computational Model page, a subtype of Dataset.
 const ComputationalModelComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+    const fileCountDisplay = <div className="file-table-paged__count">{`${context.files.length} file${context.files.length === 1 ? '' : 's'}`}</div>;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -524,8 +557,13 @@ const ComputationalModelComponent = (props, reactContext) => {
                 </PanelBody>
             </Panel>
 
-            {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={globals.encodeVersion(context)} showReplicateNumber={false} hideGraph />
+            {context.files.length > 0 ?
+                <SortTablePanel title="Files" subheader={fileCountDisplay}>
+                    <SortTable list={context.files} columns={fileCols} sortColumn="accession" />
+                </SortTablePanel>
+            : null}
+
+            <FileTablePaged fileIds={context.contributing_files} title="Contributing files" />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
