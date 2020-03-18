@@ -6,7 +6,7 @@ import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
-import PathologyReportTable from './patholgoyReprotTable';
+import PathologyReportTable from './pathologyReportTable';
 // import IHCTable from './ihcTable';
 
 
