@@ -2,6 +2,7 @@ import React from 'react';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
+import IHCTable from './ihcTable';
 
 
 class PathologyReportTable extends React.Component {
@@ -13,9 +14,13 @@ class PathologyReportTable extends React.Component {
 
     filterData() {
         this.filteredData = this.props.data;
-
-
         for (let i = 0; i < this.filteredData.length; i++) {
+            let pathologyReporti = this.filteredData[i];
+            let IHCi = pathologyReporti.ihc;
+            let hasIHC = false;
+            if (IHCi.length > 0) {
+                hasIHC = true;
+            }
             let tableTitle = this.props.tableTitle + "Tumor information" + " " + (i + 1);
             let tableIdi =
                 (< div >
@@ -187,6 +192,8 @@ class PathologyReportTable extends React.Component {
 
                         </dl>
                     </PanelBody>
+                    {hasIHC && <IHCTable data={IHCi} tableTitle="IHC Assay Staining Results"></IHCTable>}
+
                 </div >
                 )
 
