@@ -28,12 +28,11 @@ class Surgery(Item):
     embedded = [
         "pathology_report",
         "surgery_procedure",
-        "ihc"
+        "pathology_report.ihc"
     ]
     rev = {
         "pathology_report": ("PathologyReport", "surgery"),
         "surgery_procedure": ("SurgeryProcedure", "surgery"),
-        "ihc": ("Ihc", "surgery"),
     }
     audit_inherit = []
     set_status_up = []
@@ -118,22 +117,7 @@ class Surgery(Item):
             else:
                 tumor_size_range.append("10+ cm")
         return tumor_size_range
-
    
-    @calculated_property(
-        schema={
-            "title": "ihc link PR",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "linkTo": "Ihc",
-            },
-        }
-    )
-    def ihc(self, request, ihc):
-        return paths_filtered_by_status(request, ihc)
-
-
 @collection(
     name="surgery-procedures",
     properties={
@@ -147,60 +131,8 @@ class SurgeryProcedure(Item):
     embeded = []
 
 
-@collection(
-    name="PR_ihc",
-    properties={
-        "title": "Pathology tumor reports IHC",
-        "description": "Pathology tumor IHC reports results pages",
-    },
-)
-class Ihc(Item):
-    item_type = "ihc"
-    schema = load_schema("encoded:schemas/ihc.json")
-    embeded = []
-
-
-@collection(
-    name="pathology-reports",
-    unique_key="pathology_report:name",
-    properties={
-        "title": "Pathology tumor reports",
-        "description": "Pathology tumor reports results pages",
-    },
-)
-class PathologyReport(Item):
-    item_type = "pathology_report"
-    schema = load_schema("encoded:schemas/pathology_report.json")
-    embeded = []
-
-    def unique_keys(self, properties):
-        keys = super(PathologyReport, self).unique_keys(properties)
-        keys.setdefault("pathology_report:name", []).append(self._name(properties))
-        return keys
-
-    @calculated_property(
-        schema={
-            "title": "Name",
-            "type": "string",
-            "description": "Name of the tumor specific pathology report.",
-            "comment": "Do not submit. Value is automatically assigned by the server.",
-            "uniqueKey": "name",
-        }
-    )
     def name(self):
         return self.__name__
-
-    @property
-    def __name__(self):
-        properties = self.upgrade_properties()
-        return self._name(properties)
-
-    def _name(self, properties):
-        root = find_root(self)
-        surgery_uuid = properties["surgery"]
-        surgery_id = root.get_by_uuid(surgery_uuid).upgrade_properties()["accession"]
-        return u"{}-{}".format(surgery_id, properties["tumor_sequence_number"])
-
     
 
     

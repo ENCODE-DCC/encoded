@@ -586,13 +586,13 @@ class PathologyComponent extends React.Component {
                     <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pathology Report</p>
-                        <p className="type">{` ${result.name}`}</p>
+                        <p className="type">{` ${result.accession}`}</p>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {`${result.name} `}
+                            {`${result.accession} `}
                         </a>
                     </div>
                     <div className="data-row">

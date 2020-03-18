@@ -6,7 +6,7 @@
     "type": "object",
     
     "anyOf": [
-        {"required": ["surgery"]},
+        {"required": ["pathology_report"]},
         {"required": ["biospecimen"]}
     ],
     "required": [
@@ -16,7 +16,7 @@
         "result"
     ],
     "identifyingProperties": [
-        "uuid"
+        "uuid","pathology_report","biospecimen","patient"
     ],
     "additionalProperties": false,
     "mixinProperties": [
@@ -43,13 +43,13 @@
             "type": "string",
             "linkTo": "Patient"
         },
-        "surgery": {
-            "title": "Surgery Accession",
+        "pathology_report": {
+            "title": "Pathology Report Tumor Accession",
             "description": "Need any of surgery accession or biospecimen accession to submit data",
             "comment": "link to surgery information with surgery accession. ",
             "type": "string",
             "permission": "import_items",
-            "linkTo": "Surgery"
+            "linkTo": "PathologyReport"
         },
         "biospecimen": {
             "title": "Biospecimen Accession",
@@ -124,12 +124,31 @@
         "result": {
             "title": "IHC/FISH results"
         }
+       
+    },
+    "columns": {
+        
+        "pathology_report": {
+            "title": "Accession"
+        },
+        "patient": {
+            "title": "Patient"
+        },
+        "biospecimen": {
+            "title": "Biospecimen Accession"
+        },
+        "antibody": {
+            "title": "IHC Assay staining antibody"
+        },
+        "result": {
+            "title": "IHC assay staining result"
+        }
     },
 
     "boost_values": {
         "antibody": 1.0,
         "patient": 1.0,
-        "surgery": 1.0,
+        "pathology_report": 1.0,
         "biospecimen": 1.0,
         "result": 1.0
     },
