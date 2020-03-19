@@ -898,5 +898,73 @@
         "date_released": "2016-01-01",
         "target": "EBF1-human",
         "uuid": "e8251058-d8c4-4b17-b03b-bfaeabe75e02"
-     }
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCSR123AAA",
+        "assay_term_name": "RNA-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3ef6a2c1-4cb3-46f4-8e92-2db70533a222"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCSR123AAB",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3ef6a2c1-4cb3-46f4-8e92-2db70533a223"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCSR123AAC",
+        "assay_term_name": "RNA-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "e89c07df-0961-4f21-a235-0b7945ef2aa4"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCSR123AAD",
+        "assay_term_name": "DNase-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3ef6a2c1-4cbc-46f4-8e92-2db70533a222"
+    },
+    {
+        "_test": "For Mouse Dev matrix testing",
+        "accession": "ENCSR123AAE",
+        "assay_term_name": "RNA-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_released": "2019-11-08",
+        "date_submitted": "2019-07-31",
+        "internal_status": "pipeline completed",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3ef6a2c1-4cc3-46f4-8e92-2db70533a223"
+    }
 ]
