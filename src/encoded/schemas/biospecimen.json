@@ -64,8 +64,7 @@
             "type": "string",
             "enum": [
                 "solid tissue",
-                "blood",
-                "ascites fluid"
+                "blood"
             ]
         },
         "processing_type": {
@@ -124,8 +123,9 @@
                 "lymph node",
                 "pancreas",
                 "peritoneum",
-                "Retroperitoneal mass",
-                "thrombus"
+                "retroperitoneal mass",
+                "thrombus",
+                "hematopoietic system"
             ]
         },
         "primary_site": {
@@ -245,5 +245,6 @@
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
 
 

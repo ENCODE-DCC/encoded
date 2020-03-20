@@ -39,9 +39,11 @@
         "openspecimen_ID":"veniam",
         "patient":"KCEPT026PGS",
         "collection_date":"2003-11-09",
-        "collection_type":"ascites fluid",
-        "processing_type":"FF",
+        "collection_type":"blood",
+        "processing_type":"blood",
         "distributed":"No",
+        "tissue_type":"normal",
+        "anatomic_site":"hematopoietic system",
         "uuid": "469ca496-315e-4364-b770-63018e0cf8f4",
         "status": "released",
         "host": "Human",
@@ -73,6 +75,8 @@
         "collection_type":"blood",
         "processing_type":"blood",
         "distributed":"Yes",
+        "tissue_type":"normal",
+        "anatomic_site":"hematopoietic system",
         "uuid": "f6805b25-edcc-4704-bc95-dbb7d9269bed",
         "status": "released",
         "host": "Human",
@@ -176,4 +180,5 @@
         "primary_site": "kidney"
     }
 ]
+
 
