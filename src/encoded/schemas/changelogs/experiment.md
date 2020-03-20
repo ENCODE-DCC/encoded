@@ -7,6 +7,7 @@
 * Added *analyses* property.
 * Added *protein_tags* calculated property that specifies the protein tags introduced through genetic modification of the biosamples investigated in the experiment.
 * *FactorBook* can now be linked to an experiment under external resources (dbxrefs).
+* Added *analyses.assemblies*, *analyses.genome_annotations* and *analyses.pipelines* calculated property.
 
 ### Schema version 28
 
