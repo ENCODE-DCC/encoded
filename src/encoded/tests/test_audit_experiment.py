@@ -3881,3 +3881,27 @@ def test_audit_experiment_control(testapp, base_matched_set, ChIP_experiment, ex
     ctrl = testapp.patch_json(base_matched_set['@id'], {'related_datasets': [experiment['@id']]})
     res = testapp.get(ChIP_experiment['@id'] + '@@index-data')
     assert not any(error['category'] == 'inconsistent control' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_inconsistent_analyses_files(testapp, experiment_with_analyses, experiment_with_analyses_2, file_bam_1_1, file_bam_2_1, bigWig_file):
+    testapp.patch_json(file_bam_1_1['@id'], {
+        'dataset': experiment_with_analyses['@id'],
+        })
+    testapp.patch_json(file_bam_2_1['@id'], {
+        'dataset': experiment_with_analyses['@id'],
+        })
+    res = testapp.get(experiment_with_analyses['@id'] + '@@index-data')
+    assert not any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    testapp.patch_json(bigWig_file['@id'], {
+        'dataset': experiment_with_analyses['@id'],
+        })
+    res = testapp.get(experiment_with_analyses['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    testapp.patch_json(file_bam_1_1['@id'], {
+        'dataset': experiment_with_analyses_2['@id'],
+        })
+    testapp.patch_json(file_bam_2_1['@id'], {
+        'dataset': experiment_with_analyses_2['@id'],
+        })
+    res = testapp.get(experiment_with_analyses_2['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))

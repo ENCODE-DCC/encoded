@@ -343,6 +343,40 @@ def base_experiment(testapp, lab, award, heart):
 
 
 @pytest.fixture
+def experiment_with_analyses(testapp, lab, award, heart, file_bam_1_1, file_bam_2_1):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'ChIP-seq',
+        'status': 'in progress',
+        'biosample_ontology': heart['uuid'],
+        'analyses': [
+            {
+                'files': [file_bam_1_1['@id'], file_bam_2_1['@id']]
+            }
+        ]
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_with_analyses_2(testapp, lab, award, heart, file_bam_1_1, file_bam_2_1, bam_file):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'ChIP-seq',
+        'status': 'in progress',
+        'biosample_ontology': heart['uuid'],
+        'analyses': [
+            {
+                'files': [file_bam_1_1['@id'], file_bam_2_1['@id'], bam_file['@id']]
+            }
+        ]
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def base_fcc_experiment(testapp, lab, award, heart):
     item = {
         'award': award['uuid'],
