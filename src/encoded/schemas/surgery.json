@@ -84,6 +84,9 @@
         "pathology_report.n_stage": {
             "title": "pN stage"
         },
+        "pathology_report.m_stage": {
+            "title": "pM stage"
+        },
         "pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage"
         },
@@ -162,6 +165,9 @@
         "pathology_report.n_stage": {
             "title": "pN stage"
         },
+        "pathology_report.m_stage": {
+            "title": "pM stage"
+        },
         "pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage"
         },
@@ -218,6 +224,7 @@
         "tumor_size_range": 1.0,
         "pathology_report.ajcc_p_stage": 1.0,
         "pathology_report.n_stage": 1.0,
+        "pathology_report.m_stage": 1.0,
         "pathology_report.ajcc_tnm_stage": 1.0,
         "pathology_report.ajcc_version": 1.0,
         "pathology_report.laterality":1.0, 
