@@ -469,16 +469,6 @@ class ScreenSearch extends React.Component {
                         <div className="site-search__submit">
                             <a
                                 disabled={disabledSearch}
-                                aria-label="Human hg19 search"
-                                title="Human hg19 search"
-                                className="btn btn-info btn-sm site-search__submit-element"
-                                role="button"
-                                href={`https://screen-v10.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}
-                            >
-                                Human hg19 <i className="icon icon-search" />
-                            </a>
-                            <a
-                                disabled={disabledSearch}
                                 aria-label="Human GRCh38 search"
                                 title="Human GRCh38 search"
                                 className="btn btn-info btn-sm site-search__submit-element"
@@ -496,6 +486,15 @@ class ScreenSearch extends React.Component {
                                 href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}
                             >
                                 Mouse mm10 <i className="icon icon-search" />
+                            </a>
+                        </div>
+                        <div className="site-search__link">
+                            <a
+                                aria-label="Human hg19 search"
+                                title="Human hg19 search"
+                                href={`https://screen-v10.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}
+                            >
+                                <i className="icon icon-external-link" />Visit hg19 site
                             </a>
                         </div>
                     </fieldset>
