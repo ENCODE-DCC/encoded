@@ -8,6 +8,7 @@ packages:
 - apache2-utils
 - ssl-cert
 - libapache2-mod-wsgi-py3
+- w3m
 # cloudwatchmon
 # encoded app install
 ## ckeditor
