@@ -16,11 +16,13 @@ import _ from 'underscore';
 const rootColorList = [
     '#2f62cf',
     '#de3700',
-    '#ff9a00',
+    '#FF9000',
     '#009802',
     '#9b009b',
     '#0098c8',
     '#df4076',
+    '#124E78',
+    '#FFC300',
 ];
 
 
