@@ -2,7 +2,6 @@
 
 ### Minor changes since schema version 4
 
-* Added *gRNA_tiling_loci* property.
 * Added *examined_loci* property.
 
 ### Schema version 4

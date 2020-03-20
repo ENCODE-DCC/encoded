@@ -60,8 +60,7 @@ def functional_characterization_experiment_5(testapp, lab, award, ctcf):
         'assay_term_name': 'CRISPR screen',
         'status': 'in progress',
         'examined_loci': [{
-             'gene': ctcf['uuid'],
-             'gene_expression_percentile': 80
+             'gene': ctcf['uuid']
          }]
     }
     return item
@@ -131,13 +130,22 @@ def test_functional_characterization_experiment_target_expression_dependency(tes
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_4, status=422)
 
 
-def test_functional_characterization_experiment_examined_loci_dependency(testapp, functional_characterization_experiment_5, ctcf, bap1):
-    # the property examined_loci has to have at least two items
-    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid'], 'gene_expression_range_minimum': 2, 'gene_expression_range_maximum': 70}]})
+def test_functional_characterization_experiment_examined_loci_dependency(testapp, functional_characterization_experiment_5, ctcf):
+    # the property examined_loci may specify a single gene, without expression properties
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
-    # the property examined_loci needs to specify either gene_expression_percentile or gene_expression_range_maximum and gene_expression_range_minimum for each item
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid']}]})
+
+    # the property examined_loci may not specify expression_percentile AND expression_range_maximum, expression_range_minimum for each item
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 80, 'expression_range_minimum': 50, 'expression_range_maximum': 100}]})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
-    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'gene_expression_percentile': 80}, {'gene': bap1['uuid'], 'gene_expression_percentile': 25}]})
+
+    # expression_range_maximum and expression_range_minimum must be included together
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_range_maximum': 100}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_range_minimum': 50, 'expression_range_maximum': 100}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
+
+    # expression_percentile may be specified with gene, but not in combination with a single range property
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100, 'expression_range_minimum': 50}]})
+    testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=422)
+    functional_characterization_experiment_5.update({'examined_loci': [{'gene': ctcf['uuid'], 'expression_percentile': 100}]})
     testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_5, status=201)
