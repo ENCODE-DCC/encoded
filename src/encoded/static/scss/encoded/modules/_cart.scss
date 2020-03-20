@@ -365,19 +365,6 @@ $cart-facet-check-box-size: 18px;
 }
 
 
-// Defines check boxes and radio button on the cart facets.
-$cart-facet-check-box-size: 18px;
-%facet-term-control {
-    display: flex;
-    flex: 0 0 $cart-facet-check-box-size;
-    width: $cart-facet-check-box-size;
-    height: $cart-facet-check-box-size;
-    border: 1px solid #c0c0c0;
-    justify-content: center;
-    align-items: center;
-}
-
-
 // Facets for the cart-view page.
 $icon-visualizable-color: #396492;
 $cart-facet-visualizable-size: 18px;

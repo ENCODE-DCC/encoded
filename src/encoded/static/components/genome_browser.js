@@ -153,15 +153,15 @@ const TrackLabel = ({ file, long }) => {
         <React.Fragment>
             <a href={file['@id']} className="gb-accession">{file.accession}<span className="sr-only">{`Details for file ${file.accession}`}</span></a>
             <ul className="gb-info">
+                {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
+                {file.target ? <li>{file.target.label}</li> : null}
+                {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
                 {long ?
                     <React.Fragment>
                         <li>{file.output_type}</li>
                         {(biologicalReplicates !== '') ? <li>{`rep ${biologicalReplicates}`}</li> : null}
                     </React.Fragment>
                 : null}
-                {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
-                {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
-                {file.target ? <li>{file.target.label}</li> : null}
             </ul>
         </React.Fragment>
     );
