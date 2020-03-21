@@ -24,6 +24,13 @@ const largeArrow = style => (
     </svg>
 );
 
+const genomeBrowser = style => (
+    <svg version="1.1" data-name="Genome browser" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" style={style} className="svg-icon svg-icon-genome-browser">
+        <polygon points="500.06,232.95 0.11,1000 1000,1000" />
+        <rect x="267" width="466" height="153.41" />
+    </svg>
+);
+
 const icons = {
     disclosure: style => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table: style => <svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" style={style} className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg>,
@@ -38,6 +45,7 @@ const icons = {
     chevronUp: style => <svg id="Chevron Up" data-name="Chevron Up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 124" style={style}><polygon points="249,67 124.5,0 0,67 0,124 124.5,57 249,124" /></svg>,
     spinner,
     largeArrow,
+    genomeBrowser,
 };
 
 /**

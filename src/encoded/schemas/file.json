@@ -1659,6 +1659,15 @@
         "file_size": {
             "title": "File size"
         },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "target.label": {
+            "title": "Target label"
+        },    
         "href": {
             "title": "Download URL"
         },

@@ -1631,6 +1631,33 @@ def visualizable_assemblies(
             break  # Try not to go through the whole file list!
     return list(file_assemblies)
 
+def is_file_visualizable(file):
+    '''Determines whether a file can be visualized in a genome browser.
+    Needs to be kept in sync with isFileVisualizable in objectutils.js.
+
+    Keyword arguments:
+    file -- file object including props to test for visualizability
+    '''
+    conditions = [
+        file.get('file_format') in [
+            'bigWig',
+            'bigBed',
+        ],
+        file.get('file_format_type') not in [
+            'bedMethyl',
+            'bedLogR',
+            'idr_peak',
+            'tss_peak',
+            'pepMap',
+            'modPepMap',
+        ],
+        file.get('status') in [
+            'released',
+            'in progress',
+            'archived',
+        ],
+    ]
+    return all(conditions)
 
 def _file_to_format(process_file):
     '''Used with map to convert list of files to their types'''

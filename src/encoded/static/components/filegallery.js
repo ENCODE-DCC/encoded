@@ -8,10 +8,10 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor, auditsDisplayed, ObjectAuditIcon } from './audit';
 import { FetchedData, Param } from './fetched';
-import GenomeBrowser, { filterForVisualizableFiles } from './genome_browser';
+import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
-import { requestFiles, DownloadableAccession } from './objectutils';
+import { requestFiles, DownloadableAccession, computeAssemblyAnnotationValue, filterForVisualizableFiles } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -1984,59 +1984,6 @@ function createFacetObject(propertyKey, fileList, filters) {
         });
     }
     return facetObject;
-}
-
-// Convert assembly and annotation to a single value
-// Values computed such that assembly and annotations that are the most recent have the highest value
-// The correct sorting is as follows:
-// Genome mm9 or mm10
-//                 "ENSEMBL V65",
-//                 "M2",
-//                 "M3",
-//                 "M4",
-//                 "M7",
-//                 "M14",
-//                 "M21",
-// Genome hg19
-//                 "V3c",
-//                 "V7",
-//                 "V10",
-//                 "V19",
-//                 "miRBase V21",
-//                 "V22",
-// Genome GRCh38
-//                 "V24",
-//                 "V29",
-//                 "V30"
-// Genome ce10 or ce11
-//                 "WS235",
-//                 "WS245"
-// outlier:
-//                 "None"
-function computeAssemblyAnnotationValue(assembly, annotation) {
-    // There are three levels of sorting
-    // First level of sorting: most recent assemblies are ordered first (represented by numerical component of assembly)
-    // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimial')
-    // Third level of sorting: Annotations within an assembly are ordered with most recent first, with more recent annotations having a higher annotation number (with the exception of "ENSEMBL V65") (represented by the annotation number divided by 10,000, or, the three decimal places after the tenths place)
-    let assemblyNumber = +assembly.match(/[0-9]+/g)[0];
-    if (assembly.indexOf('minimal') === -1) {
-        // If there is no '-minimal', add 0.5 which will order this assembly ahead of any assembly with '-minimal' and the same numerical component
-        assemblyNumber += 0.5;
-    }
-    if (annotation) {
-        const annotationNumber = +annotation.match(/[0-9]+/g)[0];
-        let annotationDecimal = 0;
-        // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
-        // We divide by 10000 because the highest annotation number (for now) is 245
-        if (+annotationNumber === 65) {
-            annotationDecimal = (+annotationNumber / 1000000);
-        } else {
-            annotationDecimal = (+annotationNumber / 10000);
-        }
-        assemblyNumber += annotationDecimal;
-        return assemblyNumber;
-    }
-    return assemblyNumber;
 }
 
 const TabPanelFacets = (props) => {

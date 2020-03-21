@@ -44,14 +44,18 @@ class CartBatchDownloadComponent extends React.Component {
         const fileFormatSelections = _.compact(Object.keys(this.props.selectedTerms).map((field) => {
             let subQueryString = '';
             if (this.props.selectedTerms[field].length > 0) {
-                subQueryString = this.props.selectedTerms[field].map(term => `files.${field}=${encoding.encodedURIComponentOLD(term)}`).join('&');
+                // Build the query string from `files` properties in the dataset, or from the
+                // dataset properties itself for fields marked in `datasetFacets`.
+                subQueryString = this.props.selectedTerms[field].map(
+                    term => `${this.props.datasetFacets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
+                ).join('&');
             }
             return subQueryString;
         }));
 
         // Initiate a batch download as a POST, passing it all dataset @ids in the payload.
         this.props.setInProgress(true);
-        this.props.fetch(`/batch_download/?type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}`, {
+        this.props.fetch(`/batch_download/?type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${this.props.visualizable ? '&visualizable=true' : ''}`, {
             method: 'POST',
             headers: {
                 Accept: 'text/plain',
@@ -121,6 +125,8 @@ CartBatchDownloadComponent.propTypes = {
     elements: PropTypes.array,
     /** Selected facet terms */
     selectedTerms: PropTypes.object,
+    /** Facet fields with data from dataset instead of file */
+    datasetFacets: PropTypes.array,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Shared cart object */
@@ -131,6 +137,8 @@ CartBatchDownloadComponent.propTypes = {
     setInProgress: PropTypes.func.isRequired,
     /** True if cart operation in progress */
     cartInProgress: PropTypes.bool,
+    /** True to download only visualizable files */
+    visualizable: PropTypes.bool,
     /** System fetch function */
     fetch: PropTypes.func.isRequired,
 };
@@ -138,10 +146,12 @@ CartBatchDownloadComponent.propTypes = {
 CartBatchDownloadComponent.defaultProps = {
     elements: [],
     selectedTerms: null,
+    datasetFacets: [],
     savedCartObj: null,
     sharedCart: null,
     fileCount: 0,
     cartInProgress: false,
+    visualizable: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
