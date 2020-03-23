@@ -1129,4 +1129,17 @@ def file_subreads(testapp, experiment, award, lab, replicate, platform3):
         'output_type': 'subreads',
         'status': 'in progress'
     }
+
+
+@pytest.fixture
+def fastq(fastq_no_replicate, replicate_url):
+    item = fastq_no_replicate.copy()
+    item['replicate'] = replicate_url['@id']
+    return item
+
+
+@pytest.fixture
+def fastq_pair_1(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '1'
     return item
