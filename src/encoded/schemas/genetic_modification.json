@@ -72,16 +72,6 @@
                         "purpose": {
                                 "enum": ["repression", "characterization"]
                         }
-                    },
-                    "not": {
-                        "properties": {
-                            "method": {
-                                "enum": ["CRISPR"]
-                            },
-                            "purpose": {
-                                "enum": ["characterization"]
-                            }
-                        }
                     }
                 },
                 {
