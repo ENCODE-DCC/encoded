@@ -1103,3 +1103,16 @@ def file_with_no_external_sheet(file, root):
     )
     return file
 
+
+@pytest.fixture
+def fastq(fastq_no_replicate, replicate_url):
+    item = fastq_no_replicate.copy()
+    item['replicate'] = replicate_url['@id']
+    return item
+
+
+@pytest.fixture
+def fastq_pair_1(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '1'
+    return item
