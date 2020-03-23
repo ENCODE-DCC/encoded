@@ -966,5 +966,18 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cc3-46f4-8e92-2db70533a223"
+    },
+    {
+        "_test": "SPRITE test",
+        "accession": "ENCSR323SPR",
+        "assay_term_name": "SPRITE",
+        "award": "U54HG006991",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "michael-snyder",
+        "status": "released",
+        "date_submitted": "2019-12-01",
+        "date_released": "2020-02-20",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "94c2e812-dcd2-4d80-a3ba-88cdf1043a1b"
     }
 ]

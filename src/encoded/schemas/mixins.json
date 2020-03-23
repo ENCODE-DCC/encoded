@@ -464,6 +464,7 @@
                 "single-nucleus ATAC-seq",
                 "siRNA knockdown followed by RNA-seq",
                 "small RNA-seq",
+                "SPRITE",
                 "Switchgear",
                 "TAB-seq",
                 "transcription profiling by array assay",

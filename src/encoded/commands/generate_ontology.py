@@ -565,7 +565,20 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
-    }
+    },
+        "NTR:0000544": {
+        "assay": ['3D chromatin structure'],
+        "category": [],
+        "developmental": [],
+        "name": "split-pool recognition of interactions by tag extension",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "SPRITE",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
 }
 
 

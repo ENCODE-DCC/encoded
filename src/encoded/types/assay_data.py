@@ -65,5 +65,6 @@ assay_terms = {
       'CRISPR screen': 'NTR:0000520',
       'pooled clone sequencing': 'NTR:0000519',
       'PRO-cap': 'NTR:0000536',
-      'icLASER': 'NTR:0000538'
+      'icLASER': 'NTR:0000538',
+      'SPRITE': 'NTR:0000544'
 }
