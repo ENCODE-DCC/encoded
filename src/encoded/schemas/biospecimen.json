@@ -74,7 +74,7 @@
             "enum": [
                 "FF",
                 "FFPE",
-                "zenograft",
+                "xenograft",
                 "DMSO",
                 "blood",
                 "cell line"
@@ -193,6 +193,9 @@
             "title": "Biospecimen Anatomic Site"
 
         },
+        "surgery.pathology_report.histology": {
+            "title": "Tumor Histologic Subtype"
+        },
         "biolibrary.nucleic_acid_term_name": {
             "title": "Library Material"
         },
@@ -201,6 +204,18 @@
         },
         "biolibrary.biofile.output_type": {
             "title": "Genomics File Output Type"
+        },
+        "surgery.pathology_report.ajcc_p_stage": {
+            "title": "pT stage"
+        },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN stage"
+        },
+        "surgery.pathology_report.m_stage": {
+            "title": "pM stage"
+        },
+        "surgery.pathology_report.ajcc_tnm_stage": {
+            "title": "TNM stage"
         }
 
     },
@@ -245,6 +260,7 @@
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
 
 
 

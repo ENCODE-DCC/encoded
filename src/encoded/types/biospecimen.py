@@ -30,6 +30,7 @@ class Biospecimen(Item):
         'biolibrary',
         'biolibrary.biofile',
         'surgery',
+        'surgery.pathology_report',
         'ihc'
     ]
     audit_inherit = [
@@ -71,20 +72,26 @@ class Biospecimen(Item):
                 'anatomic_site',
                 'biolibrary.nucleic_acid_term_name',
                 'biolibrary.biofile.file_format',
-                'biolibrary.biofile.output_type',                
+                'biolibrary.biofile.output_type', 
+                'sur_path_tumor_size',
+                'surgery.pathology_report.ajcc_p_stage',
+                'surgery.pathology_report.n_stage',
+                'surgery.pathology_report.m_stage',
+                'surgery.pathology_report.ajcc_tnm_stage',               
             ],
-            'group_by': ['collection_type', 'processing_type'],
+            'group_by': ['tissue_type', 'processing_type'],
             'label': 'collection',
         },
         'x': {
             'facets': [
                 
-                'anatomic_site',
+                'surgery.pathology_report.histology',
             ],
-            'group_by': 'anatomic_site',
-            'label': 'anatomic_site',
+            'group_by': 'surgery.pathology_report.histology',
+            'label': 'histology',
         },
     }
+
 
 
 
