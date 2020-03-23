@@ -44,3 +44,25 @@ def dataset_reference_2(lab, award):
         'dbxrefs': ['IHEC:IHECRE00004703'],
         'notes': 'preexisting comment.'
     }
+
+@pytest.fixture
+def ucsc_browser_composite(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+    }
+    return testapp.post_json('/ucsc_browser_composite', item).json['@graph'][0]
+
+
+@pytest.fixture
+def fastq(fastq_no_replicate, replicate_url):
+    item = fastq_no_replicate.copy()
+    item['replicate'] = replicate_url['@id']
+    return item
+
+
+@pytest.fixture
+def fastq_pair_1(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '1'
+    return item

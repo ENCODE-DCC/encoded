@@ -20,7 +20,6 @@ def test_audit_biosample_modifications_whole_organism(
     assert any(error['category'] == 'mismatched genetic modifications' for error in errors_list)
 
 
-@pytest.mark.skip(reason='will be addressed in a PYTEST-REFACTOR')
 def test_audit_biosample_modifications_whole_organism_duplicated(
         testapp, base_biosample,
         fly_donor, fly, construct_genetic_modification, whole_organism):
@@ -36,7 +35,7 @@ def test_audit_biosample_modifications_whole_organism_duplicated(
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] != 'duplicated genetic modifications' for error in errors_list)
+    assert any(error['category'] == 'duplicated genetic modifications' for error in errors_list)
 
 
 def test_audit_biosample_term_ntr(testapp, base_biosample, cell_free):

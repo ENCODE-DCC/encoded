@@ -86,15 +86,6 @@ def gm_characterization(testapp, award, lab, construct_genetic_modification_N, a
 
 
 @pytest.fixture
-def ucsc_browser_composite(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-    }
-    return testapp.post_json('/ucsc_browser_composite', item).json['@graph'][0]
-
-
-@pytest.fixture
 def fastq_no_replicate(award, experiment, lab, platform1):
     return {
         'award': award['@id'],
@@ -110,16 +101,3 @@ def fastq_no_replicate(award, experiment, lab, platform1):
         'status': 'in progress',
     }
 
-
-@pytest.fixture
-def fastq(fastq_no_replicate, replicate_url):
-    item = fastq_no_replicate.copy()
-    item['replicate'] = replicate_url['@id']
-    return item
-
-
-@pytest.fixture
-def fastq_pair_1(fastq):
-    item = fastq.copy()
-    item['paired_end'] = '1'
-    return item
