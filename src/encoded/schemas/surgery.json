@@ -79,13 +79,19 @@
             "title": "Tumor Size"
         },
         "pathology_report.ajcc_p_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "pathology_report.n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
         "pathology_report.m_stage": {
-            "title": "pM stage"
+            "title": "pM Stage"
+        },
+        "pathology_report.metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "pathology_report.metasis_details.type": {
+            "title": "Metasis Type"
         },
         "pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage"
@@ -160,13 +166,19 @@
             "title": "Tumor Size"
         },
         "pathology_report.ajcc_p_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "pathology_report.n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
         "pathology_report.m_stage": {
-            "title": "pM stage"
+            "title": "pM Stage"
+        },
+        "pathology_report.metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "pathology_report.metasis_details.type": {
+            "title": "Metasis Type"
         },
         "pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage"
@@ -225,6 +237,8 @@
         "pathology_report.ajcc_p_stage": 1.0,
         "pathology_report.n_stage": 1.0,
         "pathology_report.m_stage": 1.0,
+        "pathology_report.metasis_details.site": 1.0,
+        "pathology_report.metasis_details.type": 1.0,
         "pathology_report.ajcc_tnm_stage": 1.0,
         "pathology_report.ajcc_version": 1.0,
         "pathology_report.laterality":1.0, 

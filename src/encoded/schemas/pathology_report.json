@@ -529,13 +529,13 @@
             "title": "Tumor Size"
         },
         "ajcc_p_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
         "m_stage": {
-            "title": "pM stage"
+            "title": "pM Stage"
         },
         "metasis_details.site": {
             "title": "Metasis Site"
@@ -618,6 +618,12 @@
         "m_stage": {
             "title": "pM stage"
         },
+        "metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "metasis_details.type": {
+            "title": "Metasis Type"
+        },
         "ajcc_tnm_stage": {
             "title": "AJCC TNM Stage"
         },
@@ -668,6 +674,8 @@
         "ajcc_p_stage": 1.0,
         "n_stage": 1.0,
         "m_stage": 1.0,
+        "metasis_details.site": 1.0,
+        "metasis_details.type": 1.0,
         "ajcc_tnm_stage": 1.0,
         "ajcc_version": 1.0,
         "laterality": 1.0,

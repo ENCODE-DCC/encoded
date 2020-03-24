@@ -123,13 +123,19 @@
             "title": "Tumor Histologic Subtypes"
         },
         "surgery.pathology_report.ajcc_p_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM stage"
+            "title": "pM Stage"
+        },
+        "surgery.pathology_report.metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "surgery.pathology_report.metasis_details.type": {
+            "title": "Metasis Type"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " TNM Stage"
@@ -221,13 +227,19 @@
             "title": "Tumor Histologic Subtypes"
         },
         "surgery.pathology_report.ajcc_p_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM stage"
+            "title": "pM Stage"
+        },
+        "surgery.pathology_report.metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "surgery.pathology_report.metasis_details.type": {
+            "title": "Metasis Type"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": " AJCC TNM Stage"
@@ -254,6 +266,8 @@
         "surgery.pathology_report.ajcc_p_stage": 1.0,
         "surgery.pathology_report.n_stage": 1.0,
         "surgery.pathology_report.m_stage": 1.0,
+        "surgery.pathology_report.metasis_details.site": 1.0,
+        "surgery.pathology_report.metasis_details.type": 1.0,
         "surgery.pathology_report.ajcc_tnm_stage": 1.0
         },
     "changelog": "/profiles/changelogs/patient.md"
