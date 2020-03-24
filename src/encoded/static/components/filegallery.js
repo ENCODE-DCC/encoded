@@ -1986,8 +1986,154 @@ function createFacetObject(propertyKey, fileList, filters) {
     return facetObject;
 }
 
+
+/**
+ * Compile the usable experiment analyses objects into a form for rendering a dropdown of pipeline
+ * labs. Export for Jest test.
+ * @param {object} experiment Contains the analyses to convert into an pipeline labs dropdown
+ * @param {array} files Array of all files from search that gets included in file gallery
+ *
+ * @return {array} Compiled analyses information, each element with the form:
+ * {
+ *      title: Analyses dropdown title -- `pipelineLab`+`assembly`
+ *      pipelineLab: Pipeline processing lab title, e.g. "ENCODE4 uniform"
+ *      assembly: Assembly and annotation string matching assembly facet terms
+ *      assemblyAnnotationValue: Value used to sort the compiled analyses
+ *      files: Array of files selected with the pipline lab and assembly
+ * }
+ */
+const UNIFORM_PIPELINE_LAB = '/labs/encode-processing-pipeline/';
+export const compileAnalyses = (experiment, files) => {
+    let compiledAnalyses = [];
+    if (experiment.analyses && experiment.analyses.length > 0) {
+        // Get all the analyses objects that qualify for inclusion in the Pipeline facet.
+        const qualifyingAnalyses = experiment.analyses.filter((analyses) => {
+            const rfas = _.uniq(analyses.pipeline_award_rfas);
+
+            // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
+            // `UNIFORM_PIPELINE_LAB` is only valid if alone.
+            return (
+                analyses.assemblies.length === 1
+                && analyses.genome_annotations.length <= 1
+                && analyses.pipeline_award_rfas.length === 1
+                && analyses.pipeline_labs.length > 0
+                && !(analyses.pipeline_labs.length === 1 && analyses.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
+            );
+        });
+
+        if (qualifyingAnalyses.length > 0) {
+            // Group all the qualifying analyses' files by pipeline lab. Each pipeline lab title is
+            // an object key with the value of an array containing all analyses objects included in
+            // that lab. Also form the lab title here, prepending with the rfa (e.g. ENCODE3) for
+            // `UNIFORM_PIPELINE_LAB`.
+            const analysesByLab = _(qualifyingAnalyses).groupBy((analyses) => {
+                if (analyses.pipeline_labs.length > 1) {
+                    return 'Mixed';
+                }
+
+                // At this stage, we know analyses.pipeline_labs has one and only one element.
+                if (analyses.pipeline_labs[0] !== UNIFORM_PIPELINE_LAB) {
+                    return 'Lab custom';
+                }
+                return `${analyses.pipeline_award_rfas[0]} uniform`;
+            });
+
+            // Fill in the compiled object with the labs that group the files.
+            compiledAnalyses = [];
+            const fileIds = files.map(file => file['@id']);
+            Object.keys(analysesByLab).forEach((pipelineLab) => {
+                // For one lab, group all analyses by their assembly/annotation, then combine all
+                // file arrays for those with matching pipeline lab, assembly/annotation, and RFA.
+                const analysesByAssembly = _(analysesByLab[pipelineLab]).groupBy(analyses => `${analyses.assemblies[0]}${analyses.genome_annotations.length === 1 ? ` ${analyses.genome_annotations[0]}` : ''}`);
+                Object.keys(analysesByAssembly).forEach((assembly) => {
+                    // Combine all analyses files that share the same pipeline lab, assembly, and
+                    // annotation and add each to the compiled list. Filter out any not included in
+                    // the experiment's files.
+                    const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analyses) => accFiles.concat(analyses.files), []).filter(file => fileIds.includes(file)));
+                    if (assemblyFiles.length > 0) {
+                        compiledAnalyses.push({
+                            title: `${pipelineLab} ${assembly}`,
+                            pipelineLab,
+                            assembly,
+                            assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assemblies[0], analysesByAssembly[assembly][0].genome_annotations[0]),
+                            files: _.uniq(assemblyFiles),
+                        });
+                    }
+                });
+            });
+        }
+    }
+    return _(compiledAnalyses).sortBy(compiledAnalysis => -compiledAnalysis.assemblyAnnotationValue);
+};
+
+
+/**
+ * Find the compiled analyses object matching the given assembly and annotation and return its
+ * index in the compiled analyses array.
+ * match found.
+ * @param {string} assembly Assembly and annotation to map to an analyses title
+ * @param {array} compiledAnalyses Compiled analyses for the experiment
+ *
+ * @return {object} Array index of compiled analyses object matching given assembly, or -1
+ */
+const findCompiledAnalysisIndex = (assembly, compiledAnalyses) => (
+    // Find the matching assembly in compiledAnalyses, or the first otherwise.
+    compiledAnalyses.findIndex(analyses => analyses.assembly === assembly)
+);
+
+
+/**
+ * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
+ * the file association graph.
+ */
+const AnalysesSelector = ({ assembly, analyses, handleAnalysesSelection }) => {
+    const selectedAnalysesIndex = findCompiledAnalysisIndex(assembly, analyses);
+
+    React.useEffect(() => {
+        if (selectedAnalysesIndex === -1 && analyses.length > 0) {
+            // No selected pipeline lab analyses, but if we have at least one qualifying one,
+            // automatically select the first one.
+            handleAnalysesSelection(0);
+        }
+    });
+
+    // Called when the user changes the dropdown selection. Tells the file gallery so it can update
+    // its state that tracks this.
+    const handleSelection = (e) => {
+        handleAnalysesSelection(e.target.value);
+    };
+
+    // Only present the pipeline lab analyses matching the currently selected assembly/annotation.
+    return (
+        analyses.length > 0 ?
+            <div className="analyses-selector analyses-selector--file-gallery-facets">
+                <h4>Choose analysis</h4>
+                <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
+                    {analyses.map((analysis, index) => (
+                        <option key={analysis.title} value={index}>{analysis.title}</option>
+                    ))}
+                </select>
+            </div>
+        : null
+    );
+};
+
+AnalysesSelector.propTypes = {
+    /** Assembly and annotation */
+    assembly: PropTypes.string,
+    /** Compiled analyses for the currently viewed dataset */
+    analyses: PropTypes.array.isRequired,
+    /** Called when the user chooses a pipeline lab from the menu */
+    handleAnalysesSelection: PropTypes.func.isRequired,
+};
+
+AnalysesSelector.defaultProps = {
+    assembly: '',
+};
+
+
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, handleAnalysesSelection } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2018,8 +2164,14 @@ const TabPanelFacets = (props) => {
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
-            <h4>Choose an assembly </h4>
-            <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+            {(currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0 ?
+                <AnalysesSelector assembly={filters.assembly && filters.assembly[0]} analyses={analyses} handleAnalysesSelection={handleAnalysesSelection} />
+            :
+                <React.Fragment>
+                    <h4>Choose an assembly </h4>
+                    <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+                </React.Fragment>
+            }
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
@@ -2048,7 +2200,16 @@ TabPanelFacets.propTypes = {
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
     experimentType: PropTypes.string.isRequired,
+    /** Compiled analyses objects from the currently viewed dataset */
+    analyses: PropTypes.array,
+    /** Function to call when the user changes the currently selected pipeline lab analyses */
+    handleAnalysesSelection: PropTypes.func.isRequired,
 };
+
+TabPanelFacets.defaultProps = {
+    analyses: [],
+};
+
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
@@ -2089,6 +2250,8 @@ class FileGalleryRendererComponent extends React.Component {
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
+            /** Compiled dataset analyses object */
+            compiledAnalyses: compileAnalyses(props.context, datasetFiles),
         };
 
         /** Used to see if related_files has been updated */
@@ -2116,6 +2279,7 @@ class FileGalleryRendererComponent extends React.Component {
         this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
         this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
         this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
+        this.handleAnalysesSelection = this.handleAnalysesSelection.bind(this);
     }
 
     componentDidMount() {
@@ -2155,7 +2319,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn;
+        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn || prevProps.data !== this.props.data;
         this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssembly);
     }
 
@@ -2303,21 +2467,48 @@ class FileGalleryRendererComponent extends React.Component {
             this.resetCurrentBrowser(null, allFiles);
 
             // If new tab has been selected, we may need to update which assembly is chosen
-            if (updateAssembly) {
+            if (updateAssembly || loggedIn !== prevLoggedIn) {
                 if (this.state.currentTab === 'tables') {
                     // Always set the table assembly to be 'All assemblies'
                     this.filterFiles('All assemblies', 'assembly');
                 } else if (this.state.currentTab === 'browser' || this.state.currentTab === 'graph') {
+                    let availableCompiledAnalyses = this.state.compiledAnalyses;
                     // Determine available assemblies
                     const assemblyList = this.setAssemblyList(allFiles);
-                    // Reset assembly filter if it is 'All assemblies' or is not in assemblyList
-                    // Assembly is required for browser / graph and available assemblies may be different for graph and browser
-                    // Do not reset if a particular assembly has already been chosen and it is an available option
-                    const currentAssembly = this.state.fileFilters.assembly[0];
-                    if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
-                        // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                        const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                        this.filterFiles(newAssembly, 'assembly');
+                    // Update compiled analyses filtered by available assemblies
+                    if (context.analyses && context.analyses.length > 0) {
+                        const availableAssemblies = Object.keys(assemblyList);
+                        availableCompiledAnalyses = compileAnalyses(context, allFiles).filter(analysis => availableAssemblies.includes(analysis.assembly));
+                        this.setState({ compiledAnalyses: availableCompiledAnalyses });
+                    }
+                    // Update the list of relevant compiled analyses.
+                    if (availableCompiledAnalyses.length > 0) {
+                        let newAnalyses;
+                        let newAssembly;
+                        const currentAssembly = this.state.fileFilters.assembly[0];
+                        if (currentAssembly === 'All assemblies') {
+                            // Select the first analyses' assembly.
+                            newAnalyses = availableCompiledAnalyses[0];
+                            newAssembly = newAnalyses.assembly;
+                        } else {
+                            // Find the matching assembly in compiledAnalyses, or the first otherwise.
+                            newAnalyses = availableCompiledAnalyses.find(analyses => analyses.assembly === currentAssembly) || this.state.compiledAnalyses[0];
+                            newAssembly = newAnalyses.assembly;
+                        }
+                        if (newAssembly !== currentAssembly) {
+                            this.filterFiles(newAssembly, 'assembly');
+                        }
+                    } else {
+                        // Reset assembly filter if it is 'All assemblies' or is not in assemblyList
+                        // Assembly is required for browser / graph and available assemblies may be different for graph and browser
+                        // Do not reset if a particular assembly has already been chosen and it is an available option
+                        const currentAssembly = this.state.fileFilters.assembly[0];
+                        let newAssembly;
+                        if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
+                            // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                            newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                            this.filterFiles(newAssembly, 'assembly');
+                        }
                     }
                 }
             }
@@ -2447,6 +2638,7 @@ class FileGalleryRendererComponent extends React.Component {
                 // Create a new filter with the new value
                 currentFilters[facet] = [value];
             }
+
             this.setState({ fileFilters: currentFilters });
         // If there are no filters yet, set this to be the first filter
         } else {
@@ -2461,6 +2653,13 @@ class FileGalleryRendererComponent extends React.Component {
         }
     }
 
+    // Called when the user selects a pipeline lab analyses.
+    // @param {string} selectedAnalysesIndex Index in state.compiledAnalyses of newly selected pipeline
+    handleAnalysesSelection(selectedAnalysesIndex) {
+        const selectedAnalyses = this.state.compiledAnalyses[selectedAnalysesIndex];
+        this.filterFiles(selectedAnalyses.assembly, 'assembly');
+    }
+
     render() {
         const { context, schemas, hideGraph, showReplicateNumber } = this.props;
         let allGraphedFiles;
@@ -2470,9 +2669,50 @@ class FileGalleryRendererComponent extends React.Component {
         if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
-        const graphIncludedFiles = this.filterForInclusion(this.state.graphFiles);
+        let graphIncludedFiles = this.filterForInclusion(this.state.graphFiles);
         const includedFiles = this.filterForInclusion(this.state.files);
         const facetFiles = this.filterForInclusion(this.state.allFiles);
+
+        // Compile pipeline lab information for pipeline lab dropdown.
+        if (this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
+            // Filter renderable and visualizable files to include only those in the matching
+            // analyses plus raw-data files. If no matching analyses, all files get included.
+            const selectedAnalysesIndex = findCompiledAnalysisIndex(this.state.selectedAssembly, this.state.compiledAnalyses);
+            const selectedAnalysis = this.state.compiledAnalyses[selectedAnalysesIndex === -1 ? 0 : selectedAnalysesIndex];
+            const graphAnalysesFiles = graphIncludedFiles.filter(file => selectedAnalysis.files.includes(file['@id']));
+            if (graphAnalysesFiles.length > 0) {
+                // Collect files that these files derive from, and add any missing ones to the
+                // list of files to include in the graph.
+                const assemblyAnnotation = this.state.selectedAssembly.split(' ');
+                const additionalFiles = [];
+                graphAnalysesFiles.forEach((analysesFile) => {
+                    // Get the chain of files that analysesFile derives from, then check
+                    // whether it needs to be added to the graph.
+                    const derivedFiles = collectDerivedFroms(analysesFile, context, assemblyAnnotation[0], assemblyAnnotation[1], this.state.allFiles);
+                    Object.keys(derivedFiles).forEach((derivedFileId) => {
+                        if (derivedFiles[derivedFileId]) {
+                            // See if the file is already included in the analyses' files.
+                            const includedFile = graphAnalysesFiles.find(file => file['@id'] === derivedFileId);
+                            if (!includedFile) {
+                                // The derived-from file isn't already included, so add it
+                                // if it can be found in allFiles (won't necessarily be).
+                                const derivedFile = this.state.allFiles.find(file => file['@id'] === derivedFileId);
+                                if (derivedFile) {
+                                    additionalFiles.push(derivedFile);
+                                }
+                            }
+                        }
+                    });
+                });
+
+                // The graphed files now also include the derived-from files and raw files.
+                graphIncludedFiles = graphAnalysesFiles.concat(_.uniq(additionalFiles), graphIncludedFiles.filter(file => file.output_category === 'raw data'));
+            } else {
+                // We know at this point there's nothing to graph nor browse for the selected
+                // analyses.
+                graphIncludedFiles = [];
+            }
+        }
 
         const fileTable = (
             <FileTable
@@ -2531,6 +2771,8 @@ class FileGalleryRendererComponent extends React.Component {
                             toggleFacets={this.toggleFacets}
                             clearFileFilters={this.clearFileFilters}
                             experimentType={this.experimentType}
+                            analyses={this.state.compiledAnalyses}
+                            handleAnalysesSelection={this.handleAnalysesSelection}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
@@ -2542,7 +2784,7 @@ class FileGalleryRendererComponent extends React.Component {
                         >
                             <TabPanelPane key="browser">
                                 <GenomeBrowser
-                                    files={includedFiles}
+                                    files={graphIncludedFiles}
                                     expanded={this.state.facetsOpen}
                                     assembly={this.state.selectedAssembly}
                                 />

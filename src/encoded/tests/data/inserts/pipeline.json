@@ -77,7 +77,7 @@
         ],
         "status": "released",
         "title": "Graveley RNA-seq Analysis",
-        "lab": "brenton-graveley",
+        "lab": "encode-processing-pipeline",
         "award": "U54HG007005",
         "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
     },
