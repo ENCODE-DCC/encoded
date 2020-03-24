@@ -156,7 +156,6 @@ $row-data-header-width: 200px;
 }
 
 .subcategory-row-text {
-    display: flex;
     align-items: center;
     line-height: 1.5;
     .label-stage {
@@ -170,6 +169,11 @@ $row-data-header-width: 200px;
         flex: 0 0 40%;
         font-size: 12px;
     }
+}
+
+.subcategory-row-text-mouse {
+    @extend .subcategory-row-text;
+    display: flex;
 }
 .embryo {
     background-color: #fff3e0;
@@ -916,6 +920,7 @@ $divider-color: #000; // Color of dividers between assays with targets
             width: $donor-cell-width;
             padding: 0;
             border-left: none;
+            text-align: right;
 
             > a {
                 height: $donor-cell-height;

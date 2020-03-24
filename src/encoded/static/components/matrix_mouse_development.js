@@ -498,7 +498,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                                 href={`${context.search_base}&${rowCategoryQuery}&${subCategoryQuery}`}
                                 className={`label-stage ${labelStage}`}
                             >
-                                <div className="subcategory-row-text">
+                                <div className="subcategory-row-text-mouse">
                                     <div className="label-stage">{labelStage}</div>
                                     <div className="label-length">{labelLength}</div>
                                 </div>
