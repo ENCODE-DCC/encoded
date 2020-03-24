@@ -158,6 +158,12 @@ $row-data-header-width: 200px;
 .subcategory-row-text {
     align-items: center;
     line-height: 1.5;
+}
+
+.subcategory-row-text-mouse {
+    @extend .subcategory-row-text;
+    display: flex;
+    
     .label-stage {
         font-family: Mada;
         flex: 0 0 60%;
@@ -169,11 +175,6 @@ $row-data-header-width: 200px;
         flex: 0 0 40%;
         font-size: 12px;
     }
-}
-
-.subcategory-row-text-mouse {
-    @extend .subcategory-row-text;
-    display: flex;
 }
 .embryo {
     background-color: #fff3e0;
