@@ -537,6 +537,12 @@
         "m_stage": {
             "title": "pM stage"
         },
+        "metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "metasis_details.type": {
+            "title": "Metasis Type"
+        },
         "ajcc_tnm_stage": {
             "title": "TNM Stage"
         },
@@ -576,6 +582,7 @@
         "micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         },
+
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
