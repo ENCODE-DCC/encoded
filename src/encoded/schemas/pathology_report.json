@@ -445,6 +445,82 @@
             }
         }
     },
+    "oneOf": [
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_nephrectomy"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "Not applicable"
+                    ]
+                }
+            },
+            "allOf": [
+                {
+                    "not": {
+                        "required": [
+                            "metasis_details"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_metasis"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "pM1"
+                    ]
+                }
+            }
+        },
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_biopsy"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "pM0"
+                    ]
+                }
+            },
+            "allOf": [
+                {
+                    "not": {
+                        "required": [
+                            "metasis_details"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_biopsy"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "pM1"
+                    ]
+                }
+            }
+        }
+    ],
     "facets": {
         "status": {
             "title": "Status"
@@ -452,7 +528,6 @@
         "tumor_size": {
             "title": "Tumor Size"
         },
-
         "ajcc_p_stage": {
             "title": "pT stage"
         },
@@ -464,8 +539,7 @@
         },
         "ajcc_tnm_stage": {
             "title": "TNM Stage"
-        } ,
-
+        },
         "ajcc_version": {
             "title": "AJCC Version"
         },
@@ -589,7 +663,7 @@
         "m_stage": 1.0,
         "ajcc_tnm_stage": 1.0,
         "ajcc_version": 1.0,
-        "laterality":1.0,
+        "laterality": 1.0,
         "histology": 1.0,
         "focality": 1.0,
         "grade": 1.0,
