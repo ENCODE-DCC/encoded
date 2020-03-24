@@ -848,7 +848,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 {resultsToggle}
                 <BatchDownloadControls results={context} />
                 {!hideBrowserSelector ?
-                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} />
+                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} activeFilters={activeFilters} />
                 : null}
             </div>
             <div className="results-table-control__json">
