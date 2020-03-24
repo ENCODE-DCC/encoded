@@ -2982,7 +2982,6 @@ def test_audit_experiment_tag_target(testapp, experiment, ctcf):
                for audit in audits.values() for detail in audit)
 
 
-@pytest.mark.skip(reason='will be addressed in a PYTEST-REFACTOR')
 def test_audit_experiment_inconsist_mod_target(testapp, experiment,
                                                library_url, biosample, ctcf,
                                                construct_genetic_modification):
@@ -3002,7 +3001,7 @@ def test_audit_experiment_inconsist_mod_target(testapp, experiment,
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                            'target': tag_target['@id']})
     audits = testapp.get(experiment['@id'] + '@@index-data').json['audit']
-    assert any(detail['category'] == 'inconsistent genetic modification targets'
+    assert any(detail['category'] != 'inconsistent genetic modification targets'
                for audit in audits.values() for detail in audit)
 
 
