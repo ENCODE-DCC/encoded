@@ -425,6 +425,7 @@ class CalculatedAssayTitle:
                     else:
                         preferred_name = 'TF ChIP-seq'
             elif preferred_name == 'CRISPR screen' and not control_type and replicates is not None:
+                CRISPR_gms = []
                 for rep in replicates:
                     replicate_object = request.embed(rep, '@@object?skip_calculated=true')
                     if replicate_object['status'] in ('deleted', 'revoked'):
@@ -442,17 +443,18 @@ class CalculatedAssayTitle:
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object?skip_calculated=true')
                                     if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
-                                        gm_category = gm_object.get('category')
-                                        if gm_category == 'activation':
-                                            preferred_name = 'CRISPR activation screen'
-                                        elif gm_category == 'disruption':
-                                            preferred_name = 'CRISPR disruption screen'
-                                        elif gm_category == 'inhibition':
-                                            preferred_name = 'CRISPR inhibition screen'
-                                        elif gm_category == 'interference':
-                                            preferred_name = 'CRISPR interference screen'
-                                        elif gm_category == 'knockout':
-                                            preferred_name = 'CRISPR knockout screen'
+                                        CRISPR_gms.append(gm_object['category'])
+                            if len(set(CRISPR_gms)) == 1:
+                                if 'activation' in CRISPR_gms:
+                                    preferred_name = 'CRISPR activation screen'
+                                elif 'disruption' in CRISPR_gms:
+                                    preferred_name = 'CRISPR disruption screen'
+                                elif 'inhibition' in CRISPR_gms:
+                                    preferred_name = 'CRISPR inhibition screen'
+                                elif 'interference' in CRISPR_gms:
+                                    preferred_name = 'CRISPR interference screen'
+                                elif 'knockout' in CRISPR_gms:
+                                    preferred_name = 'CRISPR knockout screen'
             elif control_type and assay_term_name == 'eCLIP':
                 preferred_name = 'Control eCLIP'
             elif control_type == 'control' and assay_term_name in ['MPRA', 'CRISPR screen', 'STARR-seq']:
