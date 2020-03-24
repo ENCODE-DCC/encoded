@@ -227,6 +227,9 @@ export const dbxrefPrefixMap = {
     },
     DepMap: {
         pattern: 'https://depmap.org/portal/cell_line/{0}',
+    },
+    GeneCards: {
+        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
     }
 };
 
