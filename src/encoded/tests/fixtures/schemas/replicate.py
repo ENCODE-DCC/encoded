@@ -178,7 +178,6 @@ def replicate(experiment):
 
 @pytest.fixture
 def replicate_url(testapp, experiment, library):
-    import pdb; pdb.set_trace();
     item = {
         'experiment': experiment['@id'],
         'library': library['@id'],

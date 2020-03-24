@@ -181,3 +181,12 @@ def library_url(testapp, lab, award, biosample):
         'biosample': biosample['@id'],
     }
     return testapp.post_json('/library', item).json['@graph'][0]
+
+
+@pytest.fixture
+def library_schema_10(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'strand_specificity': True
+    }

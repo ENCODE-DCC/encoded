@@ -1116,10 +1116,10 @@ def file_with_no_external_sheet(file, root):
 
 
 @pytest.fixture
-def file_subreads(testapp, experiment, award, lab, replicate, platform3):
+def file_subreads(testapp, experiment, award, lab, replicate_url, platform3):
     item = {
         'dataset': experiment['@id'],
-        'replicate': replicate['@id'],
+        'replicate': replicate_url['@id'],
         'lab': lab['@id'],
         'file_size': 5768,
         'platform': platform3['@id'],
@@ -1129,6 +1129,7 @@ def file_subreads(testapp, experiment, award, lab, replicate, platform3):
         'output_type': 'subreads',
         'status': 'in progress'
     }
+    return item
 
 
 @pytest.fixture
@@ -1142,4 +1143,65 @@ def fastq(fastq_no_replicate, replicate_url):
 def fastq_pair_1(fastq):
     item = fastq.copy()
     item['paired_end'] = '1'
+    return item
+
+@pytest.fixture
+def mapped_run_type_on_fastq(award, experiment, lab, platform1):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'fastq',
+        'file_size': 2535345,
+        'platform': platform1['@id'],
+        'run_type': 'paired-ended',
+        'mapped_run_type': 'single-ended',
+        'md5sum': '01234567890123456789abcdefabcdef',
+        'output_type': 'raw data',
+        'status': 'in progress',
+    }
+
+
+@pytest.fixture
+def mapped_run_type_on_bam(award, experiment, lab):
+    return {
+        'award': award['@id'],
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'file_format': 'bam',
+        'assembly': 'mm10',
+        'file_size': 2534535,
+        'mapped_run_type': 'single-ended',
+        'md5sum': 'abcdef01234567890123456789abcdef',
+        'output_type': 'alignments',
+        'status': 'in progress',
+    }
+
+
+@pytest.fixture
+def fastq_pair_1_paired_with(fastq_pair_1, file_fastq):
+    item = fastq_pair_1.copy()
+    item['paired_with'] = file_fastq['@id']
+    return item
+
+
+@pytest.fixture
+def fastq_pair_2(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '2'
+    item['md5sum'] = '2123456789abcdef0123456789abcdef'
+    return item
+
+
+@pytest.fixture
+def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
+    item = fastq_pair_2.copy()
+    item['paired_with'] = 'md5:' + fastq_pair_1['md5sum']
+    return item
+
+
+@pytest.fixture
+def external_accession(fastq_pair_1):
+    item = fastq_pair_1.copy()
+    item['external_accession'] = 'EXTERNAL'
     return item

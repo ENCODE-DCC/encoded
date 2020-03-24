@@ -64,6 +64,20 @@ def functional_characterization_experiment_5(testapp, lab, award, ctcf):
          }]
     }
     return item
+    
+
+@pytest.fixture
+def functional_characterization_experiment_6(testapp, lab, award, ctcf):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'status': 'in progress',
+        'examined_loci': [{
+             'gene': ctcf['uuid']
+         }]
+    }
+    return item
 
 
 @pytest.fixture

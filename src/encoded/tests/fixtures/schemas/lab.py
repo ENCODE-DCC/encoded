@@ -10,31 +10,6 @@ def other_lab(testapp):
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 
 
-# @pytest.fixture
-# def lab():
-#     return{
-#         'name': 'Fake Lab',
-#     }
-
-
-# @pytest.fixture
-# def lab_1(lab):
-#     item = lab.copy()
-#     item.update({
-#         'schema_version': '1',
-#         'status': 'CURRENT',
-#     })
-#     return item
-
-
-# @pytest.fixture
-# def other_lab(testapp):
-#     item = {
-#         'title': 'Other lab',
-#         'name': 'other-lab',
-#     }
-#     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
-
 @pytest.fixture
 def lab_0_0():
     return{

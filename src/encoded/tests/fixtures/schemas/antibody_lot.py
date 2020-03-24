@@ -110,3 +110,30 @@ def immunoblot(testapp, award, lab, antibody_lot, target, attachment):
         'status': 'in progress'
     }
     return item
+
+@pytest.fixture
+def immunoprecipitation(immunoblot):
+    item = immunoblot.copy()
+    item.update({'primary_characterization_method': 'immunoprecipitation'})
+    return item
+
+
+@pytest.fixture
+def mass_spec(testapp, award, lab, antibody_lot, target, attachment):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'target': target['@id'],
+        'characterizes': antibody_lot['@id'],
+        'attachment': attachment,
+        'secondary_characterization_method': 'immunoprecipitation followed by mass spectrometry',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def motif_enrichment(mass_spec):
+    item = mass_spec.copy()
+    item.update({'secondary_characterization_method': 'motif enrichment'})
+    return item

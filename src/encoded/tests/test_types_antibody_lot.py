@@ -1,20 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def immunoprecipitation(immunoblot):
-    item = immunoblot.copy()
-    item.update({'primary_characterization_method': 'immunoprecipitation'})
-    return item
-
-
-@pytest.fixture
-def motif_enrichment(mass_spec):
-    item = mass_spec.copy()
-    item.update({'secondary_characterization_method': 'motif enrichment'})
-    return item
-
-
 # A single characterization (primary or secondary) associated with an ab that is not submitted
 # for review, should result in a not pursued antibody lot status.
 def test_not_submitted_secondary_missing_primary(testapp, motif_enrichment, antibody_lot):
