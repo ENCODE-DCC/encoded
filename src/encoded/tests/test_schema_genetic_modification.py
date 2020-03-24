@@ -268,3 +268,10 @@ def test_recombination_knockout(testapp, recombination_knockout, treatment_5):
     testapp.post_json('/genetic_modification', recombination_knockout, status=201)
     recombination_knockout.update({'category': 'disruption'})
     testapp.post_json('/genetic_modification', recombination_knockout, status=422)
+
+
+def test_characterization_insertion(testapp, characterization_insertion_CRISPR, characterization_insertion_transfection, treatment):
+    res = testapp.post_json('/genetic_modification', characterization_insertion_CRISPR, expect_errors=True)
+    assert res.status_code == 201
+    res = testapp.post_json('/genetic_modification', characterization_insertion_transfection, expect_errors=True)
+    assert res.status_code == 201
