@@ -49,18 +49,6 @@ def biosample_1(testapp, lab, award, source, organism, heart):
 
 
 @pytest.fixture
-def biosample_1_heart(testapp, lab, award, source, organism, liver):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': liver['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
 def biosample_2(testapp, lab, award, source, organism, heart):
     item = {
         'award': award['uuid'],

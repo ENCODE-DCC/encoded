@@ -13,19 +13,6 @@ def base_antibody(award, lab, source, organism, target):
         'lot_id': '123'
         }
 
-@pytest.fixture
-def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_target):
-    item = {
-        'product_id': 'WH0000468M1',
-        'lot_id': 'CB191-2B3',
-        'award': encode4_award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'host_organism': mouse['@id'],
-        'targets': [gfp_target['@id']],
-    }
-    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
-
 
 @pytest.fixture
 def control_antibody(testapp, lab, award, source, mouse, target):

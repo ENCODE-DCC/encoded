@@ -459,7 +459,7 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -476,12 +476,8 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     
-    # TODO- Figure why 2 is needed (will be addressed in a PYTEST-REFACTOR)
-    assert len(res.json_body['changed']) == 2
-    assert len(res.json_body['considered']) == 2
-
-    # assert len(res.json_body['changed']) == 5
-    # assert len(res.json_body['considered']) == 6
+    assert len(res.json_body['changed']) == 5
+    assert len(res.json_body['considered']) == 6
 
 
 @mock_sts

@@ -1,14 +1,12 @@
 
-def test_replicate_upgrade_abc(root, upgrader, replicate_url, replicate_5, library_url, threadlocals, dummy_request):
+def test_replicate_upgrade(root, upgrader, replicate_url, replicate_4, library_url, threadlocals, dummy_request):
     context = root.get_by_uuid(replicate_url['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('replicate', replicate_5,
+    value = upgrader.upgrade('replicate', replicate_4,
                              target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == library_url['status']
-
-    # TODO: will be addressed in a PYTEST-REFACTOR
-    #assert 'paired_ended' not in value
+    assert 'paired_ended' not in value
 
 
 def test_replicate_upgrade_read_length(root, upgrader, replicate_url, replicate_5, library_url, threadlocals, dummy_request):

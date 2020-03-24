@@ -435,7 +435,7 @@ def test_encode4_tagged_ab_review_status(testapp,
                                          biosample_characterization_exempt,
                                          biosample_characterization_not_compliant,
                                          biosample_characterization_compliant,
-                                         biosample_1):
+                                         biosample_2_liver):
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     assert len(res.json['object']['used_by_biosample_characterizations']) == 0
     assert res.json['object']['lot_reviews'] == [{
@@ -507,28 +507,26 @@ def test_encode4_tagged_ab_review_status(testapp,
         'targets': ['/targets/gfp-human/'],
     }]
     testapp.patch_json(biosample_characterization_exempt['@id'],
-                       {'characterizes': biosample_1['@id']})
+                       {'characterizes': biosample_2_liver['@id']})
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     assert len(res.json['object']['used_by_biosample_characterizations']) == 5
-    # TODO: will be addressed in a PYTEST-REFACTOR
-    assert len(res.json['object']['lot_reviews']) == 1
-    # assert len(res.json['object']['lot_reviews']) == 2
-    # assert {
-    #     'biosample_term_id': 'UBERON:0000948',
-    #     'biosample_term_name': 'heart',
-    #     'detail': 'Fully characterized.',
-    #     'organisms': ['/organisms/human/'],
-    #     'status': 'characterized to standards',
-    #     'targets': ['/targets/gfp-human/'],
-    # } in res.json['object']['lot_reviews']
-    # assert {
-    #     'biosample_term_id': 'UBERON:0002107',
-    #     'biosample_term_name': 'liver',
-    #     'detail': 'Fully characterized with exemption.',
-    #     'organisms': ['/organisms/human/'],
-    #     'status': 'characterized to standards with exemption',
-    #     'targets': ['/targets/gfp-human/'],
-    # } in res.json['object']['lot_reviews']
+    assert len(res.json['object']['lot_reviews']) == 2
+    assert {
+        'biosample_term_id': 'UBERON:0000948',
+        'biosample_term_name': 'heart',
+        'detail': 'Fully characterized.',
+        'organisms': ['/organisms/human/'],
+        'status': 'characterized to standards',
+        'targets': ['/targets/gfp-human/'],
+    } in res.json['object']['lot_reviews']
+    assert {
+        'biosample_term_id': 'UBERON:0002107',
+        'biosample_term_name': 'liver',
+        'detail': 'Fully characterized with exemption.',
+        'organisms': ['/organisms/human/'],
+        'status': 'characterized to standards with exemption',
+        'targets': ['/targets/gfp-human/'],
+    } in res.json['object']['lot_reviews']
 
 
 def test_encode3_nontagged_ab_compliant_biosample_char(
@@ -872,7 +870,7 @@ def test_encode3_tagged_ab_other_exempt_biosample_char(
     wrangler,
     document,
     biosample_characterization_exempt,
-    biosample_1,
+    biosample_2_liver,
 ):
     testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
 
@@ -909,36 +907,34 @@ def test_encode3_tagged_ab_other_exempt_biosample_char(
     # characterization
     testapp.patch_json(
         biosample_characterization_exempt['@id'],
-        {'characterizes': biosample_1['@id'], 'antibody': antibody_lot['@id']}
+        {'characterizes': biosample_2_liver['@id'], 'antibody': antibody_lot['@id']}
     )
     lot_reviews = testapp.get(
         antibody_lot['@id'] + '@@index-data'
     ).json['object']['lot_reviews']
-    # TODO- will be addressed in a PYTEST-REFACTOR
-    assert len(lot_reviews) == 1
-    #assert len(lot_reviews) == 2
-    # assert {
-    #     "biosample_term_id": "UBERON:0000948",
-    #     "biosample_term_name": "heart",
-    #     "detail": "Awaiting submission of a compliant secondary characterization.",
-    #     "organisms": [
-    #         "/organisms/human/"
-    #     ],
-    #     "status": "partially characterized",
-    #     "targets": [
-    #         "/targets/gfp-human/"
-    #     ]
-    # } in lot_reviews
+    assert len(lot_reviews) == 2
+    assert {
+        "biosample_term_id": "UBERON:0000948",
+        "biosample_term_name": "heart",
+        "detail": "Awaiting submission of a compliant secondary characterization.",
+        "organisms": [
+            "/organisms/human/"
+        ],
+        "status": "partially characterized",
+        "targets": [
+            "/targets/gfp-human/"
+        ]
+    } in lot_reviews
     
-    # assert {
-    #     "biosample_term_id": "UBERON:0002107",
-    #     "biosample_term_name": "liver",
-    #     "detail": "Fully characterized with exemption.",
-    #     "organisms": [
-    #         "/organisms/human/"
-    #     ],
-    #     "status": "characterized to standards with exemption",
-    #     "targets": [
-    #         "/targets/gfp-human/"
-    #     ]
-    # } in lot_reviews
+    assert {
+        "biosample_term_id": "UBERON:0002107",
+        "biosample_term_name": "liver",
+        "detail": "Fully characterized with exemption.",
+        "organisms": [
+            "/organisms/human/"
+        ],
+        "status": "characterized to standards with exemption",
+        "targets": [
+            "/targets/gfp-human/"
+        ]
+    } in lot_reviews
