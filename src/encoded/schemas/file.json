@@ -1326,6 +1326,7 @@
                         "read-depth normalized signal",
                         "reads",
                         "reference variants",
+                        "regulatory elements",
                         "relative replication signal",
                         "replicated peaks",
                         "replication timing profile",
@@ -1850,6 +1851,7 @@
         "negative control regions": "annotation",
         "positive control regions": "annotation",
         "safe-targeting gRNAs": "annotation",
+        "regulatory elements": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
