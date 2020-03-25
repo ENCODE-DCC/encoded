@@ -388,12 +388,21 @@ export class BrowserSelector extends React.Component {
             activeFilters.forEach((f) => {
                 if (['adult', 'postnatal', 'embryo'].includes(f)) {
                     const stageTerm = f === 'embryo' ? 'embryonic' : f;
-                    resultsId = `${resultsId}&replicates.library.biosample.life_stage=${stageTerm}`;
+                    const stageFilter = `&replicates.library.biosample.life_stage=${stageTerm}`;
+                    if (!resultsId.includes(stageFilter)) {
+                        resultsId = `${resultsId}${stageFilter}`;
+                    }
                 } else {
                     const stageTerm = f.split(' ')[0] === 'embryo' ? 'embryonic' : f.split(' ')[0];
                     const ageTerm = f.split(' ').slice(1).join(' ');
-                    resultsId = `${resultsId}&replicates.library.biosample.life_stage=${stageTerm}`;
-                    resultsId = `${resultsId}&replicates.library.biosample.age_display=${ageTerm}`;
+                    const stageFilter = `&replicates.library.biosample.life_stage=${stageTerm}`;
+                    if (!resultsId.includes(stageFilter)) {
+                        resultsId = `${resultsId}${stageFilter}`;
+                    }
+                    const ageFilter = `&replicates.library.biosample.age_display=${ageTerm}`;
+                    if (!resultsId.includes(ageFilter)) {
+                        resultsId = `${resultsId}${ageFilter}`;
+                    }
                 }
             });
         }
