@@ -153,16 +153,18 @@ $row-data-header-width: 200px;
     .matrix__clear-classifications {
         margin-bottom: 5px;
     }
+
+    .matrix__row-data > th {
+        padding: 0;
+    }
 }
 
-.subcategory-row-text {
-    align-items: center;
-    line-height: 1.5;
-}
 
 .subcategory-row-text-mouse {
     @extend .subcategory-row-text;
     display: flex;
+    align-items: center;
+    line-height: 1.5;
     
     .label-stage {
         font-family: Mada;
@@ -185,11 +187,6 @@ $row-data-header-width: 200px;
 .adult {
     background-color: #e8be76;
 }
-
-.matrix__row-data > th {
-    padding: 0;
-}
-
 
 // Reusable styles for the left-most non-scrolling column.
 %sticky-column {
