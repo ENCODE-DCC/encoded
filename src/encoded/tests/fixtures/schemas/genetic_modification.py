@@ -549,3 +549,29 @@ def recombination_knockout(lab, award):
             "end": 62000
         }
     }
+
+
+@pytest.fixture
+def characterization_insertion_transfection(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'characterization',
+        'method': 'stable transfection',
+        'modified_site_nonspecific': 'random',
+        'introduced_elements': 'synthesized DNA'
+    }
+
+
+@pytest.fixture
+def characterization_insertion_CRISPR(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'characterization',
+        'method': 'CRISPR',
+        'modified_site_nonspecific': 'random',
+        'introduced_elements': 'synthesized DNA'
+    }
