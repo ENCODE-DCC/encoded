@@ -235,8 +235,8 @@ export const visMapBrowserName = browser => browserNameMap[browser];
  *
  * @return {string} hub URL used in visualization URLs
  */
-const generateBatchHubUrl = (results, hostName) => {
-    const parsedUrl = url.parse(results['@id']).search;
+const generateBatchHubUrl = (resultsId, hostName) => {
+    const parsedUrl = url.parse(resultsId).search;
     if (parsedUrl) {
         return `${hostName}/batch_hub/${encodeURIComponent(parsedUrl.substr(1).replace('&', ',,'))}/hub.txt`;
     }
@@ -370,7 +370,7 @@ export class BrowserSelector extends React.Component {
     }
 
     render() {
-        const { results, disabledTitle } = this.props;
+        const { results, disabledTitle, activeFilters } = this.props;
 
         // Only consider Visualize button if exactly one type= of Experiment or Annotation exists
         // in query string.
@@ -382,7 +382,31 @@ export class BrowserSelector extends React.Component {
         // Generate the batch hub URL used in batch visualization query strings.
         const parsedLocationHref = url.parse(this.context.location_href);
         const hostName = `${parsedLocationHref.protocol}//${parsedLocationHref.host}`;
-        const batchHubUrl = generateBatchHubUrl(results, hostName);
+        // if we have 'activeFilters' set on mouse development matrix page, append to visualization link
+        let resultsId = results['@id'];
+        if (activeFilters) {
+            activeFilters.forEach((f) => {
+                if (['adult', 'postnatal', 'embryo'].includes(f)) {
+                    const stageTerm = f === 'embryo' ? 'embryonic' : f;
+                    const stageFilter = `&replicates.library.biosample.life_stage=${stageTerm}`;
+                    if (!resultsId.includes(stageFilter)) {
+                        resultsId = `${resultsId}${stageFilter}`;
+                    }
+                } else {
+                    const stageTerm = f.split(' ')[0] === 'embryo' ? 'embryonic' : f.split(' ')[0];
+                    const ageTerm = f.split(' ').slice(1).join(' ');
+                    const stageFilter = `&replicates.library.biosample.life_stage=${stageTerm}`;
+                    if (!resultsId.includes(stageFilter)) {
+                        resultsId = `${resultsId}${stageFilter}`;
+                    }
+                    const ageFilter = `&replicates.library.biosample.age_display=${ageTerm}`;
+                    if (!resultsId.includes(ageFilter)) {
+                        resultsId = `${resultsId}${ageFilter}`;
+                    }
+                }
+            });
+        }
+        const batchHubUrl = generateBatchHubUrl(resultsId, hostName);
         if (!batchHubUrl) {
             return null;
         }
@@ -475,10 +499,13 @@ BrowserSelector.propTypes = {
     results: PropTypes.object.isRequired,
     /** Title of accessible text for disabled title; also flag for disabling */
     disabledTitle: PropTypes.string,
+    /** Filters specified by user (only implemented on mouse matrix currently) */
+    activeFilters: PropTypes.array,
 };
 
 BrowserSelector.defaultProps = {
     disabledTitle: '',
+    activeFilters: [],
 };
 
 BrowserSelector.contextTypes = {
