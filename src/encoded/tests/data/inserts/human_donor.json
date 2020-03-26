@@ -223,5 +223,18 @@
         "sex": "male",
         "status": "released",
         "uuid": "845eda3c-7503-43e8-a65b-0d08e8d4674d"
-    }
+    },
+    {
+    "_test": "test external_ids",
+    "accession": "ENCDO516EPW",
+    "award": "/awards/UM1HG009411/",
+    "external_ids": [
+        "AllCells:10219"
+    ],
+    "lab": "/labs/j-michael-cherry/",
+    "organism": "/organisms/human/",
+    "sex": "unknown",
+    "status": "in progress",
+    "uuid": "97cc5ec8-178f-42bb-87fe-77cae5fb1b09"
+}
 ]
