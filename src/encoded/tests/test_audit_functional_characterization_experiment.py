@@ -32,14 +32,14 @@ def test_audit_experiment_biosample(
     testapp,
     base_fcc_experiment,
     base_replicate,
-    library,
+    library_url,
     biosample,
     heart,
     cell_free
 ):
     testapp.patch_json(
         base_replicate['@id'],
-        {'experiment': base_fcc_experiment['@id'], 'library': library['@id']}
+        {'experiment': base_fcc_experiment['@id'], 'library': library_url['@id']}
     )
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert all(
@@ -67,9 +67,9 @@ def test_audit_experiment_biosample(
         error['category'] == 'inconsistent library biosample'
         for error in collect_audit_errors(res)
     )
-    lib_edit = testapp.get(library['@id'] + '?frame=edit').json
+    lib_edit = testapp.get(library_url['@id'] + '?frame=edit').json
     lib_edit.pop('biosample')
-    testapp.put_json(library['@id'], lib_edit)
+    testapp.put_json(library_url['@id'], lib_edit)
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(
         error['category'] == 'missing biosample'
@@ -78,11 +78,11 @@ def test_audit_experiment_biosample(
 
 
 def test_audit_experiment_documents(
-    testapp, base_fcc_experiment, base_replicate, library
+    testapp, base_fcc_experiment, base_replicate, library_url
 ):
     testapp.patch_json(
         base_replicate['@id'],
-        {'experiment': base_fcc_experiment['@id'], 'library': library['@id']}
+        {'experiment': base_fcc_experiment['@id'], 'library': library_url['@id']}
     )
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(
@@ -95,15 +95,15 @@ def test_audit_experiment_missing_modification(
     testapp,
     base_fcc_experiment,
     base_replicate,
-    library,
+    library_url,
     biosample,
     interference_genetic_modification
 ):
     testapp.patch_json(
         base_replicate['@id'],
-        {'experiment': base_fcc_experiment['@id'], 'library': library['@id']}
+        {'experiment': base_fcc_experiment['@id'], 'library': library_url['@id']}
     )
-    testapp.patch_json(library['@id'], {'biosample': biosample['@id']})
+    testapp.patch_json(library_url['@id'], {'biosample': biosample['@id']})
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(
         error['category'] == 'missing genetic modification'

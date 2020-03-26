@@ -1,16 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def review(lab, submitter):
-    review = {
-        'reviewed_by': submitter['@id'],
-        'status': 'compliant',
-        'lab': lab['@id'],
-    }
-    return review
-
-
 def test_audit_biosample_characterization_review_lane_not_required(
         testapp,
         biosample_characterization,

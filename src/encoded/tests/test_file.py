@@ -19,91 +19,12 @@ def test_file_post_fastq_with_replicate(testapp, fastq):
     testapp.post_json('/file', fastq, status=201)
 
 
-@pytest.fixture
-def mapped_run_type_on_fastq(award, experiment, lab, platform1):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'file_format': 'fastq',
-        'file_size': 2535345,
-        'platform': platform1['@id'],
-        'run_type': 'paired-ended',
-        'mapped_run_type': 'single-ended',
-        'md5sum': '01234567890123456789abcdefabcdef',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-
-
-@pytest.fixture
-def mapped_run_type_on_bam(award, experiment, lab):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'file_format': 'bam',
-        'assembly': 'mm10',
-        'file_size': 2534535,
-        'mapped_run_type': 'single-ended',
-        'md5sum': 'abcdef01234567890123456789abcdef',
-        'output_type': 'alignments',
-        'status': 'in progress',
-    }
-
-
 def test_file_post_mapped_run_type_on_fastq(testapp, mapped_run_type_on_fastq):
     testapp.post_json('/file', mapped_run_type_on_fastq, status=422)
 
 
 def test_file_post_mapped_run_type_on_bam(testapp, mapped_run_type_on_bam):
     testapp.post_json('/file', mapped_run_type_on_bam, status=201)
-
-
-@pytest.fixture
-def file(testapp, award, experiment, lab, replicate):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
-    res = testapp.post_json('/file', item)
-    return res.json['@graph'][0]
-
-
-@pytest.fixture
-def fastq_pair_1_paired_with(fastq_pair_1, file):
-    item = fastq_pair_1.copy()
-    item['paired_with'] = file['@id']
-    return item
-
-
-@pytest.fixture
-def fastq_pair_2(fastq):
-    item = fastq.copy()
-    item['paired_end'] = '2'
-    item['md5sum'] = '2123456789abcdef0123456789abcdef'
-    return item
-
-
-@pytest.fixture
-def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
-    item = fastq_pair_2.copy()
-    item['paired_with'] = 'md5:' + fastq_pair_1['md5sum']
-    return item
-
-
-@pytest.fixture
-def external_accession(fastq_pair_1):
-    item = fastq_pair_1.copy()
-    item['external_accession'] = 'EXTERNAL'
-    return item
 
 
 def test_file_post_fastq_pair_1_paired_with(testapp, fastq_pair_1_paired_with):
@@ -159,20 +80,20 @@ def test_file_technical_replicates(testapp, fastq_pair_1):
     assert res.json['technical_replicates'] == ['1_1']
 
 
-def test_file_replicate_libraries(testapp, fastq_pair_1, library):
+def test_file_replicate_libraries(testapp, fastq_pair_1, library_url):
     res = testapp.post_json('/file', fastq_pair_1, status=201)
     location1 = res.json['@graph'][0]['@id']
     res = testapp.get(location1)
-    assert res.json['replicate_libraries'] == [library['@id']]
+    assert res.json['replicate_libraries'] == [library_url['@id']]
 
 
-def test_file_derived_replicate_libraries(testapp, fastq_pair_1, library, bam_file):
+def test_file_derived_replicate_libraries(testapp, fastq_pair_1, library_url, bam_file):
     res = testapp.post_json('/file', fastq_pair_1, status=201)
     location1 = res.json['@graph'][0]['@id']
     res = testapp.get(location1)
     testapp.patch_json(bam_file['@id'], {'derived_from': [res.json['@id']]})
     res = testapp.get(bam_file['@id'] + '@@index-data')
-    assert res.json['object']['replicate_libraries'] == [library['@id']]
+    assert res.json['object']['replicate_libraries'] == [library_url['@id']]
 
 
 def test_file_calculated_assay_term_name(testapp, fastq_pair_1):

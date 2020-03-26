@@ -1,168 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def immunoblot(testapp, award, lab, antibody_lot, target, attachment):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'target': target['@id'],
-        'characterizes': antibody_lot['@id'],
-        'attachment': attachment,
-        'primary_characterization_method': 'immunoblot',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def immunoprecipitation(immunoblot):
-    item = immunoblot.copy()
-    item.update({'primary_characterization_method': 'immunoprecipitation'})
-    return item
-
-
-@pytest.fixture
-def mass_spec(testapp, award, lab, antibody_lot, target, attachment):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'target': target['@id'],
-        'characterizes': antibody_lot['@id'],
-        'attachment': attachment,
-        'secondary_characterization_method': 'immunoprecipitation followed by mass spectrometry',
-        'status': 'in progress'
-    }
-    return item
-
-
-@pytest.fixture
-def motif_enrichment(mass_spec):
-    item = mass_spec.copy()
-    item.update({'secondary_characterization_method': 'motif enrichment'})
-    return item
-
-
-@pytest.fixture
-def mouse_target(testapp, mouse):
-    item = {
-        'label': 'ATF4',
-        'target_organism': mouse['@id'],
-        'investigated_as': ['transcription factor'],
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_target_H3K9me3(testapp, mouse):
-    item = {
-        'label': 'H3K9me3',
-        'target_organism': mouse['@id'],
-        'investigated_as': ['histone',
-                            'broad histone mark']
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def gfp_target(testapp, organism):
-    item = {
-        'label': 'gfp',
-        'target_organism': organism['@id'],
-        'investigated_as': ['tag'],
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-@pytest.fixture
-def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_target):
-    item = {
-        'product_id': 'WH0000468M1',
-        'lot_id': 'CB191-2B3',
-        'award': encode4_award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'host_organism': mouse['@id'],
-        'targets': [gfp_target['@id']],
-    }
-    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_characterization_no_review(testapp, award, lab, biosample, attachment):
-    item = {
-        'characterizes': biosample['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-    }
-    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_characterization_2nd_opinion(testapp, award, lab, submitter, biosample, attachment):
-    item = {
-        'characterizes': biosample['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-        'review': {
-            'status': 'requires secondary opinion',
-            'lab': lab['@id'],
-            'reviewed_by': submitter['@id'],
-        },
-    }
-    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_characterization_exempt(testapp, award, lab, submitter, biosample, attachment):
-    item = {
-        'characterizes': biosample['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-        'review': {
-            'status': 'exempt from standards',
-            'lab': lab['@id'],
-            'reviewed_by': submitter['@id'],
-        },
-    }
-    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_characterization_not_compliant(testapp, award, lab, submitter, biosample, attachment):
-    item = {
-        'characterizes': biosample['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-        'review': {
-            'status': 'not compliant',
-            'lab': lab['@id'],
-            'reviewed_by': submitter['@id'],
-        },
-    }
-    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_characterization_compliant(testapp, award, lab, submitter, biosample, attachment):
-    item = {
-        'characterizes': biosample['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-        'review': {
-            'status': 'compliant',
-            'lab': lab['@id'],
-            'reviewed_by': submitter['@id'],
-        },
-    }
-    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
-
-
 # A single characterization (primary or secondary) associated with an ab that is not submitted
 # for review, should result in a not pursued antibody lot status.
 def test_not_submitted_secondary_missing_primary(testapp, motif_enrichment, antibody_lot):
@@ -597,7 +435,7 @@ def test_encode4_tagged_ab_review_status(testapp,
                                          biosample_characterization_exempt,
                                          biosample_characterization_not_compliant,
                                          biosample_characterization_compliant,
-                                         biosample_1):
+                                         biosample_2_liver):
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     assert len(res.json['object']['used_by_biosample_characterizations']) == 0
     assert res.json['object']['lot_reviews'] == [{
@@ -669,7 +507,7 @@ def test_encode4_tagged_ab_review_status(testapp,
         'targets': ['/targets/gfp-human/'],
     }]
     testapp.patch_json(biosample_characterization_exempt['@id'],
-                       {'characterizes': biosample_1['@id']})
+                       {'characterizes': biosample_2_liver['@id']})
     res = testapp.get(encode4_tag_antibody_lot['@id'] + '@@index-data')
     assert len(res.json['object']['used_by_biosample_characterizations']) == 5
     assert len(res.json['object']['lot_reviews']) == 2
@@ -1032,7 +870,7 @@ def test_encode3_tagged_ab_other_exempt_biosample_char(
     wrangler,
     document,
     biosample_characterization_exempt,
-    biosample_1,
+    biosample_2_liver,
 ):
     testapp.patch_json(antibody_lot['@id'], {'targets': [gfp_target['@id']]})
 
@@ -1069,7 +907,7 @@ def test_encode3_tagged_ab_other_exempt_biosample_char(
     # characterization
     testapp.patch_json(
         biosample_characterization_exempt['@id'],
-        {'characterizes': biosample_1['@id'], 'antibody': antibody_lot['@id']}
+        {'characterizes': biosample_2_liver['@id'], 'antibody': antibody_lot['@id']}
     )
     lot_reviews = testapp.get(
         antibody_lot['@id'] + '@@index-data'
@@ -1087,6 +925,7 @@ def test_encode3_tagged_ab_other_exempt_biosample_char(
             "/targets/gfp-human/"
         ]
     } in lot_reviews
+    
     assert {
         "biosample_term_id": "UBERON:0002107",
         "biosample_term_name": "liver",
