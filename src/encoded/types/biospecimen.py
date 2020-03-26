@@ -31,6 +31,7 @@ class Biospecimen(Item):
         'biolibrary.biofile',
         'surgery',
         'surgery.pathology_report',
+        'surgery.surgery_procedure',
         'ihc'
     ]
     audit_inherit = [
@@ -74,7 +75,8 @@ class Biospecimen(Item):
                 'biolibrary.biofile.file_format',
                 'biolibrary.biofile.output_type', 
                 'sur_path_tumor_size',
-                'surgery.pathology_report.ajcc_p_stage',
+                'surgery.surgery_procedure.procedure_type',
+                'surgery.pathology_report.t_stage',
                 'surgery.pathology_report.n_stage',
                 'surgery.pathology_report.m_stage',
                 'surgery.pathology_report.ajcc_tnm_stage',               
@@ -91,6 +93,7 @@ class Biospecimen(Item):
             'label': 'histology',
         },
     }
+
 
 
 

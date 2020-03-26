@@ -112,7 +112,8 @@
         "uuid": "4998b6fc-4730-4533-8061-4aba132763f2",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "kidney",
+        "surgery": "KCESX802XRB"
     },
     {
         "accession": "KCEBS044ANI",
@@ -180,5 +181,6 @@
         "primary_site": "kidney"
     }
 ]
+
 
 

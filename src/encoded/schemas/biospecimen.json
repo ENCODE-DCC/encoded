@@ -191,7 +191,9 @@
         },
         "anatomic_site": {
             "title": "Biospecimen Anatomic Site"
-
+        },
+        "surgery.surgery_procedure.procedure_type": {
+            "title": "Surgery Procedure"
         },
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtype"
@@ -205,7 +207,7 @@
         "biolibrary.biofile.output_type": {
             "title": "Genomics File Output Type"
         },
-        "surgery.pathology_report.ajcc_p_stage": {
+        "surgery.pathology_report.t_stage": {
             "title": "pT stage"
         },
         "surgery.pathology_report.n_stage": {
@@ -260,6 +262,7 @@
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
 
 
 
