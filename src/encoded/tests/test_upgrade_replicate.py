@@ -46,8 +46,8 @@ def test_replicate_upgrade_platform_etc(root, upgrader, replicate_url, replicate
     assert 'Test notes' in value['notes']
 
 
-# def test_replicate_upgrade_status_8_9(root, upgrader, replicate_8):
-#     value = upgrader.upgrade('replicate', replicate_8, current_version='8',
-#                              target_version='9')
-#     assert value['schema_version'] == '9'
-#     assert value['status'] == 'in progress'
+def test_replicate_upgrade_status_8_9(root, upgrader, replicate_8):
+    value = upgrader.upgrade('replicate', replicate_8, current_version='8',
+                             target_version='9')
+    assert value['schema_version'] == '9'
+    assert value['status'] == 'in progress'

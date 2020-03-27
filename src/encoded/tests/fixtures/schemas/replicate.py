@@ -32,6 +32,7 @@ def replicate_rna(testapp, experiment_rna, library_2):
     }
     return testapp.post_json('/replicate', item).json['@graph'][0]
 
+
 @pytest.fixture
 def base_replicate_two(testapp, base_experiment):
     item = {
@@ -63,6 +64,7 @@ def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def replicate_1_1(testapp, base_experiment):
     item = {
@@ -92,6 +94,7 @@ def replicate_1_2(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def file_rep(replicate, file_exp, testapp):
     item = {
@@ -100,8 +103,6 @@ def file_rep(replicate, file_exp, testapp):
         'technical_replicate_number': 1
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
 
 
 @pytest.fixture
@@ -145,6 +146,7 @@ def replicate_RRBS(testapp, reference_experiment_RRBS, library_2):
     }
     return testapp.post_json('/replicate', item).json['@graph'][0]
 
+
 @pytest.fixture
 def rep1(experiment, testapp):
     item = {
@@ -177,17 +179,6 @@ def replicate(experiment):
 
 
 @pytest.fixture
-def replicate_url(testapp, experiment, library):
-    item = {
-        'experiment': experiment['@id'],
-        'library': library['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-    }
-    return testapp.post_json('/replicate', item).json['@graph'][0]
-
-
-@pytest.fixture
 def replicate_url(testapp, experiment, library_url):
     item = {
         'experiment': experiment['@id'],
@@ -196,7 +187,6 @@ def replicate_url(testapp, experiment, library_url):
         'technical_replicate_number': 1,
     }
     return testapp.post_json('/replicate', item).json['@graph'][0]
-
 
 
 @pytest.fixture
@@ -252,6 +242,7 @@ def replicate_3(root, replicate_url):
     })
     return properties
 
+
 @pytest.fixture
 def replicate_5(root, replicate_url):
     item = root.get_by_uuid(replicate_url['uuid'])
@@ -263,5 +254,16 @@ def replicate_5(root, replicate_url):
         'paired_ended': False,
         'read_length': 36,
         'read_length_units': 'nt'
+    })
+    return properties
+
+
+@pytest.fixture
+def replicate_8(root, replicate_url):
+    item = root.get_by_uuid(replicate_url['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '8',
+        'status': 'proposed'
     })
     return properties

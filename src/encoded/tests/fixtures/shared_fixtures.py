@@ -37,4 +37,3 @@ def fastq_no_replicate(award, experiment, lab, platform1):
         'output_type': 'raw data',
         'status': 'in progress',
     }
-

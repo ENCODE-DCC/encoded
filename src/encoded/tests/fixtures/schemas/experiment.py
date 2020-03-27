@@ -296,6 +296,7 @@ def experiment_no_error(testapp, lab, award, cell_free):
     }
     return item
 
+
 @pytest.fixture
 def experiment_1(testapp, lab, award, cell_free):
     item = {
@@ -310,18 +311,6 @@ def experiment_1(testapp, lab, award, cell_free):
 
 @pytest.fixture
 def experiment_2(testapp, lab, award, cell_free):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'RNA-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_experiment(testapp, lab, award, cell_free):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -369,7 +358,6 @@ def experiment_2_0():
     }
 
 
-
 @pytest.fixture
 def experiment_3():
     return {
@@ -395,6 +383,7 @@ def experiment_7(root, experiment):
         'aliases': ['testing:123', 'testing:123']
     })
     return properties
+
 
 @pytest.fixture
 def experiment_10(root, experiment):
@@ -520,6 +509,7 @@ def experiment_26(root, experiment):
         'assay_term_name': 'single-nuclei ATAC-seq'
     })
     return properties
+
 
 @pytest.fixture
 def experiment_27(root, experiment):

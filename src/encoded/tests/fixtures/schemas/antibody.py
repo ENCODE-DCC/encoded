@@ -56,15 +56,3 @@ def IgG_antibody(testapp, award, lab, source, organism):
         'lot_id': '321'
     }
     return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
-
-# @pytest.fixture
-# def base_antibody(testapp, award, lab, source, organism, target):
-#     return {
-#         'award': award['uuid'],
-#         'lab': lab['uuid'],
-#         'source': source['uuid'],
-#         'host_organism': organism['uuid'],
-#         'targets': [target['uuid']],
-#         'product_id': 'KDKF123',
-#         'lot_id': '123'
-#     }

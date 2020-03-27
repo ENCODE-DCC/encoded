@@ -36,6 +36,7 @@ def fly_organism(testapp):
     }
     return testapp.post_json('/organism', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def organism_0_0():
     return{

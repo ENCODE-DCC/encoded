@@ -1,7 +1,6 @@
 import pytest
 
 
-
 @pytest.fixture
 def biosample_characterization_no_review(testapp, award, lab, biosample, attachment):
     item = {

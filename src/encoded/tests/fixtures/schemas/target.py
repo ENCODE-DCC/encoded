@@ -30,6 +30,7 @@ def tag_target(testapp, organism):
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def recombinant_target(testapp, gene):
     item = {
@@ -59,6 +60,7 @@ def base_target2(testapp, gene):
         'investigated_as': ['transcription factor']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def gfp_target(testapp, organism):
@@ -265,15 +267,6 @@ def mouse_target_H3K9me3(testapp, mouse):
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
-
-@pytest.fixture
-def gfp_target(testapp, organism):
-    item = {
-        'label': 'gfp',
-        'target_organism': organism['@id'],
-        'investigated_as': ['tag'],
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
 
 @pytest.fixture
 def target_0_0(organism):

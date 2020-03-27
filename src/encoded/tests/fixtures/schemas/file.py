@@ -334,20 +334,22 @@ def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
 
 
 @pytest.fixture
-def file_fastq(testapp, award, experiment, lab, replicate_url):
+def file_fastq(testapp, lab, award, base_experiment, base_replicate, platform1):
     item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': '91b574b6411514393507f4ebfa66d47a',
+        'output_type': 'reads',
+        'platform': platform1['@id'],
+        "read_length": 50,
+        'run_type': "single-ended",
+        'file_size': 34,
         'lab': lab['@id'],
-        'replicate': replicate_url['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'in progress',
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
     }
-    res = testapp.post_json('/file', item)
-    return res.json['@graph'][0]
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -739,6 +741,7 @@ def bigbed(testapp, lab, award, experiment, analysis_step_run):
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
+
 @pytest.fixture
 def file_base(experiment):
     return {
@@ -893,6 +896,7 @@ def file_8b(file_base, old_file):
     })
     return item
 
+
 @pytest.fixture
 def file_13(file_base):
     item = file_base.copy()
@@ -900,6 +904,7 @@ def file_13(file_base):
         'output_type': 'candidate regulatory elements'
     })
     return item
+
 
 @pytest.fixture
 def file_14_optimal(file_base):
@@ -943,6 +948,7 @@ def file_15(file_base):
     })
     return item
 
+
 @pytest.fixture
 def file_16(file_base):
     item = file_base.copy()
@@ -951,6 +957,7 @@ def file_16(file_base):
         'schema_version': '16'
     })
     return item
+
 
 @pytest.fixture
 def file(testapp, lab, award, experiment):
@@ -1025,25 +1032,6 @@ def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
         'file_format': 'fasta',
         'md5sum': '91be74b6e11515393507f4ebfa66d77a',
         'output_type': 'raw data',
-        'file_size': 34,
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_fastq(testapp, lab, award, base_experiment, base_replicate, platform1):
-    item = {
-        'dataset': base_experiment['@id'],
-        'replicate': base_replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '91b574b6411514393507f4ebfa66d47a',
-        'output_type': 'reads',
-        'platform': platform1['@id'],
-        "read_length": 50,
-        'run_type': "single-ended",
         'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],

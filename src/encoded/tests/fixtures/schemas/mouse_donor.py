@@ -9,6 +9,7 @@ def mouse_donor_to_test(testapp, lab, award, mouse):
         'organism': mouse['@id'],
     }
 
+
 @pytest.fixture
 def mouse_donor(testapp, award, lab, mouse):
     item = {
@@ -17,6 +18,7 @@ def mouse_donor(testapp, award, lab, mouse):
         'organism': mouse['@id'],
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def mouse_donor_base(lab, award):
@@ -46,6 +48,7 @@ def mouse_donor_2_6(testapp, award, lab, mouse):
         'organism': mouse['@id'],
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def mouse_donor_1_6(testapp, award, lab, mouse):

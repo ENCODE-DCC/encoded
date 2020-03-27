@@ -16,6 +16,7 @@ pytest_plugins = [
 
     'encoded.tests.fixtures.batch_download',
     'encoded.tests.fixtures.ontology',
+    'encoded.tests.fixtures.testapp',
 
     'encoded.tests.fixtures.schemas.access_key',
     'encoded.tests.fixtures.schemas.analysis_step_version',
@@ -152,30 +153,3 @@ def workbook(conn, app, app_settings):
         yield
     finally:
         tx.rollback()
-
-
-@fixture
-def anonhtmltestapp(app):
-    from webtest import TestApp
-    return TestApp(app)
-
-
-@fixture
-def htmltestapp(app):
-    from webtest import TestApp
-    environ = {
-        'REMOTE_USER': 'TEST',
-    }
-    return TestApp(app, environ)
-
-
-@fixture
-def submitter_testapp(app):
-    '''TestApp with JSON accept header for non-admin user.
-    '''
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST_SUBMITTER',
-    }
-    return TestApp(app, environ)
