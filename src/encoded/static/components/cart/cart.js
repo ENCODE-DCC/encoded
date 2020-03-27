@@ -294,11 +294,7 @@ class FileCount extends React.Component {
             );
         }
 
-        return (
-            <div className="cart__facet-progress-overlay">
-                <progress value={facetLoadProgress} max="100" />
-            </div>
-        );
+        return <progress value={facetLoadProgress} max="100" />;
     }
 }
 
@@ -741,7 +737,16 @@ class FileFacets extends React.Component {
     }
 
     render() {
-        const { facets, selectedTerms, selectedFileCount, termClickHandler, visualizableOnly, visualizableOnlyChangeHandler, facetLoadProgress } = this.props;
+        const {
+            facets,
+            selectedTerms,
+            selectedFileCount,
+            termClickHandler,
+            visualizableOnly,
+            visualizableOnlyChangeHandler,
+            facetLoadProgress,
+            disabled,
+        } = this.props;
 
         return (
             <div className="cart__display-facets">
@@ -780,6 +785,9 @@ class FileFacets extends React.Component {
                         </React.Fragment>
                     }
                 </div>
+                {disabled || facetLoadProgress !== -1 ?
+                    <div className="cart__facet-disabled-overlay" />
+                : null}
             </div>
         );
     }
@@ -800,6 +808,8 @@ FileFacets.propTypes = {
     visualizableOnlyChangeHandler: PropTypes.func.isRequired,
     /** Facet-loading progress for progress bar, or null if not displayed */
     facetLoadProgress: PropTypes.number,
+    /** True to disable the facets; grayed out and non-clickable */
+    disabled: PropTypes.bool,
 };
 
 FileFacets.defaultProps = {
@@ -808,6 +818,7 @@ FileFacets.defaultProps = {
     selectedFileCount: 0,
     visualizableOnly: false,
     facetLoadProgress: null,
+    disabled: false,
 };
 
 
@@ -1315,9 +1326,9 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
     // Array of dataset @ids the user has access to view; subset of `datasets`; shared carts only.
     const [viewableDatasets, setViewableDatasets] = React.useState(null);
     // Currently displayed page number for each tab panes; for pagers.
-    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, files: 0 });
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Total number of displayed pages for each tab pane; for pagers.
-    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, files: 0 });
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Currently displayed tab; match key of first TabPanelPane initially.
     const [displayedTab, setDisplayedTab] = React.useState('datasets');
     // All currently selected partial file objects, visualizable or not.
@@ -1330,6 +1341,8 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
     const [visualizableOnly, setVisualizableOnly] = React.useState(false);
     // All partial file objects in the cart datasets. Not affected by currently selected facets.
     const [allFiles, setAllFiles] = React.useState([]);
+    // All raw data files in all datasets in the cart.
+    const [rawdataFiles, setRawdataFiles] = React.useState([]);
 
     // Retrieve current cart information regardless of its source (memory, object, active).
     const { cartType, cartName, cartDatasets } = getCartInfo(context, savedCartObj, elements);
@@ -1405,6 +1418,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
         if (cartDatasets.length > 0) {
             retrieveDatasetsFiles(cartDatasets, setFacetProgress, fetch, session).then(({ datasetFiles, datasets }) => {
                 setAllFiles(datasetFiles);
+                setRawdataFiles(datasetFiles.filter(datasetFile => !datasetFile.assembly));
                 setViewableDatasets(datasets);
             });
         }
@@ -1426,10 +1440,12 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
     React.useEffect(() => {
         const datasetPageCount = calcTotalPageCount(cartDatasets.length, PAGE_ELEMENT_COUNT);
         const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
-        const filePageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
+        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
+        const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
         dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
         dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
-        dispatchTotalPageCounts({ tab: 'files', totalPageCount: filePageCount });
+        dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
+        dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
 
         // Go to first page if current page number goes out of range of new page count.
         if (pageNumbers.datasets >= datasetPageCount) {
@@ -1438,10 +1454,13 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
         if (pageNumbers.browser >= browserPageCount) {
             dispatchPageNumbers({ tab: 'browser', pageNumber: 0 });
         }
-        if (pageNumbers.files >= filePageCount) {
-            dispatchPageNumbers({ tab: 'files', pageNumber: 0 });
+        if (pageNumbers.processeddata >= processedDataPageCount) {
+            dispatchPageNumbers({ tab: 'processeddata', pageNumber: 0 });
         }
-    }, [cartDatasets, selectedVisualizableFiles, selectedFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.files]);
+        if (pageNumbers.rawdata >= rawdataPageCount) {
+            dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
+        }
+    }, [cartDatasets, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
 
     return (
         <div className={itemClass(context, 'view-item')}>
@@ -1478,14 +1497,16 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                                 visualizableOnlyChangeHandler={handleVisualizableOnlyChange}
                                 loggedIn={loggedIn}
                                 facetLoadProgress={facetProgress}
+                                disabled={displayedTab === 'rawdata'}
                             />
                             <TabPanel
                                 tabPanelCss="cart__display-content"
-                                tabs={{ datasets: 'Datasets', browser: 'Genome browser', files: 'Files' }}
+                                tabs={{ datasets: 'Datasets', browser: 'Genome browser', processeddata: 'Processed data', rawdata: 'Raw data' }}
                                 tabDisplay={{
                                     datasets: <CounterTab title="Datasets" count={cartDatasets.length} voice="datasets" />,
                                     browser: <CounterTab title="Genome browser" count={selectedVisualizableFiles.length} voice="visualizable tracks" />,
-                                    files: <CounterTab title="Files" count={selectedFiles.length} voice="files" />,
+                                    processeddata: <CounterTab title="Processed data" count={selectedFiles.length} voice="processed data files" />,
+                                    rawdata: <CounterTab title="Raw data" count={rawdataFiles.length} voice="raw data files" />,
                                 }}
                                 handleTabClick={handleTabClick}
                             >
@@ -1510,13 +1531,21 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                                     />
                                     <CartBrowser files={selectedVisualizableFiles.map(file => file['@id'])} assembly={selectedTerms.assembly[0]} pageNumber={pageNumbers.browser} />
                                 </TabPanelPane>
-                                <TabPanelPane key="files">
+                                <TabPanelPane key="processeddata">
                                     <CartPager
-                                        currentPage={pageNumbers.files}
-                                        totalPageCount={totalPageCount.files}
+                                        currentPage={pageNumbers.processeddata}
+                                        totalPageCount={totalPageCount.processeddata}
                                         updateCurrentPage={updateDisplayedPage}
                                     />
-                                    <CartFiles files={selectedFiles} currentPage={pageNumbers.files} />
+                                    <CartFiles files={selectedFiles} currentPage={pageNumbers.processeddata} />
+                                </TabPanelPane>
+                                <TabPanelPane key="rawdata">
+                                    <CartPager
+                                        currentPage={pageNumbers.rawdata}
+                                        totalPageCount={totalPageCount.rawdata}
+                                        updateCurrentPage={updateDisplayedPage}
+                                    />
+                                    <CartFiles files={rawdataFiles} currentPage={pageNumbers.rawdata} />
                                 </TabPanelPane>
                             </TabPanel>
                         </div>

@@ -250,10 +250,6 @@
     @at-root #{&}__tools {
         display: flex;
         flex: 0 1 auto;
-
-        button {
-            margin-left: 5px;
-        }
     }
 
     // Header of cart panel.
@@ -262,7 +258,7 @@
         justify-content: space-between;
     }
 
-    @at-root #{&}__facet-progress-overlay {
+    @at-root #{&}__facet-disabled-overlay {
         position: absolute;
         top: 0;
         right: 0;
@@ -1096,4 +1092,42 @@ $file-type-colors: (
         flex: 1 1 auto;
     }
 
+}
+
+
+// Control to batch download cart files.
+.cart-download {
+    margin-right: 5px;
+
+    button {
+        @extend .btn;
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+
+    @at-root #{&}__option-title {
+        margin: 5px 0;
+        font-size: 1rem;
+        font-weight: bold;
+        pointer-events: none;
+    }
+
+    @at-root #{&}__option-description {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        font-weight: normal;
+        pointer-events: none;
+    }
+
+    .dropdown-button__content {
+        button {
+            color: #000;
+
+            &:hover {
+                color: #fff;
+                
+                background-color: #4f689e;
+            }
+        }
+    }
 }
