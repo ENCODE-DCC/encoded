@@ -78,11 +78,23 @@
         "tumor_size_range": {
             "title": "Tumor Size"
         },
-        "pathology_report.t_stage": {
-            "title": "Pathological T stage"
+        "pathology_report.ajcc_p_stage": {
+            "title": "pT Stage"
+        },
+        "pathology_report.n_stage": {
+            "title": "pN Stage"
+        },
+        "pathology_report.m_stage": {
+            "title": "pM Stage"
+        },
+        "pathology_report.metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "pathology_report.metasis_details.type": {
+            "title": "Metasis Type"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "TNM Stage"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
@@ -121,7 +133,14 @@
         },
         "pathology_report.micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        },
+        "pathology_report.ihc.antibody": {
+            "title": "IHC/FISH (Clinical lab)"
+        },
+        "pathology_report.ihc.result": {
+            "title": "IHC/FISH results"
         }
+       
     },
     "columns": {
         "accession": {
@@ -146,11 +165,23 @@
         "tumor_size_range": {
             "title": "Tumor Size"
         },
-        "pathology_report.t_stage": {
-            "title": "Pathological T stage"
+        "pathology_report.ajcc_p_stage": {
+            "title": "pT Stage"
+        },
+        "pathology_report.n_stage": {
+            "title": "pN Stage"
+        },
+        "pathology_report.m_stage": {
+            "title": "pM Stage"
+        },
+        "pathology_report.metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "pathology_report.metasis_details.type": {
+            "title": "Metasis Type"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
+            "title": "TNM Stage"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
@@ -189,6 +220,12 @@
         },
         "pathology_report.micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+        },
+        "pathology_report.ihc.antibody": {
+            "title": "IHC/FISH (Clinical lab)"
+        },
+        "pathology_report.ihc.result": {
+            "title": "IHC/FISH results"
         }
 
     },
@@ -197,7 +234,11 @@
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
         "tumor_size_range": 1.0,
-        "pathology_report.t_stage": 1.0,
+        "pathology_report.ajcc_p_stage": 1.0,
+        "pathology_report.n_stage": 1.0,
+        "pathology_report.m_stage": 1.0,
+        "pathology_report.metasis_details.site": 1.0,
+        "pathology_report.metasis_details.type": 1.0,
         "pathology_report.ajcc_tnm_stage": 1.0,
         "pathology_report.ajcc_version": 1.0,
         "pathology_report.laterality":1.0, 
@@ -210,7 +251,11 @@
         "pathology_report.lvi": 1.0,
         "pathology_report.micro_perinephric":1.0,
         "pathology_report.micro_vein": 1.0,
-        "pathology_report.micro_adrenal": 1.0
+        "pathology_report.micro_adrenal": 1.0,
+        "pathology_report.ihc.antibody": 1.0,
+        "pathology_report.ihc.result": 1.0
+
+
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }

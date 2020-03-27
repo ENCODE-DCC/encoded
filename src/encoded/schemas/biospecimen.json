@@ -44,6 +44,13 @@
             "type": "string",
             "linkTo": "Patient"
         },
+        "surgery": {
+            "title": "Surgery",
+            "description": "The surgery the biospecimen was taken from.",
+            "comment": "See surgery.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Surgery"
+        },
         "collection_date": {
             "title": "Collection Date",
             "description": "the date the biospecimen was taken, such as surgery date or blood draw date.",
@@ -92,10 +99,6 @@
             "comment": "See biospecimen.json for available identifiers.",
             "type": "string",
             "linkTo": "Biospecimen"
-        },
-        "path_ID": {
-            "title": "Path Report ID",
-            "type": "string"
         },
         "tissue_type": {
             "title": "Tissue Type",
@@ -242,4 +245,5 @@
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
 

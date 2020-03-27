@@ -35,9 +35,13 @@ const portal = {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'assaysearch', title: 'Search', url: '/search/?type=Patient&status=released' },
-                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Patient&status=released' },
+                { id: 'patientsearch', title: 'Patient search', url: '/search/?type=Patient&status=released' },
+                { id: 'samplesearch', title: 'Biospecimen search', url: '/search/?type=Biospecimen&status=released' },
+                { id: 'genomicssearch', title: 'Genomics search', url: '/search/?type=Biofile&status=released' },
                 { id: 'sep-mm-1' },
+                { id: 'patientmatrix', title: 'Patient matrix', url: '/matrix/?type=Patient&status=released' },
+                { id: 'sampletmatrix', title: 'Biospecimen matrix', url: '/matrix/?type=Biospecimen&status=released' },
+                { id: 'sep-mm-2' },
                 { id: 'publications', title: 'Publications', url: '/search/?type=Publication&status=released' },
             ],
         },
@@ -45,14 +49,9 @@ const portal = {
             id: 'materialsmethods',
             title: 'Materials & Methods',
             children: [
-                { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released' },
-                { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
-                { id: 'sep-mm-1' },
                 { id: 'datastandards', title: 'Assays and standards', url: '/data-standards/' },
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
-                { id: 'softwaretools', title: 'Software tools', url: '/software/' },
-                { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
-                { id: 'sep-mm-2' },
+                { id: 'sep-mm-1' },
                 { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
                 { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
                 { id: 'profiles', title: 'Schemas', url: '/profiles/' },
@@ -65,14 +64,10 @@ const portal = {
                 { id: 'gettingstarted', title: 'Using the portal', url: '/help/getting-started/' },
                 { id: 'cart', title: 'Cohort', url: '/help/cart/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
-                { id: 'citingencode', title: 'Citing ENCODE', url: '/help/citing-encode' },
-                { id: 'faq', title: 'FAQ', url: '/help/faq/' },
+                { id: 'citingkce', title: 'Citing KCE', url: '/help/citing-kce' },
                 { id: 'sep-mm-1' },
                 { id: 'projectoverview', title: 'Project Overview', url: '/help/project-overview/' },
-                { id: 'collaborations', title: 'Collaborations', url: '/help/collaborations/' },
-                { id: 'sep-mm-2' },
-                { id: 'events', title: 'ENCODE workshops', url: '/help/events/' },
-                { id: 'contact', title: 'About the DCC', url: '/help/contacts/' },
+                { id: 'contact', title: 'About the team', url: '/help/contacts/' },
             ],
         },
     ],
@@ -1168,3 +1163,4 @@ module.exports.getRenderedProps = function getRenderedProps(document) {
     }
     return props;
 };
+

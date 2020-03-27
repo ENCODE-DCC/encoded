@@ -6,8 +6,8 @@ import { Breadcrumbs } from './navigation';
 import Status from './status';
 import { PanelLookup } from './objectutils';
 import CollapsiblePanel from './collapsiblePanel';
-import PathologyReportTable from './patholgoyReprotTable';
-import IHCTable from './ihcTable';
+import PathologyReportTable from './pathologyReportTable';
+// import IHCTable from './ihcTable';
 
 
 
@@ -27,15 +27,12 @@ class Surgery extends React.Component {
 
        
         let hasPathology=false;
-        let hasIHC=false;
 
         if (Object.keys(this.props.context.pathology_report).length > 0) {
           hasPathology = true;
             
         }
-        if (Object.keys(this.props.context.ihc).length > 0) {
-            hasIHC = true;
-          }
+        
       
          return (
             <div className={itemClass}>
@@ -62,7 +59,7 @@ class Surgery extends React.Component {
                             <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
                         </div>
                         <div data-test="surgery date">
-                            <dt>Surgery date</dt>
+                            <dt>Surgery Date</dt>
                             <dd>{context.date}</dd>
                         </div>
                         <div data-test="hospital">
@@ -74,7 +71,6 @@ class Surgery extends React.Component {
                     </PanelBody>
                 </Panel>
                 {hasPathology && <PathologyReportTable data={context.pathology_report} tableTitle="Pathology Report " ></PathologyReportTable>}
-                {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
             
             </div>
 

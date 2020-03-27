@@ -365,6 +365,61 @@ class Patient(Item):
                 surgery_summary = "No Treatment Received"
             return surgery_summary
 
+    matrix = {
+        'y': {
+            'facets': [
+                'status',
+                'gender',
+                'race',
+                'ethnicity',
+                'surgery_summary',
+                'radiation_summary',
+                'medications.name',
+                'surgery.surgery_procedure.surgery_type',
+                'surgery.hospital_location',
+                'sur_path_tumor_size',
+                'surgery.pathology_report.t_stage',
+                'germline_summary',
+                'ihc.antibody',
+                'ihc.result',
+                
+            ],
+            'group_by': ['race', 'gender'],
+            'label': 'race',
+        },
+        'x': {
+            'facets': [
+                
+                'surgery.pathology_report.histology',
+            ],
+            'group_by': 'surgery.pathology_report.histology',
+            'label': 'histology',
+        },
+    }
+
+    summary_data = {
+        'y': {
+            'facets': [
+
+                'status',
+                'gender',
+                'race',
+                'radiation_summary',
+
+            ],
+            'group_by': ['gender', 'radiation_summary'],
+            'label': 'Gender',
+        },
+        'x': {
+            'facets': [
+                'race',
+            ],
+            'group_by': 'race',
+            'label': 'Race',
+        },
+        'grouping': ['gender', 'status'],
+    }
+
 
 
     @calculated_property(condition='surgery', schema={
@@ -580,10 +635,11 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'ihc', 'labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
+

@@ -26,7 +26,7 @@ const Footer = ({ version }, reactContext) => {
                         <div className="footer-sections">
                             <div className="footer-links-section">
                                 <ul className="footer-links">
-                                    <li><a href="/help/citing-encode">Citing ENCODE</a></li>
+                                    <li><a href="/help/citing-kce">Citing KCE</a></li>
                                     <li><a href="https://www.utsouthwestern.edu/legal/privacy-policy.html">Privacy</a></li>
                                     <li><a href="mailto:BICF@UTSouthwestern.edu">Contact</a></li>
                                 </ul>
@@ -65,3 +65,4 @@ Footer.defaultProps = {
 };
 
 export default Footer;
+

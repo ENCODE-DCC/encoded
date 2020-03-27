@@ -289,6 +289,59 @@ def test_page_nested(workbook, anontestapp):
 def test_page_nested_in_progress(workbook, anontestapp):
     return anontestapp.get('/test-section/subpage-in-progress/', status=403)
 
+def help_page_toplevel(workbook, anontestapp):
+    res = anontestapp.get('/help/', status=200)
+    assert res.json['@id'] == '/help/'
+
+    res = anontestapp.get('/pages/help/', status=301)
+    assert res.location == 'http://localhost/help/'
+
+
+def help_page_project_overview(workbook, anontestapp):
+    res = anontestapp.get('/help/project-overview/', status=200)
+    assert res.json['@id'] == '/help/project-overview/'
+
+def help_page_getting_started(workbook, anontestapp):
+    res = anontestapp.get('/help/getting-started/', status=200)
+    assert res.json['@id'] == '/help/getting-started/'
+
+def help_page_rest_api(workbook, anontestapp):
+    res = anontestapp.get('/help/rest-api/', status=200)
+    assert res.json['@id'] == '/help/rest-api/'
+
+def help_page_citing_kce(workbook, anontestapp):
+    res = anontestapp.get('/help/citing-kce/', status=200)
+    assert res.json['@id'] == '/help/citing-kce/'
+
+def help_page_cart(workbook, anontestapp):
+    res = anontestapp.get('/help/cart/', status=200)
+    assert res.json['@id'] == '/help/cart/'
+
+def help_page_contacts(workbook, anontestapp):
+    res = anontestapp.get('/help/contacts/', status=200)
+    assert res.json['@id'] == '/help/contacts/'
+
+def help_page_file_formats(workbook, anontestapp):
+    res = anontestapp.get('/help/file-formats/', status=200)
+    assert res.json['@id'] == '/help/file-formats/'
+
+def help_page_data_organization(workbook, anontestapp):
+    res = anontestapp.get('/help/data-organization/', status=200)
+    assert res.json['@id'] == '/help/data-organization/'
+
+def about_page_toplevel(workbook, anontestapp):
+    res = anontestapp.get('/about/', status=200)
+    assert res.json['@id'] == '/about/'
+
+    res = anontestapp.get('/pages/about/', status=301)
+    assert res.location == 'http://localhost/about/'
+
+
+def about_page_data_use_policy(workbook, anontestapp):
+    res = anontestapp.get('/about/data-use-policy/', status=200)
+    assert res.json['@id'] == '/about/data-use-policy/'
+
+
 
 def test_page_homepage(workbook, anontestapp):
     res = anontestapp.get('/pages/homepage/', status=200)
@@ -337,3 +390,4 @@ def test_profiles(testapp, item_type):
 def test_bad_frame(testapp, human):
     res = testapp.get(human['@id'] + '?frame=bad', status=404)
     assert res.json['detail'] == '?frame=bad'
+

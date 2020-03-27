@@ -26,7 +26,7 @@
             "title": "Medication name",
             "type": "string",
             "enum": [
-                "Aldesleukin",
+                "IL-2 (Aldesleukin)",
                 "Atezolizumab",
                 "Avelumab",
                 "Axitinib",
@@ -34,7 +34,6 @@
                 "CPI-444",
                 "Cabozantinib",
                 "Everolimus",
-                "IL-2",
                 "Interferon",
                 "Ipilimumab",
                 "Lenvatinib",
@@ -74,7 +73,7 @@
         "name": {
             "title": "Medication name"
         },
-       
+
         "status": {
             "title": "Status"
         }
