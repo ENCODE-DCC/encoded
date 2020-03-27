@@ -544,7 +544,7 @@
             "title": "Metasis Type"
         },
         "ajcc_tnm_stage": {
-            "title": "TNM Stage"
+            "title": "AJCC TNM Stage"
         },
         "ajcc_version": {
             "title": "AJCC Version"
@@ -671,6 +671,9 @@
         }
     },
     "boost_values": {
+        "surgery": 1.0,
+        "patient": 1.0,
+        "accession": 1.0,
         "ajcc_p_stage": 1.0,
         "n_stage": 1.0,
         "m_stage": 1.0,
@@ -689,6 +692,7 @@
         "micro_perinephric": 1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
+        "metasis_details.site": 1.0,
         "ihc.antibody": 1.0,
         "ihc.result": 1.0
     },
