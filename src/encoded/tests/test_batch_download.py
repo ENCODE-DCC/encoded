@@ -428,3 +428,20 @@ def test_metadata_tsv_fields(testapp, workbook):
     assert len(headers) == len(set(headers))
     expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
     assert len(expected_headers - set(headers)) == 0
+
+
+def test_metadata_contains_audit_values(testapp, workbook):
+     r = testapp.get('/metadata/?type=Experiment&audit=*')
+     audit_values = [
+         'biological replicates with identical biosample',
+         'experiment not submitted to GEO',
+         'inconsistent assay_term_name',
+         'inconsistent library biosample',
+         'lacking processed data',
+         'inconsistent platforms',
+         'mismatched status',
+         'missing documents',
+         'unreplicated experiment'
+     ]
+     for value in audit_values:
+         assert value in r.text
