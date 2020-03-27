@@ -4,7 +4,6 @@
     "surgery": "KCESX708FIJ",
     "patient": "KCEPT708IJT",
     "tumor_sequence_number": 1,
-    
     "date": "1855-01-05",
     "laterality": "Bilateral, Horseshoe",
     "tumor_size": 5,
@@ -29,13 +28,13 @@
     "n_stage": "pN2",
     "examined_lymph_nodes": 3,
     "positive_lymph_nodes": 2,
-    "m_stage": "Not applicable",
+    "m_stage": "pM1",
     "status": "released",
     "ajcc_version": "6th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "2",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_nephrectomy",
+    "path_source_procedure": "path_metasis",
     "metasis_details":{
       "site":"Bone",
       "type": "Regional"
@@ -72,13 +71,13 @@
     "n_stage": "pN2",
     "examined_lymph_nodes": 3,
     "positive_lymph_nodes": 2,
-    "m_stage": "Not applicable",
+    "m_stage": "pM1",
     "status": "released",
     "ajcc_version": "6th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "2",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_nephrectomy",
+    "path_source_procedure": "path_metasis",
     "metasis_details":{
       "site":"Other",
       "type": "Distant"
@@ -152,13 +151,13 @@
     "n_stage": "pN0",
     "examined_lymph_nodes": 4,
     "positive_lymph_nodes": 0,
-    "m_stage": "Not applicable",
+    "m_stage": "pM1",
     "status": "released",
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "3A",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_nephrectomy",
+    "path_source_procedure": "path_metasis",
     "metasis_details":{
       "site":"Other",
       "type": "Distant"
@@ -194,13 +193,13 @@
     "n_stage": "Not applicable",
     "examined_lymph_nodes": 10,
     "positive_lymph_nodes": 1,
-    "m_stage": "Not applicable",
+    "m_stage": "pM0",
     "status": "released",
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "1A",
     "report_source": "Pathology Report",
-    "path_source_procedure": "path_nephrectomy",
+    "path_source_procedure": "path_biopsy",
     "uuid": "b5645964-46d7-11ea-b77f-2e728ce88125"
   },
   {
@@ -232,13 +231,13 @@
     "n_stage": "pN0",
     "examined_lymph_nodes": 4,
     "positive_lymph_nodes": 0,
-    "m_stage": "Not applicable",
+    "m_stage": "pM1",
     "status": "released",
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "3C",
     "report_source": "Tumor Registery",
-    "path_source_procedure": "path_nephrectomy",
+    "path_source_procedure": "path_biopsy",
     "metasis_details":{
       "site":"Liver",
       "type": "Distant"

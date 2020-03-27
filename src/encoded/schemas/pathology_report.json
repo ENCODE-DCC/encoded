@@ -445,6 +445,82 @@
             }
         }
     },
+    "oneOf": [
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_nephrectomy"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "Not applicable"
+                    ]
+                }
+            },
+            "allOf": [
+                {
+                    "not": {
+                        "required": [
+                            "metasis_details"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_metasis"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "pM1"
+                    ]
+                }
+            }
+        },
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_biopsy"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "pM0"
+                    ]
+                }
+            },
+            "allOf": [
+                {
+                    "not": {
+                        "required": [
+                            "metasis_details"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "properties": {
+                "path_source_procedure": {
+                    "enum": [
+                        "path_biopsy"
+                    ]
+                },
+                "m_stage": {
+                    "enum": [
+                        "pM1"
+                    ]
+                }
+            }
+        }
+    ],
     "facets": {
         "status": {
             "title": "Status"
@@ -452,18 +528,24 @@
         "tumor_size": {
             "title": "Tumor Size"
         },
-
         "ajcc_p_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
-
+        "m_stage": {
+            "title": "pM Stage"
+        },
+        "metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "metasis_details.type": {
+            "title": "Metasis Type"
+        },
         "ajcc_tnm_stage": {
-            "title": "TNM Stage"
-        } ,
-
+            "title": "AJCC TNM Stage"
+        },
         "ajcc_version": {
             "title": "AJCC Version"
         },
@@ -500,6 +582,7 @@
         "micro_adrenal": {
             "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
         },
+
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
@@ -531,6 +614,15 @@
         },
         "n_stage": {
             "title": "pN stage"
+        },
+        "m_stage": {
+            "title": "pM stage"
+        },
+        "metasis_details.site": {
+            "title": "Metasis Site"
+        },
+        "metasis_details.type": {
+            "title": "Metasis Type"
         },
         "ajcc_tnm_stage": {
             "title": "AJCC TNM Stage"
@@ -579,11 +671,17 @@
         }
     },
     "boost_values": {
+        "surgery": 1.0,
+        "patient": 1.0,
+        "accession": 1.0,
         "ajcc_p_stage": 1.0,
         "n_stage": 1.0,
+        "m_stage": 1.0,
+        "metasis_details.site": 1.0,
+        "metasis_details.type": 1.0,
         "ajcc_tnm_stage": 1.0,
         "ajcc_version": 1.0,
-        "laterality":1.0,
+        "laterality": 1.0,
         "histology": 1.0,
         "focality": 1.0,
         "grade": 1.0,
@@ -594,6 +692,7 @@
         "micro_perinephric": 1.0,
         "micro_vein": 1.0,
         "micro_adrenal": 1.0,
+        "metasis_details.site": 1.0,
         "ihc.antibody": 1.0,
         "ihc.result": 1.0
     },

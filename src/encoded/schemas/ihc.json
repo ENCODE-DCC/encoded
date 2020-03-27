@@ -138,10 +138,10 @@
             "title": "Biospecimen Accession"
         },
         "antibody": {
-            "title": "IHC Assay staining antibody"
+            "title": "IHC/FISH (Clinical lab)"
         },
         "result": {
-            "title": "IHC assay staining result"
+            "title": "IHC/FISH results"
         }
     },
 
