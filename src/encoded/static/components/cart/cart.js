@@ -13,6 +13,7 @@ import { requestObjects, DisplayAsJson } from '../objectutils';
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartCBioportalButton from './cbioportal';
+import CartXenaButton from './xenabrowser';
 import CartClearButton from './clear';
 import { cartRetrieve } from './database';
 import CartMergeShared from './merge_shared';
@@ -892,6 +893,16 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableElements, fi
         : null}
         {elements.length > 0 ?
             <CartCBioportalButton
+                elements={elements}
+                selectedTerms={selectedTerms}
+                cartType={cartType}
+                savedCartObj={savedCartObj}
+                sharedCart={sharedCart}
+                fileCount={fileCount}
+            />
+        : null}
+        {elements.length > 0 ?
+            <CartXenaButton
                 elements={elements}
                 selectedTerms={selectedTerms}
                 cartType={cartType}
