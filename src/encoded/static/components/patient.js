@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 import SurgeryChart from './surgeryChart';
 import BiospecimenTable from "./biospecimenTable";
+import PatientPathTable from './patientPathTable';
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
@@ -53,6 +54,33 @@ class Patient extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('scroll', this.listenToScroll)
   }
+
+  createPathPanel(){
+    let list = [];
+    let surgeryData= this.props.context.surgery;
+    if (surgeryData.length > 1){
+      surgeryData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+    }
+    for(let i = 0; i < surgeryData.length; i++){
+      list.push(<div data-test="surgery"><dt>Surgery Date</dt><dd>{surgeryData[i].date}</dd> </div>)
+      if (surgeryData[i].pathology_report && surgeryData[i].pathology_report.length>0) {
+        for(let j = 0; j < surgeryData[i].pathology_report.length; j++) {
+          list.push(<div data-test="surgery.pathology_report"><dt>pathology_report</dt><dd><a href={surgeryData[i].pathology_report[j]['@id']}>{surgeryData[i].pathology_report[j].accession}</a></dd> </div>)
+          list.push(<div data-test="surgery.pathology_report"><dt>Histologic Subtype</dt><dd>{surgeryData[i].pathology_report[j].histology}</dd> </div>)
+          list.push(<div data-test="surgery.pathology_report"><dt>pT stage</dt><dd>{surgeryData[i].pathology_report[j].t_stage}</dd> </div>)
+          list.push(<div data-test="surgery.pathology_report"><dt>pN stage</dt><dd>{surgeryData[i].pathology_report[j].n_stage}</dd> </div>)
+          list.push(<div data-test="surgery.pathology_report"><dt>pM stage</dt><dd>{surgeryData[i].pathology_report[j].m_stage}</dd> </div>)
+        }
+      }
+      if (i != surgeryData.length - 1) {
+        list.push(<div className="row" style={{ borderTop: "1px solid #151313" }}></div>)
+      }
+
+
+    }
+    return list
+
+  }
   render() {
 
     const context = this.props.context;
@@ -70,6 +98,7 @@ class Patient extends React.Component {
     let hasSurgery=false;
     let hasIHC=false;
     let hasBiospecimen = false;
+    let hasPath = false;
     if (Object.keys(this.props.context.labs).length > 0) {
       hasLabs = true;
     }
@@ -92,6 +121,9 @@ class Patient extends React.Component {
     if (Object.keys(this.props.context.biospecimen).length > 0) {
       hasBiospecimen = true;
     }
+    if(Object.keys(this.props.context.surgery).length > 0){
+      hasPath = true;
+    }
 
     const labsPanelBody = (
       <PatientChart chartId="labsChart" data={context.labs} ></PatientChart>
@@ -109,7 +141,9 @@ class Patient extends React.Component {
     const surgeryPanelBody = (
       <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time"></SurgeryChart>
     );
-
+    const pathPanelBody = (
+      <dl className="key-value">{this.createPathPanel()}</dl>
+    );
 
 
     return (
@@ -159,6 +193,7 @@ class Patient extends React.Component {
             </dl>
           </PanelBody>
         </Panel>
+        {hasPath && <PatientPathTable data={context.surgery} tableTitle="Patient Diagnosis"></PatientPathTable>}
         {hasLabs && <CollapsiblePanel panelId="myPanelId1" title="Lab Results Over Time" content={labsPanelBody} />}
         {hasVitals && <CollapsiblePanel panelId="myPanelId2" title="Vital Results Over Time" content={vitalsPanelBody} />}
         {hasRadiation && <CollapsiblePanel panelId="myPanelId3" title="Radiation History" content={radiationPanelBody} />}
@@ -184,3 +219,4 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
