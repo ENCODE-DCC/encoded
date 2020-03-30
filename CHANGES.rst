@@ -1,7 +1,40 @@
 Changes
 =======
+v97.0 (released) snovault 1.0.43
+--------------------------------------------------------------------
+1.	ENCD-5186-Fix-FCC-audit-script-error-with-biosample-ontology (#3219)
+2.	ENCD-5175-fix-validation-error-crispr-insertion (#3214)
+3.	ENCD-5180-re-matrix-left-align-term-names (#3216)
+4.	ENCD-5182 respect filters for viz (#3217)
+5.	ENCD-5039-reorganize-pytest-fixtures-set (#3206)
+6.	Update snovault 1.0.43 (#3212)
+7.	ENCD-4540 Cart visualizations (#3205)
+8.	SNO-146-clean-up-threadmanager-on-pyramid-retry-exception (#3207)
+9.	ENCD-5133-calculate-for-analyses (#3200)
+10.	ENCD-5145-remove-gRNA-tiled-loci-update-examined-loci (#3183)
+11.	ENCD-5150-rendering-error (#3209)
+12.	ENCD-5168-allow-apache-status-monitoring (#3210)
+13.	ENCD-5123-expt-audit-processed-files-analyses (#3192)
+14.	ENCD-2666 mouse dev matrix (#3198)
+15.	ENCD-5090-apply-experiment-audits-to-fcc-experiments (#3169)
+16.	ENCD-5117-update-mixed-read-length-audit (#3193)
+17.	ENCD-5110-add-gm-categories (#3181)
+18.	ENCD-5125-add-factorbook (#3191)
+19.	ENCD-5087-add-subreads-dependencies (#3180)
+20.	ENCD-5082-file-pagination (#3201)
+21.	ENCD-5051-generating-QC-table-for-experimental-series (#3138)
+22.	ENCD-5129-check-if-view-has-type (#3199)
+23.	ENCD-5143-remove-properties-gene_type_quant_qc (#3185)
+24.	ENCD-5144-add-dna-cloning-biosampletype (#3184)
+25.	ENCD-5139-add-post-nucleic-acid-time-biosample (#3188)
+26.	ENCD-5122-add-Donor-to-Reference (#3197)
+27.	ENCD-5109-fix-file-validation-audit-for-annotations (#3194)
+28.	ENCD-5080-add-library-property-strandedness (#3186)
+29.	ENCD-5069 fix error in gene search (#3166)
+30.	ENCD-5118-adjust-unreplicated-experiment-audit (#3187)
+31.	ENCD-5130-Add-download-btn-to-FCC (#3179)
 
-v97.0 (released) snovault 1.0.42 ubuntu18/py376 merge
+v97.0 (unreleased) snovault 1.0.42 ubuntu18/py376 merge
 --------------------------------------------------------------------
 
 1.	SNO-145 handle missing _stats on request
