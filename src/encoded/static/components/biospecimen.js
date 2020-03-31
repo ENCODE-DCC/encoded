@@ -61,7 +61,11 @@ class Biospecimen extends React.Component {
                             <dt>Internal ID</dt>
                             <dd>{context.internal_ID}</dd>
                         </div>
-
+                        <div data-test="award">
+                            <dt>Project</dt>
+                            <dd><a href={context.award}>{context.award.split("/")[2]}</a></dd>
+                            
+                        </div>
                         <div data-test="patient">
                             <dt>Patient</dt>
                             <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
@@ -127,4 +131,5 @@ class Biospecimen extends React.Component {
 }
 
 globals.contentViews.register(Biospecimen, 'Biospecimen');
+
 
