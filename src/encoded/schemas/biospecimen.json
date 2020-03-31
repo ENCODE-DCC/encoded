@@ -4,7 +4,7 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
+    "required": [ "award", "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -12,6 +12,7 @@
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/attribution"},
         {"$ref": "mixins.json#/uuid"}
     ],
     "properties": {
