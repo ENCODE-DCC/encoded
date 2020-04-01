@@ -3112,7 +3112,7 @@ def audit_experiment_target(value, system, excluded_types):
                 audit_link(path_to_text(target['@id']), target['@id'])
             )
         )
-        yield AuditFailure('inconsistent experiment target', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent experiment target', detail, level='WARNING')
 
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq',
