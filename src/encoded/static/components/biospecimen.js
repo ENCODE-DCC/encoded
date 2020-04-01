@@ -63,7 +63,7 @@ class Biospecimen extends React.Component {
                         </div>
                         <div data-test="award">
                             <dt>Project</dt>
-                            <dd><a href={context.award}>{context.award.split("/")[2]}</a></dd>
+                            <dd><a href={context.award['@id']}>{context.award.project}</a></dd>
                             
                         </div>
                         <div data-test="patient">
