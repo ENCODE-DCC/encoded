@@ -900,28 +900,29 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-03-20 12:38:54.016879: encdami-demo-2020-03-20_123854
-        'demo': 'ami-08daa6a7c89fce16a',
-        # encdami-es-wait-head build on 2020-02-27 17:12:49.808527: encdami-es-wait-head-2020-02-27_171249
-        'es-wait-head': 'ami-0dcd11e4701f5f45c',
-        # encdami-es-wait-node build on 2020-02-27 17:13:29.261061: encdami-es-wait-node-2020-02-27_171329
-        'es-wait-node': 'ami-0ce548b66f9934fbf',
+        # encdami-demo build on 2020-03-31 20:02:16.534336: encdami-demo-2020-03-31_200216
+        'demo': 'ami-0d2bf0b7292964598',
+        # encdami-es-wait-head build on 2020-03-31 20:13:17.094941: encdami-es-wait-head-2020-03-31_201317
+        'es-wait-head': 'ami-03e019cdd3cc178a0',
+        # encdami-es-wait-node build on 2020-03-31 20:08:41.739802: encdami-es-wait-node-2020-03-31_200841
+        'es-wait-node': 'ami-077951301740d5be6',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-02-27 17:18:11.694340: encdami-frontend-2020-02-27_171811
-        'frontend': 'ami-0661ab83587c0a6ae',
+        # encdami-frontend build on 2020-03-31 20:12:17.290966: encdami-frontend-2020-03-31_201217
+        'frontend': 'ami-061e7ad04e9de334d',
 
         # Production Private AMIs: Add comments to each build
 
-        #  ES wait builds have not been built
-        'es-wait-head-prod': None,
-        'es-wait-node-prod': None,
+        # encdami-es-wait-head build on 2020-03-31 20:20:04.987640: encdami-es-wait-head-2020-03-31_202004
+        'es-wait-head-prod': 'ami-0f2c2547107497579',
+        # encdami-es-wait-node build on 2020-03-31 20:21:11.386147: encdami-es-wait-node-2020-03-31_202111
+        'es-wait-node-prod': 'ami-09875dbadceee1dad',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head-prod': None,
         'es-elect-node-prod': None,
-        #  Frontend build have not been built
-        'fe-cluster-prod': None,
+        # encdami-frontend build on 2020-03-31 20:40:37.969622: encdami-frontend-2020-03-31_204037
+        'frontend-prod': 'ami-07a066a69e1fd3f4c',
     }
     if not args.image_id:
         # Select ami by build type.  
