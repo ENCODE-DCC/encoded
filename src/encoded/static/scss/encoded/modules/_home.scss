@@ -443,6 +443,15 @@
         }
     }
 
+    @at-root #{&}__link {
+        font-size: 0.9rem;
+        margin-top: 10px;
+        font-style: italic;
+        i {
+            margin-right: 5px;
+        }
+    }
+
     @at-root #{&}__input-field {
         position: relative;
     }
@@ -455,6 +464,9 @@
 
     @at-root #{&}__submit {
         margin-top: 10px;
+        a {
+            flex: 1 1 auto;
+        }
     }
 }
 
