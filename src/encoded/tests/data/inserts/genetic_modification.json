@@ -291,6 +291,7 @@
         "lab": "/labs/john-stamatoyannopoulos/",
         "method": "homologous recombination",
         "purpose": "repression",
+        "modified_site_by_gene_id": "/genes/912/",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
     }
