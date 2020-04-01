@@ -48,6 +48,7 @@
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
         "lab":"j-michael-cherry",
+        "cropped_read_length": 44,
         "md5sum": "93be74b6e11515393507f4ebfa66d78d",
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
