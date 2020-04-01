@@ -278,6 +278,20 @@
         "purpose": "characterization",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/",
-        "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM555HRK",
+        "aliases": [
+            "john-stamatoyannopoulos:HR_knockout"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "knockout",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "method": "homologous recombination",
+        "purpose": "repression",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
     }
 ]

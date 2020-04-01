@@ -275,7 +275,7 @@
                             "enum": ["knockout"]
                         },
                         "method": {
-                            "enum": ["site-specific recombination"]
+                            "enum": ["site-specific recombination", "homologous recombination"]
                         },
                         "purpose": {
                             "enum": ["repression"]
@@ -442,7 +442,8 @@
                                 "transient transfection",
                                 "transduction",
                                 "microinjection",
-                                "bombardment"
+                                "bombardment",
+                                "homologous recombination"
                             ]
                         }
                     }
@@ -723,7 +724,8 @@
                 "stable transfection",
                 "TALEN",
                 "transduction",
-                "transient transfection"
+                "transient transfection",
+                "homologous recombination"
             ]
         },
         "treatments": {

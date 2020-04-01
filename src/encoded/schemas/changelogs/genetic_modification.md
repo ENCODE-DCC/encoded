@@ -3,6 +3,7 @@
 ### Minor changes since schema version 9
 
 * Added *disruption*, *inhibition*, and *knockout* as enums in *category* for use with CRISPR screen data.
+* Added *homologous recombination* as enum in *method*, to be used with *knockout category* and with the *purpose* of *repression*.
 
 ### Schema version 9
 
