@@ -1295,6 +1295,7 @@
                         "genome compartments",
                         "genome index",
                         "genome reference",
+                        "gRNAs",
                         "hotspots",
                         "idat green channel",
                         "idat red channel",
@@ -1868,6 +1869,7 @@
         "positive control regions": "annotation",
         "safe-targeting gRNAs": "annotation",
         "regulatory elements": "annotation",
+        "gRNAs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
