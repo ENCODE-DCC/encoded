@@ -448,6 +448,8 @@ class CalculatedAssayTitle:
                 if len(set(CRISPR_gms)) == 1:
                     if 'activation' in CRISPR_gms:
                         preferred_name = 'CRISPR activation screen'
+                    elif 'deletion' in CRISPR_gms:
+                        preferred_name = 'CRISPR deletion screen'
                     elif 'disruption' in CRISPR_gms:
                         preferred_name = 'CRISPR disruption screen'
                     elif 'inhibition' in CRISPR_gms:
