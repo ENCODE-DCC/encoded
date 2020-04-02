@@ -58,6 +58,7 @@ def experiment_dnase(testapp, lab, award, heart):
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def ctrl_experiment(testapp, lab, award, cell_free):
     item = {
@@ -68,6 +69,7 @@ def ctrl_experiment(testapp, lab, award, cell_free):
         'assay_term_name': 'ChIP-seq'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def experiment_no_read_length(
@@ -365,6 +367,7 @@ def experiment_3():
         'status': "DELETED",
     }
 
+
 @pytest.fixture
 def experiment_6():
     return {
@@ -570,17 +573,6 @@ def ChIP_experiment(testapp, lab, award, cell_free, target, base_matched_set):
             base_matched_set['@id']]
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
-
-
-@pytest.fixture
-def pce_fcc_experiment(testapp, lab, award):
-        return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'pooled clone sequencing',
-        'schema_version': '2',
-        'status': 'in progress'
-    }
 
 
 @pytest.fixture

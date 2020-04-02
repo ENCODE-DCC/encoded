@@ -102,3 +102,23 @@ def functional_characterization_experiment_disruption_screen(testapp, lab, award
         'status': 'in progress'
     }
     return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def pce_fcc_experiment(testapp, lab, award):
+        return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'pooled clone sequencing',
+        'schema_version': '2',
+        'status': 'in progress'
+    }
+
+
+@pytest.fixture
+def pce_fcc_experiment_2(pce_fcc_experiment):
+    item = pce_fcc_experiment.copy()
+    item.update({
+        'schema_version': '4'
+    })
+    return item

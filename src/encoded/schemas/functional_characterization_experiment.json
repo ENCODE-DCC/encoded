@@ -5,7 +5,7 @@
     "id": "/profiles/functional_characterization_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name"],
+    "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -104,7 +104,7 @@
     "properties": {
         "schema_version": {
 
-            "default": "4"
+            "default": "5"
         },
         "assay_term_name": {
             "title": "Assay name",
