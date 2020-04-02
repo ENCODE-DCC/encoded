@@ -97,7 +97,7 @@ def test_functional_characterization_experiment_crispr_assay_title(testapp, func
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='CRISPR disruption screen'
     # more than one CRISPR characterization genetic modifications
-    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id'], activation_genetic_modification['@id']]})
+    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [disruption_genetic_modification['@id']]})
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [disruption_genetic_modification['@id'], activation_genetic_modification['@id']]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='CRISPR screen'
