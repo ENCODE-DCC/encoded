@@ -1,7 +1,6 @@
 import pytest
 
 
-
 @pytest.fixture
 def annotation_8(award, lab):
     return {

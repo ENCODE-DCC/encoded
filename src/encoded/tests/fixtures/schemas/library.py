@@ -21,6 +21,7 @@ def base_library(testapp, lab, award, base_biosample):
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def library_1(testapp, lab, award, base_biosample):
     item = {
@@ -142,6 +143,7 @@ def library_3_0(library_0_0):
     })
     return item
 
+
 @pytest.fixture
 def library_8_0(library_3_0):
     item = library_3_0.copy()
@@ -171,16 +173,6 @@ def library_schema_9b(lab, award):
         'extraction_method': 'see document ',
         'lysis_method': 'test',
     }
-
-@pytest.fixture
-def library_url(testapp, lab, award, biosample):
-    item = {
-        'nucleic_acid_term_name': 'DNA',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'biosample': biosample['@id'],
-    }
-    return testapp.post_json('/library', item).json['@graph'][0]
 
 
 @pytest.fixture

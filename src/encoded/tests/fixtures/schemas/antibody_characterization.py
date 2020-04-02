@@ -1,6 +1,7 @@
 import pytest
 from ...constants import *
 
+
 @pytest.fixture
 def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody_lot, organism, k562):
     characterization_review_list = [{
@@ -20,6 +21,7 @@ def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody
         'status': 'pending dcc review'
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def base_antibody_characterization1(testapp, lab, award, base_target1, antibody_lot, organism, k562, hepg2):

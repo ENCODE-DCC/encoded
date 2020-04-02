@@ -11,6 +11,7 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
+
 @pytest.fixture
 def pipeline_1():
     return {
@@ -53,6 +54,7 @@ def pipeline_8(award, lab):
         'award': award['uuid'],
         'lab': lab['uuid'],
     }
+
 
 @pytest.fixture
 def pipeline_bam(testapp, lab, award, analysis_step_bam):

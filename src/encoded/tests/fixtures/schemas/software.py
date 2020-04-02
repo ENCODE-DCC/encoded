@@ -29,4 +29,3 @@ def software(testapp, award, lab):
         "lab": lab['@id'],
     }
     return testapp.post_json('/software', item).json['@graph'][0]
-

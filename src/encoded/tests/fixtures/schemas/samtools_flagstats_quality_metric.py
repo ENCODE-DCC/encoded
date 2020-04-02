@@ -11,6 +11,7 @@ def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award,
     }
     return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
 
+
 @pytest.fixture
 def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
     item = {

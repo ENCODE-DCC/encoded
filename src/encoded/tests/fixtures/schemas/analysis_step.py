@@ -2,18 +2,6 @@ import pytest
 
 
 @pytest.fixture
-def analysis_step_bam(testapp):
-    item = {
-        'step_label': 'bamqc-step',
-        'title': 'bamqc step',
-        'major_version': 1,
-        'input_file_types': ['reads'],
-        'analysis_step_types': ['QA calculation']
-    }
-    return testapp.post_json('/analysis_step', item).json['@graph'][0]
-
-
-@pytest.fixture
 def base_analysis_step(testapp, software_version):
     item = {
         'name': 'lrna-pe-star-alignment-step-v-2-0',
@@ -38,7 +26,6 @@ def analysis_step(testapp):
 
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
-
 
 
 @pytest.fixture

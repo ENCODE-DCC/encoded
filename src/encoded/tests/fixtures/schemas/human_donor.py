@@ -29,6 +29,7 @@ def human_donor_1(testapp, award, lab, human):
     }
     return testapp.post_json('/human_donor', item).json['@graph'][0]
 
+
 @pytest.fixture
 def parent_human_donor(testapp, award, lab, human):
     item = {
@@ -47,6 +48,7 @@ def child_human_donor(testapp, award, lab, human):
         'organism': human['@id']
     }
     return testapp.post_json('/human_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def human_donor_1_0(lab, award, organism):
@@ -75,6 +77,7 @@ def human_donor_2(human_donor_1_0):
         'age': '11.0'
     })
     return item
+
 
 @pytest.fixture
 def human_donor_6(root, donor_1):
@@ -111,6 +114,7 @@ def human_donor_10(root, donor_1):
         'genetic_modifications': []
     })
     return properties
+
 
 @pytest.fixture
 def donor_1(testapp, lab, award, organism):

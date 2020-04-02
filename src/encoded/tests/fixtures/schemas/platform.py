@@ -39,6 +39,7 @@ def platform_6(platform_0_0):
     })
     return item
 
+
 @pytest.fixture
 def platform1(testapp):
     item = {

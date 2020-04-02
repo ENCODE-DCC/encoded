@@ -20,13 +20,13 @@ def treatment_5(testapp, organism):
 
 
 @pytest.fixture
-def treatment_2(testapp, organism):
-    item = {
-        'treatment_term_name': 'ethanol',
-        'treatment_type': 'chemical'
-    }
-    return testapp.post_json('/treatment', item).json['@graph'][0]
-
+def treatment_2(treatment_0_0):
+    item = treatment_0_0.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'CURRENT',
+    })
+    return item
 
 
 @pytest.fixture
@@ -54,16 +54,6 @@ def treatment_1(treatment_0_0, award):
         'schema_version': '1',
         'encode2_dbxrefs': ['Estradiol_1nM'],
         'award': award['uuid'],
-    })
-    return item
-
-
-@pytest.fixture
-def treatment_2(treatment_0_0):
-    item = treatment_0_0.copy()
-    item.update({
-        'schema_version': '2',
-        'status': 'CURRENT',
     })
     return item
 

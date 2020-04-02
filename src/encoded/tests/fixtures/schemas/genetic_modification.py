@@ -523,6 +523,7 @@ def interference_genetic_modification(
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
+
 @pytest.fixture
 def crispr_knockout(lab, award):
     return {

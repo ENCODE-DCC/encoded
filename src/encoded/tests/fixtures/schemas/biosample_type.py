@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def heart(testapp):
     item = {
@@ -20,7 +21,6 @@ def cell_free(testapp):
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
 
 
-
 @pytest.fixture
 def ntr_biosample_type(testapp):
     item = {
@@ -39,6 +39,7 @@ def id_nonexist_biosample_type(testapp):
         'classification': 'single cell',
     }
     return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def purkinje_cell(testapp):
@@ -215,4 +216,3 @@ def liver(testapp):
         'classification': 'tissue',
     }
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
-
