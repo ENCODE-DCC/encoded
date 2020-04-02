@@ -1134,9 +1134,8 @@
         "cropped_read_length": {
             "title": "Cropped read length (nt)",
             "permission": "import_items",
-            "description": "The length of the reads actually cropped in FASTQ, if the original read length was cropped.",
-            "comment": "This is used when the original sequenced read lengths in fastq were cropped as bams with cropped read length may provide different bams.",
-            "type": "integer",
+            "description": "Length the FASTQ reads were cropped to prior to alignment.",
+            "comment": "The actual read length could be up to 2 bp shorter than the specified cropped read length value.",
             "minimum": 0
         },
         "mapped_read_length": {
