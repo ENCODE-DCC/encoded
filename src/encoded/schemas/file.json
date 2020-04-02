@@ -1136,6 +1136,7 @@
             "permission": "import_items",
             "description": "Length the FASTQ reads were cropped to prior to alignment.",
             "comment": "The actual read length could be up to 2 bp shorter than the specified cropped read length value.",
+            "type": "integer",
             "minimum": 0
         },
         "mapped_read_length": {
