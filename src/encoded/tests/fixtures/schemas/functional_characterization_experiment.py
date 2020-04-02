@@ -40,13 +40,14 @@ def functional_characterization_experiment(testapp, lab, award, cell_free):
 
 
 @pytest.fixture
-def functional_characterization_experiment_4(testapp, lab, award):
+def functional_characterization_experiment_4(testapp, lab, award, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'CRISPR screen',
         'status': 'in progress',
-        'target_expression_percentile': 70
+        'target_expression_percentile': 70,
+        'biosample_ontology': heart['uuid']
     }
     return item
 
@@ -67,11 +68,12 @@ def functional_characterization_experiment_5(testapp, lab, award, ctcf):
     
 
 @pytest.fixture
-def functional_characterization_experiment_6(testapp, lab, award, ctcf):
+def functional_characterization_experiment_6(testapp, lab, award, ctcf, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'examined_loci': [{
              'gene': ctcf['uuid']
