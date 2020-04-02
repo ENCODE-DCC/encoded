@@ -613,3 +613,14 @@ def HR_knockout(lab, award, target):
         'method': 'homologous recombination',
         'modified_site_by_target_id': target['@id']
     }
+
+
+@pytest.fixture
+def CRISPR_introduction(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'method': 'transduction'
+    }

@@ -294,5 +294,19 @@
         "modified_site_by_gene_id": "/genes/912/",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM555CRP",
+        "aliases": [
+            "robert-waterston:CRISPR_step_one"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "introduced_elements": "gRNAs and CRISPR machinery",
+        "lab": "/labs/robert-waterston/",
+        "method": "transient transfection",
+        "purpose": "expression",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
     }
 ]

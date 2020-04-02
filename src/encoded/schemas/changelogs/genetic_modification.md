@@ -4,6 +4,7 @@
 
 * Added *disruption*, *inhibition*, and *knockout* as enums in *category* for use with CRISPR screen data.
 * Added *homologous recombination* as enum in *method*, to be used with *knockout category* and with the *purpose* of *repression*.
+* Added *gRNAs and CRISPR machinery* to *introduced_elements* enum, to indicate the first step in a CRISPR screen.
 
 ### Schema version 9
 
