@@ -273,7 +273,7 @@
             "minimum": 0
         },
         "fragmentation_duration_time_units": {
-            "title": "Nucleic acid starting quantity units",
+            "title": "Fragmentation duration time units",
             "description": "The units used for time spent undergoing fragmentation.",
             "type": "string",
             "enum": [
