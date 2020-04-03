@@ -106,11 +106,24 @@
                         },
                         {
                             "required": ["introduced_gene"]
-                        },
-                        {
-                            "required": {"introduced_elements": "gRNAs and CRISPR machinery"}
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["expression"]
+                        },
+                        "category": {
+                            "enum": ["insertion"]
+                        },
+                        "introduced_elements": {
+                            "enum": ["gRNAs and CRISPR machinery"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
+                    }
                 },
                 {
                     "properties": {
@@ -139,59 +152,64 @@
                     "oneOf": [
                         {
                             "anyOf": [
-                            {
-                                "required": ["introduced_tags"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    },
-                                    "purpose": {
-                                        "enum": ["tagging"]
-                                    }
-                                }
-                            },
-                            {
-                                "required": ["introduced_sequence"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    }
-                                }
-                            },
-                            {
-                                "required": ["introduced_gene"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    }
-                                }
-                            }
-                        ]},
-                        {
-                            "oneOf": [
                                 {
-                                    "required": ["modified_site_nonspecific", "introduced_elements"],
-                                    "not": {
-                                        "properties": {
-                                            "introduced_elements": {"enum": "gRNAs and CRISPR machinery"}
+                                    "required": ["introduced_tags"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        },
+                                        "purpose": {
+                                            "enum": ["tagging"]
                                         }
-                                    },
+                                    }
+                                },
+                                {
+                                    "required": ["introduced_sequence"],
                                     "properties": {
                                         "category": {
                                             "enum": ["insertion"]
                                         }
                                     }
-                                },    
-                                {    
-                                    "required": {"introduced_elements": "gRNAs and CRISPR machinery"},
+                                },
+                                {
+                                    "required": ["introduced_gene"],
                                     "properties": {
-                                        "category": {"enum": "insertion"},
-                                        "purpose": {"enum": "expression"},
-                                        "method": {"enum": ["transduction", "transient transfection"]}
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        }
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific", "introduced_elements"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                }
+                            }
+                        },
+                        {    
+                            "not": {
+                                "required": ["modified_site_nonspecific"]
+                            },
+                            "required": ["introduced_elements"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["expression"]
+                                },
+                                "method": {
+                                    "enum": ["transduction", "transient transfection"]
+                                },
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
+                                }
+                            }
                         }
+
                     ]
                 },
                 {
@@ -348,7 +366,6 @@
                             }
                         },
                         {
-                            "required": {"introduced_elements": ["gRNAs and CRISPR machinery"]},
                             "properties": {
                                 "category": {
                                     "enum": ["insertion"]
@@ -358,6 +375,12 @@
                                 },
                                 "method": {
                                     "enum": ["transduction", "transient transfection"]
+                                },
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
+                                },
+                                "not":{
+                                    "required": ["modified_site_nonspecific"]
                                 }
                             }
                         }
@@ -380,26 +403,6 @@
                                 "introduced_elements": {
                                     "enum": ["sheared genomic DNA", "genomic DNA regions"]
                                 }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "oneOf": [
-                        {
-                            "not": {
-                                "properties": {
-                                    "introduced_elements": {"enum": ["gRNAs and CRISPR machinery"]
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "introduced_elements": {"enum": ["gRNAs and CRISPR machinery"]},
-                                "category": {"enum": ["insertion"]},
-                                "purpose": {"enum": ["expression"]},
-                                "method": {"enum": ["transduction", "transient transfection"]}
                             }
                         }
                     ]
