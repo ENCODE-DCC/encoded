@@ -55,16 +55,16 @@ class Patient extends React.Component {
     window.removeEventListener('scroll', this.listenToScroll)
   }
 
-  createPathPanel(){
+  createPathPanel() {
     let list = [];
-    let surgeryData= this.props.context.surgery;
-    if (surgeryData.length > 1){
+    let surgeryData = this.props.context.surgery;
+    if (surgeryData.length > 1) {
       surgeryData.sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
     }
-    for(let i = 0; i < surgeryData.length; i++){
+    for (let i = 0; i < surgeryData.length; i++) {
       list.push(<div data-test="surgery"><dt>Surgery Date</dt><dd>{surgeryData[i].date}</dd> </div>)
-      if (surgeryData[i].pathology_report && surgeryData[i].pathology_report.length>0) {
-        for(let j = 0; j < surgeryData[i].pathology_report.length; j++) {
+      if (surgeryData[i].pathology_report && surgeryData[i].pathology_report.length > 0) {
+        for (let j = 0; j < surgeryData[i].pathology_report.length; j++) {
           list.push(<div data-test="surgery.pathology_report"><dt>pathology_report</dt><dd><a href={surgeryData[i].pathology_report[j]['@id']}>{surgeryData[i].pathology_report[j].accession}</a></dd> </div>)
           list.push(<div data-test="surgery.pathology_report"><dt>Histologic Subtype</dt><dd>{surgeryData[i].pathology_report[j].histology}</dd> </div>)
           list.push(<div data-test="surgery.pathology_report"><dt>pT stage</dt><dd>{surgeryData[i].pathology_report[j].t_stage}</dd> </div>)
@@ -93,24 +93,20 @@ class Patient extends React.Component {
     const crumbsReleased = (context.status === 'released');
     let hasLabs = false;
     let hasVitals = false;
-    let hasRadiation = false;
-    let hasMedication = false;
-    let hasSurgery=false;
-    let hasIHC=false;
-    let hasBiospecimen = false;
     let hasPath = false;
+    let hasSurgery = false;
+    let hasIHC = false;
+    let hasMedication = false;
+    let hasRadiation = false;
+    let hasBiospecimen = false;
     if (Object.keys(this.props.context.labs).length > 0) {
       hasLabs = true;
     }
     if (Object.keys(this.props.context.vitals).length > 0) {
       hasVitals = true;
     }
-
-    if (Object.keys(this.props.context.radiation).length > 0) {
-      hasRadiation = true;
-    }
-    if (Object.keys(this.props.context.medications).length > 0) {
-      hasMedication = true;
+    if (Object.keys(this.props.context.surgery).length > 0) {
+      hasPath = true;
     }
     if (Object.keys(this.props.context.surgery).length > 0) {
       hasSurgery = true;
@@ -118,13 +114,15 @@ class Patient extends React.Component {
     if (Object.keys(this.props.context.ihc).length > 0) {
       hasIHC = true;
     }
+    if (Object.keys(this.props.context.medications).length > 0) {
+      hasMedication = true;
+    }
+    if (Object.keys(this.props.context.radiation).length > 0) {
+      hasRadiation = true;
+    }
     if (Object.keys(this.props.context.biospecimen).length > 0) {
       hasBiospecimen = true;
     }
-    if(Object.keys(this.props.context.surgery).length > 0){
-      hasPath = true;
-    }
-
     const labsPanelBody = (
       <PatientChart chartId="labsChart" data={context.labs} ></PatientChart>
 
@@ -132,14 +130,15 @@ class Patient extends React.Component {
     const vitalsPanelBody = (
       <PatientChart chartId="vitalChart" data={context.vitals} ></PatientChart>
     );
-    const radiationPanelBody = (
-      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
+    const surgeryPanelBody = (
+      <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time"></SurgeryChart>
     );
+
     const medicationPanelBody = (
       <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
     );
-    const surgeryPanelBody = (
-      <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time"></SurgeryChart>
+    const radiationPanelBody = (
+      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -193,16 +192,15 @@ class Patient extends React.Component {
             </dl>
           </PanelBody>
         </Panel>
-        {hasPath && <PatientPathTable data={context.surgery} tableTitle="Patient Diagnosis"></PatientPathTable>}
         {hasLabs && <CollapsiblePanel panelId="myPanelId1" title="Lab Results Over Time" content={labsPanelBody} />}
         {hasVitals && <CollapsiblePanel panelId="myPanelId2" title="Vital Results Over Time" content={vitalsPanelBody} />}
-        {hasRadiation && <CollapsiblePanel panelId="myPanelId3" title="Radiation History" content={radiationPanelBody} />}
+        {hasPath && <PatientPathTable data={context.surgery} tableTitle="Patient Diagnosis"></PatientPathTable>}
+        {hasSurgery && <CollapsiblePanel panelId="myPanelId3" title="Surgical Results Over Time" content={surgeryPanelBody} />}
+        {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
         {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
-        {hasSurgery && <CollapsiblePanel panelId="myPanelId5" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
-        {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
-        { hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
-
+        {hasRadiation && <CollapsiblePanel panelId="myPanelId5" title="Radiation History" content={radiationPanelBody} />}
+        {hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
     );
