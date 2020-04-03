@@ -303,6 +303,13 @@ const ExperimentComponent = (props, reactContext) => {
 
     const uniqueTreatments = getUniqueTreatments(treatments);
 
+    let experimentSeries = [];
+    if (result.related_series && result.related_series.length > 0) {
+        experimentSeries = result.related_series.filter(
+            series => series['@type'].includes('ExperimentSeries')
+        );
+    }
+
     return (
         <li className={resultItemClass(result)}>
             <div className="result-item">
@@ -350,6 +357,19 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     </div>
                                 : null}
+                                {experimentSeries.length > 0 ?
+                                    <div>
+                                        <strong>Related experiment series: </strong>
+                                        {experimentSeries.map(
+                                            series => (
+                                                <a href={series['@id']} key={series.accession}>
+                                                    {series.accession}
+                                                </a>
+                                            )
+                                        )}
+                                    </div> :
+                                    null
+                                }
                             </React.Fragment>
                         : null}
                     </div>

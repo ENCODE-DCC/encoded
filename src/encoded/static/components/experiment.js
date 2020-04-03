@@ -456,10 +456,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // indicates isogenic.
     const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
-    // Get a list of related datasets, possibly filtering on their status.
-    let seriesList = [];
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    const seriesMap = {};
     if (context.related_series && context.related_series.length > 0) {
-        seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
+        context.related_series.forEach(
+            (series) => {
+                if (loggedIn || series.status === 'released') {
+                    if (series['@type'][0] in seriesMap) {
+                        seriesMap[series['@type'][0]].push(series);
+                    } else {
+                        seriesMap[series['@type'][0]] = [series];
+                    }
+                }
+            }
+        );
     }
 
     // Set up the breadcrumbs.
@@ -720,12 +731,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {seriesList.length > 0 ?
-                                <div data-test="relatedseries">
-                                    <dt>Related datasets</dt>
-                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                            {Object.keys(seriesMap).map(seriesType =>
+                                <div data-test="relatedseries" key={seriesType}>
+                                    <dt>Related {seriesType.replace(/([A-Z])/g, ' $1')}</dt>
+                                    <dd>
+                                        <RelatedSeriesList seriesList={seriesMap[seriesType]} />
+                                    </dd>
                                 </div>
-                            : null}
+                            )}
 
                             {context.submitter_comment ?
                                 <div data-test="submittercomment">
