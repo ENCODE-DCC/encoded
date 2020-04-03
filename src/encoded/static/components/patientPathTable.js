@@ -12,32 +12,37 @@ class patientPathTable extends React.Component {
     transformData(data) {
         let surgeryData = [];
         let index = 0;
-        let obj = {};
+
         for (let i = 0; i < data.length; i++) {
-            obj = {
+            let obj1 = {
                 surgery_accession: data[i].accession,
                 surgery_id: data[i]['@id'],
                 surgery_date: data[i].date,
             }
             if (data[i].pathology_report.length > 0) {
                 for (let j = 0; j < data[i].pathology_report.length; j++) {
-
-                    obj.path_accession = data[i].pathology_report[j].accession;
-                    obj.path_id = data[i].pathology_report[j]['@id'];
-                    obj.path_histology = data[i].pathology_report[j].histology;
-                    obj.t_stage = data[i].pathology_report[j].t_stage;
-                    obj.n_stage = data[i].pathology_report[j].n_stage;
-                    obj.m_stage = data[i].pathology_report[j].m_stage;
+                    let obj2 = {
+                        surgery_accession: data[i].accession,
+                        surgery_id: data[i]['@id'],
+                        surgery_date: data[i].date,
+                        path_accession: data[i].pathology_report[j].accession,
+                        path_id: data[i].pathology_report[j]['@id'],
+                        path_histology: data[i].pathology_report[j].histology,
+                        t_stage: data[i].pathology_report[j].t_stage,
+                        n_stage: data[i].pathology_report[j].n_stage,
+                        m_stage: data[i].pathology_report[j].m_stage,
+                    }
+                    
 
                 
                 
-                     surgeryData[index] = obj;
+                     surgeryData[index] = obj2;
                      index++;
 
                 }
                 
             } else {
-                surgeryData[index] = obj;
+                surgeryData[index] = obj1;
                 index++;
             }
 
@@ -98,4 +103,5 @@ class patientPathTable extends React.Component {
 }
 
 export default patientPathTable;
+
 

@@ -208,16 +208,16 @@
             "title": "Genomics File Output Type"
         },
         "surgery.pathology_report.t_stage": {
-            "title": "pT stage"
+            "title": "pT Stage"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN stage"
+            "title": "pN Stage"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM stage"
+            "title": "pM Stage"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": "TNM stage"
+            "title": "TNM Stage"
         }
 
     },
