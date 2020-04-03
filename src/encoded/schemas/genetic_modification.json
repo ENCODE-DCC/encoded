@@ -355,6 +355,13 @@
                                 "purpose": {
                                     "enum": ["characterization"]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["gRNAs and CRISPR machinery"]
+                                    }
+                                }
                             }
                         },
                         {
@@ -365,6 +372,13 @@
                                 },
                                 "purpose": {
                                     "enum": ["characterization"]
+                                }
+                            },
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["gRNAs and CRISPR machinery"]
+                                    }
                                 }
                             }
                         },

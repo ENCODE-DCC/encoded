@@ -298,15 +298,15 @@
     {
         "accession": "ENCGM555CRP",
         "aliases": [
-            "robert-waterston:CRISPR_step_one"
+            "bing-ren:CRISPR_step_one"
         ],
         "award": "/awards/U41HG007355/",
         "category": "insertion",
         "introduced_elements": "gRNAs and CRISPR machinery",
-        "lab": "/labs/robert-waterston/",
-        "method": "transient transfection",
+        "lab": "/labs/bing-ren/",
+        "method": "transduction",
         "purpose": "expression",
         "status": "released",
-        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+        "submitted_by": "/users/dignissim.euismod@amet.habitant/"
     }
 ]
