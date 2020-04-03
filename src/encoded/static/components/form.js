@@ -688,7 +688,7 @@ export class Field extends UpdateChildMixin(React.Component) {
                 searchBase={`?mode=picker&type=${schema.linkTo}`}
             />);
         } else if (schema.type === 'boolean') {
-            input = <input type="checkbox" {...inputProps} />;
+            input = <input type="checkbox" {...inputProps} checked={!!inputProps.value} />;
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {
