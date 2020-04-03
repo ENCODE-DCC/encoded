@@ -733,7 +733,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
                             {Object.keys(seriesMap).map(seriesType =>
                                 <div data-test="relatedseries" key={seriesType}>
-                                    <dt>Related {seriesType.replace(/([A-Z])/g, ' $1')}</dt>
+                                    <dt>{seriesType.replace(/([A-Z])/g, ' $1')}</dt>
                                     <dd>
                                         <RelatedSeriesList seriesList={seriesMap[seriesType]} />
                                     </dd>

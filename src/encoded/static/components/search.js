@@ -359,7 +359,7 @@ const ExperimentComponent = (props, reactContext) => {
                                 : null}
                                 {experimentSeries.length > 0 ?
                                     <div>
-                                        <strong>Related experiment series: </strong>
+                                        <strong>Experiment series: </strong>
                                         {experimentSeries.map(
                                             series => (
                                                 <a href={series['@id']} key={series.accession}>
