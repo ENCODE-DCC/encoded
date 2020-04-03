@@ -286,24 +286,38 @@ class Experiment(Dataset,
                         file_object['analysis_step_version'],
                         '@@object?skip_calculated=true'
                     )['analysis_step']
-                    pipelines |= set(
+                    file_pipelines = set(
                         request.embed(
                             analysis_step,
                             '@@object_with_select_calculated_properties?field=pipelines'
                         ).get('pipelines', [])
                     )
-                    for pipeline in pipelines:
+                    # Processed data must come from a pipeline.
+                    # No need to match lab is there is only one.
+                    # One lab can produce data using another lab's pipeline.
+                    skip_pipeline_filter = len(file_pipelines) == 1
+                    for pipeline in file_pipelines:
                         pipeline_object = request.embed(
                             pipeline,
                             '@@object?skip_calculated=true'
                         )
+                        # When there are > 1 pipelines, it's hard to whether a
+                        # lab produces data using another lab's pipeline.
+                        # Therefore, file and pipeline lab/origin match is
+                        # enforced here
+                        if (
+                            not skip_pipeline_filter
+                            and pipeline_object['lab'] != file_object['lab']
+                        ):
+                            continue
+                        pipelines.add(pipeline)
+                        pipeline_labs.add(pipeline_object['lab'])
                         pipeline_award_rfas.add(
                             request.embed(
                                 pipeline_object['award'],
                                 '@@object?skip_calculated=true'
                             )['rfa']
                         )
-                        pipeline_labs.add(pipeline_object['lab'])
             analysis['assemblies'] = sorted(assemblies)
             analysis['genome_annotations'] = sorted(genome_annotations)
             analysis['pipelines'] = sorted(pipelines)
