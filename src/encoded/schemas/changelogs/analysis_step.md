@@ -12,6 +12,7 @@
             "safe-targeting gRNAs",
             "subreads"
         ]
+* *gRNAs* was added to the enum list of *input_file_types* and *output_file_types*.
 
 ### Schema version 8
 
