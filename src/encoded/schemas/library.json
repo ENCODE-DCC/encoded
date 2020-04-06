@@ -30,6 +30,8 @@
     "dependencies": {
         "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+        "fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
+        "fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
         "product_id": ["source"],
         "lot_id": ["source", "product_id"]
     },
@@ -183,6 +185,7 @@
                 {
                     "enum": [
                         "Ambion mirVana",
+                        "Animal tissue kit (Norgen Biotek cat#: 25700)",
                         "ATAC-seq (Greenleaf & Chang Lab protocol)",
                         "C1 fluidigm",
                         "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
@@ -226,6 +229,7 @@
                     "chemical (MboI restriction)",
                     "chemical (micrococcal nuclease)",
                     "chemical (NcoI restriction)",
+                    "chemical (NEBNext Ultra II Directional)",
                     "chemical (Nextera tagmentation)",
                     "chemical (RNase III)",
                     "chemical (Tn5 transposase)",
@@ -260,6 +264,21 @@
             "anyOf": [
                 {"format": "date-time"},
                 {"format": "date"}
+            ]
+        },
+        "fragmentation_duration_time": {
+            "title": "Fragmentation duration time",
+            "description": "The amount of time a library spent undergoing fragmentation.",
+            "type": "number",
+            "minimum": 0
+        },
+        "fragmentation_duration_time_units": {
+            "title": "Fragmentation duration time units",
+            "description": "The units used for time spent undergoing fragmentation.",
+            "type": "string",
+            "enum": [
+                "seconds",
+                "minutes"
             ]
         },
         "library_size_selection_method": {

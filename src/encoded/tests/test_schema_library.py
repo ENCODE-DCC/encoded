@@ -11,3 +11,13 @@ def test_library_fragmentation_method_string(testapp, library_with_invalid_fragm
 
 def test_library_fragmentation_method_list(testapp, library_with_valid_fragmentation_method_list):
     testapp.post_json('/library', library_with_valid_fragmentation_method_list, status=201)
+
+
+def test_library_fragmentation_method_list(testapp, library_with_valid_fragmentation_method_list):
+    testapp.post_json('/library', library_with_valid_fragmentation_method_list, status=201)
+    library_with_valid_fragmentation_method_list.update({'fragmentation_duration_time': 5})
+    testapp.post_json('/library', library_with_valid_fragmentation_method_list, status=422)
+    library_with_valid_fragmentation_method_list.update({'fragmentation_duration_time_units': 'minutes'})
+    testapp.post_json('/library', library_with_valid_fragmentation_method_list, status=201)
+    library_with_valid_fragmentation_method_list.pop('fragmentation_methods')
+    testapp.post_json('/library', library_with_valid_fragmentation_method_list, status=422)
