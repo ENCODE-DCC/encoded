@@ -18,7 +18,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged } from './typeutils';
+import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable } from './typeutils';
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
@@ -588,12 +588,13 @@ const ComputationalModel = auditDecor(ComputationalModelComponent);
 globals.contentViews.register(ComputationalModel, 'ComputationalModel');
 
 
-// Display Annotation page, a subtype of Dataset.
+// Display Reference page, a subtype of Dataset.
 const ReferenceComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -723,6 +724,8 @@ const ReferenceComponent = (props, reactContext) => {
             <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments using ${context.accession}`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>

@@ -392,15 +392,18 @@ const experimentTableColumns = {
 export const ExperimentTable = ({ items, limit, total, url, title }) => {
     // If there's a limit on entries to display and the array is greater than that limit, then
     // clone the array with just that specified number of elements.
-    const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+    if (items.length > 0) {
+        const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
 
-    return (
-        <div>
-            <SortTablePanel title={title}>
-                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
-            </SortTablePanel>
-        </div>
-    );
+        return (
+            <div>
+                <SortTablePanel title={title}>
+                    <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
+                </SortTablePanel>
+            </div>
+        );
+    }
+    return null;
 };
 
 ExperimentTable.propTypes = {
