@@ -50,6 +50,15 @@
                     "enum": ["genome"]
                     }
             }
+        },
+        "examined_loci": {
+            "comment": "The loci whose expression or product is under investigation for the functional characterization experiment.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
         }
     },
     "properties": {
@@ -92,6 +101,21 @@
                 "type": "string",
                 "comment": "See software_version.json for available identifiers.",
                 "linkTo": "SoftwareVersion"
+            }
+        },
+        "examined_loci": {
+            "title": "Examined loci",
+            "description": "The loci whose expression or product is under investigation for the functional characterization experiment.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "title": "Gene",
+                "description": "The gene under investigation.",
+                "comment": "see gene.json for available identifiers",
+                "type": "string",
+                "linkTo": "Gene"
             }
         }
     },

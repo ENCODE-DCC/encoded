@@ -661,6 +661,23 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.examined_loci && context.examined_loci.length > 0 ?
+                                <div data-test="examinedloci">
+                                    <dt>Examined loci</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.examined_loci.map(examined_locus => (
+                                                <li key={examined_locus['@id']} className="multi-comma">
+                                                    <a href={examined_locus['@id']}>
+                                                        {examined_locus.symbol}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.software_used && context.software_used.length > 0 ?
                                 <div data-test="softwareused">
                                     <dt>Software used</dt>
