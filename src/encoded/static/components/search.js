@@ -361,10 +361,13 @@ const ExperimentComponent = (props, reactContext) => {
                                     <div>
                                         <strong>Experiment series: </strong>
                                         {experimentSeries.map(
-                                            series => (
-                                                <a href={series['@id']} key={series.accession}>
-                                                    {series.accession}
-                                                </a>
+                                            (series, i) => (
+                                                <span key={series.accession}>
+                                                    {i > 0 ? ', ' : null}
+                                                    <a href={series['@id']}>
+                                                        {series.accession}
+                                                    </a>
+                                                </span>
                                             )
                                         )}
                                     </div> :
