@@ -3048,5 +3048,20 @@
         "output_type": "safe-targeting gRNAs",
         "file_size": 9876,
         "md5sum": "201656583255e6072bf3755f3b65f885"
+    },
+    {
+        "_test": "regulatory elements",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/encode-processing-pipeline/",
+        "dataset": "ENCSR500ELM",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "024b5182-314c-4ae7-8629-ef8d1bc7053b",
+        "accession": "ENCFF123ACC",
+        "file_format": "tsv",
+        "output_type": "regulatory elements",
+        "file_size": 9876,
+        "md5sum": "4361ad9343a322ad7cf4379de9acf6aa"
     }
 ]

@@ -5,6 +5,7 @@
 * *personalized genome assembly* was also added to the enum list for *analysis_step_types*.
 * The following enums were added to the list for *input_file_types* and *output_file_types*:
         [
+            "regulatory elements",
             "negative control regions",
             "non-targeting gRNAs",
             "positive control regions",
