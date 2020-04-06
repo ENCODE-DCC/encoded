@@ -456,7 +456,7 @@ class Replicate(Item):
             "linkTo": "Library"
         }
     })
-    def libraries(self, status, biological_replicate_number,
+    def libraries(self, request, status, biological_replicate_number,
                   technical_replicate_number):
         if status == 'deleted':
             return []
@@ -483,4 +483,4 @@ class Replicate(Item):
                 libraries.add(rep_props['library'])
         # This is the "first" techinical replicate within the isogenic
         # replciate. Therefore, libraries should be calculated.
-        return list(libraries)
+        return [request.resource_path(root.get_by_uuid(lib)) for lib in libraries]
