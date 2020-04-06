@@ -303,10 +303,12 @@ const ExperimentComponent = (props, reactContext) => {
 
     const uniqueTreatments = getUniqueTreatments(treatments);
 
-    let experimentSeries = [];
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
     if (result.related_series && result.related_series.length > 0) {
-        experimentSeries = result.related_series.filter(
-            series => series['@type'].includes('ExperimentSeries')
+        seriesMap = _.groupBy(
+            result.related_series, series => series['@type'][0]
         );
     }
 
@@ -357,10 +359,10 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     </div>
                                 : null}
-                                {experimentSeries.length > 0 ?
-                                    <div>
-                                        <strong>Experiment series: </strong>
-                                        {experimentSeries.map(
+                                {Object.keys(seriesMap).map(seriesType =>
+                                    <div key={seriesType}>
+                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
+                                        {seriesMap[seriesType].map(
                                             (series, i) => (
                                                 <span key={series.accession}>
                                                     {i > 0 ? ', ' : null}
@@ -370,9 +372,8 @@ const ExperimentComponent = (props, reactContext) => {
                                                 </span>
                                             )
                                         )}
-                                    </div> :
-                                    null
-                                }
+                                    </div>
+                                )}
                             </React.Fragment>
                         : null}
                     </div>

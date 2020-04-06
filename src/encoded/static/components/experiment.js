@@ -458,18 +458,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
     // Get a map of related datasets, possibly filtering on their status and
     // categorized by their type.
-    const seriesMap = {};
+    let seriesMap = {};
     if (context.related_series && context.related_series.length > 0) {
-        context.related_series.forEach(
-            (series) => {
-                if (loggedIn || series.status === 'released') {
-                    if (series['@type'][0] in seriesMap) {
-                        seriesMap[series['@type'][0]].push(series);
-                    } else {
-                        seriesMap[series['@type'][0]] = [series];
-                    }
-                }
-            }
+        seriesMap = _.groupBy(
+            context.related_series.filter(
+                dataset => loggedIn || dataset.status === 'released'
+            ),
+            series => series['@type'][0]
         );
     }
 
