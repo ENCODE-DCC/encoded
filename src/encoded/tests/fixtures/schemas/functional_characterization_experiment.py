@@ -90,3 +90,15 @@ def base_fcc_experiment(testapp, lab, award, heart):
         'status': 'in progress'
     }
     return testapp.post_json('/functional-characterization-experiments', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def functional_characterization_experiment_disruption_screen(testapp, lab, award, liver):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': liver['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]

@@ -424,6 +424,43 @@ class CalculatedAssayTitle:
                         preferred_name = 'Histone ChIP-seq'
                     else:
                         preferred_name = 'TF ChIP-seq'
+            elif preferred_name == 'CRISPR screen' and not control_type and replicates is not None:
+                CRISPR_gms = []
+                for rep in replicates:
+                    replicate_object = request.embed(rep, '@@object?skip_calculated=true')
+                    if replicate_object['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'library' in replicate_object:
+                        library_object = request.embed(replicate_object['library'], '@@object?skip_calculated=true')
+                        if library_object['status'] in ('deleted', 'revoked'):
+                            continue
+                        if 'biosample' in library_object:
+                            biosample_object = request.embed(library_object['biosample'], '@@object')
+                            if biosample_object['status'] in ('deleted', 'revoked'):
+                                continue
+                            genetic_modifications = biosample_object.get('applied_modifications')
+                            if genetic_modifications:
+                                for gm in genetic_modifications:
+                                    gm_object = request.embed(gm, '@@object?skip_calculated=true')
+                                    if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
+                                        CRISPR_gms.append(gm_object['category'])
+                # Return a specific CRISPR assay title if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications
+                if len(set(CRISPR_gms)) == 1:
+                    if 'activation' in CRISPR_gms:
+                        preferred_name = 'CRISPR activation screen'
+                    elif 'deletion' in CRISPR_gms:
+                        preferred_name = 'CRISPR deletion screen'
+                    elif 'disruption' in CRISPR_gms:
+                        preferred_name = 'CRISPR disruption screen'
+                    elif 'inhibition' in CRISPR_gms:
+                        preferred_name = 'CRISPR inhibition screen'
+                    elif 'interference' in CRISPR_gms:
+                        preferred_name = 'CRISPR interference screen'
+                    elif 'knockout' in CRISPR_gms:
+                        preferred_name = 'CRISPR knockout screen'
+                # If there is more than one category type for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
+                if len(set(CRISPR_gms)) > 1:
+                    preferred_name = 'CRISPR screen'
             elif control_type and assay_term_name == 'eCLIP':
                 preferred_name = 'Control eCLIP'
             elif control_type == 'control' and assay_term_name in ['MPRA', 'CRISPR screen', 'STARR-seq']:

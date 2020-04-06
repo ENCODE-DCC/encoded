@@ -952,6 +952,9 @@
         "donor": "ENCDO000HUM",
         "lab": "gregory-crawford",
         "organism": "human",
+        "genetic_modifications": [
+            "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        ],
         "source": "dana-levasseur",
         "status": "released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",

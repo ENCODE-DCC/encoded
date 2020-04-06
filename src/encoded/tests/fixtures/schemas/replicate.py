@@ -267,3 +267,23 @@ def replicate_8(root, replicate_url):
         'status': 'proposed'
     })
     return properties
+
+
+@pytest.fixture
+def replicate_1_fce(testapp, functional_characterization_experiment_disruption_screen):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': functional_characterization_experiment_disruption_screen['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_2_fce(testapp, functional_characterization_experiment_disruption_screen):
+    item = {
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1,
+        'experiment': functional_characterization_experiment_disruption_screen['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
