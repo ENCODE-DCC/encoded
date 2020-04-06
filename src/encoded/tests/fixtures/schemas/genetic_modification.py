@@ -622,5 +622,5 @@ def CRISPR_introduction(lab, award):
         'award': award['@id'],
         'category': 'insertion',
         'purpose': 'expression',
-        'method': 'transduction'
+        'method': 'transient transfection'
     }

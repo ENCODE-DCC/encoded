@@ -118,7 +118,7 @@
                             "enum": ["insertion"]
                         },
                         "method": {
-                            "enum": ["transduction", "transient transfecion"]
+                            "enum": ["transduction", "transient transfection"]
                         },
                         "introduced_elements": {
                             "enum": ["gRNAs and CRISPR machinery"]
