@@ -23,7 +23,7 @@ def audit_genetic_modification_target(value, system):
                 audit_link(path_to_text(value['modified_site_by_target_id']['@id']), value['modified_site_by_target_id']['@id'])
             )
         )
-        yield AuditFailure('inconsistent modification target', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent modification target', detail, level='WARNING')
 
 
 @audit_checker('GeneticModification',
