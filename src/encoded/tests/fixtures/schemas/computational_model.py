@@ -2,36 +2,37 @@ import pytest
 
 @pytest.fixture
 def computational_model(testapp, lab, award):
-    item = {
+    return{
         'lab': lab['@id'],
         'award': award['@id'],
         'computational_model_type': 'imputation'
     }
-    return testapp.post_json('/computational_model', item).json['@graph'][0]
 
 
 @pytest.fixture
-def computational_model_unique_software(computational_model):
+def computational_model_unique_software(computational_model, software_version1, software_version2):
     item = computational_model.copy()
     item.update(
         {
             'software_used': [
-                'software_0',
-                'software_1'
-            ]
+                software_version1['@id'],
+                software_version2['@id']
+            ],
         }
     )
     return item
 
 
 @pytest.fixture
-def computational_model_non_unique_software(computational_model):
+def computational_model_non_unique_software(computational_model,software_version1, software_version2):
     item = computational_model.copy()
     item.update(
         {
             'software_used': [
-                'software_0',
-                'software_0'
-            ]
+                software_version1['@id'],
+                software_version2['@id'],
+                software_version2['@id']
+            ],
         }
     )
+    return item
