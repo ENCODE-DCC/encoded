@@ -75,7 +75,30 @@
             "type": "string",
             "permission": "import_items",
             "uniqueKey": true
+        },
+        
+        "death_date": {
+            "title": "Death Date",
+            "description": "Death date of patient.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {
+                    "format": "date"
+                }
+            ]
+        },
+        "death_source": {
+            "title": "Death Source",
+            "description": "The death date comes from",
+            "type": "string",
+            "enum": [
+                "UTSouthwestern Hospital",
+                "Parkland Hospital",
+                "Tumor Registery"
+            ]
         }
+
     },
     "facets": {
         "gender": {

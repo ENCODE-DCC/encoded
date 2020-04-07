@@ -156,6 +156,13 @@ class Patient extends React.Component {
                   {formatMeasurement(context.age, context.age_units)}
                 </dd>
               </div>
+              {context.death_date && <div data-test="death_date">
+                                            <dt>Death Date</dt>
+                                            <dd>{`${context.death_date} ( Death source: `}{`${context.death_source} )`}</dd>
+                                            {/* <dd>{context.death_source}</dd> */}
+                                        </div>}
+                                       
+
             </dl>
           </PanelBody>
         </Panel>
