@@ -75,6 +75,7 @@ class Biospecimen extends React.Component {
                     </div>
 
                 </header>
+          
                 <Panel addClasses="data-display">
 
                     <PanelBody addClasses="panel-body-with-header">
@@ -94,7 +95,6 @@ class Biospecimen extends React.Component {
                                 <dt>Internal ID</dt>
                                 <dd>{context.internal_ID}</dd>
                             </div>
-
                             <div data-test="patient">
                                 <dt>Patient</dt>
                                 <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>

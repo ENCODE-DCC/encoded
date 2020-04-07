@@ -32,7 +32,8 @@ class Biospecimen(Item):
         'surgery',
         'surgery.pathology_report',
         'surgery.surgery_procedure',
-        'ihc'
+        'ihc',
+        'award'
     ]
     audit_inherit = [
     ]
