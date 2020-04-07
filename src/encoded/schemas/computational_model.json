@@ -51,6 +51,7 @@
             "title": "Computational model type",
             "description": "The category that best describes the computational model set.",
             "type": "string",
+            "uniqueItems": true,
             "enum": [
                 "imputation"
             ]
