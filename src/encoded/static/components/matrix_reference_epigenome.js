@@ -355,13 +355,14 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
     const projectSelect = (e, baseUrl) => {
         const selectedProject = e.target.value;
         const awardRfa = selectedProject === 'All' ? '' : `&award.rfa${selectedProject === 'Roadmap' ? '=' : '!='}Roadmap`;
-        const query = new QueryString(baseUrl);
+        const parseUrl = url.parse(baseUrl);
+        const query = new QueryString(parseUrl.query);
 
         // search query string parameters and others need to be preserved across different projects but the
         // project parameter (award.rfa) may differ. So satisfy both conditions, project is removed from the url
         // and re-added or not added, as needed.
-        query.deleteKeyValue('award.rfa').deleteKeyValue('award.rfa!');
-        const link = `${query.format()}${awardRfa}`;
+        query.deleteKeyValue('award.rfa');
+        const link = `?${query.format()}${awardRfa}`;
         reactContext.navigate(link);
     };
 
