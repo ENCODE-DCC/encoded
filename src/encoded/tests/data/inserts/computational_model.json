@@ -12,6 +12,10 @@
 			"ENCFF000LSP",
 			"ENCFF182CHA"
 		],
+		"software_used": [
+			"d44db1ed-3af1-4e3b-ae7a-b0fb1085877f", 
+			"c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"
+		],
 		"uuid": "bc5b62f7-ce28-4a1e-b6b3-81c9c5a86d7a",
 		"date_released": "2020-01-23"
 	}
