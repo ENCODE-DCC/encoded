@@ -67,8 +67,8 @@ class Patient extends React.Component {
     let hasVitals = false;
     let hasRadiation = false;
     let hasMedication = false;
-    let hasSurgery=false;
-    let hasIHC=false;
+    let hasSurgery = false;
+    let hasIHC = false;
     let hasBiospecimen = false;
     if (Object.keys(this.props.context.labs).length > 0) {
       hasLabs = true;
@@ -157,12 +157,9 @@ class Patient extends React.Component {
                 </dd>
               </div>
               {context.death_date && <div data-test="death_date">
-                                            <dt>Death Date</dt>
-                                            <dd>{`${context.death_date} ( Death source: `}{`${context.death_source} )`}</dd>
-                                            {/* <dd>{context.death_source}</dd> */}
-                                        </div>}
-                                       
-
+                <dt>Death Date</dt>
+                <dd>{`${context.death_date} ( Death source: `}{`${context.death_source} )`}</dd>
+              </div>}
             </dl>
           </PanelBody>
         </Panel>
@@ -172,8 +169,8 @@ class Patient extends React.Component {
         {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
         {hasSurgery && <CollapsiblePanel panelId="myPanelId5" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
-        {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
-        { hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
+        {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
+        {hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
 
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
