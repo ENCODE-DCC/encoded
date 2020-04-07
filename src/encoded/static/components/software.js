@@ -49,7 +49,7 @@ const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactConte
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root="/search/?type=software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <Breadcrumbs root="/search/?type=Software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h1>{context.title}</h1>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'software-audit' }} />
             </header>
