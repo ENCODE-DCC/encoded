@@ -604,6 +604,7 @@ def activation_genetic_modification(testapp, lab, award):
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
 
+@pytest.fixture
 def HR_knockout(lab, award, target):
     return {
         'lab': lab['@id'],
