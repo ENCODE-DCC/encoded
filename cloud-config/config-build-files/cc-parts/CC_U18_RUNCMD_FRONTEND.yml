@@ -1,4 +1,7 @@
 runcmd:
+- cloud-init-per once libmagic-mgc-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb && sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb && sudo apt-get install -f
+- cloud-init-per once libmagic1-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb && sudo dpkg -i libmagic1_5.38-4_amd64.deb && sudo apt-get install -f
+- cloud-init-per once libmagic-dev-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb && sudo dpkg -i libmagic-dev_5.38-4_amd64.deb && sudo apt-get install -f
 - cloud-init-per once encd-git-repo sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
 - cloud-init-per once encd-git-branch sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
 - cloud-init-per once encd-post-boot sudo -u ubuntu %(CC_DIR)s/ami-pre.sh

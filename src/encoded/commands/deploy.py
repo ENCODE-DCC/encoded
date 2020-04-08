@@ -900,8 +900,8 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-03-31 20:02:16.534336: encdami-demo-2020-03-31_200216
-        'demo': 'ami-0d2bf0b7292964598',
+        # encdami-demo build on 2020-04-02 19:47:53.548416: encdami-demo-2020-04-02_194753
+        'demo': 'ami-0483adb94a046470c',
         # encdami-es-wait-head build on 2020-03-31 20:13:17.094941: encdami-es-wait-head-2020-03-31_201317
         'es-wait-head': 'ami-03e019cdd3cc178a0',
         # encdami-es-wait-node build on 2020-03-31 20:08:41.739802: encdami-es-wait-node-2020-03-31_200841
@@ -909,8 +909,8 @@ def _parse_args():
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-03-31 20:12:17.290966: encdami-frontend-2020-03-31_201217
-        'frontend': 'ami-061e7ad04e9de334d',
+        # encdami-frontend build on 2020-04-02 19:51:22.186528: encdami-frontend-2020-04-02_195122
+        'frontend': 'ami-01e6c9e8a88583551',
 
         # Production Private AMIs: Add comments to each build
 
