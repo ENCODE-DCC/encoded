@@ -372,7 +372,7 @@ class Patient(Item):
     def diagnosis_date(self, request, surgery, radiation, medication):
         nephrectomy_dates = []
         non_nephrectomy_dates = []
-        diagnosis_date = "not available"
+        diagnosis_date = "Not available"
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
