@@ -395,8 +395,8 @@ class Patient(Item):
             if len(medication) > 0:
                 # add medication dates
                 for medication_record in medication:
-                    radiation_object = request.embed(medication_record, '@@object')
-                    non_nephrectomy_dates.append(radiation_object['start_date'])
+                    medication_object = request.embed(medication_record, '@@object')
+                    non_nephrectomy_dates.append(medication_object['start_date'])
 
             if len(non_nephrectomy_dates) > 0:
                 non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d')) 
