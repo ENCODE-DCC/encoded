@@ -22,10 +22,6 @@ class Donor(Item):
     base_types = ['Donor'] + Item.base_types
     embedded = [
         'organism',
-        'characterizations',
-        'characterizations.award',
-        'characterizations.lab',
-        'characterizations.submitted_by',
         'documents',
         'documents.award',
         'documents.lab',
@@ -33,14 +29,11 @@ class Donor(Item):
         'lab'
     ]
     set_status_up = [
-        'characterizations',
         'documents',
     ]
     set_status_down = []
     name_key = 'accession'
-    rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes')
-    }
+    rev = {}
 
     def unique_keys(self, properties):
         keys = super(Donor, self).unique_keys(properties)
@@ -48,17 +41,6 @@ class Donor(Item):
             if 'external_ids' in properties:
                 keys.setdefault('alias', []).extend(properties['external_ids'])
         return keys
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "DonorCharacterization.characterizes"
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
 
 
 @collection(
@@ -78,7 +60,6 @@ class MouseDonor(Donor):
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
     set_status_up = [
-        'characterizations',
         'source',
         'genetic_modifications',
         'parent_strains',
@@ -89,57 +70,6 @@ class MouseDonor(Donor):
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
         return {Authenticated: 'role.viewing_group_member'}
-
-
-@collection(
-    name='fly-donors',
-    unique_key='accession',
-    properties={
-        'title': 'Fly donors',
-        'description': 'Listing Biosample Donors'
-    })
-class FlyDonor(Donor):
-    item_type = 'fly_donor'
-    schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = Donor.embedded + ['organism', 
-                                 'genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments', 
-                                 'characterizations']
-    set_status_up = [
-        'characterizations',
-        'source',
-        'genetic_modifications',
-        'parent_strains',
-        'documents',
-    ]
-    set_status_down = []
-
-
-@collection(
-    name='worm-donors',
-    unique_key='accession',
-    properties={
-        'title': 'Worm donors',
-        'description': 'Listing Biosample Donors',
-    })
-class WormDonor(Donor):
-    item_type = 'worm_donor'
-    schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = Donor.embedded + ['organism',
-                                 'genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments']
-    set_status_up = [
-        'characterizations',
-        'source',
-        'genetic_modifications',
-        'parent_strains',
-        'documents',
-    ]
-    set_status_down = []
 
 
 @collection(
@@ -154,8 +84,7 @@ class HumanDonor(Donor):
     schema = load_schema('encoded:schemas/human_donor.json')
     embedded = Donor.embedded + ['references']
     rev = {
-        'children': ('HumanDonor', 'parents'),
-        'characterizations': ('DonorCharacterization', 'characterizes')
+        'children': ('HumanDonor', 'parents')
     }
 
     @calculated_property(schema={

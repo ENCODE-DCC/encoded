@@ -22,90 +22,16 @@ class Biosample(Item):
     schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
     rev = {
-        'characterizations': ('BiosampleCharacterization', 'characterizes'),
         'parent_of': ('Biosample', 'part_of'),
     }
-    embedded = [
-        'biosample_ontology',
-        'donor',
-        'donor.organism',
-        'donor.characterizations',
-        'donor.characterizations.award',
-        'donor.characterizations.documents',
-        'donor.characterizations.lab',
-        'donor.characterizations.submitted_by',
-        'donor.documents',
-        'donor.documents.award',
-        'donor.documents.lab',
-        'donor.documents.submitted_by',
-        'donor.references',
-        'submitted_by',
-        'lab',
-        'award',
-        'award.pi.lab',
-        'source',
-        'treatments',
-        'treatments.documents.submitted_by',
-        'treatments.documents.lab',
-        'treatments.documents.award',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
-        'originated_from',
-        'originated_from.biosample_ontology',
-        'part_of',
-        'part_of.documents',
-        'part_of.documents.award',
-        'part_of.documents.lab',
-        'part_of.documents.submitted_by',
-        'part_of.characterizations.documents',
-        'part_of.characterizations.documents.award',
-        'part_of.characterizations.documents.lab',
-        'part_of.characterizations.documents.submitted_by',
-        'part_of.treatments.documents',
-        'parent_of',
-        'pooled_from',
-        'pooled_from.biosample_ontology',
-        'characterizations.submitted_by',
-        'characterizations.award',
-        'characterizations.lab',
-        'characterizations.documents',
-        'organism',
-        'references',
-        'applied_modifications',
-        'applied_modifications.modified_site_by_target_id',
-        'applied_modifications.modified_site_by_target_id.genes',
-        'applied_modifications.treatments'
-    ]
-    audit_inherit = [
-        'biosample_ontology',
-        'donor',
-        'donor.biosample_ontology',
-        'donor.organism',
-        'donor.characterizations',
-        'donor.donor_documents',
-        'donor.references',
-        'submitted_by',
-        'lab',
-        'award',
-        'source',
-        'treatments',
-        'originated_from',
-        'originated_from.biosample_ontology',
-        'pooled_from',
-        'pooled_from.biosample_ontology',
-        'organism',
-        'references',
-        'applied_modifications',
-        'applied_modifications.modified_site_by_target_id'
-    ]
+    embedded = []
+    audit_inherit = []
     set_status_up = [
         'donor',
         'part_of',
         'pooled_from',
         'originated_from',
         'genetic_modifications',
-        'characterizations',
         'treatments',
         'documents',
         'host',
@@ -281,17 +207,6 @@ class Biosample(Item):
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
 
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "BiosampleCharacterization.characterizes",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
 
     @calculated_property(schema={
         "description": "The biosample(s) that have this biosample in their part_of property.",

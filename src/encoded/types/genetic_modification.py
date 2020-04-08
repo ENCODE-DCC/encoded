@@ -22,8 +22,6 @@ class GeneticModification(Item):
     schema = load_schema('encoded:schemas/genetic_modification.json')
     name_key = 'accession'
     embedded = [
-        'characterizations',
-        'characterizations.lab',
         'modified_site_by_target_id',
         'modified_site_by_target_id.genes',
         'treatments',
@@ -31,7 +29,6 @@ class GeneticModification(Item):
     ]
     set_status_up = [
         'reagents.source',
-        'characterizations',
         'modified_site_by_target_id',
         'modified_site_by_target_id.genes',
         'treatments',
@@ -41,8 +38,7 @@ class GeneticModification(Item):
 
     rev = {
         'biosamples_modified': ('Biosample', 'genetic_modifications'),
-        'donors_modified': ('Donor', 'genetic_modifications'),
-        'characterizations': ('GeneticModificationCharacterization', 'characterizes')
+        'donors_modified': ('Donor', 'genetic_modifications')
     }
 
     @calculated_property(schema={
@@ -70,17 +66,6 @@ class GeneticModification(Item):
     })
     def donors_modified(self, request, donors_modified):
         return paths_filtered_by_status(request, donors_modified)
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "GeneticModificationCharacterization.characterizes",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
 
     @calculated_property(schema={
         "title": "Perturbation",

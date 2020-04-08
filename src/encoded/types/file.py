@@ -95,7 +95,6 @@ class File(Item):
 
     rev = {
         'paired_with': ('File', 'paired_with'),
-        'quality_metrics': ('QualityMetric', 'quality_metric_of'),
         'superseded_by': ('File', 'supersedes'),
     }
 
@@ -116,7 +115,6 @@ class File(Item):
         'analysis_step_version.analysis_step.pipelines',
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
-        'quality_metrics',
         'step_run',
         'biosample_ontology',
         'target'
@@ -136,7 +134,6 @@ class File(Item):
         'analysis_step_version.software_versions.software'
     ]
     set_status_up = [
-        'quality_metrics',
         'platform',
         'step_run',
     ]
@@ -378,20 +375,6 @@ class File(Item):
     })
     def output_category(self, output_type):
         return self.schema['output_type_output_category'].get(output_type)
-
-    @calculated_property(schema={
-        "title": "QC Metric",
-        "description": "The list of QC metric objects associated with this file.",
-        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "QualityMetric.quality_metric_of",
-        },
-        "notSubmittable": True,
-    })
-    def quality_metrics(self, request, quality_metrics):
-        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "File type",
