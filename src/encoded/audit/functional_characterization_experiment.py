@@ -20,7 +20,7 @@ from .formatter import (
 def audit_experiment_biosample(value, system, excluded_types):
     if value['status'] in excluded_types:
         return
-    if 'biosample_ontology' not in value:
+    if value.get('biosample_ontology', {}).get('classification') in ('cell-free sample', 'cloning host'):
         return
     exp_bio_ontology = value['biosample_ontology']
     if exp_bio_ontology['term_id'].startswith('NTR:'):

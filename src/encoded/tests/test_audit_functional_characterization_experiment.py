@@ -35,7 +35,7 @@ def test_audit_experiment_biosample(
     library_url,
     biosample,
     heart,
-    cell_free
+    ntr_biosample_type
 ):
     testapp.patch_json(
         base_replicate['@id'],
@@ -56,7 +56,7 @@ def test_audit_experiment_biosample(
     )
     testapp.patch_json(
         base_fcc_experiment['@id'],
-        {'biosample_ontology': cell_free['@id']}
+        {'biosample_ontology': ntr_biosample_type['@id']}
     )
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(

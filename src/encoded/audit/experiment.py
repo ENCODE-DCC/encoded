@@ -2780,17 +2780,14 @@ def audit_experiment_replicated(value, system, excluded_types):
         '''
         Excluding single cell experiments
         '''
-        biosample_classification = value.get(
-            'biosample_ontology', {'classification': 'unknown'}
-        )['classification']
-        if biosample_classification == 'single cell':
+        if value['biosample_ontology']['classification'] == 'single cell':
             return
         # different levels of severity for different biosample classifications
         else:
             detail = ('This experiment is expected to be replicated, but '
                 'contains only one listed biological replicate.')
             level='NOT_COMPLIANT'
-            if biosample_classification in ['tissue', 'primary cell']:
+            if value['biosample_ontology']['classification'] in ['tissue', 'primary cell']:
                 level='INTERNAL_ACTION'
             yield AuditFailure('unreplicated experiment', detail, level)
     return
