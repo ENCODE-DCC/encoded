@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 18
 
+* *Examined_loci* property may now be specified in references that are *reference_type*: *functional elements*.
 * *Donor* property may now be specified in references that are *reference_type*: *genome*
 
 ### Schema version 18
