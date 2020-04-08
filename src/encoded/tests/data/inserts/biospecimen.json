@@ -2,11 +2,12 @@
     {
         "accession": "KCEBS708IJT",
         "internal_ID":"nisiad",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"nulla ",
         "patient":"KCEPT708IJT",
         "collection_date":"1941-02-16",
         "collection_type":"solid tissue",
-        "processing_type":"zenograft",
+        "processing_type":"xenograft",
         "distributed":"Yes",
         "tissue_type":"malignant primary",
         "anatomic_site":"kidney",
@@ -19,6 +20,7 @@
     {
         "accession": "KCEBS000AAA",
         "internal_ID":"quiscillum",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"minimcommodo",
         "patient":"KCEPT708IJT",
         "collection_date":"1982-06-20",
@@ -36,12 +38,15 @@
     {
         "accession": "KCEBS356AAA",
         "internal_ID":"deserunt",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"veniam",
         "patient":"KCEPT026PGS",
         "collection_date":"2003-11-09",
-        "collection_type":"ascites fluid",
-        "processing_type":"FF",
+        "collection_type":"blood",
+        "processing_type":"blood",
         "distributed":"No",
+        "tissue_type":"normal",
+        "anatomic_site":"hematopoietic system",
         "uuid": "469ca496-315e-4364-b770-63018e0cf8f4",
         "status": "released",
         "host": "Human",
@@ -52,6 +57,7 @@
         "accession": "KCEBS024AAA",
         "internal_ID":"reprehenderit",
         "openspecimen_ID":"et",
+        "award": "Kidney-SPORE",
         "patient":"KCEPT925TMI",
         "collection_date":"1991-08-20",
         "collection_type":"solid tissue",
@@ -67,12 +73,15 @@
     {
         "accession": "KCEBS026KCE",
         "internal_ID":"doaliqua",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"inmagnaident",
         "patient":"KCEPT480NBU",
         "collection_date":"1990-01-13",
         "collection_type":"blood",
         "processing_type":"blood",
         "distributed":"Yes",
+        "tissue_type":"normal",
+        "anatomic_site":"hematopoietic system",
         "uuid": "f6805b25-edcc-4704-bc95-dbb7d9269bed",
         "status": "released",
         "host": "Human",
@@ -81,6 +90,7 @@
     {
         "accession": "KCEBS026FDC",
         "internal_ID":"sintanimau",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"Duissint",
         "patient":"KCEPT873QVK",
         "collection_date":"2012-06-15",
@@ -97,6 +107,7 @@
     {
         "accession": "KCEBS039ENC",
         "internal_ID":"nostrudquiu",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"sitani",
         "patient":"KCEPT802XRB",
         "collection_date":"2005-02-04",
@@ -108,16 +119,18 @@
         "uuid": "4998b6fc-4730-4533-8061-4aba132763f2",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "kidney",
+        "surgery": "KCESX802XRB"
     },
     {
         "accession": "KCEBS044ANI",
         "internal_ID":"laborumincidid",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"exercitation",
         "patient":"KCEPT802XRB",
         "collection_date":"1980-03-15",
         "collection_type":"solid tissue",
-        "processing_type":"zenograft",
+        "processing_type":"xenograft",
         "originated_from": "KCEBS039ENC",
         "distributed":"No",
         "tissue_type":"malignant primary",
@@ -130,6 +143,7 @@
     {
         "accession": "KCEBS057AAA",
         "internal_ID":"aute",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"dolore",
         "patient":"KCEPT186NZW",
         "collection_date":"1997-08-16",
@@ -146,6 +160,7 @@
     {
         "accession": "KCEBS087RNA",
         "internal_ID":"utminimsed",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"ut",
         "patient":"KCEPT139SOR",
         "collection_date":"2013-02-09",
@@ -162,6 +177,7 @@
     {
         "accession": "KCEBS088RNA",
         "internal_ID":"officia consequat ut nisi",
+        "award": "Kidney-SPORE",
         "openspecimen_ID":"qui",
         "patient":"KCEPT873QVK",
         "collection_date":"1976-03-28",
@@ -176,4 +192,6 @@
         "primary_site": "kidney"
     }
 ]
+
+
 

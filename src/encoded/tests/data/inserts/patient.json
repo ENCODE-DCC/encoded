@@ -3,34 +3,35 @@
         "accession": "KCEPT359MHZ",
         "age": "60",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Female",
         "race": "White",
         "status": "released",
         "uuid": "27b69535-5404-4844-b502-e77e3a9e1d12",
+        "death_date": "1861-06-03",
+        "death_source": "Tumor Registery",
         "mrn": "934"
     },
     {
         "accession": "KCEPT708IJT",
         "age": "55",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
         "race": "Black",
         "status": "released",
         "uuid": "a9b2208d-ca92-465c-83e9-0e18e1d55326",
+        "death_date": "1860-05-05",
+        "death_source": "Tumor Registery",
         "mrn": "313"
     },
     {
         "accession": "KCEPT026PGS",
         "age": "72",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
         "race": "Black",
@@ -42,8 +43,7 @@
         "accession": "KCEPT925TMI",
         "age": "34",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
         "race": "White",
@@ -55,21 +55,21 @@
         "accession": "KCEPT480NBU",
         "age": "34",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
         "race": "White",
         "status": "released",
         "uuid": "da5c55dd-fa03-4cec-b926-9e83ffa7c7e7",
+        "death_date": "1840-05-08",
+        "death_source": "Parkland Hospital",
         "mrn": "904"
     },
     {
         "accession": "KCEPT873QVK",
         "age": "79",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Unknown",
         "gender": "Female",
         "race": "Unknown",
@@ -81,21 +81,21 @@
         "accession": "KCEPT802XRB",
         "age": "62",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Male",
         "race": "White",
         "status": "released",
         "uuid": "4e600b38-2e06-440f-8dd0-9d0d17759782",
+        "death_date": "1870-02-03",
+        "death_source": "UTSouthwestern Hospital",
         "mrn": "266"
     },
     {
         "accession": "KCEPT240HMN",
         "age": "82",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
         "race": "American Indian",
@@ -107,8 +107,7 @@
         "accession": "KCEPT186NZW",
         "age": "28",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Unknown",
         "gender": "Female",
         "race": "Unknown",
@@ -120,8 +119,7 @@
         "accession": "KCEPT139SOR",
         "age": "78",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
         "race": "Asian",
@@ -133,8 +131,7 @@
         "accession": "KCEPT021XWS",
         "age": "23",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
         "race": "White",
@@ -146,8 +143,7 @@
         "accession": "KCEPT604LAK",
         "age": "21",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
         "race": "White",
@@ -159,8 +155,7 @@
         "accession": "KCEPT805NRD",
         "age": "44",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Male",
         "race": "White",
@@ -172,8 +167,7 @@
         "accession": "KCEPT692UHR",
         "age": "38",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Female",
         "race": "Other",
@@ -185,8 +179,7 @@
         "accession": "KCEPT294KIZ",
         "age": "90 or above",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Unknown",
         "gender": "Female",
         "race": "Unknown",
@@ -198,8 +191,7 @@
         "accession": "KCEPT398JLK",
         "age": "47",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Declined",
         "gender": "Male",
         "race": "Declined",
@@ -211,8 +203,7 @@
         "accession": "KCEPT756AEN",
         "age": "54",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
         "race": "White",
@@ -224,8 +215,7 @@
         "accession": "KCEPT396JUN",
         "age": "71",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Declined",
         "gender": "Female",
         "race": "White",
@@ -237,8 +227,7 @@
         "accession": "KCEPT078DUA",
         "age": "67",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
         "race": "Asian",
@@ -250,8 +239,7 @@
         "accession": "KCEPT318AXY",
         "age": "60",
         "age_units": "year",
-        "alternate_accessions": [
-        ],
+        "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
         "race": "Hawaiian Pacific Islander",
