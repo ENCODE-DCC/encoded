@@ -263,6 +263,14 @@
                 }
             }
         },
+        "cropped_read_length": {
+            "comment": "Only bam files can have cropped_read_length specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
         "paired_end": {
             "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
             "oneOf": [
@@ -1122,6 +1130,14 @@
             "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
             "type": "string",
             "linkTo": "File"
+        },
+        "cropped_read_length": {
+            "title": "Cropped read length (nt)",
+            "permission": "import_items",
+            "description": "Length the FASTQ reads were cropped to prior to alignment.",
+            "comment": "The actual read length could be up to 2 bp shorter than the specified cropped read length value.",
+            "type": "integer",
+            "minimum": 0
         },
         "mapped_read_length": {
             "title": "Mapped read length (nt)",
