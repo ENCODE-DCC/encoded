@@ -8,6 +8,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.attachment import InternalRedirect
 from snovault.schema_utils import schema_validator
 from snovault.validation import ValidationFailure
 from .base import (
@@ -19,7 +20,6 @@ from pyramid.httpexceptions import (
     HTTPTemporaryRedirect,
     HTTPNotFound,
 )
-from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import traverse
 from pyramid.view import view_config
@@ -37,6 +37,9 @@ import pytz
 import time
 
 from encoded.upload_credentials import UploadCredentials
+from snovault.util import ensure_list_and_filter_none
+from snovault.util import take_one_or_return_none
+from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
 
 
 def show_upload_credentials(request=None, context=None, status=None):
@@ -48,7 +51,7 @@ def show_upload_credentials(request=None, context=None, status=None):
 def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=None, no_file_available=None):
     if restricted or not md5sum or not file_size or no_file_available:
         return False
-    return status in File.public_s3_statuses + File.private_s3_statuses
+    return True
 
 
 def property_closure(request, propname, root_uuid):
@@ -64,6 +67,18 @@ def property_closure(request, propname, root_uuid):
             next_remaining.update(obj.__json__(request).get(propname, ()))
         remaining = next_remaining - seen
     return seen
+
+
+ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
+RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
+
+
+def file_is_md5sum_constrained(properties):
+    conditions = [
+        properties.get('lab') != ENCODE_PROCESSING_PIPELINE_UUID,
+        properties.get('output_type') in RAW_OUTPUT_TYPES
+    ]
+    return any(conditions)
 
 
 @collection(
@@ -103,6 +118,8 @@ class File(Item):
         'analysis_step_version.software_versions.software',
         'quality_metrics',
         'step_run',
+        'biosample_ontology',
+        'target'
     ]
     audit_inherit = [
         'replicate',
@@ -127,6 +144,27 @@ class File(Item):
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
+    audit = {
+        'audit.ERROR.category': {
+            'group_by': 'audit.ERROR.category',
+            'label': 'Error'
+        },
+        'audit.INTERNAL_ACTION.category': {
+            'group_by': 'audit.INTERNAL_ACTION.category',
+            'label': 'Internal Action'},
+        'audit.NOT_COMPLIANT.category': {
+            'group_by': 'audit.NOT_COMPLIANT.category',
+            'label': 'Not Compliant'
+        },
+        'audit.WARNING.category': {
+            'group_by': 'audit.WARNING.category',
+            'label': 'Warning'
+        },
+        'x': {
+            'group_by': 'file_format', 'label': 'File format'
+        }
+    }
+
     @property
     def __name__(self):
         properties = self.upgrade_properties()
@@ -136,12 +174,18 @@ class File(Item):
             return self.uuid
         return properties.get(self.name_key, None) or self.uuid
 
+
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
-                keys.setdefault('alias', []).append(value)
+                resource = self.registry[CONNECTION].get_by_unique_key('alias', value)
+                if resource and resource.uuid != self.uuid:
+                    if file_is_md5sum_constrained(properties):
+                        keys.setdefault('alias', []).append(value)
+                else:
+                    keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
@@ -168,6 +212,7 @@ class File(Item):
             return None
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
+
 
     @calculated_property(schema={
         "title": "Download URL",
@@ -437,6 +482,68 @@ class File(Item):
     def library(self, request, replicate):
         return request.embed(replicate, '@@object?skip_calculated=true').get('library')
 
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Assay term name",
+            "type": "string",
+            "notSubmittable": True
+        }
+    )
+    def assay_term_name(self, request, dataset):
+        return take_one_or_return_none(
+            ensure_list_and_filter_none(
+                try_to_get_field_from_item_with_skip_calculated_first(
+                    request,
+                    'assay_term_name',
+                    dataset
+                )
+            )
+        )
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Biosample ontology",
+            "type": "string",
+            "linkTo": "BiosampleType",
+            "notSubmittable": True
+        }
+    )
+    def biosample_ontology(self, request, dataset):
+        return take_one_or_return_none(
+            ensure_list_and_filter_none(
+                try_to_get_field_from_item_with_skip_calculated_first(
+                    request,
+                    'biosample_ontology',
+                    dataset
+                )
+            )
+        )
+
+    @calculated_property(
+        condition='dataset',
+        define=True,
+        schema={
+            "title": "Target",
+            "type": "string",
+            "linkTo": "Target",
+            "notSubmittable": True,
+        }
+    )
+    def target(self, request, dataset):
+        return take_one_or_return_none(
+            ensure_list_and_filter_none(
+                try_to_get_field_from_item_with_skip_calculated_first(
+                    request,
+                    'target',
+                    dataset
+                )
+            )
+        )
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
@@ -654,12 +761,6 @@ def download(context, request):
         _filename, = request.subpath
         if filename != _filename:
             raise HTTPNotFound(_filename)
-
-    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers \
-                                                or 'Range' in request.headers
-
-    use_download_proxy = request.client_addr not in request.registry['aws_ipset']
-
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto3.client('s3')
@@ -676,7 +777,6 @@ def download(context, request):
         raise HTTPNotFound(
             detail='External service {} not expected'.format(external.get('service'))
         )
-
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
         return {
@@ -684,16 +784,10 @@ def download(context, request):
             'location': location,
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
-
-    if proxy:
-        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
-
-    # We don't use X-Accel-Redirect here so that client behaviour is similar for
-    # both aws and non-aws users.
-    if use_download_proxy:
-        location = request.registry.settings.get('download_proxy', '') + str(location)
-
-    # 307 redirect specifies to keep original method
+    proxy = asbool(request.params.get('proxy'))
+    accel_redirect_header = request.registry.settings.get('accel_redirect_header')
+    if proxy and accel_redirect_header:
+        return InternalRedirect(headers={accel_redirect_header: '/_proxy/' + str(location)})
     raise HTTPTemporaryRedirect(location=location)
 
 

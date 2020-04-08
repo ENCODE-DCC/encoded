@@ -1,0 +1,26 @@
+## Elasticsearch Configuration: 
+#
+# For details see
+# - encoded-elasticsearch.yml.20190930
+# - default-elasticsearch.yml.20190930
+#
+## 
+
+network.host: 0.0.0.0
+http.port: 9201
+transport.tcp.port: 9299
+discovery.type: ec2
+cloud.aws.region: us-west-2
+discovery.ec2.groups: elasticsearch-https, ssh-http-https
+indices.query.bool.max_clause_count: 8192
+
+# Self elect master node
+node.master: true
+node.data: true
+
+# We can only use 4 or 5 node clusters
+#  since this is hard coded to 3.
+# N/2+1 formula.
+discovery.zen.minimum_master_nodes: 3
+
+# Cluster name is appened on deploy

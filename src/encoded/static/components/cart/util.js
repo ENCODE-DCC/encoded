@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
 
 /** List of object @type allowed in the cart. */

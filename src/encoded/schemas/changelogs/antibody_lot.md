@@ -2,9 +2,11 @@
 
 ### Minor changes since schema version 9
 
-* Added *single cell* to biosample_type enums
+* Added *single cell* to *biosample_type* enums
+* Added *used_by_biosample_characterizations* to reversely link to biosample characterizations using the antibody
+* Added *control_type*. Either *control_type* + *isotype* or *targets* is required. And they are mutually exclusive. 
 
-### Schema 9
+### Schema version 9
 
 * *status* is restricted to DCC access only
 

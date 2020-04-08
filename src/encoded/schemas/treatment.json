@@ -69,6 +69,7 @@
                 "U/mL",
                 "units",
                 "μg",
+                "μg/kg",
                 "μg/mL",
                 "μM"
             ]
@@ -85,6 +86,14 @@
                 "minute",
                 "hour",
                 "day"
+            ]
+        },
+        "purpose": {
+            "title": "Purpose",
+            "type": "string",
+            "enum": [
+                "activation",
+                "deactivation"
             ]
         },
         "temperature": {

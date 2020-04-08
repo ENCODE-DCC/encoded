@@ -4,6 +4,7 @@ import gzip
 import csv
 import logging
 import collections
+import certifi
 import json
 import requests
 import os
@@ -55,7 +56,7 @@ RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of 
 
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
-        'output_type': ['optimal idr thresholded peaks'],
+        'output_type': ['optimal IDR thresholded peaks', 'IDR thresholded peaks'],
         'file_format': ['bed']
     },
     'DNase-seq': {
@@ -622,7 +623,10 @@ class RegionIndexer(Indexer):
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
         urllib3.disable_warnings()
-        http = urllib3.PoolManager()
+        http = urllib3.PoolManager(
+            cert_reqs='CERT_REQUIRED',
+            ca_certs=certifi.where()
+        )
         r = http.request('GET', href)
         if r.status != 200:
             log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
@@ -651,6 +655,10 @@ class RegionIndexer(Indexer):
         #else:  Other file types?
 
         if file_data:
+            if self.test_instance:
+                chr1 = file_data['chr1']
+                file_data.clear()
+                file_data['chr1'] = chr1
             return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, 'encoded')
 
         return False

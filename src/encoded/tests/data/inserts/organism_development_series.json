@@ -30,6 +30,27 @@
         "uuid": "2921e211-4a37-4fd2-b41f-a1480b039b5f",
         "date_released": "2016-02-06",
         "submitter_comment": "We missed a developmental stage because because nobody wanted to watch the worms for hours on end."
+    },
+    {
+        "_test": "For Mouse dev matrix testing",
+        "accession": "ENCSR302DEV",
+        "award": "UM1HG009390",
+        "description": "Mouse Development series for matrix testing.",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+			"/experiments/ENCSR123AAA",
+			"/experiments/ENCSR123AAB",
+			"/experiments/ENCSR123AAC",
+			"/experiments/ENCSR123AAD",
+			"/experiments/ENCSR123AAE"
+        ],
+        "internal_tags": [
+            "MouseDevSeries"
+        ],
+        "uuid": "f2aa60f2-90a6-4e4b-863a-c6831be371a2",
+        "date_released": "2016-02-06",
+        "submitter_comment": "We missed a developmental stage because because nobody wanted to watch the worms for hours on end."
     }
-
 ]

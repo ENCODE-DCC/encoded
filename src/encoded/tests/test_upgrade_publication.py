@@ -1,41 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def publication():
-    return{
-        'title': "Fake paper"
-    }
-
-
-@pytest.fixture
-def publication_1(publication):
-    item = publication.copy()
-    item.update({
-        'schema_version': '1',
-        'references': ['PMID:25409824'],
-    })
-    return item
-
-
-@pytest.fixture
-def publication_4():
-    return {
-        'title': 'Fake paper',
-        'schema_version': '4'
-    }
-
-
-@pytest.fixture
-def publication_5(publication):
-    item = publication.copy()
-    item.update({
-        'schema_version': '5',
-        'status': 'in preparation'
-    })
-    return item
-
-
 def test_publication_upgrade(upgrader, publication_1):
     value = upgrader.upgrade('publication', publication_1, target_version='2')
     assert value['schema_version'] == '2'

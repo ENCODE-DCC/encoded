@@ -16,7 +16,7 @@ from .base import (
     ALLOW_CURRENT,
     ONLY_ADMIN_VIEW,
 )
-from ..cart_view import (
+from encoded.cart_view import (
     get_userid,
     get_cart_objects_by_user,
     CART_USER_MAX,

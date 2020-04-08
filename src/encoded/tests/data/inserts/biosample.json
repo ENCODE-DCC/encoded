@@ -913,7 +913,8 @@
             "encode:modification-test-2",
             "ef12855f-5d3e-4da5-8684-3a594c60505a",
             "2f33a486-e3d9-4633-8682-a363b48ba67d",
-            "b9264c83-2222-4678-a82f-4915af941fa4"
+            "b9264c83-2222-4678-a82f-4915af941fa4",
+            "46758afd-237b-4e01-951e-5f624714bfde"
         ]
     },
     {
@@ -951,9 +952,196 @@
         "donor": "KCEDO000HUM",
         "lab": "gregory-crawford",
         "organism": "human",
+        "genetic_modifications": [
+            "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        ],
         "source": "dana-levasseur",
         "status": "released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
         "uuid": "693c82ee-70f1-11e9-a923-1681be663d3e"
+    },
+    {
+        "accession": "ENCBS303RUL",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "WTC11 cell line",
+        "donor": "ENCDO000HUM",
+        "lab": "gregory-crawford",
+        "organism": "human",
+        "post_nucleic_acid_delivery_time": 30,
+        "post_nucleic_acid_delivery_time_units": "minute",
+        "source": "dana-levasseur",
+        "status": "released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
+        "uuid": "78268bc7-1715-4f49-97ef-88a123b56269"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS376EJL",
+        "aliases": [
+            "gtex:ENC-1LVAN-061-SM-IP2F3"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "donor": "ENCDO271OUW",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00019",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "e6440a82-d112-43a3-b892-a9763bdce7cf"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS009WOO",
+        "aliases": [
+            "john-stamatoyannopoulos:TC9599",
+            "gtex:ENC-1LGRB-010-CR89G"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "donor": "ENCDO793LXB",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00019",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "0e6c7ee8-9400-4bb8-ae2e-966ca5bb09fb"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS061XGD",
+        "aliases": [
+            "gtex:ENC-1JKYN-031-SM-9JLPD-1"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "description": "RNA Evaluation human tissue adrenal gland 1-2 microRNA-seq from Mortazavi",
+        "donor": "ENCDO845WKR",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00022",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "49b698f0-02ed-4e83-b04b-15642053c78d"
+    },
+    {
+        "_test": "For ENTEx matrix testing",
+        "accession": "ENCBS204NZH",
+        "aliases": [
+            "john-stamatoyannopoulos:TC9581",
+            "gtex:ENC-1K2DA-026-IP2FC"
+        ],
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "donor": "ENCDO451RUA",
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "nih_institutional_certification": "NIC00019",
+        "organism": "human",
+        "source": "michael-snyder",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "17790c53-a3f4-4e9e-86a6-227689f757cb"
+    },
+    {
+        "_test": "mouse dev matrix biosample_1",
+        "accession": "ENCBS123AAA",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_1",
+        "lab": "len-pennacchio",
+        "model_organism_age": "0",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "postnatal",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "bc5b62f7-ce28-4a1e-b6b3-93c9c5a86d7a"
+    },
+    {
+        "_test": "mouse dev matrix biosample_2",
+        "accession": "ENCBS123AAB",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_2",
+        "lab": "len-pennacchio",
+        "model_organism_sex": "male",
+        "model_organism_age": "12",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "b8d504af-5af8-4f6e-b250-9980085bee80"
+    },
+    {
+        "_test": "mouse dev matrix biosample_3",
+        "accession": "ENCBS123AAC",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0000948",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_3",
+        "lab": "len-pennacchio",
+        "model_organism_age": "12",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9d"
+    },
+    {
+        "_test": "mouse dev matrix biosample_4",
+        "accession": "ENCBS123AAD",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_4",
+        "lab": "len-pennacchio",
+        "model_organism_age": "12",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9e"
+    },
+    {
+        "_test": "mouse dev matrix biosample_5",
+        "accession": "ENCBS123AAE",
+        "award": "UM1HG009390",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "date_obtained": "2013-01-31",
+        "description": "mouse dev matrix biosample_5",
+        "lab": "len-pennacchio",
+        "model_organism_age": "8",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "adult",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9f"
     }
 ]

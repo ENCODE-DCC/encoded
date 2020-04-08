@@ -5,8 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { DropdownMenu, DropdownMenuSep } from '../../libs/bootstrap/dropdown-menu';
-import { Nav, NavItem } from '../../libs/bootstrap/navbar';
+import { DropdownMenu, DropdownMenuSep } from '../../libs/ui/dropdown-menu';
+import { NavItem } from '../../libs/ui/navbar';
 import { svgIcon } from '../../libs/svg-icons';
 import { truncateString } from '../globals';
 import { CartClearModal } from './clear';
@@ -18,20 +18,21 @@ import CartShare from './share';
  */
 const CartNavTitle = ({ elements, inProgress }) => {
     let status;
+    let iconClass = '';
 
     if (inProgress) {
-        // Get the proper spinner icon based on whether the browser supports SVG animations or not.
-        const spinnerIcon = svgIcon('spinner');
-        status = <div className="cart__nav-spinner">{spinnerIcon}</div>;
+        status = svgIcon('spinner');
+        iconClass = 'cart__nav-spinner';
     } else if (elements.length > 0) {
-        status = <div className="cart__nav-count">{elements.length}</div>;
+        status = elements.length;
+        iconClass = 'cart__nav-count';
     }
     return (
         <div className="cart__nav">
             <div className={`cart__nav-icon${status ? '' : ' cart__nav-icon--empty'}`}>
                 {svgIcon('cart')}
             </div>
-            {status ? <div>{status}</div> : null}
+            {status ? <div className={iconClass}>{status}</div> : null}
         </div>
     );
 };
@@ -114,22 +115,20 @@ class CartStatusComponent extends React.Component {
             }
 
             return (
-                <Nav>
-                    <NavItem
-                        dropdownId="cart-control"
-                        dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
-                        openDropdown={openDropdown}
-                        dropdownClick={dropdownClick}
-                        label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
-                        buttonCss="cart__nav-button"
-                    >
-                        <DropdownMenu label="cart-control">
-                            {menuItems}
-                        </DropdownMenu>
-                    </NavItem>
+                <NavItem
+                    dropdownId="cart-control"
+                    dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
+                    openDropdown={openDropdown}
+                    dropdownClick={dropdownClick}
+                    label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+                    buttonCss="cart__nav-button"
+                >
+                    <DropdownMenu label="cart-control">
+                        {menuItems}
+                    </DropdownMenu>
                     {this.state.shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
                     {this.state.clearModalOpen ? <CartClearModal closeClickHandler={this.closeClearCart} /> : null}
-                </Nav>
+                </NavItem>
             );
         }
         return null;

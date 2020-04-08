@@ -2,12 +2,14 @@
 
 ### Minor changes since schema version 9
 
+* *biological_replicate_number* and *technical_replicate_number* defaults to 1 were removed.
+* *experiment* property list was expanded to include FunctionalCharacterizationExperiment.json 
 * *biological_replicate_number* and *technical_replicate_number* were set to have a minimum of 1.
 * *rbns_protein_concentration* was set to have a minimum of 0.
 
 ### Schema version 9
 
-* Remove standard_status mixin.
+* Remove *standard_status* mixin.
 * Remove *proposed* and *preliminary* from local status enum.
 
 ### Schema version 8
@@ -41,7 +43,7 @@
 
 ### Schema version 3
 
-* *status* was brought in line with the standard status for unaccessioned objects::
+* *status* was brought in line with the standard status for unaccessioned objects:
 
 	    "enum" : [
 	        "in progress",

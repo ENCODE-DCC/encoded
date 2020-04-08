@@ -10,4 +10,5 @@ pytestmark = [
 
 scenarios(
     'cart.feature',
+    strict_gherkin=False,
 )

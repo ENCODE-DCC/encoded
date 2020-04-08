@@ -186,4 +186,10 @@
     "term_name": "WTC-11",
     "term_id": "EFO:0009747",
     "status": "released"
+}, {
+    "classification": "cloning host",
+    "uuid": "8e4fab48-e5a6-450b-8c5c-07512c845df8",
+    "term_name": "DNA cloning sample",
+    "term_id": "NTR:0000545",
+    "status": "released"
 }]

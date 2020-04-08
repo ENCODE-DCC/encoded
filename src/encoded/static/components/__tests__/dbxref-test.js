@@ -457,6 +457,25 @@ describe('Test individual dbxref types', () => {
         });
     });
 
+    describe('Test 4DN', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['4DN:4DNESUCQ2Q6H', '4DN:4DNESA84SNKC']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://data.4dnucleome.org/experiment-set-replicates/4DNESUCQ2Q6H');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://data.4dnucleome.org/experiment-set-replicates/4DNESA84SNKC');
+        });
+    });
+
     describe('Test UCSC-GB-hg19', () => {
         let dbxLinks;
 
@@ -626,6 +645,63 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.length).toBe(0);
             expect(dbxSpans.length).toBe(1);
             expect(dbxSpans.at(0).text()).toEqual('OK:NOT-REAL');
+        });
+    });
+
+    describe('Test DepMap', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': 'BiosampleType' };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['DepMap:ACH-000551', 'DepMap:ACH-000552']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000551');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://depmap.org/portal/cell_line/ACH-000552');
+        });
+    });
+
+    describe('Test FactorBook', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['FactorBook:ENCSR343RJH', 'FactorBook:ENCSR614HHL']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR343RJH');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://factorbook.org/experiment/ENCSR614HHL');
+        });
+    });
+
+    describe('Test GeneCards', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Gene'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['GeneCards:ATF3', 'GeneCards:MXD1']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('http://www.genecards.org/cgi-bin/carddisp.pl?gene=ATF3');
+            expect(dbxLinks.at(1).prop('href')).toEqual('http://www.genecards.org/cgi-bin/carddisp.pl?gene=MXD1');
         });
     });
 });

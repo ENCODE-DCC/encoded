@@ -1,12 +1,38 @@
 ## Changelog for analysis_step.json
 
+### Minor changes since schema version 8
+* *input_file_types* and *output_file_types* were updated to have the following enum term(s) to match File schema: *miRNA annotations*, *personalized genome assembly*.
+* *personalized genome assembly* was also added to the enum list for *analysis_step_types*.
+* The following enums were added to the list for *input_file_types* and *output_file_types*:
+        [
+            "regulatory elements",
+            "negative control regions",
+            "non-targeting gRNAs",
+            "positive control regions",
+            "safe-targeting gRNAs",
+            "subreads"
+        ]
+
+### Schema version 8
+
+* Add enum value *pseudoreplicated IDR* to *analysis_step_types*
+* Add enum values *IDR ranked peaks* and *IDR thresholded peaks* for *input_file_types* and *output_file_types*
+* Change enum value *conservative idr thresholded peaks* in *input_file_types* and *output_file_types* to *conservative IDR thresholded peaks*
+* Change enum value *optimal idr thresholded peaks* in *input_file_types* and *output_file_types* to *optimal IDR thresholded peaks*
+* Change enum value *pseudoreplicated idr thresholded peaks* in *input_file_types* and *output_file_types* to *pseudoreplicated IDR thresholded peaks*
+
+### Minor changes since schema version 7
+
+* *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
+* *analysis_step_type* were updated to have the following enum terms *transcriptome annotation* and *barcodes mapping generation*
+
 ### Schema version 7
 
 * Changed enum value *candidate regulatory elements* in *input_file_types* and *output_file_types* to *candidate Cis-Regulatory Elements*
 
 ### Minor changes since schema version 6
 
-* *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: "differential expression quantifications", "differential splicing quantifications", "peaks and background as input for IDR", and "gene alignments".
+* *input_file_types* and *output_file_types* were updated to have the following enum terms to match File schema: *differential expression quantifications*, *differential splicing quantifications*, *peaks and background as input for IDR*, and *gene alignments*.
 
 * *major_version* was set to have a minimum of 1.
 
@@ -24,9 +50,9 @@
         "deleted",
         "released"
     ]
-* *name* has been renamed to *step_label*. The *name* property will now be a calculated name with the major_version number.
+* *name* has been renamed to *step_label*. The *name* property will now be a calculated name with the *major_version* number.
 * *major_version* number property has been added and made required so all steps must be versioned, starting from 1.
-* all new analysis steps should be accompanied by a new step version object as well.
+* All new analysis steps should be accompanied by a new step version object as well.
 
 
 ### Schema version 5
@@ -53,4 +79,4 @@
 * *name* and *title* needs to include the major version of the analysis_step
 * *analysis_step_versions* point to *analysis_step* but are not a calcuated list
 * *current_version* is a calculated property pointing to an *analysis_step_version* based on the the highest value of *analysis_step_version.version*
-* *pipeline* is calcualted from the listing in pipeline of *analysis_steps*
+* *pipeline* is calculated from the listing in pipeline of *analysis_steps*

@@ -13,34 +13,6 @@
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
-        "label": "Control",
-        "target_organism": "mouse",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
-    },
-    {
-        "label": "mouse-IgG-control",
-        "target_organism": "human",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "2e19e501-8f32-4205-8469-2fb593a30595"
-    },
-    {
-        "label": "mouse-IgG-control",
-        "target_organism": "mouse",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "6fcd4ef8-9a84-4951-958a-828c41a5ffb0"
-    },
-    {
-        "label": "Control",
-        "target_organism": "human",
-        "status": "released",
-        "investigated_as": ["control"],
-        "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
-    },
-    {
         "dbxref": [
             "ENSEMBL:ENSG00000102974",
             "GeneID:10664",
@@ -104,7 +76,7 @@
         }],
         "label": "eGFP-E2F1",
         "status": "released",
-        "investigated_as": ["transcription factor", "recombinant protein"],
+        "investigated_as": ["transcription factor"],
         "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
     },
     {
@@ -123,7 +95,7 @@
         }],
         "label": "HA-E2F1",
         "status": "released",
-        "investigated_as": ["transcription factor", "recombinant protein"],
+        "investigated_as": ["transcription factor"],
         "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
     },
     {
@@ -262,7 +234,7 @@
             "position": 1,
             "amino_acid_code": "E"
         }],
-        "investigated_as": ["transcription factor", "recombinant protein"],
+        "investigated_as": ["transcription factor"],
         "status": "released"
     },
     {
@@ -469,7 +441,6 @@
             "amino_acid_code": "T"
         }],
         "investigated_as": [
-            "recombinant protein",
             "transcription factor"
         ],
         "label": "eGFP-ab",

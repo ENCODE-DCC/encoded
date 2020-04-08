@@ -1,251 +1,51 @@
 import pytest
 
 
-@pytest.fixture
-def biosample_0(submitter, lab, award, source, organism):
-    return {
-        'award': award['uuid'],
-        'biosample_term_id': 'UBERON:0000948',
-        'biosample_term_name': 'heart',
-        'biosample_type': 'tissue',
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid'],
-    }
-
-
-@pytest.fixture
-def biosample_1(biosample_0):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '1',
-        'starting_amount': 1000,
-        'starting_amount_units': 'g'
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_2(biosample_0):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '2',
-        'subcellular_fraction': 'nucleus',
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_3(biosample_0, biosample):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '3',
-        'derived_from': [biosample['uuid']],
-        'part_of': [biosample['uuid']],
-        'encode2_dbxrefs': ['Liver'],
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_4(biosample_0, encode2_award):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '4',
-        'status': 'CURRENT',
-        'award': encode2_award['uuid'],
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_6(biosample_0):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '5',
-        'sex': 'male',
-        'age': '2',
-        'age_units': 'week',
-        'health_status': 'Normal',
-        'life_stage': 'newborn',
-
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_7(biosample_0):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '7',
-        'worm_life_stage': 'embryonic',
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_8(biosample_0):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '8',
-        'model_organism_age': '15.0',
-        'model_organism_age_units': 'day',
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_9(root, biosample, publication):
-    item = root.get_by_uuid(biosample['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '9',
-        'references': [publication['identifiers'][0]],
-    })
-    return properties
-
-
-@pytest.fixture
-def biosample_10(root, biosample):
-    item = root.get_by_uuid(biosample['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '10',
-        'worm_synchronization_stage': 'starved L1 larva'
-    })
-    return properties
-
-
-@pytest.fixture
-def biosample_11(root, biosample):
-    item = root.get_by_uuid(biosample['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '11',
-        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
-        'aliases': ['testing:123', 'testing:123']
-    })
-    return properties
-
-
-@pytest.fixture
-def biosample_12(biosample_0, document):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '12',
-        'starting_amount': 'unknown',
-        'starting_amount_units': 'g',
-        'note': 'Value in note.',
-        'submitter_comment': 'Different value in submitter_comment.',
-        'protocol_documents': list(document)
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_13(biosample_0, document):
-    item = biosample_0.copy()
-    item.update({
-        'schema_version': '13',
-        'notes': ' leading and trailing whitespace ',
-        'description': ' leading and trailing whitespace ',
-        'submitter_comment': ' leading and trailing whitespace ',
-        'product_id': ' leading and trailing whitespace ',
-        'lot_id': ' leading and trailing whitespace '
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_15(biosample_0, biosample):
-    item = biosample_0.copy()
-    item.update({
-        'date_obtained': '2017-06-06T20:29:37.059673+00:00',
-        'schema_version': '15',
-        'derived_from': biosample['uuid'],
-        'talens': []
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_18(biosample_0, biosample):
-    item = biosample_0.copy()
-    item.update({
-        'biosample_term_id': 'EFO:0002067',
-        'biosample_term_name': 'K562',
-        'biosample_type': 'immortalized cell line',
-        'transfection_type': 'stable',
-        'transfection_method': 'electroporation'
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_19(biosample_0, biosample):
-    item = biosample_0.copy()
-    item.update({
-        'biosample_type': 'immortalized cell line',
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_21(biosample_0, biosample):
-    item = biosample_0.copy()
-    item.update({
-        'biosample_type': 'stem cell',
-        'biosample_term_id': 'EFO:0007071',
-        'biosample_term_name': 'BG01'
-    })
-    return item
-
-
-def test_biosample_upgrade(upgrader, biosample_1):
-    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
+def test_biosample_upgrade(upgrader, biosample_1_0):
+    value = upgrader.upgrade('biosample', biosample_1_0, target_version='2')
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == 1000
 
 
-def test_biosample_upgrade_unknown(upgrader, biosample_1):
-    biosample_1['starting_amount'] = 'Unknown'
-    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
+def test_biosample_upgrade_unknown(upgrader, biosample_1_0):
+    biosample_1_0['starting_amount'] = 'Unknown'
+    value = upgrader.upgrade('biosample', biosample_1_0, target_version='2')
     assert value['schema_version'] == '2'
     assert 'starting_amount' not in value
 
 
-def test_biosample_upgrade_empty_string(upgrader, biosample_1):
-    biosample_1['starting_amount'] = ''
-    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
+def test_biosample_upgrade_empty_string(upgrader, biosample_1_0):
+    biosample_1_0['starting_amount'] = ''
+    value = upgrader.upgrade('biosample', biosample_1_0, target_version='2')
     assert value['schema_version'] == '2'
     assert 'starting_amount' not in value
 
 
-def test_biosample_upgrade_exponent(upgrader, biosample_1):
-    biosample_1['starting_amount'] = '1 X 10^5'
-    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
+def test_biosample_upgrade_exponent(upgrader, biosample_1_0):
+    biosample_1_0['starting_amount'] = '1 X 10^5'
+    value = upgrader.upgrade('biosample', biosample_1_0, target_version='2')
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == 1e5
 
 
-def test_biosample_upgrade_number(upgrader, biosample_1):
-    biosample_1['starting_amount'] = -1
-    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
+def test_biosample_upgrade_number(upgrader, biosample_1_0):
+    biosample_1_0['starting_amount'] = -1
+    value = upgrader.upgrade('biosample', biosample_1_0, target_version='2')
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == -1
 
 
-def test_biosample_upgrade_subcellular_fraction(upgrader, biosample_2):
-    value = upgrader.upgrade('biosample', biosample_2, target_version='3')
+def test_biosample_upgrade_subcellular_fraction(upgrader, biosample_2_0):
+    value = upgrader.upgrade('biosample', biosample_2_0, target_version='3')
     assert value['schema_version'] == '3'
     assert value['subcellular_fraction_term_name'] == 'nucleus'
     assert value['subcellular_fraction_term_id'] == 'GO:0005634'
     assert 'subcellular_fraction' not in value
 
 
-def test_biosample_upgrade_subcellular_fraction_membrane(upgrader, biosample_2):
-    biosample_2['subcellular_fraction'] = 'membrane fraction'
-    value = upgrader.upgrade('biosample', biosample_2, target_version='3')
+def test_biosample_upgrade_subcellular_fraction_membrane(upgrader, biosample_2_0):
+    biosample_2_0['subcellular_fraction'] = 'membrane fraction'
+    value = upgrader.upgrade('biosample', biosample_2_0, target_version='3')
     assert value['schema_version'] == '3'
     assert value['subcellular_fraction_term_name'] == 'membrane'
     assert value['subcellular_fraction_term_id'] == 'GO:0016020'
@@ -322,10 +122,10 @@ def test_biosample_upgrade_model_organism_mouse(upgrader, biosample_6):
     assert value['mouse_life_stage'] == 'postnatal'
 
 
-def test_biosample_upgrade_inline(testapp, biosample_1, heart):
+def test_biosample_upgrade_inline(testapp, biosample_1_0, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1_0)
     location = res.location
 
     # The properties are stored un-upgraded.
@@ -343,12 +143,12 @@ def test_biosample_upgrade_inline(testapp, biosample_1, heart):
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
-def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1, heart):
+def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1_0, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    biosample_1['starting_amount'] = 666
-    biosample_1['starting_amount_units'] = 'g'
-    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    biosample_1_0['starting_amount'] = 666
+    biosample_1_0['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1_0)
     location = res.location
 
     # The properties are stored un-upgraded.
@@ -369,12 +169,12 @@ def test_biosample_upgrade_starting_amount_dep(testapp, biosample_1, heart):
     assert res.json['starting_amount_units'] == 'g'
 
 
-def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1, heart):
+def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1_0, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    biosample_1['starting_amount'] = 0.632
-    biosample_1['starting_amount_units'] = 'g'
-    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    biosample_1_0['starting_amount'] = 0.632
+    biosample_1_0['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1_0)
     location = res.location
 
     # The properties are stored un-upgraded.
@@ -395,12 +195,12 @@ def test_biosample_upgrade_starting_amount_explicit_patch(testapp, biosample_1, 
     assert res.json['starting_amount_units'] == 'g'
 
 
-def test_biosample_upgrade_starting_amount_unknown(testapp, biosample_1, heart):
+def test_biosample_upgrade_starting_amount_unknown(testapp, biosample_1_0, heart):
     from snovault.schema_utils import load_schema
     schema = load_schema('encoded:schemas/biosample.json')
-    biosample_1['starting_amount'] = 'unknown'
-    biosample_1['starting_amount_units'] = 'g'
-    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    biosample_1_0['starting_amount'] = 'unknown'
+    biosample_1_0['starting_amount_units'] = 'g'
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1_0)
     location = res.location
 
     # The properties are stored un-upgraded.

@@ -10,8 +10,16 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                            "Pseudoreplicated IDR thresholded peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
+            "group_order": [
+                "Optimal IDR thresholded peaks",
+                "IDR thresholded peaks",
+                "Conservative IDR thresholded peaks",
+                "Pseudoreplicated IDR thresholded peaks",
+                "Peaks",
+                "Signal p-value",
+                "Fold change over control",
+                "Signal"
+            ],
             "groups": {
                 "Optimal IDR thresholded peaks": {
                     "tag": "aOIDR",
@@ -21,30 +29,40 @@
                     "signalFilter": "0",
                     "qValueFilter": "0",
                     "spectrum":"on",
-                    "output_type": [ "optimal idr thresholded peaks" ]
+                    "output_type": [ "optimal IDR thresholded peaks" ]
                 },
-                "Conservative IDR thresholded peaks": {
-                    "tag": "bCIDR",
-                    "visibility": "hide",
-                    "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
-                    "signalFilter": "0",
-                    "qValueFilter": "0",
-                    "spectrum":"on",
-                    "output_type": [ "conservative idr thresholded peaks" ]
-                },
-                "Pseudoreplicated IDR thresholded peaks": {
-                    "tag": "cRPKS",
+                "IDR thresholded peaks": {
+                    "tag": "bIDRT",
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
                     "signalFilter": "0",
                     "qValueFilter": "0",
                     "spectrum":"on",
-                    "output_type": [ "pseudoreplicated idr thresholded peaks" ]
+                    "output_type": [ "IDR thresholded peaks" ]
+                },
+                "Conservative IDR thresholded peaks": {
+                    "tag": "cCIDR",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "qValueFilter": "0",
+                    "spectrum":"on",
+                    "output_type": [ "conservative IDR thresholded peaks" ]
+                },
+                "Pseudoreplicated IDR thresholded peaks": {
+                    "tag": "dRPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "qValueFilter": "0",
+                    "spectrum":"on",
+                    "output_type": [ "pseudoreplicated IDR thresholded peaks" ]
                 },
                 "Peaks": {
-                    "tag": "dPKS",
+                    "tag": "ePKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -53,7 +71,7 @@
                     "output_type": [ "peaks" ]
                 },
                 "Fold change over control": {
-                    "tag": "eFCOC",
+                    "tag": "fFCOC",
                     "visibility": "full",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -63,7 +81,7 @@
                     "output_type": [ "fold change over control" ]
                 },
                 "Signal p-value": {
-                    "tag": "fSPV",
+                    "tag": "gSPV",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -73,7 +91,7 @@
                     "output_type": [ "signal p-value" ]
                 },
                 "Signal": {
-                    "tag": "gSIG",
+                    "tag": "hSIG",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:10",

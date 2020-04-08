@@ -9,8 +9,7 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
-@pytest.fixture(scope='session')
-def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
@@ -33,8 +32,12 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     return settings
 
 
-@pytest.yield_fixture(scope='session')
-def app(app_settings):
+@pytest.fixture(scope='session')
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+
+
+def _app(app_settings):
     from encoded import main
     app = main({}, **app_settings)
 
@@ -48,6 +51,12 @@ def app(app_settings):
     DBSession = app.registry[DBSESSION]
     # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
+
+
+@pytest.yield_fixture(scope='session')
+def app(app_settings):
+    for app in _app(app_settings):
+        yield app
 
 
 @pytest.fixture(scope='session')
@@ -89,7 +98,6 @@ def listening_conn(dbapi_conn):
 
 
 def test_indexing_simple(testapp, indexer_testapp):
-    import time
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
@@ -101,13 +109,6 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['txn_count'] == 1
     assert res.json['updated'] == [uuid]
     res = testapp.get('/search/?type=TestingPostPutPatch')
-    uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
-    count = 0
-    while uuid not in uuids and count < 20:
-        time.sleep(1)
-        res = testapp.get('/search/?type=TestingPostPutPatch')
-        uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
-        count += 1
     assert res.json['total'] == 2
 
 
@@ -118,12 +119,12 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
 
-    from ..loadxl import load_all
+    from encoded.loadxl import load_all
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)
-    res = indexer_testapp.post_json('/index', {'record': True})
+    res = indexer_testapp.post_json('/index', {'record': True, 'is_testing_full': True})
     assert res.json['updated']
     assert res.json['indexed']
     ### OPTIONAL: audit via 2-pass is coming...

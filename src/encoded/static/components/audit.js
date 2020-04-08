@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
-import { Panel } from '../libs/bootstrap/panel';
+import * as globals from './globals';
 
 // This module supports the display of an object's audits in the form of an indicator button that
 // shows a summary of the categories of audits in the current object. Currently, we have four
@@ -89,8 +89,6 @@ import { Panel } from '../libs/bootstrap/panel';
 //
 // * options (Optional object):
 //   * options.session (object): session object from app context
-//   * options.except (string): @id to *not* make into a link in the detail text
-//   * options.forcedEditLink (boolean): `true` to make the `except` string a link anyway
 
 
 // Display an audit icon. This normally gets displayed within the audit indicator button, but it
@@ -118,54 +116,78 @@ AuditIcon.defaultProps = {
 };
 
 
-// Display details text with embedded links. This gets displayed in each row of the audit details.
-/* eslint-disable react/prefer-stateless-function */
-class DetailEmbeddedLink extends React.Component {
-    render() {
-        const { detail } = this.props;
+/**
+ * Display the audit icon for the highest audit level for the given object.
+ */
+export const ObjectAuditIcon = ({ object, audit, isAuthorized }) => {
+    if (audit !== null) {
+        let highestAuditLevel;
+        const objectAudit = audit || object.audit;
 
-        // Get an array of all paths in the detail string, if any.
-        const matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
-        if (matches) {
-            // Build React object of text followed by path for all paths in detail string
-            let lastStart = 0;
-            const result = matches.map((match) => {
-                let preMatchedChar = '';
-                const linkStart = detail.indexOf(match, lastStart);
-                const preText = detail.slice(lastStart, linkStart);
-                lastStart = linkStart + match.length;
-                const linkText = detail.slice(linkStart, lastStart);
-                if (linkText[0] !== '/') {
-                    preMatchedChar = linkText[0];
-                }
-                if (match !== this.props.except || this.props.forcedEditLink) {
-                    return <span key={linkStart}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
-                }
-                return <span key={linkStart}>{preText}{preMatchedChar}{linkText}</span>;
-            });
+        if (objectAudit) {
+            const sortedAuditLevels = _(Object.keys(objectAudit)).sortBy(level => -objectAudit[level][0].level);
 
-            // Pick up any trailing text after the last path, if any
-            const postText = detail.slice(lastStart);
-
-            // Render all text and paths, plus the trailing text
-            return <span>{result}{postText}</span>;
+            // Only authorized users should see ambulance icon (INTERNAL_ACTION)
+            highestAuditLevel = !isAuthorized && sortedAuditLevels[0] === 'INTERNAL_ACTION' ? 'OK' : sortedAuditLevels[0];
+        } else {
+            highestAuditLevel = 'OK';
         }
-
-        // No links in the detail string; just display it with no links
-        return <span>{detail}</span>;
+        return <AuditIcon level={highestAuditLevel} addClasses="audit-status" />;
     }
-}
-/* eslint-enable react/prefer-stateless-function */
-
-DetailEmbeddedLink.propTypes = {
-    detail: PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
-    except: PropTypes.string, // @id of object being reported on. Specifying it here prevents it from being converted to a link in the `detail` text
-    forcedEditLink: PropTypes.bool, // `true` to display the `except` path as a link anyway
+    return null;
 };
 
-DetailEmbeddedLink.defaultProps = {
-    except: '',
-    forcedEditLink: false,
+ObjectAuditIcon.propTypes = {
+    /** Object whose audit we display */
+    object: PropTypes.object.isRequired,
+    /** Audit object when `object` has none; null to suppress display */
+    audit: PropTypes.object,
+    /** True if user is authorized in */
+    isAuthorized: PropTypes.bool,
+};
+
+ObjectAuditIcon.defaultProps = {
+    audit: undefined,
+    isAuthorized: false,
+};
+
+
+// Regex to find a simplified markdown in the form "{link text|path}"
+const markdownRegex = /{(.+?)\|(.+?)}/g;
+
+
+/**
+ * Display details text with embedded links. This gets displayed in each row of the audit details.
+ * Links, if they exist in the `detail` text, must be formatted in this form:
+ * {link text|URI}
+ */
+const DetailEmbeddedLink = ({ detail }) => {
+    let linkMatches = markdownRegex.exec(detail);
+    if (linkMatches) {
+        // `detail` has at least one "markdown" sequence, so treat the whole thing as marked-down
+        // text. Each loop iteration finds each markdown sequence. That gets broken into the
+        // non-link text before the link and then the link itself.
+        const renderedDetail = [];
+        let segmentIndex = 0;
+        while (linkMatches) {
+            const linkText = linkMatches[1];
+            const linkPath = linkMatches[2];
+            const preText = detail.substring(segmentIndex, linkMatches.index);
+            renderedDetail.push(preText ? <span key={segmentIndex}>{preText}</span> : null, <a href={linkPath} key={linkMatches.index}>{linkText}</a>);
+            segmentIndex = linkMatches.index + linkMatches[0].length;
+            linkMatches = markdownRegex.exec(detail);
+        }
+
+        // Lastly, render any non-link text after the last link.
+        const postText = detail.substring(segmentIndex, detail.length);
+        return renderedDetail.concat(postText ? <span key={segmentIndex}>{postText}</span> : null);
+    }
+    return detail;
+};
+
+DetailEmbeddedLink.propTypes = {
+    /** Audit detail text containing formatted links */
+    detail: PropTypes.string.isRequired,
 };
 
 
@@ -178,40 +200,46 @@ class AuditGroup extends React.Component {
 
     detailSwitch() {
         // Click on the detail disclosure triangle
-        this.setState({ detailOpen: !this.state.detailOpen });
+        this.setState(prevState => (
+            ({ detailOpen: !prevState.detailOpen })
+        ));
     }
 
     render() {
-        const { group, except, auditLevelName, forcedEditLink } = this.props;
+        const { group, auditLevelName } = this.props;
         const level = auditLevelName.toLowerCase();
         const { detailOpen } = this.state;
-        const alertClass = `audit-detail-${level}`;
-        const alertItemClass = `panel-collapse collapse audit-item-${level}${detailOpen ? ' in' : ''}`;
+        const alertClass = `audit-detail__${level}`;
+        const alertItemClass = `audit-item-${level}`;
         const iconClass = `icon audit-icon-${level}`;
         const categoryName = group[0].category.uppercaseFirstChar();
 
         return (
             <div className={alertClass}>
-                <div className={`icon audit-detail-trigger-${level}`}>
-                    <button onClick={this.detailSwitch} className="collapsing-title">
-                        {collapseIcon(!detailOpen)}
-                    </button>
-                </div>
-                <div className="audit-detail-info">
-                    <i className={iconClass} />
-                    <strong>&nbsp;{categoryName}</strong>
-                    <div className="btn-info-audit">
-                        <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-question-circle" /></a>
+                <div className="audit-detail__summary">
+                    <div className={`icon audit-detail__trigger--${level}`}>
+                        <button onClick={this.detailSwitch} className="collapsing-title">
+                            {collapseIcon(!detailOpen)}
+                        </button>
+                    </div>
+                    <div className="audit-detail__info">
+                        <i className={iconClass} />
+                        <strong>&nbsp;{categoryName}</strong>
+                        <div className="btn-info-audit">
+                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-question-circle" /></a>
+                        </div>
                     </div>
                 </div>
-                <div className="audit-details-section">
-                    <div className="audit-details-decoration" />
-                    {group.map((audit, i) =>
-                        <div className={alertItemClass} key={i} role="alert">
-                            <DetailEmbeddedLink detail={audit.detail} except={except} forcedEditLink={forcedEditLink} />
-                        </div>
-                    )}
-                </div>
+                {this.state.detailOpen ?
+                    <div className="audit-details-section">
+                        <div className="audit-details-decoration" />
+                        {group.map((audit, i) =>
+                            <div className={alertItemClass} key={i} role="alert">
+                                <DetailEmbeddedLink detail={audit.detail} />
+                            </div>
+                        )}
+                    </div>
+                : null}
             </div>
         );
     }
@@ -220,13 +248,6 @@ class AuditGroup extends React.Component {
 AuditGroup.propTypes = {
     group: PropTypes.array.isRequired, // Array of audits in one name/category
     auditLevelName: PropTypes.string.isRequired, // Audit level name
-    except: PropTypes.string, // @id of object whose audits are being displayed.
-    forcedEditLink: PropTypes.bool, // `true` to display the `except` path as a link anyway
-};
-
-AuditGroup.defaultProps = {
-    except: '',
-    forcedEditLink: false,
 };
 
 
@@ -243,8 +264,65 @@ AuditGroup.defaultProps = {
 export function auditsDisplayed(audits, session) {
     const loggedIn = !!(session && session['auth.userid']);
 
-    return (audits && Object.keys(audits).length) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
+    return (audits && Object.keys(audits).length > 0) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
 }
+
+
+/**
+ * Display a summary of audit levels and their counts. Useful in audit buttons.
+ */
+export const AuditCounts = ({ audits, useWrapper, isAuthorized }) => {
+    // Sort the audit levels by their level number, using the first element of each warning
+    // category.
+    if (audits && Object.keys(audits).length > 0) {
+        const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
+        const auditCountsContent = (
+            sortedAuditLevels.map((level) => {
+                if (isAuthorized || level !== 'INTERNAL_ACTION') {
+                    // Calculate the CSS class for the icon.
+                    const levelName = level.toLowerCase();
+                    const btnClass = `audit-counts__level audit-counts__level--${levelName}`;
+                    const groupedAudits = _(audits[level]).groupBy('category');
+                    return (
+                        <span className={btnClass} key={level}>
+                            <AuditIcon level={level} />
+                            {Object.keys(groupedAudits).length}
+                        </span>
+                    );
+                }
+                return null;
+            })
+        );
+
+        // Render components surrounded by a default wrapper div.
+        if (useWrapper) {
+            return (
+                <div className="audit-counts">
+                    {auditCountsContent}
+                </div>
+            );
+        }
+
+        // Render components so that the parent component can provide the wrapper.
+        return auditCountsContent;
+    }
+    return null;
+};
+
+AuditCounts.propTypes = {
+    /** Audit object from any encode object that has audits */
+    audits: PropTypes.object,
+    /** True to wrap counts in a div with appropriate CSS class; false if taken care of outside */
+    useWrapper: PropTypes.bool,
+    /** True if user is authorized to view */
+    isAuthorized: PropTypes.bool,
+};
+
+AuditCounts.defaultProps = {
+    audits: null,
+    useWrapper: true,
+    isAuthorized: false,
+};
 
 
 // Audit decorator function. For any component that displays audits, pass this component as the
@@ -265,36 +343,24 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditIndicators(audits, id, options) {
-        const { session, search } = options || {};
-        const loggedIn = !!(session && session['auth.userid']);
+        const { session, search, sessionProperties } = options || {};
+        const roles = globals.getRoles(sessionProperties);
+        const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
         if (auditsDisplayed(audits, session)) {
-            // Sort the audit levels by their level number, using the first element of each warning
-            // category.
-            const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
-
             // Calculate the class of the indicator button based on whether the audit detail panel
             // is open or not.
-            const indicatorClass = `audit-indicators btn btn-info${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
+            const indicatorClass = `audit-indicators btn btn-sm${this.state.auditDetailOpen ? ' active' : ''}${search ? ' audit-search' : ''}`;
+            const auditItems = Object.keys(audits);
+
+            // special case for unauthorized users
+            if (!isAuthorized && auditItems.length === 1 && auditItems[0] === 'INTERNAL_ACTION') {
+                return null;
+            }
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.state.auditDetailOpen} aria-controls={id} onClick={this.toggleAuditDetail}>
-                    {sortedAuditLevels.map((level) => {
-                        if (loggedIn || level !== 'INTERNAL_ACTION') {
-                            // Calculate the CSS class for the icon
-                            const levelName = level.toLowerCase();
-                            const btnClass = `btn-audit btn-audit-${levelName} audit-level-${levelName}`;
-                            const groupedAudits = _(audits[level]).groupBy('category');
-
-                            return (
-                                <span className={btnClass} key={level}>
-                                    <AuditIcon level={level} />
-                                    {Object.keys(groupedAudits).length}
-                                </span>
-                            );
-                        }
-                        return null;
-                    })}
+                    <AuditCounts audits={audits} useWrapper={false} isAuthorized={isAuthorized} />
                 </button>
             );
         }
@@ -304,18 +370,19 @@ export const auditDecor = AuditComponent => class extends React.Component {
     }
 
     auditDetail(audits, id, options) {
-        const { except, forcedEditLink, session } = options || {};
+        const { sessionProperties } = options || {};
         if (audits && this.state.auditDetailOpen) {
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
             const sortedAuditLevelNames = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);
-            const loggedIn = session && session['auth.userid'];
+            const roles = globals.getRoles(sessionProperties);
+            const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
 
             // First loop by audit level, then by audit group
             return (
-                <Panel addClasses="audit-details" id={id.replace(/\W/g, '')} aria-hidden={!this.state.auditDetailOpen}>
+                <div className="audit-detail" id={id.replace(/\W/g, '')} aria-hidden={!this.state.auditDetailOpen}>
                     {sortedAuditLevelNames.map((auditLevelName) => {
-                        if (loggedIn || auditLevelName !== 'INTERNAL_ACTION') {
+                        if (isAuthorized || auditLevelName !== 'INTERNAL_ACTION') {
                             const audit = audits[auditLevelName];
 
                             // Group audits within a level by their category ('name' corresponds to
@@ -327,15 +394,13 @@ export const auditDecor = AuditComponent => class extends React.Component {
                                     group={groupedAudits[groupName]}
                                     groupName={groupName}
                                     auditLevelName={auditLevelName}
-                                    except={except}
-                                    forcedEditLink={forcedEditLink}
                                     key={groupName}
                                 />
                             );
                         }
                         return null;
                     })}
-                </Panel>
+                </div>
             );
         }
         return null;

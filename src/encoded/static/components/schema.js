@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
-import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
@@ -35,7 +35,6 @@ const excludedTerms = [
     'output_type_output_category',
     'file_format_file_extension',
     'sort_by',
-    'anyOf',
 ];
 
 
@@ -99,7 +98,7 @@ function createJsonDisplay(elementId, term) {
  */
 function schemaIdToName(schemaId) {
     const pathMatch = schemaId.match(/\/profiles\/(.*).json/);
-    return pathMatch && pathMatch.length ? pathMatch[1] : null;
+    return pathMatch && pathMatch.length > 0 ? pathMatch[1] : null;
 }
 
 
@@ -185,16 +184,16 @@ const SchemaTermLinksSection = (props) => {
     // Collect all the linkTo and linkFrom @types from schemaProp.
     const collectedLinks = collectLinks(schemaProp);
 
-    if (collectedLinks.linkTo.length || collectedLinks.linkFrom.length) {
+    if (collectedLinks.linkTo.length > 0 || collectedLinks.linkFrom.length > 0) {
         return (
             <div className="schema-term-links">
-                {collectedLinks.linkTo.length ?
+                {collectedLinks.linkTo.length > 0 ?
                     <div>
                         <span className="schema-term-links__title">References: </span>
                         <SchemaTermLinks schemaNames={collectedLinks.linkTo} profilesMap={profilesMap} />
                     </div>
                 : null}
-                {collectedLinks.linkFrom.length ?
+                {collectedLinks.linkFrom.length > 0 ?
                     <div>
                         <span className="schema-term-links__title">Referenced by: </span>
                         <SchemaTermLinks schemaNames={collectedLinks.linkFrom} profilesMap={profilesMap} />
@@ -347,7 +346,7 @@ const TermDisplay = (props) => {
             // array (at this time, I don't think any schema array values have non-simple types)
             // and sort the results.
             const simpleTermValues = termSchema.filter(item => !!simpleTypeDisplay[typeof item]).sort();
-            if (simpleTermValues.length) {
+            if (simpleTermValues.length > 0) {
                 return (
                     <div>
                         {simpleTermValues.map((item, i) => (
@@ -357,7 +356,7 @@ const TermDisplay = (props) => {
                 );
             }
 
-            // No simple term types in the schema value, so don't show anything.
+            // No simple term types in the schema value, this case should be caught before this component
             return null;
         }
 
@@ -397,6 +396,16 @@ class DisplayObjectSection extends React.PureComponent {
     render() {
         const { term, schema, schemaName, profilesMap } = this.props;
 
+        // No simple term types in the schema value, so display the schema object
+        const schemaTerm = schema[term];
+        const schemaIsObject = typeof schemaTerm === 'object';
+        const schemaIsArray = Array.isArray(schemaTerm);
+        let simpleTermValuesExist = true;
+        if (schemaIsObject && schemaIsArray) {
+            const simpleTermValues = schemaTerm.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            simpleTermValuesExist = simpleTermValues.length > 0;
+        }
+
         // Set aria values for accessibility.
         const accordionId = `profile-display-values-${term}`;
         const accordionLabel = `profile-value-item-${term}`;
@@ -418,7 +427,11 @@ class DisplayObjectSection extends React.PureComponent {
                 </h3>
                 {this.state.sectionOpen ?
                     <div id={accordionId} aria-labelledby={accordionLabel} className="profile-display__values">
-                        <TermDisplay termSchema={schema[term]} linkedTerm={linkedTerms.indexOf(term) !== -1} schemaName={schemaName} profilesMap={profilesMap} />
+                        {(schemaIsObject && schemaIsArray && !(simpleTermValuesExist)) ?
+                            <DisplayRawObject schema={schema[term]} />
+                        :
+                            <TermDisplay termSchema={schema[term]} linkedTerm={linkedTerms.indexOf(term) !== -1} schemaName={schemaName} profilesMap={profilesMap} />
+                        }
                     </div>
                 : null}
             </div>
@@ -533,9 +546,10 @@ const SchemaPanel = (props, reactContext) => {
 
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
-    const decoration = loggedIn ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
-    const decorationClasses = loggedIn ? 'profiles-add-obj' : '';
+    const roles = globals.getRoles(reactContext.session_properties);
+    const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
+    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
+    const decorationClasses = isAuthorized ? 'profiles-add-obj' : '';
 
     return (
         <Panel>
@@ -569,6 +583,7 @@ SchemaPanel.propTypes = {
 
 SchemaPanel.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
@@ -593,11 +608,9 @@ const SchemaPage = (props) => {
 
     return (
         <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{title}</h2>
-                </div>
+            <header>
+                <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h2>{title}</h2>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <SchemaPanel schema={context} schemaName={schemaName} />
@@ -629,39 +642,39 @@ globals.contentViews.register(SchemaPage, 'JSONSchema');
 // add a new object of that type if you're logged in.
 const AllSchemasPage = (props, reactContext) => {
     const { context } = props;
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
+    const reactContextUser = reactContext.session_properties ? reactContext.session_properties.user : null;
+    const canAddSchema = !!(
+        reactContextUser && reactContextUser.lab && reactContextUser.lab.status === 'current' &&
+        reactContextUser.submits_for && reactContextUser.submits_for.length > 0 &&
+        reactContextUser.submits_for.includes(reactContextUser.lab['@id'])
+    );
 
     // Get a sorted list of all available schema object names (e.g. GeneticModification). Filter
     // out those without any `identifyingProperties` because the user can't add objects of that
     // type, nor display their schemas.
     const objectNames = Object.keys(context).sort().filter(objectName => (
-        !!(context[objectName].identifyingProperties && context[objectName].identifyingProperties.length)
+        context[objectName].identifyingProperties && context[objectName].identifyingProperties.length > 0
     ));
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>Schemas</h2>
-                </div>
+            <header>
+                <h1>Schemas</h1>
             </header>
             <Panel>
                 <PanelBody>
-                    <div className="row">
-                        <div className="col-md-12 block-text">
-                            <p>
-                                Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
-                                structures defining each object housed in <a href="https://github.com/utsw-bicf/pandiseased" title="KCE GitHub repo">KCE</a>.
-                                To support KCE Project submitters and public users alike, this page
-                                provides a user-friendly visualization method for our schemas to help
-                                organize and understand the data.
-                            </p>
-                            <p>
-                                The links below lead to pages describing each schema KCE supports.
-                            </p>
-                        </div>
+                    <div className="schema-description">
+                        <p>
+                            Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
+                            structures defining each object housed in <a href="https://github.com/utsw-bicf/pandiseased" title="KCE GitHub repo">KCE</a>.
+                            To support KCE Project submitters and public users alike, this page
+                            provides a user-friendly visualization method for our schemas to help
+                            organize and understand the data.
+                        </p>
+                        <p>
+                            The links below lead to pages describing each schema ENCODE supports.
+                        </p>
                     </div>
-                    <hr />
                     <div className="schema-list">
                         {objectNames.map((objectName) => {
                             // `objectName` is the @type of each objects e.g. GeneticModification
@@ -672,7 +685,7 @@ const AllSchemasPage = (props, reactContext) => {
 
                             return (
                                 <div className="schema-list__item" key={objectName}>
-                                    {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
+                                    {canAddSchema ? <a className="btn btn-info btn-xs" href={`/${schemaName}/#!add`}>Add</a> : null}
                                     <a href={schemaPath} title={context[objectName].description}>{objectName}</a>
                                 </div>
                             );
@@ -690,7 +703,7 @@ AllSchemasPage.propTypes = {
 
 AllSchemasPage.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 globals.contentViews.register(AllSchemasPage, 'JSONSchemas');
-

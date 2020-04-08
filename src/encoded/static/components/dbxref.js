@@ -107,6 +107,9 @@ export const dbxrefPrefixMap = {
     Cellosaurus: {
         pattern: 'https://web.expasy.org/cellosaurus/{0}',
     },
+    FactorBook: {
+        pattern: 'https://factorbook.org/experiment/{0}',
+    },
     FlyBase: {
         pattern: 'http://flybase.org/search/symbol/{0}',
         preprocessor: (context) => {
@@ -151,7 +154,7 @@ export const dbxrefPrefixMap = {
         ),
     },
     RefSeq: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
+        pattern: 'https://www.ncbi.nlm.nih.gov/nuccore/{0}',
     },
     JAX: {
         pattern: 'https://www.jax.org/strain/{0}',
@@ -210,12 +213,24 @@ export const dbxrefPrefixMap = {
     GO: {
         pattern: 'http://amigo.geneontology.org/amigo/term/GO:{0}',
     },
+    GOGene: {
+        pattern: 'http://amigo.geneontology.org/amigo/gene_product/{0}',
+    },
     'IMGT/GENE-DB': {
         pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
     },
     SRA: {
         pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
     },
+    '4DN': {
+        pattern: 'https://data.4dnucleome.org/experiment-set-replicates/{0}',
+    },
+    DepMap: {
+        pattern: 'https://depmap.org/portal/cell_line/{0}',
+    },
+    GeneCards: {
+        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
+    }
 };
 
 

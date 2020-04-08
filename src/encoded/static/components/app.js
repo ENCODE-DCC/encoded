@@ -6,8 +6,10 @@ import ga from 'google-analytics';
 import { Provider } from 'react-redux';
 import _ from 'underscore';
 import url from 'url';
+import * as cookie from 'js-cookie';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
+import { BrowserFeat } from './browserfeat';
 import cartStore, {
     cartCacheSaved,
     cartCreateAutosave,
@@ -27,6 +29,8 @@ import Footer from './footer';
 import Home from './home';
 import { requestSearch } from './objectutils';
 import newsHead from './page';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+
 
 const portal = {
     portal_title: 'KCE',
@@ -86,8 +90,7 @@ Title.propTypes = {
 
 // Get the current browser cookie from the DOM.
 function extractSessionCookie() {
-    const cookie = require('cookie-monster');
-    return cookie(document).get('session');
+    return cookie.get('session');
 }
 
 
@@ -160,6 +163,66 @@ class Timeout {
     }
 }
 
+const EulaModal = ({ closeModal, signup }) => (
+    <Modal>
+        <ModalHeader title="Creating a new account" closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                You are about to create an ENCODE account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            closeModal={closeModal}
+            submitBtn={signup}
+            submitTitle="Proceed"
+        />
+    </Modal>
+);
+
+EulaModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+    signup: PropTypes.func.isRequired,
+};
+
+const AccountCreationFailedModal = ({ closeModal, date }) => (
+    <Modal>
+        <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                Creating a new account failed. Please contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            cancelTitle="Close"
+            closeModal={closeModal}
+        />
+    </Modal>
+);
+
+AccountCreationFailedModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+    date: PropTypes.string.isRequired,
+};
+
+
+const AccountCreatedModal = ({ closeModal }) => (
+    <Modal>
+        <ModalHeader title="Account Created" closeModal={closeModal} />
+        <ModalBody>
+            <p>
+                Welcome! A new user account is now created for you and you are automatically logged in.
+            </p>
+        </ModalBody>
+        <ModalFooter
+            closeModal={closeModal}
+            cancelTitle={'Close'}
+        />
+    </Modal>
+);
+
+AccountCreatedModal.propTypes = {
+    closeModal: PropTypes.func.isRequired,
+};
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -193,6 +256,10 @@ class App extends React.Component {
             contextRequest: null,
             unsavedChanges: [],
             promisePending: false,
+            eulaModalVisibility: false,
+            accountCreatedModalVisibility: false,
+            accountCreationFailedVisibility: false,
+            authResult: '',
         };
 
         this.triggers = {
@@ -200,6 +267,9 @@ class App extends React.Component {
             profile: 'triggerProfile',
             logout: 'triggerLogout',
         };
+
+        this.domain = 'encode.auth0.com';
+        this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
@@ -222,6 +292,10 @@ class App extends React.Component {
         this.listActionsFor = this.listActionsFor.bind(this);
         this.currentResource = this.currentResource.bind(this);
         this.currentAction = this.currentAction.bind(this);
+        this.closeSignupModal = this.closeSignupModal.bind(this);
+        this.closeAccountCreationErrorModal = this.closeAccountCreationErrorModal.bind(this);
+        this.closeAccountCreationNotification = this.closeAccountCreationNotification.bind(this);
+        this.signup = this.signup.bind(this);
     }
 
     // Data for child components to subscrie to.
@@ -257,6 +331,9 @@ class App extends React.Component {
             session,
         });
 
+        // Set browser features in the <html> CSS class.
+        BrowserFeat.setHtmlFeatClass();
+
         // Make a URL for the logo.
         const hrefInfo = url.parse(this.state.href);
         const logoHrefInfo = {
@@ -267,7 +344,7 @@ class App extends React.Component {
         };
         const logoUrl = url.format(logoHrefInfo);
 
-        this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+        this.lock = new Auth0Lock(this.clientId, this.domain, {
             auth: {
                 responseType: 'token',
                 redirect: false,
@@ -287,7 +364,7 @@ class App extends React.Component {
         // Add privacy link to auth0 login modal.
         this.lock.on('signin ready', () => {
             const lockElements = document.getElementsByClassName('auth0-lock-form');
-            if (lockElements && lockElements.length) {
+            if (lockElements && lockElements.length > 0) {
                 const privacyDiv = document.createElement('div');
                 const privacyLink = document.createElement('a');
                 const privacyLinkText = document.createTextNode('Privacy policy');
@@ -340,17 +417,6 @@ class App extends React.Component {
             window.onhashchange = this.onHashChange;
         }
         window.onbeforeunload = this.handleBeforeUnload;
-        (function walkmeinit() {
-            const s = document.getElementsByTagName('script')[0];
-            if (s) {
-                const walkme = document.createElement('script');
-                walkme.type = 'text/javascript';
-                walkme.async = true;
-                walkme.src = 'https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js';
-                s.parentNode.insertBefore(walkme, s);
-                window._walkmeConfig = { smartLoad: true };
-            }
-        }());
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -478,12 +544,61 @@ class App extends React.Component {
         });
     }
 
-    handleAuth0Login(authResult, retrying) {
+    closeSignupModal() {
+        this.setState({ eulaModalVisibility: false });
+    }
+
+    closeAccountCreationNotification() {
+        this.setState({ accountCreatedModalVisibility: false });
+    }
+
+    closeAccountCreationErrorModal() {
+        this.setState({ accountCreationFailedVisibility: false });
+    }
+
+    signup() {
+        const authResult = this.state.authResult;
+
+        if (!authResult || !authResult.accessToken) {
+            console.warn('authResult object or access token not available');
+            return;
+        }
+        const accessToken = authResult.accessToken;
+        this.closeSignupModal();
+        this.fetch(`${window.location.origin}/users/@@sign-up`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ accessToken }),
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Failed to create new account');
+            }
+            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
+            this.handleAuth0Login(authResult, false, false); // sign in after account creation
+        }).catch(() => {
+            this.setState({ accountCreationFailedVisibility: true });
+        });
+    }
+
+    /**
+    * Login with exisiting user or bring up account-creation modal
+    *
+    * @param {object} authResult- Authorization information
+    * @param {boolean} retrying- Attempt to retry login or not
+    * @param {boolean} createAccount- Where or not to attempt to create an account
+    * @returns Null
+    * @memberof App
+    */
+    handleAuth0Login(authResult, retrying, createAccount = true) {
         const accessToken = authResult.accessToken;
         if (!accessToken) {
             return;
         }
         this.sessionPropertiesRequest = true;
+        this.setState({ authResult });
         this.fetch('/login', {
             method: 'POST',
             headers: {
@@ -508,18 +623,22 @@ class App extends React.Component {
             }
             this.navigate(nextUrl, { replace: true });
         }, (err) => {
-            this.sessionPropertiesRequest = null;
-            globals.parseError(err).then((data) => {
+            if (err.status === 403 && createAccount) {
+                this.setState({ eulaModalVisibility: true });
+            } else {
+                this.sessionPropertiesRequest = null;
+                globals.parseError(err).then((data) => {
                 // Server session creds might have changed.
-                if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
-                    if (!retrying) {
-                        window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
-                        return;
+                    if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
+                        if (!retrying) {
+                            window.setTimeout(this.handleAuth0Login.bind(this, accessToken, true));
+                            return;
+                        }
                     }
-                }
-                // If there is an error, show the error messages
-                this.setState({ context: data });
-            });
+                    // If there is an error, show the error messages
+                    this.setState({ context: data });
+                });
+            }
         });
     }
 
@@ -807,7 +926,7 @@ class App extends React.Component {
     /* eslint no-alert: 0 */
     confirmNavigation() {
         // check for beforeunload confirmation
-        if (this.state.unsavedChanges.length) {
+        if (this.state.unsavedChanges.length > 0) {
             const res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
             if (res) {
                 this.setState({ unsavedChanges: [] });
@@ -818,7 +937,7 @@ class App extends React.Component {
     }
 
     handleBeforeUnload() {
-        if (this.state.unsavedChanges.length || cartIsUnsaved()) {
+        if (this.state.unsavedChanges.length > 0 || cartIsUnsaved()) {
             return 'You have unsaved changes.';
         }
         return undefined;
@@ -1012,7 +1131,6 @@ class App extends React.Component {
     render() {
         console.log('render app');
         let content;
-        let containerClass;
         let context = this.state.context;
         const hrefUrl = url.parse(this.state.href);
         // Every component is remounted when a new search is executed because 'key' is the full url
@@ -1022,7 +1140,6 @@ class App extends React.Component {
         if (isHomePage) {
             context = context.default_page;
             content = <Home context={context} />;
-            containerClass = 'container-homepage';
         } else {
             if (!currentAction && context.default_page) {
                 context = context.default_page;
@@ -1030,7 +1147,6 @@ class App extends React.Component {
             if (context) {
                 const ContentView = globals.contentViews.lookup(context, currentAction);
                 content = <ContentView context={context} />;
-                containerClass = 'container';
             }
         }
         const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
@@ -1071,10 +1187,16 @@ class App extends React.Component {
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    {/* The following line is a get around for GO server not being HTTPS */}
+                    {/* https://encodedcc.atlassian.net/browse/ENCD-5005 */}
+                    {/* https://stackoverflow.com/questions/33507566/mixed-content-blocked-when-running-an-http-ajax-operation-in-an-https-page#answer-48700852 */}
+                    {this.props.context['@type'] && this.props.context['@type'].includes('Gene') ? <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" /> : null}
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
+                    <link href="https://fonts.googleapis.com/css?family=Mada:200,400,500,600,700" rel="stylesheet" />
                     <script async src="//www.google-analytics.com/analytics.js" />
+                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
@@ -1087,24 +1209,40 @@ class App extends React.Component {
                             __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
                         }}
                     />
-                    <div id="slot-application">
-                        <div id="application" className={appClass}>
+                    <div id="slot-application" className={appClass}>
+                        <div id="application">
                             <div className="loading-spinner" />
-                            <div id="layout">
-                                <Provider store={cartStore}>
-                                    <div>
-                                        <Navigation isHomePage={isHomePage} />
-                                        <div id="content" className={containerClass} key={key}>
-                                            {content}
-                                        </div>
-                                        {errors}
-                                        <div id="layout-footer" />
+                            <Provider store={cartStore}>
+                                <div id="layout">
+                                    <Navigation isHomePage={isHomePage} />
+                                    <div id="content" className="container" key={key}>
+                                        {content}
                                     </div>
-                                </Provider>
-                            </div>
+                                    {errors}
+                                    <div id="layout-footer" />
+                                </div>
+                            </Provider>
+                            {this.state.eulaModalVisibility ?
+                                <EulaModal
+                                    closeModal={this.closeSignupModal}
+                                    signup={this.signup}
+                                />
+                            : null}
+                            { this.state.accountCreatedModalVisibility ?
+                                <AccountCreatedModal
+                                    closeModal={this.closeAccountCreationNotification}
+                                />
+                            : null}
+                            {this.state.accountCreationFailedVisibility ?
+                                <AccountCreationFailedModal
+                                    closeModal={this.closeAccountCreationErrorModal}
+                                    date={(new Date()).toUTCString()}
+                                />
+                            : null}
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>
+                    <div id="modal-root" />
                 </body>
             </html>
         );
@@ -1165,4 +1303,3 @@ module.exports.getRenderedProps = function getRenderedProps(document) {
     }
     return props;
 };
-

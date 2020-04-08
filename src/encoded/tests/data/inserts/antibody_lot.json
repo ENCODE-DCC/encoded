@@ -171,13 +171,14 @@
             "UCSC-ENCODE-cv:IgG-Yale"
         ],
         "host_organism": "mouse",
+        "isotype": "IgG",
         "lab": "michael-snyder",
         "lot_id": "unknown",
         "product_id": "IgG-Yale",
         "source": "santa-cruz-biotech",
         "submitted_by": "fames.at@per.varius",
         "uuid": "9a69a3d2-655f-49ca-a3b3-48d70ad4a9e1",
-        "targets": ["/targets/mouse-IgG-control-human", "/targets/mouse-IgG-control-mouse"],
+        "control_type": "isotype control",
         "status": "in progress"
     },
     {
@@ -383,5 +384,18 @@
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
         "clonality": "monoclonal",
         "uuid": "534171de-26f6-4363-8a1e-a353357daea9"
+    },
+    {
+        "_test": "ENCODE4 antibody",
+        "accession": "ENCAB264EPV",
+        "award": "UM1HG009442",
+        "lab": "kevin-white",
+        "product_id": "rabbit-anti-GFP-UC",
+        "source": "kevin-white",
+        "lot_id": "unknown",
+        "host_organism": "rabbit",
+        "uuid": "d19e14dd-4ae9-4439-9825-0ccb53578562",
+        "targets": ["/targets/eGFP-avictoria"],
+        "status": "in progress"
     }
 ]

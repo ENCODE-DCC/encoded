@@ -661,5 +661,16 @@
         "status": "current",
         "title": "James Brugarolas, UTSW",
         "uuid": "faa3407f-1bf5-4bc0-bbc2-2a94d8249782"
+    },
+    {
+        "address1": "",
+        "awards": ["U41HG006992"],
+        "country": "",
+        "name": "encode-consortium",
+        "phone1": "",
+        "phone2": "",
+        "status": "current",
+        "title": "ENCODE Consortium",
+        "uuid": "cb0ef1f6-3bd3-4000-8636-1c5b9f7000dc"
     }
 ]

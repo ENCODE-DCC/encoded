@@ -6,9 +6,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
-import { encodedURIComponent } from '../globals';
-import { BatchDownloadModal } from '../search';
+import * as encoding from '../../libs/query_encoding';
 import { cartOperationInProgress } from './actions';
+import { BatchDownloadModal } from '../view_controls';
 
 
 /** Maximum number of elements in cart that generates warning in download dialog */
@@ -44,14 +44,18 @@ class CartBatchDownloadComponent extends React.Component {
         const fileFormatSelections = _.compact(Object.keys(this.props.selectedTerms).map((field) => {
             let subQueryString = '';
             if (this.props.selectedTerms[field].length > 0) {
-                subQueryString = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(encodedURIComponent(term))}`).join('&');
+                // Build the query string from `files` properties in the dataset, or from the
+                // dataset properties itself for fields marked in `datasetFacets`.
+                subQueryString = this.props.selectedTerms[field].map(
+                    term => `${this.props.datasetFacets.includes(field) ? '' : 'files.'}${field}=${encoding.encodedURIComponent(term)}`
+                ).join('&');
             }
             return subQueryString;
         }));
 
         // Initiate a batch download as a POST, passing it all dataset @ids in the payload.
         this.props.setInProgress(true);
-        this.props.fetch(`/batch_download/type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}`, {
+        this.props.fetch(`/batch_download/?type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${this.props.visualizable ? '&visualizable=true' : ''}`, {
             method: 'POST',
             headers: {
                 Accept: 'text/plain',
@@ -72,16 +76,22 @@ class CartBatchDownloadComponent extends React.Component {
             // Extract filename from batch_download response content disposition tag.
             const matchResults = contentDisposition.match(/filename="(.*?)"/);
             const filename = matchResults ? matchResults[1] : 'files.txt';
+            const nav = window.navigator;
 
-            // Make a temporary link in the DOM with the URL from the response blob and then
-            // click the link to automatically download the file. Many references to the technique
-            // including https://blog.jayway.com/2017/07/13/open-pdf-downloaded-api-javascript/
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // IE11 workaround (also activates on Edge-Trident but not Edge-Chromium)
+            if (nav && nav.msSaveOrOpenBlob) {
+                nav.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Make a temporary link in the DOM with the URL from the response blob and then
+                // click the link to automatically download the file. Many references to the technique
+                // including https://blog.jayway.com/2017/07/13/open-pdf-downloaded-api-javascript/
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         }).catch((err) => {
             this.props.setInProgress(false);
             console.warn('batchDownload error %s:%s', err.name, err.message);
@@ -115,6 +125,8 @@ CartBatchDownloadComponent.propTypes = {
     elements: PropTypes.array,
     /** Selected facet terms */
     selectedTerms: PropTypes.object,
+    /** Facet fields with data from dataset instead of file */
+    datasetFacets: PropTypes.array,
     /** Cart as it exists in the database; use JSON payload method if none */
     savedCartObj: PropTypes.object,
     /** Shared cart object */
@@ -125,6 +137,8 @@ CartBatchDownloadComponent.propTypes = {
     setInProgress: PropTypes.func.isRequired,
     /** True if cart operation in progress */
     cartInProgress: PropTypes.bool,
+    /** True to download only visualizable files */
+    visualizable: PropTypes.bool,
     /** System fetch function */
     fetch: PropTypes.func.isRequired,
 };
@@ -132,10 +146,12 @@ CartBatchDownloadComponent.propTypes = {
 CartBatchDownloadComponent.defaultProps = {
     elements: [],
     selectedTerms: null,
+    datasetFacets: [],
     savedCartObj: null,
     sharedCart: null,
     fileCount: 0,
     cartInProgress: false,
+    visualizable: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({

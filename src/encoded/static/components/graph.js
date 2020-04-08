@@ -83,13 +83,13 @@ export class JsonGraph {
             if (nodes[i].id === id) {
                 return nodes[i];
             }
-            if (nodes[i].nodes.length) {
+            if (nodes[i].nodes.length > 0) {
                 const matching = this.getNode(id, nodes[i]);
                 if (matching) {
                     return matching;
                 }
             }
-            if (nodes[i].subnodes && nodes[i].subnodes.length) {
+            if (nodes[i].subnodes && nodes[i].subnodes.length > 0) {
                 const matching = nodes[i].subnodes.find(subnode => id === subnode.id);
                 if (matching) {
                     return matching;
@@ -104,13 +104,13 @@ export class JsonGraph {
 
         for (let i = 0; i < nodes.length; i += 1) {
             const node = nodes[i];
-            if (node.subnodes && node.subnodes.length) {
+            if (node.subnodes && node.subnodes.length > 0) {
                 for (let j = 0; j < node.subnodes.length; j += 1) {
                     if (node.subnodes[j].id === id) {
                         return node.subnodes[j];
                     }
                 }
-            } else if (nodes[i].nodes.length) {
+            } else if (nodes[i].nodes.length > 0) {
                 const matching = this.getSubnode(id, nodes[i]);
                 if (matching) {
                     return matching;
@@ -121,7 +121,7 @@ export class JsonGraph {
     }
 
     getEdge(source, target) {
-        if (this.edges && this.edges.length) {
+        if (this.edges && this.edges.length > 0) {
             const matching = _(this.edges).find(edge =>
                 (source === edge.source) && (target === edge.target)
             );
@@ -143,7 +143,7 @@ export class JsonGraph {
             returnArray.push(fn.call(context, node));
 
             // If the node has its own nodes, recurse
-            if (node.nodes && node.nodes.length) {
+            if (node.nodes && node.nodes.length > 0) {
                 returnArray = returnArray.concat(this.map(fn, context, node.nodes));
             }
         }
@@ -216,7 +216,7 @@ export class Graph extends React.Component {
                 if (!parent.root) {
                     subgraph.setParent(node.id, parent.id);
                 }
-                if (node.nodes.length) {
+                if (node.nodes.length > 0) {
                     convertGraphInner(subgraph, node);
                 }
             });
@@ -265,6 +265,8 @@ export class Graph extends React.Component {
         this.rangeMouseDown = this.rangeMouseDown.bind(this);
         this.rangeMouseUp = this.rangeMouseUp.bind(this);
         this.rangeDoubleClick = this.rangeDoubleClick.bind(this);
+        this.changeZoom = this.changeZoom.bind(this);
+        this.slider = React.createRef();
     }
 
     componentDidMount() {
@@ -542,7 +544,7 @@ export class Graph extends React.Component {
                             if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
                                 // If any elements use this style, add the style's CSS text to our style text accumulator.
                                 const elems = el.querySelectorAll(rule.selectorText);
-                                if (elems.length) {
+                                if (elems.length > 0) {
                                     stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
                                 }
                             }
@@ -632,6 +634,34 @@ export class Graph extends React.Component {
         this.setState({ zoomLevel });
     }
 
+    /**
+    * Changes the graph's zoom base on a provided value.
+    *
+    * @param {Number} change Positive number for increase in range, negative number for a decrease
+    * @returns undefined
+    * @memberof Graph
+    */
+    changeZoom(change) {
+        const currentValue = Number(this.slider.current.value) || 0;
+        let newValue = currentValue + change;
+
+        // normalize value if outside range (0 - 100)
+        if (newValue < 0 || newValue > 100) {
+            newValue = newValue < 0 ? 0 : 100;
+        }
+        this.slider.current.value = newValue.toString();
+
+        if (typeof (Event) === 'function') {
+            const event = new Event('input', { bubbles: true });
+            this.slider.current.dispatchEvent(event);
+        } else {
+            // Needed for IE11
+            const event = document.createEvent('Event', { bubbles: true });
+            event.initEvent('input', true, false, window, 0);
+            this.slider.current.dispatchEvent(event);
+        }
+    }
+
     render() {
         const { graph, colorize } = this.props;
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
@@ -644,16 +674,16 @@ export class Graph extends React.Component {
                         <table className="zoom-control">
                             <tbody>
                                 <tr>
-                                    <td className="zoom-indicator"><i className="icon icon-minus" /></td>
-                                    <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                    <td className="zoom-indicator"><i className="icon icon-plus" /></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(-6)}><i className="icon icon-minus" /></button></td>
+                                    <td className="zomm-controller"><input type="range" className="zoom-slider" ref={this.slider} min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onInput={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                                    <td className="zoom-indicator"><button onClick={() => this.changeZoom(6)}><i className="icon icon-plus" /></button></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div ref={(div) => { this.graphdisplay = div; }} className="graph-display" onScroll={this.scrollHandler} />
                     {colorize ? <GraphLegend /> : null}
-                    <div className="graph-dl clearfix">
+                    <div className="graph-dl">
                         <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
                         <button ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
@@ -675,8 +705,6 @@ Graph.propTypes = {
 };
 
 Graph.defaultProps = {
-    selectedAssembly: '',
-    selectedAnnotation: '',
     schemas: null,
     colorize: false,
     children: null,

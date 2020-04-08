@@ -1,14 +1,5 @@
 import pytest
 
-# also tests schema_formats generally
-@pytest.fixture
-def human_donor(lab, award, organism):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid']
-    }
-
 
 def test_replaced_accession_not_in_name(testapp, human_donor):
     donor1 = testapp.post_json('/human_donor', human_donor, status=201).json['@graph'][0]

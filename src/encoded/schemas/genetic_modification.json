@@ -1,6 +1,6 @@
 {
     "title": "Genetic Modification",
-    "description": "Schema for submitting an information on genetic modification.",
+    "description": "Schema for submitting information on genetic modification.",
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -70,14 +70,27 @@
                     ],
                     "properties": {
                         "purpose": {
-                                "enum": ["repression", "activation", "overexpression", "characterization", "screening"]
+                                "enum": ["repression", "characterization"]
                         }
                     }
                 },
                 {
                     "properties": {
                         "purpose": {
-                            "enum": ["analysis"]
+                            "enum": ["non-specific target control"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["characterization"]
+                        },
+                        "category": {
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR"]
                         }
                     }
                 },
@@ -95,11 +108,29 @@
                             "required": ["introduced_gene"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["characterization"]
+                        },
+                        "method": {
+                            "enum": ["transduction"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "required": ["introduced_sequence"]
+                        },
+                        {
+                            "required": ["introduced_gene"]
+                        }
+                    ]
                 }
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
                     "oneOf": [
@@ -154,21 +185,34 @@
                 {
                     "oneOf": [
                         {
-                             "required": ["modified_site_by_coordinates"]
+                            "required": ["modified_site_by_coordinates"]
                         },
                         {
-                             "required": ["modified_site_by_target_id"]
+                            "required": ["modified_site_by_target_id"]
                         },
                         {
-                             "required": ["modified_site_by_sequence"]
+                            "required": ["modified_site_by_sequence"]
                         },
                         {
                             "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
                         }
                     ],
                     "properties": {
                         "category": {
                             "enum": ["deletion"]
+                        }
+                    },
+                    "not": {
+                        "properties": {
+                            "method": {
+                                "enum": ["CRISPR"]
+                            },
+                            "purpose": {
+                                "enum": ["characterization"]
+                            }
                         }
                     }
                 },
@@ -184,6 +228,32 @@
                     }
                 },
                 {
+                    "properties": {
+                        "category": {
+                            "enum": ["deletion", "interference"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR", "RNAi"]
+                        },
+                        "purpose": {
+                            "enum": ["non-specific target control"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["interference", "activation", "disruption", "inhibition", "knockout", "deletion"]
+                        },
+                        "method": {
+                            "enum": ["CRISPR"]
+                        },
+                        "purpose": {
+                            "enum": ["characterization"]
+                        }
+                    }
+                },
+                {
                     "required": ["introduced_elements"],
                     "properties": {
                         "category": {
@@ -192,24 +262,28 @@
                     }
                 },
                 {
-                    "anyOf": [
-                        {
-                            "required": ["treatments", "modified_site_nonspecific"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["mutagenesis", "site-specific recombination"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["treatments"],
-                            "properties": {
-                                "category": {
-                                    "enum": ["mutagenesis"]
-                                }
-                            }
+                    "required": ["treatments"],
+                    "properties": {
+                        "category": {
+                            "enum": ["mutagenesis"]
                         }
-                    ]
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["knockout"]
+                        },
+                        "method": {
+                            "enum": ["site-specific recombination"]
+                        },
+                        "purpose": {
+                            "enum": ["repression"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
+                    }
                 }
             ]
         },
@@ -229,29 +303,64 @@
         },
         "introduced_elements": {
             "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or inserted randomly.",
-            "oneOf": [
+            "allOf": [
                 {
-                    "properties": {
-                        "category": {
-                            "enum": ["episome"]
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "category": {
+                                    "enum": ["episome"]
+                                },
+                                "purpose": {
+                                    "enum": ["characterization"]
+                                }
+                            }
                         },
-                        "purpose": {
-                            "enum": ["characterization"]
+                        {
+                            "required": ["modified_site_nonspecific"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["characterization"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
-                    "required": ["modified_site_nonspecific"],
-                    "properties": {
-                        "category": {
-                            "enum": ["insertion"]
+                    "oneOf": [
+                        {
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["sheared genomic DNA", "genomic DNA regions"]
+                                    }
+                                }
+                            }
                         },
-                        "purpose": {
-                            "enum": ["characterization"]
+                        {
+                            "required": ["donor"],
+                            "properties": {
+                                "introduced_elements": {
+                                    "enum": ["sheared genomic DNA", "genomic DNA regions"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
             ]
+        },
+        "donor": {
+            "properties": {
+                "introduced_elements": {
+                    "enum": ["sheared genomic DNA", "genomic DNA regions"]
+                },
+                "purpose": {
+                    "enum": ["characterization"]
+                }             
+            }
         },
         "guide_rna_sequences": {
             "comment": "Guide RNA sequences apply only to modification_technique = CRISPR.",
@@ -277,7 +386,7 @@
                     "enum": ["interference"]
                 },
                 "purpose": {
-                    "enum": ["repression"]
+                    "enum": ["repression", "non-specific target control"]
                 }
             }
         },
@@ -375,7 +484,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "GM"
@@ -404,6 +513,12 @@
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "formInput": "textarea"
         },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the sheared genomic DNA or genomic DNA regions originated from.",
+            "type": "string",
+            "linkTo": "Donor"            
+        },
         "category": {
             "title": "Category",
             "description": "The category/type of the genetic modification performed.",
@@ -414,7 +529,11 @@
                 "insertion",
                 "mutagenesis",
                 "replacement",
-                "episome"
+                "episome",
+                "activation",
+                "knockout",
+                "disruption",
+                "inhibition"
             ]
         },
         "purpose":{
@@ -422,13 +541,10 @@
             "description": "The purpose of the genetic modification.",
             "type": "string",
             "enum": [
-                "activation",
-                "analysis",
-                "overexpression",
+                "non-specific target control",
                 "repression",
                 "tagging",
                 "characterization",
-                "screening",
                 "expression"
             ]
         },
@@ -540,6 +656,7 @@
                             "HA",
                             "mCherry",
                             "T2A",
+                            "TagRFP",
                             "TRE",
                             "V5",
                             "YFP",
@@ -588,6 +705,7 @@
             "type": "string",
             "enum": [
                 "sheared genomic DNA",
+                "genomic DNA regions",
                 "synthesized DNA"
             ]
         },

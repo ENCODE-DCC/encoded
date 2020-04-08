@@ -30,19 +30,19 @@ How to update the ontology versions
 
 4. Load new ontology file into the encoded-build/ontology directory on S3
 
-	$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology
+	$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
 
 5.  Update the ontology version in the [buildout.cfg]:
 
-	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology ontology-YYYY-MM-DD.json
+	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
 
 6.  Update the following information
     
-    Site release version: 85
-    ontology.json file: ontology-2019-04-23.json
-    [UBERON release date]: 2018-10-14
-    [OBI release date]: 2018-08-27
-    [EFO release date]: 2019-04-18
+    Site release version: 99
+    ontology.json file: ontology-2020-03-24.json
+    [UBERON release date]: 2019-11-22
+    [OBI release date]: 2019-11-12
+    [EFO release date]: 2020-03-16
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/

@@ -11,7 +11,7 @@ pytestmark = [
     pytest.mark.usefixtures('workbook'),
 ]
 
-scenarios('generics.feature')
+scenarios('generics.feature', strict_gherkin=False)
 
 
 # https://github.com/pytest-dev/pytest-bdd/issues/124

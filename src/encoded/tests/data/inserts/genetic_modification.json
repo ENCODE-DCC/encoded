@@ -207,6 +207,7 @@
         ],
         "category": "episome",
         "purpose": "characterization",
+        "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
         "introduced_elements": "sheared genomic DNA",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "method": "transient transfection"
@@ -227,5 +228,56 @@
         "modified_site_nonspecific": "random",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "method": "transduction"
+    },
+    {
+        "accession": "ENCGM200XPR",
+        "aliases": [
+            "kevin-white:eSTARR_Batch1_input"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "episome",
+        "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
+        "introduced_elements": "genomic DNA regions",
+        "lab": "/labs/kevin-white/",
+        "method": "transient transfection",
+        "purpose": "characterization",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM518NSB",
+        "uuid": "46758afd-237b-4e01-951e-5f624714bfde",
+        "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "purpose": "tagging",
+        "modified_site_by_gene_id": "/genes/912/",
+        "introduced_tags": [
+            {
+                "name": "FLAG",
+                "location": "C-terminal"
+            }
+        ],
+        "method": "CRISPR",
+        "guide_rna_sequences": [
+            "GCGTAGCCAGTGACCAGCT",
+            "TGGGCTAACATTAGCCAGA"
+        ],
+        "submitted_by": "dignissim.euismod@amet.habitant"
+    },
+    {
+        "accession": "ENCGM555KOT",
+        "aliases": [
+            "bing-ren:CRISPR_knockout"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "knockout",
+        "lab": "/labs/bing-ren/",
+        "method": "CRISPR",
+        "purpose": "characterization",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/",
+        "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
     }
 ]

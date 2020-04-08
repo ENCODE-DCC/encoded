@@ -1,4 +1,0 @@
-argparse==1.2.1
-boto==2.38.0
-cloudwatchmon==2.0.3
-wsgiref==0.1.2

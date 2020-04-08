@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as encoding from '../../libs/query_encoding';
 import { FetchedData, Param } from '../fetched';
 import * as globals from '../globals';
 import { ResultTable } from '../search';
@@ -138,57 +139,57 @@ export class ObjectPicker extends React.Component {
         ];
         let searchParams = this.state.searchParams || this.props.searchBase;
         if (this.state.search) {
-            searchParams += `&searchTerm=${globals.encodedURIComponent(this.state.search)}`;
+            searchParams += `&searchTerm=${encoding.encodedURIComponentOLD(this.state.search)}`;
         }
         return (
-            <div className={`item-picker${this.props.disabled ? ' disabled' : ''}`}>
-                <div className="item-picker-preview" style={{ display: 'inline-block', width: 'calc(100% - 120px)' }}>
-                    {url ?
-                        <FetchedData>
-                            <Param name="data" url={previewUrl} />
-                            <ItemPreview {...this.props} />
-                        </FetchedData>
-                    : ''}
-                    {!url ?
-                        <input
-                            value={this.state.searchInput}
-                            ref={(input) => { this.input = input; }}
-                            type="text"
-                            placeholder="Enter a search term (accession, uuid, alias, ...)"
-                            onChange={this.handleInput}
-                            onBlur={this.handleSearch}
-                            onKeyDown={this.handleInput}
-                            disabled={this.props.disabled}
-                        />
-                    : ''}
-                    {this.state.error ? <div className="alert alert-danger">{this.state.error}</div> : ''}
-                </div>
-                {!this.props.disabled &&
-                    <div className="pull-right">
-                        <button className="clear-button" ref={(button) => { this.clear = button; }} onClick={this.handleClear}><i className="icon icon-times" /></button>
-                        {' '}<button className={`btn btn-primary${this.state.browsing ? ' active' : ''}`} onClick={this.handleBrowse}>Browse&hellip;</button>
+            <React.Fragment>
+                <div className={`item-picker${this.props.disabled ? ' disabled' : ''}`}>
+                    <div className="item-picker__preview">
+                        {url ?
+                            <FetchedData>
+                                <Param name="data" url={previewUrl} />
+                                <ItemPreview {...this.props} />
+                            </FetchedData>
+                        : ''}
+                        {!url ?
+                            <input
+                                value={this.state.searchInput}
+                                ref={(input) => { this.input = input; }}
+                                type="text"
+                                placeholder="Enter a search term (accession, uuid, alias, ...)"
+                                onChange={this.handleInput}
+                                onBlur={this.handleSearch}
+                                onKeyDown={this.handleInput}
+                                disabled={this.props.disabled}
+                            />
+                        : ''}
+                        {this.state.error ? <div className="alert alert-danger">{this.state.error}</div> : ''}
                     </div>
-                }
+                    {!this.props.disabled &&
+                        <div className="item-picker__browse">
+                            <button className="clear-button" ref={(button) => { this.clear = button; }} onClick={this.handleClear}><i className="icon icon-times" /></button>
+                            {' '}<button className={`btn btn-primary${this.state.browsing ? ' active' : ''}`} onClick={this.handleBrowse}>Browse&hellip;</button>
+                        </div>
+                    }
+                </div>
                 {this.state.browsing ?
                     <FetchedData>
                         <Param name="context" url={`/search/${searchParams}`} />
                         <SearchBlockEdit
                             searchBase={searchParams}
-                            restrictions={this.props.restrictions}
                             hideTextFilter={!url}
                             actions={actions}
                             onChange={this.handleFilter}
                         />
                     </FetchedData>
                 : ''}
-            </div>
+            </React.Fragment>
         );
     }
 }
 
 ObjectPicker.propTypes = {
     onChange: PropTypes.func,
-    restrictions: PropTypes.object,
     searchBase: PropTypes.string,
     value: PropTypes.string,
     disabled: PropTypes.bool,
@@ -196,7 +197,6 @@ ObjectPicker.propTypes = {
 
 ObjectPicker.defaultProps = {
     onChange: null,
-    restrictions: {},
     searchBase: '?mode=picker',
     value: '',
     disabled: false,

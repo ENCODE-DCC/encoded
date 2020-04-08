@@ -22,6 +22,10 @@ $qc-actuator-size: 30px; // Height and width of QC modal actuator on file page
     @media screen and (min-width: $screen-md-min) {
         flex: 0 1 33.3333%;
     }
+
+    @media screen and (min-width: $screen-xl-min) {
+        flex: 0 1 25%;
+    }
 }
 
 
@@ -87,6 +91,46 @@ $qc-actuator-size: 30px; // Height and width of QC modal actuator on file page
         &:focus {
             outline: none;
             box-shadow: 0 0 3px 2px #94bfe7 inset;
+        }
+    }
+}
+
+.qc-report {
+    @at-root #{&}--ideal {
+        background-color: #4ca84c;
+    }
+
+    @at-root #{&}--warning {
+        background-color: #adad00;
+    }
+
+    @at-root #{&}--not-compliant {
+        background-color: #ea7500;
+    }
+
+    @at-root #{&}--error {
+        background-color: #ea0700;
+    }
+}
+
+.qc-legend {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-content: stretch;
+    align-items: flex-start;
+    border-top: 1px solid #a0a0a0;
+    padding: 2px;
+
+    .qc-legend-item {
+        padding: 5px;
+        margin: 2px;
+        border: 1px solid darken(#ff00aa, 20%);
+        text-align: center;
+
+        @media screen and (min-width: $screen-sm-min) {
+            width: 110px;
         }
     }
 }

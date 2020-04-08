@@ -1,0 +1,16 @@
+## Elasticsearch Configuration: 
+#
+# For details see
+# - encoded-demo-elasticsearch.yml.20190930
+# - default-demo-elasticsearch.yml.20190930
+#
+## 
+
+http.port: 9201
+indices.query.bool.max_clause_count: 8192
+thread_pool:
+  search:
+    size: 100
+    queue_size: 2000
+  index:
+    queue_size: 400

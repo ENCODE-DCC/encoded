@@ -4,7 +4,7 @@
     "id": "/profiles/complexity_xcorr_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "award", "lab"],
+    "required": ["step_run", "quality_metric_of", "award", "lab"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "sample size": {
             "title": "Sample size",

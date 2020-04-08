@@ -4,7 +4,7 @@ import _ from 'underscore';
 import FallbackBlockEdit from './blocks/fallback';
 import closest from '../libs/closest';
 import offset from '../libs/offset';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import * as globals from './globals';
 
 
@@ -194,7 +194,6 @@ class Block extends React.Component {
 
         const classes = {
             block: true,
-            clearfix: true,
         };
         if (_.isEqual(this.props.pos, this.context.src_pos)) {
             classes.dragging = true;
@@ -321,22 +320,17 @@ class LayoutToolbar extends React.Component {
         /* eslint-disable jsx-a11y/anchor-is-valid */
         const blocks = globals.blocks.getAll();
         const toolbar = (
-            <div className={'layout-toolbar navbar navbar-default'} ref={(comp) => { this.domNode = comp; }}>
-                <div className="container-fluid">
-                    <div className="navbar-left">
-                        {Object.keys(blocks).map((b) => {
-                            const blockprops = blocks[b];
-                            if (blockprops.edit !== null) {
-                                return <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} />;
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <div className="navbar-right">
-                        <a href="" className="btn btn-default navbar-btn">Cancel</a>
-                        {' '}
-                        <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
-                    </div>
+            <div className="layout-toolbar" ref={(comp) => { this.domNode = comp; }}>
+                <div className="layout-toolbar__tools">
+                    {Object.keys(blocks).map((b) => {
+                        const blockprops = blocks[b];
+                        return blockprops.edit !== null ? <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} /> : null;
+                    })}
+                </div>
+                <div className="layout-toolbar__controls">
+                    <a href="" className="btn btn-default navbar-btn">Cancel</a>
+                    {' '}
+                    <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
                 </div>
             </div>
         );
@@ -426,23 +420,27 @@ class Row extends React.Component {
 
     render() {
         const classes = {
-            row: true,
+            layout__section: true,
         };
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
         const classStr = Object.keys(classes).join(' ');
         const cols = this.props.value.cols;
-        let colClass;
+        let colClass = 'layout__block';
         switch (cols.length) {
         case 2:
-            colClass = 'col-md-6'; break;
+            colClass += ' layout__block--50';
+            break;
         case 3:
-            colClass = 'col-md-4'; break;
+            colClass += ' layout__block--33';
+            break;
         case 4:
-            colClass = 'col-md-3'; break;
+            colClass += ' layout__block--25';
+            break;
         default:
-            colClass = 'col-md-12'; break;
+            colClass += ' layout__block--100';
+            break;
         }
         return (
             <div
@@ -687,13 +685,13 @@ export default class Layout extends React.Component {
         }
         e.stopPropagation();
 
-        if (target && target.render === undefined) {
+        if (!target || target.render === undefined) {
             // somehow we got something other than a React element
             return;
         }
         // eslint-disable-next-line react/no-find-dom-node
         const targetNode = (target || this).domNode;
-        if (!targetNode.childNodes.length) return;
+        if (targetNode.childNodes.length === 0) return;
         const targetOffset = offset(targetNode);
         const x = e.pageX - targetOffset.left;
         const y = e.pageY - targetOffset.top;

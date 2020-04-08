@@ -1,5 +1,13 @@
 ## Changelog for mad_quality_metric.json
 
+### Minor changes since schema version 7
+
+* *quality_metric_of* was set to have a minimum of 1.
+
+### Schema version 7
+
+* *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
+
 ### Minor changes since schema version 6
 
 * *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
@@ -21,7 +29,7 @@
 
 ### Schema version 4
 
-* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the *term_name*
 * *notes* field is no longer allowed to have leading or trailing whitespace or contain just an empty string.
 
 ### Schema version 2

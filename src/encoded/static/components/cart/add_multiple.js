@@ -5,8 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import * as encoding from '../../libs/query_encoding';
 import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
-import { encodedURIComponent } from '../globals';
 import { requestSearch } from '../objectutils';
 import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT, getAllowedCartTypes, mergeCarts } from './util';
 
@@ -60,7 +60,7 @@ class CartAddAllSearchComponent extends React.Component {
         // Use the existing query plus any cartable object types to search for all @ids to add to
         // the cart.
         const searchQuery = `${queryFilters.map(element => (
-            `${element.field}=${encodedURIComponent(element.term)}`
+            `${element.field}=${encoding.encodedURIComponentOLD(element.term)}`
         )).join('&')}&limit=all&field=%40id`;
         this.props.setInProgress(true);
         requestSearch(searchQuery).then((results) => {
@@ -94,7 +94,7 @@ class CartAddAllSearchComponent extends React.Component {
         const { savedCartObj, inProgress } = this.props;
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         return (
-            <span>
+            <React.Fragment>
                 <button
                     disabled={inProgress}
                     className="btn btn-info btn-sm"
@@ -106,7 +106,7 @@ class CartAddAllSearchComponent extends React.Component {
                 {this.state.overMaximumError ?
                     <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
                 : null}
-            </span>
+            </React.Fragment>
         );
     }
 }

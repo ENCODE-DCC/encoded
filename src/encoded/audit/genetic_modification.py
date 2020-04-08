@@ -3,6 +3,10 @@ from snovault import (
     audit_checker,
 )
 from snovault.util import simple_path_ids
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 
 
 @audit_checker('GeneticModification', frame=['modified_site_by_target_id'])
@@ -12,15 +16,14 @@ def audit_genetic_modification_target(value, system):
     type gene, i.e. a target without modifications, as defined in the schema.
     '''
     if value.get('modified_site_by_target_id', {}).get('modifications'):
-        detail = (
-            'Genetic modification {} is targeting {} which has already been '
+        detail = ('Genetic modification {} is targeting {} which has already been '
             'modified. Should consider using unmodified target version for '
             'genetic modification.'.format(
-                value['@id'],
-                value['modified_site_by_target_id']['@id'],
+                audit_link(path_to_text(value['@id']), value['@id']),
+                audit_link(path_to_text(value['modified_site_by_target_id']['@id']), value['modified_site_by_target_id']['@id'])
             )
         )
-        yield AuditFailure('inconsistent modification target', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent modification target', detail, level='WARNING')
 
 
 @audit_checker('GeneticModification',
@@ -69,9 +72,10 @@ def audit_genetic_modification_reagents(value, system):
             missing_reagents = True
 
         if missing_reagents:
-            detail = 'Genetic modification {} of method {} is missing reagents'.format(
-                value['@id'],
-                method,
+            detail = ('Genetic modification {} of method {} is missing reagents.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                method
+                )
             )
             yield AuditFailure('missing genetic modification reagents', detail, level='WARNING')
 
@@ -87,14 +91,13 @@ def audit_genetic_modification_reagent_source(value, system):
         source_name = linked_source.get('name')
         source_name_from_identifier = identifier.split(':')[0]
         if source_name != source_name_from_identifier:
-            detail = (
-                'Genetic modification {} has a reagent specifying its source '
+            detail = ('Genetic modification {} has a reagent specifying its source '
                 'as {},  but its identifier, {}, has a prefix indicating a '
-                'different source.'
-            ).format(
-                value['@id'],
-                linked_source['@id'],
-                identifier,
+                'different source.'.format(
+                    audit_link(path_to_text(value['@id']), value['@id']),
+                    audit_link(path_to_text(linked_source['@id']), linked_source['@id']),
+                    identifier
+                )
             )
             yield AuditFailure(
                 'inconsistent genetic modification reagent source and identifier',

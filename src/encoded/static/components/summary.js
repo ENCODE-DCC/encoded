@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import * as encoding from '../libs/query_encoding';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
-import { FacetList, ViewControls, ClearFilters } from './search';
+import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
+import { ViewControls } from './view_controls';
 
 
 // Render the title pane.
@@ -28,7 +30,9 @@ const SummaryTitle = (props) => {
         <div className="summary-header__title_control">
             <div className="summary-header__title">
                 <h1>{context.title}</h1>
-                <ViewControls views={context.views} />
+                <div className="results-table-control__main">
+                    <ViewControls results={context} />
+                </div>
             </div>
             <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
         </div>
@@ -55,7 +59,7 @@ function generateStatusData(buckets, labels) {
     const statusData = Array.from({ length: labels.length }, (() => 0));
 
     // Convert statusData to a form createBarChart understands.
-    if (buckets && buckets.length) {
+    if (buckets && buckets.length > 0) {
         buckets.forEach((bucketItem) => {
             const statusIndex = labels.indexOf(bucketItem.key);
             if (statusIndex !== -1) {
@@ -194,101 +198,26 @@ SummaryStatusChart.contextTypes = {
 };
 
 
-// Render the horizontal facets.
-class SummaryHorizontalFacets extends React.Component {
-    constructor() {
-        super();
-
-        // Bind `this` to non-React methods
-        this.onFilter = this.onFilter.bind(this);
-    }
-
-    onFilter(e) {
-        const search = e.currentTarget.getAttribute('href');
-        this.context.navigate(search);
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    render() {
-        const { context } = this.props;
-        const allFacets = context.facets;
-
-        // Get the array of facet field values to display in the horizontal facet area.
-        const horzFacetFields = context.summary.x.facets;
-
-        // Extract the horizontal facets from the list of all facets. We use the array of horizontal
-        // facet field values of facets that should appear in the horizontal facets.
-        const horzFacets = allFacets.filter(facet => horzFacetFields.indexOf(facet.field) >= 0);
-
-        // Calculate the searchBase, which is the current search query string fragment that can have
-        // terms added to it.`
-        const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
-
-        return (
-            <div className="summary-header__facets-horizontal">
-                <FacetList
-                    facets={horzFacets}
-                    filters={context.filters}
-                    orientation="horizontal"
-                    searchBase={searchBase}
-                    onFilter={this.onFilter}
-                    addClasses="summary-facets"
-                />
-            </div>
-        );
-    }
-}
-
-SummaryHorizontalFacets.propTypes = {
-    context: PropTypes.object.isRequired, // Summary search result object
-};
-
-SummaryHorizontalFacets.contextTypes = {
-    location_href: PropTypes.string, // Current URL
-    navigate: PropTypes.func, // encoded navigation
-};
-
-
 // Render the vertical facets.
-class SummaryVerticalFacets extends React.Component {
-    constructor() {
-        super();
+const SummaryVerticalFacets = ({ context }, reactContext) => {
+    // All facets are vertical facets.
+    const vertFacets = context.facets;
 
-        // Bind `this` to non-React methods.
-        this.onFilter = this.onFilter.bind(this);
-    }
+    // Calculate the searchBase, which is the current search query string fragment that can have
+    // terms added to it.
+    const searchBase = `${url.parse(reactContext.location_href).search}&` || '?';
 
-    onFilter(e) {
-        const search = e.currentTarget.getAttribute('href');
-        this.context.navigate(search);
-        e.stopPropagation();
-        e.preventDefault();
-    }
-
-    render() {
-        const { context } = this.props;
-
-        // All facets are vertical facets
-        const vertFacets = context.facets;
-
-        // Calculate the searchBase, which is the current search query string fragment that can have
-        // terms added to it.`
-        const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
-
-        return (
-            <div className="summary-content__facets-vertical">
-                <FacetList
-                    facets={vertFacets}
-                    filters={context.filters}
-                    searchBase={searchBase}
-                    onFilter={this.onFilter}
-                    addClasses="summary-facets"
-                />
-            </div>
-        );
-    }
-}
+    return (
+        <FacetList
+            context={context}
+            facets={vertFacets}
+            filters={context.filters}
+            searchBase={searchBase}
+            addClasses="summary-facets"
+            supressTitle
+        />
+    );
+};
 
 SummaryVerticalFacets.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object
@@ -345,16 +274,19 @@ class SummaryData extends React.Component {
         const assayFacet = context.facets.find(facet => facet.field === 'assay_title');
         let assays = assayFacet ? assayFacet.terms : null;
 
+        const filteredOutLabs = context.filters.filter(c => c.field === 'lab.title!');
+        const filteredOutAssays = context.filters.filter(c => c.field === 'assay_title!');
+
         // Filter the assay list if any assay facets have been selected so that the assay graph will be
         // filtered accordingly. Find assay_title filters. Same applies to the lab filters.
-        if (context.filters && context.filters.length) {
+        if (context.filters && context.filters.length > 0) {
             const assayTitleFilters = context.filters.filter(filter => filter.field === 'assay_title');
-            if (assayTitleFilters.length) {
+            if (assayTitleFilters.length > 0) {
                 const assayTitleFilterTerms = assayTitleFilters.map(filter => filter.term);
                 assays = assays.filter(assayItem => assayTitleFilterTerms.indexOf(assayItem.key) !== -1);
             }
             const labFilters = context.filters.filter(filter => filter.field === 'lab.title');
-            if (labFilters.length) {
+            if (labFilters.length > 0) {
                 const labFilterTerms = labFilters.map(filter => filter.term);
                 labs = labs.filter(labItem => labFilterTerms.indexOf(labItem.key) !== -1);
             }
@@ -363,23 +295,23 @@ class SummaryData extends React.Component {
         // Get the status data with a process completely different from the others because it comes
         // in its own property in the /summary/ context. Start by getting the name of the property
         // that contains the status data, as well as the number of items within it.
-        const statusProp = context.summary.grouping[0];
-        const statusSection = context.summary[statusProp];
-        const statusDataCount = statusSection.doc_count;
-        const statusData = statusSection[statusProp].buckets;
+        const statusProp = context.matrix.y.group_by[0];
+        const statusSection = context.matrix.y[statusProp];
+        const statusDataCount = context.total;
+        const statusData = statusSection.buckets;
 
         // Collect selected facet terms to add to the base linkUri.
         let searchQuery = '';
-        if (context.filters && context.filters.length) {
-            searchQuery = context.filters.reduce((queryAcc, filter) => `${queryAcc}&${filter.field}=${globals.encodedURIComponent(filter.term)}`, '');
+        if (context.filters && context.filters.length > 0) {
+            searchQuery = context.filters.map(filter => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
         }
-        const linkUri = `/matrix/?type=Experiment${searchQuery}`;
+        const linkUri = `/matrix/?${searchQuery}`;
 
         return (
             <div className="summary-content__data">
                 <div className="summary-content__snapshot">
-                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" /> : null}
-                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" /> : null}
+                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
+                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
                     {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} ident="status" /> : null}
                 </div>
                 <div className="summary-content__statistics">
@@ -433,7 +365,7 @@ const Summary = (props) => {
     const { context } = props;
     const itemClass = globals.itemClass(context, 'view-item');
 
-    if (context.summary.doc_count) {
+    if (context.total) {
         return (
             <Panel addClasses={itemClass}>
                 <PanelBody>

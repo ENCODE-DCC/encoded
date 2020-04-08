@@ -54,6 +54,20 @@
         },
         "lab.title": {
             "title": "Lab"
+        },
+        "target.label": {
+            "title": "Target of assay",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "assay_term_name": {
+            "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
         }
     },
     "dependencies": {
@@ -130,7 +144,10 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
                         }
@@ -156,7 +173,10 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
                         }
@@ -202,6 +222,25 @@
         },
         "read_name_details": {
             "comment": "Only fastq files can have read_name_details specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                }
+            }
+        },
+        "index_of": {
+            "comment": "Only fastq files can have index_of specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
+                "output_type": {
+                    "enum": ["index reads"]
+                }
+            }
+        },
+        "read_structure": {
+            "comment": "Only fastq files can have read_structure specified.",
             "properties": {
                 "file_format": {
                     "enum": ["fastq"]
@@ -266,7 +305,7 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
             "oneOf":[
                 {
                     "properties": {
@@ -310,6 +349,57 @@
                             }
                         },
                         {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    ]
+                                }
+
+                            }
+                        },
+                        {
                             "required": ["read_length"],
                             "properties": {
                                 "file_format": {
@@ -320,13 +410,31 @@
                                         "linkTo": "Platform",
                                         "linkEnum": [
                                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                         ]
                                     }
                                 }
                             }
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["subreads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            ]
+                        }
+                    }
                 },
                 {
                     "required": ["restriction_enzymes"],
@@ -337,10 +445,18 @@
                     }
                 },
                 {
+                    "required": ["index_of"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "restriction enzyme site locations"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads"]
                             }
                         }
                     }
@@ -360,7 +476,21 @@
                     {
                         "properties": {
                             "output_type": {
+                                "enum": ["index reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
                                 "enum": ["rejected reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["subreads"]
                             }
                         }
                     }
@@ -375,7 +505,10 @@
                         "linkTo": "Platform",
                         "linkEnum": [
                             "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                         ]
                     }
                 }
@@ -395,7 +528,10 @@
                                 "linkTo": "Platform",
                                 "linkEnum": [
                                     "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
                                 ]
                             }
                         }
@@ -463,6 +599,30 @@
                                         "idx"
                                     ]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "output_type": {
+                                        "enum": ["subreads"]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "bam"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
                             }
                         },
                         {
@@ -525,6 +685,7 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
+                                        "index reads",
                                         "rejected reads",
                                         "raw data",
                                         "reporter code counts"
@@ -580,6 +741,7 @@
                                             "idat green channel",
                                             "idat red channel",
                                             "intensity values",
+                                            "index reads",
                                             "reads",
                                             "rejected reads",
                                             "raw data",
@@ -599,7 +761,8 @@
                                 },
                                 "output_type": {
                                     "enum": [
-                                        "restriction enzyme site locations"
+                                        "restriction enzyme site locations",
+                                        "sequence adapters"
                                     ]
                                 }
                             }
@@ -712,7 +875,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "14"
+            "default": "18"
         },
         "accession": {
             "accessionType": "FF"
@@ -1068,6 +1231,19 @@
                 }
             }
         },
+        "index_of": {
+            "title": "Index of",
+            "description": "The files this index file is relevant for.",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
         "output_type": {
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
@@ -1082,11 +1258,12 @@
                         "candidate promoters",
                         "chromatin interactions",
                         "mapping quality thresholded chromatin interactions",
-                        "conservative idr thresholded peaks",
+                        "conservative IDR thresholded peaks",
                         "control normalized signal",
                         "DHS peaks",
                         "differential expression quantifications",
                         "differential splicing quantifications",
+                        "elements reference",
                         "enhancer validation",
                         "enrichment",
                         "exon quantifications",
@@ -1105,7 +1282,10 @@
                         "hotspots",
                         "idat green channel",
                         "idat red channel",
+                        "index reads",
                         "intensity values",
+                        "IDR ranked peaks",
+                        "IDR thresholded peaks",
                         "library fraction",
                         "long range chromatin interactions",
                         "male genome index",
@@ -1116,24 +1296,29 @@
                         "methylation state at CHH",
                         "methylation state at CpG",
                         "microRNA quantifications",
+                        "miRNA annotations",
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondria blacklisted regions",
                         "motif model",
+                        "negative control regions",
                         "nested topologically associated domains",
+                        "non-targeting gRNAs",
                         "normalized signal of all reads",
                         "open chromatin regions",
-                        "optimal idr thresholded peaks",
+                        "optimal IDR thresholded peaks",
                         "paternal haplotype mapping",
                         "paternal variant calls",
                         "peaks",
                         "peaks and background as input for IDR",
+                        "personalized genome assembly",
                         "phased mapping",
                         "phased variant calls",
                         "plus strand signal of all reads",
                         "plus strand signal of unique reads",
+                        "positive control regions",
                         "predicted enhancers",
-                        "pseudoreplicated idr thresholded peaks",
+                        "pseudoreplicated IDR thresholded peaks",
                         "raw minus strand signal",
                         "raw normalized signal",
                         "raw plus strand signal",
@@ -1141,6 +1326,7 @@
                         "read-depth normalized signal",
                         "reads",
                         "reference variants",
+                        "regulatory elements",
                         "relative replication signal",
                         "replicated peaks",
                         "replication timing profile",
@@ -1149,17 +1335,22 @@
                         "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
+                        "safe-targeting gRNAs",
                         "semi-automated genome annotation",
+                        "sequence adapters",
+                        "sequence barcodes",
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
                         "spike-in sequence",
                         "splice junctions",
                         "stable peaks",
+                        "subreads",
                         "topologically associated domains",
                         "transcript quantifications",
                         "transcription start sites",
                         "transcriptome alignments",
+                        "transcriptome annotations",
                         "transcriptome index",
                         "transcriptome reference",
                         "TSS reference",
@@ -1382,6 +1573,60 @@
             "comment": "Do not submit. The field would be posted by DCC.",
             "type": "string",
             "permission": "import_items"
+        },
+
+        "read_structure": {
+            "title": "Read structure",
+            "description": "A list of elements in the read describing the structure of a read.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequence element",
+                "description": "One element in the read with start and end coordinates.",
+                "required": ["sequence_element", "start", "end"],
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "sequence_element": {
+                        "title": "Element name",
+                        "type": "string",
+                        "enum": [
+                            "adapter",
+                            "barcode",
+                            "UMI"
+                        ]
+                    },
+                    "start": {
+                        "title": "Start coordinate",
+                        "description": "The 1-based start coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    },
+                    "end": {
+                        "title": "End coordinate",
+                        "description": "The 1-based end coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+
+        "matching_md5sum": {
+            "title": "Matching md5sum",
+            "description": "Array of files which have a matching md5sum.",
+            "comment": "Do not submit. This field is updated by checkfiles.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
+        "preferred_default": {
+            "title": "Preferred default file",
+            "description": "A flag to indicate whether this file should be used by default for purposes such as downloading, visualization, etc.",
+            "type": "boolean"
         }
     },
     "columns": {
@@ -1414,6 +1659,15 @@
         },
         "file_size": {
             "title": "File size"
+        },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "target.label": {
+            "title": "Target label"
         },
         "href": {
             "title": "Download URL"
@@ -1484,9 +1738,11 @@
         "idat red channel": "raw data",
         "intensity values": "raw data",
         "reads": "raw data",
+        "index reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
         "reporter code counts": "raw data",
+        "subreads": "raw data",
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
@@ -1567,9 +1823,11 @@
         "mitochondria blacklisted regions": "annotation",
         "distal peaks": "annotation",
         "proximal peaks": "annotation",
-        "optimal idr thresholded peaks": "annotation",
-        "conservative idr thresholded peaks": "annotation",
-        "pseudoreplicated idr thresholded peaks": "annotation",
+        "IDR ranked peaks": "annotation",
+        "IDR thresholded peaks": "annotation",
+        "optimal IDR thresholded peaks": "annotation",
+        "conservative IDR thresholded peaks": "annotation",
+        "pseudoreplicated IDR thresholded peaks": "annotation",
         "stable peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
@@ -1587,6 +1845,13 @@
         "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
+        "transcriptome annotations": "annotation",
+        "miRNA annotations": "annotation",
+        "non-targeting gRNAs": "annotation",
+        "negative control regions": "annotation",
+        "positive control regions": "annotation",
+        "safe-targeting gRNAs": "annotation",
+        "regulatory elements": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -1608,6 +1873,10 @@
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",
         "sequence uniqueness": "reference",
+        "sequence barcodes": "reference",
+        "sequence adapters": "reference",
+        "elements reference": "reference",
+        "personalized genome assembly": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
@@ -1649,5 +1918,16 @@
         "sam": ".sam.gz",
         "txt": ".txt"
     },
+     "boost_values": {
+         "accession": 20.0,
+         "@type": 1.0,
+         "assembly": 5.0,
+         "file_format": 5.0,
+         "file_type": 5.0,
+         "file_format_type": 2.0,
+         "output_category": 2.0,
+         "output_type": 2.0,
+         "status": 1.0
+     },
     "changelog": "/profiles/changelogs/file.md"
 }

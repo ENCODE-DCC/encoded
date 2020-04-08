@@ -13,9 +13,91 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/standard_status" }
     ],
+    "dependencies": {
+        "locations": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "locations": {
+                            "items": {
+                                "properties": {
+                                    "assembly": {
+                                        "enum": ["GRCh38", "hg19"]
+                                    }
+                                }
+                            }
+                        },
+                        "organism": {
+                            "linkTo": "Organism",
+                            "linkEnum": [
+                                "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "locations": {
+                            "items": {
+                                "properties": {
+                                    "assembly": {
+                                        "enum": ["mm10", "mm9"]
+                                    }
+                                }
+                            }
+                        },
+                        "organism": {
+                            "linkTo": "Organism",
+                            "linkEnum": [
+                                "3413218c-3d86-498b-a0a2-9a406638e786"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "locations": {
+                            "items": {
+                                "properties": {
+                                    "assembly": {
+                                        "enum": ["dm6", "dm3"]
+                                    }
+                                }
+                            }
+                        },
+                        "organism": {
+                            "linkTo": "Organism",
+                            "linkEnum": [
+                                "ab546d43-8e2a-4567-8db7-a217e6d6eea0"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "locations": {
+                            "items": {
+                                "properties": {
+                                    "assembly": {
+                                        "enum": ["ce11", "ce10"]
+                                    }
+                                }
+                            }
+                        },
+                        "organism": {
+                            "linkTo": "Organism",
+                            "linkEnum": [
+                                "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "geneid": {
             "title": "NCBI Entrez GeneID",
@@ -69,54 +151,63 @@
             "title": "External resources",
             "description": "Unique identifiers from external resources.",
             "comment": "This list should have at least an ID from the official nomenclature. The list of other dbxrefs is maintained using information from NCBI Entrez. Identifiers not included in NCBI gene_info can be added but are not actively maintained.",
-	          "type": "array",
-            "default": [],
+            "type": "array",
+            "minItems": 1,
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource (e.g. HGNC, MGI, FlyBase, WormBase, ENSEMBL, MIM, UniProtKB, Vega, miRBase).",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(FlyBase:FBgn\\d+)|(WormBase:WBGene\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_\\d+))$"
+                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(FlyBase:FB(gn|tr)\\d+)|(WormBase:[0-9A-Za-z.]+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_[\\d.]+)|(GeneCards:[0-9a-zA-Z-]+))$"
             },
             "permission": "import_items"
         },
-        "go_annotations": {
-            "title": "Gene ontology annotations",
-            "descrption": "Gene ontology annotations of the gene, including all three aspects: Biological Process, Cellular Component, and Molecular Function.",
-            "comment": "Data imported from the Gene Ontology Consortium.",
+        "locations": {
+            "title": "Gene locations",
+            "description": "Gene locations specified using 1-based, closed coordinates for different versions of reference genome assemblies.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "Gene Ontology annotation",
-                "description": "A gene ontology annotation of the gene function.",
+                "title": "Gene location",
+                "description": "Gene location specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
                 "type": "object",
-                "required": ["go_id", "go_name", "go_evidence_code", "go_aspect"],
+                "additionalProperties": false,
+                "required": ["assembly", "chromosome", "start", "end"],
                 "properties": {
-                    "go_id": {
-                        "title": "GO term identifier",
-                        "description": "GO ID of the annotation in the format of \"GO:xxxxxxx\"",
+                    "assembly": {
+                        "title": "Mapping assembly",
+                        "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
                         "type": "string",
-                        "pattern": "^(GO:\\d+)$"
+                        "enum": [
+                            "ce11",
+                            "ce10",
+                            "dm6",
+                            "dm3",
+                            "GRCh38",
+                            "hg19",
+                            "mm10",
+                            "mm9"
+                        ]
                     },
-                    "go_name": {
-                        "title": "GO term name",
-                        "description": "GO term name of the annotation.",
-                        "type": "string"
-                    },
-                    "go_evidence_code": {
-                        "title": "GO evidence code",
-                        "description": "An evidence code indicating how this GO annotation is supported.",
+                    "chromosome": {
+                        "title": "Chromosome",
+                        "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
                         "type": "string",
-                        "pattern": "^([A-Z]{2,3})$"
+                        "pattern": "^(chr[0-9A-Za-z]+)$"
                     },
-                    "go_aspect": {
-                        "title": "GO annotation category",
-                        "description": "The namespace or ontology to which the GO annotation belongs.",
-                        "comment": "One of P (biological process), F (molecular function) or C (cellular component).",
-                        "type": "string",
-                        "enum": ["P", "F", "C"]
+                    "start": {
+                        "title": "Start",
+                        "description": "The starting coordinate.",
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "end": {
+                        "title": "End",
+                        "description": "The ending coordinate.",
+                        "type": "integer",
+                        "minimum": 0
                     }
                 }
             },
@@ -155,7 +246,7 @@
     },
     "boost_values": {
         "geneid": 1.0,
-        "symbol": 1.0,
+        "symbol": 20.0,
         "synonyms": 1.0,
         "dbxrefs": 1.0,
         "organism.name": 1.0,

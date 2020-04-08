@@ -1,0 +1,25 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/j-michael-cherry/",
+        "award": "/awards/U54HG007004/",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "c0946680-6bd3-4e3c-b5f7-cbacdf427ea6",
+        "assay_term_name": "RNA-seq",
+        "quality_metric_of": [ "ENCFF413RGP" ],
+        "Mt_rRNA": 0,
+        "antisense": 60,
+        "miRNA": 0,
+        "processed_transcript": 16,
+        "protein_coding": 16728,
+        "rRNA": 0,
+        "ribozyme": 0,
+        "sRNA": 0,
+        "scaRNA": 0,
+        "sense_intronic": 2,
+        "sense_overlapping": 0,
+        "snRNA": 0,
+        "snoRNA": 0,
+        "spikein": 0
+    }
+]

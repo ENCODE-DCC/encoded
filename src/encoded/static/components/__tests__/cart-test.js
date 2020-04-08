@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { mount } from 'enzyme';
@@ -282,9 +283,9 @@ describe('Cart manager while logged in as submitter', () => {
                     fetch: () => { console.log('fetch'); },
                 },
                 childContextTypes: {
-                    session_properties: React.PropTypes.object,
-                    navigate: React.PropTypes.func,
-                    fetch: React.PropTypes.func,
+                    session_properties: PropTypes.object,
+                    navigate: PropTypes.func,
+                    fetch: PropTypes.func,
                 },
             }
         );
@@ -296,19 +297,19 @@ describe('Cart manager while logged in as submitter', () => {
     });
 
     test('the column count is correct', () => {
-        const tableHeaderRows = cartManager.find('.table.table-sortable thead tr');
+        const tableHeaderRows = cartManager.find('.table.table__sortable thead tr');
         expect(tableHeaderRows).toHaveLength(2);
         const tableHeaderCells = tableHeaderRows.at(1).find('th');
         expect(tableHeaderCells).toHaveLength(5);
     });
 
     test('the row count is correct', () => {
-        const tableRows = cartManager.find('.table.table-sortable tbody tr');
+        const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows).toHaveLength(3);
     });
 
     test('the special row CSS classes are correct', () => {
-        const tableRows = cartManager.find('.table.table-sortable tbody tr');
+        const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows.at(0).find('.cart-manager-table__autosave-row')).toHaveLength(1);
         expect(tableRows.at(2).find('.cart-manager-table__current-row')).toHaveLength(1);
     });
@@ -402,9 +403,9 @@ describe('Cart manager while logged in as admin', () => {
                     fetch: () => { console.log('fetch'); },
                 },
                 childContextTypes: {
-                    session_properties: React.PropTypes.object,
-                    navigate: React.PropTypes.func,
-                    fetch: React.PropTypes.func,
+                    session_properties: PropTypes.object,
+                    navigate: PropTypes.func,
+                    fetch: PropTypes.func,
                 },
             }
         );
@@ -416,19 +417,19 @@ describe('Cart manager while logged in as admin', () => {
     });
 
     test('the column count is correct', () => {
-        const tableHeaderRows = cartManager.find('.table.table-sortable thead tr');
+        const tableHeaderRows = cartManager.find('.table.table__sortable thead tr');
         expect(tableHeaderRows).toHaveLength(2);
         const tableHeaderCells = tableHeaderRows.at(1).find('th');
         expect(tableHeaderCells).toHaveLength(6);
     });
 
     test('the row count is correct', () => {
-        const tableRows = cartManager.find('.table.table-sortable tbody tr');
+        const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows).toHaveLength(4);
     });
 
     test('the special row CSS classes are correct', () => {
-        const tableRows = cartManager.find('.table.table-sortable tbody tr');
+        const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows.at(0).find('.cart-manager-table__autosave-row')).toHaveLength(1);
         expect(tableRows.at(2).find('.cart-manager-table__deleted-row')).toHaveLength(1);
         expect(tableRows.at(3).find('.cart-manager-table__current-row')).toHaveLength(1);

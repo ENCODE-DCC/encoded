@@ -21,22 +21,6 @@ def content(testapp):
         testapp.post_json(url, item)
 
 
-@pytest.fixture
-def uploading_file(testapp, award, experiment, lab, replicate, dummy_request):
-    item = {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'tsv',
-        'file_size': 2534535,
-        'md5sum': '00000000000000000000000000000000',
-        'output_type': 'raw data',
-        'status': 'uploading',
-    }
-    return item
-
-
 def test_item_set_status_method_exists(testapp, content, root):
     res = testapp.get('/test-encode-items/')
     encode_item_uuid = res.json['@graph'][0]['uuid']
@@ -356,7 +340,7 @@ def test_set_status_submitter_denied(testapp, submitter_testapp, file, dummy_req
 
 @mock_sts
 @mock_s3
-def test_set_status_in_progress_experiment(testapp, root, experiment, replicate, file, award, lab, dummy_request):
+def test_set_status_in_progress_experiment(testapp, root, experiment, replicate_url, file, award, lab, dummy_request):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -373,19 +357,19 @@ def test_set_status_in_progress_experiment(testapp, root, experiment, replicate,
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'in progress'
-    for encode_item in [experiment, file, replicate]:
+    for encode_item in [experiment, file, replicate_url]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'in progress'
     # Release experiment.
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'})
     # File, exp, and rep now released.
-    for encode_item in [experiment, file, replicate]:
+    for encode_item in [experiment, file, replicate_url]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'released'
     # Unrelease experiment.
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true&force_transition=true', {'status': 'released'})
     # Replicate and file remain released.
-    for encode_item in [replicate, file]:
+    for encode_item in [replicate_url, file]:
         res = testapp.get(encode_item['@id'])
         assert res.json['status'] == 'released'
     # Exp now in progress.
@@ -453,7 +437,7 @@ def test_set_status_changed_paths_experiment(testapp, experiment, dummy_request)
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -475,7 +459,7 @@ def test_set_status_changed_paths_experiment_rep_and_file(testapp, experiment, f
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -491,13 +475,14 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file(testapp, e
     # Set to in progress.
     testapp.patch_json(file['@id'], {'status': 'in progress'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
+    
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
 
 
 @mock_sts
 @mock_s3
-def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_children(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_children(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -519,7 +504,7 @@ def test_set_status_changed_paths_experiment_rep_and_in_progress_file_block_chil
 
 @mock_sts
 @mock_s3
-def test_set_status_force_transition_block_children_default(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_force_transition_block_children_default(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -541,7 +526,7 @@ def test_set_status_force_transition_block_children_default(testapp, experiment,
 
 @mock_sts
 @mock_s3
-def test_set_status_force_transition_block_children_specified(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_force_transition_block_children_specified(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -563,7 +548,7 @@ def test_set_status_force_transition_block_children_specified(testapp, experimen
 
 @mock_sts
 @mock_s3
-def test_set_status_released_to_released_triggers_up_list(testapp, experiment, file, replicate, dummy_request, root):
+def test_set_status_released_to_released_triggers_up_list(testapp, experiment, file, replicate_url, dummy_request, root):
     import boto3
     client = boto3.client('s3')
     client.create_bucket(Bucket='test_upload_bucket')
@@ -581,7 +566,7 @@ def test_set_status_released_to_released_triggers_up_list(testapp, experiment, f
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 5
     assert len(res.json_body['considered']) == 6
-    testapp.patch_json(replicate['@id'], {'status': 'in progress'})
+    testapp.patch_json(replicate_url['@id'], {'status': 'in progress'})
     res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'}, status=200)
     assert len(res.json_body['changed']) == 1
     assert len(res.json_body['considered']) == 6
