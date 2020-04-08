@@ -1,5 +1,8 @@
 ## Changelog for human_donor.json
 
+### Minor update since Schema version 11
+* AllCells added to *external_ids* namespace.
+
 ### Schema version 11
 
 * *genetic_modifications* was removed, it was accidentally added in the previous release.
