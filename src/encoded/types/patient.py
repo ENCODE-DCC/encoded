@@ -365,6 +365,44 @@ class Patient(Item):
                 surgery_summary = "No Treatment Received"
             return surgery_summary
 
+    @calculated_property(schema={
+        "title": "Diagnosis Date",
+        "type": "string",
+    })
+    def diagnosis_date(self, request, surgery, radiation, medication):
+        nephrectomy_dates = []
+        non_nephrectomy_dates = []
+        diagnosis_date = "not available"
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_procedure = surgery_object['surgery_procedure']
+                for procedure_record in surgery_procedure:
+                    procedure_obj = request.embed(procedure_record, '@@object')
+                    if procedure_obj['procedure_type'] == "Nephrectomy":
+                        nephrectomy_dates.append(surgery_object['date'])
+                    elif  procedure_obj['procedure_type'] == "Biopsy" or procedure_obj['procedure_type'] == "Metastectomy":
+                        non_nephrectomy_dates.append(surgery_object['date'])
+        if len(nephrectomy_dates) > 0 :
+            nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d')) 
+            diagnosis_date = nephrectomy_dates[0]
+        else:
+            if len(radiation) > 0:
+                # add radiation dates
+                for radiation_record in radiation:
+                    radiation_object = request.embed(radiation_record, '@@object')
+                    non_nephrectomy_dates.append(radiation_object['start_date'])
+            if len(medication) > 0:
+                # add medication dates
+                for medication_record in medication:
+                    radiation_object = request.embed(medication_record, '@@object')
+                    non_nephrectomy_dates.append(radiation_object['start_date'])
+
+            if len(non_nephrectomy_dates) > 0:
+                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d')) 
+                diagnosis_date = non_nephrectomy_dates[0]
+        return diagnosis_date
+
     matrix = {
         'y': {
             'facets': [
@@ -635,11 +673,12 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'diagnosis_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
+
 
