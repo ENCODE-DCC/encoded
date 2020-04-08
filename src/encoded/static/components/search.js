@@ -754,8 +754,8 @@ class BiospecimenComponent extends React.Component {
                     <div className="data-row">
                         <div><strong>Collection type: </strong>{result.collection_type}</div>
                         <div><strong>Processing type: </strong>{result.processing_type}</div>
-                        {tissueType != '' && <div><strong>Tissue type: </strong>{tissueType}</div>}
-                        {anatomicSite != '' && <div><strong>Anotomic type: </strong>{anatomicSite}</div>}
+                        <div><strong>Tissue type: </strong>{result.tissue_type}</div>
+                        <div><strong>Anotomic type: </strong>{result.anatomic_site}</div>
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -2390,3 +2390,4 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+

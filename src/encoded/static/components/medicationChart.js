@@ -124,7 +124,7 @@ class MedicationChart extends React.Component {
       },
       textposition: 'left',
       showlegend: false,
-      hovertemplate: 'Diagnosis date: ' + maxDate + '<extra></extra>',
+      hovertemplate: 'Deceased date: ' + maxDate + '<extra></extra>',
       xaxis: 'x2',
     };
     traceData.push(trace2);
