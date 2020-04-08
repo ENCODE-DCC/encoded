@@ -303,6 +303,15 @@ const ExperimentComponent = (props, reactContext) => {
 
     const uniqueTreatments = getUniqueTreatments(treatments);
 
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
+    if (result.related_series && result.related_series.length > 0) {
+        seriesMap = _.groupBy(
+            result.related_series, series => series['@type'][0]
+        );
+    }
+
     return (
         <li className={resultItemClass(result)}>
             <div className="result-item">
@@ -350,6 +359,21 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     </div>
                                 : null}
+                                {Object.keys(seriesMap).map(seriesType =>
+                                    <div key={seriesType}>
+                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
+                                        {seriesMap[seriesType].map(
+                                            (series, i) => (
+                                                <span key={series.accession}>
+                                                    {i > 0 ? ', ' : null}
+                                                    <a href={series['@id']}>
+                                                        {series.accession}
+                                                    </a>
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                )}
                             </React.Fragment>
                         : null}
                     </div>
