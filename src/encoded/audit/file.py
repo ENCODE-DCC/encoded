@@ -484,18 +484,7 @@ def audit_file_matching_md5sum(value, system):
     yield AuditFailure('matching md5 sums', detail, level='WARNING')
 
 
-function_dispatcher = {
-    'audit_step_run': audit_file_processed_step_run,
-    'audit_derived_from': audit_file_processed_derived_from,
-    'audit_assembly': audit_file_assembly,
-    'audit_replicate_match': audit_file_replicate_match,
-    'audit_paired_with': audit_paired_with,
-    'audit_specifications': audit_file_format_specifications,
-    'audit_controlled_by': audit_file_controlled_by,
-    'audit_file_in_correct_bucket': audit_file_in_correct_bucket,
-    'audit_read_structure': audit_read_structure,
-    'audit_file_matching_md5sum': audit_file_matching_md5sum
-}
+function_dispatcher = {}
 
 
 @audit_checker('File',

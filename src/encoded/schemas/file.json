@@ -560,7 +560,7 @@
                         },
                         {
                             "required": [
-                                "replicate",
+                                "library",
                                 "platform"
                             ],
                             "properties": {
@@ -1446,12 +1446,12 @@
             "type": "string",
             "linkTo": "Dataset"
         },
-        "replicate": {
-            "title": "Replicate",
-            "description": "The experimental replicate designation for the file.",
-            "comment": "This field is required for sra and fastq files. See replicate.json for available identifiers.",
+        "library": {
+            "title": "Library",
+            "description": "The experimental library designation for the file.",
+            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
             "type": "string",
-            "linkTo": "Replicate"
+            "linkTo": "Library"
         },
         "assembly": {
             "title": "Genome assembly",
@@ -1641,12 +1641,6 @@
         "assembly": {
             "title": "Genome assembly"
         },
-        "technical_replicates": {
-            "title": "Technical replicates"
-        },
-        "biological_replicates": {
-            "title": "Biological replicates"
-        },
         "file_format": {
             "title": "File Format"
         },
@@ -1677,7 +1671,7 @@
         "genome_annotation": {
             "title": "Genome annotation"
         },
-        "replicate.library.accession": {
+        "library.accession": {
             "title": "Library"
         },
         "paired_end": {

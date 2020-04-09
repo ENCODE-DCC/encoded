@@ -20,7 +20,6 @@ import re
 @upgrade_step('pipeline', '5', '6')
 @upgrade_step('platform', '4', '5')
 @upgrade_step('publication', '3', '4')
-@upgrade_step('replicate', '6', '7')
 @upgrade_step('software', '3', '4')
 @upgrade_step('software_version', '2', '3')
 @upgrade_step('source', '3', '4')
@@ -84,7 +83,6 @@ def item_alias_tighten(value, system):
 
 @upgrade_step('document', '7', '8')
 @upgrade_step('genetic_modification', '4', '5')
-@upgrade_step('replicate', '7', '8')
 @upgrade_step('page', '2', '3')
 @upgrade_step('image', '1', '2')
 @upgrade_step('software', '4', '5')

@@ -765,14 +765,6 @@
         "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
-        "analyses": [
-            {
-                "files": ["ENCFF003MRN", "ENCFF005MRN"]
-            },
-            {
-                "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"]
-            }
-        ],
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
     },
     {
@@ -881,23 +873,6 @@
         "date_released": "2020-01-20",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "55119174-ce00-455d-8e24-09bd9efd0a65"
-    },
-    {
-        "_test": "midbrain ChIP-seq controlled by mismatched-set",
-        "accession": "ENCSR000INT",
-        "assay_term_name": "ChIP-seq",
-        "award": "UM1HG009442",
-        "biosample_ontology": "tissue_UBERON_0001891",
-        "description": "ChIP-seq on midbrain tissue",
-        "lab": "john-stamatoyannopoulos/",
-        "possible_controls": [
-            "ENCSR834QRX"
-        ],
-        "status": "released",
-        "date_submitted": "2015-07-20",
-        "date_released": "2016-01-01",
-        "target": "EBF1-human",
-        "uuid": "e8251058-d8c4-4b17-b03b-bfaeabe75e02"
     },
     {
         "_test": "For Mouse Dev matrix testing",

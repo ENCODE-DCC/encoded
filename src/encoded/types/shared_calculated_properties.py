@@ -134,7 +134,7 @@ class CalculatedSeriesBiosample:
     })
     def organism(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.libraries.biosample.organism', *related_datasets)
+            'libraries.biosample.organism', *related_datasets)
 
 
 class CalculatedSeriesTreatment:
@@ -147,7 +147,7 @@ class CalculatedSeriesTreatment:
     })
     def treatment_term_name(self, request, related_datasets):
         return request.select_distinct_values(
-            'replicates.libraries.biosample.treatments.treatment_term_name',
+            'libraries.biosample.treatments.treatment_term_name',
             *related_datasets)
 
 
@@ -351,17 +351,17 @@ class CalculatedBiosampleSummary:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
-class CalculatedReplicates:
-    @calculated_property(schema={
-        "title": "Replicates",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Replicate.experiment",
-        },
-    })
-    def replicates(self, request, replicates):
-        return paths_filtered_by_status(request, replicates)
+#class CalculatedLibraries:
+#    @calculated_property(schema={
+#        "title": "Libraries",
+#        "type": "array",
+#        "items": {
+#            "type": ['string', 'object'],
+#            "linkFrom": "Library.experiment",
+#        },
+#    })
+#    def libraries(self, request, libraries):
+#        return paths_filtered_by_status(request, libraries)
 
 
 class CalculatedAssaySlims:
@@ -476,92 +476,3 @@ class CalculatedObjectiveSlims:
             return registry['ontology'][assay_term_id]['objectives']
         return []
 
-
-class CalculatedReplicationType:
-    @calculated_property(schema={
-        "title": "Replication type",
-        "description": "Calculated field that indicates the replication model",
-        "type": "string"
-    })
-    def replication_type(self, request, replicates=None, assay_term_name=None):
-        # ENCD-4251 loop through replicates and select one replicate, which has
-        # the smallest technical_replicate_number, per biological replicate.
-        # That replicate should have a libraries property which, as calculated
-        # in replicate.libraries (ENCD-4251), should have collected all
-        # possible technical replicates belong to the biological replicate.
-        # TODO: change this once we remove technical_replicate_number.
-        bio_rep_dict = {}
-        for rep in replicates:
-            replicate_object = request.embed(rep, '@@object')
-            if replicate_object['status'] == 'deleted':
-                continue
-            bio_rep_num = replicate_object['biological_replicate_number']
-            if bio_rep_num not in bio_rep_dict:
-                bio_rep_dict[bio_rep_num] = replicate_object
-                continue
-            tech_rep_num = replicate_object['technical_replicate_number']
-            if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
-                bio_rep_dict[bio_rep_num] = replicate_object
-
-        # Compare the biosamples to see if for humans they are the same donor and for
-        # model organisms if they are sex-matched and age-matched
-        biosample_donor_list = []
-        biosample_number_list = []
-
-        for replicate_object in bio_rep_dict.values():
-            if 'libraries' in replicate_object and replicate_object['libraries']:
-                biosamples = request.select_distinct_values(
-                    'biosample', *replicate_object['libraries']
-                )
-                if biosamples:
-                    for b in biosamples:
-                        biosample_object = request.embed(b, '@@object')
-                        biosample_donor_list.append(
-                            biosample_object.get('donor')
-                        )
-                        biosample_number_list.append(
-                            replicate_object.get('biological_replicate_number')
-                        )
-                        biosample_species = biosample_object.get('organism')
-                        biosample_type_object = request.embed(
-                            biosample_object['biosample_ontology'],
-                            '@@object'
-                        )
-                        biosample_type = biosample_type_object.get('classification')
-                else:
-                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
-                    # untill we change our mind
-                    if assay_term_name == 'RNA Bind-n-Seq':
-                        return 'unreplicated'
-                    # If I have a library without a biosample,
-                    # I cannot make a call about replicate structure
-                    return None
-            else:
-                # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
-                # If I have a replicate without a library,
-                # I cannot make a call about the replicate structure
-                return None
-
-        #  exclude ENCODE2
-        if (len(set(biosample_number_list)) < 2):
-            return 'unreplicated'
-
-        if biosample_type == 'cell line':
-            return 'isogenic'
-
-        # Since we are not looking for model organisms here, we likely need audits
-        if biosample_species != '/organisms/human/':
-            if len(set(biosample_donor_list)) == 1:
-                return 'isogenic'
-            else:
-                return 'anisogenic'
-
-        if len(set(biosample_donor_list)) == 0:
-            return None
-        if len(set(biosample_donor_list)) == 1:
-            if None in biosample_donor_list:
-                return None
-            else:
-                return 'isogenic'
-
-        return 'anisogenic'

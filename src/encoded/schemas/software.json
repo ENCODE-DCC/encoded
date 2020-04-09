@@ -41,7 +41,8 @@
                     "quantification",
                     "transcript identification",
                     "transcriptome assembly",
-                    "variant annotation"
+                    "variant annotation",
+                    "quality metric"
                 ]
             }
         },

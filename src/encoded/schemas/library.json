@@ -56,6 +56,13 @@
                 "pattern": "^(ENCLB\\d{3}[A-Z]{3})$|^(TSTLB\\d{6})$"
             }
         },
+        "experiment": {
+            "title": "Experiment",
+            "description": "The experiment the replicate belongs to.",
+            "comment": "See experiment.json for available identifiers.",
+            "type": "string",
+            "linkTo": ["Experiment"]
+        },
         "spikeins_used": {
             "title": "Spike-ins datasets used",
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",

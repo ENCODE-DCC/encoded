@@ -103,11 +103,6 @@ class File(Item):
         'award',
         'award.pi',
         'award.pi.lab',
-        'replicate',
-        'replicate.experiment',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
-        'replicate.library',
         'library',
         'lab',
         'submitted_by',
@@ -119,20 +114,7 @@ class File(Item):
         'biosample_ontology',
         'target'
     ]
-    audit_inherit = [
-        'replicate',
-        'replicate.experiment',
-        'replicate.experiment.target',
-        'replicate.library',
-        'library',
-        'lab',
-        'submitted_by',
-        'analysis_step_version.analysis_step',
-        'analysis_step_version.analysis_step.pipelines',
-        'analysis_step_version.analysis_step.versions',
-        'analysis_step_version.software_versions',
-        'analysis_step_version.software_versions.software'
-    ]
+    audit_inherit = []
     set_status_up = [
         'platform',
         'step_run',
@@ -315,36 +297,6 @@ class File(Item):
         return sorted(techreps)
 
     @calculated_property(schema={
-        "title": "Related libraries",
-        "description": "Libraries the file belong to or derived from",
-        "comment": "More useful for files without library property, like raw data files.",
-        "type": "array",
-        "items": {
-            "title": "Library",
-            "description": "The nucleic acid library sequenced.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-        }
-    })
-    def replicate_libraries(self, request, dataset, library=None):
-        if library is not None:
-            return [library]
-        # self.uuid can be skipped. It should be skipped here to avoid infinite
-        # embedding/calculating loop
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
-        obj_props = (request.embed(uuid, '@@object')
-                     for uuid in derived_from_closure)
-        # dataset is a required property of file and should be @id which
-        # matches props['dataset']
-        libraries = {
-            props['library']
-            for props in obj_props
-            if props['dataset'] == dataset and 'library' in props
-        }
-        return sorted(libraries)
-
-    @calculated_property(schema={
         "title": "Analysis step version",
         "description": "The step version of the pipeline from which this file is an output.",
         "comment": "Do not submit.  This field is calculated from step_run.",
@@ -450,20 +402,6 @@ class File(Item):
         except HTTPNotFound:
             return None
         return 's3://{bucket}/{key}'.format(**external)
-
-    @calculated_property(
-         condition='replicate',
-         define=True,
-         schema={
-            "title": "Library",
-            "description": "The nucleic acid library sequenced to produce this file.",
-            "comment": "See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
-         }
-     )
-    def library(self, request, replicate):
-        return request.embed(replicate, '@@object?skip_calculated=true').get('library')
 
     @calculated_property(
         condition='dataset',
