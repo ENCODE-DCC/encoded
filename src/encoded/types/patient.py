@@ -115,6 +115,87 @@ class Patient(Item):
     set_status_up = []
     set_status_down = []
 
+    @calculated_property(schema={
+        "title": "Last Follow-up Date",
+        "description": "Calculated last follow-up date,format as YYYY-MM-DD",
+        "type": "string",
+    })
+    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
+    # def last_follow_up_date(self, request, germline, ihc, radiation,medical_imaging,medication,supportive_medication,surgery):
+    
+        all_traced_dates=[]
+        last_follow_up_date="Not available"
+        if len(vitals) > 0:
+            for obj in vitals:
+                v_obj = request.embed(obj, "@@object") 
+                vital_dates=v_obj["date"]
+                all_traced_dates.append(vital_dates)
+                # for obj in v_obj["HEIGHT"]:
+                #     vh_obj = request.embed(obj, "@@object")
+                #     all_traced_dates.append(vh_obj["date"])
+                # for obj in v_obj["BMI"]:
+                #     v_bmi_obj = request.embed(obj, "@@object")
+                #     all_traced_dates.append(v_bmi_obj["date"])
+                # for obj in v_obj["WEIGHT"]:
+                #     v_weight_obj = request.embed(obj, "@@object")
+                #     all_traced_dates.append(v_weight_obj["date"]) 
+                # for obj in v_obj["BP_DIAS"]:
+                #     v_bpDias_obj = request.embed(obj, "@@object")
+                #     all_traced_dates.append(v_bpDias_obj["date"]) 
+                # for obj in v_obj["BP_SYS"]
+                #     v_bpSys_obj = request.embed(obj, "@@object")
+                #     all_traced_dates.append(v_bpSys_obj["date"])    
+        # if len(labs) > 0:
+        #     for lobj in labs:
+        #         l_obj = request.embed(lobj, "@@object")
+        #         labs_dates=l_obj.get("date")
+        #         all_traced_dates.append(labs_dates) 
+        if len(labs) > 0:
+            for obj in labs:
+                l_obj = request.embed(obj, "@@object") 
+                lab_dates=l_obj["date"]
+                all_traced_dates.append(lab_dates)
+        if len(surgery) > 0:
+            for obj in surgery:
+                s_obj = request.embed(obj, "@@object")
+                sur_dates=s_obj["date"]
+                all_traced_dates.append(sur_dates) 
+        if len(germline) > 0:
+            for obj in germline:
+                g_obj = request.embed(obj, "@@object")
+                ger_dates=g_obj.get("service_date")
+                all_traced_dates.append(ger_dates)
+        if len(ihc) > 0:
+            for obj in ihc:
+                ihc_obj = request.embed(obj, "@@object")
+                ihc_dates=ihc_obj.get("service_date")
+                all_traced_dates.append(ihc_dates)          
+        if len(radiation) > 0:
+            for obj in radiation:
+                r_obj = request.embed(obj, "@@object")
+                rad_dates=r_obj.get("end_date")
+                all_traced_dates.append(rad_dates)                
+        if len(medical_imaging) > 0:
+            for obj in medical_imaging:
+                mi_obj = request.embed(obj, "@@object")
+                med_img_dates=mi_obj.get("procedure_date")
+                all_traced_dates.append(med_img_dates) 
+        if len(medication) > 0:
+            for obj in medication:
+                m_obj = request.embed(obj, "@@object")
+                med_dates=m_obj.get("end_date")
+                all_traced_dates.append(med_dates) 
+        if len(supportive_medication) > 0:
+            for obj in supportive_medication:
+                sm_obj = request.embed(obj, "@@object")
+                sup_med_dates=sm_obj.get("start_date")
+                all_traced_dates.append(sup_med_dates) 
+
+        if len(all_traced_dates) > 0:
+            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d")) 
+            last_follow_up_date = all_traced_dates[-1]
+        return last_follow_up_date
+
     @calculated_property( schema={
         "title": "Labs",
         "type": "array",
@@ -638,7 +719,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status', 'last_follow_up_date', 'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
