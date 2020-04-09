@@ -3064,5 +3064,19 @@
         "output_type": "regulatory elements",
         "file_size": 9876,
         "md5sum": "4361ad9343a322ad7cf4379de9acf6aa"
+    },
+    {
+        "_test": "gRNAs",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/bing-ren/",
+        "dataset": "ENCSR112TRG",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "accession": "ENCFF100GRN",
+        "file_format": "tsv",
+        "output_type": "gRNAs",
+        "file_size": 9876,
+        "md5sum": "c7c62633407bb6cfe2cd14e7e021b4b1"
     }
 ]
