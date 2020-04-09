@@ -127,17 +127,17 @@ class Patient(Item):
         if len(vitals) > 0:
             for obj in vitals:
                 v_obj = request.embed(obj, "@@object") 
-                vital_dates=v_obj["date"]
+                vital_dates=v_obj.get("date")
                 all_traced_dates.append(vital_dates)
         if len(labs) > 0:
             for obj in labs:
                 l_obj = request.embed(obj, "@@object") 
-                lab_dates=l_obj["date"]
+                lab_dates=l_obj.get("date")
                 all_traced_dates.append(lab_dates)
         if len(surgery) > 0:
             for obj in surgery:
                 s_obj = request.embed(obj, "@@object")
-                sur_dates=s_obj["date"]
+                sur_dates=s_obj.get("date")
                 all_traced_dates.append(sur_dates) 
         if len(germline) > 0:
             for obj in germline:
