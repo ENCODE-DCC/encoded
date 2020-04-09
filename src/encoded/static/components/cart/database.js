@@ -122,7 +122,7 @@ export const cartCreate = ({ name, identifier, status }, fetch) => {
  * @return {Promise} Resolves to newly created cart object, or reject with error code.
  */
 export const cartCreateAutosave = fetch => (
-    cartCreate({ name: 'Auto Save', status: 'disabled' }, fetch)
+    cartCreate({ name: 'Auto Save', status: 'current' }, fetch)
 );
 
 
