@@ -78,5 +78,15 @@
         "uuid": "efde5206-bf05-4c9e-a56c-74c9321ef333",
         "attachment": "CH17_pBACGK1.1n.png",
         "name": "Common RNA filtering counts metric (PNG)"
+    },
+    {
+        "status": "released",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
+        "quality_metric_of": [ "3412830f-154f-129f-814b-fd3435417edf" ],
+        "uuid": "3eb7655a-970f-4fe4-9fcb-c98a0f3f12e1",
+        "attachment": "gene_quantification_qc.json",
+        "name": "Gene Quantification QC Results (JSON)"
     }
 ]

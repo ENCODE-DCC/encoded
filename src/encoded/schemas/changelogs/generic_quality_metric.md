@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 8
 
+* *application/json* enum added to *MIME type* in *attachment*
 * *quality_metric_of* was added as a required field
 
 ### Schema version 8
