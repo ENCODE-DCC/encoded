@@ -278,6 +278,35 @@
         "purpose": "characterization",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/",
-        "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b"
+        "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM555HRK",
+        "aliases": [
+            "john-stamatoyannopoulos:HR_knockout"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "knockout",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "method": "homologous recombination",
+        "purpose": "repression",
+        "modified_site_by_gene_id": "/genes/912/",
+        "status": "released",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM555CRP",
+        "aliases": [
+            "bing-ren:CRISPR_step_one"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "introduced_elements": "gRNAs and CRISPR machinery",
+        "lab": "/labs/bing-ren/",
+        "method": "transduction",
+        "purpose": "expression",
+        "status": "released",
+        "submitted_by": "/users/dignissim.euismod@amet.habitant/"
     }
 ]

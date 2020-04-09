@@ -112,6 +112,25 @@
                 {
                     "properties": {
                         "purpose": {
+                            "enum": ["expression"]
+                        },
+                        "category": {
+                            "enum": ["insertion"]
+                        },
+                        "method": {
+                            "enum": ["transduction", "transient transfection"]
+                        },
+                        "introduced_elements": {
+                            "enum": ["gRNAs and CRISPR machinery"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
+                    }
+                },
+                {
+                    "properties": {
+                        "purpose": {
                             "enum": ["characterization"]
                         },
                         "method": {
@@ -130,40 +149,41 @@
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at either modified_site_nonspecific or specifying gRNAs and CRISPR machinery. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
                     "oneOf": [
                         {
                             "anyOf": [
-                            {
-                                "required": ["introduced_tags"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    },
-                                    "purpose": {
-                                        "enum": ["tagging"]
+                                {
+                                    "required": ["introduced_tags"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        },
+                                        "purpose": {
+                                            "enum": ["tagging"]
+                                        }
+                                    }
+                                },
+                                {
+                                    "required": ["introduced_sequence"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        }
+                                    }
+                                },
+                                {
+                                    "required": ["introduced_gene"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                "required": ["introduced_sequence"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    }
-                                }
-                            },
-                            {
-                                "required": ["introduced_gene"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    }
-                                }
-                            }
-                        ]},
+                            ]
+                        },
                         {
                             "required": ["modified_site_nonspecific", "introduced_elements"],
                             "properties": {
@@ -171,7 +191,28 @@
                                     "enum": ["insertion"]
                                 }
                             }
+                        },
+                        {    
+                            "not": {
+                                "required": ["modified_site_nonspecific"]
+                            },
+                            "required": ["introduced_elements"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["expression"]
+                                },
+                                "method": {
+                                    "enum": ["transduction", "transient transfection"]
+                                },
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
+                                }
+                            }
                         }
+
                     ]
                 },
                 {
@@ -275,7 +316,7 @@
                             "enum": ["knockout"]
                         },
                         "method": {
-                            "enum": ["site-specific recombination"]
+                            "enum": ["site-specific recombination", "homologous recombination"]
                         },
                         "purpose": {
                             "enum": ["repression"]
@@ -302,7 +343,7 @@
             }
         },
         "introduced_elements": {
-            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or inserted randomly.",
+            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or inserted randomly; or the general introduction of guide RNAs and CRISPR machinery prior to a CRISPR screen.",
             "allOf": [
                 {
                     "oneOf": [
@@ -314,6 +355,13 @@
                                 "purpose": {
                                     "enum": ["characterization"]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["gRNAs and CRISPR machinery"]
+                                    }
+                                }
                             }
                         },
                         {
@@ -324,6 +372,32 @@
                                 },
                                 "purpose": {
                                     "enum": ["characterization"]
+                                }
+                            },
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["gRNAs and CRISPR machinery"]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["expression"]
+                                },
+                                "method": {
+                                    "enum": ["transduction", "transient transfection"]
+                                },
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
+                                },
+                                "not":{
+                                    "required": ["modified_site_nonspecific"]
                                 }
                             }
                         }
@@ -442,7 +516,8 @@
                                 "transient transfection",
                                 "transduction",
                                 "microinjection",
-                                "bombardment"
+                                "bombardment",
+                                "homologous recombination"
                             ]
                         }
                     }
@@ -706,7 +781,8 @@
             "enum": [
                 "sheared genomic DNA",
                 "genomic DNA regions",
-                "synthesized DNA"
+                "synthesized DNA",
+                "gRNAs and CRISPR machinery"
             ]
         },
         "method": {
@@ -723,7 +799,8 @@
                 "stable transfection",
                 "TALEN",
                 "transduction",
-                "transient transfection"
+                "transient transfection",
+                "homologous recombination"
             ]
         },
         "treatments": {

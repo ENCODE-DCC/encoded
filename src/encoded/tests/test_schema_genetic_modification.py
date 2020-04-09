@@ -275,3 +275,15 @@ def test_characterization_insertion(testapp, characterization_insertion_CRISPR, 
     assert res.status_code == 201
     res = testapp.post_json('/genetic_modification', characterization_insertion_transfection, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_homologous_recombination(testapp, HR_knockout):
+    testapp.post_json('/genetic_modification', HR_knockout, status=201)
+    HR_knockout.pop('modified_site_by_target_id')
+    testapp.post_json('/genetic_modification', HR_knockout, status=422)
+
+
+def test_CRISPR_introduction_step_one(testapp, CRISPR_introduction):
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=422)
+    CRISPR_introduction.update({'introduced_elements': 'gRNAs and CRISPR machinery'})
+    testapp.post_json('/genetic_modification', CRISPR_introduction, status=201)
