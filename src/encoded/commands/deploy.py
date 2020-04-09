@@ -709,7 +709,7 @@ def main():
                         )
                     )
                 print('Run the following command to view this es node deployment log.')
-                print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+                print("ssh ubuntu@{}{}".format(node_info['public_dns'], tail_cmd))
             else:
                 print("ES node{} ssh:\n ssh ubuntu@{}".format(index, node_info['public_dns']))
     elif 'frontend' in instances_info:
