@@ -121,7 +121,6 @@ class Patient(Item):
         "type": "string",
     })
     def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-    # def last_follow_up_date(self, request, germline, ihc, radiation,medical_imaging,medication,supportive_medication,surgery):
     
         all_traced_dates=[]
         last_follow_up_date="Not available"
@@ -130,26 +129,6 @@ class Patient(Item):
                 v_obj = request.embed(obj, "@@object") 
                 vital_dates=v_obj["date"]
                 all_traced_dates.append(vital_dates)
-                # for obj in v_obj["HEIGHT"]:
-                #     vh_obj = request.embed(obj, "@@object")
-                #     all_traced_dates.append(vh_obj["date"])
-                # for obj in v_obj["BMI"]:
-                #     v_bmi_obj = request.embed(obj, "@@object")
-                #     all_traced_dates.append(v_bmi_obj["date"])
-                # for obj in v_obj["WEIGHT"]:
-                #     v_weight_obj = request.embed(obj, "@@object")
-                #     all_traced_dates.append(v_weight_obj["date"]) 
-                # for obj in v_obj["BP_DIAS"]:
-                #     v_bpDias_obj = request.embed(obj, "@@object")
-                #     all_traced_dates.append(v_bpDias_obj["date"]) 
-                # for obj in v_obj["BP_SYS"]
-                #     v_bpSys_obj = request.embed(obj, "@@object")
-                #     all_traced_dates.append(v_bpSys_obj["date"])    
-        # if len(labs) > 0:
-        #     for lobj in labs:
-        #         l_obj = request.embed(lobj, "@@object")
-        #         labs_dates=l_obj.get("date")
-        #         all_traced_dates.append(labs_dates) 
         if len(labs) > 0:
             for obj in labs:
                 l_obj = request.embed(obj, "@@object") 
