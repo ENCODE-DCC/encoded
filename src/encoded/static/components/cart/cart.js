@@ -1078,7 +1078,7 @@ class CartComponent extends React.Component {
                 cartElements = savedCartObj.elements;
             } else {
                 cartType = 'MEMORY';
-                cartName = 'Cart';
+                cartName = 'Cohort';
                 cartElements = elements;
             }
         } else {
