@@ -984,9 +984,10 @@ const addFileTermToFacet = (facets, field, file) => {
 const assembleFacets = (selectedTerms, files) => {
     const assembledFacets = [];
     const facetSelectedFiles = [];
-    if (files.length > 0) {
+    const processedFiles = files.filter(file => file.assembly);
+    if (processedFiles.length > 0) {
         const selectedFacetKeys = Object.keys(selectedTerms).filter(term => selectedTerms[term].length > 0);
-        files.forEach((file) => {
+        processedFiles.forEach((file) => {
             // Determine whether the file passes the currently selected facet terms. Properties
             // within the file have to match any of the terms within a facet, and across all
             // facets that include selected terms. This is the "first test" I refer to later.

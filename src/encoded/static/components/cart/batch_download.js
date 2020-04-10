@@ -142,9 +142,9 @@ const CartBatchDownloadComponent = (
         <React.Fragment>
             <DropdownButton.Selected
                 labels={{
-                    processed: 'Processed data files',
-                    raw: 'Raw data files',
-                    all: 'All files',
+                    processed: 'Download processed data files',
+                    raw: 'Download raw data files',
+                    all: 'Download all files',
                 }}
                 execute={handleExecute}
                 id="cart-download"
