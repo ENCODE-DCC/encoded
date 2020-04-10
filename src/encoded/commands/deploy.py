@@ -347,6 +347,12 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'CLUSTER_NAME': main_args.cluster_name,
                 'REGION_INDEX': 'True',
             })
+        elif main_args.es_ip:
+            data_insert.update({
+                'BUILD_TYPE': 'encd-demo-no-es-build',
+                'CLUSTER_NAME': main_args.cluster_name,
+                'REGION_INDEX': 'False',
+            })
         else:
             data_insert.update({
                 'BUILD_TYPE': 'encd-demo-build',
@@ -455,6 +461,7 @@ def _get_cloud_config_yaml(main_args):
     diff_configs = main_args.diff_configs
     es_elect = main_args.es_elect
     es_wait = main_args.es_wait
+    es_ip = main_args.es_ip
     postgres_version = main_args.postgres_version
     save_config_name = main_args.save_config_name
     use_prebuilt_config = main_args.use_prebuilt_config
@@ -515,6 +522,8 @@ def _get_cloud_config_yaml(main_args):
         build_type = 'u18-es-nodes'
     elif cluster_name:
         build_type = 'u18-frontend'
+    elif es_ip:
+        build_type = 'u18-demo-no-es'
     # elif cluster_name:
     #     build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
     # else:
