@@ -826,7 +826,7 @@ FileFacets.defaultProps = {
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
-const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCount, cartType, sharedCart, visualizable }) => (
+const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCounts, cartType, sharedCart, visualizable }) => (
     <div className="cart__tools">
         {elements.length > 0 ?
             <CartBatchDownload
@@ -836,6 +836,7 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fi
                 cartType={cartType}
                 savedCartObj={savedCartObj}
                 sharedCart={sharedCart}
+                fileCounts={fileCounts}
                 visualizable={visualizable}
             />
         : null}
@@ -857,6 +858,8 @@ CartTools.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
+    /** Number of files batch download will download for each download type */
+    fileCounts: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
 };
@@ -867,7 +870,7 @@ CartTools.defaultProps = {
     savedCartObj: null,
     viewableDatasets: null,
     sharedCart: null,
-    fileCount: 0,
+    fileCounts: {},
     visualizable: false,
 };
 
@@ -1476,6 +1479,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                             viewableDatasets={viewableDatasets}
                             cartType={cartType}
                             sharedCart={context}
+                            fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
                             visualizable={visualizableOnly}
                         />
                         {selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}

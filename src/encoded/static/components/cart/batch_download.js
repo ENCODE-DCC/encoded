@@ -93,6 +93,23 @@ const batchDownload = (cartType, elements, selectedTerms, facets, savedCartObj, 
 
 
 /**
+ * Converts a download type to human-readable text to be used for relevant messages.
+ * @param {string} downloadType Currently selected batch download type.
+ *
+ * @return {string} Human-readable form of `downloadType`.
+ */
+const getDownloadTypeText = (downloadType) => {
+    if (downloadType === 'processed') {
+        return 'processed data files';
+    }
+    if (downloadType === 'raw') {
+        return 'raw data files';
+    }
+    return 'files';
+};
+
+
+/**
  * Displays batch download button for downloading files from experiments in carts. For shared carts
  * or logged-in users.
  */
@@ -104,6 +121,7 @@ const CartBatchDownloadComponent = (
         datasetFacets,
         savedCartObj,
         sharedCart,
+        fileCounts,
         setInProgress,
         cartInProgress,
         visualizable,
@@ -113,7 +131,9 @@ const CartBatchDownloadComponent = (
     // Tracks whether the batch-download modal is visible or not.
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     // Keeps track of the currently selected download option.
-    const downloadType = React.useRef('');
+    const [chosenFileCount, setChosenFileCount] = React.useState(fileCounts.processed);
+    // Keeps track of the currently selected download option.
+    const [downloadType, setDownloadType] = React.useState('processed');
 
     const openModal = () => { setIsModalOpen(true); };
     const closeModal = () => { setIsModalOpen(false); };
@@ -121,11 +141,11 @@ const CartBatchDownloadComponent = (
     // Called when the user clicks the Download button in the batch-download modal.
     const handleDownloadClick = () => {
         const options = {};
-        if (downloadType.current === 'processed') {
+        if (downloadType === 'processed') {
             options.visualizable = visualizable;
-        } else if (downloadType.current === 'raw') {
+        } else if (downloadType === 'raw') {
             options.raw = true;
-        } else if (downloadType.current === 'all') {
+        } else if (downloadType === 'all') {
             options.all = true;
         }
         batchDownload(cartType, elements, selectedTerms, datasetFacets, savedCartObj, sharedCart, setInProgress, options, fetch);
@@ -133,7 +153,14 @@ const CartBatchDownloadComponent = (
 
     // Called when the user clicks the button to make the batch-download modal appear.
     const handleExecute = (selection) => {
-        downloadType.current = selection;
+        setDownloadType(selection);
+        if (selection === 'processed') {
+            setChosenFileCount(fileCounts.processed);
+        } else if (selection === 'raw') {
+            setChosenFileCount(fileCounts.raw);
+        } else if (selection === 'all') {
+            setChosenFileCount(fileCounts.all);
+        }
         openModal();
     };
 
@@ -171,16 +198,25 @@ const CartBatchDownloadComponent = (
             </DropdownButton.Selected>
             {isModalOpen ?
                 <BatchDownloadModal
-                    disabled={cartInProgress}
+                    disabled={chosenFileCount === 0 || cartInProgress}
                     downloadClickHandler={handleDownloadClick}
                     closeModalHandler={closeModal}
-                    additionalContent={elements.length >= ELEMENT_WARNING_LENGTH_MIN ?
-                        <p className="cart__batch-download-warning">
-                            The &ldquo;files.txt&rdquo; file can take a very long time to generate
-                            with {elements.length} experiments in your cart. Cart operations will be
-                            unavailable until this file completes downloading.
-                        </p>
-                    : null}
+                    additionalContent={
+                        <React.Fragment>
+                            {elements.length >= ELEMENT_WARNING_LENGTH_MIN ?
+                                <p className="cart__batch-download-warning">
+                                    The &ldquo;files.txt&rdquo; file can take a very long time to generate
+                                    with {elements.length} experiments in your cart. Cart operations will be
+                                    unavailable until this file completes downloading.
+                                </p>
+                            : null}
+                            {chosenFileCount === 0 ?
+                                <p className="cart__batch-download-warning">
+                                    Unable to download as no {getDownloadTypeText(downloadType)} are available.
+                                </p>
+                            : null}
+                        </React.Fragment>
+                    }
                 />
             : null}
         </React.Fragment>
@@ -200,6 +236,8 @@ CartBatchDownloadComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** Shared cart object */
     sharedCart: PropTypes.object,
+    /** Number of files batch download will download for each download type */
+    fileCounts: PropTypes.object,
     /** Redux cart action to set the in-progress state of the cart */
     setInProgress: PropTypes.func.isRequired,
     /** True if cart operation in progress */
@@ -216,6 +254,7 @@ CartBatchDownloadComponent.defaultProps = {
     datasetFacets: [],
     savedCartObj: null,
     sharedCart: null,
+    fileCounts: {},
     cartInProgress: false,
     visualizable: false,
 };
@@ -225,6 +264,7 @@ const mapStateToProps = (state, ownProps) => ({
     elements: ownProps.elements,
     selectedTerms: ownProps.selectedTerms,
     savedCartObj: ownProps.savedCartObj,
+    fileCounts: ownProps.fileCounts,
     fetch: ownProps.fetch,
 });
 
