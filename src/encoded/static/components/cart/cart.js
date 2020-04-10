@@ -836,7 +836,6 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fi
                 cartType={cartType}
                 savedCartObj={savedCartObj}
                 sharedCart={sharedCart}
-                fileCount={fileCount}
                 visualizable={visualizable}
             />
         : null}
@@ -858,8 +857,6 @@ CartTools.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
-    /** Number of files batch download will cause to be downloaded */
-    fileCount: PropTypes.number,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
 };
@@ -1479,7 +1476,6 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                             viewableDatasets={viewableDatasets}
                             cartType={cartType}
                             sharedCart={context}
-                            fileCount={selectedFiles.length}
                             visualizable={visualizableOnly}
                         />
                         {selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}

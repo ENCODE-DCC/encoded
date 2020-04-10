@@ -104,7 +104,6 @@ const CartBatchDownloadComponent = (
         datasetFacets,
         savedCartObj,
         sharedCart,
-        fileCount,
         setInProgress,
         cartInProgress,
         visualizable,
@@ -172,7 +171,7 @@ const CartBatchDownloadComponent = (
             </DropdownButton.Selected>
             {isModalOpen ?
                 <BatchDownloadModal
-                    disabled={fileCount === 0 || cartInProgress}
+                    disabled={cartInProgress}
                     downloadClickHandler={handleDownloadClick}
                     closeModalHandler={closeModal}
                     additionalContent={elements.length >= ELEMENT_WARNING_LENGTH_MIN ?
@@ -201,8 +200,6 @@ CartBatchDownloadComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** Shared cart object */
     sharedCart: PropTypes.object,
-    /** Number of files batch download will cause to be downloaded */
-    fileCount: PropTypes.number,
     /** Redux cart action to set the in-progress state of the cart */
     setInProgress: PropTypes.func.isRequired,
     /** True if cart operation in progress */
@@ -219,7 +216,6 @@ CartBatchDownloadComponent.defaultProps = {
     datasetFacets: [],
     savedCartObj: null,
     sharedCart: null,
-    fileCount: 0,
     cartInProgress: false,
     visualizable: false,
 };
@@ -229,7 +225,6 @@ const mapStateToProps = (state, ownProps) => ({
     elements: ownProps.elements,
     selectedTerms: ownProps.selectedTerms,
     savedCartObj: ownProps.savedCartObj,
-    fileCount: ownProps.fileCount,
     fetch: ownProps.fetch,
 });
 
