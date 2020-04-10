@@ -74,8 +74,11 @@ cat "$src_dir/head.conf" > "$dest_path"
 sed "s/APP_WORKERS/$APP_WORKERS/" <  "$src_dir/app.conf" >> "$dest_path"
 
 # indexer processes
-cat "$src_dir/indexer-proc.conf" >> "$dest_path"
-cat "$src_dir/vis-indexer-proc.conf" >> "$dest_path"
+# encd-demo-no-es-build does not have indexing. REGION_INDEX already defaulted to false.
+if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ]; then
+    cat "$src_dir/indexer-proc.conf" >> "$dest_path"
+    cat "$src_dir/vis-indexer-proc.conf" >> "$dest_path"
+fi
 if [ "$REGION_INDEX" == "True" ]; then
     cat "$src_dir/region-indexer-proc.conf" >> "$dest_path"
 fi
@@ -84,8 +87,11 @@ fi
 cat "$src_dir/some-vars.conf" >> "$dest_path"
 
 # indexer directory permissions
-cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
-cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
+# encd-demo-no-es-build does not have indexing. REGION_INDEX already defaulted to false.
+if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ]; then
+    cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
+    cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
+fi
 if [ "$REGION_INDEX" == "True" ]; then
     cat "$src_dir/region-indexer-dir-permission.conf" >> "$dest_path"
 fi

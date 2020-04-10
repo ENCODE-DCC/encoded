@@ -11,7 +11,7 @@ echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
 ADD_PG_ES_AWS_KEYS=1
-if [ "$ENCD_BUILD_TYPE" == 'encd-demo-build' ] || [ "$ENCD_BUILD_TYPE" == 'encd-frontend-build' ]; then
+if [ "$ENCD_BUILD_TYPE" == 'encd-demo-build' ] || [ "$ENCD_BUILD_TYPE" == 'encd-frontend-build' ] || [ "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ]; then
     # Elasticsearch nodes(encd-es-build) do not need aws keys
     ADD_PG_ES_AWS_KEYS=0
 fi
