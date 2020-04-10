@@ -16,7 +16,6 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID,
     CalculatedVisualize,
     CalculatedBiosampleSummary,
-#    CalculatedLibraries,
     CalculatedAssaySlims,
     CalculatedAssayTitle,
     CalculatedCategorySlims,
@@ -38,7 +37,6 @@ class Experiment(Dataset,
                  CalculatedAssayTermID,
                  CalculatedVisualize,
                  CalculatedBiosampleSummary,
-#                 CalculatedLibraries,
                  CalculatedAssaySlims,
                  CalculatedAssayTitle,
                  CalculatedCategorySlims,
@@ -69,7 +67,8 @@ class Experiment(Dataset,
     rev = Dataset.rev.copy()
     rev.update({
         'related_series': ('Series', 'related_datasets'),
-        'superseded_by': ('Experiment', 'supersedes')
+        'superseded_by': ('Experiment', 'supersedes'),
+        'libraries': ('Library','experiment')
     })
 
     @calculated_property(schema={
@@ -95,6 +94,18 @@ class Experiment(Dataset,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Libraries",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Library.experiment",
+        },
+        "notSubmittable": True,
+    })
+    def libraries(self, request, libraries):
+        return paths_filtered_by_status(request, libraries)
 
     @calculated_property(schema={
         "title": "Protein tags",

@@ -351,19 +351,6 @@ class CalculatedBiosampleSummary:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
-#class CalculatedLibraries:
-#    @calculated_property(schema={
-#        "title": "Libraries",
-#        "type": "array",
-#        "items": {
-#            "type": ['string', 'object'],
-#            "linkFrom": "Library.experiment",
-#        },
-#    })
-#    def libraries(self, request, libraries):
-#        return paths_filtered_by_status(request, libraries)
-
-
 class CalculatedAssaySlims:
     @calculated_property(condition='assay_term_name', schema={
         "title": "Assay type",
