@@ -5,7 +5,7 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
+    "required": ["award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,8 +19,6 @@
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/biosample_ontology" },
-        { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
@@ -99,13 +97,6 @@
             "format": "date",
             "permission": "import_items"
         },
-        "target": {
-            "title": "Target",
-            "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",
-            "comment": "See target.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Target"
-        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -123,20 +114,6 @@
         },
         "documents": {
             "description": "Protocols or other documents that describe the assay or the results (not data files)."
-        },
-        "possible_controls": {
-            "title": "Controls",
-            "description": "Dataset that contain files that can serve as scientific controls for this experiment.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Control",
-                "description": "A dataset that contains files that can serve as a scientific control for this experiment.",
-                "comment": "See dataset.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
-                "type": "string",
-                "linkTo": "Dataset"
-            }
         },
         "supersedes": {
             "title": "Supersedes" ,
@@ -180,26 +157,6 @@
                 "no available pipeline",
                 "pipeline error",
                 "unrunnable"
-            ]
-        },
-        "pipeline_error_detail": {
-            "type": "string",
-            "description": "Explanation of why the experiment failed pipeline analysis.",
-            "comment": "should be used on experiments with internal_status:pipeline error",
-            "permission": "import_items",
-            "title": "Pipeline error message"
-        },
-        "control_type": {
-            "type": "string",
-            "title": "Control type",
-            "description": "The specific type of control if the experiment is a control.",
-            "enum": [
-                "control",
-                "IgG",
-                "input library",
-                "mock input",
-                "no protein target",
-                "non-specific target"
             ]
         },
         "analyses": {
@@ -287,13 +244,6 @@
         }
     },
     "facets": {
-        "assay_slims": {
-            "title": "Assay type"
-        },
-        "assay_title": {
-            "title": "Assay title",
-            "type": "typeahead"
-        },
         "status": {
             "title": "Status"
         },
@@ -305,30 +255,6 @@
         },
         "assembly": {
             "title": "Genome assembly"
-        },
-        "target.investigated_as": {
-            "title": "Target category"
-        },
-        "target.label": {
-            "title": "Target of assay",
-            "type": "typeahead",
-            "length": "long"
-        },
-        "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "biosample_ontology.term_name" : {
-            "title": "Biosample term name",
-            "type": "typeahead",
-            "length": "long"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ",
-            "type": "typeahead"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell",
-            "type": "typeahead"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -363,23 +289,8 @@
         "accession": {
             "title": "Accession"
         },
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "assay_title": {
-            "title": "Assay title"
-        },
-        "target.label": {
-            "title": "Target of assay"
-        },
-        "target.genes.symbol": {
-            "title": "Target gene symbol"
-        },
         "biosample_summary": {
             "title": "Biosample summary"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name"
         },
         "description": {
             "title": "Description"

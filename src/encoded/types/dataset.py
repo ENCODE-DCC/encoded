@@ -275,13 +275,8 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded + [
-        'biosample_ontology',
         'organism',
-        'target',
-        'target.genes',
-        'target.organism',
         'references',
-        'related_datasets.biosample_ontology',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',
         'related_datasets.files.analysis_step_version.analysis_step',
@@ -289,9 +284,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.lab',
         'related_datasets.submitted_by',
         'related_datasets.award.pi.lab',
-        'related_datasets.possible_controls',
-        'related_datasets.possible_controls.lab',
-        'related_datasets.target.organism',
         'related_datasets.references',
         'files.platform',
         'files.lab',

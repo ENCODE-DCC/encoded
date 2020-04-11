@@ -44,17 +44,7 @@ class Experiment(Dataset,
                  CalculatedObjectiveSlims):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
-    embedded = Dataset.embedded + [
-        'biosample_ontology',
-        'files.platform',
-        'files.analysis_step_version.analysis_step',
-        'files.analysis_step_version.analysis_step.pipelines',
-        'related_series',
-        'possible_controls',
-        'target.genes',
-        'target.organism',
-        'references',
-    ]
+    embedded = Dataset.embedded + []
     audit_inherit = []
     set_status_up = [
         'original_files',
