@@ -73,7 +73,10 @@ if [ $? -gt 0 ]; then
     touch "$encd_failed_flag"
     exit 1
 fi
-sudo -H -u encoded "$ENCD_HOME/bin/index-annotations" "$ENCD_HOME/production.ini" --app-name app
+
+if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ]; then
+    sudo -H -u encoded "$ENCD_HOME/bin/index-annotations" "$ENCD_HOME/production.ini" --app-name app
+fi
 if [ $? -gt 0 ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: index-annotations return error status"
     # Build has failed

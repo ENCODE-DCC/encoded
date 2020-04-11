@@ -84,8 +84,11 @@ fi
 cat "$src_dir/some-vars.conf" >> "$dest_path"
 
 # indexer directory permissions
-cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
-cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
+# encd-demo-no-es-build does not have indexing. REGION_INDEX already defaulted to false.
+if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ]; then
+    cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
+    cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
+fi
 if [ "$REGION_INDEX" == "True" ]; then
     cat "$src_dir/region-indexer-dir-permission.conf" >> "$dest_path"
 fi
