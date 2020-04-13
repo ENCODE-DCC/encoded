@@ -324,6 +324,13 @@ class FileComponent extends React.Component {
                                     <dd>{context.output_type}</dd>
                                 </div>
 
+                                {context.index_of ?
+                                <div data-test="outputtype">
+                                    <dt>Index of</dt>
+                                    <dd>{context.index_of.map(file => file.replace(/\/files\/|\//g, '')).join(', ')}</dd>
+                                </div>
+                                : null }
+
                                 {context.restriction_enzymes ?
                                     <div data-test="restrictionEnzymes">
                                         <dt>Restriction enzymes</dt>
