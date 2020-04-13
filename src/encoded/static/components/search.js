@@ -28,6 +28,7 @@ const types = {
     biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
     computational_model: { title: 'Computational model file set' },
+    docs: { title: 'Documents' },
     experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
