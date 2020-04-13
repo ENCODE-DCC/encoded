@@ -33,7 +33,6 @@ ORDER = [
     'experiment',
     'reference',
     'library',
-    'reference_epigenome',
     'software',
     'software_version',
     'analysis_step',
@@ -43,7 +42,6 @@ ORDER = [
     'file',
     'image',
     'page',
-    'cart',
     'access_key',
 ]
 
@@ -540,17 +538,8 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
-    'functional_characterization_experiment': [
-        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
-    ],
     'mouse_donor': [
         remove_keys('parent_strains', 'genetic_modifications'),
-    ],
-    'fly_donor': [
-        remove_keys('parent_strains', 'genetic_modifications'),
-    ],
-    'worm_donor': [
-        remove_keys('outcrossed_strain', 'parent_strains', 'genetic_modifications'),
     ],
     'human_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
@@ -558,50 +547,8 @@ PHASE1_PIPELINES = {
     'publication': [
         remove_keys('datasets'),
     ],
-    'annotation': [
-        remove_keys('related_files', 'software_used'),
-    ],
-    'project': [
-        remove_keys('related_files'),
-    ],
-    'publication_data': [
-        remove_keys('related_files'),
-    ],
     'reference': [
         remove_keys('related_files', 'software_used'),
-    ],
-    'computational_model': [
-        remove_keys('related_files', 'software_used'),
-    ],
-    'ucsc_browser_composite': [
-        remove_keys('related_files'),
-    ],
-    'functional_characterization_series': [
-        remove_keys('related_datasets'),
-    ],
-    'single_cell_rna_series': [
-        remove_keys('related_datasets'),
-    ],
-    'treatment_time_series': [
-        remove_keys('related_datasets'),
-    ],
-    'treatment_concentration_series': [
-        remove_keys('related_datasets'),
-    ],
-    'aggregate_series': [
-        remove_keys('related_datasets'),
-    ],
-    'organism_development_series': [
-        remove_keys('related_datasets'),
-    ],
-    'replication_timing_series': [
-        remove_keys('related_datasets'),
-    ],
-    'reference_epigenome': [
-        remove_keys('related_datasets', 'supersedes'),
-    ],
-    'matched_set': [
-        remove_keys('related_datasets'),
     ],
     'file': [
         remove_keys('derived_from', 'controlled_by', 'supersedes')
@@ -635,65 +582,14 @@ PHASE2_PIPELINES = {
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
-    'functional_characterization_experiment': [
-        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
-    ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
     ],
     'mouse_donor': [
         skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
-    'worm_donor': [
-        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains', 'genetic_modifications'),
-    ],
-    'fly_donor': [
-        skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
-    ],
-    'annotation': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
-    ],
-    'project': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'publication_data': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
     'reference': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
-    ],
-    'computational_model': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
-    ],
-    'ucsc_browser_composite': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'functional_characterization_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'single_cell_rna_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'treatment_time_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'aggregate_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'treatment_concentration_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'organism_development_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'replication_timing_series': [
-        skip_rows_missing_all_keys('related_datasets'),
-    ],
-    'reference_epigenome': [
-        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
-    ],
-    'matched_set': [
-        skip_rows_missing_all_keys('related_datasets'),
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),

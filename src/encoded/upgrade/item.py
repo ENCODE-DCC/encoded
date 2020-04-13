@@ -3,7 +3,6 @@ import re
 
 
 @upgrade_step('experiment', '10', '11')
-@upgrade_step('reference_epigenome', '10', '11')
 @upgrade_step('human_donor', '6', '7')
 @upgrade_step('mouse_donor', '6', '7')
 @upgrade_step('analysis_step', '4', '5')
@@ -17,7 +16,6 @@ import re
 @upgrade_step('lab', '3', '4')
 @upgrade_step('library', '6', '7')
 @upgrade_step('organism', '2', '3')
-@upgrade_step('pipeline', '5', '6')
 @upgrade_step('platform', '4', '5')
 @upgrade_step('publication', '3', '4')
 @upgrade_step('software', '3', '4')
