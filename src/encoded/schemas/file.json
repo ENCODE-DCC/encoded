@@ -1534,12 +1534,12 @@
                 "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
         },
-        "step_run": {
+        "analysis_step": {
             "title": "Analysis step run",
             "description": "The run instance of the step used to generate the file.",
             "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
             "type": "string",
-            "linkTo": "AnalysisStepRun"
+            "linkTo": "AnalysisStep"
         },
         "restriction_enzymes": {
             "title": "Restriction enzymes",
@@ -1704,14 +1704,11 @@
         "award.project": {
             "title": "Project"
         },
-        "step_run": {
-            "title": "Analysis step run"
+        "analysis_step": {
+            "title": "Analysis step"
         },
         "date_created": {
             "title": "Date created"
-        },
-        "analysis_step_version": {
-            "title": "Analysis step version"
         },
         "restricted": {
             "title": "Restricted file"

@@ -106,19 +106,13 @@ class File(Item):
         'library',
         'lab',
         'submitted_by',
-        'analysis_step_version.analysis_step',
-        'analysis_step_version.analysis_step.pipelines',
-        'analysis_step_version.software_versions',
-        'analysis_step_version.software_versions.software',
-        'step_run',
         'biosample_ontology',
         'target'
     ]
     audit_inherit = []
     set_status_up = [
-        'platform',
-        'step_run',
-    ]
+        'platform'
+   ]
     set_status_down = []
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
@@ -295,21 +289,6 @@ class File(Item):
             for uuid in replicates
         }
         return sorted(techreps)
-
-    @calculated_property(schema={
-        "title": "Analysis step version",
-        "description": "The step version of the pipeline from which this file is an output.",
-        "comment": "Do not submit.  This field is calculated from step_run.",
-        "type": "string",
-        "linkTo": "AnalysisStepVersion"
-    })
-    def analysis_step_version(self, request, root, step_run=None):
-        if step_run is None:
-            return
-        step_run_obj = traverse(root, step_run)['context']
-        step_version_uuid = step_run_obj.__json__(request).get('analysis_step_version')
-        if step_version_uuid is not None:
-            return request.resource_path(root[step_version_uuid])
 
     @calculated_property(schema={
         "title": "Output category",

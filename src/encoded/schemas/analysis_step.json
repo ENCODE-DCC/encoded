@@ -356,6 +356,17 @@
                 "type": "string",
                 "linkTo": "AnalysisStep"
             }
+        },
+        "software_versions": {
+            "title": "Software version",
+            "description": "The software version used in the analysis.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "comment": "See software_version.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "SoftwareVersion"
+            }
         }
     },
     "facets": {

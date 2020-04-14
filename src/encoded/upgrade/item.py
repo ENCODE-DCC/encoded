@@ -6,8 +6,6 @@ import re
 @upgrade_step('human_donor', '6', '7')
 @upgrade_step('mouse_donor', '6', '7')
 @upgrade_step('analysis_step', '4', '5')
-@upgrade_step('analysis_step_run', '2', '3')
-@upgrade_step('analysis_step_version', '2', '3')
 @upgrade_step('antibody_lot', '6', '7')
 @upgrade_step('award', '3', '4')
 @upgrade_step('biosample', '14', '15')

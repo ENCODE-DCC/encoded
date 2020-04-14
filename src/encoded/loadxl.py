@@ -36,13 +36,10 @@ ORDER = [
     'software',
     'software_version',
     'analysis_step',
-    'analysis_step_version',
-    'pipeline',
-    'analysis_step_run',
     'file',
     'image',
     'page',
-    'access_key',
+    'access_key'
 ]
 
 IS_ATTACHMENT = [

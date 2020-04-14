@@ -112,171 +112,6 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
             yield AuditFailure('inconsistent fragmentation method', detail, level='ERROR')       
 
 
-def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
-    # relevant only for ChIP-seq
-    if value.get('assay_term_id') != 'OBI:0000716':
-        return
-
-    if value.get('target') and 'name' in value.get('target'):
-        target_name = value['target']['name']
-        target_investigated_as = value['target']['investigated_as']
-    elif value.get('control_type'):
-        if get_organism_name(
-            reps=value['replicates'], excluded_types=[]
-        ) in ['human', 'mouse']:
-            return
-        target_name = value.get('control_type')
-        target_investigated_as = [value.get('control_type')]
-    else:
-        return
-    controls = value.get('possible_controls')
-    if controls:
-        controls_files_structures = {}
-        control_objects = {}
-        for control_experiment in controls:
-            control_objects[control_experiment.get('@id')] = control_experiment
-            controls_files_structures[control_experiment.get('@id')] = create_files_mapping(
-                control_experiment.get('original_files'),
-                files_structure.get('excluded_types'))
-        awards_to_be_checked = [
-                        'ENCODE3',
-                        'ENCODE4',
-                        'ENCODE2-Mouse',
-                        'ENCODE2',
-                        'ENCODE',
-                        'Roadmap']
-        peaks_file_gen = (
-            peaks_file for peaks_file in files_structure.get('peaks_files').values()
-            if  (peaks_file.get('award') and
-                peaks_file.get('award')['rfa'] in awards_to_be_checked and
-                peaks_file.get('lab') in ['/labs/encode-processing-pipeline/'] and
-                peaks_file.get('biological_replicates') and
-                len(peaks_file.get('biological_replicates')) == 1)
-        )
-
-        pipelines_to_check = ['ChIP-seq read mapping', 'Pool and subsample alignments']
-        analysis_steps_to_check = ['Alignment pooling and subsampling step',
-                                   'Control alignment subsampling step']
-        for peaks_file in peaks_file_gen:
-            derived_from_files = get_derived_from_files_set([peaks_file],
-                                                            files_structure,
-                                                            'bam',
-                                                            True)
-            derived_from_external_bams_gen = (
-                derived_from for derived_from in
-                derived_from_files
-                if (derived_from.get('dataset') != value.get('@id')
-                    and
-                    derived_from.get('dataset') in controls_files_structures
-                    and
-                    (check_for_any_pipelines(
-                        pipelines_to_check,
-                        derived_from.get('@id'),
-                        controls_files_structures[derived_from.get('dataset')])
-                        or
-                        check_for_analysis_steps(
-                            analysis_steps_to_check,
-                            derived_from.get('@id'),
-                            controls_files_structures[derived_from.get('dataset')]))))
-            control_bam_details = []
-            cumulative_read_depth = 0
-            missing_control_quality_metric = False
-            target_failures = False
-            for bam_file in derived_from_external_bams_gen:
-                failures = check_control_target_failures(bam_file.get('dataset'),
-                    control_objects, bam_file['@id'],
-                    bam_file['output_type'])
-                if failures:
-                    target_failures = True
-                    for f in failures:
-                        yield f
-                else:
-                    control_depth = get_chip_seq_bam_read_depth(bam_file)
-                    if not control_depth:
-                        detail = ('Control {} file {} has no associated quality metric, '
-                            'preventing calculation of the read depth.'.format(
-                                bam_file['output_type'],
-                                audit_link(path_to_text(bam_file['@id']), bam_file['@id'])
-                            )
-                        )
-                        yield AuditFailure('missing control quality metric', detail, level='WARNING')
-                        missing_control_quality_metric = True
-                    else:
-                        cumulative_read_depth += control_depth
-                        control_bam_details.append(
-                            (bam_file.get('@id'), control_depth, bam_file.get('dataset')))
-            if not missing_control_quality_metric and not target_failures:
-                yield from check_control_read_depth_standards(
-                    peaks_file.get('@id'),
-                    peaks_file.get('assembly'),
-                    cumulative_read_depth,
-                    control_bam_details,
-                    target_name,
-                    target_investigated_as)
-
-
-def check_control_target_failures(control_id, control_objects, bam_id, bam_type):
-    control = control_objects.get(control_id)
-    if not control:
-        return
-    target_failures = []
-    if not control.get('control_type'):
-        detail = 'Control {} file {} has no control_type specified.'.format(
-            bam_type,
-            audit_link(path_to_text(bam_id), bam_id)
-        )
-        target_failures.append(
-            AuditFailure(
-                'missing control_type of control experiment',
-                detail,
-                level='WARNING'
-            )
-        )
-    elif 'input library' not in control['control_type']:
-        detail = (
-            'Control {} file {} has a wrong control type {} '
-            'which is not "input library".'
-        ).format(
-            bam_type,
-            audit_link(path_to_text(bam_id), bam_id),
-            control['control_type']
-        )
-        target_failures.append(
-            AuditFailure(
-                'improper control_type of control experiment',
-                detail,
-                level='WARNING'
-            )
-        )
-    if 'target' in control and control['target']:
-        if isinstance(control['target'], list):
-            target_name = ', '.join(t['name'] for t in control['target'])
-        else:
-            target_name = control['target']['name']
-        detail = (
-            'Control {} file {} has unexpected target {} specified.'
-        ).format(
-            bam_type,
-            audit_link(path_to_text(bam_id), bam_id),
-            target_name
-        )
-        target_failures.append(
-            AuditFailure(
-                'unexpected target of control experiment',
-                detail,
-                level='WARNING'
-            )
-        )
-    return target_failures
-
-
-def check_for_any_pipelines(pipeline_titles, control_file_id, file_structure):
-    for pipeline_title in pipeline_titles:
-        if check_pipeline(pipeline_title, control_file_id, file_structure):
-            return True
-    return False
-
-
 def check_for_analysis_steps(analysis_step_titles, control_file_id, file_structure):
     for analysis_step_title in analysis_step_titles:
         if check_analysis_step(analysis_step_title, control_file_id, file_structure):
@@ -293,15 +128,6 @@ def check_analysis_step(analysis_step_title, control_file_id, file_structure):
     return False
 
 
-def check_pipeline(pipeline_title, control_file_id, file_structure):
-    control_file = file_structure.get('alignments')[control_file_id]
-    if ('analysis_step_version' in control_file and
-            'analysis_step' in control_file.get('analysis_step_version')):
-        pipelines = control_file.get('analysis_step_version').get('analysis_step').get('pipelines')
-        return pipeline_title in get_pipeline_titles(pipelines)
-    return False
-
-
 def generate_control_bam_details_string(control_bam_details):
     to_return = ''
     for (file_id, depth, exp_id) in control_bam_details:
@@ -312,91 +138,6 @@ def generate_control_bam_details_string(control_bam_details):
             )
         )
     return to_return[:-1]
-
-
-def check_control_read_depth_standards(peaks_file_id,
-                                       assembly,
-                                       read_depth,
-                                       control_bam_details,
-                                       control_to_target,
-                                       target_investigated_as):
-    marks = pipelines_with_read_depth['ChIP-seq read mapping']
-    if control_to_target == 'empty':
-        return
-
-    if not control_bam_details:
-        detail = ('The peaks file {} produced by ENCODE uniformly processing '
-            'ChIP-seq pipeline has no valid control alignments specified.'.format(
-                audit_link(path_to_text(peaks_file_id), peaks_file_id)
-            )
-        )
-        yield AuditFailure('missing control alignments', detail, level='ERROR')
-        return
-    control_details = generate_control_bam_details_string(control_bam_details)
-    if assembly:
-        prefix = ('Control alignment files ({}) '
-                  'mapped to {} assembly have in aggregate {} '
-                  'usable fragments. ').format(
-                      control_details,
-                      assembly,
-                      read_depth)
-    else:
-        prefix = ('Control alignment files ({}) '
-            'have in aggregate {} usable fragments. ').format(
-                control_details,
-                read_depth)
-    detail = ('{} The minimum ENCODE standard for a control of ChIP-seq assays '
-        'targeting {} {} is {} million usable fragments, '
-        'the recommended number of usable fragments is > {} million. '
-        '(See {} )')
-    if 'broad histone mark' in target_investigated_as:
-        detail = (detail.format(
-            prefix,
-            'broad histone mark',
-            control_to_target,
-            35,
-            45,
-            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-            )
-        )
-        if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
-                yield AuditFailure('control low read depth', detail, level='WARNING')
-        elif read_depth >= marks['broad']['low'] and read_depth < marks['broad']['minimal']:
-            yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-        elif read_depth < marks['broad']['low']:
-            yield AuditFailure('control extremely low read depth', detail, level='ERROR')
-    elif 'narrow histone mark' in target_investigated_as:
-        detail = (detail.format(
-            prefix,
-            'narrow histone mark',
-            control_to_target,
-            10,
-            20,
-            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-            )
-        )
-        if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
-            yield AuditFailure('control low read depth', detail, level='WARNING')
-        elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
-            yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-        elif read_depth < marks['narrow']['low']:
-            yield AuditFailure('control extremely low read depth', detail, level='ERROR')
-    else:
-        detail = (detail.format(
-            prefix,
-            control_to_target,
-            'and investigated as a transcription factor',
-            10,
-            20,
-            audit_link('ENCODE ChIP-seq data standards', '/data-standards/chip-seq/')
-            )
-        )
-        if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
-            yield AuditFailure('control low read depth', detail, level='WARNING')
-        elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
-            yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-        elif read_depth < marks['TF']['low']:
-            yield AuditFailure('control extremely low read depth', detail, level='ERROR')
 
 
 def audit_experiment_mixed_libraries(value, system, excluded_types):
@@ -1884,68 +1625,6 @@ def get_mapped_length(bam_file, files_structure):
     return None
 
 
-def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_structure):
-    #  get representative FASTQ file
-    if not derived_from_fastqs:
-        return False
-    control_fastq = False
-    for entry in derived_from_fastqs:
-        if entry.get('dataset') == experiment_bam.get('dataset') and \
-           'controlled_by' in entry and len(entry['controlled_by']) > 0:
-            # getting representative FASTQ
-            control_fastq = entry['controlled_by'][0]
-            break
-    # get representative FASTQ from control
-    if control_fastq is False:
-        return False
-    else:
-        if 'original_files' not in control_fastq['dataset']:
-            return False
-
-        control_bam = False
-        control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'),
-                                                       files_structure.get('excluded_types'))
-
-        for control_file in control_files_structure.get('alignments').values():
-            if 'assembly' in control_file and 'assembly' in experiment_bam and \
-               control_file['assembly'] == experiment_bam['assembly']:
-                #  we have BAM file, now we have to make sure it was created by pipeline
-                #  with similar pipeline_name
-
-                is_same_pipeline = False
-                if has_pipelines(control_file) is True:
-                    for pipeline in \
-                            control_file['analysis_step_version']['analysis_step']['pipelines']:
-                        if pipeline['title'] == pipeline_name:
-                            is_same_pipeline = True
-                            break
-
-                if is_same_pipeline is True and \
-                   'derived_from' in control_file and \
-                   len(control_file['derived_from']) > 0:
-                    derived_list = get_derived_from_files_set(
-                        [control_file],
-                        control_files_structure,
-                        'fastq',
-                        True)
-
-                    for entry in derived_list:
-                        if entry['accession'] == control_fastq['accession']:
-                            control_bam = control_file
-                            break
-        return control_bam
-
-
-def has_pipelines(bam_file):
-    if 'analysis_step_version' not in bam_file:
-        return False
-    if 'analysis_step' not in bam_file['analysis_step_version']:
-        return False
-    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
-        return False
-    return True
-
-
 def get_target(experiment):
     if 'target' in experiment:
         return experiment['target']
@@ -1962,47 +1641,6 @@ def get_organism_name(reps, excluded_types):
            rep['library']['biosample']['status'] not in excluded_types:
             if 'organism' in rep['library']['biosample']:
                 return rep['library']['biosample']['organism'].split('/')[2]
-    return False
-
-
-def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
-    for f in files_to_scan:
-        if 'file_format' in f and f['file_format'] == 'bam' and \
-           f['status'] not in ['replaced', 'deleted'] and \
-           'assembly' in f and f['assembly'] in assemblies and \
-           f['lab'] == '/labs/encode-processing-pipeline/' and \
-           'analysis_step_version' in f and \
-           'analysis_step' in f['analysis_step_version'] and \
-           'pipelines' in f['analysis_step_version']['analysis_step']:
-            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-            for p in pipelines:
-                if p['title'] in pipeline_titles:
-                    return p['title']
-    return False
-
-
-def get_pipeline_by_name(pipeline_objects, pipeline_title):
-    for pipe in pipeline_objects:
-        if pipe['title'] == pipeline_title:
-            return pipe
-    return None
-
-
-def scanFilesForPipeline(files_to_scan, pipeline_title_list):
-    for f in files_to_scan:
-        if 'analysis_step_version' not in f:
-            continue
-        else:
-            if 'analysis_step' not in f['analysis_step_version']:
-                continue
-            else:
-                if 'pipelines' not in f['analysis_step_version']['analysis_step']:
-                    continue
-                else:
-                    pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-                    for p in pipelines:
-                        if p['title'] in pipeline_title_list:
-                            return True
     return False
 
 
@@ -2109,21 +1747,6 @@ def get_contributing_files(files_list, excluded_types):
             if file_object['status'] not in excluded_types:
                 to_return[file_object['@id']] = file_object
     return to_return
-
-
-def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
-
-    if alignment_files:
-        for f in alignment_files:
-            if f.get('lab') in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
-                'analysis_step_version' in f and \
-                'analysis_step' in f['analysis_step_version'] and \
-                    'pipelines' in f['analysis_step_version']['analysis_step']:
-                pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-                for p in pipelines:
-                    if p['title'] in pipeline_titles:
-                        return p['title']
-    return False
 
 
 def get_derived_from_files_set(list_of_files, files_structure, file_format, object_flag):
@@ -2268,27 +1891,6 @@ def get_platforms_used_in_experiment(files_structure_to_check):
     return platforms
 
 
-def get_pipeline_titles(pipeline_objects):
-    to_return = set()
-    for pipeline in pipeline_objects:
-        to_return.add(pipeline.get('title'))
-    return list(to_return)
-
-
-def get_pipeline_objects(files):
-    added_pipelines = []
-    pipelines_to_return = []
-    for inspected_file in files:
-        if 'analysis_step_version' in inspected_file and \
-           'analysis_step' in inspected_file['analysis_step_version'] and \
-           'pipelines' in inspected_file['analysis_step_version']['analysis_step']:
-            for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
-                if p['title'] not in added_pipelines:
-                    added_pipelines.append(p['title'])
-                    pipelines_to_return.append(p)
-    return pipelines_to_return
-
-
 def get_biosamples(experiment):
     accessions_set = set()
     biosamples_list = []
@@ -2325,44 +1927,10 @@ function_dispatcher_with_files = {}
         'biosample_ontology',
         'award',
         'target',
-        'replicates',
-        'replicates.library',
-        'replicates.library.spikeins_used',
-        'replicates.library.biosample',
-        'replicates.library.biosample.biosample_ontology',
-        'replicates.library.biosample.applied_modifications',
-        'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
-        'replicates.library.biosample.donor',
-        'replicates.libraries',
-        'replicates.libraries.spikeins_used',
-        'replicates.libraries.biosample',
-        'replicates.libraries.biosample.applied_modifications',
-        'replicates.libraries.biosample.applied_modifications.modified_site_by_target_id',
-        'replicates.libraries.biosample.donor',
-        'replicates.antibody',
-        'replicates.antibody.targets',
-        'replicates.antibody.lot_reviews',
-        'possible_controls',
-        'possible_controls.biosample_ontology',
-        'possible_controls.original_files',
-        'possible_controls.original_files.platform',
-        'possible_controls.original_files.analysis_step_version',
-        'possible_controls.original_files.analysis_step_version.analysis_step',
-        'possible_controls.original_files.analysis_step_version.analysis_step.pipelines',
-        'possible_controls.target',
-        'possible_controls.replicates',
-        'possible_controls.replicates.antibody',
-        'possible_controls.replicates.library',
         'contributing_files',
         'original_files',
         'original_files.award',
-        'original_files.platform',
-        'original_files.replicate',
-        'original_files.analysis_step_version',
-        'original_files.analysis_step_version.analysis_step',
-        'original_files.analysis_step_version.analysis_step.pipelines',
-        'original_files.analysis_step_version.software_versions',
-        'original_files.analysis_step_version.software_versions.software'
+        'original_files.platform'
     ])
 def audit_experiment(value, system):
     excluded_files = ['revoked', 'archived']
