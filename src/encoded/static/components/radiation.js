@@ -156,14 +156,32 @@ for (let i = 0; i < ganttData.length; i++) {
       fillcolor: '#29A2CC'
     }
 }
-let date1 = new Date(ganttData[0].startDate);
-let diagnosisDate = new Date(date1.setMonth(date1.getMonth()-1));
-let date2 = new Date(ganttData[ganttData.length - 1].endDate);
-let deceasedDate = new Date(date2.setMonth(date2.getMonth()+1));
+
+let diagnosisDate;
+let date1;
+if (this.props.diagnosis_date != "Not available") {
+  diagnosisDate = new Date(this.props.diagnosis_date);
+  date1 = new Date(this.props.diagnosis_date);;
+} else {
+  date1 = new Date(ganttData[0].startDate);
+}
+let deceasedDate;
+let date2;
+if (this.props.death_date != null){
+  deceasedDate = new Date(this.props.death_date);
+  date2 = new Date(this.props.death_date);;
+} else {
+  date2 = new Date(ganttData[ganttData.length - 1].endDate);
+}
+//let minX =new Date(date1.setFullYear(date1.getFullYear()-1));
 let minX =new Date(date1.setMonth(date1.getMonth()-1));
+//let maxX =new Date(date2.setFullYear(date2.getFullYear()+1));
 let maxX =new Date(date2.setMonth(date2.getMonth()+1));
 
-let trace1 = {
+
+let trace1 ={};
+if (diagnosisDate != null) {
+  trace1 = {
   x: [diagnosisDate],
   y: [-1],
   xaxis: 'x2',
@@ -181,8 +199,10 @@ let trace1 = {
     size: 12 
   }
 };
-
-let trace2 = {
+}
+let trace2 = {};
+if (deceasedDate != null) {
+  trace2 = {
   x: [deceasedDate],
   y: [scaleYIndex],
   xaxis: 'x2',
@@ -200,13 +220,14 @@ let trace2 = {
     size: 12 
   }
 };
+}
 data.push(trace1);
 data.push(trace2);
 data = data.concat(hoverData);
 
 let layout = {
     
-  height: (scaleYIndex+ 2)*100, 
+  height: (scaleYIndex+ 2)*50, 
   margin: {
                 
     r: 20,
@@ -270,3 +291,4 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
+

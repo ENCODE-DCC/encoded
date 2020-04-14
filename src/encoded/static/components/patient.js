@@ -138,7 +138,7 @@ class Patient extends React.Component {
       <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
     );
     const radiationPanelBody = (
-      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
+      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" diagnosis_date={context.diagnosis_date} death_date={context.death_date}></Radiation>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -227,4 +227,5 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
 
