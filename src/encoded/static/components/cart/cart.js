@@ -71,7 +71,7 @@ class CartSearchResults extends React.Component {
 
     render() {
         if (this.state.elementsForDisplay && this.state.elementsForDisplay.length === 0) {
-            return <div className="nav result-table cart__empty-message">No visible patient on this page.</div>;
+            return <div className="nav result-table cart__empty-message">No visible patients on this page.</div>;
         }
         return <ResultTableList results={this.state.elementsForDisplay || []} cartControls={this.props.cartControls} />;
     }
