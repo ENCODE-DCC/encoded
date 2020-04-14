@@ -48,7 +48,7 @@ def test__tsv_mapping_value():
         ('Output type', ['files.output_type']),
         ('File assembly', ['files.assembly']),
         ('Experiment accession', ['accession']),
-        ('Assay', ['assay_term_name']),
+        ('Assay', ['assay_term_name', 'files.assay_term_name']),
         ('Biosample term id', ['biosample_ontology.term_id']),
         ('Biosample term name', ['biosample_ontology.term_name']),
         ('Biosample type', ['biosample_ontology.classification']),
@@ -398,7 +398,7 @@ def test_metadata_view(testapp, workbook):
     
 
 @pytest.mark.parametrize("test_input,expected", [
-    (files_prop_param_list(exp_file_1, param_list_2), True),
+    (files_prop_param_list(exp_file_1, param_list_2), False),
     (files_prop_param_list(exp_file_1, param_list_1), True),
     (files_prop_param_list(exp_file_2, param_list_1), False),
     (files_prop_param_list(exp_file_3, param_list_3), True),
