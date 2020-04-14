@@ -964,7 +964,7 @@ def _parse_args():
             # datanode
             args.instance_type = 'm5.xlarge'
             # Head node
-            args.eshead_instance_type = 'c5.9xlarge'
+            args.eshead_instance_type = 'm5.xlarge'
         else:
             # frontend
             args.instance_type = 'c5.9xlarge'
