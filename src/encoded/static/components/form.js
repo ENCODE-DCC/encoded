@@ -294,19 +294,17 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         if (!this.context.readonly) {
             if (subtypes.length > 1) {
                 button = (
-                    <DropdownButton title="Add" buttonClasses="rf-RepeatingFieldset__add">
-                        <DropdownMenu>
-                            {subtypes.map(subtype =>
-                                <a
-                                    href="#"
-                                    key={subtype}
-                                    data-subtype={subtype}
-                                    onClick={this.handleAdd}
-                                >
-                                    {schemas[subtype].title}
-                                </a>)}
-                        </DropdownMenu>
-                    </DropdownButton>
+                    <DropdownButton.Immediate label="Add" css="rf-RepeatingFieldset__add">
+                        {subtypes.map(subtype =>
+                            <a
+                                href="#"
+                                key={subtype}
+                                data-subtype={subtype}
+                                onClick={this.handleAdd}
+                            >
+                                {schemas[subtype].title}
+                            </a>)}
+                    </DropdownButton.Immediate>
                 );
             } else {
                 button = (

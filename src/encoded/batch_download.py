@@ -401,9 +401,10 @@ def metadata_tsv(context, request):
     ]
     qs.drop('limit')
 
-    # Determine if "visualizable=true" in query string to select only visualizable files.
-    visualizable_only = qs.is_param('visualizable', 'true')
-    qs.drop('visualizable')
+    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
+    visualizable_only = qs.is_param('option', 'visualizable')
+    raw_only = qs.is_param('option', 'raw')
+    qs.drop('option')
 
     qs.extend(
         default_params + field_params + at_id_params
@@ -419,12 +420,15 @@ def metadata_tsv(context, request):
                     make_cell(column, experiment_json, exp_data_row)
 
             f_attributes = ['files.title', 'files.file_type', 'files.file_format',
-                            'files.file_format_type', 'files.output_type']
+                            'files.file_format_type', 'files.output_type', 'file.assembly']
 
             for f in experiment_json['files']:
                 if not files_prop_param_list(f, param_list):
                     continue
                 if visualizable_only and not is_file_visualizable(f):
+                    continue
+                if raw_only and f.get('assembly'):
+                    # "raw" option only allows files w/o assembly.
                     continue
                 if restricted_files_present(f):
                     continue
@@ -477,6 +481,7 @@ def batch_download(context, request):
         ('field', 'files.file_format'),
         ('field', 'files.file_format_type'),
         ('field', 'files.status'),
+        ('field', 'files.assembly'),
     ]
     qs = QueryString(request)
     param_list = qs.group_values_by_key()
@@ -491,9 +496,10 @@ def batch_download(context, request):
     ]
     qs.drop('limit')
 
-    # Determine if "visualizable=true" in query string to select only visualizable files.
-    visualizable_only = qs.is_param('visualizable', 'true')
-    qs.drop('visualizable')
+    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
+    visualizable_only = qs.is_param('option', 'visualizable')
+    raw_only = qs.is_param('option', 'raw')
+    qs.drop('option')
 
     qs.extend(
         default_params + file_fields
@@ -559,6 +565,9 @@ def batch_download(context, request):
         if not files_prop_param_list(exp_file, param_list):
             continue
         elif visualizable_only and not is_file_visualizable(exp_file):
+            continue
+        elif raw_only and exp_file.get('assembly'):
+            # "raw" option only allows files w/o assembly.
             continue
         elif restricted_files_present(exp_file):
             continue

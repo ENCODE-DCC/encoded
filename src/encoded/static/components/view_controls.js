@@ -296,11 +296,12 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
 
 
 /**
- * Display the modal for batch download, and pass back clicks in the Download button
+ * Displays the modal to initiate downloading files. This modal gets displayed unconditionally in
+ * this component, so parent components must keep state on whether this modal is visible or not.
  */
-export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title}</button>} focusId="batch-download-submit">
-        <ModalHeader title="Using batch download" closeModal />
+export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler }) => (
+    <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
+        <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
         <ModalBody>
             <p>
                 Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
@@ -317,14 +318,49 @@ export const BatchDownloadModal = ({ handleDownloadClick, title, additionalConte
             <div>{additionalContent}</div>
         </ModalBody>
         <ModalFooter
-            closeModal={<button className="btn btn-default">Close</button>}
-            submitBtn={<button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
-            dontClose
+            closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
+            submitBtn={<button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>}
         />
     </Modal>
 );
 
 BatchDownloadModal.propTypes = {
+    /** Additional content in modal as component */
+    additionalContent: PropTypes.element,
+    /** True to disable Download button */
+    disabled: PropTypes.bool,
+    /** Called when the user clicks the Download button in the modal */
+    downloadClickHandler: PropTypes.func.isRequired,
+    /** Called when the user does something to close the modal */
+    closeModalHandler: PropTypes.func.isRequired,
+};
+
+BatchDownloadModal.defaultProps = {
+    additionalContent: null,
+    disabled: false,
+};
+
+
+/**
+ * Display the modal for batch download, and pass back clicks in the Download button
+ */
+export const BatchDownloadButton = ({ handleDownloadClick, title, additionalContent, disabled }) => {
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const openModal = () => { setIsModalOpen(true); };
+    const closeModal = () => { setIsModalOpen(false); };
+
+    return (
+        <React.Fragment>
+            <button className="btn btn-info btn-sm" onClick={openModal} disabled={disabled} data-test="batch-download">{title}</button>
+            {isModalOpen ?
+                <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} />
+            : null}
+        </React.Fragment>
+    );
+};
+
+BatchDownloadButton.propTypes = {
     /** Function to call when Download button gets clicked */
     handleDownloadClick: PropTypes.func.isRequired,
     /** Title to override usual actuator "Download" button title */
@@ -335,7 +371,7 @@ BatchDownloadModal.propTypes = {
     additionalContent: PropTypes.object,
 };
 
-BatchDownloadModal.defaultProps = {
+BatchDownloadButton.defaultProps = {
     title: 'Download',
     disabled: false,
     additionalContent: null,
@@ -377,7 +413,7 @@ export class BatchDownloadControls extends React.Component {
             return null;
         }
 
-        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
+        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} />;
     }
 }
 
