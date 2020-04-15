@@ -46,6 +46,7 @@ def test__tsv_mapping_value():
         ('File type', ['files.file_format']),
         ('File format type', ['files.file_format_type']),
         ('Output type', ['files.output_type']),
+        ('File assembly', ['files.assembly']),
         ('Experiment accession', ['accession']),
         ('Assay', ['assay_term_name']),
         ('Biosample term id', ['biosample_ontology.term_id']),
