@@ -929,7 +929,7 @@ const ElementCountArea = ({ count, viewableElementCount, typeName, typeNamePlura
         const countFormatted = count.toLocaleString ? count.toLocaleString() : count.toString();
         return (
             <div className="cart__element-count">
-                <span>{countFormatted}&nbsp;{count === 1 ? typeName : typeNamePlural} in cart</span>
+                <span>{countFormatted}&nbsp;{count === 1 ? typeName : typeNamePlural} in cohort</span>
                 {viewableElementCount >= 0 && viewableElementCount !== count ? <span> ({viewableElementCount} visible)</span> : null}
             </div>
         );
