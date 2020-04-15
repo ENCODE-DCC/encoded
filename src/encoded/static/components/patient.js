@@ -148,7 +148,7 @@ class Patient extends React.Component {
     return (
       <div className={globals.itemClass(context, 'view-item')}>
         <header className="row">
-          <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script>
+          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
           <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
           <div className="col-sm-12">

@@ -109,13 +109,14 @@ for (var i = 0; i < ganttData.length; i++) {
     
 let data = [];
 let hoverData = [];
-let testShape = [];
+let dumbbellData = [];
 for (let i = 0; i < ganttData.length; i++) {
     data[i] = {
         name: '',
         x: [ganttData[i].startDate, ganttData[i].endDate],
         y: [yLabels.indexOf(ganttData[i].id), yLabels.indexOf(ganttData[i].id)],
-        marker: {color: 'white'}
+        marker: {color: 'white',
+      }
     };
     let endDate = new Date(ganttData[i].endDate);
     endDate = new Date(endDate.setDate(endDate.getDate() + 1));
@@ -132,7 +133,9 @@ for (let i = 0; i < ganttData.length; i++) {
         y: [yLabels.indexOf(ganttData[i].id)],
         xaxis: 'x2',
         mode: 'markers',
-        marker: {color: 'white'},
+        marker: {color: '29A2CC',
+                 size: 1
+                },
         type: 'scatter',
         hoverlabel: {
           bgcolor: '#29A2CC',
@@ -142,7 +145,7 @@ for (let i = 0; i < ganttData.length; i++) {
         hovertemplate: "%{customdata}<extra></extra>"
 
     }
-  
+/** 
     testShape[i] = {
         x0: ganttData[i].startDate,
         x1: endDate,
@@ -154,6 +157,22 @@ for (let i = 0; i < ganttData.length; i++) {
       yref: 'y', 
       opacity: 1, 
       fillcolor: '#29A2CC'
+    }
+*/
+
+    dumbbellData[i] = {
+      x: [ganttData[i].startDate, endDate],
+      y: [yLabels.indexOf(ganttData[i].id), yLabels.indexOf(ganttData[i].id)],
+      mode: 'lines+markers',
+      hoverinfo:'skip',
+      marker: {
+        color: '#29A2CC',
+        size: 15
+      },
+      line: {
+        color: '#29A2CC',
+        width: 15
+      }
     }
 }
 
@@ -174,10 +193,9 @@ if (this.props.death_date != null){
   date2 = new Date(ganttData[ganttData.length - 1].endDate);
 }
 //let minX =new Date(date1.setFullYear(date1.getFullYear()-1));
-let minX =new Date(date1.setMonth(date1.getMonth()-1));
+let minX =new Date(date1.setMonth(date1.getMonth()-2));
 //let maxX =new Date(date2.setFullYear(date2.getFullYear()+1));
 let maxX =new Date(date2.setMonth(date2.getMonth()+1));
-
 
 let trace1 ={};
 if (diagnosisDate != null) {
@@ -196,7 +214,7 @@ if (diagnosisDate != null) {
   },
   marker: { 
     color: '#D31E1E',
-    size: 12 
+    size: 15
   }
 };
 }
@@ -217,17 +235,18 @@ if (deceasedDate != null) {
   },
   marker: { 
     color: '#D31E1E',
-    size: 12 
+    size: 15
   }
 };
 }
 data.push(trace1);
 data.push(trace2);
 data = data.concat(hoverData);
+data = data.concat(dumbbellData);
 
 let layout = {
     
-  height: (scaleYIndex+ 2)*50, 
+  height: (scaleYIndex+ 2)*65, 
   margin: {
                 
     r: 20,
@@ -269,7 +288,7 @@ let layout = {
     
   }, 
  
-  shapes: testShape, 
+  //shapes: testShape, 
   hovermode: 'closest', 
   showlegend: false,
 
