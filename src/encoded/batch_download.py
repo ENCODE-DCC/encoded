@@ -38,6 +38,7 @@ _tsv_mapping = OrderedDict([
     ('File type', ['files.file_format']),
     ('File format type', ['files.file_format_type']),
     ('Output type', ['files.output_type']),
+    ('File assembly', ['files.assembly']),
     ('Experiment accession', ['accession']),
     ('Assay', ['assay_term_name']),
     ('Biosample term id', ['biosample_ontology.term_id']),
@@ -420,7 +421,7 @@ def metadata_tsv(context, request):
                     make_cell(column, experiment_json, exp_data_row)
 
             f_attributes = ['files.title', 'files.file_type', 'files.file_format',
-                            'files.file_format_type', 'files.output_type', 'file.assembly']
+                            'files.file_format_type', 'files.output_type', 'files.assembly']
 
             for f in experiment_json['files']:
                 if not files_prop_param_list(f, param_list):
