@@ -54,7 +54,7 @@ const getWriteableCartObject = (cartAtId, fetch) => (
         }
         throw new Error(response);
     }).catch((err) => {
-        parseAndLogError('Retrieving writeable cart object', err);
+        parseAndLogError('Retrieving writeable cohort object', err);
     })
 );
 
