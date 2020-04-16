@@ -119,7 +119,7 @@ for (let i = 0; i < ganttData.length; i++) {
       }
     };
     let endDate = new Date(ganttData[i].endDate);
-    endDate = new Date(endDate.setDate(endDate.getDate() + 1));
+    //endDate = new Date(endDate.setDate(endDate.getDate() + 1));
     let midDate = new Date((new Date(ganttData[i].startDate).getTime() + endDate.getTime()) / 2);
   
     let dosage = "";
@@ -172,7 +172,14 @@ for (let i = 0; i < ganttData.length; i++) {
       line: {
         color: '#29A2CC',
         width: 15
-      }
+      },
+      type: 'scatter',
+      hoverlabel: {
+        bgcolor: '#29A2CC',
+        font: {color: 'white'}
+      },
+      //customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate +"<br>End date: "+ganttData[i].endDate],
+      hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate +"<br>End date: "+ganttData[i].endDate + "<extra></extra>"
     }
 }
 
