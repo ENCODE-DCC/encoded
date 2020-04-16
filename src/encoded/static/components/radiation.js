@@ -119,7 +119,6 @@ for (let i = 0; i < ganttData.length; i++) {
       }
     };
     let endDate = new Date(ganttData[i].endDate);
-    //endDate = new Date(endDate.setDate(endDate.getDate() + 1));
     let midDate = new Date((new Date(ganttData[i].startDate).getTime() + endDate.getTime()) / 2);
   
     let dosage = "";
@@ -145,20 +144,6 @@ for (let i = 0; i < ganttData.length; i++) {
         hovertemplate: "%{customdata}<extra></extra>"
 
     }
-/** 
-    testShape[i] = {
-        x0: ganttData[i].startDate,
-        x1: endDate,
-        y0: yLabels.indexOf(ganttData[i].id) - 0.4,
-        y1: yLabels.indexOf(ganttData[i].id) + 0.4,
-        line: {width: 0}, 
-      type: 'rect', 
-      xref: 'x2', 
-      yref: 'y', 
-      opacity: 1, 
-      fillcolor: '#29A2CC'
-    }
-*/
 
     dumbbellData[i] = {
       x: [ganttData[i].startDate, endDate],
@@ -178,7 +163,6 @@ for (let i = 0; i < ganttData.length; i++) {
         bgcolor: '#29A2CC',
         font: {color: 'white'}
       },
-      //customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate +"<br>End date: "+ganttData[i].endDate],
       hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate +"<br>End date: "+ganttData[i].endDate + "<extra></extra>"
     }
 }
@@ -199,9 +183,9 @@ if (this.props.death_date != null){
 } else {
   date2 = new Date(ganttData[ganttData.length - 1].endDate);
 }
-//let minX =new Date(date1.setFullYear(date1.getFullYear()-1));
+
 let minX =new Date(date1.setMonth(date1.getMonth()-2));
-//let maxX =new Date(date2.setFullYear(date2.getFullYear()+1));
+
 let maxX =new Date(date2.setMonth(date2.getMonth()+1));
 
 let trace1 ={};
@@ -295,7 +279,6 @@ let layout = {
     
   }, 
  
-  //shapes: testShape, 
   hovermode: 'closest', 
   showlegend: false,
 
