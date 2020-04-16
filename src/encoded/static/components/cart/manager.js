@@ -151,7 +151,7 @@ NameInput.defaultProps = {
 const IdentifierInput = ({ identifier, inputChangeHandler, nonValidMessage }) => (
     <div>
         <div className="form-group">
-            <label htmlFor="new-cart-identifier">New identifier for cart:&nbsp;</label>
+            <label htmlFor="new-cart-identifier">New identifier for cohort:&nbsp;</label>
             <div className="form-element-with-valid-message">
                 <input
                     id="new-cart-identifier"

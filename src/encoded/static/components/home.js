@@ -61,6 +61,7 @@ class EncodeSearch extends React.Component {
                 <div className="site-search__reference">
                     <a href="/help/project-overview/" role="button" className="site-search__reference-element">About KCP Project</a>
                     <a href="/help/getting-started/" role="button" className="site-search__reference-element">Getting Started</a>
+                    <a href="/matrix/?type=Patient&status=released" role="button" className="site-search__reference-element">Experiments</a>
                 </div>
                 <form action="/search/">
                     <fieldset>

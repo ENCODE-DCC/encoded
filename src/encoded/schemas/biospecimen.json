@@ -4,7 +4,7 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
+    "required": [ "award", "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -12,6 +12,7 @@
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/attribution"},
         {"$ref": "mixins.json#/uuid"}
     ],
     "properties": {
@@ -64,8 +65,7 @@
             "type": "string",
             "enum": [
                 "solid tissue",
-                "blood",
-                "ascites fluid"
+                "blood"
             ]
         },
         "processing_type": {
@@ -75,7 +75,7 @@
             "enum": [
                 "FF",
                 "FFPE",
-                "zenograft",
+                "xenograft",
                 "DMSO",
                 "blood",
                 "cell line"
@@ -124,8 +124,9 @@
                 "lymph node",
                 "pancreas",
                 "peritoneum",
-                "Retroperitoneal mass",
-                "thrombus"
+                "retroperitoneal mass",
+                "thrombus",
+                "hematopoietic system"
             ]
         },
         "primary_site": {
@@ -191,7 +192,12 @@
         },
         "anatomic_site": {
             "title": "Biospecimen Anatomic Site"
-
+        },
+        "surgery.surgery_procedure.procedure_type": {
+            "title": "Surgery Procedure"
+        },
+        "surgery.pathology_report.histology": {
+            "title": "Tumor Histologic Subtype"
         },
         "biolibrary.nucleic_acid_term_name": {
             "title": "Library Material"
@@ -201,6 +207,18 @@
         },
         "biolibrary.biofile.output_type": {
             "title": "Genomics File Output Type"
+        },
+        "surgery.pathology_report.t_stage": {
+            "title": "pT Stage"
+        },
+        "surgery.pathology_report.n_stage": {
+            "title": "pN Stage"
+        },
+        "surgery.pathology_report.m_stage": {
+            "title": "pM Stage"
+        },
+        "surgery.pathology_report.ajcc_tnm_stage": {
+            "title": "TNM Stage"
         }
 
     },
@@ -245,5 +263,8 @@
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
+
+
 
 
