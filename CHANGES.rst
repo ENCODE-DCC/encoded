@@ -1,6 +1,44 @@
 Changes
 =======
-v97.0 (released) snovault 1.0.43
+
+v99.0 (released) snovault 1.0.44
+--------------------------------------------------------------------
+1.	ENCD-5223-metadata-shift (#3258)
+2.	ENCD-5221-smaller-es-cluster-master (#3257)
+3.	ENCD-5171-download-fastq-files (#3252)
+4.	ENCD-5184-comp-model-software-version-unique (#3250)
+5.	ENCD-5152-add-app-json-to-attachments (#3247)
+6.	ENCD-5148-adjust-GM-for-homologous-recombination-and-CRISPR-intro (#3242)
+7.	ENCD-5111-cleanup-deploy-output (#3251)
+8.	ENCD-5194-add-grnas-file-output-type (#3234)
+9.	ENCD-5169-humandonor-external-ids (#3226)
+10.	ENCD-5195-add-gene-to-reference-page (#3244)
+11.	ENCD-5208-circle-ci-install-fix (#3249)
+12.	ENCD-5207-update-snovault-1.0.44 (#3246)
+13.	ENCD-4374-fix-restrict-file-edit-checkbx (#3237)
+14.	ENCD-5006-Fix-target-breadcrumb (#3241)
+15.	ENCD-5140-add-clear-classification-of-related-datasets (#3239)
+16.	ENCD-5127-add-biosample-ontology-fce-requirement (#3240)
+17.	ENCD-5160-cropped-read-length-bam (#3232)
+18.	ENCD-5198-update-libmagic-ubuntu-with-amis (#3238)
+19.	ENCD-5202-lower-indexing-RAM-footprint (#3243)
+20.	ENCD-5164 add production amis (#3229)
+21.	ENCD-5199-add-ref-epig-bdd-and-polish (#3233)
+22.	SNO-143-switch-update-readmes (#3221)
+23.	ENCD-5018 Change tagged target audits severity to Warning (#3230)
+24.	ENCD-5149-gene-and-target-dbxrefs-for-GeneCards (#3220)
+25.	ENCD-5128-calculate-crispr-assay-titles (#3224)
+26.	ENCD-5172-add-output-type-regulatory-elements (#3227)
+27.	ENCD-5161-add-fragmentation-duration-props-to-library (#3235)
+28.	ENCD-5173-add-to-reference-summary-page (#3228)
+29.	ENCD-5197 return paths from library calculated property
+30.	SNO-144-redirect-downloads-through-nginx-or-apache (#3182)
+31.	ENCD-5166 change organoid color (#3213)
+32.	ENCD-5189-additional-pytest-cleanup (#3223)
+33.	ENCD-5131-add-sprite-assay-ontology-update (#3215)
+34.	ENCD-5163 deemphasize hg19 screen link (#3211)
+
+v98.0 (released) snovault 1.0.43
 --------------------------------------------------------------------
 1.	ENCD-5186-Fix-FCC-audit-script-error-with-biosample-ontology (#3219)
 2.	ENCD-5175-fix-validation-error-crispr-insertion (#3214)
