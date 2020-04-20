@@ -1086,7 +1086,7 @@
             "items": {
                 "title": "Flowcell based fastq signature part",
                 "description": "Fastq file flowcell based unique signature to reference a file.",
-                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
+                "comment": "Fastq signatures are generated from the sequence identifiers in fastq files. Current convention is based on the Illumina's unique sequence identifier, which is colon separated, flowcell ID, lane number, read_end(1/2/3), and unique barcode when applicable. For more information, please see doi.org/10.1093/database/bay008 or the ENCODE publication object: https://www.encodeproject.org/publications/c954afd6-12c5-4944-b8f7-0fa30ddb8336/",
                 "type":  "string",
                 "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
             }
