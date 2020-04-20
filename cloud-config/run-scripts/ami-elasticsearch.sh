@@ -63,6 +63,13 @@ else
     cluster_name="cluster.name: $ENCD_CLUSTER_NAME"
     append_with_user "$cluster_name" ubuntu "$opts_src/$es_opts_filename"
 fi
+if [ "$ENCD_PG_OPEN" == 'true' ]; then
+    # Open postgres has open elasticsearch
+    network_host='network.host: 0.0.0.0'
+    append_with_user "$network_host" ubuntu "$opts_src/$es_opts_filename"
+    transport_tcp_port='transport.tcp.port: 9299'
+    append_with_user "$transport_tcp_port" ubuntu "$opts_src/$es_opts_filename"
+fi
 copy_with_permission "$opts_src/$es_opts_filename" "$opts_dest/elasticsearch.yml"
 
 # Install discovery for clusters, maybe only needed for clusters

@@ -16,7 +16,6 @@ Organization deployment configuration and build files
     $ bin/deploy --cluster-name test-wait --full-build --es-wait
     used by Frontend with postgres
     $ bin/deploy --cluster-name test-wait --full-build --es-ip a.b.c.d 
-
     ```
 
 # Build and save a cloud config yml
@@ -53,6 +52,21 @@ Organization deployment configuration and build files
 ## Build encoded AMIs
 ## Deploy demo
 ## Deploy cluster
+
+## From remote pg demo
+### Deplot a demo with open postgres port
+    ```
+    export branch_name='ENCD-5216-deploy-demo-pointing-at-pg'
+    bin/deploy -b $branch_name -n 5216-pg-open --pg-open --full-build
+    ```
+
+### Deploy a demo with open postgres port
+    ```
+    export branch_name='ENCD-5216-deploy-demo-pointing-at-pg'
+    export pg_ip='172.31.20.118'
+    # remote postgres ip will be used for --es-ip 'ignored-with-pg-ip'
+    bin/deploy -b $branch_name -n 5216-pg-remote --pg-ip $pg_ip --full-build
+    ```
 
 ## From remote es demo
 ### Deploy es cluster

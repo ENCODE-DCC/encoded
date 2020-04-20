@@ -10,6 +10,13 @@ fi
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
+
+# Check remote postgres uri
+PG_URI='postgresql:///encoded'
+if [ "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+    PG_URI="postgresql://$ENCD_PG_IP/encoded"
+fi
+
 # Install App
 cd "$ENCD_HOME"
 
@@ -30,7 +37,7 @@ if [ ! -f "$bin_build_path" ]; then
 fi
 
 # Run bin/buildout
-bin_build_cmd="$ENCD_HOME/bin/buildout -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT"
+bin_build_cmd="$ENCD_HOME/bin/buildout -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT buildout:pg-uri=$PG_URI buildout:fe-ip=$ENCD_FE_IP"
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $bin_build_cmd"
 sudo -H -u encoded LANG=en_US.UTF-8 $bin_build_cmd
 if [ $? -gt 0 ]; then
@@ -66,22 +73,24 @@ fi
 
 # Finished running post pg scripts
 sudo -H -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-sudo -H -u encoded "$ENCD_HOME/bin/create-mapping" "$ENCD_HOME/production.ini" --app-name app
-if [ $? -gt 0 ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: create-mapping return error status"
-    # Build has failed
-    touch "$encd_failed_flag"
-    exit 1
+if [ ! "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+    sudo -H -u encoded "$ENCD_HOME/bin/create-mapping" "$ENCD_HOME/production.ini" --app-name app
+    if [ $? -gt 0 ]; then
+        echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: create-mapping return error status"
+        # Build has failed
+        touch "$encd_failed_flag"
+        exit 1
+    fi
 fi
 
-if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ]; then
+if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ] && [ ! "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
     sudo -H -u encoded "$ENCD_HOME/bin/index-annotations" "$ENCD_HOME/production.ini" --app-name app
-fi
-if [ $? -gt 0 ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: index-annotations return error status"
-    # Build has failed
-    touch "$encd_failed_flag"
-    exit 1
+    if [ $? -gt 0 ]; then
+        echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: index-annotations return error status"
+        # Build has failed
+        touch "$encd_failed_flag"
+        exit 1
+    fi
 fi
 sudo -u root cp /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 

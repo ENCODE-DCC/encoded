@@ -292,6 +292,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'ES_IP': main_args.es_ip,
         'ES_PORT': main_args.es_port,
         'ES_OPT_FILENAME': 'notused',
+        'FE_IP': main_args.fe_ip,
         'FULL_BUILD': main_args.full_build,
         'GIT_BRANCH': main_args.branch,
         'GIT_REMOTE': git_remote,
@@ -300,6 +301,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
+        'PG_OPEN': 'true' if main_args.pg_open else 'false',
+        'PG_IP': main_args.pg_ip,
         'PY3_PATH': '/usr/bin/python3.6',
         'REDIS_PORT': main_args.redis_port,
         'REGION_INDEX': str(main_args.region_indexer),
@@ -349,10 +352,19 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'CLUSTER_NAME': main_args.cluster_name,
                 'REGION_INDEX': 'True',
             })
-        elif main_args.es_ip:
+        elif not main_args.es_ip == 'localhost' and not main_args.pg_ip:
             data_insert.update({
                 'BUILD_TYPE': 'encd-demo-no-es-build',
                 'CLUSTER_NAME': main_args.cluster_name,
+                'REGION_INDEX': 'False',
+            })
+        elif main_args.pg_ip:
+            # for now pg_ip and es_ip must be the same
+            main_args.es_ip = main_args.pg_ip
+            data_insert.update({
+                'BUILD_TYPE': 'encd-no-pg-build',
+                'CLUSTER_NAME': main_args.cluster_name,
+                'ES_IP': main_args.es_ip,
                 'REGION_INDEX': 'False',
             })
         else:
@@ -464,6 +476,7 @@ def _get_cloud_config_yaml(main_args):
     es_elect = main_args.es_elect
     es_wait = main_args.es_wait
     es_ip = main_args.es_ip
+    pg_ip = main_args.pg_ip
     postgres_version = main_args.postgres_version
     save_config_name = main_args.save_config_name
     use_prebuilt_config = main_args.use_prebuilt_config
@@ -522,9 +535,13 @@ def _get_cloud_config_yaml(main_args):
     build_type = 'demo'
     if es_elect or es_wait:
         build_type = 'es-nodes'
-    elif cluster_name and es_ip:
-        build_type = 'frontend-with-pg'
-    elif es_ip:
+    elif not es_ip == 'localhost':
+        if cluster_name:
+            build_type = 'frontend-with-pg'
+        else:
+            build_type = 'demo-no-es'
+    elif pg_ip:
+        # remote pg must have remote es
         build_type = 'demo-no-es'
     # elif cluster_name:
     #     build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
@@ -605,6 +622,9 @@ def main():
     instances_tag_data, is_tag = _get_instances_tag_data(main_args)
     if instances_tag_data is None:
         sys.exit(10)
+    if main_args.dry_run:
+        sys.exit(0)
+    # AWS - Below
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
@@ -676,7 +696,10 @@ def main():
                 )
             )
         else:
-            print('Deploying Demo:', instance_info['url'])
+            print('Deploying Demo({}): {}'.format(
+                instance_info['private_ip'],
+                instance_info['url']
+            ))
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
     elif 'cluster_master' in instances_info and main_args.es_wait:
@@ -697,9 +720,11 @@ def main():
                 )
             )
         else:
-            print('Deploying Head ES Node:', instance_info['name'])
+            print('Deploying Head ES Node({}): {}'.format(
+                instance_info['private_ip'],
+                instance_info['name']
+            ))
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
-            print(" --es-ip {}".format(instance_info['private_ip']))
         print('\nRun the following command to view es head deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         print('')
@@ -726,7 +751,7 @@ def main():
     elif 'frontend' in instances_info:
         instance_info = instances_info['frontend']
         if main_args.build_ami:
-            print('AMI Build: Frontend deploying:', instance_info['name'])
+            print('AMI Build: Deploying Frontend:', instance_info['name'])
             print('instance_id:', instance_info['instance_id'])
             print(
                 'After it builds, create the ami: '
@@ -737,7 +762,10 @@ def main():
                 )
             )
         else:
-            print('Deploying Frontend:', instance_info['url'])
+            print('Deploying Frontend({}): {}'.format(
+                instance_info['private_ip'],
+                instance_info['url'],
+            ))
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print('\n\nRun the following command to view the deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
@@ -794,6 +822,7 @@ def _parse_args():
     )
 
     # User Data Yamls
+    parser.add_argument('--dry-run', action='store_true', help="Exit before aws calls")
     parser.add_argument('--app-workers', default='6', help="Apache config app workers")
     parser.add_argument(
         '--conf-dir',
@@ -854,10 +883,13 @@ def _parse_args():
         type=hostname,
         help="Name of single node to add to already existing cluster"
     )
+    parser.add_argument('--fe-ip', default='localhost', help="Primary frontend ip address")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
 
     # Database
     parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
+    parser.add_argument('--pg-open', action='store_true', help="Allow all connections on postgres post.")
+    parser.add_argument('--pg-ip', default='', help="Skip pg install script, setup app to connect to remote ip.")
     parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')

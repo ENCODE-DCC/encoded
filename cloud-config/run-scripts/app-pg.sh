@@ -12,6 +12,10 @@ fi
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
+if [ "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+    echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Skipping install for no pg build"
+    exit 0
+fi
 standby_mode="$1"
 
 
@@ -156,6 +160,10 @@ sudo -u postgres pg_ctlcluster 11 main stop
 sudo -u postgres "$WALE_BIN/envdir" "$WALE_ENV" "$WALE_BIN/wal-e" backup-fetch "$PG_DATA" LATEST
 
 ## Restart
+if [ "$ENCD_PG_OPEN" == 'true' ]; then
+    append_with_user "listen_addresses='*'" 'postgres' "$PG_CONF_DEST/postgresql.conf"
+    append_with_user "host all all 0.0.0.0/0 trust" 'postgres' "$PG_CONF_DEST/pg_hba.conf"
+fi
 sudo -u postgres pg_ctlcluster 11 main start
 
 ## Wait for psql to come up
