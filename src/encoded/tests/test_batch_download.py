@@ -80,7 +80,7 @@ def test__tsv_mapping_value():
         ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
         ('Library size range', ['files.replicate.library.size_range']),
         ('Biological replicate(s)', ['files.biological_replicates']),
-        ('Technical replicate', ['files.replicate.technical_replicate_number']),
+        ('Technical replicate', ['files.technical_replicates']),
         ('Read length', ['files.read_length']),
         ('Mapped read length', ['files.mapped_read_length']),
         ('Run type', ['files.run_type']),
