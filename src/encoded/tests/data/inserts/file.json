@@ -3078,5 +3078,20 @@
         "output_type": "gRNAs",
         "file_size": 9876,
         "md5sum": "c7c62633407bb6cfe2cd14e7e021b4b1"
+    },
+    {
+        "_test": "eSTARR elements voom",
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/barbara-wold/",
+        "dataset": "ENCSR722STR",
+        "replicate": "df1f6993-10ef-12e9-a913-1684be663d3e",
+        "status": "in progress",
+        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/",
+        "accession": "ENCFF100ELE",
+        "assembly": "GRCh38",
+        "file_format": "tsv",
+        "output_type": "element quantifications",
+        "file_size": 640,
+        "md5sum": "d8d73744407bb6cfe2cd14e7e021b4b1"
     }
 ]

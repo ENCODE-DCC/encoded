@@ -3,7 +3,8 @@
 ### Minor changes since schema version 18
 * *output_type* list was updated to include the enum *regulatory elements*.
 * Added *cropped_read_length* property
-* Added "gRNAs" to *output_type* enum list.
+* Added *gRNAs* to *output_type* enum list.
+* Added *element quantifications* to *output_type* enum list.
 
 ### Schema version 18
 * Added dependency restrictions for files of *output_type* subreads, preventing specification of *assembly* and requiring that *platform* be one of the Pacific Biosciences platforms.
