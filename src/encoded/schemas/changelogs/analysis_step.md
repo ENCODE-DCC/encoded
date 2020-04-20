@@ -14,6 +14,7 @@
         ]
 * *gRNAs* was added to the enum list of *input_file_types* and *output_file_types*.
 * *element quantifications* was added to the enum list of *input_file_types* and *output_file_types*.
+* *elements reference* was added to the enum list of *input_file_types* and *output_file_types*.
 
 ### Schema version 8
 
