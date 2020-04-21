@@ -447,3 +447,21 @@ def target_12_recombinant(ctcf):
         'label': 'eGFP-CTCF'
     }
     return item
+
+
+@pytest.fixture
+def target_13_one_gene(target_8_one_gene, gene8335):
+    item = target_8_one_gene.copy()
+    item.update({
+        'schema_version': '13',
+        'genes': [gene8335['uuid']]
+    })
+    return item
+
+@pytest.fixture
+def target_13_no_genes(target_8_no_genes):
+    item = target_8_no_genes.copy()
+    item.update({
+        'schema_version': '13'
+    })
+    return item

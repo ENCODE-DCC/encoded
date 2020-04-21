@@ -153,3 +153,15 @@ def test_target_upgrade_remove_recombinant(
     assert new_target['schema_version'] == '13'
     assert 'recombinant protein' not in new_target['investigated_as']
     assert len(new_target['investigated_as']) != 0
+
+
+def test_target_upgrade_restrict_dbxref(upgrader, target_13_one_gene, target_13_no_genes):
+    target_with_genes = upgrader.upgrade('target', target_13_one_gene, current_version='13', target_version='14')
+    assert target_with_genes['schema_version'] == '14'
+    assert 'dbxref' not in target_with_genes
+    assert 'dbxrefs' not in target_with_genes
+
+    target_no_genes = upgrader.upgrade('target', target_13_no_genes, current_version='13', target_version='14')
+    assert target_no_genes['schema_version'] == '14'
+    assert 'dbxref' not in target_no_genes
+    assert 'dbxrefs' in target_no_genes
