@@ -1,6 +1,10 @@
 from rdflib import ConjunctiveGraph, exceptions, Namespace
 from rdflib import RDFS, RDF, BNode
 from rdflib.collection import Collection
+from .ntr_terms import (
+    ntr_assays,
+    ntr_biosamples
+)
 import json
 
 EPILOG = __doc__
@@ -261,7 +265,6 @@ slim_shims = {
         'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
     }
-
 }
 
 preferred_name = {
@@ -1054,6 +1057,7 @@ def main():
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
     
     terms.update(ntr_assays)
+    terms.update(ntr_biosamples)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
 
