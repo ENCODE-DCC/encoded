@@ -1,9 +1,9 @@
 import React from 'react';
-import { Panel, PanelBody } from '../libs/ui/panel';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
 import DataTable from './datatable';
-import _ from 'underscore';
 import { BrowserFeat } from './browserfeat';
 import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixInternalTags } from './objectutils';
@@ -104,6 +104,42 @@ const treeData = [{
 }];
 
 
+const headerDataOrder = [
+    'polyA plus RNA-seq',
+    'total RNA-seq',
+    'small RNA-seq',
+    'microRNA-seq',
+    'microRNA counts',
+    'RNA microarray',
+    'DNase-seq',
+    'ATAC-seq',
+    'WGBS',
+    'RRBS',
+    'MeDIP-seq',
+    'MRE-seq',
+    'Repli-chip',
+    'DNAme array',
+    'genotyping array',
+    'RAMPAGE',
+    'TF ChIP-seq',
+    'Histone ChIP-seq',
+];
+
+
+const rowDataOrder = [
+    'H9 Stem Cell',
+    'hepatocyte',
+    'splanchnic mesodermal cell',
+    'lateral mesodermal cell',
+    'neural crest cell',
+    'neural progenitor cell',
+    'ecto neural progenitor cell',
+    'smooth muscle cell',
+    'mesothelial cell',
+    'mesenchymal stem cell',
+];
+
+
 /**
  * Transforms context object into a format DataTable object can understand
  *
@@ -118,27 +154,6 @@ const convertToDataTableFormat = (context) => {
             tableCss: 'matrix',
         };
     }
-
-    const headerDataOrder = [
-        'polyA plus RNA-seq',
-        'total RNA-seq',
-        'small RNA-seq',
-        'microRNA-seq',
-        'microRNA counts',
-        'RNA microarray',
-        'DNase-seq',
-        'ATAC-seq',
-        'WGBS',
-        'RRBS',
-        'MeDIP-seq',
-        'MRE-seq',
-        'Repli-chip',
-        'DNAme array',
-        'genotyping array',
-        'RAMPAGE',
-        'TF ChIP-seq',
-        'Histone ChIP-seq',
-    ];
 
     const targetLabels = [];
 
@@ -186,20 +201,6 @@ const convertToDataTableFormat = (context) => {
         }
         return headerDatum;
     }, []);
-
-
-    const rowDataOrder = [
-        'H9 Stem Cell',
-        'hepatocyte',
-        'splanchnic mesodermal cell',
-        'lateral mesodermal cell',
-        'neural crest cell',
-        'neural progenitor cell',
-        'ecto neural progenitor cell',
-        'smooth muscle cell',
-        'mesothelial cell',
-        'mesenchymal stem cell',
-    ];
 
     const rowData = _.sortBy(
         context.matrix.y['biosample_ontology.classification'].buckets
