@@ -1,0 +1,19 @@
+%(ssh_keys)s
+%(apt_srcs)s
+%(apt_srcs_es)s
+%(apt_srcs_pg)s
+%(bootcmd)s
+%(bootcmd_node)s
+%(bootcmd_es)s
+%(bootcmd_pg)s
+%(packages_demo)s
+power_state:
+  mode: reboot
+output:
+  all: '| tee -a /var/log/cloud-init-output.log'
+%(runcmd_demo)s
+%(users)s
+write_files:
+%(vimrc)s
+%(env)s
+%(upgrades)s

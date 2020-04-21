@@ -73,17 +73,17 @@ Ex) How to use this script to build a new config files, like the Ubuntu 18/Pytho
     $ bin/deploy --use-prebuilt-config 20191112-pg11-u18-demo
 3. Update the prebuilt yaml by hand with necessary changes.
 4. Repeat 2. and 3. until the update is complete.
-5. Make a new template in encoded/cloud-config/config-build-files/
-    $ cp pg11-demo.yml u18-demo.yml
-6. Create a new set of files in encoded/cloud-config/config-build-files/cc-parts
+5. Make a new template in encoded/cloud-config/
+    $ cp demo-template.yml demo-without-pg.yml # for example
+6. Create a new set of files in encoded/cloud-config/template-parts
     to be used in u18-demo.yml template.  Examine older templates to see how.
 7. Diff the compiled yml with the manual yml.  Fix any differences.
 8. Save the compiled yml to prebuilt using today's date
     $ bin/deploy --save-config-name 20200129
 9. Remove the manualy prebuilt, we'll keep the compiled version
 10. Deploy the new prebuilt as in step two.
-11. Make templates in encoded/cloud-config/config-build-files/ for es nodes and frontend.
-    Try to reused the demo cc-parts is possible.  Make new ones for es or frontend if needed.
+11. Make templates in encoded/cloud-config/ for es nodes and frontend if needed.
+    Try to reused the demo template-parts is possible.  Make new ones for es or frontend if needed.
 
 
 """
@@ -198,7 +198,7 @@ def _get_user_data(config_yaml, data_insert, main_args):
             "WARNING: User is not authorized with ssh access to "
             "new instance because they have no ssh key"
         )
-    data_insert['LOCAL_SSH_KEY'] = ssh_pub_key
+    data_insert['SSH_KEY'] = ssh_pub_key
     # aws s3 authorized_keys folder
     auth_base = 's3://encoded-conf-prod/ssh-keys'
     auth_type = 'prod'
@@ -281,12 +281,13 @@ def _get_ec2_client(main_args, instances_tag_data):
 def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     master_user_data = None
     git_remote = 'origin' if not is_tag else 'tags'
+    cc_dir = '/home/ubuntu/encoded/cloud-config'
     data_insert = {
         'APP_WORKERS': 'notused',
         'BATCHUPGRADE_VARS': 'notused',
         'BUILD_TYPE': 'NONE',
         'COMMIT': instances_tag_data['commit'],
-        'CC_DIR': '/home/ubuntu/encoded/cloud-config/deploy-run-scripts',
+        'CC_DIR': cc_dir,
         'CLUSTER_NAME': 'NONE',
         'ES_IP': main_args.es_ip,
         'ES_PORT': main_args.es_port,
@@ -304,6 +305,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'REGION_INDEX': str(main_args.region_indexer),
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
+        'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
         'WALE_S3_PREFIX': main_args.wale_s3_prefix,
     }
     if main_args.es_wait or main_args.es_elect:
@@ -484,26 +486,26 @@ def _get_cloud_config_yaml(main_args):
     def _get_prebuild_config_template():
         read_config_path = "{}/{}/{}.yml".format(
             conf_dir,
-            'prebuilt-config-yamls',
+            'built-ymls',
             use_prebuilt_config
         )
         return _read_file_as_utf8(read_config_path)
 
     def _build_config_template(build_type):
-        template_path = "{}/{}/{}.yml".format(conf_dir, 'config-build-files', build_type)
+        template_path = "{}/{}-template.yml".format(conf_dir, build_type)
         built_config_template = _read_file_as_utf8(template_path)
         replace_vars = set(re.findall(r'\%\((.*)\)s', built_config_template))
-        # Replace cc parts vars in template.  Run vars are in cc-parts.
-        template_parts_dir = "{}/{}/{}".format(conf_dir, 'config-build-files', 'cc-parts')
-        cc_parts_insert = {}
+        # Replace template part vars in template.  Run vars are in template-parts.
+        template_parts_dir = "{}/{}".format(conf_dir, 'template-parts')
+        template_parts_insert = {}
         for replace_var_filename in replace_vars:
             replace_var_path = "{}/{}.yml".format(
                 template_parts_dir,
                 replace_var_filename,
             )
             replace_var_data = _read_file_as_utf8(replace_var_path).strip()
-            cc_parts_insert[replace_var_filename] = replace_var_data
-        return built_config_template % cc_parts_insert
+            template_parts_insert[replace_var_filename] = replace_var_data
+        return built_config_template % template_parts_insert
 
     # Incompatibile build arguments
     if postgres_version and postgres_version not in ['9.3', '11']:
@@ -517,13 +519,13 @@ def _get_cloud_config_yaml(main_args):
         return None, None, None
     # Determine type of build from arguments
     # - es-nodes builds will overwrite the postgres version
-    build_type = 'u18-demo'
+    build_type = 'demo'
     if es_elect or es_wait:
-        build_type = 'u18-es-nodes'
-    elif cluster_name:
-        build_type = 'u18-frontend'
+        build_type = 'es-nodes'
+    elif cluster_name and es_ip:
+        build_type = 'frontend-with-pg'
     elif es_ip:
-        build_type = 'u18-demo-no-es'
+        build_type = 'demo-no-es'
     # elif cluster_name:
     #     build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
     # else:
@@ -535,7 +537,7 @@ def _get_cloud_config_yaml(main_args):
         if prebuilt_config_template:
             return prebuilt_config_template, None, build_type
         return None, None, build_type
-    # Build config from template using cc-parts
+    # Build config from template using template-parts
     config_template = _build_config_template(build_type)
     if diff_configs:
         # Read a prebuilt config file from local dir and use for diff
@@ -551,7 +553,7 @@ def _get_cloud_config_yaml(main_args):
         config_name = "{}-{}".format(save_config_name, build_type)
         write_file_path = "{}/{}/{}.yml".format(
             conf_dir,
-            'prebuilt-config-yamls',
+            'built-ymls',
             config_name,
         )
         return config_template, write_file_path, build_type
@@ -935,13 +937,18 @@ def _parse_args():
     }
     if not args.image_id:
         # Select ami by build type.  
-        if args.build_ami or args.full_build:
+        if args.build_ami:
             # Building new amis or making full builds from scratch
             # should start from base ubutnu image
             args.image_id = ami_map['default']
             args.eshead_image_id = ami_map['default']
             # We only need one es node to make an ami
             args.cluster_size = 1
+        elif args.full_build:
+            # Full builds from scratch
+            # should start from base ubutnu image
+            args.image_id = ami_map['default']
+            args.eshead_image_id = ami_map['default']
         elif args.cluster_name:
             # Cluster builds have three prebuilt priviate amis
             if args.es_wait:

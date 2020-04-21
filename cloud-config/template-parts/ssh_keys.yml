@@ -1,0 +1,3 @@
+#cloud-config
+ssh_authorized_keys:
+  - %(SSH_KEY)s
