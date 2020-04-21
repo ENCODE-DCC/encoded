@@ -633,3 +633,13 @@ def file_17_18(value, system):
     if output_type == "subreads" and 'assembly' in value:
         value.pop('assembly', None)
     return
+
+
+@upgrade_step('file', '18', '19')
+def file_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    output_type = value.get('output_type', None)
+
+    if output_type == "representative dnase hypersensitivity sites":
+        value['output_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return

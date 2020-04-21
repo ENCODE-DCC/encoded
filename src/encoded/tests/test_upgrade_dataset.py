@@ -388,3 +388,11 @@ def test_upgrade_reference_17_to_18(upgrader, dataset_reference_1, dataset_refer
     assert value['schema_version'] == '18'
     assert 'dbxrefs' not in value
     assert 'IHEC:IHECRE00004703' in value['notes']
+
+
+def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
+    value = upgrader.upgrade(
+        'annotation', annotation_27, current_version='27', target_version='28'
+    )
+    assert value['schema_version'] == '28'
+    assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'

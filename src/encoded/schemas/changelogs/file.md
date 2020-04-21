@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 19
+* Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *output_type*.
+
 ### Minor changes since schema version 18
 * *output_type* list was updated to include the enum *regulatory elements*.
 * Added *cropped_read_length* property

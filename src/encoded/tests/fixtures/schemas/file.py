@@ -1193,3 +1193,21 @@ def external_accession(fastq_pair_1):
     item = fastq_pair_1.copy()
     item['external_accession'] = 'EXTERNAL'
     return item
+
+
+@pytest.fixture
+def file_18(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bed3+',
+        'md5sum': 'eeb9325f54a0ec4991c4a3df0ed35f20',
+        'output_type': 'representative dnase hypersensitivity sites',
+        'assembly': 'hg19',
+        'file_size': 8888,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '18'
+    }
+    return item

@@ -117,3 +117,13 @@ def annotation_dataset(testapp, lab, award):
         'annotation_type': 'imputation'
     }
     return testapp.post_json('/annotation', item).json['@graph'][0]
+
+
+@pytest.fixture
+def annotation_27(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '27',
+        'annotation_type': 'representative DNase hypersensitivity sites',
+    }
