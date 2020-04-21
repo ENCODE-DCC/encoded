@@ -401,9 +401,9 @@ def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
     assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
 
 
-def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
+def test_upgrade_annotation_27_to_28(upgrader, annotation_28):
     value = upgrader.upgrade(
-        'annotation', annotation_27, current_version='27', target_version='28'
+        'annotation', annotation_27, current_version='28', target_version='29'
     )
     assert 'relevant_timepoint' not in value
     assert 'relevant_timepoint_units' not in value
