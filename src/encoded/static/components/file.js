@@ -437,8 +437,8 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
                                 {context.genome_annotation ?
-                                    <div data-test="genome_annotation">
-                                        <dt>Genome Annotation</dt>
+                                    <div data-test="genomeannotation">
+                                        <dt>Genome annotation</dt>
                                         <dd>{context.genome_annotation}</dd>
                                     </div>
                                 : null}
