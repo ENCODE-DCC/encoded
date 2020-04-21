@@ -324,13 +324,6 @@ class FileComponent extends React.Component {
                                     <dd>{context.output_type}</dd>
                                 </div>
 
-                                {context.index_of ?
-                                <div data-test="outputtype">
-                                    <dt>Index of</dt>
-                                    <dd>{context.index_of.map(file => file.replace(/\/files\/|\//g, '')).join(', ')}</dd>
-                                </div>
-                                : null }
-
                                 {context.restriction_enzymes ?
                                     <div data-test="restrictionEnzymes">
                                         <dt>Restriction enzymes</dt>
@@ -583,6 +576,13 @@ class SequenceFileInfo extends React.Component {
                                     {file.paired_end}
                                     {file.paired_with ? <span> paired with <a href={file.paired_with} title={`View page for file ${pairedWithAccession}`}>{pairedWithAccession}</a></span> : null}
                                 </dd>
+                            </div>
+                        : null}
+
+                        {file.index_of ?
+                            <div data-test="outputtype">
+                                <dt>Index of</dt>
+                                <dd>{file.index_of.map(f => f.replace(/\/files\/|\//g, '')).join(', ')}</dd>
                             </div>
                         : null}
 
