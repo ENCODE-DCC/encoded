@@ -373,8 +373,14 @@ class BiosampleComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title="Experiments using this biosample"
+                    title="Functional genomics experiments using this biosample"
                     url={`/search/?type=Experiment&replicates.library.biosample.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title="Functional characterization experiments using this biosample"
+                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
 

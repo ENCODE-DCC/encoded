@@ -140,8 +140,14 @@ class Gene extends React.Component {
                 </div>
 
                 <RelatedItems
-                    title={`Experiments targeting gene ${context.symbol}`}
+                    title={`Functional genomics experiments targeting gene ${context.symbol}`}
                     url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title={`Functional characterization experiments targeting gene ${context.symbol}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&target.genes.uuid=$context.uuid}`}
                     Component={ExperimentTable}
                 />
             </div>
