@@ -98,6 +98,18 @@ class Treatment(Item):
 
 
 @collection(
+    name='analysis_step',
+    properties={
+        'title': 'Analysis Steps',
+        'description': 'Listing of Analysis Steps',
+    })
+class AnalysisStep(Item):
+    item_type = 'analysis_step'
+    schema = load_schema('encoded:schemas/analysis_step.json')
+    embedded = []
+
+
+@collection(
     name='documents',
     properties={
         'title': 'Documents',

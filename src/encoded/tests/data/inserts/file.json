@@ -8,7 +8,7 @@
         "file_format": "bigBed",
         "file_format_type": "bedMethyl",
         "file_format_specifications": [
-          "encode:bedMethyl.as"
+            "encode:bedMethyl.as"
         ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11515393507f4ebfa66d78d",
@@ -63,7 +63,7 @@
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "9558830f-154f-449f-814b-fd3435417edf"
+            "9558830f-154f-449f-814b-fd3435417edf"
         ],
         "file_format": "bigWig",
         "lab": "j-michael-cherry",
@@ -187,7 +187,7 @@
         "_test": "bad md5 sum",
         "accession": "ENCFF001MXB",
         "aliases": [
-          "encode:badmd5"
+            "encode:badmd5"
         ],
         "assembly": "mm9",
         "award": "U41HG006992",
@@ -219,8 +219,8 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "derived_from": [
-          "ENCFF001MWZ",
-          "ENCFF001MXA"
+            "ENCFF001MWZ",
+            "ENCFF001MXA"
         ],
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSig.bigWig",
         "uuid": "1050b698-f505-4ce5-96e5-6909e3a2acc7"
@@ -256,7 +256,7 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
         "derived_from": [
-          "ENCFF001MXA"
+            "ENCFF001MXA"
         ],
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSigIII.bigWig",
@@ -285,7 +285,7 @@
         "status": "released",
         "read_length": 36,
         "controlled_by": [
-          "ENCFF001MYM"
+            "ENCFF001MYM"
         ],
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
@@ -578,7 +578,7 @@
         "output_type": "index reads",
         "read_length": 58,
         "index_of": [
-          "aab79812-71d8-41d1-bd72-1bf5dbcae381"
+            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
         ],
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "in progress",
@@ -649,18 +649,18 @@
         "genome_annotation": "V19",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "derived_from": [
-          "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
-          "aab79812-71d8-41d1-bd72-1bf5dbcae381"
+            "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
+            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
         ],
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "cdf6c42afc135f1f95971e415b8d5fdd",
         "output_type": "alignments",
         "status": "released",
-        "analysis_step": "alignment-test-step-v-1",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bam",
-        "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66"
+        "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66",
+        "analysis_step": "6d4eb13a-144d-43b0-ad80-e627aa07d09c"
     },
     {
         "_project": "encode3",
@@ -727,18 +727,18 @@
         "genome_annotation": "V19",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "derived_from": [
-          "34b653f7-6777-49d9-8e06-d76a96a4d10b",
-          "aab79812-71d8-41d1-bd72-1bf5dbcae381"
+            "34b653f7-6777-49d9-8e06-d76a96a4d10b",
+            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
         ],
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "ecff397bffc54f01319eb41c6194379b",
         "output_type": "alignments",
         "status": "released",
-        "analysis_step": "alignment-test-step-v-1",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
-        "uuid": "895fef10-52ed-11e4-916c-0800200c9a66"
+        "uuid": "895fef10-52ed-11e4-916c-0800200c9a66",
+        "analysis_step": "6d4eb13a-144d-43b0-ad80-e627aa07d09c"
     },
     {
         "_project": "encode3",
@@ -748,8 +748,8 @@
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "derived_from": [
-          "80c23c10-52ec-11e4-916c-0800200c9a66",
-          "87732741-4173-481f-a1a8-03b8fa8829d2"
+            "80c23c10-52ec-11e4-916c-0800200c9a66",
+            "87732741-4173-481f-a1a8-03b8fa8829d2"
         ],
         "file_format": "bigWig",
         "assembly": "GRCh38",
@@ -758,10 +758,10 @@
         "md5sum": "0fa8f5fdd8eebe55eebf1875e5ac5a3c",
         "output_type": "signal of all reads",
         "status": "released",
-        "analysis_step": "signal-test-step-v-1",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bigWig",
-        "uuid": "a182ace0-52ed-11e4-916c-0800200c9a66"
+        "uuid": "a182ace0-52ed-11e4-916c-0800200c9a66",
+        "analysis_step": "097b9849-feea-41a7-96cc-040e35ec2eb3"
     },
     {
         "_project": "encode3",
@@ -771,7 +771,7 @@
         "file_size": 20,
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "derived_from": [
-          "895fef10-52ed-11e4-916c-0800200c9a66"
+            "895fef10-52ed-11e4-916c-0800200c9a66"
         ],
         "file_format": "bigWig",
         "lab": "j-michael-cherry",
@@ -780,10 +780,10 @@
         "md5sum": "3f68ceaa13a380990ca16d8dcaeffd0b",
         "output_type": "signal of all reads",
         "status": "released",
-        "analysis_step": "signal-test-step-v-1",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bigWig",
-        "uuid": "c7794da0-52ed-11e4-916c-0800200c9a66"
+        "uuid": "c7794da0-52ed-11e4-916c-0800200c9a66",
+        "analysis_step": "097b9849-feea-41a7-96cc-040e35ec2eb3"
     },
     {
         "_project": "encode3",
@@ -1020,16 +1020,12 @@
         "file_format": "fasta",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "file_size": 8856340790,
         "lab": "j-michael-cherry",
         "output_type": "reads",
         "read_length": 50,
-        "aliases": [
-          
-        ]
+        "aliases": []
     },
     {
         "status": "released",
@@ -1041,20 +1037,18 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "alternate_accessions": [
-          "ENCFF020HBG",
-          "ENCFF021HBG"
+            "ENCFF020HBG",
+            "ENCFF021HBG"
         ],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "in progress",
@@ -1081,19 +1075,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "replaced",
@@ -1105,19 +1095,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "released",
@@ -1129,19 +1115,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "released",
@@ -1153,19 +1135,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "released",
@@ -1177,19 +1155,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "released",
@@ -1201,19 +1175,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "released",
@@ -1225,19 +1195,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "released",
@@ -1249,19 +1215,15 @@
         "file_format": "tar",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 5836340790,
         "lab": "j-michael-cherry",
         "output_type": "female genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "status": "in progress",
@@ -1277,10 +1239,10 @@
         "file_size": 6252517704,
         "lab": "j-michael-cherry",
         "output_type": "male genome index",
-        "analysis_step": "prep-bismark-step-v-1",
         "derived_from": [
-          "ENCFF019HGN"
-        ]
+            "ENCFF019HGN"
+        ],
+        "analysis_step": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "paired_end": "1",
@@ -1289,7 +1251,7 @@
         "dataset": "ENCSR765JPC",
         "date_created": "2013-03-23T16:46:18.670068+00:00",
         "derived_from": [
-          "SRR1270627"
+            "SRR1270627"
         ],
         "file_size": 15887694972,
         "submitted_file_name": "gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_1_7bp_Index_6_SL65973.fastq.gz",
@@ -1302,11 +1264,11 @@
         "restricted": true,
         "output_type": "reads",
         "read_name_details": {
-          "read_number_location": 2,
-          "flowcell_id_location": 3,
-          "lane_id_location": 4,
-          "barcode_location": 1
-          },
+            "read_number_location": 2,
+            "flowcell_id_location": 3,
+            "lane_id_location": 4,
+            "barcode_location": 1
+        },
         "read_length": 50,
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
         "status": "in progress",
@@ -1317,19 +1279,13 @@
         "run_type": "paired-ended",
         "accession": "ENCFF504RKH",
         "dataset": "ENCSR765JPC",
-        "alternate_accessions": [
-          
-        ],
+        "alternate_accessions": [],
         "file_size": 16204266570,
-        "aliases": [
-          
-        ],
+        "aliases": [],
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s2/7bp_Index_6/HAA2RADXX_s2_1_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "e394868c-5e63-48c6-bfda-8cbebe62e36d",
         "file_format": "fastq",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "award": "/awards/U54HG006998/",
@@ -1347,19 +1303,13 @@
         "accession": "ENCFF958GWJ",
         "dataset": "ENCSR765JPC",
         "paired_with": "ENCFF504RKH",
-        "alternate_accessions": [
-          
-        ],
+        "alternate_accessions": [],
         "file_size": 15409926897,
-        "aliases": [
-          
-        ],
+        "aliases": [],
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s2/7bp_Index_6/HAA2RADXX_s2_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "78a74a6e-8e89-4d51-aac1-73d7e6cf234d",
         "file_format": "fastq",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "status": "in progress",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1375,21 +1325,15 @@
         "accession": "ENCFF360FSI",
         "dataset": "ENCSR765JPC",
         "paired_with": "/files/ENCFF431TKZ/",
-        "alternate_accessions": [
-          
-        ],
+        "alternate_accessions": [],
         "file_size": 15031538605,
-        "aliases": [
-          
-        ],
+        "aliases": [],
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "7acdc827-3806-448e-b0d4-2d463a42179f",
         "file_format": "fastq",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "run_type": "paired-ended",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
@@ -1410,28 +1354,22 @@
         "file_format": "bam",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR765JPC",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 64358869186,
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
         "derived_from": [
-          "ENCFF431TKZ",
-          "ENCFF504RKH",
-          "ENCFF958GWJ",
-          "ENCFF360FSI",
-          "ENCFF019HBG",
-          "ENCFF022HBG"
+            "ENCFF431TKZ",
+            "ENCFF504RKH",
+            "ENCFF958GWJ",
+            "ENCFF360FSI",
+            "ENCFF019HBG",
+            "ENCFF022HBG"
         ],
-        "aliases": [
-          
-        ],
-        "analysis_step": "mott-trim-align-bismark-step-v-1"
+        "aliases": [],
+        "analysis_step": "9641117d-b5b8-469a-a335-a1769606a63d"
     },
     {
         "status": "in progress",
@@ -1443,33 +1381,27 @@
         "file_format": "bam",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR765JPC",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 64358869186,
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
         "derived_from": [
-          "ENCFF431TKZ",
-          "ENCFF504RKH",
-          "ENCFF958GWJ",
-          "ENCFF360FSI",
-          "ENCFF021HBG",
-          "ENCFF022HBG",
-          "ENCFF023HBG",
-          "ENCFF024HBG",
-          "ENCFF025HBG",
-          "ENCFF026HBG",
-          "ENCFF027HBG"
+            "ENCFF431TKZ",
+            "ENCFF504RKH",
+            "ENCFF958GWJ",
+            "ENCFF360FSI",
+            "ENCFF021HBG",
+            "ENCFF022HBG",
+            "ENCFF023HBG",
+            "ENCFF024HBG",
+            "ENCFF025HBG",
+            "ENCFF026HBG",
+            "ENCFF027HBG"
         ],
-        "aliases": [
-          
-        ],
-        "analysis_step": "mott-trim-align-bismark-step-v-1"
+        "aliases": [],
+        "analysis_step": "9641117d-b5b8-469a-a335-a1769606a63d"
     },
     {
         "status": "in progress",
@@ -1483,22 +1415,16 @@
         "assembly": "GRCh38",
         "genome_annotation": "V19",
         "dataset": "/experiments/ENCSR765JPC/",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "file_size": 370148294,
         "output_type": "methylation state at CpG",
         "lab": "/labs/richard-myers/",
         "derived_from": [
-          "ENCFF434GXF"
+            "ENCFF434GXF"
         ],
-        "aliases": [
-          
-        ],
-        "analysis_step": "extract-bismark-step-v-1"
+        "aliases": [],
+        "analysis_step": "d3b18d6a-0a3f-4a72-ab3a-95a902248685"
     },
     {
         "status": "in progress",
@@ -1510,24 +1436,18 @@
         "file_format": "tsv",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR765JPC",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "assembly": "hg19",
         "genome_annotation": "V19",
-        "alternate_accessions": [
-          
-        ],
+        "alternate_accessions": [],
         "file_size": 1544154147,
         "lab": "/labs/richard-myers/",
         "output_type": "methylation state at CHH",
         "derived_from": [
-          "ENCFF434GXF"
+            "ENCFF434GXF"
         ],
-        "aliases": [
-          
-        ],
-        "analysis_step": "extract-bismark-step-v-1"
+        "aliases": [],
+        "analysis_step": "d3b18d6a-0a3f-4a72-ab3a-95a902248685"
     },
     {
         "status": "in progress",
@@ -1542,21 +1462,15 @@
         "file_format": "tsv",
         "award": "/awards/U54HG006998/",
         "dataset": "ENCSR765JPC",
-        "flowcell_details": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "flowcell_details": [],
+        "alternate_accessions": [],
         "lab": "/labs/richard-myers/",
         "output_type": "methylation state at CHG",
-        "aliases": [
-          
-        ],
+        "aliases": [],
         "derived_from": [
-          "ENCFF434GXF"
+            "ENCFF434GXF"
         ],
-        "analysis_step": "extract-bismark-step-v-1"
+        "analysis_step": "d3b18d6a-0a3f-4a72-ab3a-95a902248685"
     },
     {
         "accession": "ENCFF000VWO",
@@ -1609,7 +1523,7 @@
         "award": "ENCODE2",
         "dataset": "ENCSR000DZQ",
         "derived_from": [
-          "ENCFF000VUQ"
+            "ENCFF000VUQ"
         ],
         "file_format": "bed",
         "file_format_type": "narrowPeak",
@@ -1620,17 +1534,17 @@
         "preferred_default": true,
         "status": "released",
         "assembly": "hg19",
-        "analysis_step": "encode-2-step-v-1",
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
-        "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"
+        "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572",
+        "analysis_step": "d8b871df-a73b-4338-a19f-c3e3c6f7cd88"
     },
     {
         "accession": "ENCFF003COS",
         "award": "ENCODE2",
         "dataset": "ENCSR000DZQ",
         "derived_from": [
-          "ENCFF000VUQ"
+            "ENCFF000VUQ"
         ],
         "file_format": "bigBed",
         "file_format_type": "narrowPeak",
@@ -1641,37 +1555,27 @@
         "preferred_default": true,
         "status": "released",
         "assembly": "hg19",
-        "analysis_step": "encode-2-step-v-1",
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
-        "uuid": "af5c17df-e5f0-44f9-997a-f9caef22be08"
+        "uuid": "af5c17df-e5f0-44f9-997a-f9caef22be08",
+        "analysis_step": "d8b871df-a73b-4338-a19f-c3e3c6f7cd88"
     },
     {
         "genome_annotation": "V19",
-        "derived_from": [
-          
-        ],
+        "derived_from": [],
         "award": "/awards/U54HG007004/",
-        "aliases": [
-          
-        ],
+        "aliases": [],
         "lab": "/labs/j-michael-cherry/",
         "assembly": "hg19",
         "md5sum": "b6bda8755cea56d4741fc027442d370a",
         "status": "released",
         "file_size": 9528125,
         "date_created": "2014-12-21T03:33:43.516795+00:00",
-        "flowcell_details": [
-          
-        ],
+        "flowcell_details": [],
         "output_type": "gene quantifications",
         "uuid": "238dc341-150b-44db-acaf-a959307eb7af",
-        "alternate_accessions": [
-          
-        ],
-        "dbxrefs": [
-          
-        ],
+        "alternate_accessions": [],
+        "dbxrefs": [],
         "accession": "ENCFF946MFS",
         "schema_version": "4",
         "submitted_file_name": "/lrna/hg19/ENCSR000AEV/rep2_1/ENCFF001ROX-ENCFF001ROW_star_anno_rsem.genes.results",
@@ -1684,12 +1588,8 @@
         "accession": "ENCFF413RGP",
         "status": "released",
         "genome_annotation": "V19",
-        "flowcell_details": [
-          
-        ],
-        "derived_from": [
-          
-        ],
+        "flowcell_details": [],
+        "derived_from": [],
         "lab": "/labs/j-michael-cherry/",
         "file_size": 9486940,
         "file_format": "tsv",
@@ -1700,17 +1600,11 @@
         "schema_version": "4",
         "output_type": "gene quantifications",
         "md5sum": "eb82583476e2604a42d5599a70608f13",
-        "alternate_accessions": [
-          
-        ],
+        "alternate_accessions": [],
         "dataset": "ENCSR000AEM",
         "uuid": "510ee3db-460a-4d56-80bd-fac3758ba688",
-        "aliases": [
-          
-        ],
-        "dbxrefs": [
-          
-        ]
+        "aliases": [],
+        "dbxrefs": []
     },
     {
         "_test": "raw file for matched set 1",
@@ -1763,7 +1657,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF001EPI",
         "aliases": [
-          "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0"
+            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0"
         ],
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
@@ -1802,7 +1696,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF003EPI",
         "aliases": [
-          "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
+            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
         ],
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
@@ -1841,7 +1735,7 @@
         "content_md5sum": "91ce74b6e11c15393507f4ebfa66d78c",
         "accession": "ENCFF005EPI",
         "aliases": [
-          "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
+            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
         ],
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
@@ -1864,7 +1758,7 @@
         "content_md5sum": "91be74b651151a393507f5ebfa66d78c",
         "accession": "ENCFF006EPI",
         "aliases": [
-          "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
+            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
         ],
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
@@ -1887,7 +1781,7 @@
         "content_md5sum": "91be74b6e115a5393507f4ebfa66da7a",
         "accession": "ENCFF007EPI",
         "aliases": [
-          "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
+            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
         ],
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
@@ -2070,7 +1964,7 @@
         "content_md5sum": "92be74b6e11215393507f4ebfa22d77a",
         "accession": "ENCFF004CON",
         "aliases": [
-          "robert-waterston:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
+            "robert-waterston:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
         ],
         "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
@@ -2181,9 +2075,7 @@
         "output_type": "reporter code counts"
     },
     {
-        "dbxrefs": [
-          
-        ],
+        "dbxrefs": [],
         "platform": "/platforms/OBI:0000696/",
         "file_format": "csqual",
         "file_size": 4706779893,
@@ -2193,9 +2085,7 @@
         "accession": "ENCFF000LBC",
         "md5sum": "233fb8f21fc7c975ab742ca38caeaad5",
         "submitted_by": "/users/0d48e8c4-5954-4bf5-8c75-1e386eb27e31/",
-        "alternate_accessions": [
-          
-        ],
+        "alternate_accessions": [],
         "output_type": "reads",
         "read_length": 50,
         "award": "/awards/U54HG006996/",
@@ -2209,12 +2099,8 @@
         "uuid": "42ade053-d7b6-4fe1-b58e-9504b9a2a8d5",
         "file_format": "csqual",
         "status": "released",
-        "fastq_signature": [
-          
-        ],
-        "alternate_accessions": [
-          
-        ],
+        "fastq_signature": [],
+        "alternate_accessions": [],
         "run_type": "paired-ended",
         "md5sum": "fd942e78195f509cf0454ec7621eaa7a",
         "paired_end": "2",
@@ -2236,9 +2122,7 @@
         "file_format": "csfasta",
         "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
-        "fastq_signature": [
-          
-        ],
+        "fastq_signature": [],
         "platform": "/platforms/OBI:0000696/",
         "uuid": "f91de412-e397-44f5-ae2b-8195db8b2a8f",
         "accession": "ENCFF000LBA",
@@ -2305,7 +2189,7 @@
         "read_count": 42110808,
         "output_type": "reads",
         "dbxrefs": [
-          "SRA:SRR1270627"
+            "SRA:SRR1270627"
         ],
         "award": "U54HG006998",
         "run_type": "single-ended",
@@ -2318,7 +2202,7 @@
     {
         "accession": "ENCFF355OWW",
         "aliases": [
-          "erez-lieberman:HIC036-hic30"
+            "erez-lieberman:HIC036-hic30"
         ],
         "assembly": "hg19",
         "award": "U54HG006998",
@@ -2335,7 +2219,7 @@
     {
         "accession": "ENCFF784GFP",
         "aliases": [
-          "erez-lieberman:HIC036-hic"
+            "erez-lieberman:HIC036-hic"
         ],
         "assembly": "hg19",
         "award": "U54HG006998",
@@ -2352,7 +2236,7 @@
     {
         "accession": "ENCFF812THZ",
         "aliases": [
-          "erez-lieberman:HIC034-hic30"
+            "erez-lieberman:HIC034-hic30"
         ],
         "assembly": "hg19",
         "award": "U54HG006998",
@@ -2369,7 +2253,7 @@
     {
         "accession": "ENCFF123HIC",
         "aliases": [
-          "erez-lieberman:hic-map"
+            "erez-lieberman:hic-map"
         ],
         "assembly": "hg19",
         "award": "U54HG006998",
@@ -2380,7 +2264,7 @@
         "md5sum": "e77a125126ea493e1159fbee8da014e6",
         "output_type": "restriction enzyme site locations",
         "restriction_enzymes": [
-          "MboI"
+            "MboI"
         ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -2389,7 +2273,7 @@
     {
         "accession": "ENCFF130XXF",
         "aliases": [
-          "ali-mortazavi:test-bigWig1"
+            "ali-mortazavi:test-bigWig1"
         ],
         "assembly": "mm10",
         "award": "U54HG006998",
@@ -2407,7 +2291,7 @@
     {
         "accession": "ENCFF854KQX",
         "aliases": [
-          "ali-mortazavi:test-bigWig2"
+            "ali-mortazavi:test-bigWig2"
         ],
         "assembly": "GRCh38",
         "award": "U54HG006998",
@@ -2425,7 +2309,7 @@
     {
         "accession": "ENCFF119LNR",
         "aliases": [
-          "ali-mortazavi:test-bigWig3"
+            "ali-mortazavi:test-bigWig3"
         ],
         "assembly": "hg19",
         "award": "U54HG006998",
@@ -2485,7 +2369,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "1234830f-154f-449f-814b-fd3435417edf"
+            "1234830f-154f-449f-814b-fd3435417edf"
         ],
         "file_format": "bam",
         "genome_annotation": "V24",
@@ -2494,11 +2378,11 @@
         "output_type": "alignments",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
-        "analysis_step": "align-star-step-v-1",
         "file_size": 20,
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/rep1_mc_bammer.bam",
-        "uuid": "12abfcc1-9f85-415a-8eb5-e0f12346f053"
+        "uuid": "12abfcc1-9f85-415a-8eb5-e0f12346f053",
+        "analysis_step": "4f7d9e81-2b51-42a8-bc6d-c8c1831bf478"
     },
     {
         "accession": "ENCFF004MRN",
@@ -2507,7 +2391,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "5678830f-154f-449f-814b-fd3435417edf"
+            "5678830f-154f-449f-814b-fd3435417edf"
         ],
         "file_format": "bam",
         "genome_annotation": "V24",
@@ -2528,7 +2412,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "12abfcc1-9f85-415a-8eb5-e0f12346f053"
+            "12abfcc1-9f85-415a-8eb5-e0f12346f053"
         ],
         "file_format": "tsv",
         "genome_annotation": "V24",
@@ -2549,7 +2433,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "95befcc1-9f85-415a-8eb5-e0f12346f053"
+            "95befcc1-9f85-415a-8eb5-e0f12346f053"
         ],
         "file_format": "tsv",
         "genome_annotation": "V24",
@@ -2597,7 +2481,7 @@
         "run_type": "single-ended",
         "read_length": 76,
         "derived_from": [
-          "ENCFF333SBR"
+            "ENCFF333SBR"
         ],
         "library": "ENCLB723GTS"
     },
@@ -2644,7 +2528,7 @@
         "award": "U54HG006998",
         "dataset": "ENCSR751ISO",
         "derived_from": [
-          "/files/ENCFF001ISO/"
+            "/files/ENCFF001ISO/"
         ],
         "file_format": "bam",
         "file_size": 398856,
@@ -2653,10 +2537,10 @@
         "md5sum": "22be74b6e11555393507f4ebfa65d78c",
         "output_type": "alignments",
         "status": "released",
-        "analysis_step": "fastqc-step-v-1",
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "alabama.bam",
-        "uuid": "3d668412-fb5c-4cf1-8d66-5ab02ac12c12"
+        "uuid": "3d668412-fb5c-4cf1-8d66-5ab02ac12c12",
+        "analysis_step": "fcc70ac1-3cde-4c50-9d09-67c94eb92f47"
     },
     {
         "_test": "rep2 bam file for long read RNA-seq experiment",
@@ -2666,7 +2550,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "/files/ENCFF002ISO/"
+            "/files/ENCFF002ISO/"
         ],
         "file_format": "bam",
         "genome_annotation": "V24",
@@ -2688,7 +2572,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "/files/ENCFF003ISO/"
+            "/files/ENCFF003ISO/"
         ],
         "file_format": "tsv",
         "genome_annotation": "V24",
@@ -2710,7 +2594,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "/files/ENCFF004ISO/"
+            "/files/ENCFF004ISO/"
         ],
         "file_format": "tsv",
         "genome_annotation": "V24",
@@ -2732,7 +2616,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "/files/ENCFF004ISO/"
+            "/files/ENCFF004ISO/"
         ],
         "file_format": "database",
         "genome_annotation": "V24",
@@ -2753,7 +2637,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2015-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "/files/ENCFF001MYM/"
+            "/files/ENCFF001MYM/"
         ],
         "file_format": "tsv",
         "lab": "/labs/encode-processing-pipeline/",
@@ -2772,7 +2656,7 @@
         "dataset": "ENCSR123MRN",
         "date_created": "2015-04-18T16:46:18.670068+00:00",
         "derived_from": [
-          "/files/ENCFF001MXE/"
+            "/files/ENCFF001MXE/"
         ],
         "file_format": "gtf",
         "assembly": "hg19",
@@ -2850,7 +2734,7 @@
         "assembly": "GRCh38",
         "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
         "derived_from": [
-          "ENCFF164JWT"
+            "ENCFF164JWT"
         ]
     },
     {
@@ -2869,7 +2753,7 @@
         "assembly": "GRCh38",
         "md5sum": "61111f06df8446c9cee45ed6e1961d54",
         "derived_from": [
-          "ENCFF032OJW"
+            "ENCFF032OJW"
         ]
     },
     {
@@ -2898,7 +2782,7 @@
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "dataset": "/references/ENCSR819DEL/",
         "aliases": [
-          "ali-mortazavi:miRNA-three-prime-adapter"
+            "ali-mortazavi:miRNA-three-prime-adapter"
         ],
         "md5sum": "e9d9cc919aad107b62bbc2596c4a9e99",
         "lab": "/labs/ali-mortazavi/",
@@ -2921,7 +2805,7 @@
         "award": "/awards/U54HG006998/",
         "file_format": "txt",
         "aliases": [
-          "ali-mortazavi:miRNA-five-prime-adapter-set3"
+            "ali-mortazavi:miRNA-five-prime-adapter-set3"
         ],
         "accession": "ENCFF980GYX",
         "output_type": "sequence adapters",
@@ -2945,7 +2829,7 @@
         "date_created": "2019-07-01T22:25:14.861061+00:00",
         "dataset": "/references/ENCSR819DEL/",
         "aliases": [
-          "ali-mortazavi:miRNA-five-prime-adapter-set4"
+            "ali-mortazavi:miRNA-five-prime-adapter-set4"
         ],
         "status": "in progress"
     },
