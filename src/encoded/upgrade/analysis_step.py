@@ -214,10 +214,10 @@ def analysis_step_8_9(value, system):
     output_file_types = value.get('output_file_types', None)
     input_file_types = value.get('input_file_types', None)
 
-    if 'representative dnase hypersensitivity sites' in output_file_types:
+    if output_file_types and 'representative dnase hypersensitivity sites' in output_file_types:
         output_file_types.remove('representative dnase hypersensitivity sites')
         output_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
-    if 'representative dnase hypersensitivity sites' in input_file_types:
+    if input_file_types and 'representative dnase hypersensitivity sites' in input_file_types:
         input_file_types.remove('representative dnase hypersensitivity sites')
         input_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
     return
