@@ -47,6 +47,7 @@ system_slims = {
     'UBERON:0002405': 'immune system',
     'UBERON:0002416': 'integumental system',
     'UBERON:0001032': 'sensory system',
+    'UBERON:0001016': 'nervous system',
     'UBERON:0001017': 'central nervous system',
     'UBERON:0000010': 'peripheral nervous system',
     'UBERON:0002390': 'hematopoietic system',
