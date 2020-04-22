@@ -118,7 +118,6 @@
             "title": "External resources",
             "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
