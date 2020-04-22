@@ -155,9 +155,15 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 len(peaks_file.get('biological_replicates')) == 1)
         )
 
-        pipelines_to_check = ['ChIP-seq read mapping', 'Pool and subsample alignments']
+        pipelines_to_check = ['ChIP-seq read mapping', 
+                                'Pool and subsample alignments', 
+                                'Histone ChIP-seq 2',
+                                'Histone ChIP-seq 2 (unreplicated)',
+                                'Transcription factor ChIP-seq 2',
+                                'Transcription factor ChIP-seq 2 (unreplicated)']
         analysis_steps_to_check = ['Alignment pooling and subsampling step',
-                                   'Control alignment subsampling step']
+                                   'Control alignment subsampling step',
+                                   'ChIP seq alignment step']
         for peaks_file in peaks_file_gen:
             derived_from_files = get_derived_from_files_set([peaks_file],
                                                             files_structure,
@@ -454,27 +460,32 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
     # if there are no bam files - we don't know what pipeline, exit
     if len(files_structure.get('alignments').values()) == 0:
         return
-
-    if 'ChIP-seq read mapping' in get_pipeline_titles(
-            get_pipeline_objects(files_structure.get('alignments').values())):
-        for filtered_file in files_structure.get('alignments').values():
-            if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
-               filtered_file.get('lab') == '/labs/encode-processing-pipeline/' and \
-               has_no_unfiltered(filtered_file,
-                                 files_structure.get('unfiltered_alignments').values()):
-                detail = ('Experiment {} contains biological replicate '
-                    '{} with a filtered {} file {}, mapped to '
-                    'a {} assembly, but has no unfiltered '
-                    '{} file.'.format(
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                        filtered_file['biological_replicates'],
-                        filtered_file['output_type'],
-                        audit_link(path_to_text(filtered_file['@id']), filtered_file['@id']),
-                        filtered_file['assembly'],
-                        filtered_file['output_type']
-                    )
-                )
-                yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
+    pipeline_title = ['ChIP-seq read mapping',
+                        'Histone ChIP-seq 2',
+                        'Histone ChIP-seq 2 (unreplicated)',
+                        'Transcription factor ChIP-seq 2',
+                        'Transcription factor ChIP-seq 2 (unreplicated)']                    
+    for pipeline in pipeline_title:
+        if pipeline in get_pipeline_titles(
+                get_pipeline_objects(files_structure.get('alignments').values())):
+            for filtered_file in files_structure.get('alignments').values():
+                if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
+                   filtered_file.get('lab') == '/labs/encode-processing-pipeline/' and \
+                   has_no_unfiltered(filtered_file,
+                                     files_structure.get('unfiltered_alignments').values()):
+                    detail = ('Experiment {} contains biological replicate '
+                        '{} with a filtered {} file {}, mapped to '
+                        'a {} assembly, but has no unfiltered '
+                        '{} file.'.format(
+                            audit_link(path_to_text(value['@id']), value['@id']),
+                            filtered_file['biological_replicates'],
+                            filtered_file['output_type'],
+                            audit_link(path_to_text(filtered_file['@id']), filtered_file['@id']),
+                            filtered_file['assembly'],
+                            filtered_file['output_type']
+                        )
+                    ) 
+                    yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -1083,8 +1094,11 @@ def check_experiment_chip_seq_standards(
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
         alignment_files,
         ['ChIP-seq read mapping',
-            'Transcription factor ChIP-seq pipeline (modERN)']
-    )
+        'Transcription factor ChIP-seq pipeline (modERN)',
+        'Histone ChIP-seq 2 (unreplicated)',
+        'Histone ChIP-seq 2',
+        'Transcription factor ChIP-seq 2',
+        'Transcription factor ChIP-seq 2 (unreplicated)'])
     if pipeline_title is False:
         return
 
@@ -1098,7 +1112,6 @@ def check_experiment_chip_seq_standards(
             return
 
         read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
-
         yield from check_file_chip_seq_read_depth(
             f,
             experiment.get('control_type'),
@@ -1111,7 +1124,9 @@ def check_experiment_chip_seq_standards(
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
 
-    idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric')
+    idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric') 
+    if not idr_metrics:
+        idr_metrics = get_metrics(idr_peaks_files, 'ChipReplicationQualityMetric') 
     yield from check_idr(idr_metrics, 2, 2)
     return
 
@@ -1875,7 +1890,11 @@ def check_file_chip_seq_read_depth(file_to_check,
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
         [file_to_check],
         ['ChIP-seq read mapping',
-         'Transcription factor ChIP-seq pipeline (modERN)'])
+        'Transcription factor ChIP-seq pipeline (modERN)',
+        'Histone ChIP-seq 2 (unreplicated)',
+        'Histone ChIP-seq 2',
+        'Transcription factor ChIP-seq 2',
+        'Transcription factor ChIP-seq 2 (unreplicated)'])
 
     if pipeline_title is False:
         return
@@ -1999,7 +2018,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     elif 'broad histone mark' in target_investigated_as and \
             standards_version != 'modERN':  # target_name in broad_peaks_targets:
         pipeline_object = get_pipeline_by_name(
-            pipeline_objects, 'ChIP-seq read mapping')
+            pipeline_objects, pipeline_title)
         if pipeline_object:
             if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
                 if read_depth < marks['broad']['recommended']:
@@ -2098,7 +2117,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     elif 'narrow histone mark' in target_investigated_as and \
             standards_version != 'modERN':
         pipeline_object = get_pipeline_by_name(
-            pipeline_objects, 'ChIP-seq read mapping')
+            pipeline_objects, pipeline_title)
         if pipeline_object:
             if 'assembly' in file_to_check:
                 detail = ('Processed {} file {} produced by {} '
@@ -2163,7 +2182,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                    detail, level='NOT_COMPLIANT')
         else:
             pipeline_object = get_pipeline_by_name(pipeline_objects,
-                                                   'ChIP-seq read mapping')
+                                                   pipeline_title)
             if pipeline_object:
                 if 'assembly' in file_to_check:
                     detail = ('Processed {} file {} produced by {} '
@@ -4266,23 +4285,31 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
            'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
             # exception (mapped)
             for metric in quality_metrics:
+                if 'mapped_reads' in metric:
+                    mappedReads = metric['mapped_reads']
+                elif 'mapped' in metric:
+                    mappedReads = metric['mapped']
                 if 'processing_stage' in metric and \
                     metric['processing_stage'] == 'unfiltered' and \
-                        'mapped' in metric:
+                        ('mapped' in metric or 'mapped_reads' in metric):
                     if "read1" in metric and "read2" in metric:
-                        return int(metric['mapped'] / 2)
+                        return int(mappedReads / 2)
                     else:
-                        return int(metric['mapped'])
+                        return int(mappedReads)
         else:
             # not exception (useful fragments)
             for metric in quality_metrics:
-                if ('total' in metric) and \
+                if 'total_reads' in metric:
+                    totalReads = metric['total_reads']
+                elif 'total' in metric:
+                    totalReads = metric['total']
+                if ('total' in metric or 'total_reads' in metric) and \
                    (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
                         ('processing_stage' not in metric)):
                     if "read1" in metric and "read2" in metric:
-                        return int(metric['total'] / 2)
+                        return int(totalReads / 2)
                     else:
-                        return int(metric['total'])
+                        return int(totalReads)
     return False
 
 
@@ -4347,13 +4374,17 @@ def get_chip_seq_bam_read_depth(bam_file):
     read_depth = 0
 
     for metric in quality_metrics:
-        if ('total' in metric and
+        if 'total_reads' in metric:
+            totalReads = metric['total_reads']
+        elif 'total' in metric:
+            totalReads = metric['total']
+        if (('total' in metric or 'total_reads' in metric) and
                 (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
                  ('processing_stage' not in metric))):
             if "read1" in metric and "read2" in metric:
-                read_depth = int(metric['total'] / 2)
+                read_depth = int(totalReads / 2)
             else:
-                read_depth = metric['total']
+                read_depth = totalReads
             break
 
     if read_depth == 0:

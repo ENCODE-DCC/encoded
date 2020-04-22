@@ -182,3 +182,25 @@ def library_schema_10(lab, award):
         'lab': lab['uuid'],
         'strand_specificity': True
     }
+
+
+@pytest.fixture
+def library_1_chip(testapp, lab, award, biosample_human_1):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample': biosample_human_1['@id'],
+        'nucleic_acid_term_name': 'DNA'
+    }
+    return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def library_2_chip(testapp, lab, award, biosample_human_2):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample': biosample_human_2['@id'],
+        'nucleic_acid_term_name': 'DNA'
+    }
+    return testapp.post_json('/library', item, status=201).json['@graph'][0]
