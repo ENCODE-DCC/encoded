@@ -48,7 +48,10 @@ system_slims = {
     'UBERON:0002416': 'integumental system',
     'UBERON:0001032': 'sensory system',
     'UBERON:0001017': 'central nervous system',
-    'UBERON:0000010': 'peripheral nervous system'
+    'UBERON:0000010': 'peripheral nervous system',
+    'UBERON:0002390': 'hematopoietic system',
+    'UBERON:0004535': 'cardiovascular system',
+    'UBERON:0000363': 'reticuloendothelial system'
 }
 
 organ_slims = {
@@ -130,8 +133,9 @@ organ_slims = {
     'UBERON:0000414': 'mucous gland',
     'UBERON:0001821': 'sebaceous gland',
     'UBERON:0000998': 'seminal vesicle',
-    'UBERON:0001820': 'sweat gland'
-
+    'UBERON:0001820': 'sweat gland',
+    'UBERON:0001555': 'digestive tract',
+    'UBERON:0000043': 'tendon'
 }
 
 cell_slims = {
