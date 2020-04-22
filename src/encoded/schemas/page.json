@@ -217,11 +217,6 @@
             "title": "Status"
         }
     },
-    "boost_values": {
-        "name": 1.0,
-        "title": 1.0,
-        "news_keywords": 1.0,
-        "layout.blocks.body": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/page.md"
 }

@@ -55,7 +55,6 @@ class Dataset(Item):
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
-        'award.pi.lab',
         'references'
     ]
     audit_inherit = [

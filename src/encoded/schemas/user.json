@@ -98,8 +98,6 @@
             "title": "Lab"
         }
     },
-    "boost_values": {
-        "title": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/user.md"
 }

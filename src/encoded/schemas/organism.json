@@ -40,9 +40,6 @@
             "title": "Status"
         }
     },
-    "boost_values": {
-        "name": 5.0,
-        "scientific_name": 5.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/organism.md"
 }

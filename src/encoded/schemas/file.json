@@ -1904,16 +1904,6 @@
         "sam": ".sam.gz",
         "txt": ".txt"
     },
-     "boost_values": {
-         "accession": 20.0,
-         "@type": 1.0,
-         "assembly": 5.0,
-         "file_format": 5.0,
-         "file_type": 5.0,
-         "file_format_type": 2.0,
-         "output_category": 2.0,
-         "output_type": 2.0,
-         "status": 1.0
-     },
+     "boost_values": {},
     "changelog": "/profiles/changelogs/file.md"
 }

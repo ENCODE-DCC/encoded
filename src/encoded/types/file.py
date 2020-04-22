@@ -101,8 +101,6 @@ class File(Item):
     embedded = [
         'platform',
         'award',
-        'award.pi',
-        'award.pi.lab',
         'library',
         'lab',
         'submitted_by',

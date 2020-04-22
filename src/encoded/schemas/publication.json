@@ -264,13 +264,7 @@
             "title": "Identifiers"
         }
     },
-    "boost_values": {
-        "title": 5.0,
-        "authors": 1.0,
-        "identifiers": 1.0,
-        "abstract": 1.0,
-        "journal": 1.0
-    },
+    "boost_values": {},
     "sort_by": {
         "publication_year": {
             "unmapped_type": "keyword",

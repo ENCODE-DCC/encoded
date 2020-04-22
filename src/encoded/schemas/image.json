@@ -27,8 +27,6 @@
             "type": "string"
         }
     },
-    "boost_values": {
-        "caption": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/image.md"
 }

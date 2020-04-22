@@ -218,16 +218,7 @@
             "title": "Purpose"
         }
     },
-    "boost_values": {
-        "title": 1.0,
-        "name": 1.0,
-        "purpose": 1.0,
-        "used_by": 1.0,
-        "software_type": 1.0,
-        "references.title": 1.0,
-        "references.identifiers": 1.0,
-        "description": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/software.md"
 
 }

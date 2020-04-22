@@ -44,7 +44,7 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
-    embedded = ['pi.lab']
+    embedded = []
     STATUS_ACL = {
         'current': ALLOW_CURRENT,
         'deleted': DELETED,
@@ -88,8 +88,7 @@ class Source(Item):
 class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('encoded:schemas/treatment.json')
-    embedded = [
-    ]
+    embedded = []
     set_status_up = [
         'biosamples_used',
         'antibodies_used',
