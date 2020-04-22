@@ -549,7 +549,7 @@
         "target.aliases": 3.0,
         "target.genes.symbol": 10.0,
         "target.label": 10.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 5.0,
         "target.organism.scientific_name": 5.0,
         "references.title": 1.0,

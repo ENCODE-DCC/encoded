@@ -265,6 +265,7 @@
         "organism.scientific_name": 1.0,
         "genes.geneid": 1.0,
         "genes.symbol": 1.0,
+        "genes.dbxrefs": 1.0,
         "modifications.modification": 1.0,
         "modifications.amino_acid_code": 1.0,
         "organism.taxon_id": 1.0
