@@ -286,3 +286,17 @@ def test_is_part_of_empty_part_of_in_ontology(ontology):
 def test_is_part_of_parent(ontology):
     from encoded.audit.biosample import is_part_of
     assert is_part_of('UBERON:0002469', 'UBERON:0001043', ontology)
+
+
+def test_audit_biosample_CRISPR_modifications(
+        testapp, base_biosample,
+        activation_genetic_modification, disruption_genetic_modification):
+    testapp.patch_json(base_biosample['@id'], {
+        'genetic_modifications': [activation_genetic_modification['@id'], disruption_genetic_modification['@id']]
+        })
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'multiple CRISPR characterization genetic modifications' for error in errors_list)
