@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
+    "required": ["product_id", "source", "host_organism"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -31,7 +31,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "1"
         },
         "accession": {
             "accessionType": "AB"
@@ -192,102 +192,6 @@
                 "isotype control"
             ]
         }
-   },
-   "facets": {
-        "lot_reviews.status": {
-            "title": "Eligibility status"
-        },
-        "targets.organism.scientific_name": {
-            "title": "Target organism"
-        },
-        "targets.investigated_as": {
-            "title": "Target category"
-        },
-        "targets.label": {
-            "title": "Target of antibody",
-            "type": "typeahead",
-            "length": "long"
-        },
-        "source.title" : {
-            "title": "Source"
-        },
-        "clonality": {
-            "title": "Clonality"
-        },
-        "host_organism.name": {
-            "title": "Host organism"
-        }
-    },
-    "columns": {
-        "accession": {
-            "title": "Accession"
-        },
-        "control_type": {
-            "title": "Control type"
-        },
-        "isotype": {
-            "title": "Isotype"
-        },
-        "lot_reviews.biosample_term_name": {
-            "title": "Biosample name"
-        },
-        "lot_reviews.status": {
-            "title": "Eligibility status"
-        },
-        "lot_reviews.organisms.scientific_name": {
-            "title": "Organism"
-        },
-        "lot_reviews.targets.investigated_as": {
-            "title": "Target category"
-        },
-        "lot_reviews.targets.label": {
-            "title": "Target"
-        },
-        "lot_reviews.targets.name": {
-            "title": "Target name"
-        },
-        "lot_reviews.targets.organism.scientific_name": {
-            "title": "Target organism"
-        },
-        "source.title": {
-            "title": "Source"
-        },
-        "product_id": {
-            "title": "Product ID"
-        },
-        "lot_id": {
-            "title": "Lot ID"
-        },
-        "host_organism.name": {
-            "title": "Host organism"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
-    "boost_values": {
-        "accession": 1.0,
-        "alternate_accessions": 1.0,
-        "lot_id": 1.0,
-        "lot_id_alias": 1.0,
-        "clonality": 1.0,
-        "isotype": 1.0,
-        "purifications": 1.0,
-        "product_id": 1.0,
-        "aliases": 1.0,
-        "dbxrefs": 1.0,
-        "source.title": 1.0,
-        "host_organism.name": 1.0,
-        "host_organism.scientific_name": 1.0,
-        "host_organism.taxon_id": 1.0,
-        "targets.genes.symbol": 1.0,
-        "targets.label": 1.0,
-        "targets.dbxref": 1.0,
-        "targets.aliases": 1.0,
-        "targets.organism.name": 1.0,
-        "targets.organism.scientific_name": 1.0,
-        "targets.organism.taxon_id": 1.0
     },
     "changelog": "/profiles/changelogs/antibody_lot.md"
-
 }
