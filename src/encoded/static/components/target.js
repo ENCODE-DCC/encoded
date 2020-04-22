@@ -62,7 +62,7 @@ const Target = ({ context }) => {
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length > 0 ?
+                                {context.dbxrefs && context.dbxrefs.length > 0 ?
                                     <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
