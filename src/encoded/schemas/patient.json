@@ -90,7 +90,7 @@
         },
         "death_source": {
             "title": "Death Source",
-            "description": "The death date comes from",
+            "description": "The source of the death date",
             "type": "string",
             "enum": [
                 "UTSouthwestern Hospital",
