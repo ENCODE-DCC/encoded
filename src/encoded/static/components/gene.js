@@ -147,7 +147,7 @@ class Gene extends React.Component {
 
                 <RelatedItems
                     title={`Functional characterization experiments targeting gene ${context.symbol}`}
-                    url={`/search/?type=FunctionalCharacterizationExperiment&target.genes.uuid=$context.uuid}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&target.genes.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
             </div>
