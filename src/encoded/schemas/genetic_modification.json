@@ -484,7 +484,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "1"
         },
         "accession": {
             "accessionType": "GM"

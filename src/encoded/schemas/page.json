@@ -64,7 +64,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "1"
         },
         "parent": {
             "title": "Parent page",

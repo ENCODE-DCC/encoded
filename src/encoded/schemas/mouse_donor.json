@@ -54,7 +54,7 @@
             }
         },
         "schema_version": {
-            "default": "11"
+            "default": "1"
         },
         "organism": {
             "comment": "Do not submit. DCC personnel is responsible for submission of this property.",

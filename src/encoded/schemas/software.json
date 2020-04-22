@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "1"
         },
         "software_type": {
             "title": "Software type",

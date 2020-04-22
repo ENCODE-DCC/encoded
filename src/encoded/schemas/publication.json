@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "1"
         },
         "title": {
             "title": "Title",

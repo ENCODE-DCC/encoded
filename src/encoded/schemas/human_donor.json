@@ -83,7 +83,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "1"
         },
         "organism": {
             "comment": "Do not submit, value is assigned by the object.",

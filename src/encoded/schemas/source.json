@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "1"
         },
         "description": {
             "title": "Description",

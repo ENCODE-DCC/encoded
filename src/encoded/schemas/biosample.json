@@ -292,7 +292,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "24"
+            "default": "1"
         },
         "accession": {
             "accessionType": "BS"
