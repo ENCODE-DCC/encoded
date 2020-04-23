@@ -40,7 +40,7 @@ _tsv_mapping = OrderedDict([
     ('Output type', ['files.output_type']),
     ('File assembly', ['files.assembly']),
     ('Experiment accession', ['accession']),
-    ('Assay', ['assay_term_name']),
+    ('Assay', ['assay_term_name', 'files.assay_term_name']),
     ('Biosample term id', ['biosample_ontology.term_id']),
     ('Biosample term name', ['biosample_ontology.term_name']),
     ('Biosample type', ['biosample_ontology.classification']),
@@ -596,7 +596,9 @@ def files_prop_param_list(exp_file, param_list):
     for k, v in param_list.items():
         if k.startswith('files.'):
             file_prop = k[len('files.'):]
-            if file_prop in exp_file and exp_file[file_prop] not in v:
+            if file_prop not in exp_file:
+                return False
+            if exp_file[file_prop] not in v:
                 return False
     return True
 
