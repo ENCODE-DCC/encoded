@@ -328,7 +328,7 @@ def test_batch_download_report_download(testapp, workbook):
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',
     ]
-    assert len(lines) == 64
+    assert len(lines) == 65
 
 
 def test_batch_download_matched_set_report_download(testapp, workbook):

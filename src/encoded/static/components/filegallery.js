@@ -151,7 +151,13 @@ export class FileTable extends React.Component {
             // Extract four kinds of file arrays
             const files = _(datasetFiles).groupBy((file) => {
                 if (file.output_category === 'raw data') {
-                    return file.output_type === 'reads' ? 'raw' : 'rawArray';
+                    if (file.output_type === 'reads') {
+                        return 'raw';
+                    }
+                    if (file.output_type === 'index reads') {
+                        return 'index';
+                    }
+                    return 'rawArray';
                 }
                 if (file.output_category === 'reference') {
                     return 'ref';
@@ -172,6 +178,7 @@ export class FileTable extends React.Component {
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
+                            indexFiles={files.index}
                             showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
@@ -482,7 +489,21 @@ class RawSequencingTable extends React.Component {
         };
 
         // Bind `this` to non-React methods.
+        this.findIndexFile = this.findIndexFile.bind(this);
         this.handleCollapse = this.handleCollapse.bind(this);
+    }
+
+    /**
+     * Find the index reads file associated with the one or two given files. For paired reads, both
+     * files have to match to return a matching index reads file. For singled-ended reads, only
+     * `file0` needs to match.
+     * @param {object} file0 - First reads file of pair or only file of single
+     * @param {object} file1 - Second reads file of pair
+     *
+     * @return {object} Index reads file with index_of matching given files; undefined if none
+     */
+    findIndexFile(file0, file1) {
+        return this.props.indexFiles.find(indexFile => indexFile.index_of[0] === file0['@id'] && (indexFile.index_of.length === 2 ? indexFile.index_of[1] === file1['@id'] : true));
     }
 
     handleCollapse() {
@@ -491,7 +512,7 @@ class RawSequencingTable extends React.Component {
     }
 
     render() {
-        const { files, meta, showReplicateNumber } = this.props;
+        const { files, indexFiles, meta, showReplicateNumber } = this.props;
         const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
@@ -505,8 +526,8 @@ class RawSequencingTable extends React.Component {
             // Make lists of files that are and aren't paired. Paired files with missing partners
             // count as not paired. Files with more than one biological replicate don't count as
             // paired.
-            const nonpairedFiles = [];
-            const pairedFiles = _(files).filter((file) => {
+            let nonpairedFiles = [];
+            let pairedFiles = _(files).filter((file) => {
                 if (file.pairSortKey) {
                     // If we already know this file is part of a good pair from before, just let it
                     // pass the filter
@@ -528,23 +549,60 @@ class RawSequencingTable extends React.Component {
                                 file.biological_replicates[0] === partner.biological_replicates[0]) ||
                                 ((!file.biological_replicates || file.biological_replicates.length === 0) &&
                                 (!partner.biological_replicates || partner.biological_replicates.length === 0))) {
-                            // Both the file and its partner qualify as good pairs of each other. Let
-                            // them pass the filter, and record set their sort keys to the lower of
-                            // the two accessions -- that's how pairs will sort within a biological
-                            // replicate.
-                            partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
-                            file.pairSortKey = partner.pairSortKey;
-                            file.pairSortKey += file.paired_end;
-                            partner.pairSortKey += partner.paired_end;
+                            // Both the file and its partner qualify as good pairs of each other.
+                            // Let hem pass the filter, and set their sort keys to the lower of the
+                            // two accessions -- that's how pairs will sort within a biological
+                            // replicate. Also track the `pairSortId` which is the same as
+                            // `portSortKey` but without the paired_end property concatenated.
+                            partner.pairSortId = file.title < partner.title ? file.title : partner.title;
+                            partner.pairSortKey = `${partner.pairSortId}-${partner.paired_end}`;
+                            file.pairSortId = partner.pairSortId;
+                            file.pairSortKey = `${partner.pairSortId}-${file.paired_end}`;
                             return true;
                         }
                     }
                 }
 
-                // File not part of a pair; add to non-paired list and filter it out
-                nonpairedFiles.push(file);
+                // File not part of a pair; add it to the non-paired list as a copy so we can
+                // mutate them later.
+                nonpairedFiles.push(Object.assign({}, file));
                 return false;
             });
+
+            // Sort the non-paired files by biological replicate, but corresponding index reads
+            // files still need weaving into this array.
+            nonpairedFiles = nonpairedFiles.sort(sortBioReps);
+
+            // Weave index files after each corresponding single-ended raw sequencing file.
+            const nonPairedFilesWithIndex = [];
+            if (indexFiles) {
+                nonpairedFiles.forEach((nonpairedFile) => {
+                    nonPairedFilesWithIndex.push(nonpairedFile);
+                    const matchingIndexFile = indexFiles.find(indexFile => indexFile.index_of.includes(nonpairedFile['@id']));
+                    if (matchingIndexFile) {
+                        nonPairedFilesWithIndex.push(matchingIndexFile);
+                    }
+                });
+                nonpairedFiles = nonPairedFilesWithIndex;
+            }
+
+            // Copy indexFiles to have `pairSortId` and  `pairSortKey` properties similar to the
+            // corresponding reads files’ pairSortKeys. For ease-of-implementation and performance,
+            // we only look for the one file of the pair in `pairedFiles` to get its pairSortKey
+            // root (without appended `paired_end` string) -- not both files.
+            const pairedFileIndexReads = [];
+            if (indexFiles) {
+                indexFiles.forEach((indexFile) => {
+                    const indexFileCopy = Object.assign({}, indexFile);
+                    const matchingPairFile = pairedFiles.find(pairedFile => indexFile.index_of.includes(pairedFile['@id']));
+                    if (matchingPairFile) {
+                        indexFileCopy.pairSortId = matchingPairFile.pairSortId;
+                        indexFileCopy.pairSortKey = `${matchingPairFile.pairSortId}-I`;
+                        pairedFileIndexReads.push(indexFileCopy);
+                    }
+                });
+                pairedFiles = pairedFiles.concat(pairedFileIndexReads);
+            }
 
             // Group paired files by biological replicate and library -- four-digit biological
             // replicate concatenated with library accession becomes the group key, and all files
@@ -554,12 +612,12 @@ class RawSequencingTable extends React.Component {
             let pairedRepGroups = {};
             let pairedRepKeys = [];
             if (pairedFiles.length > 0) {
-                pairedRepGroups = _(pairedFiles).groupBy(file => (
-                    (file.biological_replicates && file.biological_replicates.length === 1) ?
-                        globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '')
-                    :
-                        'Z'
-                ));
+                pairedRepGroups = _(pairedFiles).groupBy((file) => {
+                    if (file.biological_replicates && file.biological_replicates.length === 1) {
+                        return globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '');
+                    }
+                    return 'Z';
+                });
 
                 // Make a sorted list of keys
                 pairedRepKeys = Object.keys(pairedRepGroups).sort();
@@ -569,7 +627,7 @@ class RawSequencingTable extends React.Component {
                 <table className="table table__sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan="11">
+                            <th colSpan="12">
                                 <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -582,6 +640,7 @@ class RawSequencingTable extends React.Component {
                                 <th>File type</th>
                                 <th>Run type</th>
                                 <th>Read</th>
+                                <th>Output type</th>
                                 <th>Lab</th>
                                 <th>Date added</th>
                                 <th>File size</th>
@@ -595,25 +654,21 @@ class RawSequencingTable extends React.Component {
                         <tbody>
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                const groupFiles = pairedRepGroups[pairedRepKey];
+                                const groupFiles = pairedRepGroups[pairedRepKey].sort((a, b) => (a.pairSortKey < b.pairSortKey ? -1 : 1));
                                 const bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
-                                return groupFiles.sort((a, b) => (a.pairSortKey < b.pairSortKey ? -1 : 1)).map((file, i) => {
+                                return groupFiles.map((file, i) => {
                                     let pairClass;
-                                    if (file.paired_end === '2') {
-                                        pairClass = `align-pair2${(i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom'}`;
+                                    if (file.run_type === 'paired-ended') {
+                                        pairClass = file.paired_end === '1' ? 'align-pair1' : 'align-pair2';
                                     } else {
-                                        pairClass = 'align-pair1';
+                                        // Must be an index reads file if it's not paired-ended.
+                                        pairClass = 'index-reads';
                                     }
-
-                                    // Prepare for run_type display
-                                    let runType;
-                                    if (file.run_type === 'single-ended') {
-                                        runType = 'SE';
-                                    } else if (file.run_type === 'paired-ended') {
-                                        runType = 'PE';
+                                    if (groupFiles[i + 1] && groupFiles[i + 1].pairSortId !== file.pairSortId) {
+                                        pairClass = `${pairClass} pair-bottom`;
                                     }
 
                                     return (
@@ -628,8 +683,9 @@ class RawSequencingTable extends React.Component {
                                                 <DownloadableAccession file={file} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
-                                            <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                            <td className={pairClass}>{file.run_type === 'paired-ended' ? 'PE' : ''}{file.read_length ? <span>{file.read_length + file.read_length_units}</span> : null}</td>
                                             <td className={pairClass}>{file.paired_end}</td>
+                                            <td className={pairClass}>{file.output_type}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
@@ -639,38 +695,46 @@ class RawSequencingTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
-                                // Prepare for run_type display
-                                let runType;
-                                if (file.run_type === 'single-ended') {
-                                    runType = 'SE';
-                                } else if (file.run_type === 'paired-ended') {
-                                    runType = 'PE';
-                                }
+                            {nonpairedFiles.map((file, i) => {
+                                // Draw a row over the first single-ended file if a paired file
+                                // preceded it.
                                 const rowClasses = [
                                     pairedRepKeys.length > 0 && i === 0 ? 'table-raw-separator' : null,
                                 ];
+
+                                // Work out CSS classes and row spans for raw sequencing files with
+                                // a corresponding index reads file.
+                                let singleClass = null;
+                                const rawHasIndex = file.output_type !== 'index reads' && nonpairedFiles[i + 1] && nonpairedFiles[i + 1].output_type === 'index reads';
+                                const rawIsIndex = file.output_type === 'index reads';
+                                const nextRawIsIndex = nonpairedFiles[i + 1] && nonpairedFiles[i + 1].output_type === 'index reads';
+                                if (rawIsIndex) {
+                                    singleClass = 'index-reads pair-bottom';
+                                }
 
                                 // Determine if accession should be a button or not.
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        {showReplicateNumber ?
-                                            <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
-                                        null}
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
-                                        <td>
+                                        {showReplicateNumber && !rawIsIndex ?
+                                            <td rowSpan={rawHasIndex ? 2 : null} className={`table-raw-biorep${nextRawIsIndex ? ' pair-bottom merge-right + table-raw-merged' : ''}`}>{file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
+                                        : null}
+                                        {showReplicateNumber && !rawIsIndex ?
+                                            <td rowSpan={rawHasIndex ? 2 : null} className={nextRawIsIndex ? 'pair-bottom merge-right + table-raw-merged' : null}>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
+                                        : null}
+                                        <td className={singleClass}>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
-                                        <td>{file.file_type}</td>
-                                        <td>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
-                                        <td>{file.paired_end}</td>
-                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                        <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
-                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                        <td className={singleClass}>{file.file_type}</td>
+                                        <td className={singleClass}>SE{file.read_length ? <span>{file.read_length + file.read_length_units}</span> : null}</td>
+                                        <td className={singleClass}>{file.paired_end}</td>
+                                        <td className={singleClass}>{file.output_type}</td>
+                                        <td className={singleClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td className={singleClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td className={singleClass}>{globals.humanFileSize(file.file_size)}</td>
+                                        <td className={singleClass}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
+                                        <td className={singleClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -693,12 +757,14 @@ class RawSequencingTable extends React.Component {
 
 RawSequencingTable.propTypes = {
     files: PropTypes.array, // Raw files to display
+    indexFiles: PropTypes.array, // Index reads files that refer to actual files in `files`
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
     showReplicateNumber: PropTypes.bool,
 };
 
 RawSequencingTable.defaultProps = {
     files: null,
+    indexFiles: null,
     showReplicateNumber: true,
 };
 

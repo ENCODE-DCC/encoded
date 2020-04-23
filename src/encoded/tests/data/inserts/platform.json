@@ -142,5 +142,16 @@
         "term_name": "Pacific Biosciences RS II",
         "url": "http://www.pacb.com/products-and-services/pacbio-systems/rsii/",
         "uuid": "c7564b38-ab4f-4c42-a401-3de48689a998"
+    },
+    {
+        "aliases": [
+            "encode:NovaSeq6000"
+        ],
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "term_id": "OBI:0002630",
+        "term_name": "Illumina NovaSeq 6000",
+        "url": "http://www.illumina.com/content/dam/illumina-marketing/documents/products/datasheets/novaseq-6000-system-specification-sheet-770-2016-025.pdf",
+        "uuid": "27e58bd7-0943-4b5a-9473-30d571eb89ff"
     }
 ]
