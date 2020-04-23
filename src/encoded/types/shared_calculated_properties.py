@@ -461,7 +461,7 @@ class CalculatedAssayTitle:
                 # If there is more than one category type for CRISPR characterization genetic modifications we cannot return a specific CRISPR assay title
                 if len(set(CRISPR_gms)) > 1:
                     preferred_name = 'CRISPR screen'
-            elif control_type == 'control' and assay_term_name in ['eCLIP', 'MPRA', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
+            elif control_type and assay_term_name in ['eCLIP', 'MPRA', 'CRISPR screen', 'STARR-seq', 'Mint-ChIP-seq']:
                 preferred_name = 'Control {}'.format(assay_term_name)
             return preferred_name or assay_term_name
         return assay_term_name

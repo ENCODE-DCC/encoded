@@ -175,6 +175,9 @@ def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, bio
 
 
 def test_experiment_mint_chip_control(testapp, experiment_28):
-    testapp.patch_json(experiment_28['@id'], {'control_type': 'control'})
+    testapp.patch_json(experiment_28['@id'], {'control_type': 'input library'})
     res = testapp.get(experiment_28['@id'] + '@@index-data')
     assert res.json['object']['assay_title'] == 'Control Mint-ChIP-seq'
+    testapp.patch_json(experiment_28['@id'], {'assay_term_name': 'eCLIP', 'control_type': 'mock input'})
+    res = testapp.get(experiment_28['@id'] + '@@index-data')
+    assert res.json['object']['assay_title'] == 'Control eCLIP'
