@@ -264,7 +264,7 @@ const LotComponent = (props, reactContext) => {
             />
 
             <RelatedItems
-                title="Funtional characterization experiments using this antibody"
+                title="Functional characterization experiments using this antibody"
                 url={`/search/?type=FunctionalCharacterizationExperiment&replicates.antibody.accession=${context.accession}`}
                 Component={ExperimentTable}
             />
