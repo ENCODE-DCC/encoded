@@ -430,7 +430,18 @@ class FileComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
                                 : null}
-
+                                {context.assembly ?
+                                    <div data-test="assembly">
+                                        <dt>Assembly</dt>
+                                        <dd>{context.assembly}</dd>
+                                    </div>
+                                : null}
+                                {context.genome_annotation ?
+                                    <div data-test="genomeannotation">
+                                        <dt>Genome annotation</dt>
+                                        <dd>{context.genome_annotation}</dd>
+                                    </div>
+                                : null}
                                 {context.date_created ?
                                     <div data-test="datecreated">
                                         <dt>Date added</dt>
