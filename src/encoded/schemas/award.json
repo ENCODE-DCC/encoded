@@ -69,6 +69,20 @@
                 "linkTo": "User"
             }
         },
+        "collaborators": {
+            "title": "Collaborators",
+            "description": "Collaborators of the grant.",
+            "comment": "See user.json for available identifiers.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "User",
+                "comment": "See user.json for available identifiers.",
+                "type": "string",
+                "linkTo": "User"
+            }
+        },
         "project": {
             "title": "Project",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
