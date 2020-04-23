@@ -845,7 +845,8 @@ def check_experiment_rna_seq_standards(value,
          'Small RNA-seq single-end pipeline',
          'RAMPAGE (paired-end, stranded)',
          'microRNA-seq pipeline',
-         'Long read RNA-seq pipeline'])
+         'Long read RNA-seq pipeline',
+         'Bulk RNA-seq'])
     if pipeline_title is False:
         return
 
@@ -855,7 +856,8 @@ def check_experiment_rna_seq_standards(value,
         'Small RNA-seq single-end pipeline': '/data-standards/rna-seq/small-rnas/',
         'RAMPAGE (paired-end, stranded)': '/data-standards/rampage/',
         'microRNA-seq pipeline': '/microrna/microrna-seq/',
-        'Long read RNA-seq pipeline': '/data-standards/long-read-rna-pipeline/'
+        'Long read RNA-seq pipeline': '/data-standards/long-read-rna-pipeline/',
+        'Bulk RNA-seq': '/data-standards/rna-seq/long-rnas/',
     }
 
     for f in fastq_files:
@@ -868,7 +870,8 @@ def check_experiment_rna_seq_standards(value,
     if pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
                           'RNA-seq of long RNAs (single-end, unstranded)',
                           'Small RNA-seq single-end pipeline',
-                          'RAMPAGE (paired-end, stranded)']:
+                          'RAMPAGE (paired-end, stranded)',
+                          'Bulk RNA-seq']:
         star_metrics = get_metrics(alignment_files,
                                    'StarQualityMetric',
                                    desired_assembly)
@@ -921,7 +924,8 @@ def check_experiment_rna_seq_standards(value,
             standards_links[pipeline_title])
 
     elif pipeline_title in ['RNA-seq of long RNAs (paired-end, stranded)',
-                            'RNA-seq of long RNAs (single-end, unstranded)']:
+                            'RNA-seq of long RNAs (single-end, unstranded)',
+                            'Bulk RNA-seq']:
         upper_limit = 30000000
         medium_limit = 20000000
         lower_limit = 1000000
