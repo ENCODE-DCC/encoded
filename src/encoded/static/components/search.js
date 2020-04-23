@@ -551,8 +551,8 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
                 </a>
                 <div className="result-item__target-external-resources">
                     <p>External resources:</p>
-                    {result.dbxref && result.dbxref.length > 0 ?
-                        <DbxrefList context={result} dbxrefs={result.dbxref} />
+                    {result.dbxrefs && result.dbxrefs.length > 0 ?
+                        <DbxrefList context={result} dbxrefs={result.dbxrefs} />
                     : <em>None submitted</em> }
                 </div>
             </div>
