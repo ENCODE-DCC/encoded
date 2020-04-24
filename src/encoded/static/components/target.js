@@ -72,8 +72,14 @@ const Target = ({ context }) => {
             </Panel>
 
             <RelatedItems
-                title={`Experiments using target ${context.label}`}
+                title={`Functional genomics experiments using target ${context.label}`}
                 url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
+
+            <RelatedItems
+                title={`Functional characterization experiments using target ${context.label}`}
+                url={`/search/?type=FunctionalCharacterizationExperiment&target.uuid=${context.uuid}`}
                 Component={ExperimentTable}
             />
         </div>

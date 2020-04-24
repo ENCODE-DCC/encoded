@@ -597,8 +597,14 @@ class DonorComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title={`Experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    title={`Functional genomics experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
                     url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title={`Functional characterization experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
 
