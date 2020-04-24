@@ -101,6 +101,9 @@
 
     },
     "facets": {
+        "age_range": {
+            "title": "Age at Diagnosis"
+        },
         "gender": {
             "title": "Gender"
         },

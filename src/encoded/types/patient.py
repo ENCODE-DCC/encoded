@@ -231,6 +231,30 @@ class Patient(Item):
                 dose_range.append("4000 - 6000")
         return dose_range
 
+    @calculated_property(condition='age', schema={
+        "title": "Age at Diagnosis",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def age_range(self, request, age):
+        age_range = []
+       
+        if age == "90 or above":
+            age_range.append("80+")
+        elif int(age) >= 80:
+            age_range.append("80+")
+        elif int(age) >= 60:
+            age_range.append("60 - 79")
+        elif int(age) >= 40:
+            age_range.append("40 - 59")
+        elif int(age) >= 20:
+            age_range.append("20 - 39")
+        else:
+            age_range.append("0 - 19")
+        return age_range
+
     @calculated_property(condition='radiation', schema={
         "title": "Radiation Fractions",
         "type": "array",
@@ -649,7 +673,7 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'age_range', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
