@@ -110,6 +110,9 @@
         "race": {
             "title": "Race"
         },
+        "vital_status": {
+            "title": "Vital Status"
+        },
 
         "medical_imaging.type" : {
           "title": "Medical Imaging"
@@ -295,3 +298,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+

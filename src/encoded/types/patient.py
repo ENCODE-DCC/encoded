@@ -201,6 +201,17 @@ class Patient(Item):
             radiation_summary = "No Treatment Received"
         return radiation_summary
 
+    @calculated_property(define=True, schema={
+        "title": "Vital Status",
+        "type": "string",
+    })
+    def vital_status(self, request, death_date=None):
+        if death_date is None:
+            vital_status = "Alived"
+        else:
+            vital_status = "Deceased"
+        return vital_status
+
     @calculated_property(condition='radiation', schema={
         "title": "Dose per Fraction",
         "type": "array",
@@ -638,11 +649,12 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
+
 
