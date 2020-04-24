@@ -66,17 +66,14 @@ def audit_biosample_CRISPR_modifications(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-5203
     if 'applied_modifications' in value:
         if len(value['applied_modifications']) > 1:
-            method = 0
-            purpose = 0
+            CRISPRchar = 0
             GM_ids = set()
             for GM in value['applied_modifications']:
-                if GM['method'] == 'CRISPR':
-                    method += 1
-                    if GM['purpose'] == 'characterization':
-                        purpose += 1
-                        GM_ids.add(GM['@id'])
+                if GM['method'] == 'CRISPR' and GM['purpose'] == 'characterization':
+                    CRISPRchar += 1
+                    GM_ids.add(GM['@id'])
             GM_ids_links = [audit_link(path_to_text(m), m) for m in GM_ids]
-            if purpose == method & purpose >1:
+            if CRISPRchar >1:
                 detail = ('Biosample {} has multiple CRISPR characterization '
                           ' genetic modifications {}'.format(
                            audit_link(path_to_text(value['@id']), value['@id']),
