@@ -229,6 +229,8 @@ def target_13_14(value, system):
     if 'dbxref' in value:
         if 'genes' in value:
             value.pop('dbxref', None)
+        elif len('dbxref') == 0:
+            value.pop('dbxref', None)
         else:
             value['dbxrefs'] = value['dbxref']
             value.pop('dbxref', None)
