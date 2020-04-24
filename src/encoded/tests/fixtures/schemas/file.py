@@ -1211,3 +1211,20 @@ def file_18(testapp, lab, award, experiment):
         'schema_version': '18'
     }
     return item
+
+@pytest.fixture
+def file_no_runtype(testapp, experiment, award, lab, replicate_url, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate_url['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'output_type': 'reads',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress',
+        'read_length': 76
+    }
+    return item
