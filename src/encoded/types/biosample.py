@@ -425,7 +425,7 @@ class Biosample(Item):
             'modifications_list',
             'originated_from',
             'treatments_phrase',
-            'post_nucleic_acid_delivery_time'
+            'post_nucleic_acid_delivery_time',
             'preservation_method',
             'depleted_in',
             'phase',
@@ -845,6 +845,9 @@ def generate_sentence(phrases_dict, values_list):
     for key in values_list:
         if phrases_dict[key] != '':
             if 'preservation_method' in key:
+                sentence = sentence.strip() + ', ' + \
+                                    phrases_dict[key].strip() + ' '
+            elif 'post_nucleic_acid_delivery_time' in key:
                 sentence = sentence.strip() + ', ' + \
                                     phrases_dict[key].strip() + ' '
             else:
