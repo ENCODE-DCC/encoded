@@ -310,3 +310,35 @@ def test_audit_experiment_uploading_files(
         error['category'] != 'file validation error'
         for error in collect_audit_errors(res)
     )
+
+
+def test_audit_experiment_inconsistent_genetic_modifications(
+        testapp,
+        construct_genetic_modification,
+        interference_genetic_modification,
+        base_fcc_experiment,
+        replicate_1_1,
+        replicate_2_1,
+        library_1,
+        library_2,
+        biosample_1,
+        biosample_2):
+    # one biosample with genetic modifications and one biosample without genetic modifications
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'experiment': base_fcc_experiment['@id'], 'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'experiment': base_fcc_experiment['@id'], 'library': library_2['@id']})
+    res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+    # biosamples with the same genetic modifications
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
+    assert not any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+    # biosamples with different genetic modifications
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']]})
+    res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))

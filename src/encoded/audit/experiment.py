@@ -4041,14 +4041,14 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
             )
         yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
 
+
 def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_types):
     genetic_modifications = {'no genetic modifications': set()}
-    #all_mods = []
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if 'replicates' is not None and len(value['replicates']) >= 2:
+    if value.get('replicates') is not None and len(value['replicates']) > 1:
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and 'library' in rep and rep['library']['status'] not in excluded_types and 'biosample' in rep['library'] and rep['library']['biosample']['status'] not in excluded_types):
                 biosampleObject = rep['library']['biosample']
@@ -4056,12 +4056,14 @@ def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_
                 if not modifications:
                     genetic_modifications['no genetic modifications'].add(biosampleObject['@id'])
                 else:
-                    gm_combined = tuple(sorted(modifications))
+                    for gm in modifications:
+                        gm_ids = set()
+                        gm_ids.add(gm['@id'])
+                        gm_combined = tuple(sorted(gm_ids))
                     if gm_combined not in genetic_modifications:
                         genetic_modifications[gm_combined] = set(biosampleObject['@id'])
                     else:
                         genetic_modifications[gm_combined].add(biosampleObject['@id'])
-
 
     # Removed unused key from dict if necessary
     if len(genetic_modifications['no genetic modifications']) == 0:
