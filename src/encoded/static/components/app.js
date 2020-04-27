@@ -27,6 +27,7 @@ import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
+import jsonldFormatter from '../libs/jsonld';
 import { requestSearch } from './objectutils';
 import newsHead from './page';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
@@ -1232,13 +1233,23 @@ class App extends React.Component {
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
+                    {this.state.context && this.state.context['@type'].some(type => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
+                        <script
+                            data-prop-name="context"
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hrefUrl.host)))}\n\n`,
+                            }}
+                        />
+                    : null
+                    }
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script
                         data-prop-name="context"
-                        type="application/ld+json"
+                        type="application/json"
                         dangerouslySetInnerHTML={{
-                            __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
+                            __html: `\n\n${jsonScriptEscape(JSON.stringify((this.state.context)))}\n\n`,
                         }}
                     />
                     <div id="slot-application" className={appClass}>
