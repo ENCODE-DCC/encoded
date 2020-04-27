@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "title": {
             "title": "Title",
@@ -89,7 +89,12 @@
                 "description": "A datasets referred to by the publication.",
                 "comment": "See dataset.json for available identifiers.",
                 "type":  "string",
-                "linkTo": "Dataset"
+                "linkTo": [
+                    "Experiment",
+                    "Annotation",
+                    "FunctionalCharacterizationExperiment",
+                    "Reference"
+                ]
             }
         },
         "supplementary_data": {

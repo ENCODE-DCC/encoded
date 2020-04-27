@@ -160,8 +160,7 @@
             "database"
         ],
         "datasets": [
-            "/projects/ENCSR860CMY/",
-            "/publication_data/ENCSR727WCB/"
+            "/experiments/ENCSR000DZQ/"
         ],
         "date_published": "2012 Jan",
         "issue": "Database issue",

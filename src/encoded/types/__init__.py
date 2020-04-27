@@ -233,6 +233,9 @@ class Publication(Item):
     item_type = 'publication'
     schema = load_schema('encoded:schemas/publication.json')
     embedded = ['datasets']
+    rev = {
+        'publication_data': ('PublicationData', 'references')
+    }
 
     def unique_keys(self, properties):
         keys = super(Publication, self).unique_keys(properties)
@@ -246,6 +249,18 @@ class Publication(Item):
     })
     def publication_year(self, date_published):
         return date_published.partition(' ')[0]
+
+    @calculated_property(schema={
+        "title": "Publication Data",
+        "type": "array",
+        "uniqueItems": True,
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "PublicationData.references",
+        },
+    })
+    def publication_data(self, request, publication_data):
+        return paths_filtered_by_status(request, publication_data)
 
 
 @collection(
