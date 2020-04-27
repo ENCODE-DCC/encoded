@@ -1,6 +1,8 @@
 [
     {
         "accession": "KCEFF398MYM",
+        "bioreplicate": "KCERP708IJT",
+
         "run_type": "single-ended",
         "file_format": "fastq",
         "flowcell_details":
@@ -22,6 +24,7 @@
     {
 
         "accession": "KCEFF287RDC",
+        "bioreplicate": "KCERP139SOR",
         "file_format": "fastq",
         "file_size": 20,
         "flowcell_details":
@@ -44,6 +47,7 @@
 
     {
         "accession": "KCEFF365RCT",
+        "bioreplicate": "KCERP139SOS",
         "file_size": 20,
         "file_format": "fastq",
         "flowcell_details":
@@ -65,6 +69,7 @@
     },
     {
         "accession": "KCEFF894MWZ",
+        "bioreplicate": "KCERP708IJU",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "99be74b6e11515393507f4ebfa66d78d",
@@ -77,6 +82,7 @@
     },
     {
         "accession": "KCEFF173MWZ",
+        "bioreplicate": "KCERP708IJV",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "91ae74b6e11515393507f4ebfa66d78d",

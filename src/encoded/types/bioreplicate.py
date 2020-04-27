@@ -13,12 +13,13 @@ import re
 
 @collection(
     name='bioreplicates',
-    acl=ALLOW_SUBMITTER_ADD,
+    # acl=ALLOW_SUBMITTER_ADD,
+    unique_key='accession',
     properties={
-        'title': 'Bioreplicates',
-        'description': 'listing of Bioreplicates',
+        'title': 'bioreplicates',
+        'description': 'listing of bioreplicates',
     })
-class Bioreplicate(Item):
+class bioreplicate(Item):
     item_type = 'bioreplicate'
     schema = load_schema('encoded:schemas/bioreplicate.json')
 

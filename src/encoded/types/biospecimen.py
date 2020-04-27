@@ -29,6 +29,7 @@ class Biospecimen(Item):
     embedded = [
         'biolibrary',
         'biolibrary.biofile',
+        'biolibrary.bioreplicate',
         'surgery',
         'surgery.pathology_report',
         'surgery.surgery_procedure',

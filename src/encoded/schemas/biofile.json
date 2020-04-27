@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
 
-    "required": ["file_format", "output_type", "md5sum", "biolibrary"],
+    "required": ["file_format", "output_type", "md5sum", "biolibrary","bioreplicate"],
 
     "identifyingProperties": ["uuid", "accession"],
     "additionalProperties": false,
@@ -616,6 +616,13 @@
             "comment": "See biolibrary.json for available identifiers.",
             "type": "string",
             "linkTo": "Biolibrary"
+        },
+        "bioreplicate": {
+            "title": "Kceioreplicate",
+            "description": "The files produced in this bioreplicate.",
+            "comment": "See bioreplicate.json for available identifiers.",
+            "type": "string",
+            "linkTo": "bioreplicate"
         },
         "sequencing_replicate_number": {
             "title": "Sequencing replicate",
