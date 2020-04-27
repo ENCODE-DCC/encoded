@@ -4041,6 +4041,36 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
             )
         yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
 
+def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_types):
+    genetic_modifications = {'no genetic modifications': set()}
+    #all_mods = []
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if 'replicates' is not None and len(value['replicates']) >= 2:
+        for rep in value['replicates']:
+            if (rep['status'] not in excluded_types and 'library' in rep and rep['library']['status'] not in excluded_types and 'biosample' in rep['library'] and rep['library']['biosample']['status'] not in excluded_types):
+                biosampleObject = rep['library']['biosample']
+                modifications = biosampleObject.get('applied_modifications')
+                if not modifications:
+                    genetic_modifications['no genetic modifications'].add(biosampleObject['@id'])
+                else:
+                    gm_combined = tuple(sorted(modifications))
+                    if gm_combined not in genetic_modifications:
+                        genetic_modifications[gm_combined] = set(biosampleObject['@id'])
+                    else:
+                        genetic_modifications[gm_combined].add(biosampleObject['@id'])
+
+
+    # Removed unused key from dict if necessary
+    if len(genetic_modifications['no genetic modifications']) == 0:
+        genetic_modifications.pop('no genetic modifications')
+
+    if len(genetic_modifications) > 1:
+        detail = 'Experiment {} contains biosamples with inconsistent genetic modifications'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('inconsistent genetic modifications', detail, level='INTERNAL_ACTION')
+
 
 #######################
 # utilities
@@ -4650,7 +4680,8 @@ function_dispatcher_without_files = {
     'audit_spikeins': audit_experiment_spikeins,
     'audit_nih_consent': audit_experiment_nih_institutional_certification,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
-    'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range
+    'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
+    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications
 }
 
 function_dispatcher_with_files = {
