@@ -601,6 +601,10 @@ $row-data-header-width: 200px;
         }
     }
 
+    @at-root #{&}__title-sescc-spacing {
+        margin-bottom: 15px;
+    }
+
     @at-root #{&}__controls {
         @media screen and (min-width: $screen-md-min) {
             display: flex;
@@ -618,6 +622,16 @@ $row-data-header-width: 200px;
     @at-root #{&}__search-controls {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 75%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
+
+    @at-root #{&}__search-controls-sescc {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 100%;
         }
 
         .results-table-control {
@@ -1061,4 +1075,101 @@ $divider-color: #000; // Color of dividers between assays with targets
     &.divider--end {
         border-right: 1px solid $divider-color;
     }
+}
+
+.sescc_matrix {
+    @at-root #{&}__title-img {
+        @media screen and (max-width: $screen-xs-min) {
+            display: none;
+        }
+    }
+
+    @at-root #{&}__graph-region {
+        display: flex;
+        justify-content: center;
+
+        @media screen and (max-width: $screen-sm-min) {
+            display: block;
+        }
+    }
+
+    @at-root #{&}__graph {
+        display: flex;
+        justify-content: left;
+    }
+
+    @at-root #{&}__data {
+        overflow-x: auto;
+
+        a {
+            cursor: pointer;
+        }
+
+        table { 
+            tr:nth-child(2) td:nth-child(2) {
+                border-top-left-radius: 14px;
+            }
+            tr:nth-child(2) td:last-child {
+                border-top-right-radius: 14px;
+            }
+        }  
+    }
+
+    @at-root #{&}__show-all {
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+    }
+
+    @at-root #{&}__germ-layer {
+        display:flex;
+        align-items: center;
+        font-weight: bold;
+    
+        @at-root #{&}-title {
+            display:flex;
+            justify-content: center;
+        }
+    
+        ul {
+            display: flex;
+            list-style: none;
+            margin-top: 0;
+            padding-top: 0;
+            flex-direction: column;
+            padding-left: 0;
+        }    
+    
+        li {
+            margin: 10px;
+        }
+    
+        hr {
+            margin-bottom:0;
+        }
+
+        .endodermColor {
+            color: blue
+        }
+        
+        .mesodermColor {
+            color: green;
+        }
+        
+        .ectoDermColor {
+            color: purple;
+        }
+    }
+
+    @at-root #{&}__node {
+        text {
+            font-size: 1.15em;
+            font-weight: 500;
+        }
+    }
+    
+    @at-root #{&}__link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
 }

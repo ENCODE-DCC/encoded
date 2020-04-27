@@ -323,6 +323,17 @@ class Experiment(Dataset,
         },
     }
 
+    sescc_stem_cell_matrix = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
+            'label': 'Assay',
+        },
+    }
+
     chip_seq_matrix = {
         'y': {
             'group_by': [

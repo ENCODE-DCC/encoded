@@ -32,7 +32,8 @@ import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 const viewControlFilter = (types, results) => {
     let views;
     const parsedUrl = url.parse(results['@id']);
-    if (parsedUrl.pathname === '/reference-epigenome-matrix/') {
+    const pathname = parsedUrl.pathname;
+    if (['/reference-epigenome-matrix/', '/sescc-stem-cell-matrix/'].includes(pathname)) {
         views = ['Search', 'Report'];
     } else {
         views = types.filter(type => type !== results['@type'][0]);

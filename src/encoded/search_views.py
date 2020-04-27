@@ -42,6 +42,7 @@ def includeme(config):
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
     config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
+    config.add_route('sescc-stem-cell-matrix', '/sescc-stem-cell-matrix{slash:/?}')
     config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
     config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
@@ -211,6 +212,35 @@ def matrix(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='sescc-stem-cell-matrix', request_method='GET', permission='search')
+def sescc_stem_cell_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='SESCC Stem Cell Development Matrix'
+            ),
+            TypeResponseField(
+                at_type=['SESCCStemCellMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='sescc_stem_cell_matrix',
             ),
             NotificationResponseField(),
             FiltersResponseField(),

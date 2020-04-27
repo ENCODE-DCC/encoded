@@ -17,5 +17,6 @@ scenarios(
     'matrix_reference_epigenome_homo_sapien_all.feature',
     'matrix_reference_epigenome_homo_sapien_nonroadmap.feature',
     'matrix_reference_epigenome_mus_musculus.feature',
+    'matrix_sescc_stem_cell.feature',
     strict_gherkin=False,
 )
