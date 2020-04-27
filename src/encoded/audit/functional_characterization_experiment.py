@@ -9,6 +9,7 @@ from .experiment import (
     audit_experiment_replicates_biosample,
     audit_experiment_replicates_with_no_libraries,
     audit_experiment_technical_replicates_same_library,
+    audit_experiment_inconsistent_genetic_modifications,
     create_files_mapping
 )
 from .formatter import (
@@ -119,41 +120,6 @@ def audit_experiment_replicate_with_no_files(value, system, excluded_statuses):
         yield AuditFailure(
             'missing raw data in replicate', detail, level='ERROR'
         )
-
-
-def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_types):
-    genetic_modifications = {'no genetic modifications': set()}
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['assay_term_name'] == 'pooled clone sequencing':
-        return
-
-    if value.get('replicates') is not None and len(value['replicates']) > 1:
-        for rep in value['replicates']:
-            if (rep['status'] not in excluded_types and 'library' in rep and rep['library']['status'] not in excluded_types and 'biosample' in rep['library'] and rep['library']['biosample']['status'] not in excluded_types):
-                biosampleObject = rep['library']['biosample']
-                modifications = biosampleObject.get('applied_modifications')
-                if not modifications:
-                    genetic_modifications['no genetic modifications'].add(biosampleObject['@id'])
-                else:
-                    for gm in modifications:
-                        gm_ids = set()
-                        gm_ids.add(gm['@id'])
-                        gm_combined = tuple(sorted(gm_ids))
-                    if gm_combined not in genetic_modifications:
-                        genetic_modifications[gm_combined] = set(biosampleObject['@id'])
-                    else:
-                        genetic_modifications[gm_combined].add(biosampleObject['@id'])
-
-    # Removed unused key from dict if necessary
-    if len(genetic_modifications['no genetic modifications']) == 0:
-        genetic_modifications.pop('no genetic modifications')
-
-    if len(genetic_modifications) > 1:
-        detail = 'Experiment {} contains biosamples with inconsistent genetic modifications'.format(audit_link(path_to_text(value['@id']), value['@id']))
-        yield AuditFailure('inconsistent genetic modifications', detail, level='INTERNAL_ACTION')
 
 
 function_dispatcher_without_files = {

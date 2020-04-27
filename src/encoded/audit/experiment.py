@@ -4048,6 +4048,9 @@ def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
+    if value['assay_term_name'] == 'pooled clone sequencing':
+        return
+
     if value.get('replicates') is not None and len(value['replicates']) > 1:
         for rep in value['replicates']:
             if (rep['status'] not in excluded_types and 'library' in rep and rep['library']['status'] not in excluded_types and 'biosample' in rep['library'] and rep['library']['biosample']['status'] not in excluded_types):
