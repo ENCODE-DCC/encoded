@@ -313,6 +313,8 @@ class CalculatedBiosampleSummary:
                                 biosampleObject.get('post_synchronization_time_units'),
                                 biosampleObject.get('post_treatment_time'),
                                 biosampleObject.get('post_treatment_time_units'),
+                                biosampleObject.get('post_nucleic_acid_delivery_time'),
+                                biosampleObject.get('post_nucleic_acid_delivery_time_units'),
                                 treatment_objects_list,
                                 preservation_method,
                                 part_of_object,

@@ -405,6 +405,8 @@ class Biosample(Item):
                 post_synchronization_time_units=None,
                 post_treatment_time=None,
                 post_treatment_time_units=None,
+                post_nucleic_acid_delivery_time=None,
+                post_nucleic_acid_delivery_time_units=None,
                 treatments=None,
                 part_of=None,
                 originated_from=None,
@@ -423,6 +425,7 @@ class Biosample(Item):
             'modifications_list',
             'originated_from',
             'treatments_phrase',
+            'post_nucleic_acid_delivery_time'
             'preservation_method',
             'depleted_in',
             'phase',
@@ -503,6 +506,8 @@ class Biosample(Item):
             post_synchronization_time_units,
             post_treatment_time,
             post_treatment_time_units,
+            post_nucleic_acid_delivery_time,
+            post_nucleic_acid_delivery_time_units,
             treatment_objects_list,
             preservation_method,
             part_of_object,
@@ -552,6 +557,8 @@ def generate_summary_dictionary(
         post_synchronization_time_units=None,
         post_treatment_time=None,
         post_treatment_time_units=None,
+        post_nucleic_acid_delivery_time=None,
+        post_nucleic_acid_delivery_time_units=None,
         treatment_objects_list=None,
         preservation_method=None,
         part_of_object=None,
@@ -568,6 +575,7 @@ def generate_summary_dictionary(
         'synchronization': '',
         'originated_from': '',
         'treatments_phrase': '',
+        'post_nucleic_acid_delivery_time': '',
         'depleted_in': '',
         'modifications_list': '',
         'strain_background': '',
@@ -708,6 +716,13 @@ def generate_summary_dictionary(
         dict_of_phrases['post_treatment'] = '{} after the sample was '.format(
             pluralize(post_treatment_time, post_treatment_time_units)
             )
+
+    if post_nucleic_acid_delivery_time is not None and \
+        post_nucleic_acid_delivery_time_units is not None:
+        dict_of_phrases['post_nucleic_acid_delivery_time'] = '{} post nucleic acid delivery time'.format(
+            pluralize(post_nucleic_acid_delivery_time, post_nucleic_acid_delivery_time_units)
+            )
+
 
     if ('sample_type' in dict_of_phrases and
         dict_of_phrases['sample_type'] != 'cell line') or \
