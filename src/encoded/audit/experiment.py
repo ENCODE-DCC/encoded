@@ -4059,10 +4059,7 @@ def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_
                 if not modifications:
                     genetic_modifications['no genetic modifications'].add(biosampleObject['@id'])
                 else:
-                    for gm in modifications:
-                        gm_ids = set()
-                        gm_ids.add(gm['@id'])
-                        gm_combined = tuple(sorted(gm_ids))
+                    gm_combined = tuple(sorted(gm['@id'] for gm in modifications))
                     if gm_combined not in genetic_modifications:
                         genetic_modifications[gm_combined] = set(biosampleObject['@id'])
                     else:
