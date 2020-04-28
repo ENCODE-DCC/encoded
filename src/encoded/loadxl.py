@@ -23,11 +23,15 @@ ORDER = [
     'surgery',
     'pathology_report',
     'surgery_procedure',
+
     'biospecimen',
+    
     'platform',
     'biolibrary',
+    'bioexperiment',
+
     'bioreplicate',
-    
+
     'biofile',
     'ihc',
     'medication',

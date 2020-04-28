@@ -1,0 +1,143 @@
+{
+    "title": "Bioexperiment",
+    "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
+    "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
+    "id": "/profiles/bioexperiment.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "lab","award","biospecimen", "experiment_classification", "experiment_description"],
+    "identifyingProperties": [ "accession" ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        {"$ref": "mixins.json#/accessioned_status"},
+
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/submitter_comment" }
+    ],
+    
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "accession": {
+            "accessionType": "BE"
+        },
+        "date_submitted": {
+            "title": "Date submitted" ,
+            "description": "The date that the experiment received all required replicates and files",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
+        },
+        "experiment_description": {
+            "title": "Experiment description",
+            "description": "The functional description of the experiment.",
+            "type": "string"
+        },
+        "experiment_classification": {
+            "title": "Experiment classification",
+            "description": "The categorization of the experiment.",
+            "type": "string",
+            "enum": [ 
+                "functional genomics assay",
+                "functional characterization assay"
+                ]
+        },
+        "biospecimen":{
+            "title": "Biosample information",
+            "description": "The functional description of the experiment.",
+            "type": "string",  
+            "linkTo": "Biospecimen"
+        },
+       
+        "documents": {
+            "description": "Protocols or other documents that describe the assay or the results (not data files)."
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External resources",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+                "type":  "string",
+                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
+            }
+        },
+        "internal_status": {
+            "type": "string",
+            "description": "The status of an experiment in the DCC process.",
+            "comment":"unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
+            "default": "unreviewed",
+            "permission": "import_items",
+            "title": "Internal status",
+            "enum": [
+                "unreviewed",
+                "pipeline ready",
+                "processing",
+                "pipeline completed",
+                "release ready",
+                "requires lab review",
+                "no available pipeline",
+                "pipeline error",
+                "unrunnable"
+            ]
+        },
+        "pipeline_error_detail": {
+            "type": "string",
+            "description": "Explanation of why the experiment failed pipeline analysis.",
+            "comment": "should be used on experiments with internal_status:pipeline error",
+            "permission": "import_items",
+            "title": "Pipeline error message"
+        }
+    },
+    "facets": {
+
+        "status": {
+            "title": "Status"
+        },
+       
+        "biospecimen":{
+            "title": "Biosample information"
+        },
+        "experiment_classification": {
+            "title": "Experiment classification"
+        }
+
+       
+        
+    },
+    "columns": {
+        "status": {
+            "title": "Status"
+        },
+        
+        "biospecimen":{
+            "title": "Biosample information"
+        },
+       
+        "experiment_classification": {
+            "title": "Experiment classification"
+        }
+    },
+    "boost_values": {
+        "accession":1.0,
+        "status": 1.0,
+        "biospecimen":1.0,
+        "experiment_classification": 1.0
+    },
+    "changelog": "/profiles/changelogs/bioexperiment.md"
+}

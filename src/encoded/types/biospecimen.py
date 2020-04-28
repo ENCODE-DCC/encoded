@@ -30,6 +30,7 @@ class Biospecimen(Item):
         'biolibrary',
         'biolibrary.biofile',
         'biolibrary.bioreplicate',
+        # 'biolibrary.bioreplicate.bioexperiment',
         'surgery',
         'surgery.pathology_report',
         'surgery.surgery_procedure',

@@ -19,7 +19,7 @@ import re
         'title': 'bioreplicates',
         'description': 'listing of bioreplicates',
     })
-class bioreplicate(Item):
+class Bioreplicate(Item):
     item_type = 'bioreplicate'
     schema = load_schema('encoded:schemas/bioreplicate.json')
 
@@ -28,7 +28,8 @@ class bioreplicate(Item):
     }
     embedded = [
         'biolibrary',
-        'biolibrary.biospecimen'
+        'biolibrary.biospecimen',
+        # 'bioexperiment'
     ]
     audit_inherit = [
     ]

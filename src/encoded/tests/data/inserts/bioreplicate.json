@@ -3,6 +3,7 @@
         "accession":"KCERP139SOR",
         "biological_replicate_number": 1,
         "biolibrary": "KCELB987EAA",
+        "bioexperiment":"KCEBE000ADH",
         "status": "released",
         "technical_replicate_number": 1,
         "uuid": "454c26c2-4252-49d7-a904-4ae479eb6743"
@@ -11,6 +12,7 @@
         "accession":"KCERP139SOS",
         "biological_replicate_number": 1,
         "biolibrary": "KCELB987EAA",
+        "bioexperiment":"KCEBE000ADH",
         "technical_replicate_number": 2,
         "status": "released",
         "uuid": "1d8d4a65-1db6-4400-ba95-6db3d98fb55f"
@@ -19,6 +21,7 @@
         "accession":"KCERP708IJT",
         "biological_replicate_number": 1,
         "biolibrary": "KCELB038EAA",
+        "bioexperiment":"KCEBE000AES",
         "technical_replicate_number": 1,
         "status": "released",
         "uuid": "18a45454-8f13-4bf2-842b-64a75613136a"
@@ -28,6 +31,7 @@
         "accession":"KCERP708IJU",
         "biological_replicate_number": 1,
         "biolibrary": "KCELB012FAA",
+        "bioexperiment":"KCEBE000AER",
         "technical_replicate_number": 1,
         "status": "released",
         "uuid": "ceb403d7-a51b-45eb-a220-643b2d12ecbf"
@@ -36,6 +40,7 @@
         "accession":"KCERP708IJV",
         "biological_replicate_number": 2,
         "biolibrary": "KCELB745FAA",
+        "bioexperiment":"KCEBE000AER",
         "technical_replicate_number": 1,
         "status": "released",
         "uuid": "2fd08d63-cb83-421a-8454-a9505da559c4"

@@ -1,0 +1,44 @@
+[
+
+    {
+      "accession": "KCEBE000AES",
+      "date_submitted": "2015-01-10",
+      "assay_term_name": "RNA-seq",
+      "award": "U54HG007004",
+      "lab": "thomas-gingeras",
+      "experiment_description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
+      "biospecimen": "KCEBS000AAA",
+      "status": "released",
+      "submitted_by": "dignissim.euismod@amet.habitant",
+      "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
+      "experiment_classification": "functional genomics assay"
+    },
+    {
+      "accession": "KCEBE000ADH",
+      "date_submitted": "2015-01-10",
+      "assay_term_name": "ChIP-seq",
+      "award": "ENCODE2-Mouse",
+      "lab": "sherman-weissman",
+      "experiment_description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
+      "biospecimen": "KCEBS087RNA",
+      "status": "released",
+
+      "submitted_by": "amet.fusce@est.fermentum",
+      "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
+      "experiment_classification": "functional genomics assay"
+    },
+
+    {
+        "accession": "KCEBE000AER",
+        "date_submitted": "2015-01-10",
+        "assay_term_name": "RAMPAGE",
+        "award": "ENCODE2",
+        "lab": "thomas-gingeras",
+        "experiment_description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
+        "biospecimen": "KCEBS708IJT",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
+        "experiment_classification": "functional characterization assay"
+      }
+  ]
