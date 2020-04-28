@@ -13,9 +13,10 @@ echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Check remote postgres uri
 PG_URI='postgresql:///encoded'
-if [ "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+if [ "$ENCD_BUILD_TYPE" == 'app' ] || [ "$ENCD_BUILD_TYPE" == 'app-es' ]; then
     PG_URI="postgresql://$ENCD_PG_IP/encoded"
 fi
+echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD PG_URI: $PG_URI"
 
 # Install App
 cd "$ENCD_HOME"
@@ -54,6 +55,17 @@ if [ ! -f "$some_other_bin_path" ]; then
     exit 1
 fi
 
+# Downlaod encoded demo aws keys
+encd_keys_dir=/home/ubuntu/encd-aws-keys
+mkdir "$encd_keys_dir"
+aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/encd-aws-keys "$encd_keys_dir"
+if [ ! -f "$encd_keys_dir/credentials" ]; then
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home encd aws creds"
+    # Build has failed
+    touch "$encd_failed_flag"
+    exit 1
+fi
+
 # Add aws keys to encoded user
 sudo -u encoded mkdir /srv/encoded/.aws
 sudo -u root cp /home/ubuntu/encd-aws-keys/* /srv/encoded/.aws/
@@ -73,7 +85,7 @@ fi
 
 # Finished running post pg scripts
 sudo -H -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-if [ ! "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
     sudo -H -u encoded "$ENCD_HOME/bin/create-mapping" "$ENCD_HOME/production.ini" --app-name app
     if [ $? -gt 0 ]; then
         echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: create-mapping return error status"
@@ -83,7 +95,7 @@ if [ ! "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
     fi
 fi
 
-if [ ! "$ENCD_BUILD_TYPE" == 'encd-demo-no-es-build' ] && [ ! "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
     sudo -H -u encoded "$ENCD_HOME/bin/index-annotations" "$ENCD_HOME/production.ini" --app-name app
     if [ $? -gt 0 ]; then
         echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: index-annotations return error status"

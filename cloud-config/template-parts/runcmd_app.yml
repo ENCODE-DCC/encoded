@@ -1,0 +1,3 @@
+- cloud-init-per once encd-pre sudo -u ubuntu %(SCRIPTS_DIR)s/ami-preapp.sh
+- cloud-init-per always encd-app sudo -u ubuntu %(SCRIPTS_DIR)s/app-wrapper.sh %(BATCHUPGRADE_VARS)s
+- cloud-init-per always encd-cloudwatch sudo -u ubuntu %(SCRIPTS_DIR)s/app-cloudwatchmon.sh

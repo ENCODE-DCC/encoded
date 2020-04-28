@@ -1,93 +1,140 @@
 Organization deployment configuration and build files
 =====================================================
+    When bin/deploy is run user_data is sent to AWS.  The user_data defines the type of deployment, 
+    i.e. Demo, es cluster, frontend, etc.  The user_data is compiled in two stages.  The first 
+    stage creates an Assembled Template.  By default the template is in memory but a bin/deploy
+    argument exists that allows the assembled template to be saved and used later.  The second stage 
+    adds Run Variables to the Assembled Template.  Then it can be sent as user_data to AWS to create
+    an instance.
 
+# Summary of cloud-config directory structure
 
-## Example commands
-
-# Deploy with ubuntu 18 base ami
-    ```
-    Demo
-    $ bin/deploy -n test-demo --full-build
-        "cycle_started": "2020-04-21T22:19:47.923214",
-        "indexed": 1392520,
-        "cycle_took": "3:31:02.360139"
+#### Templates are assembled with ./template-parts
+    # Standard Templates
+    Demo/QA Demo: app-es-pg-template.yml
+    Cluster Frontend: app-pg-template.yml
+    Cluster Elasticsearch: es-nodes-template.yml
     
-    Demo Cluster
-    $ bin/deploy --cluster-name test-wait --full-build --es-wait
-    used by Frontend with postgres
-    $ bin/deploy --cluster-name test-wait --full-build --es-ip a.b.c.d 
-    ```
+    # Non Standard Templates
+    Instance with remote pg: app-es-template.yml
+    Instance with remote pg/es: app-template.yml
 
-# Build and save a cloud config yml
-    ```
-    Demo
-    $ bin/deploy --save-config-name 20200421 
+    Open one of the templates above to compare with ./template-parts.  Each variable '%(var_name)s' 
+    in the template has a matching file in ./template-parts.  Next is a way to view and save
+    assembled templates.
+
+    We can save Assembled Templates with the --save-configure bin/deploy argument.  It will 
+    automaticallly determine which template to used based on input arguments.
+
+    $ bin/deploy --save-config-name 20200430
+    # Created assembeled template
+    #        ./cloud-config/assembled-templates/20200430-app-es-pg.yml
+    # Deploy with
+    #        $ bin/deploy --use-prebuilt-config 20200430-app-es-pg
+    # Diff with on the fly assembly.  Does not deploy
+    #        $ bin/deploy --use-prebuilt-config 20200430-app-es-pg --diff-configs
+
+
+#### Directories:
+    template-parts: Pieces of the templates
+    run-scripts: Install scripts runcmd_* template parts
+    configs: Configuration files used in run-scripts, like apache, java, es
+    assembled-templates: Assembled templates.  These still contains Run Varialbes to be filled in 
+    by bin/deploy
+    
+    # Other
+    create-ami.py: Helpers script to create amis in AWS
+
+#### Run_Variables
+    * Run variables are in /etc/environment file on the instance.  
+    * They are used in the run-scripts to configure the system and application builds
+    * /etc/environment is loaded into login/ssh sessions so you can echo them on the instance.
+    * The file will contain dupicate entries when deploying from an AMI.  Last ones are used.
+    
+    View them locally with --dry-run locally along with other info.  Does not deploy
+    $ bin/deploy --dry-run
+
+
+# Live Deployments
+    Below we'll deploy demos and clusters using the --full-build argument to avoid needing amis.  
+    Building from scratch is easier for cloud config development.
+
+### QA/Development demo: app-es-pg-template.yml
+    $ bin/deploy --full-build
+    
+    # Deploying app-es-pg
+    # $ bin/deploy --full-build
+    # create instance and wait for running state
+    ...
+
+        ### Output
+        Deploying app-es-pg
+        $ bin/deploy --full-build
+        create instance and wait for running state
+        ####
+
+### Demo Cluster(es-wait): es-nodes-template.yml and app-pg-template
+
+###### This command builds the Elasticsearch cluster
+    $ export CLUSTER_NAME='encd-dev'
+    $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-wait
    
-    ES Node - wait
-    $ bin/deploy --save-config-name 20200421 --es-wait --cluster-name some-name
+        ### Output
+        Deploying es-nodes
+        $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-wait
+        Create instance and wait for running state
+        # Deploying Head ES Node(172.31.26.236): encd-dev-datamaster
+        ###
 
-    ES Node - elect
-    $ bin/deploy --save-config-name 20200421 --es-elect --cluster-name some-name
+    The IP address is the --es-ip used to deploy a frontend.
+    $ export ES_IP='172.31.26.236'
+
+###### This command builds the front-end machine that connects to the specified elasticsearch cluster
+    $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-ip "$ES_IP"
     
-    Frontend with postgres
-    $ bin/deploy --save-config-name 20200421 --es-ip a.b.c.d --cluster-name some-name
-    ```
+        ### Output
+        Deploying app-pg
+        $ bin/deploy --full-build --cluster-name encd-dev --es-ip 172.31.26.236
+        Create instance and wait for running state
 
-# Deploy with prebuilt cloud config yml
-    ```
-    Demo
-    $ bin/deploy -n test-demo-prebuilt --use-prebuilt-config 20200421-demo --full-build
-   
-    ES Node - wait
-    $ bin/deploy --save-config-name 20200421 --es-wait --cluster-name some-name
+        Deploying Frontend(172.31.23.80): https://encd-dev.demo.encodedcc.org
+        ###
 
-    ES Node - elect
-    $ bin/deploy --save-config-name 20200421 --es-elect --cluster-name some-name
+### QA/Development demo with postgres pointing at Demo Cluster: app-pg-template.yml
+    $ bin/deploy --full-build -n app-pg-pointing-at-es --es-ip "$ES_IP" --no-indexing
+
+
+### Demo Cluster(es-wait) with open postgres port: es-nodes-template.yml and app-pg-template.yml
+
+###### This command builds the Elasticsearch cluster
+    $ export CLUSTER_NAME='encd-dev-open'
+    $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-wait
+
+        ### Output
+        Deploying es-nodes
+        $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-wait
+        Create instance and wait for running state
+        # Deploying Head ES Node(172.31.29.190): encd-dev-open-datamaster
+        ###
+
+    The IP address is the --es-ip used to deploy a frontend.
+    $ export ES_IP='172.31.29.190'
+
+###### This command builds the front-end machine that connects to the specified elasticsearch cluster with an open postgres port.
+    $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-ip "$ES_IP" --pg-open
     
-    Frontend with postgres
-    $ bin/deploy --save-config-name 20200421 --es-ip a.b.c.d --cluster-name some-name
-    ```
+        ### Output
+        Deploying app-pg
+        $ bin/deploy --full-build --cluster-name encd-dev-open --es-ip 172.31.29.190 --pg-open
+        Create instance and wait for running state
 
-# TBD
-## Build encoded AMIs
-## Deploy demo
-## Deploy cluster
+        Deploying Frontend(172.31.25.255): https://encd-dev.demo.encodedcc.org
+        ###
 
-## From remote pg demo
-### Deplot a demo with open postgres port
-    ```
-    export branch_name='ENCD-5216-deploy-demo-pointing-at-pg'
-    bin/deploy -b $branch_name -n 5216-pg-open --pg-open --full-build
-    ```
 
-### Deploy a demo with open postgres port
-    ```
-    export branch_name='ENCD-5216-deploy-demo-pointing-at-pg'
-    export pg_ip='172.31.20.118'
-    # remote postgres ip will be used for --es-ip 'ignored-with-pg-ip'
-    bin/deploy -b $branch_name -n 5216-pg-remote --pg-ip $pg_ip --full-build
-    ```
+### Demo with postgres and elasticsearch pointing at Demo Cluster: app-template.yml
+    $ export PG_IP='172.31.25.255'
+    $ bin/deploy --full-build -n app-pointing-at-pg-es --cluster-name "$CLUSTER_NAME" --es-ip "$ES_IP" --pg-ip "$PG_IP"
 
-## From remote es demo
-### Deploy es cluster
-    ```
-    export branch_name='5212-deploy-demo-pointing-at-es-cluster'
-    export cluster_name='5212-demo-es'
-    bin/deploy -b $branch_name --cluster-name $cluster_name --es-wait
-    # outputs: '--es-ip 172.31.23.141'
-    ```
 
-### Deploy a frontend to index the demeo
-    ```
-    export branch_name='5212-deploy-demo-pointing-at-es-cluster'
-    export cluster_name='5212-demo-es'
-    export es_ip='172.31.23.141'
-    bin/deploy -b $branch_name --cluster-name $cluster_name --es-ip $es_ip
-    ```
-
-### Deploy new frontend at es ip with its own db at the current snapshot.
-    ```
-    export branch_name='5212-deploy-demo-pointing-at-es-cluster'
-    export es_ip='172.31.23.141'
-    bin/deploy -b $branch_name -n 5121-test-demo --es-ip $es_ip --full-build
-    ```
+### (TBD) Demo with elasticsearch pointing at rds version of postgres: app-es-template.yml

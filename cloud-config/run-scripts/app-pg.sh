@@ -12,7 +12,7 @@ fi
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
-if [ "$ENCD_BUILD_TYPE" == 'encd-no-pg-build' ]; then
+if [ "$ENCD_BUILD_TYPE" == 'app' ] || [ "$ENCD_BUILD_TYPE" == 'app-es' ]; then
     echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Skipping install for no pg build"
     exit 0
 fi
@@ -55,6 +55,18 @@ function append_with_user {
 ### Configure
 
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Setup aws keys for wal-e"
+
+# Downlaod postgres demo aws keys
+pg_keys_dir='/home/ubuntu/pg-aws-keys'
+mkdir "$pg_keys_dir"
+aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/pg-aws-keys "$pg_keys_dir"
+if [ ! -f "$pg_keys_dir/credentials" ]; then
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
+    # Build has failed
+    touch "$encd_failed_flag"
+    exit 1
+fi
+
 ## Copy postgres aws to home
 pg_keys_dir='/home/ubuntu/pg-aws-keys'
 if [ ! -f "$pg_keys_dir/credentials" ]; then

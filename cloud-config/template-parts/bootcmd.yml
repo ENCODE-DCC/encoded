@@ -1,4 +1,3 @@
-bootcmd:
 - set -ex
 - cloud-init-per once apt-update apt-get update
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile

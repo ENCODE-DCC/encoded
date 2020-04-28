@@ -14,7 +14,7 @@ if [ "$ENCD_FULL_BUILD" == 'True' ]; then
     touch "$encd_do_install_flag"
 fi
 # Normal builds es is not installed/configured on the ami
-if [ "$ENCD_BUILD_TYPE" == 'encd-es-build' ]; then
+if [ "$ENCD_BUILD_TYPE" == 'es-nodes' ]; then
     if [ ! -f "$encd_do_install_flag" ]; then
         echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) Skipping ES AMI build. Set do install flag"
         # For es builds we set the do install flag here since this is the main app
@@ -83,7 +83,7 @@ if [ $? -gt 0 ]; then
     touch "$encd_failed_flag"
     exit 1
 fi
-if [ "$ENCD_BUILD_TYPE" == 'encd-es-build' ]; then
+if [ "$ENCD_BUILD_TYPE" == 'es-nodes' ]; then
     # For es builds we set the is installed flag here since this is the main app
     # We could have alternativily created an app-wrapper.sh for elasticsearch
     touch "$encd_is_installed_flag"

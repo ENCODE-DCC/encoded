@@ -1,6 +1,6 @@
 #cloud-config
 ssh_authorized_keys:
-  - %(SSH_KEY)s
+- %(SSH_KEY)s
 apt_sources:
 - source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
 - source: "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main"
@@ -10,44 +10,18 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- cloud-init-per once curl-nodeinstall curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 - cloud-init-per once aptkeyget-elasticsearch wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch > /etc/apt/es_gpg_key
 - cloud-init-per once aptkeyadd-elasticsearch apt-key add /etc/apt/es_gpg_key
 - cloud-init-per once aptkeyget-postgres wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc > /etc/apt/pg_gpg_key
 - cloud-init-per once aptkeyadd-postgres apt-key add /etc/apt/pg_gpg_key
+- cloud-init-per once curl-nodeinstall curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 packages:
+# Additions for all builds
+## General
 - awscli
 - git
 - unattended-upgrades
-# apache
-- apache2
-- apache2-dev
-- apache2-utils
-- ssl-cert
-- libapache2-mod-wsgi-py3
-- w3m
-# cloudwatchmon
-# encoded app install
-## ckeditor
-- bsdtar
-## Pillow
-- libjpeg8-dev
-- zlib1g-dev
-## psycopg2
-- libpq-dev
-# es
-- apt-transport-https
-- elasticsearch
-# node
-- nodejs
-## node optional installed for native add-ons
-- g++
-- gcc
-- make
-# postgresql
-- daemontools
-- postgresql-11
-# python
+## python
 - build-essential
 - libbz2-dev
 - libdb-dev
@@ -62,34 +36,64 @@ packages:
 - python3-dev
 - python3-venv
 - zlib1g-dev
-# redis
+## redis
 - redis-server
-# wal-e
-- lzop
-# # unknown - Leaving these here for a bit just in case
+# Additions for encoded application
+## apache
+- apache2
+- apache2-dev
+- apache2-utils
+- ssl-cert
+- libapache2-mod-wsgi-py3
+- w3m
+## ckeditor
+- bsdtar
+## Pillow
+- libjpeg8-dev
+- zlib1g-dev
+## psycopg2
+- libpq-dev
+## postgresql
+- daemontools
+- postgresql-11
+## node
+- nodejs
+### node optional installed for native add-ons
+- g++
+- gcc
+- make
+# Other - Unknown
 # - graphviz
 # - libevent-dev
 # - libmagic-dev
 # - libxml2-dev
 # - libxslt1-dev
-# - ntp
-# - pv
-# - ruby-dev
-# - update-notifier-common
-# - bsd-mailx
+# Additions for elasticsearch
+- apt-transport-https
+- elasticsearch
+# Additions for wal-e and postgres
+- lzop
+- pv
+# Additions for node for encoded application
+- nodejs
+### node optional installed for native add-ons
+- g++
+- gcc
+- make
 power_state:
   mode: reboot
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 runcmd:
-- cloud-init-per once libmagic-mgc-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb && sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb && sudo apt-get install -f
-- cloud-init-per once libmagic1-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb && sudo dpkg -i libmagic1_5.38-4_amd64.deb && sudo apt-get install -f
-- cloud-init-per once libmagic-dev-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb && sudo dpkg -i libmagic-dev_5.38-4_amd64.deb && sudo apt-get install -f
+- cloud-init-per once libmagic-mgc-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb && sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb && sudo apt-get install -yf
+- cloud-init-per once libmagic1-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb && sudo dpkg -i libmagic1_5.38-4_amd64.deb && sudo apt-get install -yf
+- cloud-init-per once libmagic-dev-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb && sudo dpkg -i libmagic-dev_5.38-4_amd64.deb && sudo apt-get install -yf
+- cloud-init-per once libmagic-dev-install sudo apt --fix-broken install && sudo apt autoremove
 - cloud-init-per once encd-git-repo sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
 - cloud-init-per once encd-git-branch sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
-- cloud-init-per once encd-post-boot sudo -u ubuntu %(SCRIPTS_DIR)s/ami-pre.sh
 - cloud-init-per once encd-java sudo -u ubuntu %(SCRIPTS_DIR)s/ami-java.sh
 - cloud-init-per once encd-redis sudo -u ubuntu %(SCRIPTS_DIR)s/ami-redis.sh
+- cloud-init-per always encd-elasticsearch sudo -u ubuntu %(SCRIPTS_DIR)s/ami-elasticsearch.sh
 - cloud-init-per once encd-pre sudo -u ubuntu %(SCRIPTS_DIR)s/ami-preapp.sh
 - cloud-init-per always encd-app sudo -u ubuntu %(SCRIPTS_DIR)s/app-wrapper.sh %(BATCHUPGRADE_VARS)s
 - cloud-init-per always encd-cloudwatch sudo -u ubuntu %(SCRIPTS_DIR)s/app-cloudwatchmon.sh
@@ -122,6 +126,7 @@ write_files:
     encd_is_installed_flag=/home/ubuntu/.encd_is_installed_flag
     encd_failed_flag=/home/ubuntu/.encd_failed_flag
     ENCD_APP_WORKERS=%(APP_WORKERS)s
+    ENCD_BATCHUPGRADE=%(BATCHUPGRADE)s
     ENCD_BATCHUPGRADE_VARS='%(BATCHUPGRADE_VARS)s'
     ENCD_BUILD_TYPE=%(BUILD_TYPE)s
     ENCD_CC_DIR=%(CC_DIR)s
