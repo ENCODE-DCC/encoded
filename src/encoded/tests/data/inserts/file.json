@@ -49,6 +49,7 @@
         "file_format": "bam",
         "lab":"j-michael-cherry",
         "cropped_read_length": 44,
+        "cropped_read_length_tolerance": 2,
         "md5sum": "93be74b6e11515393507f4ebfa66d78d",
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
