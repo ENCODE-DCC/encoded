@@ -316,6 +316,7 @@ def test_audit_experiment_inconsistent_genetic_modifications(
         testapp,
         construct_genetic_modification,
         interference_genetic_modification,
+        genetic_modification,
         base_fcc_experiment,
         replicate_1_1,
         replicate_2_1,
@@ -340,5 +341,12 @@ def test_audit_experiment_inconsistent_genetic_modifications(
     # biosamples with different genetic modifications
     testapp.patch_json(biosample_2['@id'],
                        {'genetic_modifications': [interference_genetic_modification['@id']]})
+    res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+    # biosamples with two genetic modifications each, with one different genetic modification for each biosample
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id'], genetic_modification['@id']]})
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id'], genetic_modification['@id']]})
     res = testapp.get(base_fcc_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
