@@ -3126,6 +3126,20 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
+                    {selectedFile.cropped_read_length !== undefined ?
+                        <div data-test="croppedreadlength">
+                            <dt>Cropped read length</dt>
+                            <dd>{selectedFile.cropped_read_length}</dd>
+                        </div>
+                    : null}
+
+                    {selectedFile.cropped_read_length_tolerance !== undefined ?
+                        <div data-test="croppedreadlengthtolerance">
+                            <dt>Cropped read length tolerance</dt>
+                            <dd>{selectedFile.cropped_read_length_tolerance}</dd>
+                        </div>
+                    : null}
+
                     {selectedFile.assembly ?
                         <div data-test="assembly">
                             <dt>Mapping assembly</dt>
