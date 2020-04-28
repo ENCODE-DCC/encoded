@@ -12,6 +12,7 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/uuid" }
     ],
     "type": "object",
