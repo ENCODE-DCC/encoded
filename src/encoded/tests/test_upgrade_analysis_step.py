@@ -49,3 +49,12 @@ def test_analysis_step_7_8(upgrader, analysis_step_7):
     assert value['schema_version'] == '8'
     assert sorted(value['input_file_types']) == expectation
     assert sorted(value['output_file_types']) == expectation
+
+
+def test_analysis_step_8_9(upgrader, analysis_step_8):
+    value = upgrader.upgrade('analysis_step', analysis_step_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert 'representative dnase hypersensitivity sites' not in value['input_file_types']
+    assert 'representative dnase hypersensitivity sites' not in value['output_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' in value['output_file_types']

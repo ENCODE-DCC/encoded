@@ -130,3 +130,9 @@ def test_file_upgrade_17_to_18(upgrader, file_17):
     value = upgrader.upgrade('file', file_17, current_version='17', target_version='18')
     assert value['schema_version'] == '18'
     assert 'assembly' not in value
+
+
+def test_file_upgrade_18_to_19(upgrader, file_18):
+    value = upgrader.upgrade('file', file_18, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert value['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)'

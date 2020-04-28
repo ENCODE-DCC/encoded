@@ -107,3 +107,17 @@ def analysis_step_bam(testapp):
         'major_version': 2
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_8(testapp):
+    item = {
+        'schema_version': '8',
+        'step_label': 'rdhs-step',
+        'title': 'rdhs step',
+        'major_version': 1,
+        'analysis_step_types': ['QA calculation'],
+        'input_file_types': ['representative dnase hypersensitivity sites'],
+        'output_file_types': ['representative dnase hypersensitivity sites']
+    }
+    return item

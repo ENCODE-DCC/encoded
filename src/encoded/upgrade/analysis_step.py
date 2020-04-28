@@ -206,3 +206,18 @@ def analysis_step_7_8(value, system):
             output_file_types.remove('pseudoreplicated idr thresholded peaks')
             output_file_types.append('pseudoreplicated IDR thresholded peaks')
             value['output_file_types'] = output_file_types
+
+
+@upgrade_step('analysis_step', '8', '9')
+def analysis_step_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'representative dnase hypersensitivity sites' in output_file_types:
+        output_file_types.remove('representative dnase hypersensitivity sites')
+        output_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
+    if input_file_types and 'representative dnase hypersensitivity sites' in input_file_types:
+        input_file_types.remove('representative dnase hypersensitivity sites')
+        input_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
+    return

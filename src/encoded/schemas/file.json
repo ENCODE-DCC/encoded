@@ -883,7 +883,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "18"
+            "default": "19"
         },
         "accession": {
             "accessionType": "FF"
@@ -1349,7 +1349,7 @@
                         "replicated peaks",
                         "replication timing profile",
                         "reporter code counts",
-                        "representative dnase hypersensitivity sites",
+                        "representative DNase hypersensitivity sites (rDHSs)",
                         "restriction enzyme site locations",
                         "RNA-binding protein associated mRNAs",
                         "rRNA reference",
@@ -1857,7 +1857,7 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate Cis-Regulatory Elements": "annotation",
-        "representative dnase hypersensitivity sites":"annotation",
+        "representative DNase hypersensitivity sites (rDHSs)": "annotation",
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",

@@ -578,3 +578,13 @@ def dataset_28_29(value, system):
         value.pop('dbxrefs', None)
     else:
         value['dbxrefs'] = sorted(new_dbxrefs)
+
+
+@upgrade_step('annotation', '27', '28')
+def annotation_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "representative DNase hypersensitivity sites":
+        value['annotation_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return

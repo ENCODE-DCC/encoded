@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 28
+* Updated *representative DNase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *annotation_type*.
+
 ### Minor changes since schema version 27
 * Added ENCODE v6 to the list of enums within *encyclopedia_version* property.
 

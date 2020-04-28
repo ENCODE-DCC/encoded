@@ -1,5 +1,8 @@
 ## Changelog for analysis_step.json
 
+### Schema version 9
+* Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enums for *output_file_types* and *input_file_types*.
+
 ### Minor changes since schema version 8
 * *input_file_types* and *output_file_types* were updated to have the following enum term(s) to match File schema: *miRNA annotations*, *personalized genome assembly*.
 * *personalized genome assembly* was also added to the enum list for *analysis_step_types*.

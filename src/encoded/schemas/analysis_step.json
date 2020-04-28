@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "step_label": {
             "title": "Step label",
@@ -184,7 +184,7 @@
                     "replicated peaks",
                     "replication timing profile",
                     "reporter code counts",
-                    "representative dnase hypersensitivity sites",
+                    "representative DNase hypersensitivity sites (rDHSs)",
                     "RNA-binding protein associated mRNAs",
                     "rRNA reference",
                     "safe-targeting gRNAs",
@@ -310,7 +310,7 @@
                     "replicated peaks",
                     "replication timing profile",
                     "reporter code counts",
-                    "representative dnase hypersensitivity sites",
+                    "representative DNase hypersensitivity sites (rDHSs)",
                     "RNA-binding protein associated mRNAs",
                     "rRNA reference",
                     "safe-targeting gRNAs",
