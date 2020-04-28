@@ -550,10 +550,12 @@ class RawSequencingTable extends React.Component {
                                 ((!file.biological_replicates || file.biological_replicates.length === 0) &&
                                 (!partner.biological_replicates || partner.biological_replicates.length === 0))) {
                             // Both the file and its partner qualify as good pairs of each other.
-                            // Let hem pass the filter, and set their sort keys to the lower of the
-                            // two accessions -- that's how pairs will sort within a biological
-                            // replicate. Also track the `pairSortId` which is the same as
-                            // `portSortKey` but without the paired_end property concatenated.
+                            // Let them pass the filter, and set their sort keys to the lower of
+                            // the two accessions -- that's how pairs will sort within a biological
+                            // replicate. The sort keys also get their paired_end value
+                            // concatenated so they sort as pairs correctly. Also track the
+                            // `pairSortId` which is the same as portSortKey` but without the
+                            // paired_end property concatenated.
                             partner.pairSortId = file.title < partner.title ? file.title : partner.title;
                             partner.pairSortKey = `${partner.pairSortId}-${partner.paired_end}`;
                             file.pairSortId = partner.pairSortId;
@@ -589,7 +591,8 @@ class RawSequencingTable extends React.Component {
             // Copy indexFiles to have `pairSortId` and  `pairSortKey` properties similar to the
             // corresponding reads files’ pairSortKeys. For ease-of-implementation and performance,
             // we only look for the one file of the pair in `pairedFiles` to get its pairSortKey
-            // root (without appended `paired_end` string) -- not both files.
+            // root (without appended `paired_end` string) -- not both files. Append "-I" to
+            // `poirSortKey` to index reads files sort after the pairs they associate with.
             const pairedFileIndexReads = [];
             if (indexFiles) {
                 indexFiles.forEach((indexFile) => {
