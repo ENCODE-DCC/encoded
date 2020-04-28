@@ -667,3 +667,14 @@ def experiment_with_analyses_2(testapp, lab, award, heart, file_bam_1_1, file_ba
         ]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def experiment_28(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'Mint-ChIP-seq',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
