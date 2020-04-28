@@ -1,6 +1,10 @@
 from rdflib import ConjunctiveGraph, exceptions, Namespace
 from rdflib import RDFS, RDF, BNode
 from rdflib.collection import Collection
+from .ntr_terms import (
+    ntr_assays,
+    ntr_biosamples
+)
 import json
 
 EPILOG = __doc__
@@ -261,7 +265,6 @@ slim_shims = {
         'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
     }
-
 }
 
 preferred_name = {
@@ -315,270 +318,6 @@ type_slims = {
     'OBI:0000424': 'transcription profiling assay',
     'OBI:0000634': 'DNA methylation profiling assay',
     'OBI:0000435': 'genotyping assay'
-}
-
-# Note this also shows the final datastructure for ontology.json
-ntr_assays = {
-    "NTR:0000612": {
-        "assay": ['RNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Switchgear",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000762": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "shRNA knockdown followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "shRNA RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000763": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "siRNA knockdown followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "siRNA RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0001132": {
-        "assay": ['RNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "RNA Bind-N-Seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "RNA Bind-N-Seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0003082": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "single cell isolation followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "scRNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0004774": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "genetic modification followed by DNase-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "GM DNase-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0003814": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPR genome editing followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CRISPR RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0004619": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPRi followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CRISPRi RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000438": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "single-nucleus ATAC-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "snATAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000433": {
-        "assay": ['RNA structure'],
-        "category": [],
-        "developmental": [],
-        "name": "in vivo click selective 2-hydroxyl acylation and profiling experiment",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "icSHAPE",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000444": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "single-cell ATAC-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "scATAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000445": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "long read RNA sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "long read RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000458": {
-        "assay": ['DNA sequencing'],
-        "category": [],
-        "developmental": [],
-        "name": "Clone-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "Clone-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000513": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "proximity ligation-assisted ChIP-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PLAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000515": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "massively parallel reporter assay",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "MPRA",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000519": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "pooled clone sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "pooled clone sequencing",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000520": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPR screen",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CRISPR screen",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000536": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "PRO-cap",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PRO-cap",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000538": {
-        "assay": ['RNA structure'],
-        "category": [],
-        "developmental": [],
-        "name": "in vivo click light activated structural examination of RNA",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "icLASER",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-        "NTR:0000544": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "split-pool recognition of interactions by tag extension",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "SPRITE",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
 }
 
 
@@ -1054,6 +793,7 @@ def main():
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
     
     terms.update(ntr_assays)
+    terms.update(ntr_biosamples)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
 
