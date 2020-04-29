@@ -255,6 +255,7 @@ export const ViewControls = ({ results, filterTerm, activeFilters, alternativeNa
                     if (alternativeNames) {
                         return (
                             <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
+                                {svgIcon(buttonData.icon)}
                                 {alternativeNames[viewIdx]}
                             </a>
                         );

@@ -11,8 +11,7 @@ import * as globals from './globals';
 import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ViewControls } from './view_controls';
-import BodyMap from './body_map';
-
+import BodyMap, { systemsField, organField } from './body_map';
 
 /**
  * Generate an array of data from one facet bucket for displaying in a chart, with one array entry
@@ -43,10 +42,6 @@ function generateStatusData(buckets, labels) {
 // Data field for organism
 // We will display different facets depending on the selected organism
 const organismField = 'replicates.library.biosample.donor.organism.scientific_name';
-// Query for systems slim
-const systemsField = 'biosample_ontology.system_slims';
-// Query for organ slim
-const organField = 'biosample_ontology.organ_slims';
 
 // Mapping of shortened organism name and full scientific organism name
 const organismTerms = {
@@ -360,12 +355,13 @@ class SummaryBody extends React.Component {
     render() {
         let clearButton;
         const searchQuery = url.parse(this.props.context['@id']).search;
-        if (searchQuery) {
+        const query = new QueryString(searchQuery);
+        if (query) {
             // If we have a 'type' query string term along with others terms, we need a Clear Filters
             // button.
-            const terms = queryString.parse(searchQuery);
-            const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
-            clearButton = nonPersistentTerms && terms.type;
+            const nonPersistentQuery = query.clone();
+            nonPersistentQuery.deleteKeyValue('type');
+            clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('type') > 0;
         }
         return (
             <div className="summary-header">
@@ -402,7 +398,6 @@ class SummaryBody extends React.Component {
                                 <BodyMap context={this.props.context} />
                                 <SummaryData context={this.props.context} displayCharts={'donuts'} />
                             </div>
-                            <SummaryHorizontalFacets context={this.props.context} facetList={'human'} />
                             <div className="summary-content">
                                 <SummaryData context={this.props.context} displayCharts={'area'} />
                             </div>

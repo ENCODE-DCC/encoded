@@ -70,6 +70,10 @@ $results-background: #E9E9E9;
                 font-size: 0.8rem;
                 margin: 2px;
             }
+            .svg-icon {
+                vertical-align: text-bottom;
+                margin-right: 10px;
+            }
         }
     }
 }
@@ -124,6 +128,9 @@ $results-background: #E9E9E9;
     .summary-content__data {
         background: $results-background;
         padding: 30px;
+        @media screen and (max-width: $screen-xs-min) {
+            padding: 10px 0;
+        }
     }
 
     @media screen and (min-width: $screen-md-min) {

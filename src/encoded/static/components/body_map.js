@@ -6,9 +6,9 @@ import QueryString from '../libs/query_string';
 import BodyDiagram from '../img/bodyMap/Deselected_Body';
 
 // Query for systems slim
-const systemsField = 'biosample_ontology.system_slims';
+export const systemsField = 'biosample_ontology.system_slims';
 // Query for organ slim
-const organField = 'biosample_ontology.organ_slims';
+export const organField = 'biosample_ontology.organ_slims';
 
 // Mapping from organ slims to paths and shapes on the body map SVG
 // Note: there is some complexity here because some organ slims are overlapping, or subsets of each other, or synonymous
@@ -90,25 +90,41 @@ const CellsList = {
 //     (you cannot select only the organ slim or the systems slim, you must select both because of the identical name)
 const SystemsList = {
     'central nervous system': ['brain', 'spinal chord'],
-    'circulatory system': ['blood', 'blood vessel', 'arterial blood vessel', 'heart', 'pericardium', 'vein'],
-    'digestive system': ['esophagus', 'small intestine', 'large intestine', 'liver', 'gallbladder', 'mouth', 'spleen', 'stomach', 'tongue', 'colon'],
+    'circulatory system': ['blood', 'blood vessel', 'arterial blood vessel', 'heart', 'pericardium', 'vein', 'lymphatic vessel'],
+    'digestive system': ['esophagus', 'intestine', 'small intestine', 'large intestine', 'liver', 'gallbladder', 'mouth', 'spleen', 'stomach', 'tongue', 'colon'],
     'endocrine system': ['adrenal gland', 'liver', 'gallbladder', 'pancreas', 'thymus', 'thyroid gland'],
     'excretory system': ['urinary bladder', 'kidney', 'ureter'],
-    'immune system': ['lymphoid tissue', 'spleen', 'thymus'],
+    'immune system': ['lymphoid tissue', 'spleen', 'thymus', 'bone marrow', 'lymph node', 'lymphatic vessel'],
     'musculature of body': ['musculature of body'],
     'peripheral nervous system': ['nerve'],
-    'reproductive system': ['ovary', 'penis', 'placenta', 'prostate gland', 'testis', 'uterus', 'vagina'],
+    'reproductive system': ['gonad', 'ovary', 'penis', 'placenta', 'prostate gland', 'testis', 'uterus', 'vagina'],
     'respiratory system': ['trachea', 'bronchus', 'lung'],
     'sensory system': ['eye', 'nose', 'tongue'],
-    'skeletal system': ['bone element', 'skeleton'],
+    'skeletal system': ['bone element', 'skeleton', 'bone marrow'],
+    'integumental system': ['mammary gland', 'skin of body'],
 };
 
 // Unhighlight all highlighted organ / inset image / systems terms and all highlighted svg paths / shapes and all highlighted inset images
 const unHighlightOrgan = () => {
     const matchingElems = document.querySelectorAll('.highlight');
-    [].forEach.call(matchingElems, (el) => {
+    matchingElems.forEach((el) => {
         el.classList.remove('highlight');
     });
+};
+
+// Add class "class" to all elements that match input parameter string "matchingString"
+// removeFlag = true will remove the class rather than add it
+const addingClass = (changedClass, matchingString, removeFlag = false) => {
+    const matchingElems = document.querySelectorAll(`.${matchingString}`);
+    if (removeFlag) {
+        matchingElems.forEach((el) => {
+            el.classList.remove(changedClass);
+        });
+    } else {
+        matchingElems.forEach((el) => {
+            el.classList.add(changedClass);
+        });
+    }
 };
 
 // Highlight all of the svg paths / shapes corresponding to a hovered-over svg path / shape and highlight corresponding term(s)
@@ -116,11 +132,8 @@ const unHighlightOrgan = () => {
 // For example, when the user hovers over one kidney, we want both kidneys to highlight because both will be selected upon click
 // As another example, "musculature of body" is comprised of 7 paths right next to each other and it would be confusing for just one line or section to highlight on hover
 const svgHighlight = (e) => {
-    const highlightElems = document.querySelectorAll('.highlight');
     // Remove existing highlights
-    [].forEach.call(highlightElems, (el) => {
-        el.classList.remove('highlight');
-    });
+    unHighlightOrgan();
     const svgClass = e.target.className.baseVal;
     if (svgClass) {
         e.target.className.baseVal = `${svgClass} highlight`;
@@ -129,10 +142,7 @@ const svgHighlight = (e) => {
                 // Highlight corresponding organ term
                 document.getElementById(b).classList.add('highlight');
                 BodyList[b].forEach((bodyClass) => {
-                    const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                    [].forEach.call(matchingElems, (el) => {
-                        el.classList.add('highlight');
-                    });
+                    addingClass('highlight', bodyClass);
                     if (bodyClass.indexOf('cls') === -1) {
                         // Highlight corresponding organ term
                         document.getElementById(bodyClass).classList.add('highlight');
@@ -152,10 +162,7 @@ const highlightOrgan = (e) => {
     const currentOrgan = e.target.id;
     // Check inset images mapping to see if term exists in that object
     if (Object.keys(CellsList).includes(currentOrgan)) {
-        const matchingElems = document.querySelectorAll(`.${currentOrgan.replace(' ', '-')}`);
-        [].forEach.call(matchingElems, (el) => {
-            el.classList.add('highlight');
-        });
+        addingClass('highlight', currentOrgan.replace(' ', '-'));
         document.getElementById(currentOrgan).classList.add('highlight');
     // If not, check organs mapping searching for the term
     } else {
@@ -166,23 +173,14 @@ const highlightOrgan = (e) => {
                         document.getElementById(bodyClass).classList.add('highlight');
                         const newBodyClass = BodyList[bodyClass];
                         if (!newBodyClass) {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.add('highlight');
-                            });
+                            addingClass('highlight', bodyClass);
                         } else {
                             newBodyClass.forEach((b2) => {
-                                const matchingElems = document.querySelectorAll(`.${b2}`);
-                                [].forEach.call(matchingElems, (el) => {
-                                    el.classList.add('highlight');
-                                });
+                                addingClass('highlight', b2);
                             });
                         }
                     } else {
-                        const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                        [].forEach.call(matchingElems, (el) => {
-                            el.classList.add('highlight');
-                        });
+                        addingClass('highlight', bodyClass);
                     }
                 });
             }
@@ -196,22 +194,16 @@ const highlightOrgan = (e) => {
                         const newBodyClass = BodyList[bodyClass];
                         if (!newBodyClass) {
                             const matchingElems = document.querySelectorAll(`.${bodyClass}, .${bodyClass.replace(' ', '-')}`);
-                            [].forEach.call(matchingElems, (el) => {
+                            matchingElems.forEach((el) => {
                                 el.classList.add('highlight');
                             });
                         } else {
                             newBodyClass.forEach((b2) => {
-                                const matchingElems = document.querySelectorAll(`.${b2}`);
-                                [].forEach.call(matchingElems, (el) => {
-                                    el.classList.add('highlight');
-                                });
+                                addingClass('highlight', b2);
                             });
                         }
                     } else {
-                        const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                        [].forEach.call(matchingElems, (el) => {
-                            el.classList.add('highlight');
-                        });
+                        addingClass('highlight', bodyClass);
                     }
                 });
             }
@@ -240,7 +232,6 @@ class BodyMap extends React.Component {
         // In the case that there are only organ slims, we initialize "organTerms" to consist of organ slims
         // In the case that there are both organ and system slims, append system terms to organ terms
         // Currently this code has a lot of cases to prevent spread syntax from spreading single terms (strings) into individual letters
-        // There may be a better way to do this, but I didn't come up with one
         if (systemsTerms && organTerms) {
             if (typeof organTerms === 'string') {
                 // There is one organ term, one systems term (only applies to case of "musculature of body")
@@ -274,40 +265,19 @@ class BodyMap extends React.Component {
     // and highlight the body map elements which correspond to those terms
     componentDidMount() {
         const searchQuery = url.parse(this.props.context['@id']).search;
-        const terms = queryString.parse(searchQuery);
-        if (terms[organField]) {
-            // Do I need this "if" statement or could I write it better?
-            if (typeof terms[organField] === 'string') {
-                const term = terms[organField];
-                if (term && BodyList[term]) {
+        const query = new QueryString(searchQuery);
+        const terms = query.getKeyValues(organField);
+        if (terms.length > 0) {
+            terms.forEach((term) => {
+                if (BodyList[term]) {
                     BodyList[term].forEach((bodyClass) => {
-                        const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                        [].forEach.call(matchingElems, (el) => {
-                            el.classList.add('active');
-                        });
+                        addingClass('active', bodyClass);
                     });
                 }
-            } else {
-                terms[organField].forEach((term) => {
-                    if (term && BodyList[term]) {
-                        BodyList[term].forEach((bodyClass) => {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.add('active');
-                            });
-                        });
-                    }
-                });
-            }
-        }
-        if (terms[systemsField]) {
-            if (typeof terms[systemsField] === 'string') {
-                document.getElementById(terms[systemsField]).classList.add('active');
-            } else {
-                terms[systemsField].forEach((systemClass) => {
-                    document.getElementById(systemClass).classList.add('active');
-                });
-            }
+                if (SystemsList[term]) {
+                    document.getElementById(term).classList.add('active');
+                }
+            });
         }
     }
 
@@ -316,10 +286,8 @@ class BodyMap extends React.Component {
         if (this.state.selectedOrgan.length !== 0) {
             // Clear terms from state and clear "active" class from organs
             this.setState({ selectedOrgan: [] });
-            const matchingElems = document.querySelectorAll('.active');
-            [].forEach.call(matchingElems, (el) => {
-                el.classList.remove('active');
-            });
+            // Removing class "active" from all elements with an "active" class (removeFlag = true)
+            addingClass('active', 'active', true);
             // Renavigate to fresh url
             const parsedUrl = url.parse(this.props.context['@id']);
             const query = new QueryString(parsedUrl.query);
@@ -363,23 +331,14 @@ class BodyMap extends React.Component {
                             document.getElementById(bodyClass).classList.add('active');
                             const newBodyClass = BodyList[bodyClass];
                             if (!newBodyClass) {
-                                const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                                [].forEach.call(matchingElems, (el) => {
-                                    el.classList.add('active');
-                                });
+                                addingClass('active', bodyClass);
                             } else {
                                 newBodyClass.forEach((b2) => {
-                                    const matchingElems = document.querySelectorAll(`.${b2}`);
-                                    [].forEach.call(matchingElems, (el) => {
-                                        el.classList.add('active');
-                                    });
+                                    addingClass('active', b2);
                                 });
                             }
                         } else {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.add('active');
-                            });
+                            addingClass('active', bodyClass);
                         }
                     });
                 }
@@ -394,23 +353,14 @@ class BodyMap extends React.Component {
                             document.getElementById(bodyClass).classList.add('active');
                             const newBodyClass = BodyList[bodyClass];
                             if (!newBodyClass) {
-                                const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                                [].forEach.call(matchingElems, (el) => {
-                                    el.classList.add('active');
-                                });
+                                addingClass('active', bodyClass);
                             } else {
                                 newBodyClass.forEach((b2) => {
-                                    const matchingElems = document.querySelectorAll(`.${b2}`);
-                                    [].forEach.call(matchingElems, (el) => {
-                                        el.classList.add('active');
-                                    });
+                                    addingClass('active', b2);
                                 });
                             }
                         } else {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.add('active');
-                            });
+                            addingClass('active', bodyClass);
                         }
                     });
                 }
@@ -426,23 +376,17 @@ class BodyMap extends React.Component {
                             document.getElementById(bodyClass).classList.remove('active');
                             const newBodyClass = BodyList[bodyClass];
                             if (!newBodyClass) {
-                                const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                                [].forEach.call(matchingElems, (el) => {
-                                    el.classList.remove('active');
-                                });
+                                // Removing "active" class (removeFlag = true)
+                                addingClass('active', bodyClass, true);
                             } else {
                                 newBodyClass.forEach((b2) => {
-                                    const matchingElems = document.querySelectorAll(`.${b2}`);
-                                    [].forEach.call(matchingElems, (el) => {
-                                        el.classList.remove('active');
-                                    });
+                                    // Removing "active" class (removeFlag = true)
+                                    addingClass('active', b2, true);
                                 });
                             }
                         } else {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.remove('active');
-                            });
+                            // Removing "active" class (removeFlag = true)
+                            addingClass('active', bodyClass, true);
                         }
                     });
                 }
@@ -457,23 +401,17 @@ class BodyMap extends React.Component {
                             document.getElementById(bodyClass).classList.remove('active');
                             const newBodyClass = BodyList[bodyClass];
                             if (!newBodyClass) {
-                                const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                                [].forEach.call(matchingElems, (el) => {
-                                    el.classList.remove('active');
-                                });
+                                // Removing "active" class (removeFlag = true)
+                                addingClass('active', bodyClass, true);
                             } else {
                                 newBodyClass.forEach((b2) => {
-                                    const matchingElems = document.querySelectorAll(`.${b2}`);
-                                    [].forEach.call(matchingElems, (el) => {
-                                        el.classList.remove('active');
-                                    });
+                                    // Removing "active" class (removeFlag = true)
+                                    addingClass('active', b2, true);
                                 });
                             }
                         } else {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.remove('active');
-                            });
+                            // Removing "active" class (removeFlag = true)
+                            addingClass('active', bodyClass, true);
                         }
                     });
                 }
@@ -517,27 +455,27 @@ class BodyMap extends React.Component {
         const query = new QueryString(parsedUrl.query);
         if (active) {
             if (systemsClick) {
-                query.addKeyValue(systemsField, e.target.id, '');
+                query.addKeyValue(systemsField, e.target.id);
             } else {
-                query.addKeyValue(organField, e.target.id, '');
+                query.addKeyValue(organField, e.target.id);
             }
             if (multipleAssociations) {
                 multipleAssociations.forEach((assoc) => {
                     // If you select "bronchus" and then "lung", "bronchus" is associated with "lung", so we need to take care not to append "bronchus" to the url twice here (can cause JS errors)
                     if (!previousState.includes(assoc)) {
-                        query.addKeyValue(organField, assoc, '');
+                        query.addKeyValue(organField, assoc);
                     }
                 });
             }
         } else {
             if (systemsClick) {
-                query.deleteKeyValue(systemsField, e.target.id, '');
+                query.deleteKeyValue(systemsField, e.target.id);
             } else {
-                query.deleteKeyValue(organField, e.target.id, '');
+                query.deleteKeyValue(organField, e.target.id);
             }
             if (multipleAssociations) {
                 multipleAssociations.forEach((assoc) => {
-                    query.deleteKeyValue(organField, assoc, '');
+                    query.deleteKeyValue(organField, assoc);
                 });
             }
         }
@@ -576,10 +514,8 @@ class BodyMap extends React.Component {
                     // Make sure all svg elements associated with that organ are selected, not just the clicked-on element
                     if (active) {
                         BodyList[b].forEach((bodyClass) => {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.add('active');
-                            });
+                            // Removing "active" class (removeFlag = true)
+                            addingClass('active', bodyClass, true);
                             if (bodyClass.indexOf('cls') === -1) {
                                 multipleAssociations.push(bodyClass);
                                 if (active) {
@@ -592,10 +528,8 @@ class BodyMap extends React.Component {
                     // De-select all svg elements associated with clicked-on organ
                     } else {
                         BodyList[b].forEach((bodyClass) => {
-                            const matchingElems = document.querySelectorAll(`.${bodyClass}`);
-                            [].forEach.call(matchingElems, (el) => {
-                                el.classList.remove('active');
-                            });
+                            // Removing "active" class (removeFlag = true)
+                            addingClass('active', bodyClass, true);
                             if (bodyClass.indexOf('cls') === -1) {
                                 multipleAssociations.push(bodyClass);
                                 if (active) {
@@ -645,19 +579,19 @@ class BodyMap extends React.Component {
                 const parsedUrl = url.parse(this.props.context['@id']);
                 const query = new QueryString(parsedUrl.query);
                 if (active) {
-                    query.addKeyValue(organField, newOrgan, '');
+                    query.addKeyValue(organField, newOrgan);
                     if (multipleAssociations) {
                         multipleAssociations.forEach((assoc) => {
                             if (!previousState.includes(assoc)) {
-                                query.addKeyValue(organField, assoc, '');
+                                query.addKeyValue(organField, assoc);
                             }
                         });
                     }
                 } else {
-                    query.deleteKeyValue(organField, newOrgan, '');
+                    query.deleteKeyValue(organField, newOrgan);
                     if (multipleAssociations) {
                         multipleAssociations.forEach((assoc) => {
-                            query.deleteKeyValue(organField, assoc, '');
+                            query.deleteKeyValue(organField, assoc);
                         });
                     }
                 }
