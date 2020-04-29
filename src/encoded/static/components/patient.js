@@ -195,7 +195,7 @@ class Patient extends React.Component {
               </div>
               {context.death_date && <div data-test="death_date">
                 <dt>Death Date</dt>
-                <dd>{`${context.death_date} ( Death source: `}{`${context.death_source} )`}</dd>
+                <dd>{`${context.death_date} ( Death Source: `}{`${context.death_source} )`}</dd>
               </div>}
             </dl>
           </PanelBody>
