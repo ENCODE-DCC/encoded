@@ -101,6 +101,9 @@
 
     },
     "facets": {
+        "age_range": {
+            "title": "Age at Diagnosis"
+        },
         "gender": {
             "title": "Gender"
         },
@@ -109,6 +112,9 @@
         },
         "race": {
             "title": "Race"
+        },
+        "vital_status": {
+            "title": "Vital Status"
         },
 
         "medical_imaging.type" : {
@@ -295,3 +301,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
