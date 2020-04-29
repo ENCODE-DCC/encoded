@@ -19,7 +19,7 @@ Encoded Application AWS Deployment Helper
 
 ### ES wait nodes
     1. Create es wait node and head for ami instance to build ami images
-        $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami
+        $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami  --profile-name default
     2. Watch the logs of both machines, wait till deployment finishes.
     3. Create the es data and head node ami image from the instance using the commands 
         printed in the console.
@@ -37,7 +37,7 @@ Encoded Application AWS Deployment Helper
 
 ### Frontend
     1. Create frontend ami instance to build fronend ami image
-        $ bin/deploy --cluster-name encdbuildami-frontend --build-ami
+        $ bin/deploy --cluster-name encdbuildami-frontend --build-ami --es-ip 1.2.3.4  --profile-name default
     2. Watch the logs of both machines, wait till deployment finishes.
     3. Create the frontend ami image from the instance using the command
         printed in the console.
@@ -380,6 +380,9 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'GIT_REMOTE': git_remote,
         'GIT_REPO': main_args.git_repo,
         'HOME': '/srv/encoded',
+        'INDEX_PRIMARY': 'false',
+        'INDEX_VIS': 'false',
+        'INDEX_REGION': 'false',
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -387,7 +390,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'PG_IP': main_args.pg_ip,
         'PY3_PATH': '/usr/bin/python3.6',
         'REDIS_PORT': main_args.redis_port,
-        'REGION_INDEX': str(main_args.region_indexer),
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
         'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
@@ -433,15 +435,30 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         elif build_type == 'app-pg':
             data_insert.update({
                 'CLUSTER_NAME': main_args.cluster_name,
+                'INDEX_PRIMARY': 'true',
+                'INDEX_VIS': 'true',
+                'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
             })
+            if main_args.no_indexing:
+                data_insert.update({
+                    'INDEX_PRIMARY': 'false',
+                    'INDEX_VIS': 'false',
+                    'INDEX_REGION': 'false',
+                })
         elif build_type == 'app-es':
+            # This needs a remote datbase like in rds
             data_insert.update({
+                'INDEX_PRIMARY': 'true',
+                'INDEX_VIS': 'true',
+                'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
             })
         else: 
             # 'app-es-pg' == "Demo"
             data_insert.update({
                 'JVM_GIGS': main_args.jvm_gigs,
                 'ES_OPT_FILENAME': 'es-demo.yml',
+                'INDEX_PRIMARY': 'true',
+                'INDEX_VIS': 'true',
             })
         user_data = _get_user_data(config_yaml, data_insert, main_args)
     run_args = {
@@ -533,6 +550,14 @@ def _get_cloud_config_yaml(main_args):
         else:
             print('Error: Could not find template with --cluster-name')
             return None, None, None
+    elif main_args.no_indexing:
+        # Standard cluster frontend with remote es and local pg
+        # but the apache build_conf will not add the indexing processes
+        # See env vars with --dry-run 
+            # 'INDEX_PRIMARY': 'false',
+            # 'INDEX_VIS': 'false',
+            # 'INDEX_REGION': 'false',
+        template_name = 'app-pg'
     elif not main_args.pg_ip == '':
         # Local es and remote pg
         template_name = 'app-es'
@@ -605,7 +630,8 @@ def main():
         _write_config_to_file(assembled_template, save_path, template_name)
         sys.exit(0)
     # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
-    print('\nDeploying %s' % template_name)
+    indexing = False if main_args.no_indexing or template_name == 'app' else True
+    print(f'\nDeploying {template_name} with indexing={indexing}')
     print("$ {}".format(' '.join(sys.argv)))
     instances_tag_data, is_tag, is_branch = _get_instances_tag_data(main_args, template_name)
     if instances_tag_data is None:
@@ -874,6 +900,11 @@ def _parse_args():
             "Where the args are batchsize, chunksize, processes, and maxtasksperchild"
         )
     )
+    parser.add_argument(
+        '--no-indexing',
+        action='store_true',
+        help="Do not add indexing procs to apache"
+    )
 
     # Cluster
     parser.add_argument(
@@ -952,29 +983,29 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-04-02 19:47:53.548416: encdami-demo-2020-04-02_194753
-        'demo': 'ami-0483adb94a046470c',
-        # encdami-es-wait-head build on 2020-03-31 20:13:17.094941: encdami-es-wait-head-2020-03-31_201317
-        'es-wait-head': 'ami-03e019cdd3cc178a0',
-        # encdami-es-wait-node build on 2020-03-31 20:08:41.739802: encdami-es-wait-node-2020-03-31_200841
-        'es-wait-node': 'ami-077951301740d5be6',
+        # encdami-demo build on 2020-05-07 11:35:19.969054: encdami-demo-2020-05-07_113519
+        'demo': 'ami-0884a78563a247d68',
+        # encdami-es-wait-head build on 2020-05-07 11:36:15.977775: encdami-es-wait-head-2020-05-07_113615
+        'es-wait-head': 'ami-0b8a90f05b2092a84',
+        # encdami-es-wait-node build on 2020-05-07 11:36:27.262571: encdami-es-wait-node-2020-05-07_113627
+        'es-wait-node': 'ami-0f57760c69fc419da',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-04-02 19:51:22.186528: encdami-frontend-2020-04-02_195122
-        'frontend': 'ami-01e6c9e8a88583551',
+        # encdami-frontend build on 2020-05-07 11:45:42.512362: encdami-frontend-2020-05-07_114542
+        'frontend': 'ami-05969da7a46dde92b',
 
         # Production Private AMIs: Add comments to each build
 
-        # encdami-es-wait-head build on 2020-03-31 20:20:04.987640: encdami-es-wait-head-2020-03-31_202004
-        'es-wait-head-prod': 'ami-0f2c2547107497579',
-        # encdami-es-wait-node build on 2020-03-31 20:21:11.386147: encdami-es-wait-node-2020-03-31_202111
-        'es-wait-node-prod': 'ami-09875dbadceee1dad',
+        # encdami-es-wait-head build on 2020-05-07 11:52:43.647275: encdami-es-wait-head-2020-05-07_115243
+        'es-wait-head-prod': 'ami-04047abf6a55f5a87',
+        # encdami-es-wait-node build on 2020-05-07 11:55:37.892057: encdami-es-wait-node-2020-05-07_115537
+        'es-wait-node-prod': 'ami-05debb5639a4e6d90',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head-prod': None,
         'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-03-31 20:40:37.969622: encdami-frontend-2020-03-31_204037
-        'frontend-prod': 'ami-07a066a69e1fd3f4c',
+        # encdami-frontend build on 2020-05-07 11:55:26.838030: encdami-frontend-2020-05-07_115526
+        'frontend-prod': 'ami-0f894e7d2e9c042eb',
     }
     if not args.image_id:
         # Select ami by build type.  
@@ -1028,8 +1059,10 @@ def _parse_args():
     # Check cluster name overrides name
     if args.cluster_name:
         cluster_tag = '-cluster'
-        args.name = args.cluster_name.replace(cluster_tag, '')
-        args.cluster_name = args.name + cluster_tag
+        cluster_name = args.cluster_name.replace(cluster_tag, '')
+        args.cluster_name = cluster_name + cluster_tag
+        if args.name is None:
+            args.name = cluster_name
         # adding a single node to a pre existing cluster
         if args.node_name and int(args.cluster_size) != 1:
             raise ValueError(

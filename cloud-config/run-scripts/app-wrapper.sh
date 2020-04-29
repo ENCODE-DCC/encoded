@@ -75,7 +75,7 @@ $ENCD_SCRIPTS_DIR/app-es-status.sh
 if [ -z "$ENCD_PG_IP" ]; then
     $ENCD_SCRIPTS_DIR/app-pg.sh "$standby_mode"
 fi
-$ENCD_SCRIPTS_DIR/app-encd.sh $ENCD_ROLE $ES_IP $ES_PORT $REGION_INDEX $APP_WORKERS
+$ENCD_SCRIPTS_DIR/app-encd.sh
 sudo -u root $ENCD_SCRIPTS_DIR/app-a2en.sh
 if [ "$ENCD_BATCHUPGRADE" == "true" ]; then
     $ENCD_SCRIPTS_DIR/app-batchupgrade.sh production.ini $BUP_VAR_1 $BUP_VAR_2 $BUP_VAR_3 $BUP_VAR_4

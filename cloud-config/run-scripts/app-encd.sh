@@ -109,4 +109,4 @@ sudo -u root cp /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available
 # Create encoded apache conf
 a2conf_src_dir="$ENCD_HOME/cloud-config/configs/apache"
 a2conf_dest_file='/etc/apache2/sites-available/encoded.conf'
-sudo -u root "$a2conf_src_dir/build-conf.sh" "$ENCD_REGION_INDEX" "$ENCD_APP_WORKERS" "$a2conf_src_dir" "$a2conf_dest_file"
+sudo -u root "$a2conf_src_dir/build-conf.sh" "$a2conf_src_dir" "$a2conf_dest_file"

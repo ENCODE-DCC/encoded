@@ -30,70 +30,57 @@
 #  export a2conf_dest_file='/etc/apache2/sites-available/encoded.conf'
 #  export ENCD_REGION_INDEX=False
 #  export ENCD_APP_WORKERS=6
-#  sudo -u root "$a2conf_src_dir/build-conf.sh" "$ENCD_REGION_INDEX" "$ENCD_APP_WORKERS" "$a2conf_src_dir" "$a2conf_dest_file"
+#  sudo -u root "$a2conf_src_dir/build-conf.sh" "$a2conf_src_dir" "$a2conf_dest_file"
 #
 ## 
 
 
-REGION_INDEX=
-if [ "$1" == 'True' ] || [ "$1" == 'False' ]; then
-    REGION_INDEX="$1"
-else
-    echo -e "\nFirst arg is 'True' or 'False' to toggle region indexer conf."
-    exit 1
-fi
-
-APP_WORKERS=
-num_pattern='^[1-9]{1,2}$'
-if [[ $2 =~ $num_pattern ]]; then
-    APP_WORKERS="$2"
-else
-    echo -e "\nSecond arg is number of apps running, one or two digit integer."
-    exit 1
-fi
-
 src_dir=
-if [ -d "$3" ]; then
-    src_dir="$3"
+if [ -d "$1" ]; then
+    src_dir="$1"
 else
-    echo -e "\nThird arg source directory of conf parts."
+    echo -e "\nFirst arg source directory of conf parts."
     exit 1
 fi
 
 dest_path=
-if [ -z "$4" ]; then
-    echo -e "\nFourth arg is the destination for the encoded.conf."
+if [ -z "$2" ]; then
+    echo -e "\nSecond arg is the destination for the encoded.conf."
     exit 1
 else
-    dest_path="$4"
+    dest_path="$2"
 fi
 
 
 # Top
 cat "$src_dir/head.conf" > "$dest_path"
-sed "s/APP_WORKERS/$APP_WORKERS/" <  "$src_dir/app.conf" >> "$dest_path"
+sed "s/APP_WORKERS/$ENCD_APP_WORKERS/" <  "$src_dir/app.conf" >> "$dest_path"
 
 # indexer processes
-# encd-demo-no-es-build and no-pg do not have indexing. REGION_INDEX already defaulted to false.
-if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
-    cat "$src_dir/indexer-proc.conf" >> "$dest_path"
-    cat "$src_dir/vis-indexer-proc.conf" >> "$dest_path"
-fi
-if [ "$REGION_INDEX" == "True" ]; then
-    cat "$src_dir/region-indexer-proc.conf" >> "$dest_path"
+if [ "$ENCD_INDEX_PRIMARY" == 'true' ]; then
+        cat "$src_dir/indexer-proc.conf" >> "$dest_path"
+else
+    if [ "$ENCD_INDEX_VIS" == 'true' ]; then
+        cat "$src_dir/vis-indexer-proc.conf" >> "$dest_path"
+    fi
+    if [ "$ENCD_INDEX_REGION" == 'true' ]; then
+        cat "$src_dir/region-indexer-proc.conf" >> "$dest_path"
+    fi
 fi
 
 # Some vars
 cat "$src_dir/some-vars.conf" >> "$dest_path"
 
 # indexer directory permissions
-# encd-demo-no-es-build does not have indexing. REGION_INDEX already defaulted to false.
-if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
-    cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
-    cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
-fi
-if [ "$REGION_INDEX" == "True" ]; then
-    cat "$src_dir/region-indexer-dir-permission.conf" >> "$dest_path"
+if [ "$ENCD_INDEX_PRIMARY" == 'true' ]; then
+        cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
+else
+    if [ "$ENCD_INDEX_VIS" == 'true' ]; then
+        cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
+    fi
+    if [ "$ENCD_INDEX_REGION" == 'true' ]; then
+        cat "$src_dir/region-indexer-dir-permission.conf" >> "$dest_path"
+    fi
 fi
 
 # the rest

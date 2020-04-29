@@ -11,15 +11,15 @@ Organization deployment configuration and build files
 
 #### Templates are assembled with ./template-parts
     # Standard Templates
-    Demo/QA Demo: app-es-pg-template.yml
-    Cluster Frontend: app-pg-template.yml
-    Cluster Elasticsearch: es-nodes-template.yml
+    Demo/QA Demo                : app-es-pg-template.yml
+    Cluster Frontend            : app-pg-template.yml
+    Cluster Elasticsearch       : es-nodes-template.yml
     
     # Non Standard Templates
-    Instance with remote pg: app-es-template.yml
-    Instance with remote pg/es: app-template.yml
+    Instance with remote pg     : app-es-template.yml
+    Instance with remote pg/es  : app-template.yml
 
-    Open one of the templates above to compare with ./template-parts.  Each variable '%(var_name)s' 
+    Open one of the templates above to compare with ./template-parts.  Each variable '%(varname)s' 
     in the template has a matching file in ./template-parts.  Next is a way to view and save
     assembled templates.
 
@@ -27,23 +27,25 @@ Organization deployment configuration and build files
     automaticallly determine which template to used based on input arguments.
 
     $ bin/deploy --save-config-name 20200430
-    # Created assembeled template
-    #        ./cloud-config/assembled-templates/20200430-app-es-pg.yml
-    # Deploy with
-    #        $ bin/deploy --use-prebuilt-config 20200430-app-es-pg
-    # Diff with on the fly assembly.  Does not deploy
-    #        $ bin/deploy --use-prebuilt-config 20200430-app-es-pg --diff-configs
+
+    ### Output
+    Created assembeled template
+           ./cloud-config/assembled-templates/20200430-app-es-pg.yml
+    Deploy with
+           $ bin/deploy --use-prebuilt-config 20200430-app-es-pg
+    Diff with on the fly assembly.  Does not deploy
+           $ bin/deploy --use-prebuilt-config 20200430-app-es-pg --diff-configs
+    ###
 
 
 #### Directories:
-    template-parts: Pieces of the templates
-    run-scripts: Install scripts runcmd_* template parts
-    configs: Configuration files used in run-scripts, like apache, java, es
-    assembled-templates: Assembled templates.  These still contains Run Varialbes to be filled in 
-    by bin/deploy
-    
-    # Other
-    create-ami.py: Helpers script to create amis in AWS
+    template-parts              : Pieces of the templates
+    run-scripts                 : Install scripts runcmd_* template parts
+    configs                     : Configuration files used in run-scripts, like apache, java, es
+    assembled-templates         : Saved.  These still contains Run Varialbes
+
+#### Helper Script
+    create-ami.py               : Create amis from deployed --ami-build in AWS
 
 #### Run_Variables
     * Run variables are in /etc/environment file on the instance.  
@@ -51,9 +53,12 @@ Organization deployment configuration and build files
     * /etc/environment is loaded into login/ssh sessions so you can echo them on the instance.
     * The file will contain dupicate entries when deploying from an AMI.  Last ones are used.
     
-    View them locally with --dry-run locally along with other info.  Does not deploy
+    View them locally with --dry-run along with other info.  Does not deploy
     $ bin/deploy --dry-run
 
+    Add options like --test, --release-candidate, or --candidate to see the differences in run vars.
+    The ROLE should change along with other variables like ENCD_INDEX_PRIMARY, ENCD_INDEX_VIS,
+    ENCD_INDEX_REGION.  The env vars are prefixed with ENCD_ as to not conflict with other env vars.
 
 # Live Deployments
     Below we'll deploy demos and clusters using the --full-build argument to avoid needing amis.  
@@ -61,11 +66,6 @@ Organization deployment configuration and build files
 
 ### QA/Development demo: app-es-pg-template.yml
     $ bin/deploy --full-build
-    
-    # Deploying app-es-pg
-    # $ bin/deploy --full-build
-    # create instance and wait for running state
-    ...
 
         ### Output
         Deploying app-es-pg
@@ -88,6 +88,7 @@ Organization deployment configuration and build files
 
     The IP address is the --es-ip used to deploy a frontend.
     $ export ES_IP='172.31.26.236'
+
 
 ###### This command builds the front-end machine that connects to the specified elasticsearch cluster
     $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-ip "$ES_IP"
