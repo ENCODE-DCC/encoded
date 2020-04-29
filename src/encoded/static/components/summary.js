@@ -353,16 +353,11 @@ class SummaryBody extends React.Component {
         this.context.navigate(href);
     }
     render() {
-        let clearButton;
         const searchQuery = url.parse(this.props.context['@id']).search;
         const query = new QueryString(searchQuery);
-        if (query) {
-            // If we have a 'type' query string term along with others terms, we need a Clear Filters
-            // button.
-            const nonPersistentQuery = query.clone();
-            nonPersistentQuery.deleteKeyValue('type');
-            clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('type') > 0;
-        }
+        const nonPersistentQuery = query.clone();
+        nonPersistentQuery.deleteKeyValue('?type');
+        const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
         return (
             <div className="summary-header">
                 <div className="summary-header__title_control">

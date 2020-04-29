@@ -112,7 +112,7 @@ const unHighlightOrgan = () => {
     });
 };
 
-// Add class "class" to all elements that match input parameter string "matchingString"
+// Add class "changedClass" to all elements that match input parameter string "matchingString"
 // removeFlag = true will remove the class rather than add it
 const addingClass = (changedClass, matchingString, removeFlag = false) => {
     const matchingElems = document.querySelectorAll(`.${matchingString}`);
@@ -514,8 +514,7 @@ class BodyMap extends React.Component {
                     // Make sure all svg elements associated with that organ are selected, not just the clicked-on element
                     if (active) {
                         BodyList[b].forEach((bodyClass) => {
-                            // Removing "active" class (removeFlag = true)
-                            addingClass('active', bodyClass, true);
+                            addingClass('active', bodyClass);
                             if (bodyClass.indexOf('cls') === -1) {
                                 multipleAssociations.push(bodyClass);
                                 if (active) {
