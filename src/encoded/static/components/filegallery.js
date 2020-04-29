@@ -730,7 +730,7 @@ class RawSequencingTable extends React.Component {
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
                                         <td className={singleClass}>{file.file_type}</td>
-                                        <td className={singleClass}>SE{file.read_length ? <span>{file.read_length + file.read_length_units}</span> : null}</td>
+                                        <td className={singleClass}>{rawIsIndex ? null : 'SE'}{file.read_length ? <span>{file.read_length + file.read_length_units}</span> : null}</td>
                                         <td className={singleClass}>{file.paired_end}</td>
                                         <td className={singleClass}>{file.output_type}</td>
                                         <td className={singleClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
