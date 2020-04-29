@@ -14,7 +14,7 @@ import re
 
 
 @collection(
-    name='bioexperiment',
+    name='bioexperiments',
     unique_key='accession',
     properties={
         'title': 'Bioxperiments',
@@ -32,27 +32,21 @@ class Bioexperiment(Item):
     embedded = [
         'award',
         'lab',
-        'user',
+        # "submitted_by", #link to User
+        # "references", #link to Publication
+        # 'documents',#link to Document
         'biospecimen',
         'bioreplicate',
-        'bioreplicate.biolibrary'
-        'bioreplicate.biolibrary.biospecimen'
+        'bioreplicate.biolibrary',
+        # 'bioreplicate.biolibrary.biospecimen'
         
-        # 'publication',
-        # "biolibrary",# have biosample, need to add extraction method, lysis method,treatment, method...
-        # "biolibrary.biospecimen",
-        # "biolibrary.bioreplicate",
-        # "biolibrary.bioreplicate.biofile",
-        # "biolibrary.platform", #link to Platform
-
-        #in mixin.json,linkto 'Publication'
-        # 'document' #in mixin.json,linkto 'Publication'
+    
     ]
   
     audit_inherit = [
+    
     ]
     set_status_up = [
-        # 'documents',
     ]
     set_status_down = [
     ]
