@@ -9,63 +9,64 @@ from .base import (
     # SharedItem,
     paths_filtered_by_status,
 )
+from pyramid.traversal import find_root, resource_path
 import re
 
 
 @collection(
-    name='bioexperiments',
+    name='bioexperiment',
     unique_key='accession',
     properties={
         'title': 'Bioxperiments',
         'description': 'Bioexperiment information page',
-    })
+    },
+)
 class Bioexperiment(Item):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    # name_key = 'accession'
+    name_key = 'accession'
     rev = {
         'bioreplicate': ('Bioreplicate', 'bioexperiment'),
 
     }
     embedded = [
-        'biospecimen',
-        'bioreplicate',
         'award',
         'lab',
-        'user'
-
+        'user',
+        'biospecimen',
+        'bioreplicate',
+        'bioreplicate.biolibrary'
+        'bioreplicate.biolibrary.biospecimen'
+        
+        # 'publication',
         # "biolibrary",# have biosample, need to add extraction method, lysis method,treatment, method...
         # "biolibrary.biospecimen",
         # "biolibrary.bioreplicate",
         # "biolibrary.bioreplicate.biofile",
         # "biolibrary.platform", #link to Platform
 
-        # "references", #in mixin.json,linkto 'Publication'
+        #in mixin.json,linkto 'Publication'
         # 'document' #in mixin.json,linkto 'Publication'
     ]
   
     audit_inherit = [
-        'submitted_by',
-        'lab',
-        'award',
-        'documents',
-        # 'references'
-
-        ]
+    ]
     set_status_up = [
         # 'documents',
     ]
     set_status_down = [
     ]
     
-    @calculated_property(schema={
-        "title": "Bioreplicate",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "Bioreplicate"
-        },
-    })
+    @calculated_property(
+        schema={
+            "title": "Bioreplicate",
+            "type": "array",
+            "items": {
+                "type": 'string',
+                "linkTo": "Bioreplicate"
+            },
+        }
+    )
     def bioreplicate(self, request, bioreplicate):
         return paths_filtered_by_status(request, bioreplicate)
     

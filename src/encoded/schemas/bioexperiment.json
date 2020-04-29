@@ -5,9 +5,9 @@
     "id": "/profiles/bioexperiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "lab","award","biospecimen", "experiment_classification", "experiment_description"],
+    "required": [ "biospecimen", "experiment_classification", "experiment_description"],
     "identifyingProperties": [ "accession" ],
-    "additionalProperties": false,
+    "additionalProperties": true,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
@@ -17,8 +17,6 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
@@ -33,11 +31,15 @@
         "date_submitted": {
             "title": "Date submitted" ,
             "description": "The date that the experiment received all required replicates and files",
-            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.Date can be submitted as YYYY-MM-DD.",
             "type": "string",
-            "format": "date",
-            "permission": "import_items"
+             "anyOf": [
+                {
+                    "format": "date"
+                }
+            ]
         },
+       
         "experiment_description": {
             "title": "Experiment description",
             "description": "The functional description of the experiment.",
@@ -59,9 +61,7 @@
             "linkTo": "Biospecimen"
         },
        
-        "documents": {
-            "description": "Protocols or other documents that describe the assay or the results (not data files)."
-        },
+        
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -110,9 +110,6 @@
             "title": "Status"
         },
        
-        "biospecimen":{
-            "title": "Biosample information"
-        },
         "experiment_classification": {
             "title": "Experiment classification"
         }
@@ -125,9 +122,7 @@
             "title": "Status"
         },
         
-        "biospecimen":{
-            "title": "Biosample information"
-        },
+      
        
         "experiment_classification": {
             "title": "Experiment classification"
@@ -136,7 +131,6 @@
     "boost_values": {
         "accession":1.0,
         "status": 1.0,
-        "biospecimen":1.0,
         "experiment_classification": 1.0
     },
     "changelog": "/profiles/changelogs/bioexperiment.md"

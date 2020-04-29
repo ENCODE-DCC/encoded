@@ -13,9 +13,11 @@ logger.setLevel(DEFAULT_LOG_LEVEL)  # doesn't work to shut off sqla INFO
 
 
 ORDER = [
+    'bioexperiment',
     'user',
     'award',
     'lab',
+
     'image',
     'page',
     'publication',
@@ -28,7 +30,6 @@ ORDER = [
     
     'platform',
     'biolibrary',
-    'bioexperiment',
 
     'bioreplicate',
 
