@@ -118,8 +118,8 @@ const jsonldFormatter = (context, url) => {
         mappedData.description = context.annotation_type;
     } else if (context['@type'].some(type => type.toLowerCase() === 'experiment' || type.toLowerCase() === 'functionalcharacterizationexperiment')) {
         mappedData.description = context.target_label ?
-        `[${context.target_label}] ${context.assay_title} ${context.biosample_summary}`.trim() :
-        `${context.assay_title} ${context.biosample_summary}`.trim();
+        `[${context.target_label || ''}] ${context.assay_title || ''} ${context.biosample_summary || ''}`.trim() :
+        `${context.assay_title || ''} ${context.biosample_summary || ''}`.trim();
     } else {
         mappedData.description = context.summary || context.description;
     }
