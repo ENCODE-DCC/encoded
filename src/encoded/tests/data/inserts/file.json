@@ -3407,5 +3407,105 @@
         "file_format_type": "bed3+",
         "accession": "ENCFF880CDH",
         "file_size": 13224
+    },
+    {
+        "_test": "RNA Bind-n-seq",
+        "accession": "ENCFF488DBR",
+        "aliases": [
+            "chris-burge:ZRANB2_1300.fastq.gz"
+        ],
+        "award": "ENCODE2",
+        "content_md5sum": "53000e69d0eb7a6d7bf450e0d8c93e3d",
+        "dataset": "ENCSR666EMD",
+        "fastq_signature": [
+            "TEMP:5:1::@HWI-ST1133R:5:1101:1547:2122#CACTCAGTTCAG/1"
+        ],
+        "file_format": "fastq",
+        "file_size": 201471176,
+        "lab": "chris-burge",
+        "md5sum": "76ac8886e6af2adfc7f8dedf2deeff85",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "/platforms/OBI:0002002/",
+        "read_count": 7988086,
+        "read_length": 20,
+        "replicate": "fb67aa50-6e7a-4cac-a8e6-09e73b4d3432",
+        "run_type": "single-ended",
+        "status": "in progress",
+        "submitted_by": "accumsan.egestas@imperdiet.rutrum",
+        "submitted_file_name": "/tgc/TGCore_User_Data/ENCODE/DATA/RBNS_data_20181129/DCC_11-29-18_fastqs/ZRANB2_1300.fastq.gz",
+        "uuid": "8da67086-d9d7-4290-b485-ae191a3a01bc"
+    },
+    {
+        "_test": "RNA Bind-n-seq",
+        "accession": "ENCFF158XJZ",
+        "aliases": [
+            "chris-burge:ZRANB2_80.fastq.gz"
+        ],
+        "award": "ENCODE2",
+        "content_md5sum": "447e8ab60f0f21a2955f2c6a481861cf",
+        "dataset": "ENCSR666EMD",
+        "fastq_signature": [
+            "TEMP:5:1::@HWI-ST1133R:5:1101:1411:2138#CACCGGGTTCAG/1"
+        ],
+        "file_format": "fastq",
+        "file_size": 536419139,
+        "lab": "chris-burge",
+        "md5sum": "f5476d70703d48fe73143f77ab6d1858",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "/platforms/OBI:0002002/",
+        "read_count": 21432984,
+        "read_length": 20,
+        "replicate": "2743cbc5-dc25-4fe4-8808-47df3e632339",
+        "run_type": "single-ended",
+        "status": "in progress",
+        "submitted_by": "accumsan.egestas@imperdiet.rutrum",
+        "submitted_file_name": "/tgc/TGCore_User_Data/ENCODE/DATA/RBNS_data_20181129/DCC_11-29-18_fastqs/ZRANB2_80.fastq.gz",
+        "uuid": "7c4cc3cd-ec39-4eb0-9f0e-cd04d46b65cb"
+    },
+    {
+        "accession": "ENCFF985YKH",
+        "aliases": [
+            "chris-burge:ZRANB2_enrichment_R.4mers.mark_adapters.txt"
+        ],
+        "award": "ENCODE2",
+        "dataset": "ENCSR666EMD",
+        "derived_from": [
+            "ENCFF488DBR",
+            "ENCFF158XJZ"
+        ],
+        "file_format": "tsv",
+        "file_size": 6724,
+        "lab": "chris-burge",
+        "md5sum": "e1104dbd59a70c0e7b821ffe14f567f0",
+        "no_file_available": false,
+        "output_type": "enrichment",
+        "status": "in progress",
+        "submitted_by": "accumsan.egestas@imperdiet.rutrum",
+        "submitted_file_name": "/tgc/TGCore_User_Data/ENCODE/DATA/RBNS_data_20181129/DCC_11-29-18_files/ZRANB2/ZRANB2_enrichment_R.4mers.mark_adapters.txt",
+        "uuid": "4c3edfc0-fc5c-4f6f-b1c6-58f4d28aeed9"
+    },
+    {
+        "accession": "ENCFF346EHH",
+        "aliases": [
+            "chris-burge:ZRANB2_enrichment_R.6mers.mark_adapters.txt"
+        ],
+        "award": "ENCODE2",
+        "dataset": "ENCSR666EMD",
+        "derived_from": [
+            "ENCFF488DBR",
+            "ENCFF158XJZ"
+        ],
+        "file_format": "tsv",
+        "file_size": 114753,
+        "lab": "chris-burge",
+        "md5sum": "d7a06e8f3ee37cca456a34d5c54becf5",
+        "no_file_available": false,
+        "output_type": "enrichment",
+        "status": "in progress",
+        "submitted_by": "accumsan.egestas@imperdiet.rutrum",
+        "submitted_file_name": "/tgc/TGCore_User_Data/ENCODE/DATA/RBNS_data_20181129/DCC_11-29-18_files/ZRANB2/ZRANB2_enrichment_R.6mers.mark_adapters.txt",
+        "uuid": "f179ecc1-cc8f-46b5-a9f8-342bd7e3d698"
     }
 ]
