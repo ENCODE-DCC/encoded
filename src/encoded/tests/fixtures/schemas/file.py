@@ -1212,6 +1212,7 @@ def file_18(testapp, lab, award, experiment):
     }
     return item
 
+
 @pytest.fixture
 def file_no_runtype(testapp, experiment, award, lab, replicate_url, platform1):
     item = {
