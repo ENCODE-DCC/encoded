@@ -32,15 +32,20 @@ const _mapContextToDistribution = (context, measurementTechnique) => {
         return {};
     }
 
-    return {
+    const distribution = {
         name: context.accession,
         contentUrl: `${baseUrl}${context['@id']}`,
         sameAs: `${baseUrl}${context['@id']}`,
         url: `${baseUrl}${context['@id']}`,
         identifier: context.uuid,
         encodingFormat: 'text',
-        measurementTechnique,
     };
+
+    if (measurementTechnique) {
+        distribution.measurementTechnique = measurementTechnique;
+    }
+
+    return distribution;
 };
 
 const _mapSourceToSourceOrganization = (source) => {
@@ -84,13 +89,8 @@ const jsonldFormatter = (context, url) => {
     }
 
     baseUrl = url || baseUrl;
-    let measurementTechnique = '';
-
-    if (context.assay_title) {
-        measurementTechnique = `${context.assay_title} (${context.assay_term_id})`;
-    } else if (context.annotation_type) {
-        measurementTechnique = context.annotation_type;
-    }
+    const isAnnotationDataSet = context['@type'].some(type => type.toLowerCase() === 'annotation');
+    const measurementTechnique = !isAnnotationDataSet ? `${context.assay_title} (${context.assay_term_id})` : '';
 
     const mappedData = {
         '@context': 'http://schema.org/',
@@ -105,7 +105,7 @@ const jsonldFormatter = (context, url) => {
         version: context.schema_version,
         publisher: _addPublisher(context),
         distribution: _mapContextToDistribution(context, measurementTechnique),
-        keywords: [...context.internal_tags, ...[measurementTechnique, context.accession, context.uuid, 'ENCODE', 'ENCODED', 'DCC', 'Encyclopedia of DNA Elements']],
+        keywords: [...context.internal_tags, ...[context.accession, context.uuid, 'ENCODE', 'ENCODED', 'DCC', 'Encyclopedia of DNA Elements']],
         measurementTechnique,
         includedInDataCatalog: {
             '@type': 'DataCatalog',
@@ -114,22 +114,22 @@ const jsonldFormatter = (context, url) => {
         },
     };
 
+    const partialDescription = [context.award.project, context.award.name, context.lab.title].filter(d => d !== '').join(' - ');
+
     // set description
-    if (context['@type'].some(type => type.toLowerCase() === 'annotation')) {
-        mappedData.description = context.annotation_type !== context.description ? `${context.annotation_type} - ${context.description}` : context.annotation_type;
+    if (isAnnotationDataSet) {
+        const annotationDescription = context.annotation_type !== context.description ?
+            `${context.annotation_type} - ${context.description}` :
+            context.annotation_type;
+        mappedData.description = [annotationDescription, partialDescription].join(' - ');
     } else if (context['@type'].some(type => type.toLowerCase() === 'experiment' || type.toLowerCase() === 'functionalcharacterizationexperiment')) {
         const targetLabel = context.target && context.target.label ? context.target.label : '';
         const assayTitle = context.assay_title || '';
         const biosampleSummary = context.biosample_summary || '';
 
-        mappedData.description = [targetLabel, assayTitle, biosampleSummary].filter(d => d !== '').join(' - ');
+        mappedData.description = [targetLabel, assayTitle, biosampleSummary, partialDescription].filter(d => d !== '').join(' - ');
     } else {
-        mappedData.description = context.summary || context.description;
-    }
-
-    // Google date set requires minimum length of 50. This pads it if need be to reach that number.
-    if (mappedData.description.length < 50) {
-        mappedData.description = [mappedData.description, context.award.project, context.award.name, context.lab.title].filter(d => d !== '').join(' - ');
+        mappedData.description = `${context.summary || context.description} ${partialDescription}`;
     }
 
     if (context.source) {
