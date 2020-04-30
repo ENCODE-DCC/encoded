@@ -585,6 +585,17 @@ def test_audit_experiment_with_RNA_library_missing_read_length_RNA_seq(
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_with_RNA_library_missing_read_length_bulk_RNA_seq(
+    testapp,
+    experiment_no_read_length,
+    pipeline_bam,
+):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'Bulk RNA-seq'})
+    res = testapp.get(experiment_no_read_length.json['object']['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing read_length'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,
