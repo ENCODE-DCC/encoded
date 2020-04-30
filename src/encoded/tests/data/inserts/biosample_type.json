@@ -192,4 +192,10 @@
     "term_name": "DNA cloning sample",
     "term_id": "NTR:0000545",
     "status": "released"
+}, {
+    "classification": "single cell",
+    "status": "released",
+    "term_id": "UBERON:0002168",
+    "term_name": "left lung",
+    "uuid": "cc030551-fce6-4800-a1a9-c2406d07a166"
 }]

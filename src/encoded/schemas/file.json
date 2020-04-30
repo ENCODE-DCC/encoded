@@ -1740,6 +1740,9 @@
         "output_type": {
             "title": "Output type"
         },
+        "index_of": {
+            "description": "The files this index file is relevant for."
+        },
         "quality_metrics": {
             "title": "QC Metric"
         },

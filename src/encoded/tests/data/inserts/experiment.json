@@ -979,5 +979,21 @@
         "date_released": "2020-02-20",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "94c2e812-dcd2-4d80-a3ba-88cdf1043a1b"
+    },
+    {
+        "_test": "index reads",
+        "accession": "ENCSR606VJQ",
+        "aliases": [
+            "michael-snyder:msAS-70"
+        ],
+        "assay_term_name": "single-nucleus ATAC-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "single_cell_UBERON_0002168",
+        "description": "scATAC-seq on human left lung",
+        "internal_status": "unreviewed",
+        "lab": "michael-snyder",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "574dba3f-4f38-4acd-9378-a2e1498b671f"
     }
 ]
