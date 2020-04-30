@@ -79,13 +79,14 @@ const _mapSubmitterToCreator = (submittedBy) => {
 };
 
 const jsonldFormatter = (context, url) => {
+    if (!context) {
+        return {};
+    }
+
     baseUrl = url || baseUrl;
     let measurementTechnique = '';
 
-    // set technique
-    if (context.target_label) {
-        measurementTechnique = context.target_label;
-    } else if (context.assay_title) {
+    if (context.assay_title) {
         measurementTechnique = `${context.assay_title} (${context.assay_term_id})`;
     } else if (context.annotation_type) {
         measurementTechnique = context.annotation_type;
@@ -115,13 +116,16 @@ const jsonldFormatter = (context, url) => {
 
     // set description
     if (context['@type'].some(type => type.toLowerCase() === 'annotation')) {
-        mappedData.description = context.annotation_type;
+        mappedData.description = context.annotation_type !== context.description ? `${context.annotation_type} - ${context.description}` : context.annotation_type;
     } else if (context['@type'].some(type => type.toLowerCase() === 'experiment' || type.toLowerCase() === 'functionalcharacterizationexperiment')) {
-        mappedData.description = context.target_label ?
-        `[${context.target_label || ''}] ${context.assay_title || ''} ${context.biosample_summary || ''}`.trim() :
-        `${context.assay_title || ''} ${context.biosample_summary || ''}`.trim();
+        mappedData.description = `${context.target && context.target.label ? [context.target.label].join('') : ''} ${context.assay_title ? ['- ', context.assay_title].join('') : ''} ${context.biosample_summary ? ['- ', context.biosample_summary].join('') : ''}`.trim();
     } else {
         mappedData.description = context.summary || context.description;
+    }
+
+    // Google date set requires minimum length of 50. This pads it if need be to reach that number.
+    if (mappedData.description.length < 50) {
+        mappedData.description = `${mappedData.description} - ${context.award.project} - ${context.award.name} - (${context.lab.title})`;
     }
 
     if (context.source) {
