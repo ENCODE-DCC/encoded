@@ -9,6 +9,7 @@ from .experiment import (
     audit_experiment_replicates_biosample,
     audit_experiment_replicates_with_no_libraries,
     audit_experiment_technical_replicates_same_library,
+    audit_experiment_inconsistent_genetic_modifications,
     create_files_mapping
 )
 from .formatter import (
@@ -130,6 +131,7 @@ function_dispatcher_without_files = {
     'audit_replicates_biosample': audit_experiment_replicates_biosample,
     'audit_replicates_no_libraries': audit_experiment_replicates_with_no_libraries,
     'audit_technical_replicates_same_library': audit_experiment_technical_replicates_same_library,
+    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications
 }
 function_dispatcher_with_files = {
     'audit_no_processed_data': audit_experiment_no_processed_data,
@@ -145,9 +147,11 @@ function_dispatcher_with_files = {
         'original_files.replicate',
         'replicates',
         'replicates.libraries.biosample',
+        'replicates.libraries.biosample.applied_modifications',
         'replicates.libraries.biosample.biosample_ontology',
         'replicates.library',
         'replicates.library.biosample',
+        'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.donor',
     ]
 )
