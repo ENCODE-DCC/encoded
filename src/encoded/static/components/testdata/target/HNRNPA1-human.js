@@ -9,14 +9,6 @@ module.exports = {
     "investigated_as": [
         "RNA binding protein"
     ],
-    "dbxref":[
-        "ENSEMBL:ENSG00000135486",
-        "GeneID:3178",
-        "HGNC:HNRPA1",
-        "HGNC:hnRNPA1",
-        "HGNC:hnRNP-A1",
-        "UniProtKB:P09651"
-    ],
     "genes": [
         {
             "go_annotations": [

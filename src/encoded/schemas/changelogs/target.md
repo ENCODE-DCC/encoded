@@ -1,5 +1,9 @@
 ## Changelog for target.json
 
+### Schema version 14
+
+* Property *dbxref* was renamed to *dbxrefs* and restricted to non-gene targets.
+
 ### Schema version 13
 
 * *investigated_as* enum list was modified. The following terms were removed:
