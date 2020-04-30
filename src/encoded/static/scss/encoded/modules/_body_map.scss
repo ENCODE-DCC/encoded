@@ -80,17 +80,23 @@
 .cls-9{
     mask:url(#mask);
 }
-.cls-10{
+.cls-vein {
     fill:#4d85b2;
     &.active {
         fill: #63326E;
     }
+}
+.cls-10 {
+    display: none;
 }
 .cls-11{
     fill:#2e70a5;
     &.active {
         fill: #e90006;
     }
+}
+.cls-11new {
+    display: none;
 }
 .cls-12{
     fill:#3b79aa;
@@ -307,6 +313,9 @@
 }
 .cls-50,.cls-51,.cls-62{
     stroke-width:1.48px;
+}
+.cls-51 {
+    display: none;
 }
 .cls-51{
     stroke-dasharray:4.45 4.45;

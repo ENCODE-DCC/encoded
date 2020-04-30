@@ -64,7 +64,7 @@ const BodyList = {
     uterus: ['cls-uterus'],
     'urinary bladder': ['cls-35', 'cls-36'],
     vagina: ['cls-vagina', 'cls-vagina2'],
-    vein: ['cls-10'],
+    vein: ['cls-vein'],
 };
 
 // Mapping from cells and tissue types to inset images
@@ -159,7 +159,7 @@ const svgHighlight = (e) => {
 // As another example, if hovering over the organ term "musculature of body", we want all svg components to highlight as well as the system term "musculature of body"
 // Hovering over a system term name should highlight all associated organ terms and inset image terms and their corresponding svg elements or inset images
 const highlightOrgan = (e) => {
-    const currentOrgan = e.target.id;
+    const currentOrgan = e.target.id || e.target.parentNode.id;
     // Check inset images mapping to see if term exists in that object
     if (Object.keys(CellsList).includes(currentOrgan)) {
         addingClass('highlight', currentOrgan.replace(' ', '-'));
