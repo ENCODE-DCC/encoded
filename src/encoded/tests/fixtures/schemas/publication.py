@@ -37,6 +37,16 @@ def publication_5(publication_0_0):
 
 
 @pytest.fixture
+def publication_6(testapp, lab, award):
+    item = {
+        'title': "Test publication with publication data",
+        'award': award['@id'],
+        'lab': lab['@id'],
+    }
+    return testapp.post_json('/publication', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def publication(testapp, lab, award):
     item = {
         # upgrade/shared.py has a REFERENCES_UUID mapping.
