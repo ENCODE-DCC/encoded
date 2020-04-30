@@ -40,8 +40,9 @@ developental_slims = {
 }
 
 system_slims = {
-    'UBERON:0000383': 'musculature of body',
+    'UBERON:0001015': 'musculature',
     'UBERON:0000949': 'endocrine system',
+    'UBERON:0002330': 'exocrine system',
     'UBERON:0000990': 'reproductive system',
     'UBERON:0001004': 'respiratory system',
     'UBERON:0001007': 'digestive system',
@@ -166,7 +167,8 @@ cell_slims = {
     'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
     'CL:0000034': 'stem cell',
     'EFO:0002886': 'stem cell', # stem cell derived cell line
-    'CL:0000084': 'T cell'
+    'CL:0000084': 'T cell',
+    'CL:0011115': 'precursor cell'
 }
 
 assay_slims = {
@@ -182,8 +184,7 @@ assay_slims = {
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
     'OBI:0000845': 'RNA structure',
-    'NTR:0000516': 'Functional characterization',
-    'OBI:0002144': 'DNA sequencing'
+    'NTR:0000516': 'Functional characterization'
 }
 
 slim_shims = {
@@ -208,7 +209,8 @@ slim_shims = {
         'OBI:0002086': ['DNA methylation'],  # TAB-seq
         'OBI:0000716': ['DNA binding'], # ChIP-seq
         'OBI:0001919': ['3D chromatin structure'], # 5C
-        'OBI:0002160': ['DNA binding']  # Mint-ChIP-seq
+        'OBI:0002160': ['DNA binding'],  # Mint-ChIP-seq
+        'OBI:0002675': ['Functional characterization'] # MPRA
     },
     'organ': {
         'CL:0002399': ['blood', 'bodily fluid'],
@@ -264,6 +266,15 @@ slim_shims = {
         'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
+    },
+    'system': {
+        'UBERON:0006566': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
+        'UBERON:0006567': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
+        'CL:0000515': ['musculature'],
+        'CL:0000187': ['musculature'],
+        'CL:0000192': ['musculature'],
+        'CL:0000746': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
+        'UBERON:0002101': ['musculature', 'skeletal system']
     }
 }
 

@@ -61,7 +61,7 @@ assay_terms = {
       '4C': 'OBI:0002458',
       'Clone-seq': 'NTR:0000458',
       'PLAC-seq' : 'NTR:0000513',
-      'MPRA' : 'NTR:0000515',
+      'MPRA' : 'OBI:0002675',
       'CRISPR screen': 'NTR:0000520',
       'pooled clone sequencing': 'NTR:0000519',
       'PRO-cap': 'NTR:0000536',
