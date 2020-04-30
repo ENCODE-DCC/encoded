@@ -118,14 +118,18 @@ const jsonldFormatter = (context, url) => {
     if (context['@type'].some(type => type.toLowerCase() === 'annotation')) {
         mappedData.description = context.annotation_type !== context.description ? `${context.annotation_type} - ${context.description}` : context.annotation_type;
     } else if (context['@type'].some(type => type.toLowerCase() === 'experiment' || type.toLowerCase() === 'functionalcharacterizationexperiment')) {
-        mappedData.description = `${context.target && context.target.label ? [context.target.label].join('') : ''} ${context.assay_title ? ['- ', context.assay_title].join('') : ''} ${context.biosample_summary ? ['- ', context.biosample_summary].join('') : ''}`.trim();
+        const targetLabel = context.target && context.target.label ? context.target.label : '';
+        const assayTitle = context.assay_title || '';
+        const biosampleSummary = context.biosample_summary || '';
+
+        mappedData.description = [targetLabel, assayTitle, biosampleSummary].filter(d => d !== '').join(' - ');
     } else {
         mappedData.description = context.summary || context.description;
     }
 
     // Google date set requires minimum length of 50. This pads it if need be to reach that number.
     if (mappedData.description.length < 50) {
-        mappedData.description = `${mappedData.description} - ${context.award.project} - ${context.award.name} - (${context.lab.title})`;
+        mappedData.description = [mappedData.description, context.award.project, context.award.name, context.lab.title].filter(d => d !== '').join(' - ');
     }
 
     if (context.source) {
