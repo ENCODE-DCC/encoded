@@ -33,7 +33,7 @@ const BodyList = {
     gallbladder: ['cls-gallbladder'],
     gonad: ['testis', 'ovary'],
     heart: ['cls-33', 'cls-44', 'cls-45'],
-    intestine: ['large intestine', 'small intestine'],
+    intestine: ['large intestine', 'small intestine', 'colon'],
     kidney: ['cls-kidney'],
     'large intestine': ['cls-29', 'cls-30', 'cls-lg-intestine', 'colon'],
     limb: ['cls-limb'],
