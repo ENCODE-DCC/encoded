@@ -229,3 +229,9 @@ def test_no_runtype_readlength_dependency(testapp, file_no_runtype_readlength, p
 def test_subreads_bam(testapp, file_subreads):
     res = testapp.post_json('/file', file_subreads, expect_errors=False)
     assert res.status_code == 201
+
+
+def test_no_runtype_dependency(testapp, file_no_runtype, platform3):
+    testapp.post_json('/file', file_no_runtype, status=422)
+    file_no_runtype.update({'run_type': 'single-ended'})
+    testapp.post_json('/file', file_no_runtype, status=201)
