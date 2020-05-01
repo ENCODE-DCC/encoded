@@ -147,22 +147,24 @@ function mapGenome(inputAssembly) {
 /**
  * Display a label for a file’s track.
  */
-const TrackLabel = ({ file, long }) => {
+const TrackLabel = ({ file, long, short }) => {
     const biologicalReplicates = file.biological_replicates && file.biological_replicates.join(',');
     return (
         <React.Fragment>
             <a href={file['@id']} className="gb-accession">{file.accession}<span className="sr-only">{`Details for file ${file.accession}`}</span></a>
-            <ul className="gb-info">
-                {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
-                {file.target ? <li>{file.target.label}</li> : null}
-                {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
-                {long ?
-                    <React.Fragment>
-                        <li>{file.output_type}</li>
-                        {(biologicalReplicates !== '') ? <li>{`rep ${biologicalReplicates}`}</li> : null}
-                    </React.Fragment>
-                : null}
-            </ul>
+            {!short ?
+                <ul className="gb-info">
+                    {file.biosample_ontology && file.biosample_ontology.term_name ? <li>{file.biosample_ontology.term_name}</li> : null}
+                    {file.target ? <li>{file.target.label}</li> : null}
+                    {file.assay_term_name ? <li>{file.assay_term_name}</li> : null}
+                    {long ?
+                        <React.Fragment>
+                            <li>{file.output_type}</li>
+                            {(biologicalReplicates !== '') ? <li>{`rep ${biologicalReplicates}`}</li> : null}
+                        </React.Fragment>
+                    : null}
+                </ul>
+            : null}
         </React.Fragment>
     );
 };
@@ -172,10 +174,13 @@ TrackLabel.propTypes = {
     file: PropTypes.object.isRequired,
     /** True to generate a long version of the label */
     long: PropTypes.bool,
+    /** True to generate a short version of the label */
+    short: PropTypes.bool,
 };
 
 TrackLabel.defaultProps = {
     long: false,
+    short: false,
 };
 
 class GenomeBrowser extends React.Component {
@@ -463,6 +468,7 @@ class GenomeBrowser extends React.Component {
                 const trackObj = {};
                 trackObj.name = <TrackLabel file={file} />;
                 trackObj.longname = <TrackLabel file={file} long />;
+                trackObj.shortname = <TrackLabel file={file} short />;
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = 80;
