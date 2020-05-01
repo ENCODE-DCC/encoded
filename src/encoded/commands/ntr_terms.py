@@ -486,7 +486,7 @@ ntr_biosamples = {
     },
     "NTR:0000722": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell", "precursor cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-positive CD71-positive TER-119-positive erythroid progenitor cells",
         "objectives": [],
@@ -499,7 +499,7 @@ ntr_biosamples = {
     },
     "NTR:0000721": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell", "precursor cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
         "objectives": [],
@@ -512,7 +512,7 @@ ntr_biosamples = {
     },
     "NTR:0000720": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell", "precursor cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-positive CD71-negative TER-119-negative erythroid progenitor cells",
         "objectives": [],
@@ -525,7 +525,7 @@ ntr_biosamples = {
     },
     "NTR:0000719": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell", "precursor cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-negative CD71-positive TER-119-positive erythroid progenitor cells",
         "objectives": [],
@@ -915,7 +915,7 @@ ntr_biosamples = {
     },
     "NTR:0000711": {
         "category": [],
-        "cells": ["precursor cell"],
+        "cells": ["progenitor cell"],
         "developmental": ["ectoderm"],
         "name": "neural progenitor cell",
         "objectives": [],
@@ -967,7 +967,7 @@ ntr_biosamples = {
     },
     "NTR:0000514": {
         "category": [],
-        "cells": ["precursor cell"],
+        "cells": ["progenitor cell"],
         "developmental": [],
         "name": "cardiovascular progenitor cell",
         "objectives": [],
@@ -980,7 +980,7 @@ ntr_biosamples = {
     },
     "NTR:0000512": {
         "category": [],
-        "cells": ["precursor cell"],
+        "cells": ["progenitor cell"],
         "developmental": [],
         "name": "nephron progenitor cell",
         "objectives": [],
@@ -993,7 +993,7 @@ ntr_biosamples = {
     },
     "NTR:0000474": {
         "category": [],
-        "cells": ["precursor cell"],
+        "cells": ["progenitor cell"],
         "developmental": ["ectoderm"],
         "name": "ecto neural progenitor cell",
         "objectives": [],

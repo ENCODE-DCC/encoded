@@ -168,7 +168,7 @@ cell_slims = {
     'CL:0000034': 'stem cell',
     'EFO:0002886': 'stem cell', # stem cell derived cell line
     'CL:0000084': 'T cell',
-    'CL:0011115': 'precursor cell'
+    'NTR:0000550': 'progenitor cell'
 }
 
 assay_slims = {
