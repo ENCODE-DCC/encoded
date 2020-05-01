@@ -3372,5 +3372,19 @@
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "63c1bfbc-4c10-4ad0-b89e-b51e1b63340e"
+    },
+    {
+        "dataset": "ENCSR000AJK",
+        "status": "released",
+        "award": "U54HG006998",
+        "assembly": "GRCh38",
+        "md5sum": "c540631e31df3993044cb78128d65de6",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "consensus DNase hypersensitivity sites (cDHSs)",
+        "file_format": "bigBed",
+        "lab": "ali-mortazavi",
+        "file_format_type": "bed3+",
+        "accession": "ENCFF880CDH",
+        "file_size": 13224
     }
 ]

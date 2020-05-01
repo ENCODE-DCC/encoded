@@ -395,5 +395,24 @@
         "step_label": "star-alignment-step",
         "title": "microRNA miRNA annotation step",
         "uuid": "c9c96dd8-681a-43fd-b5ad-07ca5f4d5f86"
+    },
+    {
+        "analysis_step_types": [
+            "representative peak selection",
+            "candidate cis-regulatory element identification"
+        ],
+        "date_created": "2020-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "reads",
+            "consensus DNase hypersensitivity sites (cDHSs)"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "consensus DNase hypersensitivity sites (cDHSs)"
+        ],
+        "status": "released",
+        "step_label": "cdhss-step",
+        "title": "cDHSs step",
+        "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537ca"
     }
 ]

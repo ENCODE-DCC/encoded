@@ -1290,6 +1290,7 @@
                         "candidate enhancers",
                         "candidate promoters",
                         "chromatin interactions",
+                        "consensus DNase hypersensitivity sites (cDHSs)",
                         "mapping quality thresholded chromatin interactions",
                         "conservative IDR thresholded peaks",
                         "control normalized signal",
