@@ -1247,7 +1247,7 @@ class App extends React.Component {
                             <Provider store={cartStore}>
                                 <div id="layout">
                                     <Navigation isHomePage={isHomePage} />
-                                    <div id="content" className="container" key={key}>
+                                    <div id="content" className={`container ${context['@type'].join(' ')}`} key={key}>
                                         {content}
                                     </div>
                                     {errors}

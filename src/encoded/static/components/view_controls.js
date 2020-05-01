@@ -185,7 +185,7 @@ const getQueryFromFilters = (filters) => {
 /**
  * Displays view control buttons appropriate for the given search results.
  */
-export const ViewControls = ({ results, filterTerm, activeFilters }) => {
+export const ViewControls = ({ results, filterTerm, activeFilters, alternativeNames }) => {
     // Add the hard-coded type filter if given.
     let filters = [];
     if (filterTerm) {
@@ -250,8 +250,16 @@ export const ViewControls = ({ results, filterTerm, activeFilters }) => {
         const queryString = getQueryFromFilters(results.filters);
         return (
             <div className="btn-attached">
-                {views.map((view) => {
+                {views.map((view, viewIdx) => {
                     const buttonData = viewPathMap[view];
+                    if (alternativeNames) {
+                        return (
+                            <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
+                                {svgIcon(buttonData.icon)}
+                                {alternativeNames[viewIdx]}
+                            </a>
+                        );
+                    }
                     return (
                         <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
                             {svgIcon(buttonData.icon)}
@@ -270,11 +278,13 @@ ViewControls.propTypes = {
     /** Filter `type` to use in addition to `filters` property for missing "type" filter cases */
     filterTerm: PropTypes.string,
     activeFilters: PropTypes.array,
+    alternativeNames: PropTypes.array,
 };
 
 ViewControls.defaultProps = {
     filterTerm: null,
     activeFilters: [],
+    alternativeNames: null,
 };
 
 
