@@ -471,7 +471,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.shortname = <TrackLabel file={file} short />;
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
-                trackObj.heightPx = 80;
+                trackObj.heightPx = 85;
                 return trackObj;
             } else if (file.file_format === 'vdna-dir') {
                 const trackObj = {};

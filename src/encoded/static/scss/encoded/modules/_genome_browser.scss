@@ -267,3 +267,15 @@
         margin: 5px 0;
     }
 }
+
+.button-container {
+    text-align: right;
+    .hpgv_track-expander {
+        svg {
+            color: #868686;
+            &:hover {
+                color: #6C6C6C;
+            }
+        }
+    }
+}
