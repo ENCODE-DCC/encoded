@@ -1,8 +1,7 @@
 import pytest
 
-
 @pytest.fixture
-def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum):
+def experiment_chip_control(testapp, lab, award, ileum):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -10,7 +9,36 @@ def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum):
         'date_released': '2019-10-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid']
+        'control_type': 'input library'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum, experiment_chip_control):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'released',
+        'date_released': '2019-10-08',
+        'biosample_ontology': ileum['uuid'],
+        'assay_term_name': 'ChIP-seq',
+        'target': target_H3K4me3['uuid'],
+        'possible_controls': [experiment_chip_control['@id']]
+
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_chip_H3K27me3(testapp, lab, award, target_H3K27me3, experiment_chip_control, ileum):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample_ontology': ileum['uuid'],
+        'assay_term_name': 'ChIP-seq',
+        'target': target_H3K27me3['uuid'],
+        'possible_controls': [experiment_chip_control['uuid']]
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

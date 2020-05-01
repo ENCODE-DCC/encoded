@@ -36,3 +36,15 @@ def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
         ],
     }
     return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_chip_encode4(testapp, analysis_step_chip_encode4, software_version):
+    item = {
+        'analysis_step': analysis_step_chip_encode4['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]

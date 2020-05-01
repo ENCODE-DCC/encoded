@@ -151,6 +151,153 @@ def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
+
+@pytest.fixture
+def file_fastq_control_chip(testapp, lab, award, experiment_chip_control, replicate_control_chip, platform1):
+    item = {
+        'dataset': experiment_chip_control['@id'],
+        'replicate': replicate_control_chip['@id'],
+        'file_format': 'fastq',
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '21ab74b6e21518393507f4ebfa66d77a',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_1_chip(testapp, lab, award, experiment_chip_H3K27me3, replicate_1_chip, platform1, file_fastq_control_chip):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'replicate': replicate_1_chip['@id'],
+        'file_format': 'fastq',
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '21be74b6e19115393507f4ebfa66d77a',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'controlled_by': [file_fastq_control_chip['@id']],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_2_chip(testapp, lab, award, experiment_chip_H3K27me3, replicate_2_chip, platform1):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'replicate': replicate_2_chip['@id'],
+        'file_format': 'fastq',
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '21ab74b6e11515393507f4ebfa66d77a',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+
+@pytest.fixture
+def file_bam_control_chip(testapp, encode_lab, award, experiment_chip_control, file_fastq_control_chip):
+    item = {
+        'dataset': experiment_chip_control['@id'],
+        'derived_from': [file_fastq_control_chip['@id']],
+        'file_format': 'bam',
+        'assembly': 'GRCh38',
+        'file_size': 34,
+        'md5sum': '91be42b6e91515394407f4ebfa66d77a',
+        'output_type': 'alignments',
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam_1_chip(testapp, encode_lab, award, experiment_chip_H3K27me3, file_fastq_1_chip):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'derived_from': [file_fastq_1_chip['@id']],
+        'file_format': 'bam',
+        'assembly': 'GRCh38',
+        'file_size': 34,
+        'md5sum': '91be42b6e11515394407f4ebfa66d77a',
+        'output_type': 'alignments',
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam_2_chip(testapp, encode_lab, award, experiment_chip_H3K27me3, file_fastq_2_chip):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'derived_from': [file_fastq_2_chip['@id']],
+        'file_format': 'bam',
+        'assembly': 'GRCh38',
+        'file_size': 34,
+        'md5sum': '91be89b6e11515377807f4ebfa66d77a',
+        'output_type': 'alignments',
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bed_narrowPeak_chip_background(testapp, experiment_chip_H3K27me3, file_bam_1_chip, award, lab):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'derived_from': [file_bam_1_chip['@id']],
+        'file_format': 'bed',
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'e008ab102df36d93dd070ef0712b8ee7',
+        'output_type': 'peaks and background as input for IDR',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bed_narrowPeak_chip_peaks(testapp, experiment_chip_H3K27me3, file_bed_narrowPeak_chip_background, award, lab):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bed',
+        'derived_from':[file_bed_narrowPeak_chip_background['@id']],
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'e008ab204df36d93dd070ef0712b8ee7',
+        'output_type': 'optimal IDR thresholded peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
     item = {

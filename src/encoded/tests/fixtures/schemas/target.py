@@ -117,7 +117,7 @@ def target_H3K27me3(testapp, organism):
     item = {
         'label': 'H3K27me3',
         'target_organism': organism['@id'],
-        'investigated_as': ['histone']
+        'investigated_as': ['histone', 'broad histone mark']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
