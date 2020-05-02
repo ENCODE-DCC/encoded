@@ -153,7 +153,7 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
     }, [facet.field, queryString, reactContext, relevantFilters]);
 
     const query = new QueryString(queryString);
-    const isFieldPartOfSearchQuery = !!query.getKeyValues(facet.field)[0];
+    const isFieldPartOfSearchQuery = !!query.getKeyValuesIfPresent(facet.field)[0];
 
     // this field show display if it is part of the search query even if there are no results. Otherwise hide
     return (

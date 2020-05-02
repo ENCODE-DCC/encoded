@@ -126,6 +126,21 @@ class QueryString {
     }
 
     /**
+     * Returns an array of values whose keys match the `key` string parameter REGARDLESS of the relationship
+     * between the key and value in the query string. For example, query string "a=1&b=2&a=3&b!=3", a `key`
+     * value of "b" would return [2,3]. This method does not take "==" and "!=" into consideration.
+     * @param {string} key
+     * @memberof QueryString
+     *
+     *  @return {array} Non-URL-encoded values that have `key` as their key.
+     */
+    getKeyValuesIfPresent(key) {
+        return this._parsedQuery
+            .filter(queryElement => queryElement[key])
+            .map(queryElement => queryElement[Object.keys(queryElement)[0]]);
+    }
+
+    /**
      * Get the number of query string elements for any key or a specific key.
      * @param {string} key Optional key to count; count all keys if not supplied
      *
