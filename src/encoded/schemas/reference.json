@@ -109,7 +109,7 @@
             "comment": "See gene.json for available identifiers.",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
+            "minItems": 1,
             "items": {
                 "title": "Gene",
                 "description": "The gene under investigation.",
