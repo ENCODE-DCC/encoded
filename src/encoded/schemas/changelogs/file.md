@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 20
+* Reimplemented *run_type* dependency on fastq files.
+
 ### Minor changes since schema version 19
 * Added *consensus DNase hypersensitivity sites (cDHSs)* to the num for *output_type*.
 

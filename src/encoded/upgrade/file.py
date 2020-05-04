@@ -643,3 +643,14 @@ def file_18_19(value, system):
     if output_type == "representative dnase hypersensitivity sites":
         value['output_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
     return
+
+
+@upgrade_step('file', '19', '20')
+def file_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5258
+    run_type = value.get('run_type', None)
+
+    if run_type is None:
+        value['run_type'] = 'single-ended'
+        value['notes'] = 'The run_type of this file was automatically upgraded by ENCD-5258.'
+    return
