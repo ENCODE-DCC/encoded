@@ -212,6 +212,17 @@ slim_shims = {
         'OBI:0002160': ['DNA binding'],  # Mint-ChIP-seq
         'OBI:0002675': ['Functional characterization'] # MPRA
     },
+    'cell': {
+        'CL:0000038': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
+        'CL:0000049': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0000050': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
+        'CL:0000051': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0000553': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
+        'CL:0000557': ['hematopoietic cell', 'myeloid cell', 'progenitor cell'], # 'hematopoietic cell' & 'myeloid cell' are ontology-based
+        'CL:0000837': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0001059': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
+        'CL:0002351': ['progenitor cell']
+    },
     'organ': {
         'CL:0002399': ['blood', 'bodily fluid'],
         'CL:0000236': ['blood', 'bodily fluid'],
@@ -228,52 +239,100 @@ slim_shims = {
         'CL:0000546': ['blood', 'bodily fluid'],
         'CL:0000576': ['blood', 'bodily fluid'],
         'CL:0001054': ['blood', 'bodily fluid'],
-        'CL:0000515': ['musculature of body'],
-        'CL:0000187': ['musculature of body'],
         'CL:0000905': ['blood', 'bodily fluid'],
         'CL:0000037': ['blood', 'bodily fluid'],
-        'CL:0000192': ['musculature of body'],
-        'CL:0000746': ['musculature of body', 'heart'],
         'CL:0000837': ['blood', 'bodily fluid'],
+        'CL:0001053': ['blood', 'bodily fluid'],
+        'CL:0000902': ['blood', 'bodily fluid'],
+        'CL:0000900': ['blood', 'bodily fluid'],
+        'CL:0000896': ['blood', 'bodily fluid'],
+        'CL:0000842': ['blood', 'bodily fluid'],
+        'CL:0000788': ['blood', 'bodily fluid'],
+        'CL:0000785': ['blood', 'bodily fluid'],
+        'CL:0000775': ['blood', 'bodily fluid'],
+        'CL:0000623': ['blood', 'bodily fluid'],
+        'CL:0000492': ['blood', 'bodily fluid'],
+        'CL:0000081': ['blood', 'bodily fluid'],
+        'CL:0000765': ['bone marrow', 'bone element'],
+        'CL:0000763': ['bone marrow', 'bone element'],
+        'CL:0000038': ['bone marrow', 'bone element'],
+        'CL:0001059': ['bone marrow', 'bone element'],
+        'CL:0000553': ['bone marrow', 'bone element'],
+        'CL:0000235': ['bone marrow', 'bone element'],
+        'CL:0000051': ['bone marrow', 'bone element'],
+        'CL:0000050': ['bone marrow', 'bone element'],
+        'CL:0000049': ['bone marrow', 'bone element'],
+        'CL:0000823': ['bone marrow', 'bone element', 'lymph node', 'spleen', 'thymus'],
+        'CL:0000598': ['brain'],
+        'CL:0000127': ['brain', 'spinal cord'],
+        'CL:0000103': ['brain', 'spinal cord', 'ear', 'eye'],
+        'CL:2000017': ['connective tissue', 'mouth'], # 'connective tissue' is ontology-based
+        'CL:0011012': ['embryo'],
+        'CL:0000681': ['embryo'],
+        'CL:0000352': ['embryo'],
+        'CL:0000047': ['embryo'],
+        'CL:0002322': ['embryo'],
+        'CL:0002259': ['embryo', 'epithelium'],
+        'CL:0002351': ['endocrine gland', 'pancreas'],
+        'CL:2000054': ['exocrine gland', 'liver', 'endocrine gland'],
+        'CL:0000091': ['exocrine gland', 'liver', 'endocrine gland', 'blood vessel', 'vasculature'],
+        'CL:0002451': ['exocrine gland', 'mammary gland'],
         'CL:0002328': ['lung', 'bronchus', 'epithelium'], # 'bronchus' & 'epithelium' are ontology-based
         'CL:0002598': ['lung', 'bronchus'], # 'bronchus' is ontology-based
-        'CL:2000017': ['connective tissue', 'mouth'], # 'connective tissue' is ontology-based
-        'EFO:0005650': ['limb'],
-        'EFO:0005916': ['embryo'],
+        'CL:0000515': ['musculature of body'],
+        'CL:0000187': ['musculature of body'],
+        'CL:0000192': ['musculature of body'],
+        'CL:0000680': ['musculature of body'],
+        'CL:0000056': ['musculature of body'],
+        'CL:0000746': ['musculature of body', 'heart'],
+        'CL:0010021': ['musculature of body', 'heart'],
+        'CL:0002098': ['musculature of body', 'heart'],
+        'CL:0000019': ['testis'],
         'EFO:0005023': ['adipose tissue', 'connective tissue'],
-        'EFO:0002787': ['lymphoid tissue'],
         'EFO:0007598': ['blood', 'bodily fluid'],
-        'EFO:0000586': ['connective tissue'],
-        'EFO:0005904': ['embryo'],
-        'EFO:0002939': ['brain'],
-        'EFO:0005694': ['bone element'],
         'EFO:0005903': ['blood', 'bodily fluid'],
-        'EFO:0000681': ['kidney'],
-        'EFO:0002324': ['lymphoid tissue'],
         'EFO:0002798': ['blood', 'bodily fluid'],
-        'EFO:0005914': ['embryo'],
-        'EFO:0005915': ['embryo'],
-        'EFO:0002779': ['penis', 'skin of body', 'connective tissue'], # 'connective tissue' & 'penis' are ontology-based
+        'EFO:0001253': ['blood', 'bodily fluid'],
         'EFO:0005233': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
         'EFO:0005480': ['blood', 'bodily fluid', 'spleen'], # 'blood' & 'bodily fluid' are ontology-based
         'EFO:0005482': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
         'EFO:0005719': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
-        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
-        'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
         'EFO:0006283': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
         'EFO:0006711': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
+        'EFO:0002939': ['brain'],
+        'EFO:0005823': ['brain'],
+        'EFO:0005694': ['bone element'],
+        'EFO:0009500': ['colon', 'intestine', 'large intestine'],
+        'EFO:0000586': ['connective tissue'],
+        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
+        'EFO:0005916': ['embryo'],
+        'EFO:0005904': ['embryo'],
+        'EFO:0005914': ['embryo'],
+        'EFO:0005915': ['embryo'],
+        'EFO:0004038': ['embryo'],
+        'EFO:0002055': ['embryo'],
+        'EFO:0002034': ['embryo'],
+        'EFO:0005824': ['eye'],
+        'EFO:0000681': ['kidney'],
+        'EFO:0005650': ['limb'],
+        'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
+        'EFO:0002787': ['lymphoid tissue'],
+        'EFO:0002324': ['lymphoid tissue'],
         'EFO:0007095': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
+        'EFO:0007098': ['skin of body', 'penis'], # 'penis' is ontology-based
+        'EFO:0002779': ['skin of body', 'penis', 'connective tissue'] # 'connective tissue' & 'penis' are ontology-based
     },
     'system': {
-        'UBERON:0006566': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
-        'UBERON:0006567': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
+        'CL:0008030': ['central nervous system', 'peripheral nervous system'],
+        'CL:0002319': ['central nervous system', 'peripheral nervous system'],
         'CL:0000515': ['musculature'],
         'CL:0000187': ['musculature'],
         'CL:0000192': ['musculature'],
-        'CL:0000746': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
+        'CL:0000746': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based',
+        'UBERON:0006566': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
+        'UBERON:0006567': ['musculature', 'circulatory system'], # 'circulatory system is ontology-based'
         'UBERON:0002101': ['musculature', 'skeletal system']
     }
 }

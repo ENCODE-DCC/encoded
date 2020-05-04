@@ -41,7 +41,7 @@ How to update the ontology versions
     Site release version: 100
     ontology.json file: ontology-2020-04-23.json
     [UBERON release date]: 2019-11-22
-    [OBI release date]: 2019-04-23
+    [OBI release date]: 2020-04-23
     [EFO release date]: 2020-04-20
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
