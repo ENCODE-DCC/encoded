@@ -396,3 +396,12 @@ def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
     )
     assert value['schema_version'] == '28'
     assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
+    upgrade_18_19_reference['examined_loci'] = []
+    print(upgrade_18_19_reference['examined_loci'])
+    value = upgrader.upgrade(
+        'reference', upgrade_18_19_reference, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert 'examined_loci' not in value

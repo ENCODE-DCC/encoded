@@ -8,3 +8,14 @@ def base_reference(testapp, lab, award):
         'lab': lab['@id']
     }
     return testapp.post_json('/reference', item).json['@graph'][0]
+
+
+@pytest.fixture
+def upgrade_18_19_reference(testapp, lab, award, gene):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'examined_loci': [gene['@id']],
+        'reference_type': 'functional elements'
+    }
+    return testapp.post_json('/reference', item).json['@graph'][0]

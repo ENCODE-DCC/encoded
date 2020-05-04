@@ -1,5 +1,8 @@
 ## Changelog for reference.json
 
+### Schema version 19
+* Adjusted the default schema to not specify *examined_loci* property automatically.
+
 ### Minor changes since schema version 18
 
 * *Examined_loci* property may now be specified in references that are *reference_type*: *functional elements*.
