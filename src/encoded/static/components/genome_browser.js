@@ -456,7 +456,9 @@ class GenomeBrowser extends React.Component {
     }
 
     filesToTracks(files, domain) {
+        console.log('file to tracks');
         const tracks = files.map((file) => {
+            console.log(file);
             if (file.name) {
                 const trackObj = {};
                 trackObj.name = <i>{file.name}</i>;
@@ -474,8 +476,10 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = 85;
                 return trackObj;
             } else if (file.file_format === 'vdna-dir') {
+                console.log('do we get here');
                 const trackObj = {};
                 trackObj.name = this.props.assembly.split(' ')[0];
+                console.log(trackObj.name);
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
                 trackObj.heightPx = 40;
@@ -485,7 +489,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.name = file.title;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
-                trackObj.heightPx = 120;
+                trackObj.heightPx = 65; //120;
                 return trackObj;
             }
             const trackObj = {};
@@ -496,12 +500,14 @@ class GenomeBrowser extends React.Component {
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
             if (file.file_format_type &&
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase() > -1))) {
-                trackObj.heightPx = 120;
+                trackObj.heightPx = 65; //120;
             } else {
-                trackObj.heightPx = 80;
+                trackObj.heightPx = 65; //80;
             }
             return trackObj;
         });
+        console.log('tracks');
+        console.log(tracks);
         return tracks;
     }
 
