@@ -3407,5 +3407,19 @@
         "file_format_type": "bed3+",
         "accession": "ENCFF880CDH",
         "file_size": 13224
+    },
+    {
+        "_test": "footprints",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/encode-processing-pipeline/",
+        "dataset": "ENCSR500ELM",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "accession": "ENCFF111FPT",
+        "file_format": "tsv",
+        "output_type": "footprints",
+        "file_size": 3456,
+        "md5sum": "a976d265b6dd95237d3c2368f3ec67b1"
     }
 ]

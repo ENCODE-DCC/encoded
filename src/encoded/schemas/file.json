@@ -1957,6 +1957,7 @@
         "safe-targeting gRNAs": "annotation",
         "regulatory elements": "annotation",
         "gRNAs": "annotation",
+        "footprints": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",

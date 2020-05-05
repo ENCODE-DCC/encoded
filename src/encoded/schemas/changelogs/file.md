@@ -1,10 +1,10 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 20
-* Added *footprints* to the num for *output_type*.
+* Added *footprints* to the enum for *output_type*.
 
 ### Minor changes since schema version 19
-* Added *consensus DNase hypersensitivity sites (cDHSs)* to the num for *output_type*.
+* Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum for *output_type*.
 
 ### Schema version 19
 * Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *output_type*.
