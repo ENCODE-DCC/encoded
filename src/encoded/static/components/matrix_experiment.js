@@ -106,6 +106,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         colTitleMap[colCategoryBucket.key] = colIndex;
         return colCategoryBucket.key;
     });
+    const searchUrl = '/search/?type=Experiment&status=released';
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
         header: <a href={`${context.search_base}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
@@ -163,7 +164,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${context.search_base}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${searchUrl}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -208,7 +209,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${context.search_base}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${searchUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
