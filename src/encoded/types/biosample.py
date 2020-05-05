@@ -21,21 +21,14 @@ class Biosample(Item):
     item_type = 'biosample'
     schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
-    rev = {
-        'parent_of': ('Biosample', 'part_of'),
-    }
+    rev = {}
     embedded = []
     audit_inherit = []
     set_status_up = [
-        'donor',
-        'part_of',
-        'pooled_from',
-        'originated_from',
         'genetic_modifications',
         'treatments',
         'documents',
-        'host',
-        'source',
+        'source'
     ]
     set_status_down = []
 
@@ -159,39 +152,6 @@ class Biosample(Item):
                     return worm_life_stage
             return 'unknown'
 
-    @calculated_property(define=True,
-                         schema={"title": "Synchronization",
-                                 "type": "string"})
-    def synchronization(self, request, donor=None, mouse_synchronization_stage=None,
-                        fly_synchronization_stage=None, worm_synchronization_stage=None):
-        # XXX mouse_synchronization_stage does not exist
-        if mouse_synchronization_stage is not None:
-            return mouse_synchronization_stage
-        if fly_synchronization_stage is not None:
-            return fly_synchronization_stage
-        if worm_synchronization_stage is not None:
-            return worm_synchronization_stage
-        if donor is not None:
-            return request.embed(donor, '@@object').get('synchronization')
-
-    @calculated_property(schema={
-        "title": "Model organism genetic modifications",
-        "description":
-            "Genetic modifications made in the model organism of the biosample.",
-        "type": "array",
-        "items": {
-            "title": "Model organism genetic modification",
-            "description": "Genetic modification made in the model organism of the biosample.",
-            "comment": "See genetic_modification.json for available identifiers.",
-            "type": "string",
-            "linkTo": "GeneticModification",
-        },
-    }, define=True)
-    def model_organism_donor_modifications(self, request, donor=None):
-        if donor is not None:
-            return request.embed(donor, '@@object').get('genetic_modifications')
-
-
     @calculated_property(schema={
         "title": "Applied modifications",
         "description": "All genetic modifications made in either the model organism and/or biosample.",
@@ -207,20 +167,6 @@ class Biosample(Item):
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
 
-
-    @calculated_property(schema={
-        "description": "The biosample(s) that have this biosample in their part_of property.",
-        "comment": "Do not submit. Values in the list are reverse links of a biosamples that are part_of this biosample.",
-        "title": "Child biosamples",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Biosample.part_of",
-        },
-        'notSubmittable': True,
-    })
-    def parent_of(self, request, parent_of):
-        return paths_filtered_by_status(request, parent_of)
 
     @calculated_property(schema={
         "title": "Age display",
@@ -244,59 +190,6 @@ class Biosample(Item):
                 pluralize(model_organism_age, model_organism_age_units)
             )
         return None
-
-    @calculated_property(condition='depleted_in_term_name', schema={
-        "title": "Depleted in term ID",
-        "type": "string",
-    })
-    def depleted_in_term_id(self, request, depleted_in_term_name):
-
-        term_lookup = {
-            'head': 'UBERON:0000033',
-            'limb': 'UBERON:0002101',
-            'salivary gland': 'UBERON:0001044',
-            'male accessory sex gland': 'UBERON:0010147',
-            'testis': 'UBERON:0000473',
-            'female gonad': 'UBERON:0000992',
-            'digestive system': 'UBERON:0001007',
-            'arthropod fat body': 'UBERON:0003917',
-            'antenna': 'UBERON:0000972',
-            'adult maxillary segment': 'FBbt:00003016',
-            'female reproductive system': 'UBERON:0000474',
-            'male reproductive system': 'UBERON:0000079'
-        }
-
-        term_id = list()
-        for term_name in depleted_in_term_name:
-            if term_name in term_lookup:
-                term_id.append(term_lookup.get(term_name))
-            else:
-                term_id.append('Term ID unknown')
-
-        return term_id
-
-    @calculated_property(condition='subcellular_fraction_term_name', schema={
-        "title": "Subcellular fraction term ID",
-        "type": "string",
-    })
-    def subcellular_fraction_term_id(self, request, subcellular_fraction_term_name):
-        term_lookup = {
-            'nucleus': 'GO:0005634',
-            'cytosol': 'GO:0005829',
-            'chromatin': 'GO:0000785',
-            'membrane': 'GO:0016020',
-            'mitochondria': 'GO:0005739',
-            'nuclear matrix': 'GO:0016363',
-            'nucleolus': 'GO:0005730',
-            'nucleoplasm': 'GO:0005654',
-            'polysome': 'GO:0005844',
-            'insoluble cytoplasmic fraction': 'NTR:0002594'
-        }
-
-        if subcellular_fraction_term_name in term_lookup:
-            return term_lookup.get(subcellular_fraction_term_name)
-        else:
-            return 'Term ID unknown'
 
     @calculated_property(schema={
         "title": "Summary",

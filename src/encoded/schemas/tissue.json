@@ -1,0 +1,96 @@
+{
+    "title": "Tissue",
+    "description": "Schema for submitting a tissue sample.",
+    "comment": "",
+    "id": "/profiles/tissue.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["source", "biosample_ontology"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/submitter_comment"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "mixins.json#/genetic_modifications"},
+        {"$ref": "mixins.json#/biosample_ontology"},
+        {"$ref": "mixins.json#/product_id"},
+        {"$ref": "mixins.json#/lot_id"},
+        {"$ref": "mixins.json#/source"},
+        {"$ref": "biosample.json#/properties"}
+    ],
+    "dependencies": {
+        "postmortem_interval":{
+            "required": ["postmortem_interval_units"],
+            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified."
+        },
+        "postmortem_interval_units": {
+            "required":["postmortem_interval"],
+            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified."
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "preservation_method": {
+            "title": "Preservation method",
+            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
+            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
+            "type": "string",
+            "enum": [
+                "cryopreservation",
+                "flash-freezing"
+            ]
+        },
+        "postmortem_interval": {
+            "title": "Post-mortem interval",
+            "description": "The amount of time elapsed since death.",
+            "comment": "Post-mortem interval for tissues should be reported, if known. Using for biosamples other than tissue is currently not allowed.",
+            "type": "integer",
+            "minimum": 1
+        },
+        "postmortem_interval_units": {
+            "title": "Post-mortem interval units",
+            "description": "The unit in which the PMI time was reported.",
+            "comment": "Post-mortem interval units for tissues should be reported with PMI value, if known. Using for biosamples other than tissue is currently not allowed.",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour",
+                "day",
+                "week"
+            ]
+        },
+        "ischemic_temperature": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "ischemic_time": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "ischemic_time_units": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        }
+    },
+    "facets": {},
+    "columns": {},
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/tissue.md"
+}

@@ -20,6 +20,54 @@ def includeme(config):
 
 
 @collection(
+    name='cell_culture',
+    properties={
+        'title': 'Cell cultures',
+        'description': 'Listing of Cell cultures',
+    })
+class CellCulture(Item):
+    item_type = 'cell_culture'
+    schema = load_schema('encoded:schemas/cell_culture.json')
+    embedded = []
+
+
+@collection(
+    name='suspension',
+    properties={
+        'title': 'Suspensions',
+        'description': 'Listing of Suspensions',
+    })
+class Suspension(Item):
+    item_type = 'suspension'
+    schema = load_schema('encoded:schemas/suspension.json')
+    embedded = []
+
+
+@collection(
+    name='organoid',
+    properties={
+        'title': 'Organoids',
+        'description': 'Listing of Organoids',
+    })
+class Organoid(Item):
+    item_type = 'organoid'
+    schema = load_schema('encoded:schemas/organoid.json')
+    embedded = []
+
+
+@collection(
+    name='tissue',
+    properties={
+        'title': 'Tissues',
+        'description': 'Listing of Tissues',
+    })
+class Tissue(Item):
+    item_type = 'tissue'
+    schema = load_schema('encoded:schemas/tissue.json')
+    embedded = []
+
+
+@collection(
     name='labs',
     unique_key='lab:name',
     properties={
@@ -153,8 +201,6 @@ class Library(Item):
     name_key = 'accession'
     embedded = [
         'biosample',
-        'biosample.donor',
-        'biosample.donor.organism',
         'biosample.biosample_ontology'
     ]
     set_status_up = [
