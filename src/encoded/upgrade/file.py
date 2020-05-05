@@ -659,10 +659,11 @@ def file_19_20(value, system):
     file_format = value.get('file_format', None)
     platform = value.get('platform', None)
     run_type = value.get('run_type', None)
+    notes = value.get('notes', '')
 
     if file_format in formats_to_check and \
             run_type is None and \
             platform not in platforms_to_exclude:
         value['run_type'] = 'single-ended'
-        value['notes'] = 'The run_type of this file was automatically upgraded by ENCD-5258.'
+        value['notes'] = (notes + ' The run_type of this file was automatically upgraded by ENCD-5258.').strip()
     return
