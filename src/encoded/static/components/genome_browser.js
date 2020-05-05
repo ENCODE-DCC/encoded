@@ -456,9 +456,7 @@ class GenomeBrowser extends React.Component {
     }
 
     filesToTracks(files, domain) {
-        console.log('file to tracks');
         const tracks = files.map((file) => {
-            console.log(file);
             if (file.name) {
                 const trackObj = {};
                 trackObj.name = <i>{file.name}</i>;
@@ -476,38 +474,40 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = 85;
                 return trackObj;
             } else if (file.file_format === 'vdna-dir') {
-                console.log('do we get here');
                 const trackObj = {};
                 trackObj.name = this.props.assembly.split(' ')[0];
-                console.log(trackObj.name);
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
-                trackObj.heightPx = 40;
+                trackObj.heightPx = 35;
                 return trackObj;
             } else if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
                 trackObj.name = file.title;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
-                trackObj.heightPx = 65; //120;
+                trackObj.heightPx = 50; //120;
+                trackObj.inputParameters = [2, 0.7, -1.0, 30];
+                trackObj.expandable = true;
                 return trackObj;
             }
             const trackObj = {};
             trackObj.name = <TrackLabel file={file} />;
+            trackObj.longname = <TrackLabel file={file} long />;
+            trackObj.shortname = <TrackLabel file={file} short />;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
+            trackObj.inputParameters = [2, 0.7, -1.0, 30];
+            trackObj.expandable = true;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
             if (file.file_format_type &&
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase() > -1))) {
-                trackObj.heightPx = 65; //120;
+                trackObj.heightPx = 100; //120;
             } else {
-                trackObj.heightPx = 65; //80;
+                trackObj.heightPx = 50; //80;
             }
             return trackObj;
         });
-        console.log('tracks');
-        console.log(tracks);
         return tracks;
     }
 
