@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 20
+* Added *footprints* to the num for *output_type*.
+
 ### Minor changes since schema version 19
 * Added *consensus DNase hypersensitivity sites (cDHSs)* to the num for *output_type*.
 
