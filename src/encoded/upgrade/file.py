@@ -648,9 +648,21 @@ def file_18_19(value, system):
 @upgrade_step('file', '19', '20')
 def file_19_20(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5258
+    platforms_to_exclude = [
+        'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+        'c7564b38-ab4f-4c42-a401-3de48689a998',
+        'e2be5728-5744-4da4-8881-cb9526d0389e',
+        '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+        '8f1a9a8c-3392-4032-92a8-5d196c9d7810'
+    ]
+    formats_to_check = ['fastq', 'sra']
+    file_format = value.get('file_format', None)
+    platform = value.get('platform', None)
     run_type = value.get('run_type', None)
 
-    if run_type is None:
+    if file_format in formats_to_check and \
+            run_type is None and \
+            platform not in platforms_to_exclude:
         value['run_type'] = 'single-ended'
         value['notes'] = 'The run_type of this file was automatically upgraded by ENCD-5258.'
     return
