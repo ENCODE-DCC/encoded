@@ -486,7 +486,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
                 trackObj.heightPx = 50; //120;
-                trackObj.inputParameters = [2, 0.7, -1.0, 30];
+                trackObj.inputParameters = [2, 0.7, -1.0, 30, 0.43];
                 trackObj.expandable = true;
                 return trackObj;
             }
@@ -496,7 +496,7 @@ class GenomeBrowser extends React.Component {
             trackObj.shortname = <TrackLabel file={file} short />;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            trackObj.inputParameters = [2, 0.7, -1.0, 30];
+            trackObj.inputParameters = [2, 0.7, -1.0, 30, 0.43];
             trackObj.expandable = true;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
