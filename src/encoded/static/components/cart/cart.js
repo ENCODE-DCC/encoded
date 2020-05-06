@@ -168,7 +168,7 @@ const CartBrowser = ({ files, assembly, pageNumber }) => {
             setPageFiles([]);
         }
     }, [files, assembly, pageNumber]);
-    return <GenomeBrowser files={pageFiles} assembly={assembly} expanded />;
+    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded />;
 };
 
 CartBrowser.propTypes = {
