@@ -68,8 +68,8 @@ class Biospecimen(Item):
         'y': {
             'facets': [
                 'status',
-                'collection_type',
-                'processing_type',
+                'sample_type',
+                'tissue_derivatives',
                 'tissue_type',
                 'anatomic_site',
                 'biolibrary.nucleic_acid_term_name',
@@ -82,7 +82,7 @@ class Biospecimen(Item):
                 'surgery.pathology_report.m_stage',
                 'surgery.pathology_report.ajcc_tnm_stage',               
             ],
-            'group_by': ['tissue_type', 'processing_type'],
+            'group_by': ['tissue_type', 'tissue_derivatives'],
             'label': 'collection',
         },
         'x': {

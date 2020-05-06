@@ -12,6 +12,7 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/uuid" }
     ],
     "type": "object",
@@ -55,8 +56,7 @@
                 "Hawaiian Pacific Islander",
                 "White",
                 "Declined",
-                "Other",
-                "Unknown"
+                "Other"
             ]
         },
         "ethnicity": {
@@ -90,17 +90,20 @@
         },
         "death_source": {
             "title": "Death Source",
-            "description": "The death date comes from",
+            "description": "The source of the death date",
             "type": "string",
             "enum": [
                 "UTSouthwestern Hospital",
                 "Parkland Hospital",
-                "Tumor Registery"
+                "Tumor Registry"
             ]
         }
 
     },
     "facets": {
+        "age_range": {
+            "title": "Age at Diagnosis"
+        },
         "gender": {
             "title": "Gender"
         },
@@ -109,6 +112,9 @@
         },
         "race": {
             "title": "Race"
+        },
+        "vital_status": {
+            "title": "Vital Status"
         },
 
         "medical_imaging.type" : {
@@ -193,11 +199,11 @@
         "radiation.treatment_intention" : {
           "title": "Radiation Treatment Intention"
         },
-        "biospecimen.collection_type": {
-              "title": "Biospecimen Collection Type"
+        "biospecimen.sample_type": {
+              "title": "Biospecimen Sample Type"
         },
-        "biospecimen.processing_type": {
-            "title": "Biospecimen Processing Type"
+        "biospecimen.tissue_derivatives": {
+            "title": "Biospecimen Tissue Derivatives"
         },
         "biospecimen.tissue_type": {
             "title": "Biospecimen Tissue Type"
@@ -295,3 +301,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+

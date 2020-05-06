@@ -115,6 +115,66 @@ class Patient(Item):
     set_status_up = []
     set_status_down = []
 
+    @calculated_property(schema={
+        "title": "Last Follow-up Date",
+        "description": "Calculated last follow-up date,format as YYYY-MM-DD",
+        "type": "string",
+    })
+    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
+    
+        all_traced_dates=[]
+        last_follow_up_date="Not available"
+        if len(vitals) > 0:
+            for obj in vitals:
+                v_obj = request.embed(obj, "@@object") 
+                vital_dates=v_obj.get("date")
+                all_traced_dates.append(vital_dates)
+        if len(labs) > 0:
+            for obj in labs:
+                l_obj = request.embed(obj, "@@object") 
+                lab_dates=l_obj.get("date")
+                all_traced_dates.append(lab_dates)
+        if len(surgery) > 0:
+            for obj in surgery:
+                s_obj = request.embed(obj, "@@object")
+                sur_dates=s_obj.get("date")
+                all_traced_dates.append(sur_dates) 
+        if len(germline) > 0:
+            for obj in germline:
+                g_obj = request.embed(obj, "@@object")
+                ger_dates=g_obj.get("service_date")
+                all_traced_dates.append(ger_dates)
+        if len(ihc) > 0:
+            for obj in ihc:
+                ihc_obj = request.embed(obj, "@@object")
+                ihc_dates=ihc_obj.get("service_date")
+                all_traced_dates.append(ihc_dates)          
+        if len(radiation) > 0:
+            for obj in radiation:
+                r_obj = request.embed(obj, "@@object")
+                rad_dates=r_obj.get("end_date")
+                all_traced_dates.append(rad_dates)                
+        if len(medical_imaging) > 0:
+            for obj in medical_imaging:
+                mi_obj = request.embed(obj, "@@object")
+                med_img_dates=mi_obj.get("procedure_date")
+                all_traced_dates.append(med_img_dates) 
+        if len(medication) > 0:
+            for obj in medication:
+                m_obj = request.embed(obj, "@@object")
+                med_dates=m_obj.get("end_date")
+                all_traced_dates.append(med_dates) 
+        if len(supportive_medication) > 0:
+            for obj in supportive_medication:
+                sm_obj = request.embed(obj, "@@object")
+                sup_med_dates=sm_obj.get("start_date")
+                all_traced_dates.append(sup_med_dates) 
+
+        if len(all_traced_dates) > 0:
+            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d")) 
+            last_follow_up_date = all_traced_dates[-1]
+        return last_follow_up_date
+
     @calculated_property( schema={
         "title": "Labs",
         "type": "array",
@@ -201,6 +261,17 @@ class Patient(Item):
             radiation_summary = "No Treatment Received"
         return radiation_summary
 
+    @calculated_property(define=True, schema={
+        "title": "Vital Status",
+        "type": "string",
+    })
+    def vital_status(self, request, death_date=None):
+        if death_date is None:
+            vital_status = "Alived"
+        else:
+            vital_status = "Deceased"
+        return vital_status
+
     @calculated_property(condition='radiation', schema={
         "title": "Dose per Fraction",
         "type": "array",
@@ -219,6 +290,30 @@ class Patient(Item):
             else:
                 dose_range.append("4000 - 6000")
         return dose_range
+
+    @calculated_property(condition='age', schema={
+        "title": "Age at Diagnosis",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def age_range(self, request, age):
+        age_range = []
+       
+        if age == "90 or above":
+            age_range.append("80+")
+        elif int(age) >= 80:
+            age_range.append("80+")
+        elif int(age) >= 60:
+            age_range.append("60 - 79")
+        elif int(age) >= 40:
+            age_range.append("40 - 59")
+        elif int(age) >= 20:
+            age_range.append("20 - 39")
+        else:
+            age_range.append("0 - 19")
+        return age_range
 
     @calculated_property(condition='radiation', schema={
         "title": "Radiation Fractions",
@@ -676,8 +771,8 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'diagnosis_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
-                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
+
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'diagnosis_date', 'age_range', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging','medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
