@@ -1805,7 +1805,7 @@
             "title": "Output type"
         },
         "index_of": {
-            "description": "The files this index file is relevant for."
+            "title": "Index of"
         },
         "quality_metrics": {
             "title": "QC Metric"
