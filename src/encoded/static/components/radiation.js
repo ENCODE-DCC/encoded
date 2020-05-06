@@ -176,11 +176,16 @@ if (this.props.diagnosis_date != "Not available") {
   date1 = new Date(ganttData[0].startDate);
 }
 let deceasedDate;
+let lastFollowUpDate;
 let date2;
 if (this.props.death_date != null){
   deceasedDate = new Date(this.props.death_date);
-  date2 = new Date(this.props.death_date);;
-} else {
+  date2 = new Date(this.props.death_date);
+} else if(this.props.last_follow_up_date != "Not available") {
+  lastFollowUpDate = new Date(this.props.last_follow_up_date);
+  date2 = new Date(this.props.last_follow_up_date);
+}
+else {
   date2 = new Date(ganttData[ganttData.length - 1].endDate);
 }
 
@@ -229,6 +234,26 @@ if (deceasedDate != null) {
     size: 15
   }
 };
+} else if (lastFollowUpDate!= null) {
+  trace2 = {
+    x: [lastFollowUpDate],
+    y: [scaleYIndex],
+    xaxis: 'x2',
+    mode: 'markers+text',
+    type: 'scatter',
+    name: '',
+    text: ['Date of last follow up'],
+    hovertemplate: "Date of last follow up: " + lastFollowUpDate.toISOString().split('T')[0],
+    textposition: 'left',
+    textfont: {
+      family:  'Raleway, sans-serif'
+    },
+    marker: { 
+      color: '#D31E1E',
+      size: 15
+    }
+  };
+
 }
 data.push(trace1);
 data.push(trace2);
@@ -300,4 +325,5 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
+
 
