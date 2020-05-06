@@ -5,8 +5,8 @@
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
+    "required": ["organism"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "donor.json#/properties" },

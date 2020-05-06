@@ -9,10 +9,8 @@
         "alternate_accessions": [
             "ENCDO117AAA"
         ],
-        "award": "U41HG006992",
         "ethnicity": "Caucasian",
-        "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
-        "lab": "j-michael-cherry",
+        "diseases": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",
@@ -25,42 +23,29 @@
         "aliases": [
             "michael-snyder:STL003"
         ],
-        "award": "U41HG006992",
         "ethnicity": "Caucasian",
-        "health_status": "Healthy",
-        "lab": "j-michael-cherry",
+        "diseases": "Healthy",
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",
         "uuid": "13e91df8-6ba4-460f-baf3-c313d884bf4b"
     },
     {
-        "_test": "has references",
         "accession": "ENCDO000HUM",
-        "award": "U41HG006992",
         "documents": [
             "encode:PanIsletD_Crawford_protocol"
         ],
-        "health_status": "unknown",
-        "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
         "parents": [
             "ENCDO058AAA",
             "ENCDO000AAK"
         ],
-        "references": [
-            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
-            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
-        ],
         "sex": "unknown",
         "uuid": "d90607d9-a5fa-4988-8cbf-c7fe8fcd0998"
     },
     {
         "accession": "ENCDO106AAA",
-        "award": "U41HG006992",
-        "health_status": "unknown",
-        "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
@@ -68,10 +53,7 @@
     },
     {
         "accession": "ENCDO275AAA",
-        "award": "U41HG006992",
         "ethnicity": "Black",
-        "health_status": "unknown",
-        "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
@@ -79,10 +61,7 @@
     },
     {
         "accession": "ENCDO276AAA",
-        "award": "U41HG006992",
         "ethnicity": "Asian",
-        "health_status": "unknown",
-        "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
@@ -90,9 +69,7 @@
     },
     {
         "accession": "ENCDO568ESC",
-        "award": "U41HG006992",
-        "health_status": "Healthy",
-        "lab": "j-michael-cherry",
+        "diseases": "Healthy",
         "life_stage": "embryonic",
         "organism": "human",
         "sex": "unknown",
@@ -106,10 +83,7 @@
             "encode:donor_of_GM12878",
             "encode:donor of GM12878"
         ],
-        "award": "U41HG006992",
         "ethnicity": "Caucasian",
-        "health_status": "unknown",
-        "lab": "j-michael-cherry",
         "life_stage": "adult",
         "organism": "human",
         "sex": "female",
@@ -118,13 +92,10 @@
     },
     {
         "accession": "ENCDO003HUM",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "organism": "human",
         "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
     },
     {
-        "_test": "For ENTEx matrix testing, female 4",
         "accession": "ENCDO271OUW",
         "age": "51",
         "age_units": "year",
@@ -134,15 +105,6 @@
             "gtex:ENC-004",
             "bradley-bernstein:Donor GTEX-1LVAN"
         ],
-        "award": "ENCODE2",
-        "external_ids": [
-            "GEO:SAMN05897787"
-        ],
-        "internal_tags": [
-            "ENTEx",
-            "SESCC"
-        ],
-        "lab": "encode2-project",
         "life_stage": "adult",
         "organism": "human",
         "sex": "female",
@@ -150,7 +112,6 @@
         "uuid": "ed01347d-b5cc-4a63-bf4c-40aebdab5cd1"
     },
     {
-        "_test": "For ENTEx matrix testing, female 3",
         "accession": "ENCDO793LXB",
         "age": "53",
         "age_units": "year",
@@ -160,14 +121,6 @@
             "gtex:PT-1LGRB",
             "bradley-bernstein:Donor GTEX-1LGRB"
         ],
-        "award": "ENCODE2",
-        "external_ids": [
-            "GEO:SAMN05897794"
-        ],
-        "internal_tags": [
-            "ENTEx"
-        ],
-        "lab": "encode2-project",
         "life_stage": "adult",
         "organism": "human",
         "sex": "female",
@@ -175,7 +128,6 @@
         "uuid": "28e5135a-6529-4f7a-8dad-41e0a216f46e"
     },
     {
-        "_test": "For ENTEx matrix testing, male 2",
         "accession": "ENCDO451RUA",
         "age": "54",
         "age_units": "year",
@@ -185,14 +137,6 @@
             "gtex:ENC-002",
             "bradley-bernstein:Donor GTEX-1K2DA"
         ],
-        "award": "ENCODE2",
-        "external_ids": [
-            "GEO:SAMN05897789"
-        ],
-        "internal_tags": [
-            "ENTEx"
-        ],
-        "lab": "encode2-project",
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",
@@ -200,7 +144,6 @@
         "uuid": "d370683e-81e7-473f-8475-7716d027849b"
     },
     {
-        "_test": "For ENTEx matrix testing, male 1",
         "accession": "ENCDO845WKR",
         "age": "37",
         "age_units": "year",
@@ -210,14 +153,6 @@
             "gtex:PT-1JKYN",
             "bradley-bernstein:Donor GTEX-1JKYN"
         ],
-        "award": "ENCODE2",
-        "external_ids": [
-            "GEO:SAMN05897796"
-        ],
-        "internal_tags": [
-            "ENTEx"
-        ],
-        "lab": "encode2-project",
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",

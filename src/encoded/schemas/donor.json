@@ -5,20 +5,9 @@
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "organism"],
+    "required": [],
     "mixinProperties": [
-        { "$ref": "mixins.json#/genetic_modifications" },
-        { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/url" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
     "properties": {
@@ -27,18 +16,6 @@
         },
         "accession": {
             "accessionType": "DO"
-        },
-        "external_ids": {
-            "title": "Unique external identifier(s) of strain or donor",
-            "description": "External identifiers that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
-            "comment": "List of identifiers that are used by external resources that can be used to identify samples from that particular donor or strain.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "description": "External identifier that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
-                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$|^(JAX:\\d{6})$|^(NBRP:\\d+)$|^(TRiP:[A-Z0-9]+)$"
-            }
         },
         "alternate_accessions": {
             "title": "Alternate accessions",

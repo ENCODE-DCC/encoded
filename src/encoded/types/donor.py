@@ -25,8 +25,7 @@ class Donor(Item):
         'documents',
         'documents.award',
         'documents.lab',
-        'documents.submitted_by',
-        'lab'
+        'documents.submitted_by'
     ]
     set_status_up = [
         'documents',
@@ -54,8 +53,7 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references',
-                                 'genetic_modifications',
+    embedded = Donor.embedded + ['genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
                                  'genetic_modifications.modified_site_by_target_id.genes',
                                  'genetic_modifications.treatments']
@@ -82,7 +80,7 @@ class MouseDonor(Donor):
 class HumanDonor(Donor):
     item_type = 'human_donor'
     schema = load_schema('encoded:schemas/human_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + []
     rev = {
         'children': ('HumanDonor', 'parents')
     }

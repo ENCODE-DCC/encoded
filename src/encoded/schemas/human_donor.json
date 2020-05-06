@@ -5,33 +5,23 @@
     "id": "/profiles/human_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
+    "required": ["organism"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "donor.json#/properties" },
-        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/url" },
+        { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/schema_version" }
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "donor.json#/properties" }
     ],
     "dependencies": {
-        "internal_tags": {
-            "comment": "If internal_tags list is initiated, it must contain at least one value.",
-            "properties": {
-                "internal_tags": {
-                    "minItems": 1
-                }
-            }
-        },
         "age_units":  {
             "comment":"Age units is required if age is specified as anything but unknown.",
             "required": ["age", "life_stage"],
@@ -129,8 +119,25 @@
                 "year"
             ]
         },
-        "health_status": {
-            "title": "Health status",
+        "embryonic_age": {
+            "title": "Age",
+            "description": "The age or age range of the donor when biological material was sampled.",
+            "comment": "This is gestational time for fetal and embryonic samples. We allow a generic over 90 for privacy purposes.",
+            "type": "string",
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+        },
+        "embryonic_age_units": {
+            "title": "Age units",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "year"
+            ]
+        },
+        "diseases": {
+            "title": "Diseases",
             "type": "string"
         },
         "ethnicity": {
@@ -203,22 +210,6 @@
                 "monozygotic"
             ]
         },
-        "internal_tags": {
-            "title": "Internal tags",
-            "description": "Some human donors are part of particular data collections",
-            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
-            "type": "array",
-
-            "permission": "import_items",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "enum": [
-                    "ENTEx",
-                    "PGP",
-                    "SESCC"]
-            }
-        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -235,6 +226,54 @@
                 "type":  "string",
                 "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(NIH:NIHhESC-[\\d]{2}-[\\d]{4})|(GEO:SAMN\\d+))$"
             }
+        },
+        "cause_of_death": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "crown_rump_length": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "crown_rump_length_units": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "body_mass_index": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "height": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "height_unit": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "weight": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "weight_unit": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
         }
     },
     "facets": {
@@ -243,9 +282,6 @@
         },
         "sex": {
             "title": "Sex"
-        },
-        "lab.title": {
-            "title": "Lab"
         },
         "status": {
             "title": "Status"
@@ -264,8 +300,8 @@
         "age_units": {
             "title": "Age units"
         },
-        "health_status": {
-            "title": "Health status"
+        "diseases": {
+            "title": "Diseases"
         },
         "life_stage": {
             "title": "Life stage"
@@ -278,12 +314,6 @@
         },
         "ethnicity": {
             "title": "Ethnicity"
-        },
-        "external_ids": {
-            "title": "Unique external identifier(s) of strain or donor"
-        },
-        "lab.title": {
-            "title": "Lab"
         },
         "status": {
             "title": "Status"
