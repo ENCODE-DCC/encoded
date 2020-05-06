@@ -145,6 +145,8 @@ cell_slims = {
     'EFO:0001640': 'B cell',# B cell derived cell line
     'EFO:0001639': 'cancer cell', # cancer cell line
     'CL:0002494': 'cardiocyte',
+    'CL:0002320': 'connective tissue cell',
+    'CL:0002321': 'embryonic cell',
     'CL:0000115': 'endothelial cell',
     'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
     'CL:0000066': 'epithelial cell',
@@ -207,7 +209,8 @@ preferred_name = {
     "OBI:0002458": "4C",
     "OBI:0002629": "direct RNA-seq",
     "OBI:0002144": "Circulome-seq",
-    "OBI:0002459": "genotyping HiC"
+    "OBI:0002459": "genotyping HiC",
+    "OBI:0002675": "MPRA"
 }
 
 category_slims = {
