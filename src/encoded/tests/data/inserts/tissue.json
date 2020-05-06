@@ -12,7 +12,11 @@
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
         "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
+        "uuid": "467c7505-5039-4935-8da1-6ad22d813310",
+        "derived_from": [
+            "ENCDO017AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS492ENC",
@@ -21,7 +25,11 @@
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
         "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "e62102b0-7452-4fb7-9932-d799366e1f5a"
+        "uuid": "e62102b0-7452-4fb7-9932-d799366e1f5a",
+        "derived_from": [
+            "ENCDO058AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS493ENC",
@@ -30,7 +38,11 @@
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
         "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "718d142d-7677-4c09-bfb5-39214a9f85a9"
+        "uuid": "718d142d-7677-4c09-bfb5-39214a9f85a9",
+        "derived_from": [
+            "ENCDO000HUM"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS044RNA",
@@ -49,7 +61,11 @@
         ],
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
+        "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe",
+        "derived_from": [
+            "ENCDO106AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "status": "released",
@@ -60,7 +76,11 @@
         "source": "peggy-farnham",
         "biosample_ontology": "tissue_UBERON_0001891",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "31db042c-9844-467d-a725-ba3a4d007039"
+        "uuid": "31db042c-9844-467d-a725-ba3a4d007039",
+        "derived_from": [
+            "ENCDO275AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "status": "released",
@@ -71,7 +91,11 @@
         "source": "peggy-farnham",
         "biosample_ontology": "tissue_UBERON_0001891",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "9213cd74-b065-4f36-8346-800fe10f56ff"
+        "uuid": "9213cd74-b065-4f36-8346-800fe10f56ff",
+        "derived_from": [
+            "ENCDO276AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS376EJL",
@@ -82,7 +106,11 @@
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e6440a82-d112-43a3-b892-a9763bdce7cf"
+        "uuid": "e6440a82-d112-43a3-b892-a9763bdce7cf",
+        "derived_from": [
+            "ENCDO568ESC"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS009WOO",
@@ -94,7 +122,11 @@
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "0e6c7ee8-9400-4bb8-ae2e-966ca5bb09fb"
+        "uuid": "0e6c7ee8-9400-4bb8-ae2e-966ca5bb09fb",
+        "derived_from": [
+            "ENCDO000AAK"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS061XGD",
@@ -106,7 +138,11 @@
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "49b698f0-02ed-4e83-b04b-15642053c78d"
+        "uuid": "49b698f0-02ed-4e83-b04b-15642053c78d",
+        "derived_from": [
+            "ENCDO003HUM"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS204NZH",
@@ -118,7 +154,11 @@
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "17790c53-a3f4-4e9e-86a6-227689f757cb"
+        "uuid": "17790c53-a3f4-4e9e-86a6-227689f757cb",
+        "derived_from": [
+            "ENCDO793LXB"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS123AAA",
@@ -127,7 +167,11 @@
         "description": "mouse dev matrix biosample_1",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "bc5b62f7-ce28-4a1e-b6b3-93c9c5a86d7a"
+        "uuid": "bc5b62f7-ce28-4a1e-b6b3-93c9c5a86d7a",
+        "derived_from": [
+            "ENCDO012AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS123AAB",
@@ -136,7 +180,11 @@
         "description": "mouse dev matrix biosample_2",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "b8d504af-5af8-4f6e-b250-9980085bee80"
+        "uuid": "b8d504af-5af8-4f6e-b250-9980085bee80",
+        "derived_from": [
+            "ENCDO075AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS123AAC",
@@ -145,7 +193,11 @@
         "description": "mouse dev matrix biosample_3",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9d"
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9d",
+        "derived_from": [
+            "ENCDO015AAA"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS123AAD",
@@ -154,7 +206,11 @@
         "description": "mouse dev matrix biosample_4",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9e"
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9e",
+        "derived_from": [
+            "ENCDO000MUS"
+        ],
+        "derivation_process": "physical separation"
     },
     {
         "accession": "ENCBS123AAE",
@@ -163,6 +219,10 @@
         "description": "mouse dev matrix biosample_5",
         "source": "len-pennacchio",
         "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9f"
+        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9f",
+        "derived_from": [
+            "ENCDO003MUS"
+        ],
+        "derivation_process": "physical separation"
     }
 ]

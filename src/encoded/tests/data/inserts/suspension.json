@@ -13,7 +13,11 @@
         ],
         "source": "michael-bender",
         "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "9d192023-d78e-4f24-8e58-33b5f379faba"
+        "uuid": "9d192023-d78e-4f24-8e58-33b5f379faba",
+        "derived_from": [
+            "ENCBS222SCS"
+        ],
+        "derivation_process": "organoid dissociation"
     },
     {
         "accession": "ENCBS128ENC",
@@ -24,7 +28,11 @@
         ],
         "source": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "02377f5f-30a1-4577-bb21-4e6add9d3d6e"
+        "uuid": "02377f5f-30a1-4577-bb21-4e6add9d3d6e",
+        "derived_from": [
+            "ENCBS356AAA"
+        ],
+        "derivation_process": "cell dissociaton"
     },
     {
         "accession": "ENCBS175ENC",
@@ -38,7 +46,11 @@
         "treatments": [
             "3280b708-0f05-40fa-bff2-54e2b6505c13"
         ],
-        "uuid": "26df3a6b-ad35-4ea9-954f-08ecf41bb3ad"
+        "uuid": "26df3a6b-ad35-4ea9-954f-08ecf41bb3ad",
+        "derived_from": [
+            "ENCDO017AAA"
+        ],
+        "derivation_process": "cell dissociaton"
     },
     {
         "accession": "ENCBS417ENC",
@@ -54,7 +66,11 @@
         "source": "lonza",
         "submitted_by": "facilisis.venenatis@mauris.mauris",
         "url": "http://www.lonza.com/",
-        "uuid": "d0e58076-e61d-49dc-a0e1-3422645e50f8"
+        "uuid": "d0e58076-e61d-49dc-a0e1-3422645e50f8",
+        "derived_from": [
+            "ENCBS123AAC"
+        ],
+        "derivation_process": "cell dissociaton"
     },
     {
         "accession": "ENCBS000RNA",
@@ -75,7 +91,11 @@
         "starting_amount_units": "cells",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "url": "http://www.promocell.com/nc/products/human-primary-cells/smooth-muscle-cells/human-aortic-smooth-muscle-cells-haosmc",
-        "uuid": "c305924f-1058-47bb-af42-259bad767853"
+        "uuid": "c305924f-1058-47bb-af42-259bad767853",
+        "derived_from": [
+            "ENCBS123AAC"
+        ],
+        "derivation_process": "cell dissociaton"
     },
     {
         "accession": "ENCBS175SCS",
@@ -83,6 +103,10 @@
         "description": "Undifferentiated mouse embryonic stem single cell",
         "source": "dana-levasseur",
         "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "66df3a6b-ad36-4ea9-954f-06ecf41bb6ad"
+        "uuid": "66df3a6b-ad36-4ea9-954f-06ecf41bb6ad",
+        "derived_from": [
+            "ENCBS123AAE"
+        ],
+        "derivation_process": "cell dissociaton"
     }
 ]

@@ -200,11 +200,11 @@ class Library(Item):
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
     embedded = [
-        'biosample',
-        'biosample.biosample_ontology'
+        'biosamples',
+        'biosamples.biosample_ontology'
     ]
     set_status_up = [
-        'biosample',
+        'biosamples',
         'documents',
         'source',
         'treatments',

@@ -29,9 +29,9 @@ ORDER = [
     'human_donor',
     'genetic_modification',
     'tissue',
+    'suspension',
     'cell_culture',
     'organoid',
-    'suspension',
     'platform',
     'experiment',
     'reference',
@@ -529,8 +529,14 @@ PHASE1_PIPELINES = {
     'user': [
         remove_keys('lab', 'submits_for'),
     ],
-    'biosample': [
-        remove_keys('derived_from', 'pooled_from', 'part_of', 'host'),
+    'cell_culture': [
+        remove_keys('derived_from'),
+    ],
+    'suspension': [
+        remove_keys('derived_from'),
+    ],
+    'organoid': [
+        remove_keys('derived_from'),
     ],
     'library': [
         remove_keys('spikeins_used', 'adapters'),

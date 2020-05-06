@@ -22,7 +22,11 @@
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
-        "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999"
+        "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999",
+        "derived_from": [
+            "ENCBS128ENC"
+        ],
+        "derivation_process": "cell differentation"
     },
     {
         "accession": "ENCBS001AAA",
@@ -45,7 +49,11 @@
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
-        "uuid": "2ec6f642-95fc-4f3a-a7b7-a2d3c5abe426"
+        "uuid": "2ec6f642-95fc-4f3a-a7b7-a2d3c5abe426",
+        "derived_from": [
+            "ENCBS417ENC"
+        ],
+        "derivation_process": "cell differentation"
     },
     {
         "accession": "ENCBS039ENC",
@@ -61,7 +69,11 @@
         "source": "atcc",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
-        "uuid": "60dff9b7-875a-47e3-8283-a855ebe1775a"
+        "uuid": "60dff9b7-875a-47e3-8283-a855ebe1775a",
+        "derived_from": [
+            "ENCBS417ENC"
+        ],
+        "derivation_process": "cell differentation"
     },
     {
         "accession": "ENCBS044ENC",
@@ -72,333 +84,10 @@
         ],
         "source": "sherman-weissman",
         "submitted_by": "semper.habitant@ut.venenatis",
-        "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f"
-    },
-    {
-        "accession": "ENCBS044ANI",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "description": "B-cell lymphoma (GM12878 analog)",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CH12"
+        "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f",
+        "derived_from": [
+            "ENCBS175SCS"
         ],
-        "source": "sherman-weissman",
-        "submitted_by": "semper.habitant@ut.venenatis",
-        "uuid": "c5ce6328-9e59-4309-a61c-020bc1c5720a"
-    },
-    {
-        "accession": "ENCBS045ANI",
-        "biosample_ontology": "cell_line_EFO_0005233",
-        "description": "B-cell lymphoma (GM12878 analog)",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CH12"
-        ],
-        "source": "sherman-weissman",
-        "submitted_by": "semper.habitant@ut.venenatis",
-        "uuid": "33a7dece-2b83-43fe-b670-23c63174334b"
-    },
-    {
-        "accession": "ENCBS057AAA",
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "genetic_modifications": [
-            "8163d8c9-15c5-4583-8b43-0e21422297a0",
-            "ef12855f-5d3e-4da5-8684-3a594c60505a"
-        ],
-        "culture_harvest_date": "2012-12-19",
-        "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:K562"
-        ],
-        "source": "kevin-white",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
-    },
-    {
-        "accession": "ENCBS087RNA",
-        "aliases": [
-            "thomas-gingeras:K562-1"
-        ],
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "culture_harvest_date": "2013-03-06",
-        "culture_start_date": "2013-02-28",
-        "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 1.",
-        "lot_id": "59300853",
-        "submitter_comment": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
-        "passage_number": 5,
-        "product_id": "CCL-243",
-        "source": "atcc",
-        "starting_amount": 100000.0,
-        "starting_amount_units": "cells/ml",
-        "submitted_by": "mus.mi@porttitor.molestie",
-        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
-        "uuid": "2ee883ef-b0dd-4305-a69b-d881de132795"
-    },
-    {
-        "accession": "ENCBS088RNA",
-        "aliases": [
-            "thomas-gingeras:K562-2"
-        ],
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "culture_harvest_date": "2013-03-06",
-        "culture_start_date": "2013-02-28",
-        "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 2.",
-        "lot_id": "59300853",
-        "submitter_comment": "K562 cell line replicate 2 used inENCODE3 RNA-seq evaluation",
-        "passage_number": 5,
-        "product_id": "CCL-243",
-        "source": "atcc",
-        "starting_amount": 100000.0,
-        "starting_amount_units": "cells/ml",
-        "submitted_by": "mus.mi@porttitor.molestie",
-        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
-        "uuid": "87b7bb1b-8924-4320-9f48-67bda4d03b82"
-    },
-    {
-        "accession": "ENCBS094ENC",
-        "alternate_accessions": [
-            "ENCBS238AAA"
-        ],
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
-        "product_id": "86012803",
-        "documents": [
-            "encode:MCF-7_Crawford_growth_protocol"
-        ],
-        "genetic_modifications": [
-            "ef12855f-5d3e-4da5-8684-3a594c60505a"
-        ],
-        "source": "ecacc",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.hpacultures.org.uk/products/celllines/generalcell/detail.jsp?refId=86012803&collection=ecacc_gc",
-        "uuid": "ddefc862-0107-4478-9398-acbe76b90f36"
-    },
-    {
-        "accession": "ENCBS107ENC",
-        "biosample_ontology": "cell_line_EFO_0001203",
-        "genetic_modifications": [
-            "2f33a486-e3d9-4633-8682-a363b48ba67d"
-        ],
-        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
-        "product_id": "HTB-22",
-        "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
-        ],
-        "source": "atcc",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "treatments": [
-            "2e33a097-412c-4646-87f9-858dfaaa7c06"
-        ],
-        "post_treatment_time": "5",
-        "post_treatment_time_units": "day",
-        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
-        "uuid": "57437af2-9aef-4b38-a238-4afa3361df6b"
-    },
-    {
-        "accession": "ENCBS124ENC",
-        "biosample_ontology": "cell_line_EFO_0001098",
-        "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury",
-        "documents": [
-            "encode:C2C12_Wold_growth_protocol"
-        ],
-        "source": "barbara-wold",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "5ef752ad-bc6e-4a08-abca-f6b76b188e95"
-    },
-    {
-        "accession": "ENCBS181AAA",
-        "biosample_ontology": "cell_line_EFO_0002783",
-        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project, CEPH/Utah, treatment: Epstein-Barr Virus transformed",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:GM06990"
-        ],
-        "product_id": "GM06990",
-        "documents": [
-            "encode:Stam_15_protocols"
-        ],
-        "source": "coriell",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM06990&PgId=166",
-        "uuid": "9c246ad4-713a-48dc-ad65-d0400c26a140"
-    },
-    {
-        "accession": "ENCBS450ENC",
-        "aliases": [
-            "thomas-gingeras:088N"
-        ],
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:A549"
-        ],
-        "lot_id": "58483235",
-        "source": "encode",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "12d82da3-6ee1-4919-9026-4ebdd8079ba1"
-    },
-    {
-        "accession": "ENCBS987RNP",
-        "aliases": [
-            "encode:H9-cells"
-        ],
-        "biosample_ontology": "cell_line_NTR_0000838",
-        "date_obtained": "2012-12-01",
-        "description": "embryonic stem cell (hESC) H9",
-        "documents": [],
-        "source": "michael-snyder",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
-    },
-    {
-        "accession": "ENCBS630AAA",
-        "biosample_ontology": "cell_line_EFO_0002784",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:GM12878"
-        ],
-        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project - CEPH/Utah - European Caucasion, Epstein-Barr Virus",
-        "product_id": "GM12878",
-        "source": "coriell",
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
-        "uuid": "d8ca0867-13cd-40df-9de0-29f9da53d935"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "lot_id": "58483235",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS001SER",
-        "treatments": [
-            "robert-waterston:100mM_dex_8hr"
-        ],
-        "uuid": "3a159987-d2de-4afa-8bb9-8fae69a51e47"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "lot_id": "58483235",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS002SER",
-        "treatments": [
-            "robert-waterston:100mM_dex_10hr"
-        ],
-        "uuid": "11f2177b-de6c-492b-9cac-d75e25bc6798"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "lot_id": "58483235",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS003SER",
-        "treatments": [
-            "robert-waterston:100mM_dex_12hr"
-        ],
-        "uuid": "9012a97f-2b01-4e52-8c80-ae6ccce2a686"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "lot_id": "58483235",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS002CON",
-        "treatments": [
-            "robert-waterston:80mM_dex_8hr"
-        ],
-        "uuid": "8e638c43-cdb4-4dd7-b96f-3648b550ea77"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0001086",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "lot_id": "58483235",
-        "source": "encode",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS003CON",
-        "treatments": [
-            "robert-waterston:60mM_dex_8hr"
-        ],
-        "uuid": "d3da3e40-d934-4fa2-b1c5-888994837524"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0002067",
-        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
-        "lot_id": "58483235",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS001EPI",
-        "treatments": [
-            "robert-waterston:60mM_dex_8hr"
-        ],
-        "uuid": "006d62aa-eade-4908-80a2-d42f481d2a32"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS001REP",
-        "uuid": "c75fdcad-0841-404d-a7c2-fd51485e5f1b"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS002REP",
-        "uuid": "8a140550-7b90-4839-89cc-1b9a1651fde4"
-    },
-    {
-        "biosample_ontology": "cell_line_EFO_0003072",
-        "description": "Neuroblastoma, newly promoted to tier 2: not in 2011 analysis, the SK-N-SH line was established from a neuroblastoma in a 4 year old individual.",
-        "source": "encode",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCBS003REP",
-        "uuid": "e8402526-b042-4b9e-89d7-0d3471e19765"
-    },
-    {
-        "accession": "ENCBS535BWO",
-        "aliases": [
-            "michael-snyder:B-272"
-        ],
-        "dbxrefs": [
-            "Cellosaurus:CVCL_0395"
-        ],
-        "biosample_ontology": "cell_line_EFO_0002071",
-        "culture_harvest_date": "2012-04-26",
-        "product_id": "CRL-1740",
-        "source": "/sources/atcc",
-        "status": "in progress",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
-        "uuid": "db677ae5-d3a2-449d-8f93-0c07e1eaa0f1"
-    },
-    {
-        "accession": "ENCBS888RUL",
-        "biosample_ontology": "cell_line_EFO_0009747",
-        "description": "WTC11 cell line",
-        "source": "dana-levasseur",
-        "status": "released",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
-        "uuid": "693c82ee-70f1-11e9-a923-1681be663d3e"
-    },
-    {
-        "accession": "ENCBS303RUL",
-        "biosample_ontology": "cell_line_EFO_0009747",
-        "description": "WTC11 cell line",
-        "source": "dana-levasseur",
-        "status": "released",
-        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6",
-        "uuid": "78268bc7-1715-4f49-97ef-88a123b56269"
+        "derivation_process": "cell differentation"
     }
 ]

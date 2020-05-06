@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["source", "biosample_ontology"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "derived_from", "derivation_process"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/documents"},
@@ -37,6 +37,26 @@
             "description": "",
             "comment": "",
             "type": "boolean"
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "comment": "",
+                "type": "string",
+                "linkTo": [
+                    "CellCulture",
+                    "Suspension"
+                ]
+            }
+        },
+        "derivation_process": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
         }
     },
     "facets": {},
