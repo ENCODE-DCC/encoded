@@ -525,6 +525,7 @@ class GenomeBrowser extends React.Component {
             trackObj.path = domain + file.href;
             trackObj.inputParameters = [2, 0.7, -1.0, 0, 0.43, 15];
             trackObj.expandable = true;
+            trackObj.heightPx = 60; //80;
             trackObj.collapsedHeightPx = 32;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
@@ -532,11 +533,10 @@ class GenomeBrowser extends React.Component {
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase() > -1))) {
                 trackObj.heightPx = 100; //120;
                 trackObj.collapsedHeightPx = 70;
-            } else {
-                trackObj.heightPx = 60; //80;
             }
             return trackObj;
         });
+        console.log(tracks);
         return tracks;
     }
 
