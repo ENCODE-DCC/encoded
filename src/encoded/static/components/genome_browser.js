@@ -532,7 +532,7 @@ class GenomeBrowser extends React.Component {
             if (file.file_format_type &&
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase() > -1))) {
                 trackObj.heightPx = 100; //120;
-                trackObj.collapsedHeightPx = 70;
+                trackObj.collapsedHeightPx = 32;
             }
             return trackObj;
         });
