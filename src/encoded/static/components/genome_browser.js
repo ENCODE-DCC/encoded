@@ -486,6 +486,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'signal';
                 trackObj.path = file.href;
                 trackObj.heightPx = 80;
+                trackObj.collapsedHeightPx = 32;
                 return trackObj;
             } else if (file.file_format === 'bigWig') {
                 const trackObj = {};
@@ -495,6 +496,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'signal';
                 trackObj.path = domain + file.href;
                 trackObj.heightPx = 85;
+                trackObj.collapsedHeightPx = 32;
                 return trackObj;
             } else if (file.file_format === 'vdna-dir') {
                 const trackObj = {};
@@ -502,6 +504,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
                 trackObj.heightPx = 35;
+                trackObj.collapsedHeightPx = 32;
                 return trackObj;
             } else if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
@@ -522,6 +525,7 @@ class GenomeBrowser extends React.Component {
             trackObj.path = domain + file.href;
             trackObj.inputParameters = [2, 0.7, -1.0, 0, 0.43, 15];
             trackObj.expandable = true;
+            trackObj.collapsedHeightPx = 32;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
             if (file.file_format_type &&
@@ -529,7 +533,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.heightPx = 100; //120;
                 trackObj.collapsedHeightPx = 70;
             } else {
-                trackObj.heightPx = 50; //80;
+                trackObj.heightPx = 60; //80;
             }
             return trackObj;
         });
