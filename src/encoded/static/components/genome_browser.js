@@ -508,7 +508,8 @@ class GenomeBrowser extends React.Component {
                 trackObj.name = file.title;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
-                trackObj.heightPx = 50; //120;
+                trackObj.heightPx = 100; //120;
+                trackObj.collapsedHeightPx = 50;
                 trackObj.inputParameters = [2, 0.7, -1.0, 0, 0.43, 15];
                 trackObj.expandable = true;
                 return trackObj;
@@ -526,6 +527,7 @@ class GenomeBrowser extends React.Component {
             if (file.file_format_type &&
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase() > -1))) {
                 trackObj.heightPx = 100; //120;
+                trackObj.collapsedHeightPx = 70;
             } else {
                 trackObj.heightPx = 50; //80;
             }
