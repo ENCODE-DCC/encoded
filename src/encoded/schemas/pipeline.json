@@ -197,6 +197,11 @@
             "comment": "Please increment as whole numbers starting from 1.",
             "type": "integer",
             "minimum": 1
+        },
+        "new_property": {
+            "title": "New property",
+            "description": "New property to test EU-11.",
+            "type": "string"
         }
     },
     "facets": {
