@@ -455,6 +455,29 @@ class GenomeBrowser extends React.Component {
         return newFiles;
     }
 
+    // Input parameters for annotation type tracks in "inputParameters"
+    // Parameter 0: "yDivisor"
+    //              how closely spaced should double tracks be? This sets value for y based on annotation Y
+    //              when it is 2, tracks are spaced tightly, with 1, tracks have more space between them
+    // Parameter 1: "relativeY" for "updateMicroAnnotations"
+    //              how offset from the top should the tracks be?
+    //              with value of 0.7, there is some space from the top
+    //              with 0.3, they are cropped by the top of the track
+    //              note that there is a separate parameter for the zoomed-in and zoomed-out annotation drawings
+    // Parameter 2: "originY"
+    //              how do we want the labels to line up with the annotation blocks?
+    //              larger negative numbers (-1.3) will have them centered
+    //              less large negative numbers (-1) will have them directly on top of the drawings
+    //              a value of 0 will allow some good space between the label and the drawing
+    // Parameter 3: "yOffset"
+    //              this may not be useful actually, possibly to be deleted
+    // Parameter 4: "relativeY" for "updateMacroAnnotations"
+    //              how offset from the top should the tracks be?
+    //              note that this parameter should make the zoomed-in and zoomed-out annotations line up
+    //              however, bewilderingly, to get the annotations to line up we do not want matching offsets in (most?) cases
+    // Parameter 5: "TRANSCRIPT_HEIGHT"
+    // Note: "heightPx" is also closely tied to these other parameters
+
     filesToTracks(files, domain) {
         const tracks = files.map((file) => {
             if (file.name) {
@@ -486,7 +509,7 @@ class GenomeBrowser extends React.Component {
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
                 trackObj.heightPx = 50; //120;
-                trackObj.inputParameters = [2, 0.7, -1.0, 30, 0.43];
+                trackObj.inputParameters = [2, 0.7, -1.0, 0, 0.43, 15];
                 trackObj.expandable = true;
                 return trackObj;
             }
@@ -496,7 +519,7 @@ class GenomeBrowser extends React.Component {
             trackObj.shortname = <TrackLabel file={file} short />;
             trackObj.type = 'annotation';
             trackObj.path = domain + file.href;
-            trackObj.inputParameters = [2, 0.7, -1.0, 30, 0.43];
+            trackObj.inputParameters = [2, 0.7, -1.0, 0, 0.43, 15];
             trackObj.expandable = true;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
