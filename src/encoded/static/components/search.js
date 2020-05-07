@@ -51,6 +51,7 @@ const types = {
     treatment_time_series: { title: 'Treatment time series' },
     ucsc_browser_composite: { title: 'UCSC browser composite file set' },
     functional_characterization_experiment: { title: 'Functional characterization experiments' },
+    in_vivo_experiment: { title: 'In vivo experiments' },
 };
 
 const datasetTypes = {
@@ -71,6 +72,7 @@ const datasetTypes = {
     SingleCellRnaSeries: types.single_cell_rna_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
     FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
+    InVivoExperiment: types.in_vivo_experiment.title,
 };
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));

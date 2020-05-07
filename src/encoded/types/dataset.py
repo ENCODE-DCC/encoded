@@ -13,12 +13,19 @@ from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssayTitle,
+    CalculatedAssaySlims,
+    CalculatedBiosampleSummary,
+    CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
+    CalculatedObjectiveSlims,
+    CalculatedTypeSlims,
     CalculatedVisualize
 )
 
@@ -179,6 +186,59 @@ class Dataset(Item):
     })
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
+
+
+@collection(
+    name='in-vivo-experiments',
+    unique_key='accession',
+    properties={
+        'title': 'In vivo experiments',
+        'description': 'Listing of In vivo Experiments',
+    })
+class InVivoExperiment(
+    Dataset,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedBiosampleSummary,
+    CalculatedAssaySlims,
+    CalculatedAssayTitle,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims):
+    item_type = 'in_vivo_experiment'
+    schema = load_schema('encoded:schemas/in_vivo_experiment.json')
+    embedded = [
+        'biosample_ontology',
+        'submitted_by',
+        'lab',
+        'award.pi.lab',
+        'references'
+    ]
+    audit_inherit = [
+        'submitted_by',
+        'lab',
+        'award',
+        'documents.lab',
+    ]
+    set_status_up = [
+        'documents'
+    ]
+    set_status_down = []
+    rev = {
+        'superseded_by': ('InVivoExperiment', 'supersedes'),
+    }
+
+    @calculated_property(schema={
+            "title": "Superseded by",
+            "type": "array",
+            "items": {
+                "type": ['string', 'object'],
+                "linkFrom": "InVivoExperiment.supersedes",
+            },
+            "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
 
 class FileSet(Dataset):
