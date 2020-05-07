@@ -246,6 +246,19 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+        "NTR:0000551": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "transgenic enhancer assay",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 

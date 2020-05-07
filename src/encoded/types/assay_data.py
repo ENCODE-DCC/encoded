@@ -66,5 +66,6 @@ assay_terms = {
       'pooled clone sequencing': 'NTR:0000519',
       'PRO-cap': 'NTR:0000536',
       'icLASER': 'NTR:0000538',
-      'SPRITE': 'NTR:0000544'
+      'SPRITE': 'NTR:0000544',
+      'transgenic enhancer assay': 'NTR:0000551'
 }
