@@ -237,7 +237,7 @@ const convertToDataTableFormat = (context) => {
 
     const headerRow = headerData.map(x => ({
         header: (
-            <a href={`${searchBase}&status=released&assay_title!=Control%20ChIP-seq&${x.type}=${x.key}`} className={`${subCategoryKeys.includes(x.key) ? 'sub' : ''}`} title={`${x.key}  with ${x.doc_count} experiment${x.doc_count !== 0 ? 's' : ''}`}>
+            <a href={`${searchBase}&${x.type}=${x.key}`} className={`${subCategoryKeys.includes(x.key) ? 'sub' : ''}`} title={`${x.key}  with ${x.doc_count} experiment${x.doc_count !== 0 ? 's' : ''}`}>
                 <div className="subcategory-row-text">{x.key}</div>
             </a>),
         style: { borderBottom: headerBorderBottom },
@@ -262,7 +262,7 @@ const convertToDataTableFormat = (context) => {
 
         rowContent[0] = {
             header: (
-                <a href={`${searchBase}&status=released&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}`} title={`${row.key} with ${row.doc_count} experiment${row.doc_count !== '0' ? 's' : ''}`}>
+                <a href={`${searchBase}&biosample_ontology.term_name=${row.key}`} title={`${row.key} with ${row.doc_count} experiment${row.doc_count !== '0' ? 's' : ''}`}>
                     <div className="subcategory-row-text">
                         { title }
                     </div>
@@ -286,7 +286,7 @@ const convertToDataTableFormat = (context) => {
                 const borderLeft = edgeColor;
 
                 rowContent[index].content = (
-                    <a href={`${searchBase}&status=released&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}&${assayTitle.type}=${assayTitle.key}`} title={`${assayTitle.doc_count}`}>
+                    <a href={`${searchBase}&biosample_ontology.term_name=${row.key}&${assayTitle.type}=${assayTitle.key}`} title={`${assayTitle.doc_count}`}>
                         {' '}
                     </a>
                 );
