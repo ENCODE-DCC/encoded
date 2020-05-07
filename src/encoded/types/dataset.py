@@ -27,6 +27,11 @@ from .shared_calculated_properties import (
     CalculatedVisualize
 )
 
+from .biosample import (
+    construct_biosample_summary,
+    generate_summary_dictionary
+)
+
 from itertools import chain
 import datetime
 
@@ -205,6 +210,7 @@ class InVivoExperiment(
     schema = load_schema('encoded:schemas/in_vivo_experiment.json')
     embedded = [
         'biosample_ontology',
+        'biosamples',
         'submitted_by',
         'lab',
         'award.pi.lab',
@@ -226,16 +232,137 @@ class InVivoExperiment(
     })
 
     @calculated_property(schema={
-            "title": "Superseded by",
-            "type": "array",
-            "items": {
-                "type": ['string', 'object'],
-                "linkFrom": "InVivoExperiment.supersedes",
-            },
-            "notSubmittable": True,
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "InVivoExperiment.supersedes",
+        },
+        "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, biosamples=None):
+        drop_age_sex_flag = False
+        dictionaries_of_phrases = []
+        biosample_accessions = set()
+        if biosamples is not None:
+            for bs in biosamples:
+                biosampleObject = request.embed(bs, '@@object')
+                if biosampleObject['status'] == 'deleted':
+                    continue
+                if biosampleObject['accession'] not in biosample_accessions:
+                    biosample_accessions.add(biosampleObject['accession'])
+
+                    biosampleTypeObject = request.embed(biosampleObject['biosample_ontology'], '@@object')
+                    if biosampleTypeObject.get('classification') in ['in vitro differentiated cells']:
+                        drop_age_sex_flag = True
+
+                    organismObject = None
+                    if 'organism' in biosampleObject:
+                        organismObject = request.embed(biosampleObject['organism'], '@@object')
+
+                    donorObject = None
+                    if 'donor' in biosampleObject:
+                        donorObject = request.embed(biosampleObject['donor'], '@@object')
+
+                    treatment_objects_list = None
+                    treatments = biosampleObject.get('treatments')
+                    if treatments is not None and len(treatments) > 0:
+                        treatment_objects_list = []
+                        for t in treatments:
+                            treatment_objects_list.append(request.embed(t, '@@object'))
+
+                    part_of_object = None
+                    if 'part_of' in biosampleObject:
+                        part_of_object = request.embed(biosampleObject['part_of'], '@@object')
+
+                    originated_from_object = None
+                    if 'originated_from' in biosampleObject:
+                        originated_from_object = request.embed(biosampleObject['originated_from'], '@@object')
+
+                    modifications_list = None
+                    genetic_modifications = biosampleObject.get('applied_modifications')
+                    if genetic_modifications:
+                        modifications_list = []
+                        for gm in genetic_modifications:
+                            gm_object = request.embed(gm, '@@object')
+                            modification_dict = {'category': gm_object.get('category')}
+                            if gm_object.get('modified_site_by_target_id'):
+                                modification_dict['target'] = request.embed(gm_object.get('modified_site_by_target_id'), '@@object')['label']
+                            if gm_object.get('introduced_tags_array'):
+                                modification_dict['tags'] = []
+                                for tag in gm_object.get('introduced_tags_array'):
+                                    tag_dict = {'location': tag['location']}
+                                    if tag.get('promoter_used'):
+                                        tag_dict['promoter'] = request.embed(tag.get('promoter_used'), '@@object').get['label']
+                                    modification_dict['tags'].append(tag_dict)
+                            modifications_list.append((gm_object['method'], modification_dict))
+
+                    preservation_method = None
+                    dictionary_to_add = generate_summary_dictionary(
+                        request,
+                        organismObject,
+                        donorObject,
+                        biosampleObject.get('age'),
+                        biosampleObject.get('age_units'),
+                        biosampleObject.get('life_stage'),
+                        biosampleObject.get('sex'),
+                        biosampleTypeObject.get('term_name'),
+                        biosampleTypeObject.get('classification'),
+                        biosampleObject.get('starting_amount'),
+                        biosampleObject.get('starting_amount_units'),
+                        biosampleObject.get('depleted_in_term_name'),
+                        biosampleObject.get('phase'),
+                        biosampleObject.get('subcellular_fraction_term_name'),
+                        biosampleObject.get('synchronization'),
+                        biosampleObject.get('post_synchronization_time'),
+                        biosampleObject.get('post_synchronization_time_units'),
+                        biosampleObject.get('post_treatment_time'),
+                        biosampleObject.get('post_treatment_time_units'),
+                        biosampleObject.get('post_nucleic_acid_delivery_time'),
+                        biosampleObject.get('post_nucleic_acid_delivery_time_units'),
+                        treatment_objects_list,
+                        preservation_method,
+                        part_of_object,
+                        originated_from_object,
+                        modifications_list,
+                        True)
+
+                    dictionaries_of_phrases.append(dictionary_to_add)
+
+        if drop_age_sex_flag is True:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'phase',
+                'fractionated',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in'
+            ]
+        else:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'phase',
+                'fractionated',
+                'sex_stage_age',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in'
+            ]
+        if len(dictionaries_of_phrases) > 0:
+            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
 class FileSet(Dataset):
