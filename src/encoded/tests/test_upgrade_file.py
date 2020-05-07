@@ -136,3 +136,10 @@ def test_file_upgrade_18_to_19(upgrader, file_18):
     value = upgrader.upgrade('file', file_18, current_version='18', target_version='19')
     assert value['schema_version'] == '19'
     assert value['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_file_upgrade_19_to_20(upgrader, file_19):
+    value = upgrader.upgrade('file', file_19, current_version='19', target_version='20')
+    assert value['schema_version'] == '20'
+    assert value['run_type'] == 'single-ended'
+    assert value['notes'] == 'The run_type of this file was automatically upgraded by ENCD-5258.'
