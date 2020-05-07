@@ -212,7 +212,7 @@ export class DefaultDateSelectorFacet extends React.Component {
             startMonth: undefined, // chosen start month
             endYear: undefined, // chosen end year
             endMonth: undefined, // chosen end month
-            activeFacet: 'date_released', // for toggle, either 'date_released' or 'date_submitted'
+            activeFacet: '', // for toggle, either 'date_released' or 'date_submitted'
         };
 
         this.selectYear = this.selectYear.bind(this);
@@ -225,6 +225,7 @@ export class DefaultDateSelectorFacet extends React.Component {
     }
 
     componentDidMount() {
+        this.setState({ activeFacet: this.props.facet.field });
         this.setActiveFacetParameters(true);
     }
 
@@ -416,6 +417,26 @@ export class DefaultDateSelectorFacet extends React.Component {
         const field = this.state.activeFacet;
         const activeFacet = results.facets.filter(f => f.field === this.state.activeFacet)[0];
 
+        // We have two facets registered for the date selector facet, one for date_released and one for date_submitted, but we only want to display one
+        // "displayField", when false, hides the duplicate facet when needed (most of the time)
+        // If we have date_released or date_submitted data only, then only one facet will be displayed and we don't need to hide one
+        // If we have both, we will just display the facet for date_released
+        let displayField = true;
+        if (facet.field === 'date_submitted' && results.facets.filter(f => f.field === 'date_released').length > 0) {
+            displayField = false;
+        }
+
+        // If we are missing data for "date_submitted" or "date_released", we want to disable that radio button
+        // "missingField" indicates if there is a field to disable, and if so, which one
+        let missingField = null;
+        // Check if we are displaying date_submitted facet and there is no date_released data
+        if (facet.field === 'date_submitted' && !(results.facets.filter(f => f.field === 'date_released')).length > 0) {
+            missingField = 'date_released';
+        // Check if we are displaying date_released facet and there is no date_submitted data
+        } else if (facet.field === 'date_released' && !(results.facets.filter(f => f.field === 'date_submitted')).length > 0) {
+            missingField = 'date_submitted';
+        }
+
         const daysInEndMonth = dayjs(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
 
         // if a date range has already been selected, we want to over-write that date range with a new one
@@ -441,9 +462,9 @@ export class DefaultDateSelectorFacet extends React.Component {
             }
         }
 
-        if (((activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if ((activeFacet && (activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
-                <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
+                <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''} ${!displayField ? 'hide-facet' : ''}`}>
                     <h5>Date range selection</h5>
                     {existingFilter.length > 0 ?
                         <div className="selected-date-range">
@@ -455,21 +476,29 @@ export class DefaultDateSelectorFacet extends React.Component {
                     : null}
 
                     <div className="date-selector-toggle-wrapper">
-                        <div className="date-selector-toggle"><input
-                            type="radio"
-                            name="released"
-                            value="released"
-                            checked={this.state.activeFacet === 'date_released'}
-                            onChange={this.toggleDateFacet}
-                        />Released
+                        <div className="date-selector-toggle">
+                            <input
+                                type="radio"
+                                name="released"
+                                value="released"
+                                id="released-radio-button"
+                                checked={this.state.activeFacet === 'date_released'}
+                                onChange={this.toggleDateFacet}
+                                disabled={missingField === 'date_released'}
+                            />
+                            <label htmlFor="released-radio-button" id="released-radio-button-label">Released</label>
                         </div>
-                        <div className="date-selector-toggle"><input
-                            type="radio"
-                            name="submitted"
-                            value="submitted"
-                            checked={this.state.activeFacet === 'date_submitted'}
-                            onChange={this.toggleDateFacet}
-                        />Submitted
+                        <div className="date-selector-toggle">
+                            <input
+                                type="radio"
+                                name="submitted"
+                                value="submitted"
+                                id="submitted-radio-button"
+                                checked={this.state.activeFacet === 'date_submitted'}
+                                onChange={this.toggleDateFacet}
+                                disabled={missingField === 'date_submitted'}
+                            />
+                            <label htmlFor="submitted-radio-button" id="submitted-radio-button-label">Submitted</label>
                         </div>
                     </div>
                     <button className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>

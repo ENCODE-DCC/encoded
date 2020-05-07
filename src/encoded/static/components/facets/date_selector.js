@@ -40,4 +40,4 @@ DateReleasedFacet.defaultProps = {
 
 
 FacetRegistry.Facet.register('date_released', DateReleasedFacet);
-FacetRegistry.Facet.register('date_submitted', null);
+FacetRegistry.Facet.register('date_submitted', DateReleasedFacet);
