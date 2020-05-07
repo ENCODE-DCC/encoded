@@ -64,7 +64,7 @@
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
             "enum": [
-                "mouse transgenic enhancer assay"
+                "transgenic enhancer assay"
             ]
         },
         "date_submitted": {

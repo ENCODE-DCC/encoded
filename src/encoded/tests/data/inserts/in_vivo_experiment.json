@@ -1,0 +1,25 @@
+[
+    {
+        "_test": "in vivo enhancer assay",
+        "accession": "ENCSR507TEA",
+        "assay_term_name": "transgenic enhancer assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "biosamples": [
+            "ENCBS001MWO",
+            "ENCBS000MUS"
+        ],
+        "expressed_tissue_pattern": [{
+            "tissue": "tail (UBERON:0002415)",
+            "expressed_tissue_percentile": 80
+        }, {"tissue": "limb (UBERON:0002101)",
+            "expressed_tissue_percentile": 50}],
+        "description": "Mouse transgenic enhancer experiment",
+        "lab": "len-pennacchio",
+        "status": "released",
+        "date_submitted": "2019-12-20",
+        "date_released": "2020-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "aae07757-94a0-4bbd-8c87-b7d39a7ae02a"
+    }
+]

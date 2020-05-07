@@ -14,9 +14,7 @@ from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
-    CalculatedAssayTitle,
     CalculatedAssaySlims,
-    CalculatedBiosampleSummary,
     CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
@@ -199,9 +197,7 @@ class InVivoExperiment(
     Dataset,
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
-    CalculatedBiosampleSummary,
     CalculatedAssaySlims,
-    CalculatedAssayTitle,
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims):
@@ -224,9 +220,10 @@ class InVivoExperiment(
         'documents'
     ]
     set_status_down = []
-    rev = {
-        'superseded_by': ('InVivoExperiment', 'supersedes'),
-    }
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('InVivoExperiment', 'supersedes')
+    })
 
     @calculated_property(schema={
             "title": "Superseded by",
