@@ -588,3 +588,12 @@ def annotation_27_28(value, system):
     if annotation_type == "representative DNase hypersensitivity sites":
         value['annotation_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
     return
+
+
+@upgrade_step('reference', '18', '19')
+def reference_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5259
+    if 'examined_loci' in value:
+        examined_loci = value.get('examined_loci', None)
+        if examined_loci == []:
+            value.pop('examined_loci', None)

@@ -63,7 +63,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "18"
+            "default": "19"
         },
         "reference_type": {
             "title": "Reference type",
@@ -109,7 +109,7 @@
             "comment": "See gene.json for available identifiers.",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
+            "minItems": 1,
             "items": {
                 "title": "Gene",
                 "description": "The gene under investigation.",
