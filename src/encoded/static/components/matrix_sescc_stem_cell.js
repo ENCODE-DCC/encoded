@@ -9,6 +9,7 @@ import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixInternalTags } from './objectutils';
 import { SearchControls } from './search';
 import * as globals from './globals';
+import { tintColor, isLight } from './datacolors';
 
 
 /**
@@ -466,18 +467,31 @@ class MatrixPresentation extends React.Component {
                             const name = formatH9HeaderTitle(d.name);
                             const elementClass = formatPebbleNameToCssClassFriendly(name);
                             const element = document.querySelector(`.${elementClass} th`);
+                            const text = document.querySelector(`.${elementClass} th .subcategory-row-text`);
 
                             if (element) {
-                                element.style.backgroundColor = d.selectedColor;
+                                const cellColor = tintColor(d.selectedColor, 0.1);
+                                const textColor = isLight(cellColor) ? '#000' : '#fff';
+
+                                element.style.backgroundColor = cellColor;
+
+                                if (text) {
+                                    text.style.color = textColor;
+                                }
                             }
                         })
                         .on('mouseout', (d) => {
                             const name = formatH9HeaderTitle(d.name);
                             const elementClass = formatPebbleNameToCssClassFriendly(name);
                             const element = document.querySelector(`.${elementClass} th`);
+                            const text = document.querySelector(`.${elementClass} th .subcategory-row-text`);
 
                             if (element) {
                                 element.style.backgroundColor = 'white';
+
+                                if (text) {
+                                    text.style.color = 'black';
+                                }
                             }
                         });
 
