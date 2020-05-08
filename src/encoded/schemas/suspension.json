@@ -53,7 +53,7 @@
             "comment": "",
             "type": "integer"
         },
-        "selected_cell_types": {
+        "enrichment_cell_types": {
             "title": "",
             "description": "",
             "comment": "",
@@ -66,7 +66,13 @@
                 "linkTo": "BiosampleType"
             }
         },
-        "cell_selection_factors": {
+        "enrichment_factors": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "enrichment_method": {
             "title": "",
             "description": "",
             "comment": "",
@@ -115,17 +121,23 @@
             "comment": "",
             "type": "string"
         },
-        "cell_dissociation_method": {
+        "single_cell_isolation_method": {
             "title": "Cell isolation method",
             "description": "The method by which the cell(s) in the sampe were isolated.",
             "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.",
             "type": "string"
         },
-        "cell_dissociation_method_version": {
+        "single_cell_isolation_method_version": {
             "title": "Cell isolation method version",
             "description": "",
             "comment": "",
             "type": "integer"
+        },
+        "cell_dissociation_method": {
+            "title": "Cell dissociation method",
+            "description": "",
+            "comment": "",
+            "type": "string"
         },
         "derived_from": {
             "title": "Derived from",
