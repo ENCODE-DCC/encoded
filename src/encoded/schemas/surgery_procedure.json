@@ -90,7 +90,7 @@
             ],
             "properties": {
                 "type": {
-                    "title": "Neprhectomy type",
+                    "title": "Nephrectomy type",
                     "type": "string",
                     "enum": [
                         "Partial",
@@ -106,7 +106,7 @@
                     ]
                 },
                 "robotic_assist": {
-                    "title": "Robotic Assit",
+                    "title": "Robotic Assist",
                     "type": "boolean"
                 }
             }
