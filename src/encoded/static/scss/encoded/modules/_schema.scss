@@ -95,23 +95,46 @@
     }
 }
 
-// Button in profile object's tab bar to add a new object of this type.
-.profiles-add-obj {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    height: 100%;
-    z-index: 1;
-
-    @at-root #{&}__btn {
-        height: 90%;
-    }
-}
-
 .schema-term-links {
     margin: 2px 0 10px;
 
     @at-root #{&}__title {
         font-weight: bold;
+    }
+}
+
+// Styles for the raw JSON schema display.
+$raw-schema-height: 8000px;
+.raw-schema {
+    position: relative;
+    height: auto;
+    max-height: $raw-schema-height;
+    overflow: hidden;
+
+    pre {
+        overflow: scroll;
+        max-height: $raw-schema-height;
+    }
+
+    @at-root #{&}__controls {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+}
+
+.profiles-controls {
+    display: flex;
+    margin: 2px;
+
+    .btn {
+        margin-left: 5px;
+    }
+}
+
+.type-JSONSchema {
+    .tab-nav {
+        display: flex;
+        justify-content: space-between;
     }
 }
