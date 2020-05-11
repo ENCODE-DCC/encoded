@@ -602,7 +602,7 @@ PHASE1_PIPELINES = {
         remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'in_vivo_experiment': [
-        remove_keys('supersedes'),
+        remove_keys('related_files', 'supersedes'),
     ],
     'mouse_donor': [
         remove_keys('parent_strains', 'genetic_modifications'),
@@ -700,7 +700,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'in_vivo_experiment': [
-        skip_rows_missing_all_keys('supersedes'),
+        skip_rows_missing_all_keys('related_files', 'supersedes'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
