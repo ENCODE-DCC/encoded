@@ -421,11 +421,9 @@ export class DefaultDateSelectorFacet extends React.Component {
         // "displayField", when false, hides the duplicate facet when needed (most of the time)
         // If we have date_released or date_submitted data only, then only one facet will be displayed and we don't need to hide one
         // If we have both, we will just display the facet for date_released
-        let displayField = true;
         if (facet.field === 'date_submitted' && results.facets.filter(f => f.field === 'date_released').length > 0) {
-            displayField = false;
+            return null;
         }
-
         // If we are missing data for "date_submitted" or "date_released", we want to disable that radio button
         // "missingField" indicates if there is a field to disable, and if so, which one
         let missingField = null;
@@ -464,7 +462,7 @@ export class DefaultDateSelectorFacet extends React.Component {
 
         if ((activeFacet && (activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
-                <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''} ${!displayField ? 'hide-facet' : ''}`}>
+                <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
                     <h5>Date range selection</h5>
                     {existingFilter.length > 0 ?
                         <div className="selected-date-range">
