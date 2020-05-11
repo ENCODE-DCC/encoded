@@ -428,7 +428,7 @@ export class DefaultDateSelectorFacet extends React.Component {
         // "missingField" indicates if there is a field to disable, and if so, which one
         let missingField = null;
         // Check if we are displaying date_submitted facet and there is no date_released data
-        if (facet.field === 'date_submitted' && !(results.facets.filter(f => f.field === 'date_released')).length > 0) {
+        if (facet.field === 'date_submitted') {
             missingField = 'date_released';
         // Check if we are displaying date_released facet and there is no date_submitted data
         } else if (facet.field === 'date_released' && !(results.facets.filter(f => f.field === 'date_submitted')).length > 0) {
