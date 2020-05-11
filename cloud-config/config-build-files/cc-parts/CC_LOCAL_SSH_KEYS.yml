@@ -1,3 +1,0 @@
-#cloud-config
-ssh_authorized_keys:
-  - %(LOCAL_SSH_KEY)s

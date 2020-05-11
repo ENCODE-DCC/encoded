@@ -1,0 +1,25 @@
+#cloud-config
+ssh_authorized_keys:
+%(ssh_auth_keys)s
+apt_sources:
+%(apt_srcs_es)s
+bootcmd:
+%(bootcmd)s
+%(bootcmd_es)s
+packages:
+%(packages_all)s
+%(packages_es)s
+power_state:
+  mode: reboot
+output:
+  all: '| tee -a /var/log/cloud-init-output.log'
+runcmd:
+%(runcmd_all)s
+%(runcmd_es)s
+%(runcmd_es_nodes)s
+users:
+%(users)s
+write_files:
+%(vimrc)s
+%(env)s
+%(upgrades)s
