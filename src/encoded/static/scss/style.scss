@@ -265,9 +265,6 @@ $link-hover-color:                          darken($link-color, 15%);
 @import "encoded/state";
 @import "encoded/theme";
 
-// Utility classes - Bootstrap 3, keep last
-@import "bootstrap/utilities";
-@import "bootstrap/responsive-utilities";
 
 //moves the help button to the right side
 #walkme-player {
