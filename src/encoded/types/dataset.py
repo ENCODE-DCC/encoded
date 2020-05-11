@@ -208,13 +208,9 @@ class InVivoExperiment(
     CalculatedObjectiveSlims):
     item_type = 'in_vivo_experiment'
     schema = load_schema('encoded:schemas/in_vivo_experiment.json')
-    embedded = [
+    embedded = Dataset.embedded + [
         'biosample_ontology',
         'biosamples',
-        'submitted_by',
-        'lab',
-        'award.pi.lab',
-        'references'
     ]
     audit_inherit = [
         'submitted_by',
