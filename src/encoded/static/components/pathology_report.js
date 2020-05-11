@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
@@ -173,7 +173,7 @@ class PathologyReport extends React.Component {
                                             <dd>{context.positive_lymph_nodes}</dd>
                                         </div>}
 
-                                        
+
 
                                         {context.ajcc_version && <div data-test="ajcc_version">
                                             <dt>AJCC Version</dt>
