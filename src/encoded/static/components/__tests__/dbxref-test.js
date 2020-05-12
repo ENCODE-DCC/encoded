@@ -709,7 +709,7 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
-            const context = { '@type': ['InVivoExperiment'] };
+            const context = { '@type': ['TransgenicEnhancerExperiment'] };
             const wrapper = mount(
                 <DbxrefList context={context} dbxrefs={['VISTA:hs10', 'VISTA:mm1694']} />
             );

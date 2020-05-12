@@ -1,8 +1,8 @@
 {
-    "title": "In vivo experiment",
-    "description": "Schema for submitting metadata for an in vivo assay.",
-    "comment": "An in vivo experiment is a special case of dataset. It includes assay metadata.",
-    "id": "/profiles/in_vivo_experiment.json",
+    "title": "Transgenic enhancer experiment",
+    "description": "Schema for submitting metadata for a transgenic enhancer experiment.",
+    "comment": "An transgenic enhancer experiment is a special case of dataset. It includes assay metadata.",
+    "id": "/profiles/transgenic_enhancer_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
@@ -109,13 +109,13 @@
         },
         "biosamples": {
             "title": "Biosamples",
-            "description": "The biosamples used in the in vivo experiment.",
+            "description": "The biosamples used in the transgenic enhancer experiment.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
+            "minItems": 1,
             "items": {
                 "title": "Biosample",
-                "description": "The unique test organism used in the in vivo experiment.",
+                "description": "The unique test organism used in the transgenic enhancer experiment.",
                 "comment": "See biosample.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "Biosample"
@@ -136,7 +136,7 @@
                 "properties": {
                     "tissue": {
                         "title": "Tissue",
-                        "description": "The tissue the enhancer was pressed in.",
+                        "description": "The tissue the enhancer was expressed in.",
                         "type": "string",
                         "enum": [
                             "blood vessels (UBERON:0001981)",
@@ -166,7 +166,7 @@
                     "expressed_tissue_percentile": {
                         "title": "Tissue expression percentile",
                         "description": "Tissue expression expressed as a percentile.",
-                        "type": "integer",
+                        "type": "number",
                         "minimum": 0,
                         "maximum": 100
                     }
@@ -175,14 +175,14 @@
         },
         "supersedes": {
             "title": "Supersedes" ,
-            "description": "The in vivo experiment(s) that this in vivo experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "description": "The transgenic enhancer experiment(s) that this transgenic enhancer experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                "comment": "See in_vivo_experiment.json for a list of available identifiers.",
+                "comment": "See transgenic_enhancer_experiment.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "InVivoExperiment"
+                "linkTo": "TransgenicEnhancerExperiment"
             }
         }
     },
@@ -281,5 +281,5 @@
         "notes": 1.0,
         "internal_tags": 1.0
     },
-    "changelog": "/profiles/changelogs/in_vivo_experiment.md"
+    "changelog": "/profiles/changelogs/transgenic_enhancer_experiment.md"
 }

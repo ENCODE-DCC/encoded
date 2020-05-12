@@ -192,13 +192,13 @@ class Dataset(Item):
 
 
 @collection(
-    name='in-vivo-experiments',
+    name='transgenic-enhancer-experiments',
     unique_key='accession',
     properties={
-        'title': 'In vivo experiments',
-        'description': 'Listing of In vivo Experiments',
+        'title': 'Transgenic enhancer experiments',
+        'description': 'Listing of Transgenic Enhancer Experiments',
     })
-class InVivoExperiment(
+class TransgenicEnhancerExperiment(
     Dataset,
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
@@ -206,8 +206,8 @@ class InVivoExperiment(
     CalculatedCategorySlims,
     CalculatedTypeSlims,
     CalculatedObjectiveSlims):
-    item_type = 'in_vivo_experiment'
-    schema = load_schema('encoded:schemas/in_vivo_experiment.json')
+    item_type = 'transgenic_enhancer_experiment'
+    schema = load_schema('encoded:schemas/transgenic_enhancer_experiment.json')
     embedded = Dataset.embedded + [
         'biosample_ontology',
         'biosamples',
@@ -224,7 +224,7 @@ class InVivoExperiment(
     set_status_down = []
     rev = Dataset.rev.copy()
     rev.update({
-        'superseded_by': ('InVivoExperiment', 'supersedes')
+        'superseded_by': ('TransgenicEnhancerExperiment', 'supersedes')
     })
 
     @calculated_property(schema={
