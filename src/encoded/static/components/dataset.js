@@ -1398,15 +1398,6 @@ const organismDevelopmentSeriesTableColumns = {
 
 // Map series @id to title and table columns
 const seriesComponents = {
-    MatchedSet: { title: 'matched set series', table: basicTableColumns },
-    OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
-    ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
-    ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
-    TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
-    TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
-    AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
-    SingleCellRnaSeries: { title: 'single cell rna series', table: basicTableColumns },
-    FunctionalCharacterizationSeries: { title: 'functional characterization series', table: basicTableColumns },
 };
 
 export const SeriesComponent = (props, reactContext) => {

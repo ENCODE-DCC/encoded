@@ -54,23 +54,6 @@ const types = {
 };
 
 const datasetTypes = {
-    Annotation: types.annotation.title,
-    Dataset: types.dataset.title,
-    MatchedSet: types.matched_set.title,
-    OrganismDevelopmentSeries: types.organism_development_series.title,
-    Project: types.project.title,
-    PublicationData: types.publication_data.title,
-    Reference: types.reference.title,
-    ComputationalModel: types.computational_model.title,
-    ReferenceEpigenome: types.reference_epigenome.title,
-    ReplicationTimingSeries: types.replication_timing_series.title,
-    TreatmentConcentrationSeries: types.treatment_concentration_series.title,
-    TreatmentTimeSeries: types.treatment_time_series.title,
-    AggregateSeries: types.aggregate_series.title,
-    FunctionalCharacterizationSeries: types.functional_characterization_series.title,
-    SingleCellRnaSeries: types.single_cell_rna_series.title,
-    UcscBrowserComposite: types.ucsc_browser_composite.title,
-    FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
 };
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
