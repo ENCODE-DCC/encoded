@@ -30,13 +30,13 @@ ORDER = [
     'ihc',
     'medication',
     'supportive_medication',
-    'lab_results',
-    'vital_results',
     'germline',
     'consent',
     'radiation',
     'medical_imaging',
     'cart',
+    'lab_results',
+    'vital_results'
 ]
 
 IS_ATTACHMENT = [
@@ -480,6 +480,8 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'model_organism_age',
             'model_organism_sex',
             'mouse_life_stage',
+            'race',
+            'gender'
             # 'flowcell_details.machine',
         ),
         add_attachments(docsdir),

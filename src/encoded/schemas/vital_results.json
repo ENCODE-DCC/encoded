@@ -49,14 +49,13 @@
                 "BMI",
                 "BP_DIAS",
                 "BP_SYS",
-                "HEMOGLOBIN",
                 "HEIGHT",
                 "WEIGHT"
             ]
         },
         "date": {
             "title": "Vital date",
-            "description": "Date of lab.",
+            "description": "Date of vital.",
             "comment": "Date can be submitted as YYYY-MM-DD.",
             "type": "string",
             "anyOf": [
