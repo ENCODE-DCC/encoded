@@ -8,16 +8,16 @@
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        {"$ref": "mixins.json#/schema_version" },
+        {"$ref": "mixins.json#/uuid" },
+        {"$ref": "mixins.json#/accession" },
+        {"$ref": "mixins.json#/aliases" },
+        {"$ref": "mixins.json#/attribution" },
+        {"$ref": "mixins.json#/submitted" },
+        {"$ref": "mixins.json#/references" },
+        {"$ref": "mixins.json#/documents" },
+        {"$ref": "mixins.json#/notes" },
+        {"$ref": "mixins.json#/submitter_comment" }
     ],
     "properties": {
         "schema_version": {
@@ -59,21 +59,6 @@
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
             "formInput": "textarea"
-        },
-        "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "External identifier",
-                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-                "type":  "string",
-                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
-            }
         },
         "date_released": {
             "title": "Date released",

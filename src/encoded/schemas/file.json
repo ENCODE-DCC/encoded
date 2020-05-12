@@ -15,14 +15,15 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        {"$ref": "mixins.json#/notes" },
+        {"$ref": "mixins.json#/submitted" },
+        {"$ref": "mixins.json#/attribution" },
+        {"$ref": "mixins.json#/schema_version" },
+        {"$ref": "mixins.json#/aliases" },
+        {"$ref": "mixins.json#/accession" },
+        {"$ref": "mixins.json#/uuid" },
+        {"$ref": "mixins.json#/submitter_comment" },
+        {"$ref": "mixins.json#/dbxrefs"}
     ],
     "facets": {
         "status": {
@@ -1519,14 +1520,6 @@
                 ]
         },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "comment": "Do not submit.  This is for admins to make virtual file objects for files at external resources.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",

@@ -2,7 +2,7 @@
     "title": "Cell Culture",
     "description": "Schema for submitting a sample of cultured cells.",
     "comment": "",
-    "id": "/profiles/cultured_cells.json",
+    "id": "/profiles/cell_culture.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["source", "biosample_ontology"],
@@ -24,6 +24,7 @@
         {"$ref": "mixins.json#/product_id"},
         {"$ref": "mixins.json#/lot_id"},
         {"$ref": "mixins.json#/source"},
+        {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],
@@ -52,25 +53,15 @@
             "type": "string"
         },
         "derived_from": {
-            "title": "Derived from",
-            "description": "",
-            "type": "array",
-            "uniqueItems": true,
             "items": {
                 "comment": "",
                 "type": "string",
                 "linkTo": "Suspension"
             }
-        },
-        "derivation_process": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
         }
     },
     "facets": {},
     "columns": {},
     "boost_values": {},
-    "changelog": "/profiles/changelogs/cultured_cells.md"
+    "changelog": "/profiles/changelogs/cell_culture.md"
 }

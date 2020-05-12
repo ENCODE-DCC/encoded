@@ -14,7 +14,8 @@
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/standard_status"},
-        {"$ref": "mixins.json#/uuid"}
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/dbxrefs"}
     ],
     "dependencies": {
         "term_id":{
@@ -137,14 +138,6 @@
             ]
         },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
-            "permission": "import_items",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "An identifier from external resource.",

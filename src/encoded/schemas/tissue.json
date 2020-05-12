@@ -24,6 +24,7 @@
         {"$ref": "mixins.json#/product_id"},
         {"$ref": "mixins.json#/lot_id"},
         {"$ref": "mixins.json#/source"},
+        {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
@@ -89,10 +90,6 @@
             "type": "string"
         },
         "derived_from": {
-            "title": "Derived from",
-            "description": "",
-            "type": "array",
-            "uniqueItems": true,
             "items": {
                 "comment": "",
                 "type": "string",
@@ -101,12 +98,6 @@
                     "Tissue"
                 ]
             }
-        },
-        "derivation_process": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
         }
     },
     "facets": {},

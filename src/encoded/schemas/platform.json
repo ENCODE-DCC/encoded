@@ -8,13 +8,14 @@
     "identifyingProperties": ["uuid", "term_name", "aliases", "term_id"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/url" },
-        { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" }
+        {"$ref": "mixins.json#/schema_version" },
+        {"$ref": "mixins.json#/uuid" },
+        {"$ref": "mixins.json#/aliases" },
+        {"$ref": "mixins.json#/url" },
+        {"$ref": "mixins.json#/standard_status" },
+        {"$ref": "mixins.json#/submitted" },
+        {"$ref": "mixins.json#/notes" },
+        {"$ref": "mixins.json#/dbxrefs"}
     ],
     "properties": {
         "schema_version": {
@@ -36,13 +37,6 @@
             "uniqueKey": "platform:term_id"
         },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",

@@ -9,17 +9,18 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/url" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "donor.json#/properties" }
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/submitter_comment"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "donor.json#/properties"}
     ],
     "dependencies": {
         "age_units":  {
@@ -211,15 +212,6 @@
             ]
         },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "comment": "Do not submit. DCC personnel is responsible for submission of donor external resource identifiers.",
-            "permission": "import_items",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "Database external identifier",
                 "description": "Identifier an from external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",

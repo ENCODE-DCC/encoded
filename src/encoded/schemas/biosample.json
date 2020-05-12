@@ -10,6 +10,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/accession"}
     ],
     "dependencies": {
@@ -97,15 +98,6 @@
             }
         },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
-            "comment": "Do not submit. DCC personnel is responsible for submission of biosample external resource identifiers.",
-            "permission": "import_items",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
@@ -169,6 +161,21 @@
             "type": "string"
         },
         "genotype": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            }
+        },
+        "derivation_process": {
             "title": "",
             "description": "",
             "comment": "",
