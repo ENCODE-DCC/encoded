@@ -90,12 +90,12 @@
         },
         "death_source": {
             "title": "Death Source",
-            "description": "The death date comes from",
+            "description": "The source of the death date",
             "type": "string",
             "enum": [
                 "UTSouthwestern Hospital",
                 "Parkland Hospital",
-                "Tumor Registery"
+                "Tumor Registry"
             ]
         }
 
@@ -199,11 +199,11 @@
         "radiation.treatment_intention" : {
           "title": "Radiation Treatment Intention"
         },
-        "biospecimen.collection_type": {
-              "title": "Biospecimen Collection Type"
+        "biospecimen.sample_type": {
+              "title": "Biospecimen Sample Type"
         },
-        "biospecimen.processing_type": {
-            "title": "Biospecimen Processing Type"
+        "biospecimen.tissue_derivatives": {
+            "title": "Biospecimen Tissue Derivatives"
         },
         "biospecimen.tissue_type": {
             "title": "Biospecimen Tissue Type"

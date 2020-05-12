@@ -195,9 +195,14 @@ class Patient extends React.Component {
                 <dd>{context.diagnosis_date}</dd>
               </div>
 
+              <div data-test="last_follow_up_date">
+               <dt>Last Follow Up Date</dt>
+               <dd>{context.last_follow_up_date} </dd>
+             </div>
+
               {context.death_date && <div data-test="death_date">
                 <dt>Death Date</dt>
-                <dd>{`${context.death_date} ( Death source: `}{`${context.death_source} )`}</dd>
+                <dd>{`${context.death_date} ( Death Source: `}{`${context.death_source} )`}</dd>
               </div>}
             </dl>
           </PanelBody>
@@ -227,4 +232,3 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
-

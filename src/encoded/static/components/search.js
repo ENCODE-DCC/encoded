@@ -725,8 +725,8 @@ globals.listingViews.register(Biofile, 'Biofile');
 class BiospecimenComponent extends React.Component {
     render() {
         const result = this.props.context;
-        const tissueType = (result.tissue_type && result.collection_type == 'solid tissue') ? ` ${result.tissue_type}` : '';
-        const anatomicSite = (result.anatomic_site && result.collection_type == 'solid tissue') ? ` ${result.anatomic_site}` : '';
+        const tissueType = (result.tissue_type && result.sample_type == 'Tissue') ? ` ${result.tissue_type}` : '';
+        const anatomicSite = (result.anatomic_site && result.sample_type == 'Tissue') ? ` ${result.anatomic_site}` : '';
 
         return (
             <li>
@@ -745,8 +745,8 @@ class BiospecimenComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Collection type: </strong>{result.collection_type}</div>
-                        <div><strong>Processing type: </strong>{result.processing_type}</div>
+                        <div><strong>Sample type: </strong>{result.sample_type}</div>
+                        <div><strong>Tissue Derivatives: </strong>{result.tissue_derivatives}</div>
                         <div><strong>Tissue type: </strong>{result.tissue_type}</div>
                         <div><strong>Anotomic type: </strong>{result.anatomic_site}</div>
                     </div>

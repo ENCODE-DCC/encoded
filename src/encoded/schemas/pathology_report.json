@@ -525,8 +525,8 @@
         "status": {
             "title": "Status"
         },
-        "tumor_size": {
-            "title": "Tumor Size"
+        "pathology_report_tumor_range": {
+            "title": "Tumor Range"
         },
         "ajcc_p_stage": {
             "title": "pT Stage"
