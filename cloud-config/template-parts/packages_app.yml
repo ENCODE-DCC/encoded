@@ -3,6 +3,8 @@
 - apache2
 - apache2-dev
 - apache2-utils
+- debhelper
+- dh-autoreconf
 - ssl-cert
 - libapache2-mod-wsgi-py3
 - w3m

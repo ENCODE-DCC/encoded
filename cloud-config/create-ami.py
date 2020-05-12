@@ -153,7 +153,7 @@ def main():
             key_name += '-prod'
         print('\nAdd below to ami map in deploy script')
         print("# {} build on {}: {}".format(fuzzy_ami_name, date_now, ami_name))
-        print("'{}{}': '{}',".format(main_args.deployment_type, key_name, ami_id))
+        print("'{}': '{}',".format(key_name, ami_id))
 
 def _parse_args():
     # pylint: disable=too-many-branches, too-many-statements

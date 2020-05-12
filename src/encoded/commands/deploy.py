@@ -313,13 +313,17 @@ def _get_instances_tag_data(main_args, build_type_template_name):
     tag_output = subprocess.check_output(
         ['git', 'tag', '--contains', instances_tag_data['commit']]
     ).strip().decode()
-    if tag_output:
-        if tag_output == main_args.branch:
+    for tag in tag_output.split('\n'):
+        if tag == main_args.branch:
             is_tag = True
     is_branch = False
-    git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
-    if subprocess.check_output(git_cmd).strip():
-        is_branch = True
+    if not is_tag:
+        git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
+        branch_output = subprocess.check_output(git_cmd).decode()
+        for branch in branch_output.split('\n'):
+            branch_name = branch.strip().replace('origin/', '')
+            if branch_name == main_args.branch:
+                is_branch = True
     if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
     else:
@@ -983,29 +987,29 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-05-07 11:35:19.969054: encdami-demo-2020-05-07_113519
-        'demo': 'ami-0884a78563a247d68',
-        # encdami-es-wait-head build on 2020-05-07 11:36:15.977775: encdami-es-wait-head-2020-05-07_113615
-        'es-wait-head': 'ami-0b8a90f05b2092a84',
-        # encdami-es-wait-node build on 2020-05-07 11:36:27.262571: encdami-es-wait-node-2020-05-07_113627
-        'es-wait-node': 'ami-0f57760c69fc419da',
+        # encdami-demo build on 2020-05-12 11:37:41.865324: encdami-demo-2020-05-12_113741
+        'demo': 'ami-0cfb31de2f52e01a5',
+        # encdami-es-wait-head build on 2020-05-12 11:27:42.486819: encdami-es-wait-head-2020-05-12_112742
+        'es-wait-head': 'ami-02e3ef2b5803db44a',
+        # encdami-es-wait-node build on 2020-05-12 11:27:52.074392: encdami-es-wait-node-2020-05-12_112752
+        'es-wait-node': 'ami-0c1838d72e5957f9b',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-05-07 11:45:42.512362: encdami-frontend-2020-05-07_114542
-        'frontend': 'ami-05969da7a46dde92b',
+        # encdami-frontend build on 2020-05-12 11:37:48.826714: encdami-frontend-2020-05-12_113748
+        'frontend': 'ami-0950bd8a532c42f16',
 
         # Production Private AMIs: Add comments to each build
 
-        # encdami-es-wait-head build on 2020-05-07 11:52:43.647275: encdami-es-wait-head-2020-05-07_115243
-        'es-wait-head-prod': 'ami-04047abf6a55f5a87',
-        # encdami-es-wait-node build on 2020-05-07 11:55:37.892057: encdami-es-wait-node-2020-05-07_115537
-        'es-wait-node-prod': 'ami-05debb5639a4e6d90',
+        # encdami-es-wait-head build on 2020-05-12 10:09:25.025435: encdami-es-wait-head-2020-05-12_100925
+        'es-wait-head-prod': 'ami-014e72506bbd44e17',
+        # encdami-es-wait-node build on 2020-05-12 10:09:39.229262: encdami-es-wait-node-2020-05-12_100939
+        'es-wait-node-prod': 'ami-097e519fd45a99723',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head-prod': None,
         'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-05-07 11:55:26.838030: encdami-frontend-2020-05-07_115526
-        'frontend-prod': 'ami-0f894e7d2e9c042eb',
+        # encdami-frontend build on 2020-05-12 11:54:03.562797: encdami-frontend-2020-05-12_115403
+        'frontend-prod': 'ami-0c00c42372dfd18b1',
     }
     if not args.image_id:
         # Select ami by build type.  
@@ -1100,9 +1104,9 @@ def _parse_args():
             args.role = 'candidate'
     # do_batchupgrade is default True for everything but rcs and candidates
     if args.do_batchupgrade is None:
-        args.do_batchupgrade = 'n'
+        args.do_batchupgrade = 'y'
         if args.role in ['rc', 'candidate']:
-            args.do_batchupgrade = 'y'
+            args.do_batchupgrade = 'n'
     if args.do_batchupgrade[0].lower() == 'y':
         args.do_batchupgrade = True
     else:
