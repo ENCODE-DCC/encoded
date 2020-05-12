@@ -41,9 +41,10 @@ const portal = {
             title: 'Data',
             children: [
                 { id: 'functional-genomics', title: 'Functional Genomics data' },
+                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released', tag: 'collection' },
                 { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released', tag: 'collection' },
                 { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&status=released', tag: 'collection' },
-                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released', tag: 'collection' },
+                { id: 'bodymap', title: 'Human body map', url: '/summary/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
                 { id: 'sep-mm-0' },
                 { id: 'functional-characterization', title: 'Functional Characterization data' },
                 { id: 'functional-char-assays', title: 'Experiment search', url: '/search/?type=FunctionalCharacterizationExperiment', tag: 'collection' },

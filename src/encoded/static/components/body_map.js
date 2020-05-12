@@ -86,21 +86,20 @@ const CellsList = {
 
 // Mapping for systems slims
 // Systems slims are mapped to organs in the "BodyList"
-// To be fixed: "musculature of body" is both an organ slim and a systems slim which causes some oddities
-//     (you cannot select only the organ slim or the systems slim, you must select both because of the identical name)
 const SystemsList = {
     'central nervous system': ['brain', 'spinal chord'],
     'circulatory system': ['blood', 'blood vessel', 'arterial blood vessel', 'heart', 'pericardium', 'vein', 'lymphatic vessel'],
     'digestive system': ['esophagus', 'intestine', 'small intestine', 'large intestine', 'liver', 'gallbladder', 'mouth', 'spleen', 'stomach', 'tongue', 'colon'],
     'endocrine system': ['adrenal gland', 'liver', 'gallbladder', 'pancreas', 'thymus', 'thyroid gland'],
     'excretory system': ['urinary bladder', 'kidney', 'ureter'],
+    'exocrine system': ['mammary gland', 'liver'],
     'immune system': ['lymphoid tissue', 'spleen', 'thymus', 'bone marrow', 'lymph node', 'lymphatic vessel'],
-    'musculature of body': ['musculature of body'],
+    musculature: ['musculature of body', 'limb'],
     'peripheral nervous system': ['nerve'],
     'reproductive system': ['gonad', 'ovary', 'penis', 'placenta', 'prostate gland', 'testis', 'uterus', 'vagina'],
     'respiratory system': ['trachea', 'bronchus', 'lung'],
     'sensory system': ['eye', 'nose', 'tongue'],
-    'skeletal system': ['bone element', 'skeleton', 'bone marrow'],
+    'skeletal system': ['bone element', 'skeleton', 'bone marrow', 'limb'],
     'integumental system': ['mammary gland', 'skin of body'],
 };
 
@@ -156,7 +155,6 @@ const svgHighlight = (e) => {
 // Highlight all of the paths corresponding to a particular organ / system / inset image term
 // Additionally, highlight any other associated terms
 // For example, if hovering over "large intestine", we want all "large intestine" svg components to highlight as well as the term "colon"
-// As another example, if hovering over the organ term "musculature of body", we want all svg components to highlight as well as the system term "musculature of body"
 // Hovering over a system term name should highlight all associated organ terms and inset image terms and their corresponding svg elements or inset images
 const highlightOrgan = (e) => {
     const currentOrgan = e.target.id || e.target.parentNode.id;
@@ -234,7 +232,7 @@ class BodyMap extends React.Component {
         // Currently this code has a lot of cases to prevent spread syntax from spreading single terms (strings) into individual letters
         if (systemsTerms && organTerms) {
             if (typeof organTerms === 'string') {
-                // There is one organ term, one systems term (only applies to case of "musculature of body")
+                // There is one organ term, one systems term
                 if (typeof systemsTerms === 'string') {
                     organTerms = [organTerms, systemsTerms];
                 // There is one organ term, multiple systems terms (no examples but maybe leave for completeness?)
@@ -307,7 +305,7 @@ class BodyMap extends React.Component {
         // active = true corresponds to a term that should be selected now that the user has clicked
         // active = false corresponds to a term that should be de-selected now
         let active = true;
-        if (this.state.selectedOrgan.includes(currentOrgan)) {
+        if ((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === currentOrgan) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(currentOrgan))) {
             active = false;
         }
 
@@ -607,7 +605,7 @@ class BodyMap extends React.Component {
                     <div className="body-list-inner">
                         {Object.keys(SystemsList).map(b =>
                             <button
-                                className={`body-list-element ${this.state.selectedOrgan.includes(b) ? 'active' : ''}`}
+                                className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
                                 id={b}
                                 onClick={e => this.chooseOrgan(e)}
                                 onMouseEnter={e => highlightOrgan(e)}
@@ -634,7 +632,7 @@ class BodyMap extends React.Component {
                         <div className="body-list-inner">
                             {Object.keys(BodyList).map(b =>
                                 <button
-                                    className={`body-list-element ${this.state.selectedOrgan.includes(b) ? 'active' : ''}`}
+                                    className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
                                     id={b}
                                     onClick={e => this.chooseOrgan(e)}
                                     onMouseEnter={e => highlightOrgan(e)}
@@ -649,14 +647,14 @@ class BodyMap extends React.Component {
                     <div className="body-inset-container">
                         {Object.keys(CellsList).map(image =>
                             <button
-                                className={`body-inset ${image.replace(' ', '-')} ${this.state.selectedOrgan.includes(image) ? 'active' : ''}`}
+                                className={`body-inset ${image.replace(' ', '-')} ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === image) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(image))) ? 'active' : ''}`}
                                 id={image}
                                 onClick={e => this.chooseOrgan(e)}
                                 onMouseEnter={e => highlightOrgan(e)}
                                 onMouseLeave={unHighlightOrgan}
                                 key={image}
                             >
-                                {(this.state.selectedOrgan.includes(image)) ?
+                                {((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === image) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(image))) ?
                                     <img src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}.svg`} alt={image} />
                                 :
                                     <img src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}_deselected.svg`} alt={image} />
@@ -669,7 +667,7 @@ class BodyMap extends React.Component {
                         <div className="body-list-inner">
                             {Object.keys(CellsList).map(b =>
                                 <button
-                                    className={`body-list-element ${b.replace(' ', '-')} ${this.state.selectedOrgan.includes(b) ? 'active' : ''}`}
+                                    className={`body-list-element ${b.replace(' ', '-')} ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
                                     id={b}
                                     onClick={e => this.chooseOrgan(e)}
                                     onMouseEnter={e => highlightOrgan(e)}
