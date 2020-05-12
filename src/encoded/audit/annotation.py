@@ -35,5 +35,7 @@ def audit_annotation_derived_from_revoked(value, system):
                 if parent['status'] == 'revoked':
                     detail = (
                         f'Annotation {audit_link(path_to_text(value["@id"]), value["@id"])} '
-                        f'includes a file {file["@id"]} that was derived from a revoked file {parent["@id"]}.')
+                        f'includes a file {audit_link(path_to_text(file["@id"]), file["@id"])} '
+                        f'that was derived from a revoked file {audit_link(path_to_text(f), f)}.'
+                    )
                     raise AuditFailure('derived from revoked file', detail, level='WARNING')
