@@ -121,24 +121,24 @@ class Patient(Item):
         "type": "string",
     })
     def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-    
+
         all_traced_dates=[]
         last_follow_up_date="Not available"
         if len(vitals) > 0:
             for obj in vitals:
-                v_obj = request.embed(obj, "@@object") 
+                v_obj = request.embed(obj, "@@object")
                 vital_dates=v_obj.get("date")
                 all_traced_dates.append(vital_dates)
         if len(labs) > 0:
             for obj in labs:
-                l_obj = request.embed(obj, "@@object") 
+                l_obj = request.embed(obj, "@@object")
                 lab_dates=l_obj.get("date")
                 all_traced_dates.append(lab_dates)
         if len(surgery) > 0:
             for obj in surgery:
                 s_obj = request.embed(obj, "@@object")
                 sur_dates=s_obj.get("date")
-                all_traced_dates.append(sur_dates) 
+                all_traced_dates.append(sur_dates)
         if len(germline) > 0:
             for obj in germline:
                 g_obj = request.embed(obj, "@@object")
@@ -148,30 +148,30 @@ class Patient(Item):
             for obj in ihc:
                 ihc_obj = request.embed(obj, "@@object")
                 ihc_dates=ihc_obj.get("service_date")
-                all_traced_dates.append(ihc_dates)          
+                all_traced_dates.append(ihc_dates)
         if len(radiation) > 0:
             for obj in radiation:
                 r_obj = request.embed(obj, "@@object")
                 rad_dates=r_obj.get("end_date")
-                all_traced_dates.append(rad_dates)                
+                all_traced_dates.append(rad_dates)
         if len(medical_imaging) > 0:
             for obj in medical_imaging:
                 mi_obj = request.embed(obj, "@@object")
                 med_img_dates=mi_obj.get("procedure_date")
-                all_traced_dates.append(med_img_dates) 
+                all_traced_dates.append(med_img_dates)
         if len(medication) > 0:
             for obj in medication:
                 m_obj = request.embed(obj, "@@object")
                 med_dates=m_obj.get("end_date")
-                all_traced_dates.append(med_dates) 
+                all_traced_dates.append(med_dates)
         if len(supportive_medication) > 0:
             for obj in supportive_medication:
                 sm_obj = request.embed(obj, "@@object")
                 sup_med_dates=sm_obj.get("start_date")
-                all_traced_dates.append(sup_med_dates) 
+                all_traced_dates.append(sup_med_dates)
 
         if len(all_traced_dates) > 0:
-            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d")) 
+            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d"))
             last_follow_up_date = all_traced_dates[-1]
         return last_follow_up_date
 
@@ -300,7 +300,7 @@ class Patient(Item):
     })
     def age_range(self, request, age):
         age_range = []
-       
+
         if age == "90 or above":
             age_range.append("80+")
         elif int(age) >= 80:
@@ -479,7 +479,7 @@ class Patient(Item):
                     elif  procedure_obj['procedure_type'] == "Biopsy" or procedure_obj['procedure_type'] == "Metastectomy":
                         non_nephrectomy_dates.append(surgery_object['date'])
         if len(nephrectomy_dates) > 0 :
-            nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d')) 
+            nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
             diagnosis_date = nephrectomy_dates[0]
         else:
             if len(radiation) > 0:
@@ -494,7 +494,7 @@ class Patient(Item):
                     non_nephrectomy_dates.append(medication_object['start_date'])
 
             if len(non_nephrectomy_dates) > 0:
-                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d')) 
+                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
                 diagnosis_date = non_nephrectomy_dates[0]
         return diagnosis_date
 
@@ -518,14 +518,14 @@ class Patient(Item):
                 'germline_summary',
                 'ihc.antibody',
                 'ihc.result',
-                
+
             ],
             'group_by': ['race', 'gender'],
             'label': 'race',
         },
         'x': {
             'facets': [
-                
+
                 'surgery.pathology_report.histology',
             ],
             'group_by': 'surgery.pathology_report.histology',
@@ -604,8 +604,8 @@ class Patient(Item):
     })
 
     def sur_path_tumor_size(self, request, surgery):
-        
-        
+
+
         sp_obj_array = []
         array=[]
         if surgery is not None:
@@ -630,9 +630,9 @@ class Patient(Item):
                 tumor_size_range.append("7-10 cm")
             else:
                 tumor_size_range.append("10+ cm")
-        return tumor_size_range                   
+        return tumor_size_range
 
-   
+
 
 @collection(
     name='lab-results',
@@ -771,12 +771,10 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'diagnosis_date', 'age_range', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging','medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'age_range', 'diagnosis_date', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
-
-
