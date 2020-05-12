@@ -31,7 +31,7 @@ def audit_annotation_derived_from_revoked(value, system):
     for file in value.get('files'):
         if 'derived_from' in file:
             for f in file['derived_from']:
-                parent = request.embed(f + '@@object')
+                parent = request.embed(f + '@@object?skip_calculated=true')
                 if parent['status'] == 'revoked':
                     detail = (
                         f'Annotation {audit_link(path_to_text(value["@id"]), value["@id"])} '
