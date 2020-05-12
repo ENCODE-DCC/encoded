@@ -1,5 +1,48 @@
 Changes
 =======
+v100.0 (released) snovault 1.0.44
+--------------------------------------------------------------------
+1.	ENCD-5216 deploy demo pointing at pg (#3273)
+    ⁃ ENCD-5242 refactor cloud config
+    ⁃ ENCD-5235 fix wale backup error
+    ⁃ ENCD-5240 fix lib magic dependency
+    ⁃ ENCD-5212 deploy demo at ES cluster
+    ⁃ ENCD-5234 fix key validation upload bucket
+2.	ENCD-5275-fix-json-ld-exploding-without-at-type (#3301)
+3.	ENCD-4215-enable-google-set (#3282)
+4.	ENCD-5258-add-file-upgrade (#3292)
+5.	ENCD-5264 fix error on pages missing @type (#3293)
+6.	ENCD-5259-fix-validation-fail-reference-objects (#3291)
+7.	ENCD-5266 change description to title for index_of property
+8.	ENCD-5116-pipeline-graph (#3278)
+9.	ENCD-5178 add body map to summary page (#3285)
+10.	ENCD-5228-add-enc4-chip-pipeline-to-audits (#3288)
+11.	ENCD-5229-fix-run-type-dependency (#3270)
+12.	ENCD-5244-add-new-enums-for-DAC-pipeline (#3286)
+13.	ENCD-5226-add-bulk-RNA-seq-pipeline-to-audits (#3276)
+14.	ENCD-5217-expt-fcc-audit-inconsistent-gms (#3284)
+15.	ENCD-5157-add-to-biosample-summary-and-display (#3280)
+16.	ENCD-4378-remove-restrict-target-dbxref (#3271)
+17.	ENCD-5100-index-reads-grouping (#3281)
+18.	ENCD-5215-improve-Publication-link-to-PublicationData (#3283)
+19.	ENCD-5204-fix-ExperimentSeries-QC-table-crash-for-no-target-experiments (#3269)
+20.	ENCD-4644-add-details-about-fastq-signatures (#3272)
+21.	ENCD-5220-add-crop-length-tolerance-to-file (#3277)
+22.	ENCD-5230-change-tech-replicate-field-of-metadata-tsv (#3268)
+23.	ENCD-5211-add-Mint-ChIP-control-title (#3262)
+24.	ENCD-5201-biosample-organ-system-slims (#3275)
+25.	ENCD-5209-add-elements-ref-to-analysis-step-schema (#3264)
+26.	ENCD-5232-add-rDHSs-to-rep-DNase-hypersensitivity-sites (#3267)
+27.	ENCD-5203-biosample-audit-inconsistent-GMs (#3274)
+28.	ENCD-5151-fix-software-breadcrumb (#3245)
+29.	ENCD-5099-add-index-read-on-file-page (#3256)
+30.	ENCD-5105-SECC-Stem-cell-matrix (#3203)
+31.	ENCD-5200-add-FCC-ExperimentTable (#3266)
+32.	ENCD-5210-make-documents-searchable (#3263)
+33.	ENCD-5206-add-element-quantification-to-file-output-type (#3265)
+34.	ENCD-4991-display-assembly-N-gene_annot-on-UI (#3248)
+35.	ENCD-5218-batch-dl-issue (#3259)
+36.	ENCD-5070-missing-img (#3260)
 
 v99.0 (released) snovault 1.0.44
 --------------------------------------------------------------------
