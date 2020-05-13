@@ -1541,3 +1541,61 @@ def file_21_22(file_subreads):
     item.update({'notes': 'Prior entry.'})
     item.pop('replicate')
     return item
+
+
+@pytest.fixture
+def fastq_index(testapp, lab, award, experiment, base_replicate_two, platform1, single_fastq_indexed):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': '11bd74b6e11515393507f4ebfa66d78c',
+        'replicate': base_replicate_two['@id'],
+        'output_type': 'index reads',
+        'read_length': 36,
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',
+        'index_of': [single_fastq_indexed['@id']]
+        }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def single_fastq_indexed(testapp, lab, award, base_experiment, base_replicate, platform1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78b',
+        'replicate': base_replicate['@id'],
+        'output_type': 'reads',
+        'read_length': 36,
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'run_type': 'single-ended',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def second_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': '82cd66b6f21515393507f4ebfa66d78b',
+        'replicate': base_replicate_two['@id'],
+        'output_type': 'reads',
+        'read_length': 36,
+        'file_size': 68,
+        'platform': platform1['@id'],
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
