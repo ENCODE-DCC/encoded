@@ -20,54 +20,6 @@ def includeme(config):
 
 
 @collection(
-    name='cell_culture',
-    properties={
-        'title': 'Cell cultures',
-        'description': 'Listing of Cell cultures',
-    })
-class CellCulture(Item):
-    item_type = 'cell_culture'
-    schema = load_schema('encoded:schemas/cell_culture.json')
-    embedded = []
-
-
-@collection(
-    name='suspension',
-    properties={
-        'title': 'Suspensions',
-        'description': 'Listing of Suspensions',
-    })
-class Suspension(Item):
-    item_type = 'suspension'
-    schema = load_schema('encoded:schemas/suspension.json')
-    embedded = []
-
-
-@collection(
-    name='organoid',
-    properties={
-        'title': 'Organoids',
-        'description': 'Listing of Organoids',
-    })
-class Organoid(Item):
-    item_type = 'organoid'
-    schema = load_schema('encoded:schemas/organoid.json')
-    embedded = []
-
-
-@collection(
-    name='tissue',
-    properties={
-        'title': 'Tissues',
-        'description': 'Listing of Tissues',
-    })
-class Tissue(Item):
-    item_type = 'tissue'
-    schema = load_schema('encoded:schemas/tissue.json')
-    embedded = []
-
-
-@collection(
     name='labs',
     unique_key='lab:name',
     properties={
@@ -187,64 +139,6 @@ class Platform(Item):
     def title(self, term_name):
         return term_name
 
-
-@collection(
-    name='libraries',
-    unique_key='accession',
-    properties={
-        'title': 'Libraries',
-        'description': 'Listing of Libraries',
-    })
-class Library(Item):
-    item_type = 'library'
-    schema = load_schema('encoded:schemas/library.json')
-    name_key = 'accession'
-    embedded = [
-        'biosamples',
-        'biosamples.biosample_ontology'
-    ]
-    set_status_up = [
-        'biosamples',
-        'documents',
-        'source',
-        'treatments',
-    ]
-    set_status_down = []
-
-    @calculated_property(condition='nucleic_acid_term_name', schema={
-        "title": "Nucleic acid term ID",
-        "type": "string",
-    })
-    def nucleic_acid_term_id(self, request, nucleic_acid_term_name):
-        term_lookup = {
-            'DNA': 'SO:0000352',
-            'RNA': 'SO:0000356',
-            'polyadenylated mRNA': 'SO:0000871',
-            'miRNA': 'SO:0000276',
-            'protein': 'SO:0000104'
-        }
-        term_id = None
-        if nucleic_acid_term_name in term_lookup:
-            term_id = term_lookup.get(nucleic_acid_term_name)
-        return term_id
-
-    @calculated_property(condition='depleted_in_term_name', schema={
-        "title": "Depleted in term ID",
-        "type": "string",
-    })
-    def depleted_in_term_id(self, request, depleted_in_term_name):
-        term_lookup = {
-            'rRNA': 'SO:0000252',
-            'polyadenylated mRNA': 'SO:0000871',
-            'capped mRNA': 'SO:0000862'
-        }
-        term_id = list()
-        for term_name in depleted_in_term_name:
-            if term_name in term_lookup:
-                term_id.append(term_lookup.get(term_name))
-            else:
-                term_id.append('Term ID unknown')
-        return term_id
 
 @collection(
     name='publications',
