@@ -1,10 +1,14 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 20
+* *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.
+* Added *hotspots_prefix* property.
+
 ### Schema version 20
 * Added upgrade required due to re-implementation of the *run_type* dependency
 
 ### Minor changes since schema version 19
-* Added *consensus DNase hypersensitivity sites (cDHSs)* to the num for *output_type*.
+* Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum for *output_type*.
 
 ### Schema version 19
 * Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *output_type*.

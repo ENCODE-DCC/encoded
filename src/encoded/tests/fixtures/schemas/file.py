@@ -1395,3 +1395,19 @@ def file_19(testapp, experiment, award, lab, replicate_url, platform1):
         'read_length': 76
     }
     return item
+
+
+@pytest.fixture
+def file_hotspots_prefix(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'tsv',
+        'md5sum': 'eeb9325f54a0ec4991c4a3df0ed35f20',
+        'output_type': 'hotspots',
+        'hotspots_prefix': 'GRCh38',
+        'file_size': 8888,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',
+    }
+    return item
