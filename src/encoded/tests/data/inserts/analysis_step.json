@@ -432,5 +432,49 @@
         "step_label": "pseudoalignment-test-step",
         "title": "pseudoalignment quantification step",
         "uuid": "6b41a0a5-dede-447b-abb6-064620b45bb1"
+    },
+    {
+        "analysis_step_types": [
+            "peak calling",
+            "depth normalization",
+            "signal generation"
+        ],
+        "date_created": "2020-03-01T15:56:52.458705+00:00",
+        "input_file_types": [
+            "alignments",
+            "genome reference",
+            "blacklisted regions",
+            "hotspots1 reference",
+            "hotspots2 reference"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "hotspots",
+            "peaks",
+            "read-depth normalized signal",
+            "FDR cut rate",
+            "footprints"
+        ],
+        "status": "released",
+        "step_label": "dnase-hotspot-calling-step",
+        "title": "DNase hotspot calling step",
+        "uuid": "4014594f-cef4-4f78-baaa-ef9e7fdecac8"
+    },
+    {
+        "step_label": "indexing-and-mappability-processing-step",
+        "major_version": 1,
+        "title": "Indexing and mappability processing step",
+        "input_file_types": [
+            "genome reference",
+            "blacklisted regions",
+            "mitochondrial genome reference",
+            "chromosomes reference"
+        ],
+        "output_file_types": [
+            "genome index",
+            "mitochondrial genome index"
+        ],
+        "analysis_step_types": ["genome indexing"],
+        "uuid": "ea03a364-a877-4858-99bd-e5cd250ae386"
     }
 ]
