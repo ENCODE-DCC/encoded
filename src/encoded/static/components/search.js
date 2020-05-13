@@ -1458,7 +1458,8 @@ class Facet extends React.Component {
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
                             {selectedTerms.map(filter =>
-                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link">
+                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'}/> {filter.term}</div></a>
                             )}
                         </div>
                         : null}
