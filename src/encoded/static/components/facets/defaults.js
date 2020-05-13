@@ -152,28 +152,34 @@ export const DefaultExistsFacet = ({ facet, relevantFilters, queryString }, reac
         reactContext.navigate(href);
     }, [facet.field, queryString, reactContext, relevantFilters]);
 
+    const query = new QueryString(queryString);
+    const isFieldPartOfSearchQuery = !!query.getKeyValuesIfPresent(facet.field)[0];
+
+    // this field show display if it is part of the search query even if there are no results. Otherwise hide
     return (
-        <fieldset className="facet">
-            <legend>{facet.title}</legend>
-            <div className="facet__content--exists">
-                {sortedTerms.map(term => (
-                    <div key={term.key} className="facet__radio">
-                        <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
-                        <label htmlFor={term.key}>
-                            <div className="facet__radio-label">{term.key}</div>
-                            <div className="facet__radio-count">{term.doc_count}</div>
+        facet.total > 0 || isFieldPartOfSearchQuery ?
+            <fieldset className="facet">
+                <legend>{facet.title}</legend>
+                <div className="facet__content--exists">
+                    {sortedTerms.map(term => (
+                        <div key={term.key} className="facet__radio">
+                            <input type="radio" name={facet.field} value={term.key} id={term.key} checked={currentOption === term.key} onChange={handleRadioClick} />
+                            <label htmlFor={term.key}>
+                                <div className="facet__radio-label">{term.key}</div>
+                                <div className="facet__radio-count">{term.doc_count}</div>
+                            </label>
+                        </div>
+                    ))}
+                    <div className="facet__radio">
+                        <input type="radio" name={facet.field} value="either" id={`${facet.field}-either`} checked={currentOption === 'either'} onChange={handleRadioClick} />
+                        <label htmlFor={`${facet.field}-either`}>
+                            <div className="facet__radio-label">either</div>
+                            <div className="facet__radio-count">{facet.total}</div>
                         </label>
                     </div>
-                ))}
-                <div className="facet__radio">
-                    <input type="radio" name={facet.field} value="either" id={`${facet.field}-either`} checked={currentOption === 'either'} onChange={handleRadioClick} />
-                    <label htmlFor={`${facet.field}-either`}>
-                        <div className="facet__radio-label">either</div>
-                        <div className="facet__radio-count">{facet.total}</div>
-                    </label>
                 </div>
-            </div>
-        </fieldset>
+            </fieldset>
+        : null
     );
 };
 
