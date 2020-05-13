@@ -74,6 +74,11 @@
                 "linkTo": "Reference"
             }
         },
+        "plate_id": {
+            "title": "Identifier of the plate the single cell sample originated from",
+            "description": "The plate the single cell sample comes from.",
+            "type": "string"
+        },
         "plate_barcode_details": {
             "title": "Single cell barcodes information",
             "description": "For single cell biosamples, the barcodes used to identify the biosamples.",
@@ -87,11 +92,6 @@
                 "properties": {
                     "barcode": {
                         "title": "Barcode",
-                        "type": "string"
-                    },
-                    "plate_id": {
-                        "title": "Identifier of the plate the single cell sample originated from",
-                        "description": "The plate the single cell sample comes from.",
                         "type": "string"
                     },
                     "plate_location": {
