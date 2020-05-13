@@ -191,10 +191,17 @@ class Patient extends React.Component {
                   {formatMeasurement(context.age, context.age_units)}
                 </dd>
               </div>
-               <div data-test="last_follow_up_date">
-                <dt>Last Follow Up Date</dt>
-                <dd>{context.last_follow_up_date} </dd>
+
+              <div data-test="diagnosis_date">
+                <dt>Diagnosis Date</dt>
+                <dd>{context.diagnosis_date}</dd>
               </div>
+
+              <div data-test="last_follow_up_date">
+               <dt>Last Follow Up Date</dt>
+               <dd>{context.last_follow_up_date} </dd>
+             </div>
+
               {context.death_date && <div data-test="death_date">
                 <dt>Death Date</dt>
                 <dd>{`${context.death_date} ( Death Source: `}{`${context.death_source} )`}</dd>
@@ -227,4 +234,3 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
-

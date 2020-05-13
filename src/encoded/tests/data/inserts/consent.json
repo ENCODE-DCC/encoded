@@ -6,7 +6,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT708IJT",
-        "status": "released",
+        "status": "current",
         "uuid": "5b5e70c7-2c04-473e-9f16-c3a0cd73a029",
         "date": "1872-06-16",
         "consent_version": "version2"
@@ -19,7 +19,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT708IJT",
-        "status": "released",
+        "status": "current",
         "uuid": "02a36882-c990-4340-83ee-4f77a5d43406",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -28,7 +28,7 @@
         "biopsyForResearch": "Agree",
         "overall": "Agree",
         "patient": "KCEPT026PGS",
-        "status": "released",
+        "status": "current",
         "uuid": "060cfb0d-334c-446b-8af6-f92d9accf499",
         "date": "1880-06-09",
         "consent_version": "version3"
@@ -37,7 +37,7 @@
         "biopsyForResearch": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT925TMI",
-        "status": "released",
+        "status": "current",
         "uuid": "90508437-ff87-478f-98fa-e3f5d5071f50",
         "date": "1883-11-05",
         "consent_version": "version3"
@@ -50,7 +50,7 @@
         "information_release": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT480NBU",
-        "status": "released",
+        "status": "current",
         "uuid": "823a9c07-fe92-44e5-ba99-ddc71466c9b7",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -62,7 +62,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT873QVK",
-        "status": "released",
+        "status": "current",
         "uuid": "9d038791-ffe0-4f0b-a5e2-9de6770c8b59",
         "date": "1874-07-11",
         "consent_version": "version2"
@@ -75,7 +75,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT802XRB",
-        "status": "released",
+        "status": "current",
         "uuid": "ebf9eb20-56ff-41fe-8b8b-b195e3f24565",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -88,7 +88,7 @@
         "information_release": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT802XRB",
-        "status": "released",
+        "status": "current",
         "uuid": "9c453714-67ab-4090-8f5c-bec5c64e24b4",
         "date": "1870-09-19",
         "consent_version": "version1"
@@ -101,7 +101,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT186NZW",
-        "status": "released",
+        "status": "current",
         "uuid": "08d4b613-0376-4070-8ef2-2ea97f247e14",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -114,7 +114,7 @@
         "information_release": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT139SOR",
-        "status": "released",
+        "status": "current",
         "uuid": "fc4cd663-c93f-41c8-b221-86083621bd3a",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -127,7 +127,7 @@
         "information_release": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT604LAK",
-        "status": "released",
+        "status": "current",
         "uuid": "d6aae2c4-1ccb-44db-8395-be6a694f8054",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -140,7 +140,7 @@
         "information_release": "Refuse",
         "overall": "Refuse",
         "patient": "KCEPT692UHR",
-        "status": "released",
+        "status": "current",
         "uuid": "cfcd20f1-8771-4ce4-a95a-e5a18f49b038",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -153,7 +153,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT294KIZ",
-        "status": "released",
+        "status": "current",
         "uuid": "5d4e174d-b00b-4dfa-81c3-9b1de459cd32",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -166,7 +166,7 @@
         "information_release": "Agree",
         "overall": "Agree",
         "patient": "KCEPT398JLK",
-        "status": "released",
+        "status": "current",
         "uuid": "4d1e1355-c783-455e-adc9-fdef6cca40a4",
         "date": "1870-03-16",
         "consent_version": "version1"
@@ -179,7 +179,7 @@
         "information_release": "Refuse",
         "overall": "Agree",
         "patient": "KCEPT756AEN",
-        "status": "released",
+        "status": "current",
         "uuid": "21a2ed04-4d86-4fe4-8618-906b29ea59c1",
         "date": "1870-03-16",
         "consent_version": "version1"
