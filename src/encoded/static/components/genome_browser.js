@@ -157,7 +157,7 @@ const TrackLabel = ({ file, label, long }) => {
                     {file.biosample_ontology && file.biosample_ontology.term_name ? <span>{file.biosample_ontology.term_name}</span> : null}
                     {long ?
                         <React.Fragment>
-                            <li><a href={file['@id']} className="gb-accession">{file.accession}<span className="sr-only">{`Details for file ${file.accession}`}</span></a></li>
+                            <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
                             <li>{`rep ${biologicalReplicates}`}</li>
                         </React.Fragment>
@@ -166,7 +166,7 @@ const TrackLabel = ({ file, label, long }) => {
             :
                 <ul className="gb-info">
                     <li>
-                        <a href={file['@id']} className="gb-accession">{file.accession}<span className="sr-only">{`Details for file ${file.accession}`}</span></a>
+                        <a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a>
                         {(biologicalReplicates !== '') ? <span>{` (rep ${biologicalReplicates})`}</span> : null}
                     </li>
                     {long ?
