@@ -647,7 +647,7 @@ GeneticModificationComponent.defaultProps = {
 };
 
 const GeneticModificationInternal = (props, reactContext) => (
-    <GeneticModificationComponent {...props} session={reactContext.session} />
+    <GeneticModificationComponent {...props} session={reactContext.session} sessionProperties={reactContext.session_properties} />
 );
 
 GeneticModificationInternal.propTypes = {
