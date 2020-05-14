@@ -24,19 +24,16 @@ properties={
 class Bioexperiment(Item):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    # name_key = 'accession'
-
     embedded = [
         'award',
         'lab',
-        # 'user',
         "submitted_by", #link to User
-        # "references", #link to Publication
-        # 'documents',#link to Document
-        # 'biospecimen',
+        'biospecimen',#first test can insert biospecimen or not
         # 'bioreplicate',
         # 'bioreplicate.biolibrary',
         # 'bioreplicate.biolibrary.biospecimen'
+        # "references", #link to Publication
+        # 'documents',#link to Document
         
 
     ]

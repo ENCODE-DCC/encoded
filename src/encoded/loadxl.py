@@ -24,6 +24,7 @@ ORDER = [
     'pathology_report',
     'surgery_procedure',
     'biospecimen',
+    'bioexperiment',
     'platform',
     'biolibrary',
     'bioreplicate',
