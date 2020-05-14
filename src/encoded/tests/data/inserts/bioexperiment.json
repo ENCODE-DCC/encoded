@@ -1,0 +1,40 @@
+[
+    {
+      "accession": "KCEBE000AER",
+      "assay_term_name": "RAMPAGE",
+      "award": "Kidney-SPORE",
+      "lab": "thomas-gingeras",
+      "experiment_description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
+      "date_released": "2015-01-10",
+      "status": "released",
+      "submitted_by": "dignissim.euismod@amet.habitant",
+      "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
+      "experiment_classification": "functional genomics assay"
+    },
+    
+    {
+      "accession": "KCEBE000AES",
+      "assay_term_name": "RNA-seq",
+      "award": "Kidney-SPORE",
+      "lab": "thomas-gingeras",
+      "experiment_description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
+      "date_released": "2015-01-10",
+      "status": "released",
+      "submitted_by": "dignissim.euismod@amet.habitant",
+      "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
+      "experiment_classification": "functional genomics assay"
+    },
+    {
+      "accession": "KCEBE000ADH",
+      "assay_term_name": "ChIP-seq",
+      "award": "Kidney-SPORE",
+      "lab": "sherman-weissman",
+      "experiment_description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
+      "date_released": "2015-01-10",
+      "status": "released",
+      "submitted_by": "amet.fusce@est.fermentum",
+      "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
+      "experiment_classification": "functional genomics assay"
+    }
+    
+  ]

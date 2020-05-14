@@ -1,0 +1,176 @@
+{
+    "title": "Bioexperiment",
+    "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
+    "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
+    "id": "/profiles/bioexperiment.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [
+        "award",
+        "lab",
+        "assay_term_name",
+        "experiment_classification",
+        "experiment_description"
+    ],
+    "identifyingProperties": [
+        "uuid",
+        "accession"
+    ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        
+        {
+            "$ref": "mixins.json#/accession"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        },
+        {
+            "$ref": "mixins.json#/accessioned_status"
+        },
+       
+        {
+            "$ref": "mixins.json#/attribution"
+        },
+        {
+            "$ref": "mixins.json#/submitted"
+        }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+       
+        "accession": {
+            "accessionType": "BE"
+        },
+        "assay_term_name": {
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "type": "string",
+            "enum": [
+                        "3' RACE",
+                        "4C",
+                        "5' RACE",
+                        "5' RLM RACE",
+                        "5C",
+                        "ATAC-seq",
+                        "Bru-seq",
+                        "BruChase-seq",
+                        "BruUV-seq",
+                        "CAGE",
+                        "ChIA-PET",
+                        "ChIP-seq",
+                        "Circulome-seq",
+                        "Clone-seq",
+                        "comparative genomic hybridization by array",
+                        "CRISPR genome editing followed by RNA-seq",
+                        "CRISPRi followed by RNA-seq",
+                        "direct RNA-seq",
+                        "DNA methylation profiling by array assay",
+                        "DNA-PET",
+                        "DNase-seq",
+                        "eCLIP",
+                        "FAIRE-seq",
+                        "genetic modification followed by DNase-seq",
+                        "genotype phasing by HiC",
+                        "genotyping by high throughput sequencing assay",
+                        "HiC",
+                        "iCLIP",
+                        "icSHAPE",
+                        "long read RNA-seq",
+                        "MeDIP-seq",
+                        "microRNA counts",
+                        "microRNA-seq",
+                        "Mint-ChIP-seq",
+                        "MNase-seq",
+                        "MRE-seq",
+                        "PAS-seq",
+                        "PLAC-seq",
+                        "PRO-seq",
+                        "protein sequencing by tandem mass spectrometry assay",
+                        "RAMPAGE",
+                        "Repli-chip",
+                        "Repli-seq",
+                        "RIP-chip",
+                        "RIP-seq",
+                        "RNA Bind-n-Seq",
+                        "RNA-PET",
+                        "RNA-seq",
+                        "RRBS",
+                        "shRNA knockdown followed by RNA-seq",
+                        "single cell isolation followed by RNA-seq",
+                        "single-cell ATAC-seq",
+                        "single-nuclei ATAC-seq",
+                        "siRNA knockdown followed by RNA-seq",
+                        "small RNA-seq",
+                        "Switchgear",
+                        "TAB-seq",
+                        "transcription profiling by array assay",
+                        "whole genome sequencing assay",
+                        "whole-genome shotgun bisulfite sequencing",
+                        "STARR-seq",
+                        "MPRA",
+                        "CRISPR screen",
+                        "pooled clone sequencing"
+                    ]
+                },  
+        "date_released": {
+            "title": "Date released",
+            "comment": "Do not submit, value is assigned whe the object is releaesd.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
+        },
+        "date_submitted": {
+            "title": "Date submitted",
+            "description": "The date that the experiment received all required replicates and files",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
+        },
+        "experiment_description": {
+            "title": "Experiment description",
+            "description": "The description of the experiment.",
+            "type": "string"
+        },
+        "experiment_classification": {
+            "title": "Experiment classification",
+            "description": "The categorization of the experiment.",
+            "uniqueItems": true,
+            "type": "string",
+            "enum": [
+                "functional genomics assay",
+                "functional characterization assay"
+            ]
+        }
+        
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        }
+        
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "assay_term_name": 1.0,
+        "award.project": 1.0,
+        "award.rfa": 1.0,
+        "lab.title": 1.0
+    },
+    "changelog": "/profiles/changelogs/bioexperiment.md"
+}
