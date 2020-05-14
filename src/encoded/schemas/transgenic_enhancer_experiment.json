@@ -121,54 +121,61 @@
                 "linkTo": "Biosample"
             }
         },
-        "expressed_tissue_pattern": {
-            "title": "Expressed tissue pattern",
-            "description": "The tissues that the enhancer was expressed in.",
+        "enhancer_activity": {
+            "title": "Enhancer activity",
+            "description": "Enhancer activity and the tissues in which the enhancer was expressed in.",
             "type": "array",
-            "uniqueItems": true,
             "minItems": 1,
             "items": {
-                "title": "Tissue",
-                "description": "The tissue that the enhancer was expressed in.",
+                "title": "Enhancer activity",
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["tissue", "expressed_tissue_percentile"],
+                "required": ["enhancer_activity", "expressed_tissue"],
                 "properties": {
-                    "tissue": {
-                        "title": "Tissue",
-                        "description": "The tissue the enhancer was expressed in.",
+                    "enhancer_activity": {
+                        "title": "Enhancer activity",
                         "type": "string",
                         "enum": [
-                            "blood vessels (UBERON:0001981)",
-                            "branchial arch (UBERON:0002539)",
-                            "cranial nerve (UBERON:0001785)",
-                            "dorsal root ganglion (UBERON:0000044)",
-                            "ear (UBERON:0001690)",
-                            "eye (UBERON:0000970)",
-                            "facial mesenchyme (UBERON:0009891)",
-                            "forebrain (UBERON:0001890)",
-                            "genital tubercle (UBERON:0005876)",
-                            "heart (UBERON:0000948)",
-                            "hindbrain (rhombencephalon) (UBERON:0002028)",
-                            "limb (UBERON:0002101)",
-                            "liver (UBERON:0002101)",
-                            "melanocytes (CL:0000148)",
-                            "mesenchyme derived from neural crest (UBERON:0014387)",
-                            "midbrain (mesencephalon) (UBERON:0001891)",
-                            "neural tube (UBERON:0001049)",
-                            "nose (UBERON:0000004)",
-                            "pancreas (UBERON:0001264)",
-                            "somite (UBERON:0002329)",
-                            "tail (UBERON:0002415)",
-                            "trigeminal V (ganglion, cranial) (UBERON:0001645)"
+                            "positive",
+                            "negative"
                         ]
                     },
-                    "expressed_tissue_percentile": {
-                        "title": "Tissue expression percentile",
-                        "description": "Tissue expression expressed as a percentile.",
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 100
+                    "expressed_tissue": {
+                        "title": "Expressed tissues",
+                        "description": "The tissue(s) the enhancer was expressed in.",
+                        "type": "array",
+                        "minItems": 1,
+                        "uniqueItems": true,
+                        "items": {
+                            "title": "Tissue",
+                            "description": "The tissue the enhancer was expressed in.",
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "blood vessels (UBERON:0001981)",
+                                "branchial arch (UBERON:0002539)",
+                                "cranial nerve (UBERON:0001785)",
+                                "dorsal root ganglion (UBERON:0000044)",
+                                "ear (UBERON:0001690)",
+                                "eye (UBERON:0000970)",
+                                "facial mesenchyme (UBERON:0009891)",
+                                "forebrain (UBERON:0001890)",
+                                "genital tubercle (UBERON:0005876)",
+                                "heart (UBERON:0000948)",
+                                "hindbrain (rhombencephalon) (UBERON:0002028)",
+                                "limb (UBERON:0002101)",
+                                "liver (UBERON:0002101)",
+                                "melanocytes (CL:0000148)",
+                                "mesenchyme derived from neural crest (UBERON:0014387)",
+                                "midbrain (mesencephalon) (UBERON:0001891)",
+                                "neural tube (UBERON:0001049)",
+                                "nose (UBERON:0000004)",
+                                "pancreas (UBERON:0001264)",
+                                "somite (UBERON:0002329)",
+                                "tail (UBERON:0002415)",
+                                "trigeminal V (ganglion, cranial) (UBERON:0001645)"
+                            ]
+                        }
                     }
                 }
             }
