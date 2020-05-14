@@ -27,6 +27,7 @@ class bioreplicate(Item):
 
     }
     embedded = [
+        # 'bioexperiment'
         'biolibrary',
         'biolibrary.biospecimen'
     ]

@@ -44,7 +44,13 @@
             "type": "string",
             "linkTo": "Biolibrary"
         },
-
+        "bioexperiment": {
+            "title": "Bioexperiment",
+            "description": "The bioexperiment the replicate belongs to.",
+            "comment": "See bioexperiment.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Bioexperiment"
+        },
         "status": {
             "title": "Status",
             "type": "string",
