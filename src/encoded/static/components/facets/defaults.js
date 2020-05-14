@@ -5,6 +5,7 @@ import _ from 'underscore';
 import url from 'url';
 import QueryString from '../../libs/query_string';
 import FacetRegistry from './registry';
+import TriStateToggle from '../../libs/ui/tristate_toggle';
 
 
 /**
@@ -575,83 +576,87 @@ DefaultTermName.propTypes = {
 /**
  * Default component to render a single term within the default facet.
  */
-export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
-    const TermNameComponent = FacetRegistry.TermName.lookup(facet.field);
-    let href;
-    let negHref;
-    let negated = false;
-
-    // Find the search-results filter matching this term, which if found indicates this term is
-    // selected; also check if the selection is for negation.
-    const selectedTermFilter = relevantFilters.find((filter) => {
-        let filterField = filter.field;
-        const negatedFilter = filterField.slice(-1) === '!';
-        if (negatedFilter) {
-            filterField = filterField.slice(0, -1);
-        }
-        const selected = filterField === facet.field && filter.term === term.key.toString();
-        if (selected) {
-            negated = negatedFilter;
-        }
-        return selected;
-    });
-
-    // Build the term href as well as its negation href, or the `remove` link for selected terms.
-    if (selectedTermFilter) {
-        // Term is selected, so its link URI is the `remove` property of the matching filter.
-        // Process this URI to remove the "/search/" path.
-        href = url.parse(selectedTermFilter.remove).search || selectedTermFilter.remove;
-    } else {
-        // Term isn't selected, so build the link URI by adding this term to the existing URL.
-        const query = new QueryString(queryString);
-        const negQuery = query.clone();
-        query.addKeyValue(facet.field, term.key);
-        href = `?${query.format()}`;
-
-        // Also build the negation URI.
-        negQuery.addKeyValue(facet.field, term.key, true);
-        negHref = `?${negQuery.format()}`;
+export class DefaultTerm extends React.Component {
+    constructor(props) {
+        super(props);
     }
 
-    // Build the CSS class for selected terms.
-    let termCss = '';
-    if (selectedTermFilter) {
-        termCss = ` facet-term__item--${negated ? 'negated' : 'selected'}`;
+    render() {
+        const { term, facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation } = this.props;
+        const TermNameComponent = FacetRegistry.TermName.lookup(facet.field);
+        let href;
+        let negHref;
+        let neutralHref = '';
+        let negated = false;
+
+        // Find the search-results filter matching this term, which if found indicates this term is
+        // selected; also check if the selection is for negation.
+        const selectedTermFilter = relevantFilters.find((filter) => {
+            let filterField = filter.field;
+            const negatedFilter = filterField.slice(-1) === '!';
+            if (negatedFilter) {
+                filterField = filterField.slice(0, -1);
+            }
+            const selected = filterField === facet.field && filter.term === term.key.toString();
+            if (selected) {
+                negated = negatedFilter;
+            }
+            return selected;
+        });
+
+        // Build the term href as well as its negation href, or the `remove` link for selected terms.
+        if (selectedTermFilter) {
+            // Term is selected, so its link URI is the `remove` property of the matching filter.
+            // Process this URI to remove the "/search/" path.
+            href = url.parse(selectedTermFilter.remove).search || selectedTermFilter.remove;
+        } else {
+            // Term isn't selected, so build the link URI by adding this term to the existing URL.
+            const query = new QueryString(queryString);
+            const negQuery = query.clone();
+            query.addKeyValue(facet.field, term.key);
+            neutralHref = `?${query.format()}`;
+
+            // Also build the negation URI.
+            negQuery.addKeyValue(facet.field, term.key, true);
+            negHref = `?${negQuery.format()}`;
+        }
+
+        // Build the CSS class for selected terms.
+        let termCss = '';
+        if (selectedTermFilter) {
+            termCss = ` facet-term__item--${negated ? 'negated' : 'selected'}`;
+        }
+
+        // Calculate the width of the term bar graph.
+        const barStyle = {
+            width: `${Math.ceil((term.doc_count / facet.total) * 100)}%`,
+        };
+
+        const convertSpaceToUnderscore = str => (!str || !str.trim ? '' : str.trim().replace(/\s/g, '_'));
+
+        return (
+            <li className="facet-term">
+                <a href={href} onClick={href ? onFilter : null} className={`facet-term__item${termCss}`}>
+                    <div className="facet-term__text">
+                        <TermNameComponent
+                            termName={term.key}
+                            selected={!!selectedTermFilter}
+                            term={term}
+                            facet={facet}
+                            results={results}
+                            mode={mode}
+                            pathname={pathname}
+                            queryString={queryString}
+                        />
+                    </div>
+                    {negated ? null : <div className="facet-term__count">{term.doc_count}</div>}
+                    {(selectedTermFilter || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
+                </a>
+                <TriStateToggle href={href} negHref={negHref} neutralHref={neutralHref} identifier={`${convertSpaceToUnderscore(facet.title)}${convertSpaceToUnderscore(term.key)}${convertSpaceToUnderscore(pathname)}`} />
+            </li>
+        );
     }
-
-    // Calculate the width of the term bar graph.
-    const barStyle = {
-        width: `${Math.ceil((term.doc_count / facet.total) * 100)}%`,
-    };
-
-    return (
-        <li className="facet-term">
-            <a href={href} onClick={href ? onFilter : null} className={`facet-term__item${termCss}`}>
-                <div className="facet-term__text">
-                    <TermNameComponent
-                        termName={term.key}
-                        selected={!!selectedTermFilter}
-                        term={term}
-                        facet={facet}
-                        results={results}
-                        mode={mode}
-                        pathname={pathname}
-                        queryString={queryString}
-                    />
-                </div>
-                {negated ? null : <div className="facet-term__count">{term.doc_count}</div>}
-                {(selectedTermFilter || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
-            </a>
-            <div className="facet-term__negator">
-                {allowNegation ?
-                    <React.Fragment>
-                        {selectedTermFilter ? null : <a href={negHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
-                    </React.Fragment>
-                : null}
-            </div>
-        </li>
-    );
-};
+}
 
 DefaultTerm.propTypes = {
     /** facet.terms object for the term we're rendering */

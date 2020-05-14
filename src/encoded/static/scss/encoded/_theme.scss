@@ -23,3 +23,39 @@ select {
     background-color: #B24342;
     border-radius: 3px;
 }
+
+.switch-toggle {
+    cursor: pointer;
+    float: left;
+    //background: #242729;
+}
+
+.switch-toggle { 
+    input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    label {
+        .on-switch {
+            color: green;
+            cursor: pointer;
+        }
+     
+        .neutral-switch {
+            color: blue;
+            cursor: pointer;
+        }
+     
+        .off-switch {
+            color: red;
+            cursor: pointer;
+        }
+    }
+}
+
+.switch-toggle input + label {
+   padding: 4px;
+   float:left;
+   //color: #fff;
+}
