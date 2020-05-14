@@ -648,6 +648,13 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.donor ?
+                                <div data-test="donor">
+                                    <dt>Donor</dt>
+                                    <dd><a href={context.donor['@id']} title="Donor">{context.donor.accession}</a></dd>
+                                </div>
+                            : null}
+
                             {context.reference_type ?
                                 <div data-test="type">
                                     <dt>Reference type</dt>
