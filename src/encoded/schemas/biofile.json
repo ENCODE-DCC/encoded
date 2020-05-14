@@ -618,11 +618,11 @@
             "linkTo": "Biolibrary"
         },
         "bioreplicate": {
-            "title": "Kceioreplicate",
+            "title": "Bioreplicate",
             "description": "The files produced in this bioreplicate.",
             "comment": "See bioreplicate.json for available identifiers.",
             "type": "string",
-            "linkTo": "bioreplicate"
+            "linkTo": "Bioreplicate"
         },
         "sequencing_replicate_number": {
             "title": "Sequencing replicate",

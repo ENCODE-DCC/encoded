@@ -29,7 +29,7 @@ class Bioexperiment(Item):
         'lab',
         "submitted_by", #link to User
         'biospecimen',#first test can insert biospecimen or not
-        # 'bioreplicate',
+        'bioreplicate',
         # 'bioreplicate.biolibrary',
         # 'bioreplicate.biolibrary.biospecimen'
         # "references", #link to Publication
@@ -38,7 +38,7 @@ class Bioexperiment(Item):
 
     ]
     rev = {
-        # 'bioreplicate': ('Bioreplicate', 'bioexperiment'),
+        'bioreplicate': ('Bioreplicate', 'bioexperiment'),
 
     }
 
@@ -50,18 +50,18 @@ class Bioexperiment(Item):
     set_status_down = [
     ]
 
-# @calculated_property(
-#     schema={
-#         "title": "Bioreplicate",
-#         "type": "array",
-#         "items": {
-#             "type": 'string',
-#             "linkTo": "Bioreplicate"
-#         },
-#     }
-# )
-# def bioreplicate(self, request, bioreplicate):
-#     return paths_filtered_by_status(request, bioreplicate)
+    @calculated_property(
+        schema={
+            "title": "Bioreplicate",
+            "type": "array",
+            "items": {
+                "type": 'string',
+                "linkTo": "Bioreplicate"
+            },
+        }
+    )
+    def bioreplicate(self, request, bioreplicate):
+        return paths_filtered_by_status(request, bioreplicate)
 
 
 
