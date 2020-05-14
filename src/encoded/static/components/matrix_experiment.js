@@ -177,7 +177,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}&${mappedSubCategoryQuery}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${context.search_base}${context.search_base.includes(mappedSubCategoryQuery) ? '' : ['&', mappedSubCategoryQuery].join('')}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
