@@ -963,7 +963,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "accession": {
             "accessionType": "FF"
@@ -1912,6 +1912,7 @@
         "relative replication signal": "signal",
 
         "enrichment": "quantification",
+        "FDR cut rate": "quantification",
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
@@ -1931,6 +1932,7 @@
         "differential splicing quantifications": "quantification",
 
         "hotspots": "annotation",
+        "footprints": "annotation",
         "long range chromatin interactions": "annotation",
         "chromatin interactions": "annotation",
         "mapping quality thresholded chromatin interactions": "annotation",
@@ -2011,6 +2013,11 @@
         "sequence adapters": "reference",
         "elements reference": "reference",
         "personalized genome assembly": "reference",
+        "chromosomes reference": "reference",
+        "hotspots1 reference": "reference",
+        "hotspots2 reference": "reference",
+        "mitochondrial genome index": "reference",
+        "mitochondrial genome reference": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

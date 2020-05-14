@@ -1411,3 +1411,40 @@ def file_hotspots_prefix(testapp, lab, award, experiment):
         'status': 'in progress',
     }
     return item
+
+
+@pytest.fixture
+def file_dnase_enrichment(testapp, experiment_dnase, award, lab):
+    item = {
+        'schema_version': '20',
+        'dataset': experiment_dnase['@id'],
+        'lab': lab['@id'],
+        'file_size': 13459832,
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'assay_term_name': 'DNase-seq',
+        'file_format': 'bed',
+        'file_format_type': 'bed3+',
+        'output_type': 'enrichment',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_chip_enrichment(testapp, experiment_chip_CTCF, award, lab):
+    item = {
+        'schema_version': '20',
+        'dataset': experiment_chip_CTCF['@id'],
+        'lab': lab['@id'],
+        'file_size': 267744,
+        'award': award['@id'],
+        'assembly': 'mm10',
+        'assay_term_name': 'ChIP-seq',
+        'file_format': 'tsv',
+        'output_type': 'enrichment',
+        'md5sum': 'eeb9325f54a0ec4991c4a3df0ed35f20',
+        'status': 'in progress'
+    }
+    return item

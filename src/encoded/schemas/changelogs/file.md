@@ -1,8 +1,9 @@
 ## Changelog for file.json
 
-### Minor changes since schema version 20
+### Schema version 21
 * *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.
 * Added *hotspots_prefix* property.
+* DNase files with *output_type* *enrichment* changed to *output_type* *FDR cut rate*.
 
 ### Schema version 20
 * Added upgrade required due to re-implementation of the *run_type* dependency
