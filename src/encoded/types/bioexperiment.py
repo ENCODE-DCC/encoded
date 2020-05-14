@@ -24,24 +24,26 @@ import re
 class Bioexperiment(Item):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    name_key = 'accession'
-    rev = {
-        'bioreplicate': ('Bioreplicate', 'bioexperiment'),
-
-    }
+    # name_key = 'accession'
+    
     embedded = [
         'award',
         'lab',
-        # "submitted_by", #link to User
+        # 'user',
+        "submitted_by", #link to User
         # "references", #link to Publication
         # 'documents',#link to Document
         'biospecimen',
-        'bioreplicate',
-        'bioreplicate.biolibrary',
+        # 'bioreplicate',
+        # 'bioreplicate.biolibrary',
         # 'bioreplicate.biolibrary.biospecimen'
         
     
     ]
+    rev = {
+        # 'bioreplicate': ('Bioreplicate', 'bioexperiment'),
+
+    }
   
     audit_inherit = [
     
@@ -51,18 +53,18 @@ class Bioexperiment(Item):
     set_status_down = [
     ]
     
-    @calculated_property(
-        schema={
-            "title": "Bioreplicate",
-            "type": "array",
-            "items": {
-                "type": 'string',
-                "linkTo": "Bioreplicate"
-            },
-        }
-    )
-    def bioreplicate(self, request, bioreplicate):
-        return paths_filtered_by_status(request, bioreplicate)
+    # @calculated_property(
+    #     schema={
+    #         "title": "Bioreplicate",
+    #         "type": "array",
+    #         "items": {
+    #             "type": 'string',
+    #             "linkTo": "Bioreplicate"
+    #         },
+    #     }
+    # )
+    # def bioreplicate(self, request, bioreplicate):
+    #     return paths_filtered_by_status(request, bioreplicate)
     
 
   

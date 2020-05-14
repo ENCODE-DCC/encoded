@@ -10,7 +10,7 @@
     "status": "released",
     "submitted_by": "dignissim.euismod@amet.habitant",
     "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
-    "experiment_classification": ["functional genomics assay"]
+    "experiment_classification": "functional genomics assay"
   },
   
   {
@@ -24,7 +24,7 @@
     "status": "released",
     "submitted_by": "dignissim.euismod@amet.habitant",
     "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
-    "experiment_classification": ["functional genomics assay"]
+    "experiment_classification": "functional genomics assay"
   },
   {
     "accession": "KCEBE000ADH",
@@ -35,10 +35,9 @@
     "biospecimen": "KCEBS087RNB",
     "date_released": "2015-01-10",
     "status": "released",
-    "dbxrefs": ["UCSC-ENCODE-mm9:wgEncodeEM002001"],
     "submitted_by": "amet.fusce@est.fermentum",
     "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
-    "experiment_classification": ["functional genomics assay"]
+    "experiment_classification": "functional genomics assay"
   }
   
 ]

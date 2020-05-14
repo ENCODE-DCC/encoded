@@ -4,7 +4,7 @@
     "id": "/profiles/bioreplicate.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "biological_replicate_number", "technical_replicate_number","bioexperiment"],
+    "required": [ "biological_replicate_number", "technical_replicate_number"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -44,13 +44,7 @@
             "type": "string",
             "linkTo": "Biolibrary"
         },
-        "bioexperiment": {
-            "title": "Bioexperiment",
-            "description": "The nucleic acid library used in this replicate.",
-            "comment": "See bioexperiment.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Bioexperiment"
-        },
+       
 
         "status": {
             "title": "Status",
@@ -72,8 +66,7 @@
     },
     "boost_values": {
         "biolibrary.accession": 1.0,
-        "biolibrary.biospecimen.accession": 1.0,
-        "bioexperiment.accession": 1.0
+        "biolibrary.biospecimen.accession": 1.0
 
 
     },

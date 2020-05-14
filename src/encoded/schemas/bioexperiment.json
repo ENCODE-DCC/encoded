@@ -1,78 +1,67 @@
 {
-    "title": "BioExperiment",
+    "title": "Bioexperiment",
     "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
     "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/bioExperiment.json",
+    "id": "/profiles/bioexperiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "biospecimen", "experiment_classification","experiment_description"],
-    "identifyingProperties": ["uuid", "accession" , "aliases"],
+    "required": [
+        "award",
+        "lab",
+        "biospecimen",
+        "experiment_classification",
+        "experiment_description"
+    ],
+    "identifyingProperties": [
+        "uuid",
+        "accession"
+    ],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accession" },
-        {"$ref": "mixins.json#/accessioned_status"},
-
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/assay" },
-        { "$ref": "mixins.json#/submitter_comment" }
-    ],
-    "dependencies": {
-        "status": {
-            "oneOf": [
-                {
-                    "required": ["date_released"],
-                    "properties": {
-                        "status": {
-                            "enum": ["released", "revoked"]
-                        }
-                    }
-                },
-                {
-                    "required": ["date_submitted"],
-                    "properties": {
-                        "status": {
-                            "enum": ["submitted"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "status": {
-                                "enum": ["released", "revoked", "submitted"]
-                            }
-                        }
-                    }
-                }
-            ]
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        
+        {
+            "$ref": "mixins.json#/accession"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        },
+        {
+            "$ref": "mixins.json#/accessioned_status"
+        },
+       
+        {
+            "$ref": "mixins.json#/attribution"
+        },
+        {
+            "$ref": "mixins.json#/submitted"
+        },
+       
+        {
+            "$ref": "mixins.json#/assay"
         }
-     
-    },
+       
+    ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
+       
         "accession": {
             "accessionType": "BE"
         },
+           
         "date_released": {
             "title": "Date released",
             "comment": "Do not submit, value is assigned whe the object is releaesd.",
             "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ],
+            "format": "date",
             "permission": "import_items"
         },
         "date_submitted": {
-            "title": "Date submitted" ,
+            "title": "Date submitted",
             "description": "The date that the experiment received all required replicates and files",
             "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
             "type": "string",
@@ -87,117 +76,19 @@
         "experiment_classification": {
             "title": "Experiment classification",
             "description": "The categorization of the experiment.",
-            "type": "array",
             "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "oneOf": [
-                    {
-                        "enum": [
-                            "functional genomics assay"
-                        ]
-                    },
-                    {
-                        "comment": "Assay classification will migrate into new functional characterization experiment object, functional characterization assay classification in no longer valid for new submissions.",
-                        "permission": "import_items",
-                        "enum": [
-                            "functional characterization assay"
-                        ]
-                    }
-                ]  
-            }    
+            "type": "string",
+            "enum": [
+                "functional genomics assay",
+                "functional characterization assay"
+            ]
         },
-
-        "biospecimen":{
+        "biospecimen": {
             "title": "Biosample information",
             "description": "The biospecimen identifiers used in the experiment. ",
-            "type": "string",  
+            "type": "string",
             "linkTo": "Biospecimen"
-        },
- 
-        "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "External identifier",
-                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-                "type":  "string",
-                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
-            }
         }
-
-    },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay type"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "date_released": {
-            "title": "Date released"
-        },
-        "date_submitted": {
-            "title": "Date submitted"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "experiment_classification": {
-            "title": "Experiment classification"
-        }
-
-       
-        
-    },
-    "columns": {
-        "assay_term_name": {
-            "title": "Assay type"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "date_released": {
-            "title": "Date released"
-        },
-        "date_submitted": {
-            "title": "Date submitted"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-
-        "experiment_classification": {
-            "title": "Experiment classification"
-        }
-    },
-    "boost_values": {
-        "assay_term_name": 1.0,
-        "status": 1.0,
-        "award.project": 1.0,
-        "award.rfa": 1.0,
-        "date_released": 1.0,
-        "date_submitted": 1.0,
-        "lab.title": 1.0,
-        "biospecimen":1.0,
-        "experiment_classification": 1.0
     },
     "changelog": "/profiles/changelogs/bioexperiment.md"
 }
