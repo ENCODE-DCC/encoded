@@ -244,7 +244,7 @@ const AnnotationComponent = (props, reactContext) => {
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
-            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as elements references`} />
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>
@@ -745,7 +745,7 @@ const ReferenceComponent = (props, reactContext) => {
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
-            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as elements references`} />
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>

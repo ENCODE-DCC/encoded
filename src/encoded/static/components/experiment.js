@@ -676,7 +676,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
                             {context.elements_cloning ?
                                 <div data-test="elements-cloning">
-                                    <dt>Elements mapping</dt>
+                                    <dt>Elements cloning</dt>
                                     <dd><a href={context.elements_cloning}>{globals.atIdToAccession(context.elements_cloning)}</a></dd>
                                 </div>
                             : null}
@@ -780,14 +780,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 context={context}
                 url={fcelementsmappingUrl}
                 Component={ExperimentTable}
-                title={`Functional characterization experiments with ${context.accession} as elements mapping`}
+                title={`Functional characterization experiments with ${context.accession} as an elements mapping`}
             />
 
             <FetchedItems
                 context={context}
                 url={fcelementscloningUrl}
                 Component={ExperimentTable}
-                title={`Functional characterization experiments with ${context.accession} as elements cloning`}
+                title={`Functional characterization experiments with ${context.accession} as an elements cloning`}
             />
 
             {combinedDocuments.length > 0 ?
