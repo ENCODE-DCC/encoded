@@ -1,4 +1,7 @@
-from snovault import upgrade_step
+from snovault import (
+    CONNECTION,
+    upgrade_step,
+)
 from pyramid.traversal import find_root
 from datetime import datetime, time
 
@@ -673,8 +676,11 @@ def file_19_20(value, system):
 def file_20_21(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5271
     output_type = value.get('output_type', None)
-    assay_type = value.get('assay_term_name', None)
 
-    if output_type == 'enrichment' and assay_type == 'DNase-seq':
+    conn = system['registry'][CONNECTION]
+    dataset = conn.get_by_uuid(value['dataset'])
+    assay = str(dataset.properties['assay_term_name'])
+
+    if assay == 'DNase-seq' and output_type == 'enrichment':
         value['output_type'] = 'FDR cut rate'
     return

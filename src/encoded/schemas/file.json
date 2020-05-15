@@ -462,6 +462,14 @@
                     }
                 },
                 {
+                    "required": ["hotspots_prefix"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["hotspots1 reference", "hotspots2 reference"]
+                        }
+                    }
+                },
+                {
                     "required": ["restriction_enzymes"],
                     "properties": {
                         "output_type": {
@@ -481,7 +489,7 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference"]
                             }
                         }
                     }
