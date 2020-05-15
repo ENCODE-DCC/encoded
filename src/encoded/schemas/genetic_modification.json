@@ -145,6 +145,37 @@
                             "required": ["introduced_gene"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["in vivo enhancer characterization"]
+                        },
+                        "method": {
+                            "enum": ["mouse pronuclear microinjection"]
+                        },
+                        "category": {
+                            "enum": ["transgene insertion"]
+                        }
+                    },
+                    "required": ["introduced_sequence"],
+                    "oneOf": [
+                        {
+                            "required": ["modified_site_by_target_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_coordinates"]
+                        },
+                        {
+                            "required": ["modified_site_by_sequence"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
+                        }
+                    ]
                 }
             ]
         },
@@ -325,6 +356,37 @@
                     "not": {
                         "required": ["modified_site_nonspecific"]
                     }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["modified_site_by_coordinates"]
+                        },
+                        {
+                            "required": ["modified_site_by_target_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_sequence"]
+                        },
+                        {
+                            "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
+                        }
+                    ],
+                    "required": ["introduced_sequence"],
+                    "properties": {
+                        "category": {
+                            "enum": ["transgene insertion"]
+                        },
+                        "method": {
+                            "enum": ["mouse pronuclear microinjection"]
+                        },
+                        "purpose": {
+                            "enum": ["in vivo enhancer characterization"]
+                        }
+                    }
                 }
             ]
         },
@@ -477,12 +539,29 @@
             }
         },
         "introduced_sequence": {
-            "comment": "Introduced sequences apply only to category = insertion and replacement.",
-            "properties": {
-                "category": {
-                    "enum": ["insertion", "replacement"]
+            "comment": "Introduced sequences apply only to category = insertion, replacement, or transgene insertion.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["insertion", "replacement"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["transgene insertion"]
+                        },
+                        "method": {
+                            "enum": ["mouse pronuclear microinjection"]
+                        },
+                        "purpose": {
+                            "enum": ["in vivo enhancer characterization"]
+                        }
+                    }
                 }
-            }
+            ]
         },
         "reagents": {
             "comment": "Specified reagent availablity details should include at least one entry.",
@@ -517,7 +596,8 @@
                                 "transduction",
                                 "microinjection",
                                 "bombardment",
-                                "homologous recombination"
+                                "homologous recombination",
+                                "mouse pronuclear microinjection"
                             ]
                         }
                     }
@@ -609,7 +689,8 @@
                 "knockout",
                 "disruption",
                 "inhibition",
-                "binding"
+                "binding",
+                "transgene insertion"
             ]
         },
         "purpose":{
@@ -621,7 +702,8 @@
                 "repression",
                 "tagging",
                 "characterization",
-                "expression"
+                "expression",
+                "in vivo enhancer characterization"
             ]
         },
         "zygosity":{
@@ -801,7 +883,8 @@
                 "TALEN",
                 "transduction",
                 "transient transfection",
-                "homologous recombination"
+                "homologous recombination",
+                "mouse pronuclear microinjection"
             ]
         },
         "treatments": {
