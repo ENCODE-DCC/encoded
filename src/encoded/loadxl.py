@@ -39,7 +39,9 @@ ORDER = [
     'software',
     'software_version',
     'analysis_step',
-    'file',
+    'reference_file',
+    'raw_sequence_file',
+    'sequence_alignment_file',
     'image',
     'page',
     'access_key'

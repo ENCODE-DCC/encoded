@@ -98,19 +98,9 @@ class File(Item):
         'superseded_by': ('File', 'supersedes'),
     }
 
-    embedded = [
-        'platform',
-        'award',
-        'library',
-        'lab',
-        'submitted_by',
-        'biosample_ontology',
-        'target'
-    ]
+    embedded = []
     audit_inherit = []
-    set_status_up = [
-        'platform'
-   ]
+    set_status_up = []
     set_status_down = []
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
@@ -716,3 +706,55 @@ def file_update_bucket(context, request):
         'old_bucket': current_bucket,
         'new_bucket': new_bucket
     }
+
+
+@collection(
+    name='sequence alignment files',
+    unique_key='accession',
+    properties={
+        'title': "Sequence Alignment File",
+        'description': "",
+    })
+class SequenceAlignmentFile(File):
+    item_type = 'sequence_alignment_file'
+    schema = load_schema('encoded:schemas/sequence_alignment_file.json')
+    embedded = File.embedded + []
+
+
+@collection(
+    name='reference files',
+    unique_key='accession',
+    properties={
+        'title': "Reference File",
+        'description': "",
+    })
+class ReferenceFile(File):
+    item_type = 'reference_file'
+    schema = load_schema('encoded:schemas/reference_file.json')
+    embedded = File.embedded + []
+
+
+@collection(
+    name='raw sequence files',
+    unique_key='accession',
+    properties={
+        'title': "Raw Sequence File",
+        'description': "",
+    })
+class RawSequenceFile(File):
+    item_type = 'raw_sequence_file'
+    schema = load_schema('encoded:schemas/raw_sequence_file.json')
+    embedded = File.embedded + []
+
+
+@collection(
+    name='matrix files',
+    unique_key='accession',
+    properties={
+        'title': "Matrix File",
+        'description': "",
+    })
+class MatrixFile(File):
+    item_type = 'matrix_file'
+    schema = load_schema('encoded:schemas/matrix_file.json')
+    embedded = File.embedded + []

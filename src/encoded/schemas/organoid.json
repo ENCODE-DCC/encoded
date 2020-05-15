@@ -45,7 +45,8 @@
                 "type": "string",
                 "linkTo": [
                     "CellCulture",
-                    "Suspension"
+                    "Suspension",
+                    "Organoid"
                 ]
             }
         }

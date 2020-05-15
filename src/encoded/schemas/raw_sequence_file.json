@@ -1,0 +1,777 @@
+{
+    "title": "Data file",
+    "description": "Schema for submitting metadata for a data file.",
+    "id": "/profiles/file.json", 
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "anyOf": [
+        {
+            "required": ["dataset", "file_format", "output_type", "library", "md5sum"]
+        },
+        {
+            "required": ["dataset", "file_format", "output_type", "library", "no_file_available"]
+        }
+    ],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/attribution"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/submitter_comment"},
+        {"$ref": "file.json#/properties"}
+    ],
+    "dependencies": {
+        "paired_with": {
+            "comment": "Only paired-ended files should have paired_with value.",
+            "required": ["sequencing_run_type"],
+            "allOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                }
+            ]
+        },
+        "sequencing_run_type": {
+            "comment": "sequencing_run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
+            "required": ["platform"], 
+            "allOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "sequencing_run_type": {
+                                    "enum": ["single-ended"]
+                                }                        
+                            }
+                        },
+                        {
+                            "required": ["read_type"],
+                            "properties": {
+                                "sequencing_run_type": {
+                                    "enum": ["paired-ended"]
+                                },
+                                "read_type":{
+                                    "enum": ["read1", "read2","reads1,2"]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]           
+        },
+        "external_accession": {
+            "comment": "A file with an external accession should not get an ENCODE accession.",
+            "not": {
+                "required": ["accession"]
+            }
+        },
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "index_of": {
+            "comment": "Only fastq files can have index_of specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
+                "output_type": {
+                    "enum": ["index reads"]
+                }
+            }
+        },
+        "read_structure": {
+            "comment": "Only fastq files can have read_structure specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                }
+            }
+        },
+        "read_type": {
+            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require sequencing_run_type to be specified as paired-ended",
+            "oneOf": [
+                {
+                   "required": ["paired_with", "sequencing_run_type"],
+                    "properties": {
+                        "read_type": {
+                            "enum": ["read2"]
+                        },
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["sequencing_run_type"],
+                    "properties": {
+                        "read_type": {
+                            "enum": ["read1"]
+                        },
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["sequencing_run_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "read_type": {
+                            "enum": ["reads1,2"]
+                        },
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                }
+            ]
+        },
+        "output_type":{
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
+            "oneOf":[
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["reads"]
+                        }
+                    },
+                    "oneOf": [
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "required": ["read_length"],
+                            "properties": {
+                                "not": {
+                                    "platform": {
+                                        "linkTo": "Platform",
+                                        "linkEnum": [
+                                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "properties": {
+                        "output_type": {
+                            "enum": ["subreads"]
+                        },
+                        "platform": {
+                            "linkTo": "Platform",
+                            "linkEnum": [
+                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                "e2be5728-5744-4da4-8881-cb9526d0389e"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "required": ["index_of"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["index reads"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["reads", "index reads", "subreads"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "platform": {
+            "not": {
+                "required": ["sequencing_run_type", "read_type", "read_length"],
+                "properties": {
+                    "platform": {
+                        "linkTo": "Platform",
+                        "linkEnum": [
+                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                            "c7564b38-ab4f-4c42-a401-3de48689a998",
+                            "e2be5728-5744-4da4-8881-cb9526d0389e",
+                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                        ]
+                    }
+                }
+            }
+        },
+        "read_length": {
+            "oneOf": [
+                {
+                    "not": {
+                        "required":["platform"]
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
+                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
+                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "status": {
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "anyOf": [
+                                    {
+                                        "required": ["no_file_available"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            },
+                                             "no_file_available": {
+                                                "enum": [true]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["file_size"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    }
+                            ]
+                        },
+
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "read_count": {
+            "title": "Read count",
+            "description": "Number of reads in fastq file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "permission": "import_items",
+            "type": "integer",
+            "minimum": 0
+        },
+        "file_format": {
+            "enum": [
+                "fasta",
+                "fastq",
+                "sra",
+                "bam"
+            ]
+        },
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Flowcell based fastq signature part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
+                "type":  "string",
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
+            }
+        },
+        "platform": {
+            "title": "Platform",
+            "description": "The measurement device used to collect data.",
+            "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
+            "type": "string",
+            "linkTo": "Platform"
+        },
+        "read_length": {
+            "title": "Read length",
+            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "sequencing_run_type": {
+            "title": "Run type",
+            "description": "Indicates if file is part of a single or paired end sequencing run",
+            "comment": "This field is required for sra and fastq files.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "paired_with": {
+            "title": "Paired with",
+            "description": "The paired end fastq that corresponds with this file.",
+            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "read_name_details": {
+            "title": "Fastq read name details",
+            "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
+            "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
+            "type": "object",
+            "permission": "import_items",
+            "additionalProperties": false,
+            "properties": {
+                "flowcell_id_location": {
+                    "title": "Flowcell identifier location",
+                    "description": "Location of the flowcell identifier in the read name",
+                    "comment": "Zero-based location of the flowcell identifier in the read name, if you split read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "lane_id_location": {
+                    "title": "Lane identifier location",
+                    "description": "Location of the lane identifier in the read name",
+                    "comment": "Zero-based location of the lane identifier in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "read_number_location": {
+                    "title": "Read number (1 or 2) identifier location",
+                    "description": "Location of the read number in the read name",
+                    "comment": "Zero-based location of the read number in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "barcode_location": {
+                    "title": "Barcode location",
+                    "description": "Location of the barcode in the read name",
+                    "comment": "Zero-based location of the barcode in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "flowcell_details": {
+            "title": "Flowcell details",
+            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "index_of": {
+            "title": "Index of",
+            "description": "The files this index file is relevant for.",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "RawSequenceFile"
+            }
+        },
+        "output_type": {
+            "enum": [
+                "index reads",
+                "reads",
+                "rejected reads",
+                "subreads"
+            ]
+        },
+        "library": {
+            "title": "Library",
+            "description": "The experimental library designation for the file.",
+            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        },
+        "read_structure": {
+            "title": "Read structure",
+            "description": "A list of elements in the read describing the structure of a read.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequence element",
+                "description": "One element in the read with start and end coordinates.",
+                "required": ["sequence_element", "start", "end"],
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "sequence_element": {
+                        "title": "Element name",
+                        "type": "string",
+                        "enum": [
+                            "adapter",
+                            "barcode",
+                            "UMI"
+                        ]
+                    },
+                    "start": {
+                        "title": "Start coordinate",
+                        "description": "The 1-based start coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    },
+                    "end": {
+                        "title": "End coordinate",
+                        "description": "The 1-based end coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "read_type": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "enum": [
+                "read1",
+                "read2",
+                "reads1,2",
+                "index"
+            ]
+        },
+        "sequence_type": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "enum": [
+                "3' of molecule",
+                "5' of molecule",
+                "feature barocde",
+                "cell barcode",
+                "sample index,UMI"
+            ]
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "platform.term_name": {
+            "title": "Platform"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "assay_term_name": {
+            "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "dataset": {
+            "title": "Dataset"
+        },
+        "file_format": {
+            "title": "File Format"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "library.accession": {
+            "title": "Library"
+        },
+        "paired_with": {
+            "title": "Paired with"
+        },
+        "sequencing_run_type": {
+            "title": "Run type"
+        },
+        "read_length": {
+            "title": "Read length"
+        },
+        "read_length_units": {
+            "title": "Read length units"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "date_created": {
+            "title": "Date created"
+        },
+        "submitter_comment": {
+            "title": "Submitter comment"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "output_type_output_category": {
+        "reads": "raw data",
+        "index reads": "raw data",
+        "rejected reads": "raw data",
+        "subreads": "raw data"
+    },
+    "file_format_file_extension": {
+        "fasta": ".fasta.gz",
+        "fastq": ".fastq.gz",
+        "sra": ".sra",
+        "bam": ".bam"
+    },
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/file.md"
+}

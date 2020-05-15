@@ -49,10 +49,7 @@ class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
     embedded = [
         'files',
-        'files.submitted_by',
-        'files.lab',
         'revoked_files',
-        'revoked_files.submitted_by',
         'submitted_by',
         'lab',
         'references'

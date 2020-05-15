@@ -56,7 +56,10 @@
             "items": {
                 "comment": "",
                 "type": "string",
-                "linkTo": "Suspension"
+                "linkTo": [
+                    "Suspension",
+                    "CellCulture"
+                ]
             }
         }
     },
