@@ -18,7 +18,10 @@
             "title": "Derived from",
             "description": "The files participating as inputs into software to produce this output file.",
             "type": "array",
-            "uniqueItems": true
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            }
         },
         "assembly": {
             "title": "Genome assembly",

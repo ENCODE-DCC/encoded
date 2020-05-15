@@ -709,20 +709,33 @@ def file_update_bucket(context, request):
 
 
 @collection(
-    name='sequence alignment files',
+    name='analysis-files',
+    unique_key='accession',
+    properties={
+        'title': "Analysis File",
+        'description': "",
+    })
+class AnalysisFile(File):
+    item_type = 'analysis_file'
+    schema = load_schema('encoded:schemas/analysis_file.json')
+    embedded = File.embedded + []
+
+
+@collection(
+    name='sequence-alignment-files',
     unique_key='accession',
     properties={
         'title': "Sequence Alignment File",
         'description': "",
     })
-class SequenceAlignmentFile(File):
+class SequenceAlignmentFile(AnalysisFile):
     item_type = 'sequence_alignment_file'
     schema = load_schema('encoded:schemas/sequence_alignment_file.json')
     embedded = File.embedded + []
 
 
 @collection(
-    name='reference files',
+    name='reference-files',
     unique_key='accession',
     properties={
         'title': "Reference File",
@@ -735,7 +748,7 @@ class ReferenceFile(File):
 
 
 @collection(
-    name='raw sequence files',
+    name='raw-sequence-files',
     unique_key='accession',
     properties={
         'title': "Raw Sequence File",
@@ -748,13 +761,13 @@ class RawSequenceFile(File):
 
 
 @collection(
-    name='matrix files',
+    name='matrix-files',
     unique_key='accession',
     properties={
         'title': "Matrix File",
         'description': "",
     })
-class MatrixFile(File):
+class MatrixFile(AnalysisFile):
     item_type = 'matrix_file'
     schema = load_schema('encoded:schemas/matrix_file.json')
     embedded = File.embedded + []

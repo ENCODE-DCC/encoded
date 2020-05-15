@@ -11,54 +11,6 @@ import re
 
 
 @collection(
-    name='cell_culture',
-    properties={
-        'title': 'Cell cultures',
-        'description': 'Listing of Cell cultures',
-    })
-class CellCulture(Item):
-    item_type = 'cell_culture'
-    schema = load_schema('encoded:schemas/cell_culture.json')
-    embedded = []
-
-
-@collection(
-    name='suspension',
-    properties={
-        'title': 'Suspensions',
-        'description': 'Listing of Suspensions',
-    })
-class Suspension(Item):
-    item_type = 'suspension'
-    schema = load_schema('encoded:schemas/suspension.json')
-    embedded = []
-
-
-@collection(
-    name='organoid',
-    properties={
-        'title': 'Organoids',
-        'description': 'Listing of Organoids',
-    })
-class Organoid(Item):
-    item_type = 'organoid'
-    schema = load_schema('encoded:schemas/organoid.json')
-    embedded = []
-
-
-@collection(
-    name='tissue',
-    properties={
-        'title': 'Tissues',
-        'description': 'Listing of Tissues',
-    })
-class Tissue(Item):
-    item_type = 'tissue'
-    schema = load_schema('encoded:schemas/tissue.json')
-    embedded = []
-
-
-@collection(
     name='biosamples',
     unique_key='accession',
     properties={
@@ -792,3 +744,68 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
+
+
+@collection(
+    name='cultures',
+    unique_key='accession',
+    properties={
+        'title': 'Cultures',
+        'description': 'Listing of Cultures',
+    })
+class Culture(Biosample):
+    item_type = 'culture'
+    schema = load_schema('encoded:schemas/culture.json')
+    embedded = []
+
+
+@collection(
+    name='cell-cultures',
+    unique_key='accession',
+    properties={
+        'title': 'Cell cultures',
+        'description': 'Listing of Cell cultures',
+    })
+class CellCulture(Culture):
+    item_type = 'cell_culture'
+    schema = load_schema('encoded:schemas/cell_culture.json')
+    embedded = []
+
+
+@collection(
+    name='suspensions',
+    unique_key='accession',
+    properties={
+        'title': 'Suspensions',
+        'description': 'Listing of Suspensions',
+    })
+class Suspension(Biosample):
+    item_type = 'suspension'
+    schema = load_schema('encoded:schemas/suspension.json')
+    embedded = []
+
+
+@collection(
+    name='organoids',
+    unique_key='accession',
+    properties={
+        'title': 'Organoids',
+        'description': 'Listing of Organoids',
+    })
+class Organoid(Culture):
+    item_type = 'organoid'
+    schema = load_schema('encoded:schemas/organoid.json')
+    embedded = []
+
+
+@collection(
+    name='tissues',
+    unique_key='accession',
+    properties={
+        'title': 'Tissues',
+        'description': 'Listing of Tissues',
+    })
+class Tissue(Biosample):
+    item_type = 'tissue'
+    schema = load_schema('encoded:schemas/tissue.json')
+    embedded = []
