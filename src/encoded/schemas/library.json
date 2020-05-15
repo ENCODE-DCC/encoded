@@ -449,24 +449,48 @@
                 "title": "Sequencing adapter",
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["file"],
-                "properties": {
-                    "type": {
-                        "title": "Adapter type",
-                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
-                        "type": "string",
-                        "enum": [
-                            "5' adapter",
-                            "3' adapter"
-                        ]
+                "oneOf": [
+                    { 
+                        "required": ["file"],
+                        "properties": {
+                            "type": {
+                                "title": "Adapter type",
+                                "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                                "type": "string",
+                                "enum": [
+                                    "5' adapter",
+                                    "3' adapter"
+                                ]
+                            },
+                            "file": {
+                                "title": "Adapter file",
+                                "description": "One file with adapter sequence(s).",
+                                "type": "string",
+                                "linkTo": "File"
+                            }
+                        }
                     },
-                    "file": {
-                        "title": "Adapter file",
-                        "description": "One file with adapter sequence(s).",
-                        "type": "string",
-                        "linkTo": "File"
+                    { 
+                        "required": ["sequence"],
+                        "properties": {
+                            "type": {
+                                "title": "Adapter type",
+                                "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                                "type": "string",
+                                "enum": [
+                                    "5' adapter",
+                                    "3' adapter"
+                                ]
+                            },
+                            "sequence": {
+                                "title": "Adapter sequence",
+                                "description": "The sequence of an adapter used for library construction",
+                                "type": "string",
+                                "pattern": "^[ACUNTGacuntg]+$"
+                            }
+                        }
                     }
-                }
+                ]
             }
         }
     },

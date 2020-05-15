@@ -1,12 +1,9 @@
 ## Changelog for library.json
 
-
-* *adapters* property is modified. The property is a list that captures information on adapters used during library preparation. The modification allows specification of adapters as strings.
-
-
 ### Minor changes since schema version 11
 * The properties *fragmentation_duration_time* and *fragmentation_duration_time_units* were added.
 * *chemical (NEBNext Ultra II Directional)* was added to the *fragmentation_method* enum, and *Animal tissue kit (Norgen Biotek cat#: 25700)* was added to the *extraction_method* enum.
+* *adapters* property is modified to allows specification of adapters as strings.
 * The properties *average_fragment_size*, *fragment_length_CV*, and *fragment_length_SD* were added.
 
 ### Schema version 11
