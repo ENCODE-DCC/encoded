@@ -44,7 +44,10 @@
                     "properties": {
                         "adapters": {
                             "items": {
-                                "required": ["file"]
+                                "required": ["file"],
+                                "not": {
+                                    "required": ["sequence"]
+                                }
                             }
                         }
                     }
@@ -53,7 +56,10 @@
                     "properties": {
                         "adapters": {
                             "items": {
-                                "required": ["sequence"]
+                                "required": ["sequence"],
+                                "not": {
+                                    "required": ["file"]
+                                }
                             }
                         }
                     }

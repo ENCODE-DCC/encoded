@@ -63,7 +63,7 @@ def test_library_adapters(testapp, library, file):
         ]
     }
     testapp.post_json('/library', sequence_adapters, status=201)
-    file_sequence_adapter = {
+    file_sequence_adapter1 = {
         **library,
         'adapters': [
             {
@@ -73,7 +73,22 @@ def test_library_adapters(testapp, library, file):
             },
         ]
     }
-    testapp.post_json('/library', file_sequence_adapter, status=422)
+    testapp.post_json('/library', file_sequence_adapter1, status=422)
+    file_sequence_adapter2 = {
+        **library,
+        'adapters': [
+            {
+                'type': "3' adapter",
+                'file': file['@id'],
+            },
+            {
+                'type': "3' adapter",
+                'file': file['@id'],
+                'sequence': 'GGGGGGCNA',
+            },
+        ]
+    }
+    testapp.post_json('/library', file_sequence_adapter2, status=422)
     mixed_adapters = {
         **library,
         'adapters': [
