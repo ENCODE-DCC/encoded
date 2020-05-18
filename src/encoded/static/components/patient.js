@@ -138,7 +138,7 @@ class Patient extends React.Component {
       <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
     );
     const radiationPanelBody = (
-      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
+      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis_date} death_date={context.death_date}></Radiation>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -148,7 +148,7 @@ class Patient extends React.Component {
     return (
       <div className={globals.itemClass(context, 'view-item')}>
         <header className="row">
-          <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script>
+          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
           <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
           <div className="col-sm-12">
