@@ -812,6 +812,7 @@ def main():
         # helps vars for release and building amis
         for helper_var in helper_vars:
             print(helper_var)
+    print('Done')
 
 
 def _parse_args():
