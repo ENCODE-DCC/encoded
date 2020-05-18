@@ -9,13 +9,13 @@
             "ENCBS001MWO",
             "ENCBS000MUS"
         ],
-        "enhancer_activity": [{
-            "enhancer_activity": "positive",
-            "expressed_tissue": ["eye (UBERON:0000970)", "limb (UBERON:0002101)"]
-            }],
+        "tissue_with_enhancer_activity": [
+            "eye (UBERON:0000970)",
+            "limb (UBERON:0002101)"
+        ],
         "description": "Mouse transgenic enhancer1 experiment",
         "lab": "len-pennacchio",
-        "status": "released",
+        "status": "in progress",
         "date_submitted": "2019-12-20",
         "date_released": "2020-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -31,13 +31,13 @@
             "ENCBS001MWO",
             "ENCBS000MUS"
         ],
-        "enhancer_activity": [{
-            "enhancer_activity": "negative",
-            "expressed_tissue": ["none"]
-            }],
+        "tissue_with_enhancer_activity": [
+            "heart (UBERON:0000948)",
+            "neural tube (UBERON:0001049)"
+        ],
         "description": "Mouse transgenic enhancer2 experiment",
         "lab": "len-pennacchio",
-        "status": "released",
+        "status": "in progress",
         "date_submitted": "2019-12-30",
         "date_released": "2020-01-15",
         "submitted_by": "dignissim.euismod@amet.habitant",
