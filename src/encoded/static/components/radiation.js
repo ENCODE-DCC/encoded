@@ -41,7 +41,7 @@ class Radiation extends React.Component {
         //compare end date
         if (ganttData[i].end != ganttData[i].end) {
           ganttData[i].end = Math.max(ganttData[i].end, dataPoint.end);
-          ganttData[i].endDate = new Date(ganttData[i].end - 60000 * 60 * 24);
+          ganttData[i].endDate = new Date(ganttData[i].end);
         }
       }
     }
@@ -64,20 +64,13 @@ class Radiation extends React.Component {
 
   drawChart() {
 
-
-    let datesUnix = [];
-
     let ganttData = [];
 
     for (let i = 0; i < this.radiationAppointments.length; i++) {
-      let startDateUnix = this.parseTime(this.radiationAppointments[i].start_date);
-      let endDateUnix = this.parseTime(this.radiationAppointments[i].end_date) + 60000 * 60 * 24;
       let dataPoint = {
         id: this.radiationAppointments[i].site_general,
-        start: startDateUnix,
-        startDate: this.radiationAppointments[i].start_date,
-        end: endDateUnix,
-        endDate: this.radiationAppointments[i].end_date,
+        startDate: this.radiationAppointments[i].start_date + ' 00:00:00',
+        endDate: this.radiationAppointments[i].end_date + ' 00:00:00',
         numberOfSite: 1,
         maxDosagePerFraction: this.radiationAppointments[i].dose_per_fraction,
         minDosagePerFraction: this.radiationAppointments[i].dose_per_fraction
@@ -87,7 +80,6 @@ class Radiation extends React.Component {
       } else {
         this.filterData(dataPoint, ganttData);
       }
-      datesUnix.push(startDateUnix);
     }
 
       
@@ -118,8 +110,7 @@ for (let i = 0; i < ganttData.length; i++) {
         marker: {color: 'white',
       }
     };
-    let endDate = new Date(ganttData[i].endDate);
-    let midDate = new Date((new Date(ganttData[i].startDate).getTime() + endDate.getTime()) / 2);
+    let midDate = new Date((new Date(ganttData[i].startDate).getTime() + new Date(ganttData[i].endDate).getTime()) / 2);
   
     let dosage = "";
     if (ganttData[i].minDosagePerFraction === ganttData[i].maxDosagePerFraction) {
@@ -140,13 +131,13 @@ for (let i = 0; i < ganttData.length; i++) {
           bgcolor: '#29A2CC',
           font: {color: 'white'}
         },
-        customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate +"<br>End date: "+ganttData[i].endDate],
+        customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +"<br>End date: "+ganttData[i].endDate.split(" ")[0]],
         hovertemplate: "%{customdata}<extra></extra>"
 
     }
 
     dumbbellData[i] = {
-      x: [ganttData[i].startDate, endDate],
+      x: [ganttData[i].startDate, ganttData[i].endDate],
       y: [yLabels.indexOf(ganttData[i].id), yLabels.indexOf(ganttData[i].id)],
       mode: 'lines+markers',
       hoverinfo:'skip',
@@ -163,35 +154,35 @@ for (let i = 0; i < ganttData.length; i++) {
         bgcolor: '#29A2CC',
         font: {color: 'white'}
       },
-      hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate +"<br>End date: "+ganttData[i].endDate + "<extra></extra>"
+      hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +"<br>End date: "+ganttData[i].endDate.split(" ")[0] + "<extra></extra>"
     }
 }
 
 let diagnosisDate;
-let date1;
+let minX;
 if (this.props.diagnosis_date != "Not available") {
-  diagnosisDate = new Date(this.props.diagnosis_date);
-  date1 = new Date(this.props.diagnosis_date);;
+  diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
+  minX = new Date(this.props.diagnosis_date + ' 00:00:00');;
 } else {
-  date1 = new Date(ganttData[0].startDate);
+  minX = new Date(ganttData[0].startDate);
 }
 let deceasedDate;
 let lastFollowUpDate;
-let date2;
+let maxX;
 if (this.props.death_date != null){
-  deceasedDate = new Date(this.props.death_date);
-  date2 = new Date(this.props.death_date);
+  deceasedDate = new Date(this.props.death_date + ' 00:00:00');
+  maxX = new Date(this.props.death_date + ' 00:00:00');
 } else if(this.props.last_follow_up_date != "Not available") {
-  lastFollowUpDate = new Date(this.props.last_follow_up_date);
-  date2 = new Date(this.props.last_follow_up_date);
+  lastFollowUpDate = new Date(this.props.last_follow_up_date + ' 00:00:00');
+  maxX = new Date(this.props.last_follow_up_date + ' 00:00:00');
 }
 else {
-  date2 = new Date(ganttData[ganttData.length - 1].endDate);
+  maxX = new Date(ganttData[ganttData.length - 1].endDate);
 }
 
-let minX =new Date(date1.setMonth(date1.getMonth()-2));
+minX =new Date(minX.setMonth(minX.getMonth()-1));
 
-let maxX =new Date(date2.setMonth(date2.getMonth()+1));
+maxX =new Date(maxX.setMonth(maxX.getMonth()+1));
 
 let trace1 ={};
 if (diagnosisDate != null) {
@@ -312,9 +303,6 @@ let layout = {
 this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
   }
 
-  parseTime(dateString) {
-    return this.moment(dateString).unix() * 1000;
-  }
 
 
   componentDidMount() {
@@ -325,5 +313,6 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
+
 
 
