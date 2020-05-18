@@ -27,6 +27,26 @@
             "title": "Status"
         }
     },
+    "oneOf": [
+        {
+            "properties": {
+                "adapters": {
+                    "items": {
+                        "required": ["file"]
+                    }
+                }
+            }
+        },
+        {
+            "properties": {
+                "adapters": {
+                    "items": {
+                        "required": ["sequence"]
+                    }
+                }
+            }
+        }
+    ],
     "dependencies": {
         "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
@@ -445,58 +465,34 @@
             "description": "Adapter(s) used during library preparation",
             "uniqueItems": true,
             "minItems": 1,
-            "oneOf": [
-                {
-                    "items": {
-                        "title": "Sequencing adapter",
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": ["sequence"],
-                        "properties": {
-                            "type": {
-                                "title": "Adapter type",
-                                "description": "Information (type or name) for adapter(s) specified in the adapter sequence. This info will be used to identify how the adapter sequence should be feed to a pipeline.",
-                                "type": "string",
-                                "enum": [
-                                    "5' adapter",
-                                    "3' adapter"
-                                ]
-                            },
-                            "sequence": {
-                                "title": "Adapter sequence",
-                                "description": "The sequence of an adapter used for library construction",
-                                "type": "string",
-                                "pattern": "^[ACUNTGacuntg]+$"
-                            }
-                        }
-                    }
-                },
-                {
-                    "items": {
-                        "title": "Sequencing adapter",
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": ["file"],
-                        "properties": {  
-                            "type": {
-                                "title": "Adapter type",
-                                "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
-                                "type": "string",
-                                "enum": [
-                                    "5' adapter",
-                                    "3' adapter"
-                                ]
-                            },                    
-                            "file": {
-                                "title": "Adapter file",
-                                "description": "One file with adapter sequence(s).",
-                                "type": "string",
-                                "linkTo": "File"
-                            }
-                        }
+            "items": {
+                "title": "Sequencing adapter",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "type": {
+                        "title": "Adapter type",
+                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                        "type": "string",
+                        "enum": [
+                            "5' adapter",
+                            "3' adapter"
+                        ]
+                    },
+                    "file": {
+                        "title": "Adapter file",
+                        "description": "One file with adapter sequence(s).",
+                        "type": "string",
+                        "linkTo": "File"
+                    },
+                    "sequence": {
+                        "title": "Adapter sequence",
+                        "description": "The sequence of an adapter used for library construction",
+                        "type": "string",
+                        "pattern": "^[ACUNTGacuntg]+$"
                     }
                 }
-            ]
+            }
         }
     },
     "columns": {
