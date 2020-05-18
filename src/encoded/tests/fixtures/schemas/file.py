@@ -1429,7 +1429,7 @@ def file_hotspots1_reference(testapp, lab, award, experiment):
 
 @pytest.fixture
 def file_dnase_enrichment(testapp, experiment_dnase, award, lab):
-    item = {
+    return {
         'dataset': experiment_dnase['uuid'],
         'lab': lab['@id'],
         'file_size': 13459832,
@@ -1441,4 +1441,19 @@ def file_dnase_enrichment(testapp, experiment_dnase, award, lab):
         'md5sum': '99378c852c5be68251cbb125ffcf045a',
         'status': 'in progress'
     }
-    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_chip_enrichment(testapp, experiment_chip_CTCF, award, lab):
+    return {
+        'dataset': experiment_chip_CTCF['uuid'],
+        'lab': lab['@id'],
+        'file_size': 151823,
+        'award': award['@id'],
+        'assembly': 'mm10',
+        'file_format': 'bed',
+        'file_format_type': 'bed3+',
+        'output_type': 'enrichment',
+        'md5sum': 'a2d0dde9ea1cbc8ec24d74c413a897f1',
+        'status': 'in progress'
+    }
