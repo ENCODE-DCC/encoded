@@ -414,5 +414,23 @@
         "step_label": "cdhss-step",
         "title": "cDHSs step",
         "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537ca"
+    },
+    {
+        "analysis_step_types": [
+            "pseudoalignment based quantification"
+        ],
+        "date_created": "2020-01-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "reads",
+            "transcriptome index"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "transcript quantifications"
+        ],
+        "status": "released",
+        "step_label": "pseudoalignment-test-step",
+        "title": "pseudoalignment quantification step",
+        "uuid": "6b41a0a5-dede-447b-abb6-064620b45bb1"
     }
 ]

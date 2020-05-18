@@ -3,6 +3,7 @@
 ### Minor changes since schema version 9
 * Added *representative peak selection* and *candidate cis-regulatory element identification* to the enum list for *analysis_step_types*
 * Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum list for *input_file_types* and *output_file_types*
+* Added *pseudoalignment based quantification* to the enum list for *analysis_step_types*
 
 ### Schema version 9
 * Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enums for *output_file_types* and *input_file_types*.
