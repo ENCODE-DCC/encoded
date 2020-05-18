@@ -678,8 +678,8 @@ def file_20_21(value, system):
     output_type = value.get('output_type', None)
 
     conn = system['registry'][CONNECTION]
-    dataset = conn.get_by_uuid(value['dataset'])
-    assay_type = dataset.get('assay_term_name', None)
+    datasetObject = conn.get_by_uuid(value['dataset'])
+    assay_type = datasetObject.get('assay_term_name', None)
 
     if assay_type == 'DNase-seq' and output_type == 'enrichment':
         value['output_type'] = 'FDR cut rate'

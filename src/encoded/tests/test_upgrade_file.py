@@ -145,10 +145,9 @@ def test_file_upgrade_19_to_20(upgrader, file_19):
     assert value['notes'] == 'The run_type of this file was automatically upgraded by ENCD-5258.'
 
 
-def test_file_upgrade_20_to_21(upgrader, file_dnase_enrichment, file_chip_enrichment):
-    value = upgrader.upgrade('file', file_dnase_enrichment, current_version='20', target_version='21')
+def test_file_upgrade_20_to_21(root, testapp, upgrader, registry, file_dnase_enrichment):
+    file_dnase_enrichment['schema_version'] = '20'
+    context = root.get_by_uuid(file_dnase_enrichment['uuid'])
+    value = upgrader.upgrade('file', file_dnase_enrichment, registry=registry, current_version='20', target_version='21', context=context)
     assert value['schema_version'] == '21'
     assert value['output_type'] == 'FDR cut rate'
-    value = upgrader.upgrade('file', file_chip_enrichment, current_version='20', target_version='21')
-    assert value['schema_version'] == '21'
-    assert value['output_type'] == 'enrichment'
