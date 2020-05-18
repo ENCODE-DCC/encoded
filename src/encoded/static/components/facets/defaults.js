@@ -584,9 +584,9 @@ export class DefaultTerm extends React.Component {
     render() {
         const { term, facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation } = this.props;
         const TermNameComponent = FacetRegistry.TermName.lookup(facet.field);
+        let undoHref;
         let href;
-        let negHref;
-        let neutralHref = '';
+        let removeHref = '';
         let negated = false;
 
         // Find the search-results filter matching this term, which if found indicates this term is
@@ -604,21 +604,21 @@ export class DefaultTerm extends React.Component {
             return selected;
         });
 
-        // Build the term href as well as its negation href, or the `remove` link for selected terms.
+        // Build the term undoHref as well as its negation undoHref, or the `remove` link for selected terms.
         if (selectedTermFilter) {
             // Term is selected, so its link URI is the `remove` property of the matching filter.
             // Process this URI to remove the "/search/" path.
-            href = url.parse(selectedTermFilter.remove).search || selectedTermFilter.remove;
+            undoHref = url.parse(selectedTermFilter.remove).search || selectedTermFilter.remove;
         } else {
             // Term isn't selected, so build the link URI by adding this term to the existing URL.
             const query = new QueryString(queryString);
             const negQuery = query.clone();
             query.addKeyValue(facet.field, term.key);
-            neutralHref = `?${query.format()}`;
+            removeHref = `?${query.format()}`;
 
             // Also build the negation URI.
             negQuery.addKeyValue(facet.field, term.key, true);
-            negHref = `?${negQuery.format()}`;
+            href = `?${negQuery.format()}`;
         }
 
         // Build the CSS class for selected terms.
@@ -636,7 +636,7 @@ export class DefaultTerm extends React.Component {
 
         return (
             <li className="facet-term">
-                <a href={href} onClick={href ? onFilter : null} className={`facet-term__item${termCss}`}>
+                <a href={undoHref} onClick={undoHref ? onFilter : null} className={`facet-term__item${termCss}`}>
                     <div className="facet-term__text">
                         <TermNameComponent
                             termName={term.key}
@@ -652,7 +652,7 @@ export class DefaultTerm extends React.Component {
                     {negated ? null : <div className="facet-term__count">{term.doc_count}</div>}
                     {(selectedTermFilter || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
                 </a>
-                <TriStateToggle href={href} negHref={negHref} neutralHref={neutralHref} identifier={`${convertSpaceToUnderscore(facet.title)}${convertSpaceToUnderscore(term.key)}${convertSpaceToUnderscore(pathname)}`} />
+                <TriStateToggle undoHref={undoHref} href={href} removeHref={removeHref} identifier={`${convertSpaceToUnderscore(facet.title)}${convertSpaceToUnderscore(term.key)}${convertSpaceToUnderscore(pathname)}`} />
             </li>
         );
     }
