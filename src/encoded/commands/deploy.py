@@ -987,8 +987,8 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-05-12 11:37:41.865324: encdami-demo-2020-05-12_113741
-        'demo': 'ami-0cfb31de2f52e01a5',
+        # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
+        'demo': 'ami-02ee743e10e6bca42',
         # encdami-es-wait-head build on 2020-05-12 11:27:42.486819: encdami-es-wait-head-2020-05-12_112742
         'es-wait-head': 'ami-02e3ef2b5803db44a',
         # encdami-es-wait-node build on 2020-05-12 11:27:52.074392: encdami-es-wait-node-2020-05-12_112752
