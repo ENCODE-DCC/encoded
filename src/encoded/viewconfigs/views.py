@@ -36,7 +36,7 @@ DEFAULT_DOC_TYPES = [
     'Target',
     'Patient',
     'Biospecimen',
-    # 'Bioexperiment',
+    'Bioexperiment',
     'Biofile',
     'PathologyReport',
     'Surgery',

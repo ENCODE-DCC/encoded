@@ -12,7 +12,7 @@ class Bioexperiment extends React.Component {
     }
     render() {
         const context = this.props.context;
-
+        console.log(context);
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs
         const crumbs = [
@@ -25,8 +25,8 @@ class Bioexperiment extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.accession}</h2>
+                        <Breadcrumbs root="/search/?type=Bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        {/* <h2>{context.accession}</h2> */}
                     </div>
 
                 </header>
@@ -38,7 +38,7 @@ class Bioexperiment extends React.Component {
 
                         <dl className="key-value">
                             <div >
-                                <div data-test="status">
+                                {/* <div data-test="status">
                                     <dt>Status</dt>
                                     <dd><Status item={context.status} inline /></dd>
                                 </div>
@@ -49,7 +49,7 @@ class Bioexperiment extends React.Component {
                                 <div data-test="experiment_description">
                                     <dt>Assay Term Name</dt>
                                     <dd>{context.experiment_description}</dd>
-                                </div>
+                                </div> */}
                                 {/* <div data-test="biospecimen">
                                     <dt>Biospecimen Accession</dt>
                                     <dd>{context.biospecimen}</dd>
