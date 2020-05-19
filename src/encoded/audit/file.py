@@ -524,8 +524,7 @@ def audit_file_index_of(value, system):
         return
     if 'index_of' in value:
         index_exp = value['dataset']['@id']
-        fastq_ids = set()
-        exp_ids = set()
+        fastq_with_expt = {}
         indexed_files = 0
         error_files = 0
         run_type = set()
@@ -534,30 +533,33 @@ def audit_file_index_of(value, system):
             indexed_files += 1
             run_type.add(each['run_type'])
             if index_exp != fastq_exp:
-                fastq_ids.add(each['@id'])
-                exp_ids.add(each['dataset'])
+                fastq_with_expt[each['@id']] = each['dataset']
                 error_files += 1
         if error_files >= 1:
-            fastq_ids_links = [audit_link(path_to_text(m), m) for m in fastq_ids]
-            exp_ids_links = [audit_link(path_to_text(n), n) for n in exp_ids]
-            detail = ('Index file {} is from experiment {}, but is used as an index for file(s) {} from experiment(s) {}'.format(
-                                audit_link(path_to_text(value['@id']), value['@id']),
-                                audit_link(path_to_text(value['dataset']['@id']), value['dataset']['@id']),
-                                ', '.join(fastq_ids_links),
-                                ', '.join(exp_ids_links)
-                                )
-                    )
-            yield AuditFailure('incorrect index file', detail, level='ERROR')
-
+            files = tuple(sorted(fastq_with_expt.keys()))
+            expts = tuple(sorted(fastq_with_expt.values()))
+            files_links = ', '.join(audit_link(path_to_text(m), m) for m in files)
+            expts_links = ', '.join(audit_link(path_to_text(n), n) for n in expts)
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is from experiment {audit_link(path_to_text(value["dataset"]["@id"]), value["dataset"]["@id"])} '
+                f'but it is used as an index for '
+                f'file(s) {files_links} from experiment(s) {expts_links}.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
         if indexed_files > 1 and 'single-ended' in run_type:
-            detail = ('Index file {} is incorrectly specified for both single- and paired-end fastq files'.format(
-                audit_link(path_to_text(value['@id']), value['@id'])))
-            yield AuditFailure('mismatched index file', detail, level='ERROR')
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is incorrectly specified for both single- and paired-end fastq files.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
 
-        elif indexed_files == 1 and 'single-ended' not in run_type:
-            detail = ('Index file {} specifies it is index_of only one fastq from a paired-end run'.format(
-                audit_link(path_to_text(value['@id']), value['@id'])))
-            yield AuditFailure('fastq missing index', detail, level='ERROR')
+        elif indexed_files == 1 and 'paired-ended' in run_type:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'specifies it is index_of only one fastq from a paired-end run.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
 
 
 function_dispatcher = {
