@@ -24,6 +24,7 @@ properties={
 class Bioexperiment(Item):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
+    name_key = 'accession'
     embedded = [
         'award',
         'lab',
