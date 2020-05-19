@@ -951,6 +951,7 @@ def _parse_args():
     parser.add_argument(
         '--full-build',
         action='store_true',
+        default=True, # Defaulting to True b/c amis are more overhead than needed at the moment.
         help='Flag to indicate building without an ami'
     )
     parser.add_argument(
@@ -990,27 +991,27 @@ def _parse_args():
 
         # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
         'demo': 'ami-02ee743e10e6bca42',
-        # encdami-es-wait-head build on 2020-05-12 11:27:42.486819: encdami-es-wait-head-2020-05-12_112742
-        'es-wait-head': 'ami-02e3ef2b5803db44a',
-        # encdami-es-wait-node build on 2020-05-12 11:27:52.074392: encdami-es-wait-node-2020-05-12_112752
-        'es-wait-node': 'ami-0c1838d72e5957f9b',
+        # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
+        'es-wait-head': 'ami-04637560d9b9c4cb9',
+        # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
+        'es-wait-node': 'ami-03c53286feed8040f',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-05-12 11:37:48.826714: encdami-frontend-2020-05-12_113748
-        'frontend': 'ami-0950bd8a532c42f16',
+        # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
+        'frontend': 'ami-004367e4b7cdfc264',
 
         # Production Private AMIs: Add comments to each build
 
-        # encdami-es-wait-head build on 2020-05-12 10:09:25.025435: encdami-es-wait-head-2020-05-12_100925
-        'es-wait-head-prod': 'ami-014e72506bbd44e17',
-        # encdami-es-wait-node build on 2020-05-12 10:09:39.229262: encdami-es-wait-node-2020-05-12_100939
-        'es-wait-node-prod': 'ami-097e519fd45a99723',
+        # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
+        'es-wait-head-prod': 'ami-03530bdf05c08bf32',
+        # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
+        'es-wait-node-prod': 'ami-0de906a6f1894057b',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head-prod': None,
         'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-05-12 11:54:03.562797: encdami-frontend-2020-05-12_115403
-        'frontend-prod': 'ami-0c00c42372dfd18b1',
+        # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
+        'frontend-prod': 'ami-0e13a1f4c36d19ac1',
     }
     if not args.image_id:
         # Select ami by build type.  
