@@ -44,7 +44,10 @@ require('./experiment_series');
 require('./surgery');
 require('./pathology_report');
 require('./biospecimen');
+require('./bioexperiment');
+
 require('./biofile');
+
 
 
 module.exports = require('./app');
