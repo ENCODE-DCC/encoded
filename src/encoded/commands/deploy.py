@@ -386,7 +386,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'HOME': '/srv/encoded',
         'INDEX_PRIMARY': 'false',
         'INDEX_VIS': 'false',
-        'INDEX_REGION': 'false',
+        'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -441,7 +441,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'CLUSTER_NAME': main_args.cluster_name,
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
-                'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
             })
             if main_args.no_indexing:
                 data_insert.update({
@@ -454,7 +453,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             data_insert.update({
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
-                'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
             })
         else: 
             # 'app-es-pg' == "Demo"
