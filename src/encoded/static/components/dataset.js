@@ -64,6 +64,7 @@ const AnnotationComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -242,6 +243,8 @@ const AnnotationComponent = (props, reactContext) => {
             <FileGallery context={context} encodevers={encodevers} showReplicateNumber={false} />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>
@@ -749,7 +752,7 @@ const ReferenceComponent = (props, reactContext) => {
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
 
-            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments using ${context.accession}`} />
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>

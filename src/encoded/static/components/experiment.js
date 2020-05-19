@@ -16,7 +16,7 @@ import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 
@@ -502,8 +502,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     ));
 
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-
     const fcexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&possible_controls.accession=${context.accession}`;
+    const fcelementsmappingUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_mapping=${context['@id']}`;
+    const fcelementscloningUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_cloning=${context['@id']}`;
+
 
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
@@ -671,6 +673,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
                                 </div>
                             : null}
+
+                            {context.elements_cloning ?
+                                <div data-test="elements-cloning">
+                                    <dt>Elements cloning</dt>
+                                    <dd><a href={context.elements_cloning}>{globals.atIdToAccession(context.elements_cloning)}</a></dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
 
@@ -766,6 +775,20 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
             <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems
+                context={context}
+                url={fcelementsmappingUrl}
+                Component={ExperimentTable}
+                title={`Functional characterization experiments with ${context.accession} as an elements mapping`}
+            />
+
+            <FetchedItems
+                context={context}
+                url={fcelementscloningUrl}
+                Component={ExperimentTable}
+                title={`Functional characterization experiments with ${context.accession} as an elements cloning`}
+            />
 
             {combinedDocuments.length > 0 ?
                 <DocumentsPanelReq documents={combinedDocuments} />
