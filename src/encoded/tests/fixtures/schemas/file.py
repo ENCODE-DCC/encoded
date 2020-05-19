@@ -1478,9 +1478,9 @@ def fastq_index(testapp, lab, award, experiment, base_replicate_two, platform1, 
 
 
 @pytest.fixture
-def single_fastq_indexed(testapp, lab, award, base_experiment, base_replicate, platform1):
+def single_fastq_indexed(testapp, lab, award, experiment, base_replicate, platform1):
     item = {
-        'dataset': base_experiment['@id'],
+        'dataset': experiment['@id'],
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa66d78b',
         'replicate': base_replicate['@id'],
