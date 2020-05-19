@@ -291,29 +291,7 @@ class Patient(Item):
                 dose_range.append("4000 - 6000")
         return dose_range
 
-    @calculated_property(condition='age', schema={
-        "title": "Age at Diagnosis",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def age_range(self, request, age):
-        age_range = []
-
-        if age == "90 or above":
-            age_range.append("80+")
-        elif int(age) >= 80:
-            age_range.append("80+")
-        elif int(age) >= 60:
-            age_range.append("60 - 79")
-        elif int(age) >= 40:
-            age_range.append("40 - 59")
-        elif int(age) >= 20:
-            age_range.append("20 - 39")
-        else:
-            age_range.append("0 - 19")
-        return age_range
+    
 
     @calculated_property(condition='radiation', schema={
         "title": "Radiation Fractions",
@@ -460,11 +438,43 @@ class Patient(Item):
                 surgery_summary = "No Treatment Received"
             return surgery_summary
 
+   
+
     @calculated_property(schema={
-        "title": "Diagnosis Date",
-        "type": "string",
+        "title": "Diagnosis",
+        "description": "Infomation related to diagnosis",
+        "type": "object",
+        "additionalProperties": False,
+        "properties":{
+            "diagnosis_date": {
+                "title": "Diagnosis Date",
+                "description": "Date of Diagnosis",
+                "type": "string",
+            },
+            "age": {
+                "title": "Diagnosis age",
+                "description": "The age of diagnosis.",
+                "type": "string",
+                "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+            },
+            "age_unit": {
+                "title": "Diagnosis age unit",
+                "type": "string",
+                "default": "year",                    
+                "enum": [
+                    "year",
+                    "month"
+                ]
+            },
+            "age_range": {
+                "title": "Age at Diagnosis",
+                "type": "string"
+
+            }
+            
+        },
     })
-    def diagnosis_date(self, request, surgery, radiation, medication):
+    def diagnosis(self, request, surgery, radiation, medication):
         nephrectomy_dates = []
         non_nephrectomy_dates = []
         diagnosis_date = "Not available"
@@ -496,7 +506,35 @@ class Patient(Item):
             if len(non_nephrectomy_dates) > 0:
                 non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
                 diagnosis_date = non_nephrectomy_dates[0]
-        return diagnosis_date
+        age_range = "Unknown"
+        ageString = "Unknown"
+        if diagnosis_date != "Not available":
+            birth_date = datetime.strptime("1800-01-01", "%Y-%m-%d")
+            end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
+            age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
+            ageString = str(age) 
+            if age >= 90:
+                ageString = "90 or above"
+
+
+            if age >= 80:
+                age_range = "80+"
+            elif age >= 60:
+                age_range = "60 - 79"
+            elif age >= 40:
+                age_range = "40 - 59"
+            elif age >= 20:
+                age_range = "20 - 39"
+            else:
+                age_range = "0 - 19"
+
+        diagnosis = dict()
+        diagnosis['diagnosis_date'] = diagnosis_date
+        diagnosis['age'] = ageString
+        diagnosis['age_unit'] = "year"
+        diagnosis['age_range'] = age_range
+        
+        return diagnosis
 
     matrix = {
         'y': {
@@ -771,10 +809,11 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'age_range', 'diagnosis_date', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
+

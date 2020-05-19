@@ -138,7 +138,7 @@ class Patient extends React.Component {
       <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
     );
     const radiationPanelBody = (
-      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis_date} death_date={context.death_date}></Radiation>
+      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Radiation>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -186,13 +186,13 @@ class Patient extends React.Component {
               <div data-test="age">
                 <dt>Age at diagnosis</dt>
                 <dd className="sentence-case">
-                  {formatMeasurement(context.age, context.age_units)}
+                  {formatMeasurement(context.diagnosis.age, context.diagnosis.age_unit)}
                 </dd>
               </div>
 
               <div data-test="diagnosis_date">
                 <dt>Diagnosis Date</dt>
-                <dd>{context.diagnosis_date}</dd>
+                <dd>{context.diagnosis.diagnosis_date}</dd>
               </div>
 
               <div data-test="last_follow_up_date">
@@ -232,3 +232,4 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+

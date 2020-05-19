@@ -32,20 +32,7 @@
                 "Unknown"
             ]
         },
-        "age": {
-            "title": "Diagnosis age",
-            "description": "The age of diagnosis.",
-            "type": "string",
-            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
-        },
-        "age_units": {
-            "title": "Diagnosis age units",
-            "type": "string",
-            "default": "year",
-            "enum": [
-                "year"
-            ]
-        },
+
         "race": {
             "title": "Race",
             "type": "string",
@@ -101,7 +88,7 @@
 
     },
     "facets": {
-        "age_range": {
+        "diagnosis.age_range": {
             "title": "Age at Diagnosis"
         },
         "gender": {
@@ -223,10 +210,10 @@
         "accession": {
             "title": "Accession"
         },
-        "age": {
+        "diagnosis.age": {
             "title": "Diagnosis age"
         },
-        "age_units": {
+        "diagnosis.age_unit": {
             "title": "Diagnosis age units"
         },
         "gender": {
@@ -301,4 +288,5 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
 

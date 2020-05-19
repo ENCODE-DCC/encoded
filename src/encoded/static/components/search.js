@@ -530,8 +530,8 @@ globals.listingViews.register(Target, 'Target');
 class PatientComponent extends React.Component {
     render() {
         const result = this.props.context;
-        const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
-        const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
+        const age = (result.diagnosis.age && result.diagnosis.age !== 'Unknown') ? ` ${result.diagnosis.age}` : '';
+        const ageUnits = (result.diagnosis.age_unit && result.diagnosis.age_unit !== 'Unknown' && age) ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
             <li>
@@ -2384,4 +2384,5 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
 
