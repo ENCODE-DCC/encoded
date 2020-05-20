@@ -524,7 +524,8 @@ def audit_file_index_of(value, system):
         return
     if 'index_of' in value:
         index_exp = value['dataset']['@id']
-        fastq_with_expt = {}
+        files = []
+        expts = []
         indexed_files = 0
         error_files = 0
         run_type = set()
@@ -533,11 +534,10 @@ def audit_file_index_of(value, system):
             indexed_files += 1
             run_type.add(each['run_type'])
             if index_exp != fastq_exp:
-                fastq_with_expt[each['@id']] = each['dataset']
+                files.append(each['@id'])
+                expts.append(each['dataset'])
                 error_files += 1
         if error_files >= 1:
-            files = tuple(sorted(fastq_with_expt.keys()))
-            expts = tuple(sorted(fastq_with_expt.values()))
             files_links = ', '.join(audit_link(path_to_text(m), m) for m in files)
             expts_links = ', '.join(audit_link(path_to_text(n), n) for n in expts)
             detail = (
