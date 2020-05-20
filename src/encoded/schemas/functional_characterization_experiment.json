@@ -293,9 +293,6 @@
         }
     },
     "facets": {
-        "assay_slims": {
-            "title": "Assay type"
-        },
         "assay_title": {
             "title": "Assay title",
             "type": "typeahead"
