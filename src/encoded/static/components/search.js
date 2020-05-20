@@ -830,7 +830,7 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters, showDownloadButton }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
@@ -870,7 +870,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
             <div className="results-table-control__main">
                 <ViewControls results={context} activeFilters={activeFilters} />
                 {resultsToggle}
-                <BatchDownloadControls results={context} />
+                {showDownloadButton ? <BatchDownloadControls results={context} /> : ''}
                 {!hideBrowserSelector ?
                     <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} activeFilters={activeFilters} />
                 : null}
@@ -905,6 +905,8 @@ SearchControls.propTypes = {
     hideBrowserSelector: PropTypes.bool,
     /** Add filters to search links if needed */
     activeFilters: PropTypes.array,
+    /** Determines whether or not download button is displayed */
+    showDownloadButton: PropTypes.bool,
 };
 
 SearchControls.defaultProps = {
@@ -913,6 +915,7 @@ SearchControls.defaultProps = {
     onFilter: null,
     hideBrowserSelector: false,
     activeFilters: [],
+    showDownloadButton: true,
 };
 
 SearchControls.contextTypes = {

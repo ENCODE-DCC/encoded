@@ -9,6 +9,7 @@ import { MATRIX_VISUALIZE_LIMIT } from './matrix';
 import { MatrixInternalTags } from './objectutils';
 import { SearchControls } from './search';
 import * as globals from './globals';
+import { tintColor, isLight } from './datacolors';
 
 
 /**
@@ -237,7 +238,7 @@ const convertToDataTableFormat = (context) => {
 
     const headerRow = headerData.map(x => ({
         header: (
-            <a href={`${searchBase}&status=released&assay_title!=Control%20ChIP-seq&${x.type}=${x.key}`} className={`${subCategoryKeys.includes(x.key) ? 'sub' : ''}`} title={`${x.key}  with ${x.doc_count} experiment${x.doc_count !== 0 ? 's' : ''}`}>
+            <a href={`${searchBase}&${x.type}=${x.key}`} className={`${subCategoryKeys.includes(x.key) ? 'sub' : ''}`} title={`${x.key}`}>
                 <div className="subcategory-row-text">{x.key}</div>
             </a>),
         style: { borderBottom: headerBorderBottom },
@@ -262,7 +263,7 @@ const convertToDataTableFormat = (context) => {
 
         rowContent[0] = {
             header: (
-                <a href={`${searchBase}&status=released&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}`} title={`${row.key} with ${row.doc_count} experiment${row.doc_count !== '0' ? 's' : ''}`}>
+                <a href={`${searchBase}&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}`} title={`${row.key}`}>
                     <div className="subcategory-row-text">
                         { title }
                     </div>
@@ -286,7 +287,7 @@ const convertToDataTableFormat = (context) => {
                 const borderLeft = edgeColor;
 
                 rowContent[index].content = (
-                    <a href={`${searchBase}&status=released&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}&${assayTitle.type}=${assayTitle.key}`} title={`${assayTitle.doc_count}`}>
+                    <a href={`${searchBase}&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}&${assayTitle.type}=${assayTitle.key}`} title={`${assayTitle.doc_count}`}>
                         {' '}
                     </a>
                 );
@@ -333,7 +334,7 @@ const MatrixHeader = ({ context }) => {
             </div>
             <div className="matrix-header__controls">
                 <div className="matrix-header__search-controls-sescc">
-                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} hideBrowserSelector />
+                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} hideBrowserSelector showDownloadButton={false} />
                 </div>
             </div>
         </div>
@@ -466,18 +467,31 @@ class MatrixPresentation extends React.Component {
                             const name = formatH9HeaderTitle(d.name);
                             const elementClass = formatPebbleNameToCssClassFriendly(name);
                             const element = document.querySelector(`.${elementClass} th`);
+                            const text = document.querySelector(`.${elementClass} th .subcategory-row-text`);
 
                             if (element) {
-                                element.style.backgroundColor = d.selectedColor;
+                                const cellColor = tintColor(d.selectedColor, 0.1);
+                                const textColor = isLight(cellColor) ? '#000' : '#fff';
+
+                                element.style.backgroundColor = cellColor;
+
+                                if (text) {
+                                    text.style.color = textColor;
+                                }
                             }
                         })
                         .on('mouseout', (d) => {
                             const name = formatH9HeaderTitle(d.name);
                             const elementClass = formatPebbleNameToCssClassFriendly(name);
                             const element = document.querySelector(`.${elementClass} th`);
+                            const text = document.querySelector(`.${elementClass} th .subcategory-row-text`);
 
                             if (element) {
                                 element.style.backgroundColor = 'white';
+
+                                if (text) {
+                                    text.style.color = 'black';
+                                }
                             }
                         });
 

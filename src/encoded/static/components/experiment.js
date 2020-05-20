@@ -22,8 +22,8 @@ import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 /**
  * 'Experiment' search results view-control filter. For most experiment searches, this just returns
- * the default views for experiments. But if this displays the reference-epigenome matrix, it
- * returns the subset of views relevant to those.
+ * the default views for experiments. But if this displays the reference-epigenome matrix or Stem Cell
+ * Matrix, it returns the subset of views relevant to those.
  * @param {array} types Views defined by default for the Experiment @type.
  * @param {object} results Current page's search-results object
  *
