@@ -797,7 +797,7 @@ FacetTerms.defaultProps = {
 /**
  * Display the default text facet with optional typeahead field.
  */
-export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
+export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation, expanded }) => {
     const [initialState, setInitialState] = React.useState(true);
     const [topShadingVisible, setTopShadingVisible] = React.useState(false);
     const [bottomShadingVisible, setBottomShadingVisible] = React.useState(false);
@@ -889,17 +889,21 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
 
     return (
         <div className="facet">
-            <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
-            <SelectedFilters selectedTerms={relevantFilters} />
-            {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-            <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
-                <ul onScroll={handleScroll} ref={scrollingElement}>
-                    {(filteredTerms.length === 0) ?
-                        <div className="searcherror">
+            <div className="facet__expander--header">
+                <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
+                <i className={`icon icon-chevron-${expanded ? 'up' : 'down'}`} />
+            </div>
+            <div className={`facet-content facet-${expanded ? 'open' : 'close'}`}>
+                <SelectedFilters selectedTerms={relevantFilters} />
+                {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
+                <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
+                    <ul onScroll={handleScroll} ref={scrollingElement}>
+                        {(filteredTerms.length === 0) ?
+                            <div className="searcherror">
                             Try a different search term for results.
                         </div>
-                    :
-                        <React.Fragment>
+                        :
+                            <React.Fragment>
                             <FacetTerms
                                 facet={facet}
                                 results={results}
@@ -914,8 +918,10 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                             <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
                             <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
                         </React.Fragment>
-                    }
-                </ul>
+                        }
+                    </ul>
+                </div>
+                <hr />
             </div>
         </div>
     );
@@ -938,6 +944,8 @@ DefaultFacet.propTypes = {
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
+    /** True to expand facet */
+    expanded: PropTypes.bool,
 };
 
 DefaultFacet.defaultProps = {
@@ -945,4 +953,5 @@ DefaultFacet.defaultProps = {
     queryString: '',
     onFilter: null,
     allowNegation: true,
+    expanded: false,
 };

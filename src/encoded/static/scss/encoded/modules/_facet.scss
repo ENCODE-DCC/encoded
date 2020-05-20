@@ -124,6 +124,25 @@
         padding-bottom: 0;
         margin-bottom: 0;
     }
+
+    @at-root #{&}__expander {
+        @at-root #{&}--header {
+            display: flex;
+            flex-direction: row;
+            
+            i {
+                float: right;
+            }
+        }  
+    }
+
+    .facet-open {
+        display: inline;
+    }
+
+    .facet-close {
+        display: none;
+    }
 }
 
 // Radio button facet styles.
