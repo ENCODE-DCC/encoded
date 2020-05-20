@@ -67,6 +67,7 @@
                      "open chromatin region identification",
                      "partition concordance",
                      "personalized genome assembly",
+                     "pseudoalignment based quantification",
                      "pseudoreplicated IDR",
                      "peak calling",
                      "pooling",
