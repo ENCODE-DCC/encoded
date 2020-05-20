@@ -98,3 +98,27 @@ class HumanDonor(Donor):
     })
     def children(self, request, children):
         return paths_filtered_by_status(request, children)
+
+
+    @calculated_property(define=True,
+                        schema={
+                        "title": "Age display",
+                        "type": "string"})
+    def age_display(self, request, age=None, age_units=None):
+        if age != None and age_units !=None:
+            if age == 'unknown':
+                return 'unknown'
+            else:
+                return u'{}'.format(pluralize(age, age_units))
+        else:
+            return None
+
+
+def pluralize(value, value_units):
+    try:
+        if float(value) == 1:
+            return str(value) + ' ' + value_units
+        else:
+            return str(value) + ' ' + value_units + 's'
+    except:
+        return str(value) + ' ' + value_units + 's'

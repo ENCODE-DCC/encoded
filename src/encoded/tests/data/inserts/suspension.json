@@ -108,5 +108,30 @@
             "ENCBS123AAE"
         ],
         "derivation_process": "cell dissociaton"
+    },
+    {
+        "accession": "ENCBS111JAH",
+        "biosample_ontology": "single_cell_CL_0002322",
+        "description": "Undifferentiated mouse embryonic stem single cell",
+        "source": "dana-levasseur",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "7ed0ca0a-9acd-11ea-bb37-0242ac130002",
+        "derived_from": [
+            "ENCBS009WOO"
+        ],
+        "derivation_process": "cell dissociaton"
+    },
+    {
+        "accession": "ENCBS222JAH",
+        "biosample_ontology": "single_cell_CL_0002322",
+        "description": "Undifferentiated mouse embryonic stem single cell",
+        "source": "dana-levasseur",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "7ed0cc1c-9acd-11ea-bb37-0242ac130002",
+        "derived_from": [
+            "ENCBS128ENC",
+            "ENCBS111JAH"
+        ],
+        "derivation_process": "pooling"
     }
 ]

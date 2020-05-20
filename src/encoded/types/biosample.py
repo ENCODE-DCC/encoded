@@ -26,6 +26,21 @@ def property_closure(request, propname, root_uuid):
     return seen
 
 
+def caclulate_donor_prop(self, request, donors, propname):
+    collected_values = []
+
+    if donors is not None:  # try to get the sex from the donor
+        for donor_id in donors:
+            donorObject = request.embed(donor_id, '@@object')
+            if propname in donorObject and donorObject[propname] not in collected_values:
+                collected_values.append(donorObject[propname])
+
+    if not collected_values:
+        return 'unknown'
+    else:
+        return str(collected_values)
+
+
 @abstract_collection(
     name='biosamples',
     unique_key='accession',
@@ -55,7 +70,7 @@ class Biosample(Item):
                                     "linkTo": "Donor"
                                     }
                                 })
-    def donors(self, request, registry, accession=None):
+    def donors(self, request, registry):
         connection = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
         obj_props = (request.embed(uuid, '@@object') for uuid in derived_from_closure)
@@ -66,11 +81,21 @@ class Biosample(Item):
         }
         return sorted(all_donors)
 
+    @calculated_property(define=True,
+                         schema={"title": "Organism",
+                                 "type": "string"
+                                })
+    def organism(self, request, registry, donors=None):
+        if donors is not None:
+            for donor_id in donors:
+                donorObject = request.embed(donor_id, '@@object')
+                if 'organism' in donorObject:
+                    return donorObject['organism']
 
     @calculated_property(define=True,
                          schema={"title": "Sex",
                                  "type": "string"})
-    def sex(self, request, donor=None, model_organism_sex=None, organism=None):
+    def sex(self, request, donors=None, model_organism_sex=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -78,14 +103,11 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag is True:
-            if donor is not None:  # try to get the sex from the donor
-                donorObject = request.embed(donor, '@@object')
-                if 'sex' in donorObject:
-                    return donorObject['sex']
-                else:
-                    return 'unknown'
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'sex')
             else:
                 return 'unknown'
+
         else:
             if model_organism_sex is not None:
                 return model_organism_sex
@@ -95,7 +117,7 @@ class Biosample(Item):
     @calculated_property(define=True,
                          schema={"title": "Age",
                                  "type": "string"})
-    def age(self, request, donor=None, model_organism_age=None, organism=None):
+    def age(self, request, donors=None, model_organism_age=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -103,14 +125,11 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag is True:
-            if donor is not None:  # try to get the age from the donor
-                donorObject = request.embed(donor, '@@object')
-                if 'age' in donorObject:
-                    return donorObject['age']
-                else:
-                    return 'unknown'
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'age')
             else:
                 return 'unknown'
+
         else:
             if model_organism_age is not None:
                 return model_organism_age
@@ -120,7 +139,7 @@ class Biosample(Item):
     @calculated_property(define=True,
                          schema={"title": "Age units",
                                  "type": "string"})
-    def age_units(self, request, donor=None, model_organism_age_units=None, organism=None):
+    def age_units(self, request, donors=None, model_organism_age_units=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -128,64 +147,69 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag is True:
-            if donor is not None:  # try to get the age_units from the donor
-                donorObject = request.embed(donor, '@@object')
-                if 'age_units' in donorObject:
-                    return donorObject['age_units']
-                else:
-                    return None
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'age_units')
             else:
-                return None
+                return 'unknown'
+
         else:
-            return model_organism_age_units
+            if model_organism_age_units is not None:
+                return model_organism_age_units
+            else:
+                return 'unknown'
+
+
+    @calculated_property(define=True,
+                        schema={
+                        "title": "Age display",
+                        "type": "string"})
+    def age_display(self, request, donors=None):
+        if donors is not None:
+            return caclulate_donor_prop(self, request, donors, 'age_display')
+        else:
+            return 'unknown'
+
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
                                  "type": "string"})
-    def health_status(self, request, donor=None, model_organism_health_status=None, organism=None):
+    def donor_diseases(self, request, donors=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
             if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag is True and donor is not None:
-            donorObject = request.embed(donor, '@@object')
-            if 'health_status' in donorObject:
-                return donorObject['health_status']
+        if humanFlag is True:
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'diseases')
             else:
-                return None
+                return 'unknown'
+
         else:
-            if humanFlag is False:
-                return model_organism_health_status
-            return None
+            return 'unknown'
 
     @calculated_property(define=True,
                          schema={"title": "Life stage",
                                  "type": "string"})
-    def life_stage(self, request, donor=None, mouse_life_stage=None, fly_life_stage=None,
-                   worm_life_stage=None, organism=None):
+    def life_stage(self, request, donors=None, mouse_life_stage=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
             if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag is True and donor is not None:
-            donorObject = request.embed(donor, '@@object')
-            if 'life_stage' in donorObject:
-                return donorObject['life_stage']
+        if humanFlag is True:
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'life_stage')
             else:
                 return 'unknown'
+
         else:
-            if humanFlag is False:
-                if mouse_life_stage is not None:
-                    return mouse_life_stage
-                if fly_life_stage is not None:
-                    return fly_life_stage
-                if worm_life_stage is not None:
-                    return worm_life_stage
-            return 'unknown'
+            if mouse_life_stage is not None:
+                return mouse_life_stage
+            else:
+                return 'unknown'
 
     @calculated_property(schema={
         "title": "Applied modifications",
@@ -202,29 +226,6 @@ class Biosample(Item):
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
 
-
-    @calculated_property(schema={
-        "title": "Age display",
-        "type": "string",
-    })
-    def age_display(self, request, donor=None, model_organism_age=None,
-                    model_organism_age_units=None, post_synchronization_time=None,
-                    post_synchronization_time_units=None):
-        if post_synchronization_time is not None and post_synchronization_time_units is not None:
-            return u'{}'.format(
-                pluralize(post_synchronization_time, post_synchronization_time_units)
-                )
-        if donor is not None:
-            donor = request.embed(donor, '@@object')
-            if 'age' in donor and 'age_units' in donor:
-                if donor['age'] == 'unknown':
-                    return ''
-                return u'{}'.format(pluralize(donor['age'], donor['age_units']))
-        if model_organism_age is not None and model_organism_age_units is not None:
-            return u'{}'.format(
-                pluralize(model_organism_age, model_organism_age_units)
-            )
-        return None
 
     @calculated_property(schema={
         "title": "Summary",
