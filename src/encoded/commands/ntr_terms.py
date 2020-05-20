@@ -182,19 +182,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000515": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "massively parallel reporter assay",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "MPRA",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000519": {
         "assay": ['Functional characterization'],
         "category": [],
@@ -255,6 +242,19 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "SPRITE",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+        "NTR:0000551": {
+        "assay": ['Functional characterization'],
+        "category": [],
+        "developmental": [],
+        "name": "transgenic enhancer assay",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -499,7 +499,7 @@ ntr_biosamples = {
     },
     "NTR:0000722": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-positive CD71-positive TER-119-positive erythroid progenitor cells",
         "objectives": [],
@@ -512,7 +512,7 @@ ntr_biosamples = {
     },
     "NTR:0000721": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
         "objectives": [],
@@ -525,7 +525,7 @@ ntr_biosamples = {
     },
     "NTR:0000720": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-positive CD71-negative TER-119-negative erythroid progenitor cells",
         "objectives": [],
@@ -538,7 +538,7 @@ ntr_biosamples = {
     },
     "NTR:0000719": {
         "category": [],
-        "cells": ["hematopoietic cell", "myeloid cell"],
+        "cells": ["hematopoietic cell", "myeloid cell", "progenitor cell"],
         "developmental": [],
         "name": "c-Kit-negative CD71-positive TER-119-positive erythroid progenitor cells",
         "objectives": [],
@@ -928,7 +928,7 @@ ntr_biosamples = {
     },
     "NTR:0000711": {
         "category": [],
-        "cells": [],
+        "cells": ["progenitor cell"],
         "developmental": ["ectoderm"],
         "name": "neural progenitor cell",
         "objectives": [],
@@ -980,7 +980,7 @@ ntr_biosamples = {
     },
     "NTR:0000514": {
         "category": [],
-        "cells": [],
+        "cells": ["progenitor cell"],
         "developmental": [],
         "name": "cardiovascular progenitor cell",
         "objectives": [],
@@ -993,7 +993,7 @@ ntr_biosamples = {
     },
     "NTR:0000512": {
         "category": [],
-        "cells": [],
+        "cells": ["progenitor cell"],
         "developmental": [],
         "name": "nephron progenitor cell",
         "objectives": [],
@@ -1006,7 +1006,7 @@ ntr_biosamples = {
     },
     "NTR:0000474": {
         "category": [],
-        "cells": [],
+        "cells": ["progenitor cell"],
         "developmental": ["ectoderm"],
         "name": "ecto neural progenitor cell",
         "objectives": [],

@@ -5,6 +5,7 @@ from .ntr_terms import (
     ntr_assays,
     ntr_biosamples
 )
+from .manual_slims import slim_shims
 import json
 
 EPILOG = __doc__
@@ -40,8 +41,9 @@ developental_slims = {
 }
 
 system_slims = {
-    'UBERON:0000383': 'musculature of body',
+    'UBERON:0001015': 'musculature',
     'UBERON:0000949': 'endocrine system',
+    'UBERON:0002330': 'exocrine system',
     'UBERON:0000990': 'reproductive system',
     'UBERON:0001004': 'respiratory system',
     'UBERON:0001007': 'digestive system',
@@ -143,6 +145,8 @@ cell_slims = {
     'EFO:0001640': 'B cell',# B cell derived cell line
     'EFO:0001639': 'cancer cell', # cancer cell line
     'CL:0002494': 'cardiocyte',
+    'CL:0002320': 'connective tissue cell',
+    'CL:0002321': 'embryonic cell',
     'CL:0000115': 'endothelial cell',
     'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
     'CL:0000066': 'epithelial cell',
@@ -166,7 +170,8 @@ cell_slims = {
     'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
     'CL:0000034': 'stem cell',
     'EFO:0002886': 'stem cell', # stem cell derived cell line
-    'CL:0000084': 'T cell'
+    'CL:0000084': 'T cell',
+    'NTR:0000550': 'progenitor cell'
 }
 
 assay_slims = {
@@ -182,89 +187,7 @@ assay_slims = {
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
     'OBI:0000845': 'RNA structure',
-    'NTR:0000516': 'Functional characterization',
-    'OBI:0002144': 'DNA sequencing'
-}
-
-slim_shims = {
-    # this allows us to manually assign term X to slim Y while waiting for ontology updates
-    'assay': {
-        # DNA accessibility
-        'OBI:0001924': ['DNA accessibility'],  # 'OBI:0000870' / MNase-seq
-        'OBI:0002039': ['DNA accessibility'],  # 'OBI:0000870', / ATAC-seq
-        'OBI:0001853': ['DNA accessibility'],  # 'OBI:0000870', / DNase-seq
-        'OBI:0001859': ['DNA accessibility'],  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
-        'OBI:0002042': ['3D chromatin structure'],  # 'OBI:0000870' (Hi-C)
-        'OBI:0001848': ['3D chromatin structure'],  # ChIA-PET / OBI:000870
-        'OBI:0001923': ['Proteomics'],  # OBI:0000615': 'MS-MS'
-        'OBI:0001849': ['Genotyping'],  # OBI:0000435 (DNA-PET)
-        'OBI:0002044': ['RNA binding'],  # OBI:0001854 (RNA-Bind-N-Seq)
-        'OBI:0002091': ['Transcription'],  # 5' RACE
-        'OBI:0002092': ['Transcription'],  # 3' RACE
-        'OBI:0002093': ['Transcription'],  # 5' RLM RACE
-        'OBI:0001863': ['DNA methylation'],  # WGBS
-        'OBI:0001862': ['DNA methylation'],  # RRBS
-        'OBI:0001861': ['DNA methylation'],  # MRE-seq
-        'OBI:0002086': ['DNA methylation'],  # TAB-seq
-        'OBI:0000716': ['DNA binding'], # ChIP-seq
-        'OBI:0001919': ['3D chromatin structure'], # 5C
-        'OBI:0002160': ['DNA binding']  # Mint-ChIP-seq
-    },
-    'organ': {
-        'CL:0002399': ['blood', 'bodily fluid'],
-        'CL:0000236': ['blood', 'bodily fluid'],
-        'CL:0000084': ['blood', 'bodily fluid'],
-        'CL:0000625': ['blood', 'bodily fluid'],
-        'CL:0000624': ['blood', 'bodily fluid'],
-        'CL:0000897': ['blood', 'bodily fluid'],
-        'CL:0000895': ['blood', 'bodily fluid'],
-        'CL:0000792': ['blood', 'bodily fluid'],
-        'CL:0000909': ['blood', 'bodily fluid'],
-        'CL:0000899': ['blood', 'bodily fluid'],
-        'CL:0000815': ['blood', 'bodily fluid'],
-        'CL:0000545': ['blood', 'bodily fluid'],
-        'CL:0000546': ['blood', 'bodily fluid'],
-        'CL:0000576': ['blood', 'bodily fluid'],
-        'CL:0001054': ['blood', 'bodily fluid'],
-        'CL:0000515': ['musculature of body'],
-        'CL:0000187': ['musculature of body'],
-        'CL:0000905': ['blood', 'bodily fluid'],
-        'CL:0000037': ['blood', 'bodily fluid'],
-        'CL:0000192': ['musculature of body'],
-        'CL:0000746': ['musculature of body', 'heart'],
-        'CL:0000837': ['blood', 'bodily fluid'],
-        'CL:0002328': ['lung', 'bronchus', 'epithelium'], # 'bronchus' & 'epithelium' are ontology-based
-        'CL:0002598': ['lung', 'bronchus'], # 'bronchus' is ontology-based
-        'CL:2000017': ['connective tissue', 'mouth'], # 'connective tissue' is ontology-based
-        'EFO:0005650': ['limb'],
-        'EFO:0005916': ['embryo'],
-        'EFO:0005023': ['adipose tissue', 'connective tissue'],
-        'EFO:0002787': ['lymphoid tissue'],
-        'EFO:0007598': ['blood', 'bodily fluid'],
-        'EFO:0000586': ['connective tissue'],
-        'EFO:0005904': ['embryo'],
-        'EFO:0002939': ['brain'],
-        'EFO:0005694': ['bone element'],
-        'EFO:0005903': ['blood', 'bodily fluid'],
-        'EFO:0000681': ['kidney'],
-        'EFO:0002324': ['lymphoid tissue'],
-        'EFO:0002798': ['blood', 'bodily fluid'],
-        'EFO:0005914': ['embryo'],
-        'EFO:0005915': ['embryo'],
-        'EFO:0002779': ['penis', 'skin of body', 'connective tissue'], # 'connective tissue' & 'penis' are ontology-based
-        'EFO:0005233': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0005480': ['blood', 'bodily fluid', 'spleen'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0005482': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0005719': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
-        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
-        'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
-        'EFO:0006283': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0006711': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
-        'EFO:0007095': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
-    }
+    'NTR:0000516': 'Functional characterization'
 }
 
 preferred_name = {
@@ -286,7 +209,8 @@ preferred_name = {
     "OBI:0002458": "4C",
     "OBI:0002629": "direct RNA-seq",
     "OBI:0002144": "Circulome-seq",
-    "OBI:0002459": "genotyping HiC"
+    "OBI:0002459": "genotyping HiC",
+    "OBI:0002675": "MPRA"
 }
 
 category_slims = {
