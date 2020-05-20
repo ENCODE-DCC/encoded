@@ -1,6 +1,7 @@
 from botocore.exceptions import ClientError
 from botocore.config import Config
 from snovault import (
+    abstract_collection,
     AfterModified,
     BeforeModified,
     CONNECTION,
@@ -81,23 +82,20 @@ def file_is_md5sum_constrained(properties):
     return any(conditions)
 
 
-@collection(
+@abstract_collection(
     name='files',
     unique_key='accession',
     properties={
         'title': 'Files',
-        'description': 'Listing of Files',
+        'description': 'Listing of all types of file.',
     })
 class File(Item):
-    item_type = 'file'
-    schema = load_schema('encoded:schemas/file.json')
+    base_types = ['File'] + Item.base_types
     name_key = 'accession'
-
     rev = {
         'paired_with': ('File', 'paired_with'),
         'superseded_by': ('File', 'supersedes'),
     }
-
     embedded = []
     audit_inherit = []
     set_status_up = []
@@ -708,16 +706,15 @@ def file_update_bucket(context, request):
     }
 
 
-@collection(
+@abstract_collection(
     name='analysis-files',
     unique_key='accession',
     properties={
-        'title': "Analysis File",
+        'title': "Analysis Files",
         'description': "",
     })
 class AnalysisFile(File):
-    item_type = 'analysis_file'
-    schema = load_schema('encoded:schemas/analysis_file.json')
+    base_types = ['File'] + Item.base_types
     embedded = File.embedded + []
 
 
@@ -725,20 +722,20 @@ class AnalysisFile(File):
     name='sequence-alignment-files',
     unique_key='accession',
     properties={
-        'title': "Sequence Alignment File",
+        'title': "Sequence Alignment Files",
         'description': "",
     })
 class SequenceAlignmentFile(AnalysisFile):
     item_type = 'sequence_alignment_file'
     schema = load_schema('encoded:schemas/sequence_alignment_file.json')
-    embedded = File.embedded + []
+    embedded = AnalysisFile.embedded + []
 
 
 @collection(
     name='reference-files',
     unique_key='accession',
     properties={
-        'title': "Reference File",
+        'title': "Reference Files",
         'description': "",
     })
 class ReferenceFile(File):
@@ -751,7 +748,7 @@ class ReferenceFile(File):
     name='raw-sequence-files',
     unique_key='accession',
     properties={
-        'title': "Raw Sequence File",
+        'title': "Raw Sequence Files",
         'description': "",
     })
 class RawSequenceFile(File):
@@ -764,10 +761,10 @@ class RawSequenceFile(File):
     name='matrix-files',
     unique_key='accession',
     properties={
-        'title': "Matrix File",
+        'title': "Matrix Files",
         'description': "",
     })
 class MatrixFile(AnalysisFile):
     item_type = 'matrix_file'
     schema = load_schema('encoded:schemas/matrix_file.json')
-    embedded = File.embedded + []
+    embedded = AnalysisFile.embedded + []

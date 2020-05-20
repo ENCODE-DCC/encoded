@@ -581,8 +581,14 @@ PHASE2_PIPELINES = {
     'user': [
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
-    'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of', 'host'),
+    'cell_culture': [
+        skip_rows_missing_all_keys('derived_from'),
+    ],
+    'suspension': [
+        skip_rows_missing_all_keys('derived_from'),
+    ],
+    'organoid': [
+        skip_rows_missing_all_keys('derived_from'),
     ],
     'library': [
         skip_rows_missing_all_keys('spikeins_used', 'adapters'),

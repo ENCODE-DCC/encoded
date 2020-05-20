@@ -1,6 +1,8 @@
 from snovault import (
+    abstract_collection,
     calculated_property,
     collection,
+    CONNECTION,
     load_schema,
 )
 from .base import (
@@ -10,16 +12,29 @@ from .base import (
 import re
 
 
-@collection(
+def property_closure(request, propname, root_uuid):
+    conn = request.registry[CONNECTION]
+    seen = set()
+    remaining = {str(root_uuid)}
+    while remaining:
+        seen.update(remaining)
+        next_remaining = set()
+        for uuid in remaining:
+            obj = conn.get_by_uuid(uuid)
+            next_remaining.update(obj.__json__(request).get(propname, ()))
+        remaining = next_remaining - seen
+    return seen
+
+
+@abstract_collection(
     name='biosamples',
     unique_key='accession',
     properties={
         'title': 'Biosamples',
-        'description': 'Biosamples used in the ENCODE project',
+        'description': 'Listing of all types of biosample.',
     })
 class Biosample(Item):
-    item_type = 'biosample'
-    schema = load_schema('encoded:schemas/biosample.json')
+    base_types = ['Biosample'] + Item.base_types
     name_key = 'accession'
     rev = {}
     embedded = []
@@ -31,6 +46,26 @@ class Biosample(Item):
         'source'
     ]
     set_status_down = []
+
+    @calculated_property(define=True,
+                         schema={"title": "Donors",
+                                 "type": "array",
+                                 "items": {
+                                    "type": 'string',
+                                    "linkTo": "Donor"
+                                    }
+                                })
+    def donors(self, request, registry, accession=None):
+        connection = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
+        obj_props = (request.embed(uuid, '@@object') for uuid in derived_from_closure)
+        all_donors = {
+            props['accession']
+            for props in obj_props
+            if 'Donor' in props['@type']
+        }
+        return sorted(all_donors)
+
 
     @calculated_property(define=True,
                          schema={"title": "Sex",
@@ -746,17 +781,16 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
 
 
-@collection(
+@abstract_collection(
     name='cultures',
     unique_key='accession',
     properties={
         'title': 'Cultures',
-        'description': 'Listing of Cultures',
+        'description': 'Listing of all types of culture.',
     })
 class Culture(Biosample):
-    item_type = 'culture'
-    schema = load_schema('encoded:schemas/culture.json')
-    embedded = []
+    base_types = ['Culture'] + Item.base_types
+    embedded = Biosample.embedded + []
 
 
 @collection(
@@ -769,7 +803,7 @@ class Culture(Biosample):
 class CellCulture(Culture):
     item_type = 'cell_culture'
     schema = load_schema('encoded:schemas/cell_culture.json')
-    embedded = []
+    embedded = Culture.embedded + []
 
 
 @collection(
@@ -782,7 +816,7 @@ class CellCulture(Culture):
 class Suspension(Biosample):
     item_type = 'suspension'
     schema = load_schema('encoded:schemas/suspension.json')
-    embedded = []
+    embedded = Biosample.embedded + []
 
 
 @collection(
@@ -795,7 +829,7 @@ class Suspension(Biosample):
 class Organoid(Culture):
     item_type = 'organoid'
     schema = load_schema('encoded:schemas/organoid.json')
-    embedded = []
+    embedded = Culture.embedded + []
 
 
 @collection(
@@ -808,4 +842,4 @@ class Organoid(Culture):
 class Tissue(Biosample):
     item_type = 'tissue'
     schema = load_schema('encoded:schemas/tissue.json')
-    embedded = []
+    embedded = Biosample.embedded + []
