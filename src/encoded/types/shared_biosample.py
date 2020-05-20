@@ -1,6 +1,6 @@
 from .biosample import generate_summary_dictionary
 
-def biosample_summary_dictionary(request, biosampleObject=None):
+def biosample_summary_information(request, biosampleObject=None):
     drop_age_sex_flag = False
     biosample_accessions = set()
     if biosampleObject is not None:

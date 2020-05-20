@@ -7,7 +7,7 @@ from encoded.vis_defines import (
     browsers_available
     )
 from .biosample import construct_biosample_summary
-from .shared_biosample import biosample_summary_dictionary
+from .shared_biosample import biosample_summary_information
 from .base import (
     paths_filtered_by_status
 )
@@ -229,9 +229,11 @@ class CalculatedBiosampleSummary:
                         continue
                     if 'biosample' in libraryObject:
                         biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                        biosample_dict = biosample_summary_dictionary(request, biosampleObject)
-                        dictionaries_of_phrases.append(biosample_dict[0])
-                        if biosample_dict[1] is True:
+                        biosample_info = biosample_summary_information(request, biosampleObject)
+                        biosample_summary_dictionary = biosample_info[0]
+                        biosample_drop_age_sex_flag = biosample_info[1]
+                        dictionaries_of_phrases.append(biosample_summary_dictionary)
+                        if biosample_drop_age_sex_flag is True:
                             drop_age_sex_flag is True
 
         if drop_age_sex_flag is True:

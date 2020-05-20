@@ -29,7 +29,7 @@ from .shared_calculated_properties import (
 
 from .biosample import construct_biosample_summary
 
-from .shared_biosample import biosample_summary_dictionary
+from .shared_biosample import biosample_summary_information
 
 from itertools import chain
 import datetime
@@ -248,9 +248,11 @@ class TransgenicEnhancerExperiment(
         if biosamples is not None:
             for bs in biosamples:
                 biosampleObject = request.embed(bs, '@@object')
-                biosample_dict = biosample_summary_dictionary(request, biosampleObject)
-                dictionaries_of_phrases.append(biosample_dict[0])
-                if biosample_dict[1] is True:
+                biosample_info = biosample_summary_information(request, biosampleObject)
+                biosample_summary_dictionary = biosample_info[0]
+                biosample_drop_age_sex_flag = biosample_info[1]
+                dictionaries_of_phrases.append(biosample_summary_dictionary)
+                if biosample_drop_age_sex_flag is True:
                     drop_age_sex_flag is True
 
         if drop_age_sex_flag is True:

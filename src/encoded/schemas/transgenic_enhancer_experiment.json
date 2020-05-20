@@ -123,13 +123,13 @@
         },
         "tissue_with_enhancer_activity": {
             "title": "Tissues with enhancer activity",
-            "description": "The tissue(s) in which enhancer activity was positively expressed in.",
+            "description": "The tissue(s) in which enhancer activity was detected.",
             "type": "array",
             "uniqueItems": true,
             "minItems": 1,
             "items": {
                 "title": "Tissue",
-                "description": "Tissue where positive expression of the enhancer was observed.",
+                "description": "Tissue where enhancer activity was detected.",
                 "type": "string",
                 "enum": [
                     "blood vessels (UBERON:0001981)",
