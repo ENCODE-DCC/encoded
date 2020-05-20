@@ -32,18 +32,18 @@ Feature: Search
 
     Scenario: Search Experiments
         When I press "Data"
-        And I click the link to "/search/?type=Experiment&status=released"
+        And I click the link to "/search/?type=Experiment&status=released&replicates.library.biosample.perturbed=0"
         And I wait for the content to load
         Then I should see at least 25 elements with the css selector "ul.result-table > li"
         And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=TF+ChIP-seq"
+        When I click the link to "?type=Experiment&status=released&replicates.library.biosample.perturbed=0&assay_title=TF+ChIP-seq"
         And I wait for the content to load
-        Then I should see at least 7 elements with the css selector "ul.result-table > li"
+        Then I should see at least 2 elements with the css selector "ul.result-table > li"
 
-        When I click the link to "?type=Experiment&status=released&assay_title=TF+ChIP-seq&assay_title=DNAme+array"
+        When I click the link to "?type=Experiment&status=released&replicates.library.biosample.perturbed=0&assay_title=TF+ChIP-seq&assay_title=DNAme+array"
         And I wait for the content to load
-        Then I should see at least 11 elements with the css selector "ul.result-table > li"
+        Then I should see at least 4 elements with the css selector "ul.result-table > li"
 
 
     Scenario: Search BoxI
@@ -62,21 +62,21 @@ Feature: Search
 
     Scenario: Search for Assay term
         When I press "Data"
-        And I click the link to "/search/?type=Experiment&status=released"
+        And I click the link to "/search/?type=Experiment&status=released&replicates.library.biosample.perturbed=0"
         And I wait for the content to load
         When I fill in "searchAssaytitle" with "dna"
         Then I should see at least 2 elements with the css selector "div.facet__term-list.searchAssaytitle > li"
 
     Scenario: Search for Target of Assay term
         When I press "Data"
-        And I click the link to "/search/?type=Experiment&status=released"
+        And I click the link to "/search/?type=Experiment&status=released&replicates.library.biosample.perturbed=0"
         And I wait for the content to load
-        When I fill in "searchTargetofassay" with "h3k2"
-        Then I should see at least 2 elements with the css selector "div.facet__term-list.searchTargetofassay > li"
+        When I fill in "searchTargetofassay" with "fkh-10"
+        Then I should see at least 1 elements with the css selector "div.facet__term-list.searchTargetofassay > li"
 
     Scenario: Search for Organ term
         When I press "Data"
-        And I click the link to "/search/?type=Experiment&status=released"
+        And I click the link to "/search/?type=Experiment&status=released&replicates.library.biosample.perturbed=0"
         And I wait for the content to load
         When I fill in "searchOrgan" with "zzz"
         Then I should see 0 elements with the css selector "div.facet__term-list.searchOrgan > li"

@@ -6,6 +6,6 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "ENCODE"
         When I press "Data"
-        And I click the link to "/search/?type=Experiment&status=released"
+        And I click the link to "/search/?type=Experiment&status=released&replicates.library.biosample.perturbed=0"
         And I wait for the content to load
         Then the title should contain the text "Search – ENCODE"
