@@ -1,4 +1,7 @@
-from snovault import upgrade_step
+from snovault import (
+    CONNECTION,
+    upgrade_step,
+)
 from pyramid.traversal import find_root
 from datetime import datetime, time
 
@@ -666,4 +669,18 @@ def file_19_20(value, system):
             platform not in platforms_to_exclude:
         value['run_type'] = 'single-ended'
         value['notes'] = (notes + ' The run_type of this file was automatically upgraded by ENCD-5258.').strip()
+    return
+
+
+@upgrade_step('file', '20', '21')
+def file_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5271
+    output_type = value.get('output_type', None)
+
+    conn = system['registry'][CONNECTION]
+    datasetContext = conn.get_by_uuid(value['dataset'])
+    assay_type = datasetContext.properties.get('assay_term_name', None)
+
+    if assay_type == 'DNase-seq' and output_type == 'enrichment':
+        value['output_type'] = 'FDR cut rate'
     return

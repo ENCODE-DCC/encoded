@@ -235,3 +235,11 @@ def test_no_runtype_dependency(testapp, file_no_runtype, platform3):
     testapp.post_json('/file', file_no_runtype, status=422)
     file_no_runtype.update({'run_type': 'single-ended'})
     testapp.post_json('/file', file_no_runtype, status=201)
+
+def test_hotspots_prefix_dependency_requirement(testapp, file_hotspots_prefix, file_hotspots1_reference):
+    testapp.post_json('/file', file_hotspots_prefix, status=422)
+    file_hotspots_prefix.update({'output_type': 'hotspots1 reference'})
+    testapp.post_json('/file', file_hotspots_prefix, status=201)
+    testapp.post_json('/file', file_hotspots1_reference, status=422)
+    file_hotspots1_reference.update({'hotspots_prefix': 'mm10'})
+    testapp.post_json('/file', file_hotspots1_reference, status=201)

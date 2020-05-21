@@ -1395,3 +1395,65 @@ def file_19(testapp, experiment, award, lab, replicate_url, platform1):
         'read_length': 76
     }
     return item
+
+
+@pytest.fixture
+def file_hotspots_prefix(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'tsv',
+        'md5sum': 'eeb9325f54a0ec4991c4a3df0ed35f20',
+        'output_type': 'hotspots',
+        'hotspots_prefix': 'GRCh38',
+        'file_size': 8888,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',
+    }
+    return item
+
+@pytest.fixture
+def file_hotspots1_reference(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'tsv',
+        'md5sum': 'ae26b3d8e556703291282149e3ae894f',
+        'output_type': 'hotspots1 reference',
+        'file_size': 8888,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',
+    }
+    return item
+
+
+@pytest.fixture
+def file_dnase_enrichment(testapp, experiment_dnase, award, lab):
+    return {
+        'dataset': experiment_dnase['uuid'],
+        'lab': lab['@id'],
+        'file_size': 13459832,
+        'award': award['@id'],
+        'assembly': 'GRCh38',
+        'file_format': 'bed',
+        'file_format_type': 'bed3+',
+        'output_type': 'enrichment',
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+
+
+@pytest.fixture
+def file_chip_enrichment(testapp, experiment_chip_CTCF, award, lab):
+    return {
+        'dataset': experiment_chip_CTCF['uuid'],
+        'lab': lab['@id'],
+        'file_size': 151823,
+        'award': award['@id'],
+        'assembly': 'mm10',
+        'file_format': 'bed',
+        'file_format_type': 'bed3+',
+        'output_type': 'enrichment',
+        'md5sum': 'a2d0dde9ea1cbc8ec24d74c413a897f1',
+        'status': 'in progress'
+    }

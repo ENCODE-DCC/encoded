@@ -280,6 +280,14 @@
                 }
             }
         },
+        "hotspots_prefix": {
+            "comment": "Only files with output_type of hotspots1 reference or hotspots2 reference can have hotspots_prefix specified.",
+            "properties": {
+                "output_type": {
+                    "enum": ["hotspots1 reference", "hotspots2 reference"]
+                }
+            }
+        },
         "paired_end": {
             "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
             "oneOf": [
@@ -454,6 +462,14 @@
                     }
                 },
                 {
+                    "required": ["hotspots_prefix"],
+                    "properties": {
+                        "output_type": {
+                            "enum": ["hotspots1 reference", "hotspots2 reference"]
+                        }
+                    }
+                },
+                {
                     "required": ["restriction_enzymes"],
                     "properties": {
                         "output_type": {
@@ -473,7 +489,7 @@
                     "not": {
                         "properties": {
                             "output_type": {
-                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads"]
+                                "enum": ["reads", "index reads", "restriction enzyme site locations", "subreads", "hotspots1 reference", "hotspots2 reference"]
                             }
                         }
                     }
@@ -955,7 +971,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "accession": {
             "accessionType": "FF"
@@ -1353,6 +1369,7 @@
                         "candidate enhancers",
                         "candidate promoters",
                         "chromatin interactions",
+                        "chromosomes reference",
                         "consensus DNase hypersensitivity sites (cDHSs)",
                         "mapping quality thresholded chromatin interactions",
                         "conservative IDR thresholded peaks",
@@ -1365,6 +1382,7 @@
                         "enhancer validation",
                         "enrichment",
                         "exon quantifications",
+                        "FDR cut rate",
                         "female genome index",
                         "female genome reference",
                         "filtered indels",
@@ -1372,6 +1390,7 @@
                         "filtered regions",
                         "filtered SNPs",
                         "fold change over control",
+                        "footprints",
                         "gene alignments",
                         "gene quantifications",
                         "genome compartments",
@@ -1379,6 +1398,8 @@
                         "genome reference",
                         "gRNAs",
                         "hotspots",
+                        "hotspots1 reference",
+                        "hotspots2 reference",
                         "idat green channel",
                         "idat red channel",
                         "index reads",
@@ -1399,6 +1420,8 @@
                         "minus strand signal of all reads",
                         "minus strand signal of unique reads",
                         "mitochondria blacklisted regions",
+                        "mitochondrial genome index",
+                        "mitochondrial genome reference",
                         "motif model",
                         "negative control regions",
                         "nested topologically associated domains",
@@ -1726,6 +1749,15 @@
             "title": "Preferred default file",
             "description": "A flag to indicate whether this file should be used by default for purposes such as downloading, visualization, etc.",
             "type": "boolean"
+        },
+        "hotspots_prefix": {
+            "title": "Hotspots prefix",
+            "description": "Prefix to be checked and specified only for hotspots1 reference and hotspots2 reference files.",
+            "type": "string",
+            "enum": [
+                "GRCh38",
+                "mm10"
+                ]
         }
     },
     "columns": {
@@ -1888,6 +1920,7 @@
         "relative replication signal": "signal",
 
         "enrichment": "quantification",
+        "FDR cut rate": "quantification",
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
@@ -1907,6 +1940,7 @@
         "differential splicing quantifications": "quantification",
 
         "hotspots": "annotation",
+        "footprints": "annotation",
         "long range chromatin interactions": "annotation",
         "chromatin interactions": "annotation",
         "mapping quality thresholded chromatin interactions": "annotation",
@@ -1987,6 +2021,11 @@
         "sequence adapters": "reference",
         "elements reference": "reference",
         "personalized genome assembly": "reference",
+        "chromosomes reference": "reference",
+        "hotspots1 reference": "reference",
+        "hotspots2 reference": "reference",
+        "mitochondrial genome index": "reference",
+        "mitochondrial genome reference": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",
