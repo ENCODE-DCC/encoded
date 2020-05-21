@@ -218,7 +218,7 @@ export class DefaultDateSelectorFacet extends React.Component {
             startMonth: undefined, // chosen start month
             endYear: undefined, // chosen end year
             endMonth: undefined, // chosen end month
-            activeFacet: 'date_released', // for toggle, either 'date_released' or 'date_submitted'
+            activeFacet: '', // for toggle, either 'date_released' or 'date_submitted'
         };
 
         this.selectYear = this.selectYear.bind(this);
@@ -231,6 +231,7 @@ export class DefaultDateSelectorFacet extends React.Component {
     }
 
     componentDidMount() {
+        this.setState({ activeFacet: this.props.facet.field });
         this.setActiveFacetParameters(true);
     }
 
@@ -418,9 +419,86 @@ export class DefaultDateSelectorFacet extends React.Component {
 
     render() {
         const { facet, results, queryString } = this.props;
-        const searchBase = `?${queryString}&`;
+        let searchBase = `?${queryString}&`;
         const field = this.state.activeFacet;
         const activeFacet = results.facets.filter(f => f.field === this.state.activeFacet)[0];
+        let disableDateReleased = false;
+        let disableDateSubmitted = false;
+        // filterFlag is true to indicate that we need to display filters
+        let filterFlag = false;
+        // missingField indicates which field to disable (date_released or date_submitted) if one field is not disabled
+        let missingField = null;
+
+        // Check which of date released and date submitted might be disabled, either for lack of data or because of !=* filter
+        if ((queryString.indexOf('date_released!=*') > -1) || !(results.facets.filter(f => f.field === 'date_released').length > 0)) {
+            disableDateReleased = true;
+            missingField = 'date_released';
+        }
+        if ((queryString.indexOf('date_submitted!=*') > -1) || !(results.facets.filter(f => f.field === 'date_submitted').length > 0)) {
+            disableDateSubmitted = true;
+            missingField = 'date_submitted';
+        }
+
+        // If date released and/or date submitted has a !=* filter, determine link(s) to delete the filter(s)
+        let deleteSubmittedFilter = '';
+        let deleteReleasedFilter = '';
+        let missingFilter = '';
+        if (queryString.indexOf('date_submitted!=*') > -1) {
+            filterFlag = true;
+            missingFilter = 'date_submitted';
+            const parsedUrl = url.parse(searchBase);
+            const query = new QueryString(parsedUrl.query);
+            query.deleteKeyValue('date_submitted');
+            deleteSubmittedFilter = `?${query.format()}`;
+            searchBase = deleteSubmittedFilter;
+        }
+        if (queryString.indexOf('date_released!=*') > -1) {
+            filterFlag = true;
+            missingFilter = 'date_released';
+            const parsedUrl = url.parse(searchBase);
+            const query = new QueryString(parsedUrl.query);
+            query.deleteKeyValue('date_released');
+            deleteReleasedFilter = `?${query.format()}`;
+        }
+
+        // If both date released and date submitted are disabled and at least one is disabled by a !=* filter, display the filter(s) only
+        if (disableDateReleased && disableDateSubmitted && (facet.field === missingFilter) && filterFlag) {
+            return (
+                <div className="facet date-selector-facet">
+                    <h5>Date range selection</h5>
+                    <div className="filter-container">
+                        {deleteReleasedFilter ?
+                            <React.Fragment>
+                                <div className="filter-hed">Selected filter for date released:</div>
+                                <a href={deleteReleasedFilter} className="negation-filter">
+                                    <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
+                                </a>
+                            </React.Fragment>
+                        : null}
+                        {deleteSubmittedFilter ?
+                            <React.Fragment>
+                                <div className="filter-hed">Selected filter for date submitted:</div>
+                                <a href={deleteSubmittedFilter} className="negation-filter">
+                                    <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
+                                </a>
+                            </React.Fragment>
+                        : null}
+                    </div>
+                </div>
+            );
+        // If both date released and date submitted are disabled but there are no filters (both have no data), display no facet
+        } else if (disableDateReleased && disableDateSubmitted && !filterFlag) {
+            return null;
+        }
+
+        // If we are not disabling either date released nor date submitted, only display the facet for date released
+        if (!disableDateReleased && !disableDateSubmitted && facet.field === 'date_submitted') {
+            return null;
+        }
+        // If one of date_released and date_submitted is disabled, only display the facet for the one that is not disabled
+        if ((disableDateReleased && facet.field === 'date_released') || (disableDateSubmitted && facet.field === 'date_submitted')) {
+            return null;
+        }
 
         const daysInEndMonth = dayjs(`${this.state.endYear}-${this.state.endMonth}`, 'YYYY-MM').daysInMonth();
 
@@ -447,10 +525,26 @@ export class DefaultDateSelectorFacet extends React.Component {
             }
         }
 
-        if (((activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+        if ((activeFacet && (activeFacet.terms.length > 0) && activeFacet.terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className={`facet date-selector-facet ${facet.field === 'date_released' ? 'display-date-selector' : ''}`}>
                     <h5>Date range selection</h5>
+                    {(queryString.indexOf('date_released!=*') > -1) ?
+                        <div className="filter-container">
+                            <div className="filter-hed">Selected filter for date released:</div>
+                            <a href={deleteReleasedFilter} className="negation-filter">
+                                <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
+                            </a>
+                        </div>
+                    : null}
+                    {(queryString.indexOf('date_submitted!=*') > -1) ?
+                        <div className="filter-container">
+                            <div className="filter-hed">Selected filter for date submitted:</div>
+                            <a href={deleteSubmittedFilter} className="negation-filter">
+                                <div className="filter-link"><i className="icon icon-times-circle" /> *</div>
+                            </a>
+                        </div>
+                    : null}
                     {existingFilter.length > 0 ?
                         <div className="selected-date-range">
                             <div>Selected range: </div>
@@ -461,21 +555,29 @@ export class DefaultDateSelectorFacet extends React.Component {
                     : null}
 
                     <div className="date-selector-toggle-wrapper">
-                        <div className="date-selector-toggle"><input
-                            type="radio"
-                            name="released"
-                            value="released"
-                            checked={this.state.activeFacet === 'date_released'}
-                            onChange={this.toggleDateFacet}
-                        />Released
+                        <div className="date-selector-toggle">
+                            <input
+                                type="radio"
+                                name="released"
+                                value="released"
+                                id="released-radio-button"
+                                checked={this.state.activeFacet === 'date_released'}
+                                onChange={this.toggleDateFacet}
+                                disabled={missingField === 'date_released'}
+                            />
+                            <label htmlFor="released-radio-button" id="released-radio-button-label">Released</label>
                         </div>
-                        <div className="date-selector-toggle"><input
-                            type="radio"
-                            name="submitted"
-                            value="submitted"
-                            checked={this.state.activeFacet === 'date_submitted'}
-                            onChange={this.toggleDateFacet}
-                        />Submitted
+                        <div className="date-selector-toggle">
+                            <input
+                                type="radio"
+                                name="submitted"
+                                value="submitted"
+                                id="submitted-radio-button"
+                                checked={this.state.activeFacet === 'date_submitted'}
+                                onChange={this.toggleDateFacet}
+                                disabled={missingField === 'date_submitted'}
+                            />
+                            <label htmlFor="submitted-radio-button" id="submitted-radio-button-label">Submitted</label>
                         </div>
                     </div>
                     <button className="date-selector-btn" onClick={() => this.handleQuickLink(searchBaseForDateRange, field)}>

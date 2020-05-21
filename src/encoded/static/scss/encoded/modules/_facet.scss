@@ -377,6 +377,9 @@ fieldset.facet {
         input {
             margin: 5px;
         }
+        input[disabled] + label {
+            color: #9F9F9F;
+        }
         margin-right: 10px;
     }
     margin-bottom: 10px;
