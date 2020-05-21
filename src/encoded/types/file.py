@@ -210,73 +210,6 @@ class File(Item):
             return "nt"
 
     @calculated_property(schema={
-        "title": "Biological replicates",
-        "description": "The biological replicate numbers associated with this file.",
-        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
-        "type": "array",
-        "items": {
-            "title": "Biological replicate number",
-            "description": "The identifying number of each relevant biological replicate",
-            "type": "integer",
-        }
-    })
-    def biological_replicates(self, request, registry, root, replicate=None):
-        if replicate is not None:
-            replicate_obj = traverse(root, replicate)['context']
-            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
-            return [replicate_biorep]
-
-        conn = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
-        dataset_uuid = self.__json__(request)['dataset']
-        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        replicates = {
-            props['replicate']
-            for props in obj_props
-            if props['dataset'] == dataset_uuid and 'replicate' in props
-        }
-        bioreps = {
-            conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']
-            for uuid in replicates
-        }
-        return sorted(bioreps)
-
-    @calculated_property(schema={
-        "title": "Technical replicates",
-        "description": "The technical replicate numbers associated with this file.",
-        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
-        "type": "array",
-        "items": {
-            "title": "Technical replicate number",
-            "description": "The identifying number of each relevant technical replicate",
-            "type": "string"
-        }
-    })
-    def technical_replicates(self, request, registry, root, replicate=None):
-        if replicate is not None:
-            replicate_obj = traverse(root, replicate)['context']
-            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
-            replicate_techrep = replicate_obj.__json__(request)['technical_replicate_number']
-            tech_rep_string = str(replicate_biorep)+"_"+str(replicate_techrep)
-            return [tech_rep_string]
-
-        conn = registry[CONNECTION]
-        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
-        dataset_uuid = self.__json__(request)['dataset']
-        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        replicates = {
-            props['replicate']
-            for props in obj_props
-            if props['dataset'] == dataset_uuid and 'replicate' in props
-        }
-        techreps = {
-            str(conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']) +
-            '_' + str(conn.get_by_uuid(uuid).__json__(request)['technical_replicate_number'])
-            for uuid in replicates
-        }
-        return sorted(techreps)
-
-    @calculated_property(schema={
         "title": "Output category",
         "description": "The overall catagory of the file content.",
         "comment": "Do not submit.  This field is calculated from output_type_output_category.",
@@ -367,26 +300,6 @@ class File(Item):
         except HTTPNotFound:
             return None
         return 's3://{bucket}/{key}'.format(**external)
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Assay term name",
-            "type": "string",
-            "notSubmittable": True
-        }
-    )
-    def assay_term_name(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'assay_term_name',
-                    dataset
-                )
-            )
-        )
 
     @calculated_property(
         condition='dataset',
