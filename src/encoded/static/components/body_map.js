@@ -252,8 +252,9 @@ class BodyMap extends React.Component {
         }
         // Initialize state, "selectedOrgan", to be combined organ and system terms
         this.state = {
-            selectedOrgan: organTerms || [],
+            selectedOrgan: [organTerms] || [],
         };
+        console.log(this.state.selectedOrgan);
         this.svgClick = this.svgClick.bind(this);
         this.chooseOrgan = this.chooseOrgan.bind(this);
         this.clearOrgans = this.clearOrgans.bind(this);
@@ -605,7 +606,7 @@ class BodyMap extends React.Component {
                     <div className="body-list-inner">
                         {Object.keys(SystemsList).map(b =>
                             <button
-                                className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
+                                className={`body-list-element ${this.state.selectedOrgan.includes(b) ? 'active' : ''}`}
                                 id={b}
                                 onClick={e => this.chooseOrgan(e)}
                                 onMouseEnter={e => highlightOrgan(e)}
@@ -632,7 +633,7 @@ class BodyMap extends React.Component {
                         <div className="body-list-inner">
                             {Object.keys(BodyList).map(b =>
                                 <button
-                                    className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
+                                    className={`body-list-element ${this.state.selectedOrgan.includes(b) ? 'active' : ''}`}
                                     id={b}
                                     onClick={e => this.chooseOrgan(e)}
                                     onMouseEnter={e => highlightOrgan(e)}
