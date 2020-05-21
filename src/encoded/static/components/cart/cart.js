@@ -5,7 +5,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
@@ -823,6 +825,66 @@ FileFacets.defaultProps = {
 
 
 /**
+ * Display a button that links to experiment search results. This *only* works for Experiments, not
+ * FCCs for now.
+ */
+const MAX_SEARCHABLE_DATASETS = 125; // Maximum number of datasets for search-results links.
+const CartDatasetSearch = ({ elements }, reactContext) => {
+    const [isWarningVisible, setIsWarningVisible] = React.useState(false);
+
+    // * For now only include experiments. Might need to expand this in the future.
+    const experimentElements = elements.filter(element => element.includes('/experiments/'));
+
+    // Called when the user clicks the Dataset Search button.
+    const handleButtonClick = () => {
+        if (experimentElements.length > MAX_SEARCHABLE_DATASETS) {
+            setIsWarningVisible(true);
+        } else {
+            const datasetsQuery = experimentElements.map(element => `@id=${encodedURIComponent(element)}`).join('&');
+            const query = `/search/?type=Experiment&${datasetsQuery}`;
+            reactContext.navigate(query);
+        }
+    };
+
+    // Called when the user closes the warning modal.
+    const handleCloseClick = () => {
+        setIsWarningVisible(false);
+    };
+
+    // Only display the Dataset Search button if we have at least one experiment in the cart.
+    if (experimentElements.length > 0) {
+        return (
+            <React.Fragment>
+                <button onClick={handleButtonClick} className="btn btn-sm btn-info btn-inline">Dataset search</button>
+                {isWarningVisible ?
+                    <Modal closeModal={handleCloseClick}>
+                        <ModalHeader title={<h4>Cart dataset search results</h4>} closeModal={handleCloseClick} />
+                        <ModalBody>
+                            Viewing cart dataset search results requires {MAX_SEARCHABLE_DATASETS} datasets
+                            or fewer. This cart contains {elements.length} datasets.
+                        </ModalBody>
+                        <ModalFooter
+                            closeModal={handleCloseClick}
+                        />
+                    </Modal>
+                : null}
+            </React.Fragment>
+        );
+    }
+    return null;
+};
+
+CartDatasetSearch.propTypes = {
+    /** Dataset @ids in the cart */
+    elements: PropTypes.array.isRequired,
+};
+
+CartDatasetSearch.contextTypes = {
+    navigate: PropTypes.func,
+};
+
+
+/**
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
@@ -842,6 +904,7 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fi
         : null}
         {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
         {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClearButton /> : null}
+        <CartDatasetSearch elements={elements} />
     </div>
 );
 

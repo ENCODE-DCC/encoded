@@ -123,7 +123,7 @@ class CartClearButtonComponent extends React.Component {
         if (elements.length > 0) {
             return (
                 <React.Fragment>
-                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm">Clear cart</button>
+                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm btn-inline">Clear cart</button>
                     {this.state.modalOpen ?
                         <CartClearModal closeClickHandler={this.handleCloseClick} />
                     : null}
