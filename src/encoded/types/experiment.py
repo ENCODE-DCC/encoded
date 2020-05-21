@@ -192,7 +192,7 @@ class Experiment(Dataset,
 
     matrix = {
         'y': {
-            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'group_by': 'biosample_ontology.term_name',
             'label': 'Biosample',
         },
         'x': {
@@ -212,7 +212,7 @@ class Experiment(Dataset,
 
     reference_epigenome = {
         'y': {
-            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'group_by': 'biosample_ontology.term_name',
             'label': 'Biosample',
         },
         'x': {

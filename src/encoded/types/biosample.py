@@ -257,6 +257,7 @@ class Biosample(Item):
         "type": "string",
     })
     def summary(self, request,
+                item_type=None,
                 organism=None,
                 donors=None,
                 age_display=None,
@@ -328,10 +329,10 @@ class Biosample(Item):
         if biosample_ontology:
             biosample_type_object = request.embed(biosample_ontology, '@@object')
             biosample_term_name = biosample_type_object['term_name']
-            biosample_type = biosample_type_object['classification']
         else:
             biosample_term_name = None
-            biosample_type = None
+
+        biosample_type = item_type
 
         biosample_dictionary = generate_summary_dictionary(
             request,
@@ -443,7 +444,7 @@ def generate_summary_dictionary(
         if sex != 'mixed' and len(sex) == 1:
             dict_of_phrases['sex'] = sex[0]
         else:
-            dict_of_phrases['sex'] = 'mixed'
+            dict_of_phrases['sex'] = 'mixed sex'
 
     if preservation_method is not None:
         if len(preservation_method) == 1:
@@ -452,17 +453,13 @@ def generate_summary_dictionary(
     if biosample_term_name is not None:
         dict_of_phrases['sample_term_name'] = str(biosample_term_name)
 
-    if biosample_type is not None and \
-        biosample_type not in ['whole organisms', 'whole organism']:
+    if biosample_type is not None:
         dict_of_phrases['sample_type'] = biosample_type
 
     term_name = ''
 
     if 'sample_term_name' in dict_of_phrases:
-        if dict_of_phrases['sample_term_name'] == 'multi-cellular organism':
-            term_name += 'whole organisms'
-        else:
-            term_name += dict_of_phrases['sample_term_name']
+        term_name += dict_of_phrases['sample_term_name']
 
     dict_of_phrases['experiment_term_phrase'] = term_name
 
@@ -507,30 +504,19 @@ def generate_summary_dictionary(
             pluralize(post_treatment_time, post_treatment_time_units)
             )
 
-    if ('sample_type' in dict_of_phrases and
-        dict_of_phrases['sample_type'] != 'cell line') or \
-        ('sample_type' not in dict_of_phrases):
-        phrase = ''
+    phrase = ''
 
-        stage_phrase = ''
-        if 'life_stage' in dict_of_phrases:
-            stage_phrase += ' ' + dict_of_phrases['life_stage']
+    stage_phrase = ''
+    if 'life_stage' in dict_of_phrases:
+        phrase += ' ' + dict_of_phrases['life_stage']
 
-        phrase += stage_phrase.replace("embryonic", "embryo")
-
-        if 'sex' in dict_of_phrases and 'age_display' in dict_of_phrases:
-            if dict_of_phrases['sex'] == 'mixed':
-                phrase +=' (' + dict_of_phrases['sex'] + ' sex, ' + dict_of_phrases['age_display'] + ')'
-            else:
-                phrase +=' (' + dict_of_phrases['sex'] + ', ' + dict_of_phrases['age_display'] + ')'
-        elif 'sex' in dict_of_phrases:
-            if dict_of_phrases['sex'] == 'mixed':
-                phrase += ' (' + dict_of_phrases['sex'] + ' sex' + ')'
-            else:
-                phrase += ' (' + dict_of_phrases['sex'] + ')'
-        elif 'age_display' in dict_of_phrases:
-            phrase += ' (' + dict_of_phrases['age_display'] + ')'
-        dict_of_phrases['sex_stage_age'] = phrase
+    if 'sex' in dict_of_phrases and 'age_display' in dict_of_phrases:
+        phrase +=' (' + dict_of_phrases['sex'] + ', ' + dict_of_phrases['age_display'] + ')'
+    elif 'sex' in dict_of_phrases:
+        phrase += ' (' + dict_of_phrases['sex'] + ')'
+    elif 'age_display' in dict_of_phrases:
+        phrase += ' (' + dict_of_phrases['age_display'] + ')'
+    dict_of_phrases['sex_stage_age'] = phrase
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []

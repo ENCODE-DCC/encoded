@@ -1,7 +1,7 @@
 [
     {
         "accession": "ENCBS356AAA",
-        "biosample_ontology": "tissue_UBERON_0000006",
+        "biosample_ontology": "UBERON_0000006",
         "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
         "dbxrefs": [
             "UCSC-ENCODE-cv:PanIsletD"
@@ -20,7 +20,7 @@
     },
     {
         "accession": "ENCBS492ENC",
-        "biosample_ontology": "tissue_UBERON_0000006",
+        "biosample_ontology": "UBERON_0000006",
         "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
@@ -33,7 +33,7 @@
     },
     {
         "accession": "ENCBS493ENC",
-        "biosample_ontology": "tissue_UBERON_0000006",
+        "biosample_ontology": "UBERON_0000006",
         "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
@@ -49,7 +49,7 @@
         "aliases": [
             "thomas-gingeras:097WC"
         ],
-        "biosample_ontology": "tissue_UBERON_0000948",
+        "biosample_ontology": "UBERON_0000948",
         "date_obtained": "2012-12-01",
         "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
         "dbxrefs": [
@@ -74,7 +74,7 @@
         ],
         "accession": "ENCBS278TPS",
         "source": "peggy-farnham",
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "31db042c-9844-467d-a725-ba3a4d007039",
         "derived_from": [
@@ -89,7 +89,7 @@
         ],
         "accession": "ENCBS804RUL",
         "source": "peggy-farnham",
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "9213cd74-b065-4f36-8346-800fe10f56ff",
         "derived_from": [
@@ -102,7 +102,7 @@
         "aliases": [
             "gtex:ENC-1LVAN-061-SM-IP2F3"
         ],
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
@@ -118,7 +118,7 @@
             "john-stamatoyannopoulos:TC9599",
             "gtex:ENC-1LGRB-010-CR89G"
         ],
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
@@ -133,7 +133,7 @@
         "aliases": [
             "gtex:ENC-1JKYN-031-SM-9JLPD-1"
         ],
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "description": "RNA Evaluation human tissue adrenal gland 1-2 microRNA-seq from Mortazavi",
         "source": "michael-snyder",
         "status": "released",
@@ -150,7 +150,7 @@
             "john-stamatoyannopoulos:TC9581",
             "gtex:ENC-1K2DA-026-IP2FC"
         ],
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "source": "michael-snyder",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
@@ -162,7 +162,7 @@
     },
     {
         "accession": "ENCBS123AAA",
-        "biosample_ontology": "tissue_UBERON_0000948",
+        "biosample_ontology": "UBERON_0000948",
         "date_obtained": "2013-01-31",
         "description": "mouse dev matrix biosample_1",
         "source": "len-pennacchio",
@@ -175,7 +175,7 @@
     },
     {
         "accession": "ENCBS123AAB",
-        "biosample_ontology": "tissue_UBERON_0000948",
+        "biosample_ontology": "UBERON_0000948",
         "date_obtained": "2013-01-31",
         "description": "mouse dev matrix biosample_2",
         "source": "len-pennacchio",
@@ -188,7 +188,7 @@
     },
     {
         "accession": "ENCBS123AAC",
-        "biosample_ontology": "tissue_UBERON_0000948",
+        "biosample_ontology": "UBERON_0000948",
         "date_obtained": "2013-01-31",
         "description": "mouse dev matrix biosample_3",
         "source": "len-pennacchio",
@@ -201,7 +201,7 @@
     },
     {
         "accession": "ENCBS123AAD",
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "date_obtained": "2013-01-31",
         "description": "mouse dev matrix biosample_4",
         "source": "len-pennacchio",
@@ -214,7 +214,7 @@
     },
     {
         "accession": "ENCBS123AAE",
-        "biosample_ontology": "tissue_UBERON_0001891",
+        "biosample_ontology": "UBERON_0001891",
         "date_obtained": "2013-01-31",
         "description": "mouse dev matrix biosample_5",
         "source": "len-pennacchio",

@@ -1,7 +1,7 @@
 [
     {
         "accession": "ENCBS222SCS",
-        "biosample_ontology": "organoid_NTR_0002319",
+        "biosample_ontology": "NTR_0002319",
         "description": "Brain organoid",
         "post_differentiation_time": 80,
         "post_differentiation_time_units": "hour",

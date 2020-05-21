@@ -164,10 +164,6 @@ class CalculatedBiosampleSummary:
                                 biosampleObject['biosample_ontology'],
                                 '@@object'
                             )
-                            if biosampleTypeObject.get('classification') in [
-                                    'in vitro differentiated cells']:
-                                drop_age_sex_flag = True
-
                             organismObject = None
                             if 'organism' in biosampleObject:
                                 organismObject = request.embed(biosampleObject['organism'],
@@ -225,7 +221,6 @@ class CalculatedBiosampleSummary:
                                 biosampleObject.get('life_stage'),
                                 biosampleObject.get('sex'),
                                 biosampleTypeObject.get('term_name'),
-                                biosampleTypeObject.get('classification'),
                                 biosampleObject.get('starting_amount'),
                                 biosampleObject.get('starting_amount_units'),
                                 biosampleObject.get('depleted_in_term_name'),
