@@ -33,7 +33,11 @@
         "fragmentation_duration_time_units": ["fragmentation_duration_time", "fragmentation_methods"],
         "fragmentation_duration_time": ["fragmentation_duration_time_units", "fragmentation_methods"],
         "product_id": ["source"],
-        "lot_id": ["source", "product_id"]
+        "lot_id": ["source", "product_id"],
+        "average_fragment_size": {"not": {"required": ["size_range"]}},
+        "size_range": {"not": {"required": ["average_fragment_size"]}},
+        "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},
+        "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}}
     },
     "properties": {
         "schema_version": {
@@ -355,6 +359,25 @@
             "description": "The measured size range of the purified nucleic acid, in bp.",
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+        },
+        "average_fragment_size": {
+            "title": "Average fragment size",
+            "description": "The average size of a fragment in the library, in bp.",
+            "type": "number",
+            "minimum": 0
+        },
+        "fragment_length_CV": {
+            "title": "Coefficient of variation of library fragment length",
+            "description": "The coefficient of variation for the size distribution of library fragments expressed as a percentage.",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "fragment_length_SD": {
+            "title": "Standard deviation in library fragment size",
+            "description": "The standard deviation for the size distribution of library fragments.",
+            "type": "number",
+            "minimum": 0
         },
         "queried_RNP_size_range": {
             "title": "Queried RNP size range",

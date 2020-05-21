@@ -204,3 +204,21 @@ def library_2_chip(testapp, lab, award, biosample_human_2):
         'nucleic_acid_term_name': 'DNA'
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def library_size_range(library):
+    item = library.copy()
+    item.update({
+        'size_range': '100-800',
+    })
+    return item
+
+
+@pytest.fixture
+def library_fragment_length_CV(library):
+    item = library.copy()
+    item.update({
+        'fragment_length_CV': 68,
+    })
+    return item
