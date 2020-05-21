@@ -176,6 +176,13 @@
                             "required": ["modified_site_nonspecific"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["binding"]
+                        }
+                    }
                 }
             ]
         },
@@ -385,6 +392,13 @@
                         },
                         "purpose": {
                             "enum": ["in vivo enhancer characterization"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["binding"]
                         }
                     }
                 }
