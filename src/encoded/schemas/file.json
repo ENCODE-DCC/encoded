@@ -2026,7 +2026,7 @@
         "vcf": ".vcf.gz",
         "wig": ".wig.gz",
         "sam": ".sam.gz",
-        "txt": ".txt"
+        "txt": ".txt.gz"
     },
      "boost_values": {
          "accession": 20.0,
