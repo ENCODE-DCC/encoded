@@ -129,10 +129,8 @@
         @at-root #{&}--header {
             display: flex;
             flex-direction: row;
-            
-            i {
-                float: right;
-            }
+            cursor: pointer;
+            justify-content: space-between;
         }  
     }
 

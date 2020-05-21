@@ -803,6 +803,18 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     const [bottomShadingVisible, setBottomShadingVisible] = React.useState(false);
     const [typeaheadTerm, setTypeaheadTerm] = React.useState('');
     const scrollingElement = React.useRef(null);
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
+
+    React.useEffect(() => {
+        let facetList = sessionStorage.getItem('expanded-facets');
+        if (!facetList) {
+            facetList = new Set();
+            sessionStorage.setItem('expanded-facets', '');
+        } else {
+            facetList = new Set(facetList.split(','));
+        }
+        setExpandFacets(facetList);
+    }, []);
 
     // Retrieve reference to the registered facet title component for this facet.
     const TitleComponent = FacetRegistry.Title.lookup(facet.field);
@@ -887,13 +899,29 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         setTypeaheadTerm(event.target.value);
     };
 
+    const handleExpanderClick = (status, field) => {
+        const facetList = `${(sessionStorage.getItem('expanded-facets') || '')}, ${field}`;
+        const expandItems = new Set(facetList.split(','));
+        expandItems[!status ? 'add' : 'delete'](field);
+        sessionStorage.setItem('expanded-facets', [...expandItems].join());
+        setExpandFacets(expandItems);
+    };
+
     return (
         <div className="facet">
-            <div className="facet__expander--header">
+            <div
+                className="facet__expander--header"
+                tabIndex="0"
+                role="button"
+                aria-label={facet.field}
+                aria-pressed={expandedFacets.has(facet.field)}
+                onClick={() => handleExpanderClick(expandedFacets.has(facet.field), facet.field)}
+                onKeyDown={() => handleExpanderClick(expandedFacets.has(facet.field), facet.field)}
+            >
                 <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
-                <i className={`icon icon-chevron-${expanded ? 'up' : 'down'}`} />
+                <i className={`icon icon-chevron-${expandedFacets.has(facet.field) ? 'up' : 'down'}`} />
             </div>
-            <div className={`facet-content facet-${expanded ? 'open' : 'close'}`}>
+            <div className={`facet-content facet-${expandedFacets.has(facet.field) ? 'open' : 'close'}`}>
                 <SelectedFilters selectedTerms={relevantFilters} />
                 {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
                 <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
@@ -901,20 +929,20 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                         {(filteredTerms.length === 0) ?
                             <div className="searcherror">
                             Try a different search term for results.
-                        </div>
+                            </div>
                         :
                             <React.Fragment>
-                            <FacetTerms
-                                facet={facet}
-                                results={results}
-                                mode={mode}
-                                relevantFilters={relevantFilters}
-                                pathname={pathname}
-                                queryString={queryString}
-                                filteredTerms={filteredTerms}
-                                onFilter={onFilter}
-                                allowNegation={allowNegation}
-                            />
+                                <FacetTerms
+                                    facet={facet}
+                                    results={results}
+                                    mode={mode}
+                                    relevantFilters={relevantFilters}
+                                    pathname={pathname}
+                                    queryString={queryString}
+                                    filteredTerms={filteredTerms}
+                                    onFilter={onFilter}
+                                    allowNegation={allowNegation}
+                                />
                             <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
                             <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
                         </React.Fragment>
