@@ -81,7 +81,7 @@ sudo -u root chown -R postgres:postgres /var/lib/postgresql/.aws/
 
 # Add ssh keys to postgres user
 sudo -u postgres mkdir /var/lib/postgresql/.ssh
-sudo -u root cp /home/ubuntu/.ssh/authorized_keys2 /var/lib/postgresql/.ssh/authorized_keys2
+sudo -u root cp /home/ubuntu/.ssh/authorized_keys /var/lib/postgresql/.ssh/authorized_keys
 sudo -u root chown -R postgres:postgres /var/lib/postgresql/.ssh/
 
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Setup postgres configuration"

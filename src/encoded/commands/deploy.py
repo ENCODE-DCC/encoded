@@ -313,13 +313,17 @@ def _get_instances_tag_data(main_args, build_type_template_name):
     tag_output = subprocess.check_output(
         ['git', 'tag', '--contains', instances_tag_data['commit']]
     ).strip().decode()
-    if tag_output:
-        if tag_output == main_args.branch:
+    for tag in tag_output.split('\n'):
+        if tag == main_args.branch:
             is_tag = True
     is_branch = False
-    git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
-    if subprocess.check_output(git_cmd).strip():
-        is_branch = True
+    if not is_tag:
+        git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
+        branch_output = subprocess.check_output(git_cmd).decode()
+        for branch in branch_output.split('\n'):
+            branch_name = branch.strip().replace('origin/', '')
+            if branch_name == main_args.branch:
+                is_branch = True
     if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
     else:
@@ -382,7 +386,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'HOME': '/srv/encoded',
         'INDEX_PRIMARY': 'false',
         'INDEX_VIS': 'false',
-        'INDEX_REGION': 'false',
+        'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -437,7 +441,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'CLUSTER_NAME': main_args.cluster_name,
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
-                'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
             })
             if main_args.no_indexing:
                 data_insert.update({
@@ -450,7 +453,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             data_insert.update({
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
-                'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
             })
         else: 
             # 'app-es-pg' == "Demo"
@@ -808,6 +810,7 @@ def main():
         # helps vars for release and building amis
         for helper_var in helper_vars:
             print(helper_var)
+    print('Done')
 
 
 def _parse_args():
@@ -946,6 +949,7 @@ def _parse_args():
     parser.add_argument(
         '--full-build',
         action='store_true',
+        default=True, # Defaulting to True b/c amis are more overhead than needed at the moment.
         help='Flag to indicate building without an ami'
     )
     parser.add_argument(
@@ -983,29 +987,29 @@ def _parse_args():
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-05-07 11:35:19.969054: encdami-demo-2020-05-07_113519
-        'demo': 'ami-0884a78563a247d68',
-        # encdami-es-wait-head build on 2020-05-07 11:36:15.977775: encdami-es-wait-head-2020-05-07_113615
-        'es-wait-head': 'ami-0b8a90f05b2092a84',
-        # encdami-es-wait-node build on 2020-05-07 11:36:27.262571: encdami-es-wait-node-2020-05-07_113627
-        'es-wait-node': 'ami-0f57760c69fc419da',
+        # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
+        'demo': 'ami-02ee743e10e6bca42',
+        # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
+        'es-wait-head': 'ami-04637560d9b9c4cb9',
+        # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
+        'es-wait-node': 'ami-03c53286feed8040f',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-05-07 11:45:42.512362: encdami-frontend-2020-05-07_114542
-        'frontend': 'ami-05969da7a46dde92b',
+        # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
+        'frontend': 'ami-004367e4b7cdfc264',
 
         # Production Private AMIs: Add comments to each build
 
-        # encdami-es-wait-head build on 2020-05-07 11:52:43.647275: encdami-es-wait-head-2020-05-07_115243
-        'es-wait-head-prod': 'ami-04047abf6a55f5a87',
-        # encdami-es-wait-node build on 2020-05-07 11:55:37.892057: encdami-es-wait-node-2020-05-07_115537
-        'es-wait-node-prod': 'ami-05debb5639a4e6d90',
+        # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
+        'es-wait-head-prod': 'ami-03530bdf05c08bf32',
+        # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
+        'es-wait-node-prod': 'ami-0de906a6f1894057b',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head-prod': None,
         'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-05-07 11:55:26.838030: encdami-frontend-2020-05-07_115526
-        'frontend-prod': 'ami-0f894e7d2e9c042eb',
+        # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
+        'frontend-prod': 'ami-0e13a1f4c36d19ac1',
     }
     if not args.image_id:
         # Select ami by build type.  
@@ -1100,9 +1104,9 @@ def _parse_args():
             args.role = 'candidate'
     # do_batchupgrade is default True for everything but rcs and candidates
     if args.do_batchupgrade is None:
-        args.do_batchupgrade = 'n'
+        args.do_batchupgrade = 'y'
         if args.role in ['rc', 'candidate']:
-            args.do_batchupgrade = 'y'
+            args.do_batchupgrade = 'n'
     if args.do_batchupgrade[0].lower() == 'y':
         args.do_batchupgrade = True
     else:

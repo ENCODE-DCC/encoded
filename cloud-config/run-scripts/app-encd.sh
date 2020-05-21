@@ -73,8 +73,8 @@ sudo -u root chown -R encoded:encoded ~encoded/.aws
 
 # Add ssh keys to encoded user
 sudo -u encoded mkdir /srv/encoded/.ssh
-sudo -u root cp /home/ubuntu/.ssh/authorized_keys2 /srv/encoded/.ssh/authorized_keys2
-sudo -u root chown -R encoded:encoded /srv/encoded/.ssh/authorized_keys2
+sudo -u root cp /home/ubuntu/.ssh/authorized_keys /srv/encoded/.ssh/authorized_keys
+sudo -u root chown -R encoded:encoded /srv/encoded/.ssh/authorized_keys
 
 ## Wait for psql to come up
 $ENCD_SCRIPTS_DIR/app-pg-status.sh
