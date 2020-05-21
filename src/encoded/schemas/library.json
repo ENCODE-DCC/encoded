@@ -37,7 +37,7 @@
         "average_fragment_size": {"not": {"required": ["size_range"]}},
         "size_range": {"not": {"required": ["average_fragment_size"]}},
         "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},
-        "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}}
+        "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}},
         "adapters": {
             "oneOf": [
                 {
