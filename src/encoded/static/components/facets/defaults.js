@@ -675,6 +675,20 @@ DefaultTermName.propTypes = {
 
 
 /**
+ * Default component to render the name of a selected term from the search result filters. Used for
+ * the "Selected filters" links, and the term gets rendered inside an <a>.
+ */
+export const DefaultSelectedTermName = ({ filter }) => (
+    <span>{filter.term}</span>
+);
+
+DefaultSelectedTermName.propTypes = {
+    /** facet.filters object for the selected term we're rendering */
+    filter: PropTypes.object.isRequired,
+};
+
+
+/**
  * Default component to render a single term within the default facet.
  */
 export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
@@ -818,22 +832,27 @@ Typeahead.propTypes = {
  * Display links to clear the terms currently selected in the facet. Display nothing if no terms
  * have been selected.
  */
-const SelectedFilters = ({ selectedTerms }) => (
-    <React.Fragment>
-        {(selectedTerms.length > 0) ?
-            <div className="filter-container">
-                <div className="filter-hed">Selected filters:</div>
-                {selectedTerms.map(filter =>
-                    <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
-                        <div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div>
-                    </a>
-                )}
-            </div>
-        : null}
-    </React.Fragment>
-);
+const SelectedFilters = ({ facet, selectedTerms }) => {
+    const SelectedTermNameComponent = FacetRegistry.SelectedTermName.lookup(facet.field);
+    return (
+        <React.Fragment>
+            {(selectedTerms.length > 0) ?
+                <div className="filter-container">
+                    <div className="filter-hed">Selected filters:</div>
+                    {selectedTerms.map(filter =>
+                        <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
+                            <div className="filter-link"><i className="icon icon-times-circle" /> <SelectedTermNameComponent filter={filter} /></div>
+                        </a>
+                    )}
+                </div>
+            : null}
+        </React.Fragment>
+    );
+};
 
 SelectedFilters.propTypes = {
+    /** Relevant `facet` object from `facets` array in `results` */
+    facet: PropTypes.object.isRequired,
     /** Search-result filters relevant to the facet */
     selectedTerms: PropTypes.array.isRequired,
 };
@@ -992,7 +1011,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     return (
         <div className="facet">
             <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
-            <SelectedFilters selectedTerms={relevantFilters} />
+            <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
             {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
             <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
                 <ul onScroll={handleScroll} ref={scrollingElement}>
