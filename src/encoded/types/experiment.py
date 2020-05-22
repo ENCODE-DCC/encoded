@@ -13,8 +13,7 @@ from .base import (
 from .dataset import Dataset
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
-    CalculatedVisualize,
-    CalculatedBiosampleSummary
+    CalculatedVisualize
 )
 
 @collection(
@@ -26,8 +25,7 @@ from .shared_calculated_properties import (
     })
 class Experiment(Dataset,
                  CalculatedAssaySynonyms,
-                 CalculatedVisualize,
-                 CalculatedBiosampleSummary):
+                 CalculatedVisualize):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + []
