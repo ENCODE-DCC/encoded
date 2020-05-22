@@ -1,6 +1,5 @@
 from snovault import calculated_property
 from snovault.util import ensurelist
-from .assay_data import assay_terms
 from urllib.parse import urljoin
 from encoded.vis_defines import (
     vis_format_url,
@@ -71,34 +70,6 @@ class CalculatedFileSetAssay:
     def assay_term_name(self, request, related_files):
         return request.select_distinct_values(
             'dataset.assay_term_name', *related_files)
-
-    @calculated_property(define=True, condition='assay_term_name', schema={
-        "title": "Assay term ID",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def assay_term_id(self, request, assay_term_name):
-        return [
-            assay_terms.get(x)
-            for x in assay_term_name
-            if assay_terms.get(x)
-        ]
-
-
-class CalculatedAssayTermID:
-    @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay term ID",
-        "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
-        "type": "string",
-        "comment": "Calculated based on the choice of assay_term_name"
-    })
-    def assay_term_id(self, request, assay_term_name):
-        term_id = None
-        if assay_term_name in assay_terms:
-            term_id = assay_terms.get(assay_term_name)
-        return term_id
 
 
 class CalculatedVisualize:
@@ -267,117 +238,3 @@ class CalculatedBiosampleSummary:
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
-
-
-class CalculatedAssaySlims:
-    @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay type",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assay_slims(self, registry, assay_term_name):
-        assay_term_id = assay_terms.get(assay_term_name, None)
-        if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id]['assay']
-        return []
-
-
-class CalculatedAssayTitle:
-    @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay title",
-        "type": "string",
-    })
-    def assay_title(self, request, registry, assay_term_name,
-                    control_type=None, replicates=None, target=None):
-        # This is the preferred name in generate_ontology.py if exists
-        assay_term_id = assay_terms.get(assay_term_name, None)
-        if assay_term_id in registry['ontology']:
-            preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
-                                                                     assay_term_name)
-            if preferred_name == 'RNA-seq' and replicates is not None:
-                for rep in replicates:
-                    replicate_object = request.embed(rep, '@@object')
-                    if replicate_object['status'] == 'deleted':
-                        continue
-                    if 'libraries' in replicate_object:
-                        preferred_name = 'total RNA-seq'
-                        for lib in replicate_object['libraries']:
-                            library_object = request.embed(lib, '@@object')
-                            if 'size_range' in library_object and \
-                            library_object['size_range'] == '<200':
-                                preferred_name = 'small RNA-seq'
-                                break
-                            elif 'depleted_in_term_name' in library_object and \
-                                'polyadenylated mRNA' in library_object['depleted_in_term_name']:
-                                preferred_name = 'polyA minus RNA-seq'
-                                break
-                            elif 'nucleic_acid_term_name' in library_object and \
-                                library_object['nucleic_acid_term_name'] == 'polyadenylated mRNA':
-                                preferred_name = 'polyA plus RNA-seq'
-                                break
-                        else:
-                            continue
-                        break
-            elif preferred_name == 'ChIP-seq':
-                preferred_name = 'Control ChIP-seq'
-                if not control_type and target is not None:
-                    target_object = request.embed(target,'@@object')
-                    target_categories = target_object['investigated_as']
-                    if 'histone' in target_categories:
-                        preferred_name = 'Histone ChIP-seq'
-                    else:
-                        preferred_name = 'TF ChIP-seq'
-            elif control_type and assay_term_name == 'eCLIP':
-                preferred_name = 'Control eCLIP'
-            elif control_type == 'control' and assay_term_name in ['MPRA', 'CRISPR screen', 'STARR-seq']:
-                preferred_name = 'Control {}'.format(assay_term_name)
-            return preferred_name or assay_term_name
-        return assay_term_name
-
-
-class CalculatedCategorySlims:
-    @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay category",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def category_slims(self, registry, assay_term_name):
-        assay_term_id = assay_terms.get(assay_term_name, None)
-        if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id]['category']
-        return []
-
-
-class CalculatedTypeSlims:
-    @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay type slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def type_slims(self, registry, assay_term_name):
-        assay_term_id = assay_terms.get(assay_term_name, None)
-        if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id]['types']
-        return []
-
-
-class CalculatedObjectiveSlims:
-    @calculated_property(condition='assay_term_name', schema={
-        "title": "Assay objective",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def objective_slims(self, registry, assay_term_name):
-        assay_term_id = assay_terms.get(assay_term_name, None)
-        if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id]['objectives']
-        return []
-

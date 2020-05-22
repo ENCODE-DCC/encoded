@@ -13,17 +13,9 @@ from .base import (
 from .dataset import Dataset
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
-    CalculatedAssayTermID,
     CalculatedVisualize,
-    CalculatedBiosampleSummary,
-    CalculatedAssaySlims,
-    CalculatedAssayTitle,
-    CalculatedCategorySlims,
-    CalculatedTypeSlims,
-    CalculatedObjectiveSlims
+    CalculatedBiosampleSummary
 )
-
-from .assay_data import assay_terms
 
 @collection(
     name='experiments',
@@ -34,14 +26,8 @@ from .assay_data import assay_terms
     })
 class Experiment(Dataset,
                  CalculatedAssaySynonyms,
-                 CalculatedAssayTermID,
                  CalculatedVisualize,
-                 CalculatedBiosampleSummary,
-                 CalculatedAssaySlims,
-                 CalculatedAssayTitle,
-                 CalculatedCategorySlims,
-                 CalculatedTypeSlims,
-                 CalculatedObjectiveSlims):
+                 CalculatedBiosampleSummary):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + []
