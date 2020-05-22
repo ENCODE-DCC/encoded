@@ -8,11 +8,6 @@ from .base import (
     paths_filtered_by_status,
 )
 
-from .ab_lot_status_data import (
-    ab_states,
-    ab_state_details
-)
-
 @collection(
     name='antibodies',
     unique_key='accession',
