@@ -13,8 +13,6 @@ from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
-    CalculatedFileSetAssay,
-    CalculatedFileSetBiosample,
     CalculatedVisualize
 )
 
@@ -163,94 +161,14 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
 
-class FileSet(Dataset):
-    item_type = 'file_set'
-    base_types = ['FileSet'] + Dataset.base_types
-    schema = load_schema('encoded:schemas/file_set.json')
-    embedded = Dataset.embedded
-
-    @calculated_property(schema={
-        "title": "Contributing files",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "File",
-        },
-    })
-    def contributing_files(self, request, original_files, related_files, status):
-        files = set(original_files + related_files)
-        derived_from = set()
-        for path in files:
-            properties = request.embed(path, '@@object?skip_calculated=true')
-            derived_from.update(
-                paths_filtered_by_status(request, properties.get('derived_from', []))
-            )
-        outside_files = list(derived_from.difference(files))
-        if status in ('released'):
-            return paths_filtered_by_status(
-                request, outside_files,
-                include=('released',),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, outside_files,
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
-
-    @calculated_property(define=True, schema={
-        "title": "Files",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "File",
-        },
-    })
-    def files(self, request, original_files, related_files, status):
-        if status in ('released'):
-            return paths_filtered_by_status(
-                request, chain(original_files, related_files),
-                include=('released',),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, chain(original_files, related_files),
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
-
-    @calculated_property(schema={
-        "title": "Revoked files",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "File",
-        },
-    })
-    def revoked_files(self, request, original_files, related_files):
-        return [
-            path for path in chain(original_files, related_files)
-            if item_is_revoked(request, path)
-        ]
-
-    @calculated_property(define=True, schema={
-        "title": "Genome assembly",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assembly(self, request, original_files, related_files, status):
-        return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
-
-
 @collection(
-    name='references',
+    name='reference-file-sets',
     unique_key='accession',
     properties={
-        'title': "Reference file set",
+        'title': "Reference file sets",
         'description': 'A set of reference files used by ENCODE.',
     })
-class Reference(FileSet):
-    item_type = 'reference'
-    schema = load_schema('encoded:schemas/reference.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset', 'donor']
-
+class ReferenceFileSet(Dataset):
+    item_type = 'reference_file_set'
+    schema = load_schema('encoded:schemas/reference_file_set.json')
+    embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset', 'donor']

@@ -33,45 +33,6 @@ class CalculatedAssaySynonyms: #dataset and experiment
         return list(syns)
 
 
-class CalculatedFileSetBiosample: #dataset only
-    @calculated_property(condition='related_files', schema={
-        "title": "Biosample ontology",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "BiosampleType"
-        },
-    })
-    def biosample_ontology(self, request, related_files):
-        return request.select_distinct_values(
-            'dataset.biosample_ontology', *related_files)
-
-    @calculated_property(condition='related_files', schema={
-        "title": "Organism",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "Organism"
-        },
-    })
-    def organism(self, request, related_files):
-        return request.select_distinct_values(
-            'library.biosample.organism', *related_files)
-
-
-class CalculatedFileSetAssay: #dataset only
-    @calculated_property(define=True, condition='related_files', schema={
-        "title": "Assay name",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def assay_term_name(self, request, related_files):
-        return request.select_distinct_values(
-            'dataset.assay_term_name', *related_files)
-
-
 class CalculatedVisualize:
     @calculated_property(condition='hub', category='page', schema={
         "title": "Visualize Data",

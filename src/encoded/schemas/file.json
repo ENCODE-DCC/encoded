@@ -109,8 +109,7 @@
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
             "comment": "Required. See dataset.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Dataset"
+            "type": "string"
         },
         "status": {
             "title": "Status",

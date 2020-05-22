@@ -1,7 +1,7 @@
 {
-    "title": "Reference",
-    "description": "Schema for submitting metadata for a reference set.",
-    "id": "/profiles/reference.json",
+    "title": "Reference File Set",
+    "description": "Schema for submitting metadata for a reference file set.",
+    "id": "/profiles/reference_file_set.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],
@@ -17,8 +17,7 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "mixins.json#/documents" },
-        { "$ref": "file_set.json#/properties" }
+        { "$ref": "mixins.json#/documents" }
     ],
     "dependencies": {
         "status": {
@@ -92,6 +91,19 @@
                 "type": "string",
                 "comment": "See software_version.json for available identifiers.",
                 "linkTo": "SoftwareVersion"
+            }
+        },
+        "related_files": {
+            "title": "Additional data files",
+            "description": "List of data files to be associated with the dataset.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "File"
             }
         }
     },

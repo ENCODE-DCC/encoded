@@ -34,7 +34,7 @@ ORDER = [
     'organoid',
     'platform',
     'experiment',
-    'reference',
+    'reference_file_set',
     'library',
     'software',
     'software_version',
@@ -555,7 +555,7 @@ PHASE1_PIPELINES = {
     'publication': [
         remove_keys('datasets'),
     ],
-    'reference': [
+    'reference_file_set': [
         remove_keys('related_files', 'software_used'),
     ],
     'file': [
@@ -602,7 +602,7 @@ PHASE2_PIPELINES = {
     'mouse_donor': [
         skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
-    'reference': [
+    'reference_file_set': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
     ],
     'publication': [

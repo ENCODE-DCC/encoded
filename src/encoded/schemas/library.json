@@ -71,7 +71,7 @@
                 "description": "A specific spike-ins type dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "Reference"
+                "linkTo": "ReferenceFileSet"
             }
         },
         "plate_id": {
