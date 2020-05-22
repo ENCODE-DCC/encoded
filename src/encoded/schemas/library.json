@@ -37,7 +37,35 @@
         "average_fragment_size": {"not": {"required": ["size_range"]}},
         "size_range": {"not": {"required": ["average_fragment_size"]}},
         "fragment_length_CV": {"not": {"required": ["fragment_length_SD"]}},
-        "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}}
+        "fragment_length_SD": {"not": {"required": ["fragment_length_CV"]}},
+        "adapters": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "adapters": {
+                            "items": {
+                                "required": ["file"],
+                                "not": {
+                                    "required": ["sequence"]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "adapters": {
+                            "items": {
+                                "required": ["sequence"],
+                                "not": {
+                                    "required": ["file"]
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
@@ -449,7 +477,6 @@
                 "title": "Sequencing adapter",
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["file"],
                 "properties": {
                     "type": {
                         "title": "Adapter type",
@@ -465,6 +492,12 @@
                         "description": "One file with adapter sequence(s).",
                         "type": "string",
                         "linkTo": "File"
+                    },
+                    "sequence": {
+                        "title": "Adapter sequence",
+                        "description": "The sequence of an adapter used for library construction",
+                        "type": "string",
+                        "pattern": "^[ACUNTGacuntg]+$"
                     }
                 }
             }
