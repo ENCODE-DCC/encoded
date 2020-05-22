@@ -13,13 +13,14 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "frip": {
             "title": "FRiP score of peaks",
@@ -57,31 +58,6 @@
             "title": "Average peak size",
             "type": "number",
             "minimum": 0
-        },
-        "fri_dhs": {
-            "title": "Fraction of DHS reads",
-            "description": "Fraction of reads in universal DHS regions",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-        },
-        "fri_blacklist": {
-            "title": "Fraction of reads in blacklist regions",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-        },
-        "fri_prom": {
-            "title": "Fraction of reads in promoter regions",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-        },
-        "fri_enh": {
-            "title": "Fraction of reads in enhancer regions",
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
         },
         "peak_width_distribution_plot": {
             "title": "Peak width distribution plot",
