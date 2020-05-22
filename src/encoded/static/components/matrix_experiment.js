@@ -188,6 +188,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         // button.
         matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-spacer`;
         matrixRow += 1;
+        const biosampleOntologyTermNames = renderedData.map(subCategoryBucket => mapSubCategoryQueries(subCategory, subCategoryBucket.key));
         return accumulatingTable.concat(
             [
                 {
@@ -209,7 +210,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${searchUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${searchUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}${biosampleOntologyTermNames ? `&${biosampleOntologyTermNames.join('&')}` : ''}`}>
                                     {subCategorySum}
                                 </a>
                             :
