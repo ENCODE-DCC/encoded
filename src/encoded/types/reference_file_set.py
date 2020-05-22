@@ -11,10 +11,6 @@ from .base import (
 
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
-from .shared_calculated_properties import (
-    CalculatedAssaySynonyms,
-    CalculatedVisualize
-)
 
 from itertools import chain
 import datetime
@@ -36,21 +32,22 @@ def calculate_assembly(request, files_list, status):
     return list(assembly)
 
 
-@abstract_collection(
-    name='datasets',
+@collection(
+    name='reference-file-sets',
     unique_key='accession',
     properties={
-        'title': "Datasets",
-        'description': 'Listing of all types of dataset.',
+        'title': "Reference file sets",
+        'description': 'A set of reference files used by ENCODE.',
     })
-class Dataset(Item):
-    base_types = ['Dataset'] + Item.base_types
+class ReferenceFileSet(Item):
+    item_type = 'reference_file_set'
+    schema = load_schema('encoded:schemas/reference_file_set.json')
     embedded = [
+        'software_used',
+        'software_used.software',
         'files',
         'revoked_files',
-        'submitted_by',
-        'lab',
-        'references'
+        'submitted_by'
     ]
     audit_inherit = [
         'original_files',
@@ -159,16 +156,3 @@ class Dataset(Item):
     })
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
-
-
-@collection(
-    name='reference-file-sets',
-    unique_key='accession',
-    properties={
-        'title': "Reference file sets",
-        'description': 'A set of reference files used by ENCODE.',
-    })
-class ReferenceFileSet(Dataset):
-    item_type = 'reference_file_set'
-    schema = load_schema('encoded:schemas/reference_file_set.json')
-    embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset', 'donor']

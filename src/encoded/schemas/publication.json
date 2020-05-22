@@ -89,7 +89,7 @@
                 "description": "A datasets referred to by the publication.",
                 "comment": "See dataset.json for available identifiers.",
                 "type":  "string",
-                "linkTo": "Dataset"
+                "linkTo": "Experiment"
             }
         },
         "supplementary_data": {

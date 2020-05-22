@@ -10,11 +10,22 @@ from .base import (
     paths_filtered_by_status,
     SharedItem
 )
-from .dataset import Dataset
-from .shared_calculated_properties import (
-    CalculatedAssaySynonyms,
-    CalculatedVisualize
-)
+
+def item_is_revoked(request, path):
+    return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
+
+
+def calculate_assembly(request, files_list, status):
+    assembly = set()
+    viewable_file_status = ['released','in progress']
+
+    for path in files_list:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        if properties['status'] in viewable_file_status:
+            if 'assembly' in properties:
+                assembly.add(properties['assembly'])
+    return list(assembly)
+
 
 @collection(
     name='experiments',
@@ -23,12 +34,10 @@ from .shared_calculated_properties import (
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     })
-class Experiment(Dataset,
-                 CalculatedAssaySynonyms,
-                 CalculatedVisualize):
+class Experiment(Item):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
-    embedded = Dataset.embedded + []
+    embedded = []
     audit_inherit = []
     set_status_up = [
         'original_files',
@@ -38,11 +47,11 @@ class Experiment(Dataset,
     set_status_down = [
         'original_files',
     ]
-    rev = Dataset.rev.copy()
-    rev.update({
+    rev = {
         'superseded_by': ('Experiment', 'supersedes'),
-        'libraries': ('Library','experiment')
-    })
+        'libraries': ('Library','experiment'),
+        'original_files': ('File','dataset')
+    }
 
     @calculated_property(schema={
             "title": "Superseded by",
@@ -173,6 +182,145 @@ class Experiment(Dataset,
             analysis['genome_annotations'] = sorted(genome_annotations)
             updated_analyses.append(analysis)
         return analyses
+
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay synonyms",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_synonyms(self, registry, assay_term_id):
+        assay_term_id = ensurelist(assay_term_id)
+        syns = set()
+        for term_id in assay_term_id:
+            if term_id in registry['ontology']:
+                syns.update(registry['ontology'][term_id]['synonyms'] + [
+                    registry['ontology'][term_id]['name'],
+                ])
+        return list(syns)
+
+
+    @calculated_property(condition='hub', category='page', schema={
+        "title": "Visualize Data",
+        "type": "string",
+    })
+    def visualize(self, request, hub, accession, assembly, status, files):
+        hub_url = urljoin(request.resource_url(request.root), hub)
+        viz = {}
+        vis_assembly = set()
+        viewable_file_formats = ['bigWig', 'bigBed', 'hic']
+        viewable_file_status = ['released', 'in progress']
+        vis_assembly = {
+            properties['assembly']
+            for properties in files
+            if properties.get('file_format') in viewable_file_formats
+            if properties.get('status') in viewable_file_status
+            if 'assembly' in properties
+        }
+        for assembly_name in vis_assembly:
+            if assembly_name in viz:
+                continue
+            browsers = browsers_available(status, [assembly_name],
+                                          self.base_types, self.item_type,
+                                          files, accession, request)
+            if len(browsers) > 0:
+                viz[assembly_name] = browsers
+        if viz:
+            return viz
+        else:
+            return None
+
+    @calculated_property(schema={
+        "title": "Original files",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "File.dataset",
+        },
+        "notSubmittable": True,
+    })
+    def original_files(self, request, original_files):
+        return paths_filtered_by_status(request, original_files)
+
+    @calculated_property(schema={
+        "title": "Contributing files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "File",
+        },
+    })
+    def contributing_files(self, request, original_files, status):
+        derived_from = set()
+        for path in original_files:
+            properties = request.embed(path, '@@object?skip_calculated=true')
+            derived_from.update(
+                paths_filtered_by_status(request, properties.get('derived_from', []))
+            )
+        outside_files = list(derived_from.difference(original_files))
+        if status in ('released'):
+            return paths_filtered_by_status(
+                request, outside_files,
+                include=('released',),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, outside_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
+
+    @calculated_property(schema={
+        "title": "Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "File",
+        },
+    })
+    def files(self, request, original_files, status):
+        if status in ('released', 'archived'):
+            return paths_filtered_by_status(
+                request, original_files,
+                include=('released', 'archived'),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, original_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
+
+    @calculated_property(schema={
+        "title": "Revoked files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "File",
+        },
+    })
+    def revoked_files(self, request, original_files):
+        return [
+            path for path in original_files
+            if item_is_revoked(request, path)
+        ]
+
+    @calculated_property(define=True, schema={
+        "title": "Genome assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, original_files, status):
+        return calculate_assembly(request, original_files, status)
+
+    @calculated_property(condition='assembly', schema={
+        "title": "Hub",
+        "type": "string",
+    })
+    def hub(self, request):
+        return request.resource_path(self, '@@hub', 'hub.txt')
 
     matrix = {
         'y': {
