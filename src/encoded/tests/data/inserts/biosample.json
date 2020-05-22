@@ -537,6 +537,22 @@
         "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
     },
     {
+        "accession": "ENCBS001MWO",
+        "award": "U54HG006997",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "description": "Mouse embryo",
+        "donor": "ENCDO015AAA",
+        "lab": "kevin-white",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "mouse_life_stage": "embryonic",
+        "model_organism_age": "14.5",
+        "model_organism_age_units": "day",
+        "model_organism_sex": "mixed",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "20d8e4b0-0fa6-4679-b25c-71e9293d9272"
+    },
+    {
         "_test": "has mouse life stage and depleted in term name and id",
         "accession": "ENCBS000MUS",
         "award": "U54HG006997",

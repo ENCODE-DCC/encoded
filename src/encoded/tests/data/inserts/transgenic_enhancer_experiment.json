@@ -1,0 +1,46 @@
+[
+    {
+        "_test": "mouse transgenic enhancer1 assay",
+        "accession": "ENCSR507TEA",
+        "assay_term_name": "transgenic enhancer assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "biosamples": [
+            "ENCBS001MWO",
+            "ENCBS000MUS"
+        ],
+        "tissue_with_enhancer_activity": [
+            "eye (UBERON:0000970)",
+            "limb (UBERON:0002101)"
+        ],
+        "description": "Mouse transgenic enhancer1 experiment",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "date_submitted": "2019-12-20",
+        "date_released": "2020-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "aae07757-94a0-4bbd-8c87-b7d39a7ae02a"
+    },
+    {
+        "_test": "mouse transgenic enhancer2 assay",
+        "accession": "ENCSR514TEA",
+        "assay_term_name": "transgenic enhancer assay",
+        "award": "U54HG007004",
+        "biosample_ontology": "whole_organisms_UBERON_0000468",
+        "biosamples": [
+            "ENCBS001MWO",
+            "ENCBS000MUS"
+        ],
+        "tissue_with_enhancer_activity": [
+            "heart (UBERON:0000948)",
+            "neural tube (UBERON:0001049)"
+        ],
+        "description": "Mouse transgenic enhancer2 experiment",
+        "lab": "len-pennacchio",
+        "status": "in progress",
+        "date_submitted": "2019-12-30",
+        "date_released": "2020-01-15",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "a8ecafef-4d0f-4a42-8bb8-d85d3f76810b"
+    }
+]

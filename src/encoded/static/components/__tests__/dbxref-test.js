@@ -704,4 +704,23 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.at(1).prop('href')).toEqual('http://www.genecards.org/cgi-bin/carddisp.pl?gene=MXD1');
         });
     });
+
+    describe('Test VISTA', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['TransgenicEnhancerExperiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['VISTA:hs10', 'VISTA:mm1694']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id=10&organism_id=1');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id=1694&organism_id=2');
+        });
+    });
 });

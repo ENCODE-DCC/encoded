@@ -22,4 +22,4 @@ Feature: Biosamples
         And I wait for the content to load
         When I click the link to "/search/?type=Biosample&status=in+progress"
         Then I should see an element with the css selector "div.search-results"
-        And I should see "Showing 25 of 36 results"
+        And I should see "Showing 25 of 37 results"

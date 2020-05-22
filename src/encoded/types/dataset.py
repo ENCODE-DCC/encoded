@@ -13,14 +13,23 @@ from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssaySlims,
+    CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
+    CalculatedObjectiveSlims,
+    CalculatedTypeSlims,
     CalculatedVisualize
 )
+
+from .biosample import construct_biosample_summary
+
+from .shared_biosample import biosample_summary_information
 
 from itertools import chain
 import datetime
@@ -179,6 +188,100 @@ class Dataset(Item):
     })
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
+
+
+@collection(
+    name='transgenic-enhancer-experiments',
+    unique_key='accession',
+    properties={
+        'title': 'Transgenic enhancer experiments',
+        'description': 'Listing of Transgenic Enhancer Experiments',
+    })
+class TransgenicEnhancerExperiment(
+    Dataset,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssaySlims,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims):
+    item_type = 'transgenic_enhancer_experiment'
+    schema = load_schema('encoded:schemas/transgenic_enhancer_experiment.json')
+    embedded = Dataset.embedded + [
+        'biosample_ontology',
+        'biosamples',
+    ]
+    audit_inherit = [
+        'submitted_by',
+        'lab',
+        'award',
+        'documents.lab',
+    ]
+    set_status_up = [
+        'documents'
+    ]
+    set_status_down = []
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('TransgenicEnhancerExperiment', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "InVivoExperiment.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "string",
+    })
+    def biosample_summary(self, request, biosamples=None):
+        drop_age_sex_flag = False
+        dictionaries_of_phrases = []
+        if biosamples is not None:
+            for bs in biosamples:
+                biosampleObject = request.embed(bs, '@@object')
+                biosample_info = biosample_summary_information(request, biosampleObject)
+                biosample_summary_dictionary = biosample_info[0]
+                biosample_drop_age_sex_flag = biosample_info[1]
+                dictionaries_of_phrases.append(biosample_summary_dictionary)
+                if biosample_drop_age_sex_flag is True:
+                    drop_age_sex_flag is True
+
+        if drop_age_sex_flag is True:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'phase',
+                'fractionated',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in'
+            ]
+        else:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'phase',
+                'fractionated',
+                'sex_stage_age',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in'
+            ]
+        if len(dictionaries_of_phrases) > 0:
+            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
 class FileSet(Dataset):

@@ -39,6 +39,7 @@ ORDER = [
     'library',
     'experiment',
     'functional_characterization_experiment',
+    'transgenic_enhancer_experiment',
     'replicate',
     'annotation',
     'project',
@@ -600,6 +601,9 @@ PHASE1_PIPELINES = {
     'functional_characterization_experiment': [
         remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
+    'transgenic_enhancer_experiment': [
+        remove_keys('related_files', 'supersedes'),
+    ],
     'mouse_donor': [
         remove_keys('parent_strains', 'genetic_modifications'),
     ],
@@ -694,6 +698,9 @@ PHASE2_PIPELINES = {
     ],
     'functional_characterization_experiment': [
         skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
+    ],
+    'transgenic_enhancer_experiment': [
+        skip_rows_missing_all_keys('related_files', 'supersedes'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
