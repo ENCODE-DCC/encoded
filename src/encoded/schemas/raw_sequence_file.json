@@ -25,7 +25,6 @@
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/url"},
         {"$ref": "mixins.json#/uuid"},
-        {"$ref": "mixins.json#/submitter_comment"},
         {"$ref": "file.json#/properties"}
     ],
     "dependencies": {

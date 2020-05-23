@@ -49,12 +49,6 @@
             "accessionType": "BS"
         },
         "alternate_accessions": {
-            "title": "Alternate accessions",
-            "description": "Accessions previously assigned to objects that have been merged with this object.",
-            "comment": "Do not submit. Only admins are allowed to set or update this value.",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
             "items": {
                 "title": "Alternate Accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",
@@ -63,6 +57,13 @@
                 "format": "accession",
                 "pattern": "^(ENCBS\\d{3}[A-Z]{3})$|^(TSTBS\\d{6})$"
             }
+        },
+        "biosample_ontology": {
+            "title": "Biosample ontology",
+            "description": "An embeded property for linking to biosample type which describes the ontology of the biosample.",
+            "comment": "See biosample_type.json for available identifiers.",
+            "type": "string",
+            "linkTo": "BiosampleType"
         },
         "description": {
             "title": "Description",
@@ -170,10 +171,7 @@
             "title": "Derived from",
             "description": "",
             "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "type": "string"
-            }
+            "uniqueItems": true
         },
         "derivation_process": {
             "title": "",

@@ -10,7 +10,6 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/documents"},
-        {"$ref": "mixins.json#/submitter_comment"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/schema_version"},

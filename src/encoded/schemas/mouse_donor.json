@@ -11,7 +11,6 @@
     "mixinProperties": [
         {"$ref": "donor.json#/properties" },
         {"$ref": "mixins.json#/genetic_modifications" },
-        {"$ref": "mixins.json#/strains"},
         {"$ref": "mixins.json#/source" },
         {"$ref": "mixins.json#/references" },
         {"$ref": "mixins.json#/notes" },
@@ -24,7 +23,6 @@
         {"$ref": "mixins.json#/aliases" },
         {"$ref": "mixins.json#/accession" },
         {"$ref": "mixins.json#/uuid" },
-        {"$ref": "mixins.json#/submitter_comment" },
         {"$ref": "mixins.json#/schema_version" },
         {"$ref": "mixins.json#/dbxrefs"}
     ],
@@ -70,6 +68,24 @@
                 "type":  "string",
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
+        },
+        "strain_background": {
+            "title": "Strain background",
+            "description": "The specific parent strain designation of a non-human donor.",
+            "comment": "Strain background of fly/worm/mouse strains.",
+            "type": "string"
+        },
+        "strain_name": {
+            "title": "Strain name",
+            "description": "The specific strain designation of a non-human donor.",
+            "comment": "Strain name of fly/worm/mouse strains.",
+            "type": "string"
+        },
+        "genotype": {
+            "title": "Strain genotype",
+            "description": "The genotype of the strain according to accepted nomenclature conventions.",
+            "comment": "Genotype of fly/worm/mouse strains.",
+            "type": "string"
         }
     },
     "facets": {

@@ -18,12 +18,6 @@
             "accessionType": "DO"
         },
         "alternate_accessions": {
-            "title": "Alternate accessions",
-            "description": "Accessions previously assigned to objects that have been merged with this object.",
-            "comment": "Do not submit. Only admins are allowed to set or update this value.",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
             "items": {
                 "title": "Alternate accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",

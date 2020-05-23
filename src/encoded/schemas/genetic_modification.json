@@ -15,8 +15,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" }
+        { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
         "purpose": {
@@ -490,13 +489,6 @@
             "accessionType": "GM"
         },
         "alternate_accessions": {
-            "title": "Alternate accessions",
-            "description": "Accessions previously assigned to objects that have been merged with this object.",
-            "comment": "Do not submit. Only admins are allowed to set or update this value.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "permission": "import_items",
             "items": {
                 "title": "Alternate Accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",

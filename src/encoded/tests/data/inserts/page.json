@@ -8,14 +8,30 @@
             "rows": [
                 {
                     "cols": [
-                        {"blocks": ["#block1"]}
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
                     ]
                 },
                 {
                     "cols": [
-                        {"blocks": ["#block2"]},
-                        {"blocks": ["#block3"]},
-                        {"blocks": ["#block4"]}
+                        {
+                            "blocks": [
+                                "#block2"
+                            ]
+                        },
+                        {
+                            "blocks": [
+                                "#block3"
+                            ]
+                        },
+                        {
+                            "blocks": [
+                                "#block4"
+                            ]
+                        }
                     ]
                 }
             ],
@@ -53,7 +69,6 @@
         "news_excerpt": "367 modERN datasets released",
         "title": "367 modERN Datasets Released",
         "status": "released",
-        "award": "U41HG007355",
         "date_created": "2016-07-06T16:48:27.199407+00:00",
         "layout": {
             "blocks": [
@@ -79,7 +94,6 @@
     {
         "name": "test-section",
         "title": "Test Section",
-        "lab": "thomas-gingeras",
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "41c4ea4e-7a8e-4b91-8fe3-384d0adc8735",
@@ -89,7 +103,9 @@
                     "cols": [
                         {
                             "className": "col-md-12 class_override",
-                            "blocks": ["#block1"]
+                            "blocks": [
+                                "#block1"
+                            ]
                         }
                     ]
                 }
@@ -108,14 +124,17 @@
         "name": "subpage",
         "title": "Subpage",
         "status": "released",
-        "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "331928f7-d8f7-4ea6-b4e0-8d380fb22974",
         "layout": {
             "rows": [
                 {
                     "cols": [
-                        {"blocks": ["#block1"]}
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
                     ]
                 }
             ],
@@ -132,7 +151,6 @@
         "parent": "/test-section",
         "name": "subpage-in-progress",
         "title": "Subpage in progress not visible to users",
-        "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "status": "in progress",
         "uuid": "83173355-31ff-4ca7-a259-e4af0f3a0169",
@@ -140,7 +158,11 @@
             "rows": [
                 {
                     "cols": [
-                        {"blocks": ["#block1"]}
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
                     ]
                 }
             ],
@@ -156,7 +178,6 @@
     {
         "name": "permission-test",
         "title": "Permission Test",
-        "lab": "thomas-gingeras",
         "status": "in progress",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2efb5ffe-5a7b-4a44-9071-2e0651a566e0",
@@ -166,7 +187,9 @@
                     "cols": [
                         {
                             "className": "col-md-12 class_override",
-                            "blocks": ["#block1"]
+                            "blocks": [
+                                "#block1"
+                            ]
                         }
                     ]
                 }
@@ -189,7 +212,11 @@
             "rows": [
                 {
                     "cols": [
-                        {"blocks": ["#block1"]}
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
                     ]
                 }
             ],
@@ -230,19 +257,23 @@
         "title": "Release of Annotation File Sets",
         "status": "released",
         "news_excerpt": "111 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
-        "news_keywords": ["RNA binding", "Transcription"],
+        "news_keywords": [
+            "RNA binding",
+            "Transcription"
+        ],
         "date_created": "2016-08-26T16:14:06.471431+00:00"
     },
     {
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "uuid": "17ac540c-ef0a-4f99-940c-daf03cd04fd8",
         "title": "336 Annotation File Sets Released",
-        "award": "ENCODE2",
         "news": true,
         "status": "released",
         "name": "336-annotation-file-sets-released",
         "news_excerpt": "With collaborations from the DAC (Data Analysis Center), a total of 336 Annotation File Sets of promoter-like and enhancer-like regions have been released!",
-        "news_keywords": ["Proteomics"],
+        "news_keywords": [
+            "Proteomics"
+        ],
         "date_created": "2016-08-03T16:28:11.258613+00:00",
         "layout": {
             "blocks": [
@@ -273,7 +304,10 @@
         "status": "released",
         "name": "mouse-histone-chip-seq-dataset",
         "news_excerpt": "Mouse e10.5\u00a0histone ChIP-seq dataset\u00a0from from the Ren lab available.",
-        "news_keywords": ["DNA binding", "Genotyping"],
+        "news_keywords": [
+            "DNA binding",
+            "Genotyping"
+        ],
         "date_created": "2016-07-20T16:44:05.457718+00:00",
         "layout": {
             "blocks": [
@@ -304,7 +338,9 @@
         "status": "released",
         "name": "191-encode-experiments-released",
         "news_excerpt": "191 new ENCODE experiments released in July!",
-        "news_keywords": ["DNA accessibility"],
+        "news_keywords": [
+            "DNA accessibility"
+        ],
         "date_created": "2016-08-01T16:33:38.726440+00:00",
         "layout": {
             "blocks": [
@@ -335,7 +371,9 @@
         "status": "released",
         "name": "latest-ggr-release-reddy-lab",
         "news_excerpt": "Check out the latest GGR release from the Reddy lab.",
-        "news_keywords": ["DNA methylation"],
+        "news_keywords": [
+            "DNA methylation"
+        ],
         "date_created": "2016-07-21T16:37:40.681507+00:00",
         "layout": {
             "blocks": [
@@ -365,8 +403,11 @@
         "news": true,
         "status": "released",
         "name": "abstract-deadline-encode-users-meeting",
-        "news_excerpt": "Don’t miss the abstract deadline for ENCODE Users Meeting.",
-        "news_keywords": ["Conferences", "Encyclopedia"],
+        "news_excerpt": "Don\u2019t miss the abstract deadline for ENCODE Users Meeting.",
+        "news_keywords": [
+            "Conferences",
+            "Encyclopedia"
+        ],
         "date_created": "2016-04-15T16:37:40.681507+00:00",
         "layout": {
             "blocks": [
@@ -396,8 +437,10 @@
         "news": true,
         "status": "released",
         "name": "2016-encode-users-meeting",
-        "news_excerpt": "We’re happy to announce the second annual ENCODE Users Meeting.",
-        "news_keywords": ["Conferences"],
+        "news_excerpt": "We\u2019re happy to announce the second annual ENCODE Users Meeting.",
+        "news_keywords": [
+            "Conferences"
+        ],
         "date_created": "2016-04-15T16:37:40.681507+00:00",
         "layout": {
             "blocks": [
@@ -459,7 +502,6 @@
         "name": "2017-02-03-january-release"
     },
     {
-        "award": "/awards/U41HG007355/",
         "news_keywords": [
             "DNA accessibility",
             "DNA binding",
@@ -494,11 +536,9 @@
         },
         "date_created": "2017-01-20T23:02:58.968100+00:00",
         "name": "2017-01-20-garber-lab-release",
-        "lab": "/labs/barbara-wold/",
         "title": "Data Release: 66 new dendritic cell datasets from the Garber Lab"
     },
     {
-        "award": "/awards/U41HG007355/",
         "news_keywords": [
             "DNA binding"
         ],
@@ -529,7 +569,6 @@
         },
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "uuid": "d3c14e74-6392-4eda-9e92-56ceb08e55c1",
-        "lab": "/labs/kevin-white/",
         "news_excerpt": "We are pleased to announce that the modERN project has released 86 new Drosophila ChIP-seq data.",
         "title": "Data Release: 86 Drosophila ChIP-seq data",
         "status": "released",
@@ -540,11 +579,9 @@
         "news_excerpt": "We are pleased to announce that the Reddy Lab has released 48 new ChIP-seq experiments. ",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "name": "2016-12-20-new-chipseq-data",
-        "award": "/awards/U01HG007900/",
         "news": true,
         "date_created": "2016-12-21T00:06:46.395305+00:00",
         "title": "December releases: 48 ChIP-seq from the Reddy Lab",
-        "lab": "/labs/tim-reddy/",
         "layout": {
             "blocks": [
                 {
@@ -575,7 +612,6 @@
     },
     {
         "title": "Regarding new eCLIP processed data",
-        "lab": "/labs/gene-yeo/",
         "news": true,
         "layout": {
             "blocks": [
@@ -647,7 +683,6 @@
         "date_created": "2016-11-07T18:05:52.467197+00:00"
     },
     {
-        "award": "/awards/U54HG007004/",
         "news_excerpt": "72 ChIP-seq experiments from the Reddy Lab (Genomics of Gene Regulation project) have been released to the public.",
         "name": "2016-10-27-ggr-chipseq",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
@@ -683,7 +718,6 @@
         "status": "released"
     },
     {
-        "award": "/awards/U41HG007355/",
         "news_excerpt": "modERN ChIP-seq datasets from fly and worm",
         "name": "2016-09-30-modern-chipseq-released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
@@ -760,7 +794,6 @@
         "status": "released"
     },
     {
-        "award": "/awards/U41HG007355/",
         "news_excerpt": "Totaling to 198 modERN experiments released in May",
         "name": "2016-05-24-celegans-chipseq",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
@@ -869,7 +902,6 @@
         "name": "2016-03-22-users-meeting"
     },
     {
-        "award": "/awards/U01ES017155/",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news_keywords": [
             "DNA accessibility",
@@ -948,7 +980,6 @@
         "status": "released"
     },
     {
-        "award": "/awards/U01ES017155/",
         "news_excerpt": "To improve transparency about the changes to the objects that comprise the ENCODE metadata schema, we are publishing changelogs for each object",
         "name": "2015-05-28-changelogs",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
