@@ -2138,27 +2138,10 @@ export const compileAnalyses = (experiment, files) => {
 
 
 /**
- * Find the compiled analyses object matching the given assembly and annotation and return its
- * index in the compiled analyses array.
- * match found.
- * @param {string} assembly Assembly and annotation to map to an analyses title
- * @param {array} compiledAnalyses Compiled analyses for the experiment
- *
- * @return {object} Array index of compiled analyses object matching given assembly, or -1
- */
-const findCompiledAnalysisIndex = (assembly, compiledAnalyses) => (
-    // Find the matching assembly in compiledAnalyses, or the first otherwise.
-    compiledAnalyses.findIndex(analyses => analyses.assembly === assembly)
-);
-
-
-/**
  * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
  * the file association graph.
  */
-const AnalysesSelector = ({ assembly, analyses, handleAnalysesSelection }) => {
-    const selectedAnalysesIndex = findCompiledAnalysisIndex(assembly, analyses);
-
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection }) => {
     React.useEffect(() => {
         if (selectedAnalysesIndex === -1 && analyses.length > 0) {
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
@@ -2189,21 +2172,17 @@ const AnalysesSelector = ({ assembly, analyses, handleAnalysesSelection }) => {
 };
 
 AnalysesSelector.propTypes = {
-    /** Assembly and annotation */
-    assembly: PropTypes.string,
     /** Compiled analyses for the currently viewed dataset */
     analyses: PropTypes.array.isRequired,
+    /** Currently selected analysis index */
+    selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Called when the user chooses a pipeline lab from the menu */
     handleAnalysesSelection: PropTypes.func.isRequired,
 };
 
-AnalysesSelector.defaultProps = {
-    assembly: '',
-};
-
 
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, handleAnalysesSelection } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2235,7 +2214,7 @@ const TabPanelFacets = (props) => {
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
             {(currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0 ?
-                <AnalysesSelector assembly={filters.assembly && filters.assembly[0]} analyses={analyses} handleAnalysesSelection={handleAnalysesSelection} />
+                <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
             :
                 <React.Fragment>
                     <h4>Choose an assembly </h4>
@@ -2272,6 +2251,8 @@ TabPanelFacets.propTypes = {
     experimentType: PropTypes.string.isRequired,
     /** Compiled analyses objects from the currently viewed dataset */
     analyses: PropTypes.array,
+    /** Index of selected analysis */
+    selectedAnalysesIndex: PropTypes.number.isRequired,
     /** Function to call when the user changes the currently selected pipeline lab analyses */
     handleAnalysesSelection: PropTypes.func.isRequired,
 };
@@ -2320,8 +2301,16 @@ class FileGalleryRendererComponent extends React.Component {
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
-            /** Compiled dataset analyses object */
+            /** Sorted compiled dataset analyses objects filtered by available assemblies */
             compiledAnalyses: compileAnalyses(props.context, datasetFiles),
+            /** Index of currently/last selected `compiledAnalyses`. */
+            selectedAnalysesIndex: 0,
+        };
+
+        /** Store characteristics of currently selected analyses menu item */
+        this.selectedAnalysisProps = {
+            assembly: '', // Assembly/annotation of currently selected analysis
+            pipelineLab: '', // Pipeline lab of currently selected analysis
         };
 
         /** Used to see if related_files has been updated */
@@ -2348,6 +2337,8 @@ class FileGalleryRendererComponent extends React.Component {
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
         this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
         this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
+        this.saveSelectedAnalysesProps = this.saveSelectedAnalysesProps.bind(this);
+        this.findCompiledAnalysesIndex = this.findCompiledAnalysesIndex.bind(this);
         this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
         this.handleAnalysesSelection = this.handleAnalysesSelection.bind(this);
     }
@@ -2453,6 +2444,52 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     /**
+     * Sets the `selectedAnalysisProps` property to track the corresponding selected assembly/annotation
+     * and pipeline lab. Only pass in `compiledAnalyses` if it has been newly determined and might
+     * not yet have propogated to `this.state.compiledAnalyses`.
+     * @param {number} selectedAnalysesIndex New index of selected `compiledAnalyses`
+     * @param {array} compiledAnalyses Compiled analyses for the experiment if newly determined
+     */
+    saveSelectedAnalysesProps(selectedAnalysesIndex, compiledAnalyses) {
+        const localCompiledAnalyses = compiledAnalyses || this.state.compiledAnalyses;
+        const selectedAnalyses = localCompiledAnalyses[selectedAnalysesIndex];
+        this.selectedAnalysisProps = { assembly: selectedAnalyses.assembly, pipelineLab: selectedAnalyses.pipelineLab };
+    }
+
+    /**
+     * Find the compiled analyses object best matching the given assembly/annotation and the last
+     * selected pipeline lab and return its index into the compiled analyses array. Only pass in
+     * `compiledAnalyses` if it has been newly determined and might not yet have propogated to
+     * `this.state.compiledAnalyses`. If no appropriate compiled analyses can be found, return 0
+     * which selects the first compiled analyses object.
+     * @param {string} assembly Suggested assembly for matching an analysis
+     * @param {array} compiledAnalyses Compiled analyses for the experiment if newly determined
+     *
+     * @return {object} Array index of most appropriate compiled analyses object
+     */
+    findCompiledAnalysesIndex(assembly, compiledAnalyses) {
+        let compiledAnalysisIndex = 0;
+        const localCompiledAnalyses = compiledAnalyses || this.state.compiledAnalyses;
+
+        // Find all analyses matching the given assembly, then of those find one that also matches
+        // the pipeline lab.
+        const analysesWithMatchingAssembly = localCompiledAnalyses.filter(analysis => analysis.assembly === assembly);
+        if (analysesWithMatchingAssembly.length > 0) {
+            const matchingAnalysis = analysesWithMatchingAssembly.find(analysis => analysis.pipelineLab === this.selectedAnalysisProps.pipelineLab);
+            if (matchingAnalysis) {
+                // An analysis matched both assembly and pipeline lab. Get the index of its object
+                // in the array of compiled analyses.
+                compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === matchingAnalysis);
+            } else {
+                // An analysis matched just the assembly. Get the index of the first compiled
+                // analyses object with the matching assembly regardless of its pipeline lab.
+                compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === analysesWithMatchingAssembly[0]);
+            }
+        }
+        return compiledAnalysisIndex;
+    }
+
+    /**
      * Called when the set of relevant files might have changed based on a user action. This makes
      * sure the current browser still makes sense, and resets it if not.
      * @param {string} filterValue Optional <select> value for current assembly/annotation or
@@ -2549,22 +2586,18 @@ class FileGalleryRendererComponent extends React.Component {
                     if (context.analyses && context.analyses.length > 0) {
                         const availableAssemblies = Object.keys(assemblyList);
                         availableCompiledAnalyses = compileAnalyses(context, allFiles).filter(analysis => availableAssemblies.includes(analysis.assembly));
-                        this.setState({ compiledAnalyses: availableCompiledAnalyses });
                     }
-                    // Update the list of relevant compiled analyses.
                     if (availableCompiledAnalyses.length > 0) {
-                        let newAnalyses;
-                        let newAssembly;
+                        // Update the list of relevant compiled analyses and use it to select an
+                        // appropriate selected pipeline menu based on the current assembly and the
+                        // last-selected pipeline lab.
                         const currentAssembly = this.state.fileFilters.assembly[0];
-                        if (currentAssembly === 'All assemblies') {
-                            // Select the first analyses' assembly.
-                            newAnalyses = availableCompiledAnalyses[0];
-                            newAssembly = newAnalyses.assembly;
-                        } else {
-                            // Find the matching assembly in compiledAnalyses, or the first otherwise.
-                            newAnalyses = availableCompiledAnalyses.find(analyses => analyses.assembly === currentAssembly) || this.state.compiledAnalyses[0];
-                            newAssembly = newAnalyses.assembly;
-                        }
+                        const compiledAnalysesIndex = this.findCompiledAnalysesIndex(currentAssembly, availableCompiledAnalyses);
+                        this.saveSelectedAnalysesProps(compiledAnalysesIndex, availableCompiledAnalyses);
+                        this.setState({ compiledAnalyses: availableCompiledAnalyses, selectedAnalysesIndex: compiledAnalysesIndex });
+                        // Find the matching assembly in compiledAnalyses, or the first otherwise.
+                        const newAnalyses = availableCompiledAnalyses[compiledAnalysesIndex];
+                        const newAssembly = newAnalyses.assembly;
                         if (newAssembly !== currentAssembly) {
                             this.filterFiles(newAssembly, 'assembly');
                         }
@@ -2572,6 +2605,7 @@ class FileGalleryRendererComponent extends React.Component {
                         // Reset assembly filter if it is 'All assemblies' or is not in assemblyList
                         // Assembly is required for browser / graph and available assemblies may be different for graph and browser
                         // Do not reset if a particular assembly has already been chosen and it is an available option
+                        this.setState({ compiledAnalyses: [] });
                         const currentAssembly = this.state.fileFilters.assembly[0];
                         let newAssembly;
                         if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
@@ -2726,8 +2760,9 @@ class FileGalleryRendererComponent extends React.Component {
     // Called when the user selects a pipeline lab analyses.
     // @param {string} selectedAnalysesIndex Index in state.compiledAnalyses of newly selected pipeline
     handleAnalysesSelection(selectedAnalysesIndex) {
-        const selectedAnalyses = this.state.compiledAnalyses[selectedAnalysesIndex];
-        this.filterFiles(selectedAnalyses.assembly, 'assembly');
+        this.saveSelectedAnalysesProps(selectedAnalysesIndex);
+        this.setState({ selectedAnalysesIndex: +selectedAnalysesIndex });
+        this.filterFiles(this.state.compiledAnalyses[selectedAnalysesIndex].assembly, 'assembly');
     }
 
     render() {
@@ -2747,8 +2782,7 @@ class FileGalleryRendererComponent extends React.Component {
         if (this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
             // Filter renderable and visualizable files to include only those in the matching
             // analyses plus raw-data files. If no matching analyses, all files get included.
-            const selectedAnalysesIndex = findCompiledAnalysisIndex(this.state.selectedAssembly, this.state.compiledAnalyses);
-            const selectedAnalysis = this.state.compiledAnalyses[selectedAnalysesIndex === -1 ? 0 : selectedAnalysesIndex];
+            const selectedAnalysis = this.state.compiledAnalyses[this.state.selectedAnalysesIndex];
             const graphAnalysesFiles = graphIncludedFiles.filter(file => selectedAnalysis.files.includes(file['@id']));
             if (graphAnalysesFiles.length > 0) {
                 // Collect files that these files derive from, and add any missing ones to the
@@ -2842,6 +2876,7 @@ class FileGalleryRendererComponent extends React.Component {
                             clearFileFilters={this.clearFileFilters}
                             experimentType={this.experimentType}
                             analyses={this.state.compiledAnalyses}
+                            selectedAnalysesIndex={this.state.selectedAnalysesIndex}
                             handleAnalysesSelection={this.handleAnalysesSelection}
                         />
                         <TabPanel
