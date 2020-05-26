@@ -227,3 +227,13 @@ def cloning_sample(testapp):
         'uuid': '09e6c39a-92af-41fc-a535-7a86d5e9590a'
     }
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def epiblast(testapp):
+    item = {
+        'term_id': 'CL:0000352',
+        'term_name': 'epiblast cell',
+        'classification': 'in vitro differentiated cells',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]
