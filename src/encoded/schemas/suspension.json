@@ -20,6 +20,7 @@
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/source"},
         {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/description"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {},

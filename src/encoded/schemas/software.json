@@ -16,6 +16,7 @@
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/description" },
         { "$ref": "mixins.json#/attribution" }
     ],
     "properties": {
@@ -169,13 +170,6 @@
                     "mouseENCODE"
                 ]
             }
-        },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the software.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "formInput": "textarea"
         }
     },
     "facets": {

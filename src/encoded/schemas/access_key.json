@@ -6,6 +6,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/description" },
         { "$ref": "mixins.json#/uuid" }
     ],
     "type": "object",
@@ -28,13 +29,6 @@
             "type": "string",
             "linkTo": "User",
             "permission": "import_items"
-        },
-        "description": {
-            "title": "Description",
-            "type": "string",
-            "default": "",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
-            "formInput": "textarea"
         },
         "access_key_id": {
             "title": "Access key ID",

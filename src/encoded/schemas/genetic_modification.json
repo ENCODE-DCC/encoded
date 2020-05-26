@@ -15,6 +15,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/description" },
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
@@ -497,13 +498,6 @@
                 "format": "accession",
                 "pattern": "^(ENCGM\\d{3}[A-Z]{3})$|^(TSTGM\\d{6})$"
             }
-        },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the genetic modification.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "formInput": "textarea"
         },
         "donor": {
             "title": "Donor",

@@ -9,6 +9,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/url" },
+        { "$ref": "mixins.json#/description" },
         { "$ref": "mixins.json#/shared_status" }
     ],
     "type": "object",
@@ -31,11 +32,7 @@
             "uniqueKey": true
        },
         "description": {
-            "rdfs:subPropertyOf": "dc:description",
-            "title": "Description",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "formInput": "textarea"
+            "rdfs:subPropertyOf": "dc:description"
         },
         "start_date": {
             "title": "Start date",
