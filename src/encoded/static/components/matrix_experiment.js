@@ -106,7 +106,12 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         colTitleMap[colCategoryBucket.key] = colIndex;
         return colCategoryBucket.key;
     });
-    const searchUrl = [context.search_base.split('&')[0], '&status=released'].join(''); // fancy way of removing query string parameters from URL
+
+    // This gets the statues and the base url and combines them
+    const urlComponents = context.search_base.split('&');
+    const statues = urlComponents.filter(component => component.includes('status')).join('&');
+    const searchUrl = `${urlComponents[0]}${statues ? ['&', statues].join('') : ''}`;
+
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
         header: <a href={`${searchUrl}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
