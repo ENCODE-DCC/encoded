@@ -4097,6 +4097,17 @@ def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_
         yield AuditFailure('inconsistent genetic modifications', detail, level='INTERNAL_ACTION')
 
 
+def audit_biosample_perturbed_mixed(value, system, excluded_types):
+    '''Error for biosamples with mixed perturbed values'''
+    biosamples = get_biosamples(value)
+    bio_perturbed = set()
+    for biosample in biosamples:
+        bio_perturbed.add(biosample['perturbed'])
+    if len(bio_perturbed) > 1:
+        detail = 'Experiment {} contains both perturbed and non-perturbed biosamples'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('mixed biosample perturbations', detail, level='ERROR')
+
+
 #######################
 # utilities
 #######################
@@ -4718,7 +4729,8 @@ function_dispatcher_without_files = {
     'audit_nih_consent': audit_experiment_nih_institutional_certification,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
-    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications
+    'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
+    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed
 }
 
 function_dispatcher_with_files = {

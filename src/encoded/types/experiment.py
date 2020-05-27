@@ -312,6 +312,30 @@ class Experiment(Dataset,
             updated_analyses.append(analysis)
         return analyses
 
+    @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether any biosamples have been perturbed with treatments or genetic modifications.",
+        "type": "boolean",
+    })
+    def perturbed(self, request, replicates=None):
+        if replicates is not None:
+            bio_perturbed = set()
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] in ('deleted', 'revoked'):
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
+                            continue
+                        bio_perturbed.add(biosampleObject['perturbed'])
+            return any(bio_perturbed)
+        return False
+
     matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
@@ -495,3 +519,4 @@ class Replicate(Item):
         # This is the "first" techinical replicate within the isogenic
         # replciate. Therefore, libraries should be calculated.
         return [request.resource_path(root.get_by_uuid(lib)) for lib in libraries]
+

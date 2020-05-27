@@ -3,27 +3,25 @@ import PropTypes from 'prop-types';
 import FacetRegistry from './registry';
 
 /**
- * This module handles the “perturbed” boolean facet, needed because the values of the facet terms
- * aren't human readable and have to be mapped to human-readable forms, and because we didn't want
- * this facet to be the typical boolean radio buttons.
+ * This module handles the “perturbed” boolean facet, needed to map the 1/0 or true/false term keys
+ * to "not perturbed" and "perturbed".
  */
 
-const perturbedTerms = ['not perturbed', 'perturbed'];
+// The facet term key can be true/false or 1/0 with identical results either way.
+const perturbedTerms = {
+    false: 'not perturbed',
+    true: 'perturbed',
+    0: 'not perturbed',
+    1: 'perturbed',
+};
 
 
 /**
- * Perturbed terms have a value either 0 or 1. Map them to human-readable names.
+ * Perturbed terms have a key either true/false or 1/0. Map them to human-readable term names.
  */
-const PerturbedTermName = ({ term }) => {
-    let mappedTerm;
-    if (term.key === 0 || term.key === 1) {
-        mappedTerm = perturbedTerms[term.key];
-    } else {
-        // Likely will never happen.
-        mappedTerm = 'unknown';
-    }
-    return <span>{mappedTerm}</span>;
-};
+const PerturbedTermName = ({ term }) => (
+    <span>{perturbedTerms[term.key_as_string]}</span>
+);
 
 PerturbedTermName.propTypes = {
     /** facet.terms object for the term we're mapping */
@@ -32,7 +30,7 @@ PerturbedTermName.propTypes = {
 
 
 /**
- * Maps the "perturbed" "0" and "1" values from the search result filters to human-readable
+ * Maps the `perturbed` true/false and 0/1 keys from the search result filters to human-readable
  * strings for the "Selected filters" links.
  */
 const PerturbedSelectedTermName = ({ filter }) => (
@@ -45,7 +43,5 @@ PerturbedSelectedTermName.propTypes = {
 };
 
 
-FacetRegistry.TermName.register('replicates.library.biosample.perturbed', PerturbedTermName);
 FacetRegistry.TermName.register('perturbed', PerturbedTermName);
-FacetRegistry.SelectedTermName.register('replicates.library.biosample.perturbed', PerturbedSelectedTermName);
 FacetRegistry.SelectedTermName.register('perturbed', PerturbedSelectedTermName);
