@@ -627,7 +627,9 @@ def file_update_bucket(context, request):
         'description': "",
     })
 class AnalysisFile(File):
-    base_types = ['File'] + Item.base_types
+    item_type = 'analysis_file'
+    base_types = ['AnalysisFile'] + File.base_types
+    schema = load_schema('encoded:schemas/analysis_file.json')
     embedded = File.embedded + []
 
 

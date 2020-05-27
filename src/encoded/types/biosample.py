@@ -718,7 +718,9 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'description': 'Listing of all types of culture.',
     })
 class Culture(Biosample):
-    base_types = ['Culture'] + Item.base_types
+    item_type = 'analysis_file'
+    base_types = ['Culture'] + Biosample.base_types
+    schema = load_schema('encoded:schemas/culture.json')
     embedded = Biosample.embedded + []
 
 
