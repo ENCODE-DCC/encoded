@@ -443,19 +443,20 @@ export class DefaultDateSelectorFacet extends React.Component {
         let deleteSubmittedFilter = '';
         let deleteReleasedFilter = '';
         let missingFilter = '';
+        let searchBaseCopy = searchBase;
         if (queryString.indexOf('date_submitted!=*') > -1) {
             filterFlag = true;
             missingFilter = 'date_submitted';
-            const parsedUrl = url.parse(searchBase);
+            const parsedUrl = url.parse(searchBaseCopy);
             const query = new QueryString(parsedUrl.query);
             query.deleteKeyValue('date_submitted');
             deleteSubmittedFilter = `?${query.format()}`;
-            searchBase = deleteSubmittedFilter;
+            searchBaseCopy = deleteSubmittedFilter;
         }
         if (queryString.indexOf('date_released!=*') > -1) {
             filterFlag = true;
             missingFilter = 'date_released';
-            const parsedUrl = url.parse(searchBase);
+            const parsedUrl = url.parse(searchBaseCopy);
             const query = new QueryString(parsedUrl.query);
             query.deleteKeyValue('date_released');
             deleteReleasedFilter = `?${query.format()}`;
