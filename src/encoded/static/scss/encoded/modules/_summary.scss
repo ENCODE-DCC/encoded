@@ -50,6 +50,13 @@ $results-background: #E9E9E9;
         margin-bottom: 10px;
         max-width: 1600px;
     }
+
+    .body-facet-container {
+        li {
+            list-style: none;
+            display: inline;
+        }
+    }
 }
 
 .view-controls-container {
@@ -267,7 +274,7 @@ $results-background: #E9E9E9;
     }
 }
 
-.results-controls, .results-count {
+.results-controls {
     display: inline-block;
 }
 
@@ -402,7 +409,7 @@ $results-background: #E9E9E9;
     border-radius: 3px;
     background: #e0e0e0;
     position: absolute;
-    bottom: -40px;
+    bottom: -50px;
     right: 10px;
     .icon {
         margin-right: 3px;
@@ -413,16 +420,16 @@ $results-background: #E9E9E9;
     }
     @media screen and (max-width: $screen-md-min) {
         left: 10px;
-        bottom: -50px;
+        bottom: -60px;
     }
     @media screen and (max-width: $screen-sm-min) {
         font-size: 0.8rem;
-        bottom: -70px;
+        bottom: -80px;
         left: 10px;
         width: 100px;
     }
     @media screen and (max-width: $screen-xs-min) {
-        bottom: -70px;
+        bottom: -90px;
     }
 }
 

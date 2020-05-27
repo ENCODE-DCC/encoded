@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import QueryString from '../libs/query_string';
