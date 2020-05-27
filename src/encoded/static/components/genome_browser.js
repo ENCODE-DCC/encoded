@@ -544,7 +544,7 @@ class GenomeBrowser extends React.Component {
         if (this.chartdisplay) {
             this.state.visualizer.render({
                 width: this.chartdisplay.clientWidth,
-                height: this.state.visualizer.getContentHeight(),
+                height: 1000, // this.state.visualizer.getContentHeight(),
             }, this.chartdisplay);
         }
     }
@@ -562,7 +562,7 @@ class GenomeBrowser extends React.Component {
         this.clearBrowserMemory();
         visualizer.render({
             width: this.chartdisplay.clientWidth,
-            height: visualizer.getContentHeight(),
+            height: 1000, // visualizer.getContentHeight(),
         }, container);
         visualizer.addEventListener('track-resize', this.drawTracksResized);
         window.addEventListener('resize', this.drawTracksResized);
