@@ -107,13 +107,12 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         return colCategoryBucket.key;
     });
 
-    // This gets the statues and the base url and combines them
-    const urlComponents = context.search_base.split('&');
-    const statues = urlComponents.filter(component => component.includes('status')).join('&');
-    const searchUrl = `${urlComponents[0]}${statues ? ['&', statues].join('') : ''}`;
+    // Breaks up url so unneeded parts can be discarded
+    const searchBaseUrlComponents = context.search_base.split('&').filter(s => s.trim() !== '');
 
+    const headerUrl = searchBaseUrlComponents.filter(s => !s.includes('assay_title')).join('&');
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${searchUrl}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${headerUrl}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -145,6 +144,9 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         const renderedData = categoryExpanded ? subCategoryData : subCategoryData.slice(0, SUB_CATEGORY_SHORT_SIZE);
         matrixRowKeys[matrixRow] = rowCategoryBucket.key;
         matrixRow += 1;
+        const cellDataUrl = searchBaseUrlComponents
+            .filter(s => !(s.includes('biosample_ontology.term_name') || s.includes('assay_title')))
+            .join('&');
 
         const cells = Array(colCount);
         const subCategoryRows = renderedData.map((subCategoryBucket) => {
@@ -169,7 +171,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${searchUrl}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${cellDataUrl}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -180,9 +182,10 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             // Add a single row's data and left header to the matrix.
             matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-${subCategoryBucket.key}`;
             matrixRow += 1;
+            const rowContentUrl = searchBaseUrlComponents.filter(s => !s.includes('biosample_ontology.term_name')).join('&');
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}${context.search_base.includes(mappedSubCategoryQuery) ? '' : ['&', mappedSubCategoryQuery].join('')}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${rowContentUrl}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -193,7 +196,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         // button.
         matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-spacer`;
         matrixRow += 1;
-        const biosampleOntologyTermNames = renderedData.map(subCategoryBucket => mapSubCategoryQueries(subCategory, subCategoryBucket.key));
+        const subCategoriesUrl = searchBaseUrlComponents.filter(s => !s.includes('assay_title')).join('&');
         return accumulatingTable.concat(
             [
                 {
@@ -215,7 +218,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${searchUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}${biosampleOntologyTermNames ? `&${biosampleOntologyTermNames.join('&')}` : ''}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${subCategoriesUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
