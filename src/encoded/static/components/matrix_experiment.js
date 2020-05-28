@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
+import QueryString from '../libs/query_string';
 import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
@@ -107,12 +108,24 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         return colCategoryBucket.key;
     });
 
-    // Breaks up url so unneeded parts can be discarded
-    const searchBaseUrlComponents = context.search_base.split('&').filter(s => s.trim() !== '');
+    // Set specific base urls, in different combinations
+    let query = new QueryString(context.search_base);
+    query.deleteKeyValue('biosample_ontology.term_name');
+    const baseUrlWithoutBiosampleOntology = query.format();
 
-    const headerUrl = searchBaseUrlComponents.filter(s => !s.includes('assay_title')).join('&');
+    query.deleteKeyValue('assay_title');
+    const baseUrlWithoutAssayTitleAndBiosampleOntology = query.format();
+
+    query = new QueryString(context.search_base);
+    query.deleteKeyValue('assay_title');
+    const baseUrlWithoutAssayTitle = query.format();
+
+
+    // query.deleteKeyValue('biosample_ontology.term_name');
+    // const baseUrl = query.format();
+
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${headerUrl}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${baseUrlWithoutAssayTitle}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -144,9 +157,6 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         const renderedData = categoryExpanded ? subCategoryData : subCategoryData.slice(0, SUB_CATEGORY_SHORT_SIZE);
         matrixRowKeys[matrixRow] = rowCategoryBucket.key;
         matrixRow += 1;
-        const cellDataUrl = searchBaseUrlComponents
-            .filter(s => !(s.includes('biosample_ontology.term_name') || s.includes('assay_title')))
-            .join('&');
 
         const cells = Array(colCount);
         const subCategoryRows = renderedData.map((subCategoryBucket) => {
@@ -171,7 +181,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${cellDataUrl}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${baseUrlWithoutAssayTitleAndBiosampleOntology}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -182,10 +192,9 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             // Add a single row's data and left header to the matrix.
             matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-${subCategoryBucket.key}`;
             matrixRow += 1;
-            const rowContentUrl = searchBaseUrlComponents.filter(s => !s.includes('biosample_ontology.term_name')).join('&');
             return {
                 rowContent: [
-                    { header: <a href={`${rowContentUrl}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${baseUrlWithoutBiosampleOntology}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -196,7 +205,6 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         // button.
         matrixRowKeys[matrixRow] = `${rowCategoryBucket.key}-spacer`;
         matrixRow += 1;
-        const subCategoriesUrl = searchBaseUrlComponents.filter(s => !s.includes('assay_title')).join('&');
         return accumulatingTable.concat(
             [
                 {
@@ -218,7 +226,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${subCategoriesUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseUrlWithoutAssayTitle}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
