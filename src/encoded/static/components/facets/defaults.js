@@ -419,7 +419,7 @@ export class DefaultDateSelectorFacet extends React.Component {
 
     render() {
         const { facet, results, queryString } = this.props;
-        let searchBase = `?${queryString}&`;
+        const searchBase = `?${queryString}&`;
         const field = this.state.activeFacet;
         const activeFacet = results.facets.filter(f => f.field === this.state.activeFacet)[0];
         let disableDateReleased = false;
@@ -443,19 +443,20 @@ export class DefaultDateSelectorFacet extends React.Component {
         let deleteSubmittedFilter = '';
         let deleteReleasedFilter = '';
         let missingFilter = '';
+        let searchBaseCopy = searchBase;
         if (queryString.indexOf('date_submitted!=*') > -1) {
             filterFlag = true;
             missingFilter = 'date_submitted';
-            const parsedUrl = url.parse(searchBase);
+            const parsedUrl = url.parse(searchBaseCopy);
             const query = new QueryString(parsedUrl.query);
             query.deleteKeyValue('date_submitted');
             deleteSubmittedFilter = `?${query.format()}`;
-            searchBase = deleteSubmittedFilter;
+            searchBaseCopy = deleteSubmittedFilter;
         }
         if (queryString.indexOf('date_released!=*') > -1) {
             filterFlag = true;
             missingFilter = 'date_released';
-            const parsedUrl = url.parse(searchBase);
+            const parsedUrl = url.parse(searchBaseCopy);
             const query = new QueryString(parsedUrl.query);
             query.deleteKeyValue('date_released');
             deleteReleasedFilter = `?${query.format()}`;
