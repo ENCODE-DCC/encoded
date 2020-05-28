@@ -49,6 +49,7 @@ class Experiment(Dataset,
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
+        'analysis_objects',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
@@ -336,6 +337,28 @@ class Experiment(Dataset,
             return any(bio_perturbed)
         return False
 
+    @calculated_property(schema={
+        "title": "[Deprecated] Analysis",
+        "description": "A list of analyses.",
+        "comment": "Will transfer to analyses property in the future release.",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Analysis",
+        },
+        "notSubmittable": True,
+    })
+    def analysis_objects(self, request, original_files):
+        analyses = set()
+        for fid in original_files:
+            file_object = request.embed(
+                fid,
+                '@@object_with_select_calculated_properties?field=analyses'
+            )
+            analyses |= set(file_object.get('analyses', []))
+        if analyses:
+            return sorted(analyses)
+
     matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
@@ -519,4 +542,3 @@ class Replicate(Item):
         # This is the "first" techinical replicate within the isogenic
         # replciate. Therefore, libraries should be calculated.
         return [request.resource_path(root.get_by_uuid(lib)) for lib in libraries]
-

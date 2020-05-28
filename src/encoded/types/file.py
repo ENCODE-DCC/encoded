@@ -97,6 +97,7 @@ class File(Item):
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
         'superseded_by': ('File', 'supersedes'),
+        'analyses': ('Analysis', 'files'),
     }
 
     embedded = [
@@ -543,6 +544,20 @@ class File(Item):
                 )
             )
         )
+
+    @calculated_property(schema={
+        "title": "Analyses",
+        "description": "A list of analyses.",
+        "comment": "Do not submit. Values in the list are reverse links of analyses involving this file.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Analysis.files",
+        },
+        "notSubmittable": True,
+    })
+    def analyses(self, request, analyses):
+        return paths_filtered_by_status(request, analyses)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

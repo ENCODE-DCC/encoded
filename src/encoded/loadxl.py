@@ -64,6 +64,7 @@ ORDER = [
     'pipeline',
     'analysis_step_run',
     'file',
+    'analysis',
     'star_quality_metric',
     'gene_quantification_quality_metric',
     'gene_type_quantification_quality_metric',
