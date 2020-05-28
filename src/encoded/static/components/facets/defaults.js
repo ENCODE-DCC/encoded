@@ -419,7 +419,7 @@ export class DefaultDateSelectorFacet extends React.Component {
 
     render() {
         const { facet, results, queryString } = this.props;
-        let searchBase = `?${queryString}&`;
+        const searchBase = `?${queryString}&`;
         const field = this.state.activeFacet;
         const activeFacet = results.facets.filter(f => f.field === this.state.activeFacet)[0];
         let disableDateReleased = false;
