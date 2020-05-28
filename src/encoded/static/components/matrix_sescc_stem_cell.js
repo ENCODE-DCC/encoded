@@ -287,7 +287,7 @@ const convertToDataTableFormat = (context) => {
                 const borderLeft = edgeColor;
 
                 rowContent[index].content = (
-                    <a href={`${searchBase}&assay_title!=Control%20ChIP-seq&biosample_ontology.term_name=${row.key}&${assayTitle.type}=${assayTitle.key}`} title={`${assayTitle.doc_count}`}>
+                    <a href={`${searchBase}&biosample_ontology.term_name=${row.key}&${assayTitle.type}=${assayTitle.key}`} title={`${assayTitle.doc_count}`}>
                         {' '}
                     </a>
                 );
