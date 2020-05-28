@@ -234,7 +234,7 @@ class CalculatedBiosampleSummary:
                         biosample_drop_age_sex_flag = biosample_info[1]
                         dictionaries_of_phrases.append(biosample_summary_dictionary)
                         if biosample_drop_age_sex_flag is True:
-                            drop_age_sex_flag is True
+                            drop_age_sex_flag = True
 
         if drop_age_sex_flag is True:
             sentence_parts = [

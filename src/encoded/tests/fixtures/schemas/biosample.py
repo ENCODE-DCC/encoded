@@ -352,3 +352,27 @@ def biosample_human_2(testapp, lab, award, source, organism, human_donor_1, hear
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def biosample_22(testapp, lab, award, source, organism, epiblast):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': epiblast['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_23(testapp, lab, award, source, organism, epiblast):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': epiblast['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
