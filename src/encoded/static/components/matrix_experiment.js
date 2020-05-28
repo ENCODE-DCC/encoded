@@ -110,22 +110,22 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
 
     // Set specific base urls, in different combinations
     let query = new QueryString(context.search_base);
-    query.deleteKeyValue('biosample_ontology.term_name');
-    const baseUrlWithoutBiosampleOntology = query.format();
+    query.deleteKeyValue(subCategory);
+    const baseUrlWithoutSubcategoryType = query.format();
 
-    query.deleteKeyValue('assay_title');
-    const baseUrlWithoutAssayTitleAndBiosampleOntology = query.format();
+    query.deleteKeyValue(columnCategoryType);
+    const baseUrlWithoutSubNorColCategoriesType = query.format();
 
     query = new QueryString(context.search_base);
-    query.deleteKeyValue('assay_title');
-    const baseUrlWithoutAssayTitle = query.format();
+    query.deleteKeyValue(columnCategoryType);
+    const baseUrlWithoutColCategoryType = query.format();
 
 
     // query.deleteKeyValue('biosample_ontology.term_name');
     // const baseUrl = query.format();
 
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${baseUrlWithoutAssayTitle}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${baseUrlWithoutColCategoryType}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -181,7 +181,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${baseUrlWithoutAssayTitleAndBiosampleOntology}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${baseUrlWithoutSubNorColCategoriesType}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -194,7 +194,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${baseUrlWithoutBiosampleOntology}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${baseUrlWithoutSubcategoryType}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -226,7 +226,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseUrlWithoutAssayTitle}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseUrlWithoutColCategoryType}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
