@@ -120,10 +120,6 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
     query.deleteKeyValue(columnCategoryType);
     const baseUrlWithoutColCategoryType = query.format();
 
-
-    // query.deleteKeyValue('biosample_ontology.term_name');
-    // const baseUrl = query.format();
-
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
         header: <a href={`${baseUrlWithoutColCategoryType}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
