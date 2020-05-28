@@ -61,3 +61,20 @@ def test_library_upgrade_10_to_11(upgrader, library_schema_10):
     value = upgrader.upgrade('library', library_schema_10, target_version='11')
     assert value['schema_version'] == '11'
     assert value['strand_specificity'] == 'strand-specific'
+
+
+def test_library_upgrade_11_to_12(upgrader, library_schema_11a, library_schema_11b):
+    value = upgrader.upgrade('library', library_schema_11a, target_version='12')
+    assert value['schema_version'] == '12'
+    assert 'shearing (generic)' in value['fragmentation_methods']
+    assert 'chemical (DpnII restriction)' in value['fragmentation_methods']
+    assert 'chemical (HindIII restriction)' in value['fragmentation_methods']
+    assert 'chemical (HindIII/DpnII restriction)' not in value['fragmentation_methods']
+
+    # library with both dual and single restriction enzyme in fragmentation_methods
+    value = upgrader.upgrade('library', library_schema_11b, target_version='12')
+    assert value['schema_version'] == '12'
+    assert 'shearing (generic)' in value['fragmentation_methods']
+    assert 'chemical (DpnII restriction)' in value['fragmentation_methods']
+    assert 'chemical (HindIII restriction)' in value['fragmentation_methods']
+    assert 'chemical (HindIII/DpnII restriction)' not in value['fragmentation_methods']

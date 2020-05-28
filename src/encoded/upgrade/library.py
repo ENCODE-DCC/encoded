@@ -233,3 +233,17 @@ def library_10_11(value, system):
             value.pop('strand_specificity')
         elif value['strand_specificity'] == True:
             value['strand_specificity'] = 'strand-specific'
+
+
+@upgrade_step('library', '11', '12')
+def library_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5321
+    if 'fragmentation_methods' in value:
+        frag_methods = value.get('fragmentation_methods')
+        if 'chemical (HindIII/DpnII restriction)' in frag_methods:
+            frag_methods.remove('chemical (HindIII/DpnII restriction)')
+            if 'chemical (DpnII restriction)' not in frag_methods:
+                frag_methods.append('chemical (DpnII restriction)')
+            if 'chemical (HindIII restriction)' not in frag_methods:
+                frag_methods.append('chemical (HindIII restriction)')
+            value['fragmentation_methods'] = frag_methods

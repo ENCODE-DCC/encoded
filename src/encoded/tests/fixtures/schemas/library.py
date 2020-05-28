@@ -222,3 +222,21 @@ def library_fragment_length_CV(library):
         'fragment_length_CV': 68,
     })
     return item
+
+
+@pytest.fixture
+def library_schema_11a(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'shearing (generic)']
+    }
+
+
+@pytest.fixture
+def library_schema_11b(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'chemical (DpnII restriction)', 'shearing (generic)']
+    }
