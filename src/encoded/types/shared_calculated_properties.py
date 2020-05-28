@@ -433,6 +433,10 @@ class CalculatedReplicationType:
         "type": "string"
     })
     def replication_type(self, request, replicates=None, assay_term_name=None):
+        # ENCD-5185 decided to return None for replication type for all
+        # pooled clone sequencing
+        if assay_term_name == 'pooled clone sequencing':
+            return None
         # ENCD-4251 loop through replicates and select one replicate, which has
         # the smallest technical_replicate_number, per biological replicate.
         # That replicate should have a libraries property which, as calculated
