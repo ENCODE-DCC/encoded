@@ -148,6 +148,8 @@ function mapGenome(inputAssembly) {
  */
 const TrackLabel = ({ file, label, long }) => {
     const biologicalReplicates = file.biological_replicates && file.biological_replicates.join(', ');
+    const splitDataset = file.dataset.split('/');
+    const datasetName = splitDataset[splitDataset.length - 2];
     return (
         <React.Fragment>
             {(label === 'cart') ?
@@ -157,6 +159,7 @@ const TrackLabel = ({ file, label, long }) => {
                     {file.biosample_ontology && file.biosample_ontology.term_name ? <span>{file.biosample_ontology.term_name}</span> : null}
                     {long ?
                         <React.Fragment>
+                            <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
                             <li>{`rep ${biologicalReplicates}`}</li>
