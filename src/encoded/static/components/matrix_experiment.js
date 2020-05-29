@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
+import QueryString from '../libs/query_string';
 import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
@@ -106,9 +107,21 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
         colTitleMap[colCategoryBucket.key] = colIndex;
         return colCategoryBucket.key;
     });
-    const searchUrl = [context.search_base.split('&')[0], '&status=released'].join(''); // fancy way of removing query string parameters from URL
+
+    // Set specific base urls, in different combinations
+    let query = new QueryString(context.search_base);
+    query.deleteKeyValue(subCategory);
+    const baseUrlWithoutSubcategoryType = query.format();
+
+    query.deleteKeyValue(columnCategoryType);
+    const baseUrlWithoutSubNorColCategoriesType = query.format();
+
+    query = new QueryString(context.search_base);
+    query.deleteKeyValue(columnCategoryType);
+    const baseUrlWithoutColCategoryType = query.format();
+
     const header = [{ header: null }].concat(colCategoryNames.map(colCategoryName => ({
-        header: <a href={`${searchUrl}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
+        header: <a href={`${baseUrlWithoutColCategoryType}&${columnCategoryType}=${colCategoryName}`}>{colCategoryName}</a>,
     })));
 
     // Generate the main table content including the data hierarchy, where the upper level of the
@@ -164,7 +177,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${searchUrl}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${baseUrlWithoutSubNorColCategoriesType}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
@@ -177,7 +190,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
             matrixRow += 1;
             return {
                 rowContent: [
-                    { header: <a href={`${context.search_base}${context.search_base.includes(mappedSubCategoryQuery) ? '' : ['&', mappedSubCategoryQuery].join('')}`}>{subCategoryBucket.key}</a> },
+                    { header: <a href={`${baseUrlWithoutSubcategoryType}${mappedSubCategoryQuery ? `&${mappedSubCategoryQuery}` : ''}`}>{subCategoryBucket.key}</a> },
                 ].concat(cells),
                 css: 'matrix__row-data',
             };
@@ -209,7 +222,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                     }].concat(subCategorySums.map((subCategorySum, subCategorySumIndex) => ({
                         content: (
                             subCategorySum > 0 ?
-                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${searchUrl}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
+                                <a style={{ backgroundColor: rowCategoryColor, color: rowCategoryTextColor }} href={`${baseUrlWithoutColCategoryType}&${mappedRowCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[subCategorySumIndex])}`}>
                                     {subCategorySum}
                                 </a>
                             :
