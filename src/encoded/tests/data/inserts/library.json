@@ -959,6 +959,7 @@
         "biosample": "ENCBS123AAE",
         "lab": "encode2-project",
         "nucleic_acid_term_name": "DNA",
+        "extraction_method": "NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e"

@@ -3,8 +3,10 @@
 ### Schema version 12
 
 * *chemical (HindIII/DpnII restriction)* was removed from *fragmentation_methods* enum.
+* *NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)* was added to the *extraction_method* enum.
 
 ### Minor changes since schema version 11
+
 * The properties *fragmentation_duration_time* and *fragmentation_duration_time_units* were added.
 * *chemical (NEBNext Ultra II Directional)* was added to the *fragmentation_methods* enum, and *Animal tissue kit (Norgen Biotek cat#: 25700)* was added to the *extraction_method* enum.
 * *adapters* property is modified to allows specification of adapters as strings.
