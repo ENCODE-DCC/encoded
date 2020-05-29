@@ -363,7 +363,7 @@
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
         },
-        "replicates.library.biosample.perturbed": {
+        "perturbed": {
             "title": "Perturbation"
         },
         "date_released": {

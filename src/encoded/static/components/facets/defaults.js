@@ -699,14 +699,16 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
     let negated = false;
 
     // Find the search-results filter matching this term, which if found indicates this term is
-    // selected; also check if the selection is for negation.
+    // selected; also check if the selection is for negation. Boolean terms have a
+    // term.key_as_string "true" and "false" values, preferable to the "1" and "0" values in
+    // term.key.
     const selectedTermFilter = relevantFilters.find((filter) => {
         let filterField = filter.field;
         const negatedFilter = filterField.slice(-1) === '!';
         if (negatedFilter) {
             filterField = filterField.slice(0, -1);
         }
-        const selected = filterField === facet.field && filter.term === term.key.toString();
+        const selected = filterField === facet.field && (filter.term === term.key_as_string || filter.term === term.key.toString());
         if (selected) {
             negated = negatedFilter;
         }
@@ -722,11 +724,12 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
         // Term isn't selected, so build the link URI by adding this term to the existing URL.
         const query = new QueryString(queryString);
         const negQuery = query.clone();
-        query.addKeyValue(facet.field, term.key);
+        const key = term.key_as_string || term.key;
+        query.addKeyValue(facet.field, key);
         href = `?${query.format()}`;
 
         // Also build the negation URI.
-        negQuery.addKeyValue(facet.field, term.key, true);
+        negQuery.addKeyValue(facet.field, key, true);
         negHref = `?${negQuery.format()}`;
     }
 

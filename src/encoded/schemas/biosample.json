@@ -850,8 +850,8 @@
         "award.rfa": {
             "title": "RFA"
         },
-        "perturbation": {
-            "title": "Perturbed"
+        "perturbed": {
+            "title": "Perturbation"
         },
         "nih_institutional_certification": {
             "type": "exists",
