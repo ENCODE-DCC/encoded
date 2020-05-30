@@ -20,6 +20,14 @@ const sanitizedString = inputString => inputString.toLowerCase()
     .replace(/ /g, '') // remove spaces (to allow multiple word searches)
     .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 
+// session storage used to preserve opened/closed facets
+const FACET_STORAGE = 'FACET_STORAGE';
+
+// marker for determining user just opened the page
+const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
+
+// List of facets deemed to open when the page first starts
+const preopenedFacetList = ['status', 'perturbed', 'assay_slims', 'biosample_ontology.term_name', 'target.label'];
 
 /**
  * Render a tri-state boolean facet with "true," "false," and "either." This doesn't get registered
@@ -923,7 +931,7 @@ FacetTerms.defaultProps = {
 /**
  * Display the default text facet with optional typeahead field.
  */
-export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
+export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation, expandedFacets, setExpandFacets }) => {
     const [initialState, setInitialState] = React.useState(true);
     const [topShadingVisible, setTopShadingVisible] = React.useState(false);
     const [bottomShadingVisible, setBottomShadingVisible] = React.useState(false);
@@ -940,10 +948,53 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
     // We have to check the full list for now (until schema change) because some lists contain both numerical and string terms ('Encyclopedia version' under Annotations) and we do not want to sort those by value
     const numericalTest = a => !isNaN(a.key);
+
     // For straightforward numerical facets, just sort by value
     const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, obj => obj.key) : significantTerms;
 
     const disabledCss = filters => filters.some(f => f.field.indexOf('!') !== -1 && f.term.trim() === '*');
+
+    React.useEffect(() => {
+        const field = facet.field;
+
+        // Get facets from storage that need to be expanded
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        // This determines if facet has just loaded check if anything needs
+        // to be expanded
+        const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+        const storedFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+
+        if (!storedFacetNewlyLoaded) {
+            // sessions storage set to prevent this if-statement from running again on the field
+            sessionStorage.setItem(newlyLoadedFacetStorage, field);
+
+            // auto-open facets based on (1)With selected terms OR facet pre-determined to be opened
+            if ((relevantFilters && relevantFilters.length > 0) || preopenedFacetList.includes(field)) {
+                facetList.add(field);
+            }
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const toggleFacets = (e, status, field) => {
+        let facetList = null;
+
+        if (e.altKey) {
+            // user has held down option-key (alt-key in Windows and Linux)
+            sessionStorage.removeItem(FACET_STORAGE);
+            facetList = new Set(status ? [] : results.facets.map(f => f.field));
+        } else {
+            facetList = new Set(expandedFacets);
+            facetList[status ? 'delete' : 'add'](field);
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
+        setExpandFacets(facetList); // controls open/closed facets
+    };
 
     // Filter the list of facet terms to those allowed by the optional typeahead field. Memoize the
     // resulting list to avoid needlessly rerendering the facet-term list that can get very long.
@@ -1015,15 +1066,59 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         setTypeaheadTerm(event.target.value);
     };
 
+    /**
+     * Handlers opening or closing a tab
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+     */
+    const handleExpanderClick = (e, status, field) => {
+        if (toggleFacets) {
+            toggleFacets(e, status, field);
+        }
+    };
+
+    /**
+    * Called when user types a key while focused on a facet term. If the user types a space or
+    * return we call the term click handler -- needed for a11y because we have a <div> acting as a
+    * button instead of an actual <button>.
+    *
+    * @param {event} e React synthetic event
+    * @param {bool} status True for open, false for closed
+    * @param {string} field Tab name
+    */
+    const handleKeyDown = (e, status, field) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            // keyCode: 13 = enter-key. 32 = spacebar
+            e.preventDefault();
+            handleExpanderClick(e, status, field);
+        }
+    };
+
+    const isExpanded = expandedFacets && expandedFacets.has(facet.field);
+
     return (
         <div className="facet">
-            <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
+            <div
+                className="facet__expander--header"
+                tabIndex="0"
+                role="button"
+                aria-label={facet.field}
+                aria-pressed={isExpanded}
+                onClick={e => handleExpanderClick(e, isExpanded, facet.field)}
+                onKeyDown={e => handleKeyDown(e, isExpanded, facet.field)}
+            >
+                <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
+                <i className={`icon icon-chevron-${isExpanded ? 'up' : 'down'}`} />
+            </div>
             <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
             <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
-                {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-                <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
-                    <ul onScroll={handleScroll} ref={scrollingElement}>
-                        {(filteredTerms.length === 0) ?
+                <div className={`facet-content facet-${isExpanded ? 'open' : 'close'}`}>
+                    {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
+                    <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
+                        <ul onScroll={handleScroll} ref={scrollingElement}>
+                            {(filteredTerms.length === 0) ?
                             <div className="searcherror">
                                 Try a different search term for results.
                             </div>
@@ -1043,8 +1138,9 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                                 <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
                                 <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
                             </React.Fragment>
-                        }
-                    </ul>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1068,6 +1164,10 @@ DefaultFacet.propTypes = {
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
+    /** List of expand facet */
+    expandedFacets: PropTypes.instanceOf(Set),
+    /** toogles facets */
+    setExpandFacets: PropTypes.func,
 };
 
 DefaultFacet.defaultProps = {
@@ -1075,4 +1175,6 @@ DefaultFacet.defaultProps = {
     queryString: '',
     onFilter: null,
     allowNegation: true,
+    expandedFacets: new Set([]),
+    setExpandFacets: () => { console.error('Expanded not set'); },
 };

@@ -7,7 +7,7 @@ import FacetRegistry from './registry';
 /**
  * Handles the facet to control submission and release dates.
  */
-const DateReleasedFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => (
+const DateReleasedFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, expandedFacets, setExpandFacets }) => (
     <DefaultDateSelectorFacet
         facet={facet}
         results={results}
@@ -15,6 +15,8 @@ const DateReleasedFacet = ({ facet, results, mode, relevantFilters, pathname, qu
         relevantFilters={relevantFilters}
         pathname={pathname}
         queryString={queryString}
+        expandedFacets={expandedFacets}
+        setExpandFacets={setExpandFacets}
     />
 );
 
@@ -31,11 +33,17 @@ DateReleasedFacet.propTypes = {
     pathname: PropTypes.string.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
+    /** List of expand facet */
+    expandedFacets: PropTypes.instanceOf(Set),
+    /** toogles facets */
+    setExpandFacets: PropTypes.func,
 };
 
 DateReleasedFacet.defaultProps = {
     mode: '',
     queryString: '',
+    expandedFacets: new Set([]),
+    setExpandFacets: () => {},
 };
 
 

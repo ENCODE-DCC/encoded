@@ -77,7 +77,6 @@ const datasetTypes = {
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
 
-
 // You can use this function to render a listing view for the search results object with a couple
 // options:
 //   1. Pass a search results object directly in props. listing returns a React component that you
@@ -700,6 +699,9 @@ TextFilter.propTypes = {
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
     const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
+
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
+
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
@@ -765,6 +767,8 @@ export const FacetList = (props) => {
                             pathname={parsedUrl.pathname}
                             queryString={parsedUrl.query}
                             onFilter={onFilter}
+                            expandedFacets={expandedFacets}
+                            setExpandFacets={setExpandFacets}
                         />;
                     })}
                 </div>

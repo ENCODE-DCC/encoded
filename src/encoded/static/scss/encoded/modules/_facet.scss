@@ -124,6 +124,23 @@
         padding-bottom: 0;
         margin-bottom: 0;
     }
+
+    @at-root #{&}__expander {
+        @at-root #{&}--header {
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+            justify-content: space-between;
+        }  
+    }
+
+    .facet-open {
+        display: inline;
+    }
+
+    .facet-close {
+        display: none;
+    }
 }
 
 // Radio button facet styles.
@@ -455,7 +472,7 @@ fieldset.facet {
 
 .filter-container {
     display: block;
-    margin: 10px auto;
+    margin: 0 10px 10px 0;
     .filter-hed {
         display: inline-block;
         padding: 0 5px;

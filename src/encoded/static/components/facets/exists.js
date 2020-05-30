@@ -7,7 +7,7 @@ import FacetRegistry from './registry';
 /**
  * Facet renderer for "exists" facets.
  */
-const ExistsFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => (
+const ExistsFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, expandedFacets, setExpandFacets }) => (
     <DefaultExistsFacet
         facet={facet}
         results={results}
@@ -15,6 +15,8 @@ const ExistsFacet = ({ facet, results, mode, relevantFilters, pathname, queryStr
         relevantFilters={relevantFilters}
         pathname={pathname}
         queryString={queryString}
+        expandedFacets={expandedFacets}
+        setExpandFacets={setExpandFacets}
     />
 );
 
@@ -31,11 +33,17 @@ ExistsFacet.propTypes = {
     pathname: PropTypes.string.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
+    /** List of expand facet */
+    expandedFacets: PropTypes.instanceOf(Set),
+    /** toogles facets */
+    setExpandFacets: PropTypes.func,
 };
 
 ExistsFacet.defaultProps = {
     mode: '',
     queryString: '',
+    expandedFacets: new Set([]),
+    setExpandFacets: () => {},
 };
 
 FacetRegistry.Facet.register('datasets.accession', ExistsFacet);
