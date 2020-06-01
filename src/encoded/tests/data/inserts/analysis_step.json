@@ -476,5 +476,20 @@
         ],
         "analysis_step_types": ["genome indexing"],
         "uuid": "ea03a364-a877-4858-99bd-e5cd250ae386"
+    },
+    {
+        "step_label": "demultiplexing-and-alignment-processing-step",
+        "major_version": 1,
+        "title": "Demultiplexing and alignment processing step",
+        "input_file_types": [
+            "reads",
+            "genome reference",
+            "sequence barcodes"
+        ],
+        "output_file_types": [
+            "alignments"
+        ],
+        "analysis_step_types": ["fastq demultiplexing", "fastq concatenation", "alignment", "filtering"],
+        "uuid": "664aee68-83ca-40ee-a074-f3f239044fab"
     }
 ]

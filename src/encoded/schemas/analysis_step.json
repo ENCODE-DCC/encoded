@@ -57,6 +57,7 @@
                      "depth normalization",
                      "enrichment",
                      "fastq concatenation",
+                     "fastq demultiplexing",
                      "file format conversion",
                      "filtering",
                      "genome indexing",
