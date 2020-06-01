@@ -31,6 +31,24 @@ const genomeBrowser = style => (
     </svg>
 );
 
+const lockOpen = style => (
+    <svg version="1.1" data-name="Lock open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 249" style={style} className="svg-icon svg-icon-lock-open">
+        <path d="M180.7,3.5c-30.2,0-54.77,24.57-54.77,54.77v57.41h-95.9c-8.8,0-16,7.2-16,16V229c0,8.8,7.2,16,16,16h116.27
+            c8.8,0,16-7.2,16-16v-97.32c0-8.8-7.2-16-16-16h-3.37V58.27c0-20.82,16.94-37.77,37.77-37.77s37.77,16.94,37.77,37.77v40.18
+            c0,4.69,3.81,8.5,8.5,8.5s8.5-3.81,8.5-8.5V58.27C235.47,28.07,210.9,3.5,180.7,3.5z"
+        />
+    </svg>
+);
+
+const lockClosed = style => (
+    <svg version="1.1" data-name="Lock closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 249" style={style} className="svg-icon svg-icon-lock-open">
+        <path d="M182.89,115.15h-3.37V82.74c0-30.2-24.57-54.77-54.77-54.77c-30.2,0-54.77,24.57-54.77,54.77v32.41h-3.37
+            c-8.8,0-16,7.2-16,16v97.32c0,8.8,7.2,16,16,16h116.27c8.8,0,16-7.2,16-16v-97.32C198.89,122.35,191.69,115.15,182.89,115.15z
+            M86.98,82.74c0-20.82,16.94-37.77,37.77-37.77s37.77,16.94,37.77,37.77v32.41H86.98V82.74z"
+        />
+    </svg>
+);
+
 const icons = {
     disclosure: style => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table: style => <svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" style={style} className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg>,
@@ -46,6 +64,8 @@ const icons = {
     spinner,
     largeArrow,
     genomeBrowser,
+    lockOpen,
+    lockClosed,
 };
 
 /**

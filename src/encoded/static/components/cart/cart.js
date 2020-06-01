@@ -17,6 +17,7 @@ import { requestObjects, ItemAccessories, isFileVisualizable, computeAssemblyAnn
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartClearButton from './clear';
+import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
 import Status from '../status';
 
@@ -888,7 +889,7 @@ CartDatasetSearch.contextTypes = {
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
-const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCounts, cartType, sharedCart, visualizable }) => (
+const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCounts, cartType, sharedCart, visualizable, inProgress }) => (
     <div className="cart__tools">
         {elements.length > 0 ?
             <CartBatchDownload
@@ -903,6 +904,7 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fi
             />
         : null}
         {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
+        {cartType === 'ACTIVE' ? <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} /> : null}
         {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClearButton /> : null}
         <CartDatasetSearch elements={elements} />
     </div>
@@ -925,6 +927,8 @@ CartTools.propTypes = {
     fileCounts: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
 };
 
 CartTools.defaultProps = {
@@ -1382,7 +1386,7 @@ const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCo
  * only the file object properties requested in `requestedFacetFields`. When visualizing a subset
  * of these files, complete file objects get retrieved.
  */
-const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, session }) => {
+const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, fetch, session }) => {
     // Array of currently displayed facets and the terms each contains.
     const [facets, setFacets] = React.useState([]);
     // Keeps track of currently selected facet terms keyed by facet fields.
@@ -1544,6 +1548,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                             sharedCart={context}
                             fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
                             visualizable={visualizableOnly}
+                            inProgress={inProgress}
                         />
                         {selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}
                     </PanelHeading>
@@ -1631,6 +1636,8 @@ CartComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** True if user has logged in */
     loggedIn: PropTypes.bool,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool,
     /** System fetch function */
     fetch: PropTypes.func.isRequired,
     /** System session information */
@@ -1640,6 +1647,7 @@ CartComponent.propTypes = {
 CartComponent.defaultProps = {
     savedCartObj: null,
     loggedIn: false,
+    inProgress: false,
     session: null,
 };
 
@@ -1653,6 +1661,7 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     context: ownProps.context,
     loggedIn: ownProps.loggedIn,
+    inProgress: state.inProgress,
     fetch: ownProps.fetch,
     session: ownProps.session,
 });
