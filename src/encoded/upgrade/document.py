@@ -1,6 +1,5 @@
 from past.builtins import basestring
 from snovault import upgrade_step
-from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from pyramid.traversal import find_root
 import re
 
@@ -27,11 +26,6 @@ def document_2_3(value, system):
     if 'status' in value:
         if value['status'] == 'DELETED':
             value['status'] = 'deleted'
-        elif value['status'] == 'CURRENT':
-            if value['award'] in ENCODE2_AWARDS:
-                value['status'] = 'released'
-            elif value['award'] not in ENCODE2_AWARDS:
-                value['status'] = 'in progress'
 
 
 @upgrade_step('document', '3', '4')
@@ -43,11 +37,8 @@ def document_3_4(value, system):
     if 'references' in value:
         new_references = []
         for ref in value['references']:
-            if re.match('doi', ref):
-                new_references.append(REFERENCES_UUID[ref])
-            else:
-                item = publications[ref]
-                new_references.append(str(item.uuid))
+            item = publications[ref]
+            new_references.append(str(item.uuid))
         value['references'] = new_references
 
 

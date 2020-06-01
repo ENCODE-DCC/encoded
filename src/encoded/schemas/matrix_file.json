@@ -273,6 +273,6 @@
         "csv": ".csv.gz",
         "loom": ".loom"
     },
-     "boost_values": {},
-    "changelog": "/profiles/changelogs/file.md"
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/matrix_file.md"
 }

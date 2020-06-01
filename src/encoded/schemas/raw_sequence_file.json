@@ -775,5 +775,5 @@
         "bam": ".bam"
     },
     "boost_values": {},
-    "changelog": "/profiles/changelogs/file.md"
+    "changelog": "/profiles/changelogs/raw_sequence_file.md"
 }
