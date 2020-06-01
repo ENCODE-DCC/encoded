@@ -1,5 +1,9 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Minor changes since schema version 5
+
+* *plasmids_library_type* value *other* was removed.
+
 ### Schema version 5
 
 * Made *biosample_ontology* a required property.
