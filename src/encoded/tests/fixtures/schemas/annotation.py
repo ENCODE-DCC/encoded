@@ -134,7 +134,7 @@ def annotation_28(award, lab):
     return {
         'award': award['@id'],
         'lab': lab['@id'],
-        'schema_version': '27',
+        'schema_version': '28',
         'relevant_timepoint': '3',
         'relevant_timepoint_units': 'stage'
     }

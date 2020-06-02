@@ -579,7 +579,6 @@ def dataset_28_29(value, system):
     else:
         value['dbxrefs'] = sorted(new_dbxrefs)
 
-<<<<<<< HEAD
 
 @upgrade_step('annotation', '27', '28')
 def annotation_27_28(value, system):
