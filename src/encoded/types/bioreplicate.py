@@ -22,14 +22,17 @@ import re
 class Bioreplicate(Item):
     item_type = 'bioreplicate'
     schema = load_schema('encoded:schemas/bioreplicate.json')
-
     rev = {
+        'biofile': ('Biofile', 'bioreplicate'),
 
     }
+   
     embedded = [
         # 'bioexperiment'
         'biolibrary',
-        'biolibrary.biospecimen'
+        'biolibrary.biospecimen',
+        'biofile'
+        
     ]
     audit_inherit = [
     ]
@@ -37,3 +40,16 @@ class Bioreplicate(Item):
 
     ]
     set_status_down = []
+    
+    @calculated_property(
+        schema={
+            "title": "Biofile",
+            "type": "array",
+            "items": {
+                "type": 'string',
+                "linkTo": "Biofile"
+            },
+        }
+    )
+    def biofile(self, request, biofile):
+        return paths_filtered_by_status(request, biofile)

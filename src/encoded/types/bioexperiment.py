@@ -29,10 +29,10 @@ class Bioexperiment(Item):
         'award',
         'lab',
         "submitted_by", #link to User
-        'biospecimen',#first test can insert biospecimen or not
+        # 'biospecimen',
         'bioreplicate',
-        # 'bioreplicate.biolibrary',
-        # 'bioreplicate.biolibrary.biospecimen'
+        'bioreplicate.biolibrary',
+        'bioreplicate.biolibrary.biospecimen'
         # "references", #link to Publication
         # 'documents',#link to Document
         
