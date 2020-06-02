@@ -1620,3 +1620,21 @@ def incorrect_paired_fastq_indexed(testapp, lab, award, experiment, base_replica
             'status': 'in progress'
         }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def pacbio_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, platform3):
+    item = {
+            'dataset': experiment['@id'],
+            'file_format': 'fastq',
+            'md5sum': '93cd66b6f21515393507f4ebfa55e77c',
+            'replicate': base_replicate_two['@id'],
+            'output_type': 'reads',
+            'read_length': 150,
+            'file_size': 720,
+            'platform': platform3['@id'],
+            'lab': lab['@id'],
+            'award': award['@id'],
+            'status': 'in progress'
+        }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
