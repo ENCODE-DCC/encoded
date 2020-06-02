@@ -231,8 +231,9 @@ export class DefaultDateSelectorFacet extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ activeFacet: this.props.facet.field });
-        this.setActiveFacetParameters(true);
+        this.setState({ activeFacet: this.props.facet.field }, () => {
+            this.setActiveFacetParameters(true);
+        });
     }
 
     setActiveFacetParameters(initializationFlag) {
