@@ -31,9 +31,9 @@ class CartClearModalComponent extends React.Component {
         const { cartName, closeClickHandler, inProgress } = this.props;
         return (
             <Modal labelId="clear-cart-label" descriptionId="clear-cart-description" focusId="clear-cart-close">
-                <ModalHeader labelId="clear-cart-label" title={`Clear entire cart contents${cartName ? `: ${cartName}` : ''}`} closeModal={closeClickHandler} />
+                <ModalHeader labelId="clear-cart-label" title={`Clear entire cohort contents${cartName ? `: ${cartName}` : ''}`} closeModal={closeClickHandler} />
                 <ModalBody>
-                    <p id="clear-cart-description">Clearing the cart is not reversible.</p>
+                    <p id="clear-cart-description">Clearing the cohort is not reversible.</p>
                 </ModalBody>
                 <ModalFooter
                     closeModal={<button id="clear-cart-close" onClick={closeClickHandler} className="btn btn-info">Cancel</button>}
@@ -123,7 +123,7 @@ class CartClearButtonComponent extends React.Component {
         if (elements.length > 0) {
             return (
                 <span>
-                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-info btn-sm">Clear cart</button>
+                    <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-info btn-sm">Clear cohort</button>
                     {this.state.modalOpen ?
                         <CartClearModal closeClickHandler={this.handleCloseClick} />
                     : null}

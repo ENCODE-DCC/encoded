@@ -96,7 +96,7 @@ class CartStatusComponent extends React.Component {
             // Define the menu items for the Cart Status menu.
             const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
-            const viewCartItem = <a key="view" href="/cart-view/">View cohort</a>;
+            const viewCartItem = <a key="view" href="/cohort-view/">View cohort</a>;
             const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cohort</button>;
             if (loggedIn) {
                 menuItems.push(<span key="name" className="disabled-menu-item">{`Current: ${cartName}`}</span>, <DropdownMenuSep key="sep-1" />);
@@ -108,7 +108,7 @@ class CartStatusComponent extends React.Component {
                         <DropdownMenuSep key="sep-2" />
                     );
                 }
-                menuItems.push(<a key="manage" href="/cart-manager/">Cohort manager</a>);
+                menuItems.push(<a key="manage" href="/cohort-manager/">Cohort manager</a>);
             } else {
                 menuItems.push(viewCartItem, clearCartItem);
             }
@@ -120,10 +120,10 @@ class CartStatusComponent extends React.Component {
                         dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
                         openDropdown={openDropdown}
                         dropdownClick={dropdownClick}
-                        label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+                        label={`Cohort containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
                         buttonCss="cart__nav-button"
                     >
-                        <DropdownMenu label="cart-control">
+                        <DropdownMenu label="cohort-control">
                             {menuItems}
                         </DropdownMenu>
                     </NavItem>

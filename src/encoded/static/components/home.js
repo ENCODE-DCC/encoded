@@ -74,7 +74,7 @@ class EncodeSearch extends React.Component {
                             <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
                         </div>
                         <div className="site-search__submit">
-                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">KCE <i className="icon icon-search" /></button>
+                            <button type="submit" aria-label="KCE portal search" title="KCE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">KCE <i className="icon icon-search" /></button>
                         </div>
                     </fieldset>
                 </form>
@@ -641,16 +641,7 @@ export default class Home extends React.Component {
                 <div className="row">
                     <div className="col-xs-12">
                         <Panel>
-                            <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
-                            <HomeBanner adminUser={adminUser} />
-                            <div className="organism-tabs">
-                                <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
-                            </div>
-                            <div className="graphs">
-                                <div className="row">
-                                    <HomepageChartLoader organisms={this.state.organisms} assayCategory={this.state.assayCategory} query={currentQuery} />
-                                </div>
-                            </div>
+                        <img src="/static/img/banner-bg.jpg  " alt="UT Southwestern" id="su-logo" height="390"/>
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">

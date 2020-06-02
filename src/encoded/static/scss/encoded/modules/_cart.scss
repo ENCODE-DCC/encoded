@@ -88,7 +88,7 @@
     @at-root #{&}__loss-warning {
         font-style: italic;
         text-align: center;
-    
+
         @media screen and (min-width: $screen-sm-min) {
             flex: 0 1 auto;
             text-align: left;
@@ -196,27 +196,27 @@
         stroke: #000;
         stroke-width: 0.5px;
         fill: #000;
-        fill-opacity: 0;
+        fill-opacity: 0.2;
         -webkit-appearance: none; // Avoid apparent chrome bug
 
         svg {
             display: block;
             height: 1.2rem;
-    
+
             @media screen and (min-width: $screen-sm-min) {
                 height: 1.1rem;
             }
         }
-    
+
         &:hover {
             background-color: #e0e0e0;
         }
-    
+
         &:disabled {
             stroke: #a0a0a0;
             fill: #a0a0a0;
         }
-    
+
         @at-root #{&}--header {
             float: right;
             margin-left: 5px;
@@ -225,7 +225,7 @@
         &--in-cart {
             stroke-width: 0;
             fill-opacity: 1;
-    
+
             &:disabled {
                 stroke: #a0a0a0;
                 fill: #a0a0a0;
@@ -501,7 +501,7 @@ $deleted-bg: #ffe0e0;
     height: 10px;
     border: 1px solid #c0c0c0;
 }
-  
+
 .cart-manager-table {
     @at-root #{&}__action {
         display: flex;
