@@ -1,5 +1,43 @@
 Changes
 =======
+v101.0 (released) snovault 1.0.44
+--------------------------------------------------------------------
+	1.	ENCD-5324-experiment-perturbed (#3338)
+	2.	ENCD-5296-fix-matrix-header-link (#3329)
+	3.	ENCD-5317-fix-bug-biosample-summary (#3332)
+	4.	ENCD-5319 fix date released link (#3335)
+	5.	ENCD-5322-fix-table-capitalization (#3334)
+	6.	ENCD-5191 add ENCSR id to cart (#3336)
+	7.	ENCD-5294-move-4-read-fraction-QMs (#3320)
+	8.	ENCD-5302-cart-link (#3328)
+	9.	ENCD-5181-perturbed-facet-normal (#3325)
+	10.	ENCD-5267 body map updates (#3326)
+	11.	ENCD-5270-library-adapter (#3312)
+	12.	ENCD-5278-add-binding-to-category-property (#3310)
+	13.	ENCD-5214-in-vivo-enhancer-screen (#3314)
+	14.	ENCD-5271-add-atac-dnase-output-types (#3309)
+	15.	ENCD-5243 fix crash on date submitted (#3300)
+	16.	ENCD-5281 Remove extra files.assembly column (#3324)
+	17.	ENCD-5276-add-kallisto-properties-to-library (#3321)
+	18.	ENCD-5292 Change txt extension to txt.gz (#3319)
+	19.	ENCD-5277 Update amis v100 and typos (#3307)
+	20.	ENCD-5300-add-audit-field-to-metadata-tsv (#3322)
+	21.	ENCD-5265-correct-stem-cell-matrix-links (#3298)
+	22.	ENCD-5289-fcc-remove-assay-type-facet (#3316)
+	23.	ENCD-5254-add-pseudoalignment-analysis-step-type (#3317)
+	24.	ENCD-5238-organ-system-slims-assay-update (#3297)
+	25.	ENCD-4913-fix-filtered-url-in-matrix (#3294)
+	26.	ENCD-5262 add skinny tracks (#3306)
+	27.	ENCD-5236-display-fcc-prop (#3315)
+	28.	ENCD-5261-copy-schema (#3311)
+	29.	ENCD-5269-audit-annotation-file-derived-from-revoked (#3302)
+	30.	ENCD-5225-display-cropped-read-length-and-tolerance (#3287)
+	31.	ENCD-4614-no-assembly-graph (#3299)
+	32.	ENCD-4927 Internal Audit details not showing up for GM
+	33.	ENCD-5260 Cart auto-save
+	34.	ENCD-5159-show-donor-on-ref-page (#3289)
+	35.	ENCD-5136-hide-nih-in-facets-on-0-results (#3290)
+
 v100.0 (released) snovault 1.0.44
 --------------------------------------------------------------------
 1.	ENCD-5216 deploy demo pointing at pg (#3273)
