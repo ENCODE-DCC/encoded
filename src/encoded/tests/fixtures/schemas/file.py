@@ -1459,6 +1459,7 @@ def file_chip_enrichment(testapp, experiment_chip_CTCF, award, lab):
     }
 
 
+@pytest.fixture
 def fastq_index(testapp, lab, award, experiment, base_replicate_two, platform1, single_fastq_indexed):
     item = {
         'dataset': experiment['@id'],
