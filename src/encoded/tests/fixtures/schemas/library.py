@@ -240,3 +240,22 @@ def library_schema_11b(lab, award):
         'lab': lab['uuid'],
         'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'chemical (DpnII restriction)', 'shearing (generic)']
     }
+
+
+@pytest.fixture
+def library_schema_12(library, award, lab, biosample_human_2):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample': biosample_human_2['@id'],
+        'nucleic_acid_term_name': 'DNA',
+        'adapters': [
+            {
+              'type': '3\' adapter',
+              'sequence': 'ACCCCTG'
+            },
+            {
+              'sequence': 'GGGGGGCN'
+            }
+        ]
+    }

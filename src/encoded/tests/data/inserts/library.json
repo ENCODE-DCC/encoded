@@ -793,11 +793,11 @@
         "lab": "/labs/ali-mortazavi/",
         "adapters": [
             {
-              "type": "3' adapter",
+              "type": "read1 3' adapter",
               "file": "ENCFF463QEL"
             },
             {
-              "type": "5' adapter",
+              "type": "read1 5' adapter",
               "file": "ENCFF980GYX"
             }
         ]
@@ -818,11 +818,11 @@
         "status": "released",
         "adapters": [
             {
-              "type": "3' adapter",
+              "type": "read1 3' adapter",
               "file": "ENCFF463QEL"
             },
             {
-              "type": "5' adapter",
+              "type": "read1 5' adapter",
               "file": "ENCFF379BCO"
             }
         ]
@@ -842,11 +842,11 @@
         "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5",
         "adapters": [
             {
-              "type": "3' adapter",
+              "type": "read1 3' adapter",
               "sequence": "ACCCCTG"
             },
             {
-              "type": "5' adapter",
+              "type": "read1 5' adapter",
               "sequence": "GGGGGGCNA"
             }
         ]
