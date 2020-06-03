@@ -117,5 +117,14 @@
         "lab": "/labs/greg-cooper/",
         "reference_type": "functional elements",
         "status": "in progress"
+    },
+    {
+        "_test": "sequence barcodes",
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/ali-mortazavi/",
+        "reference_type": "sequence barcodes",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "in progress",
+        "accession": "ENCSR063SBC"
     }
 ]
