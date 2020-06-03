@@ -139,3 +139,30 @@ Organization deployment configuration and build files
 
 
 ### (TBD) Demo with elasticsearch pointing at rds version of postgres: app-es-template.yml
+
+
+
+### Cluster with remote indexing node, this a little manual since deploy vars are getting messy
+    $ export GIT_REL='SNO-159-allow-remote-indexing' && export ENCD_REL='sno-159' && echo "$GIT_REL $ENCD_REL"   
+
+    # Normal elasticsearch cluster
+    $ bin/deploy -b $GIT_REL --cluster-name "$ENCD_REL" --es-wait
+    #           add --profile-name production --candidate for prod
+
+    # Head frontend node: 12 app workers, 8 index workers
+    $ export ES_IP=172.31.31.72
+    $ bin/deploy -b $GIT_REL --es-ip $ES_IP --cluster-name "$ENCD_REL" --remote-indexing --primary-indexing --index-procs 8 --app-workers 12 --pg-open --do-batchupgrade no --dry-run
+    #           add --profile-name production --candidate for prod
+    # ssh on and stop apache once deployment is done
+    # if needed fix env vars and rebuild apache conf
+    # check encd base ini vars
+
+    # Indexer node: 8 app workers, 16 index workers
+    $ export PG_IP=172.31.26.207
+    $ bin/deploy -b $GIT_REL --es-ip $ES_IP --pg-ip $PG_IP -n "$ENCD_REL-indexer" --cluster-name "$ENCD_REL" --no-indexing --primary-indexing --app-workers 8 --do-batchupgrade no --profile-name production --candidate
+    # ssh on and stop apache once deployment is done
+    # fix apache conf
+    # check encd base ini vars
+    # turn off machine
+
+    # SSh onto head node and restart apache, watch logs
