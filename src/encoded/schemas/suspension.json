@@ -141,9 +141,7 @@
                 "comment": "",
                 "type": "string",
                 "linkTo": [
-                    "Culture",
-                    "Tissue",
-                    "Suspension",
+                    "Biosample",
                     "Donor"
                 ]
             }
