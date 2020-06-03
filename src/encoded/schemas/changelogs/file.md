@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 21
+* The *file_format_type* enum was updated to include *idr_ranked_peak*.
+
 ### Schema version 21
 * *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.
 * Added *hotspots_prefix* property.

@@ -3616,5 +3616,26 @@
         "file_format_type": "bed3+",
         "accession": "ENCFF714FDR",
         "file_size": 132245
+    },
+    {
+        "accession": "ENCFF003IRP",
+        "award": "ENCODE2",
+        "dataset": "ENCSR000DZQ",
+        "derived_from": [
+            "ENCFF000VUQ"
+        ],
+        "file_format": "bed",
+        "file_format_type": "idr_ranked_peak",
+        "file_size": 1600,
+        "lab": "j-michael-cherry",
+        "md5sum": "7e28f46aa18273f269360535fce32ed2",
+        "output_type": "IDR ranked peaks",
+        "preferred_default": true,
+        "status": "released",
+        "assembly": "hg19",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.IDRrankedpeak.bed",
+        "uuid": "be4c17df-e5f0-44f9-997a-f9caef22be08"
     }
 ]
