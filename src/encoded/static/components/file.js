@@ -594,9 +594,9 @@ class SequenceFileInfo extends React.Component {
                             <div data-test="outputtype">
                                 <dt>Index of</dt>
                                 <dd>
-                                    {file.index_of.reduce((fUrls, f) => {
-                                        const fileId = f.replace(/\/files\/|\//g, '');
-                                        const fUrl = <a key={f} href={`/files/${fileId}`} title={fileId}>{fileId}</a>;
+                                    {file.index_of.reduce((fUrls, href) => {
+                                        const fileId = href.replace(/\/files\/|\//g, '');
+                                        const fUrl = <a key={fileId} href={href} title={fileId}>{fileId}</a>;
                                         return !fUrls ? [fUrl] : [fUrl, ', ', fUrls];
                                     }, '')}
                                 </dd>
