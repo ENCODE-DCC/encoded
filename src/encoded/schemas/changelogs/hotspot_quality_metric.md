@@ -1,5 +1,9 @@
 ## Changelog for hotspot_quality_metric.json
 
+### Schema version 9
+* Standardized property names to remove spaces and capital letters.
+* Added the following new properties: *five_percent_allcalls_count*, *five_percent_hotspots_count*, *five_percent_narrowpeaks_count*, and *tenth_of_one_percent_narrowpeaks_count*.
+
 ### Minor changes since schema version 8
 
 * *quality_metric_of* was set to have a minimum of 1.
