@@ -2446,7 +2446,7 @@ class FileGalleryRendererComponent extends React.Component {
     /**
      * Sets the `selectedAnalysisProps` property to track the corresponding selected assembly/annotation
      * and pipeline lab. Only pass in `compiledAnalyses` if it has been newly determined and might
-     * not yet have propogated to `this.state.compiledAnalyses`.
+     * not yet have propagated to `this.state.compiledAnalyses`.
      * @param {number} selectedAnalysesIndex New index of selected `compiledAnalyses`
      * @param {array} compiledAnalyses Compiled analyses for the experiment if newly determined
      */
@@ -2459,7 +2459,7 @@ class FileGalleryRendererComponent extends React.Component {
     /**
      * Find the compiled analyses object best matching the given assembly/annotation and the last
      * selected pipeline lab and return its index into the compiled analyses array. Only pass in
-     * `compiledAnalyses` if it has been newly determined and might not yet have propogated to
+     * `compiledAnalyses` if it has been newly determined and might not yet have propagated to
      * `this.state.compiledAnalyses`. If no appropriate compiled analyses can be found, return 0
      * which selects the first compiled analyses object.
      * @param {string} assembly Suggested assembly for matching an analysis
