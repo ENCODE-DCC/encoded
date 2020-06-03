@@ -398,3 +398,13 @@ class GeneQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class GeneTypeQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'gene_type_quantification_quality_metric'
     schema = load_schema('encoded:schemas/gene_type_quantification_quality_metric.json')
+
+
+@collection(
+    name='dnase-footprinting-quality-metrics',
+    properties={
+        'title': "DNase Footprinting Quality Metrics",
+    })
+class DnaseFootprintingQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'dnase_footprinting_quality_metric'
+    schema = load_schema('encoded:schemas/dnase_footprinting_quality_metric.json')
