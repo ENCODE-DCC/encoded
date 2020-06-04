@@ -8,6 +8,6 @@
         "lab": "/labs/john-stamatoyannopoulos/",
         "award": "/awards/U54HG007010/",
         "footprint_count": 5045,
-        "dispersion_model": "footprints_dispersion_model.json"
+        "dispersion_model": "gene_quantification_qc.json"
     }
 ]
