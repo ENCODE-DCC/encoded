@@ -752,7 +752,7 @@ def check_experiment_dnase_seq_standards(experiment,
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
-                if "SPOT1 score" in metric:
+                if "spot1_score" in metric:
                     file_names = []
                     file_list = []
                     for f in metric['quality_metric_of']:
@@ -777,14 +777,14 @@ def check_experiment_dnase_seq_standards(experiment,
                             pipelines[0]['title'],
                             audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id']),
                             assemblies_detail(extract_assemblies(alignments_assemblies, file_names)),
-                            metric["SPOT1 score"],
+                            metric["spot1_score"],
                             audit_link('ENCODE DNase-seq data standards', link_to_standards)
                         )
                     )
 
-                    if 0.25 <= metric["SPOT1 score"] < 0.4:
+                    if 0.25 <= metric["spot1_score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif metric["SPOT1 score"] < 0.25:
+                    elif metric["spot1_score"] < 0.25:
                         yield AuditFailure('extremely low spot score', detail, level='ERROR')
 
         if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
