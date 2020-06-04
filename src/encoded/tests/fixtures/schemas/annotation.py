@@ -136,5 +136,6 @@ def annotation_28(award, lab):
         'lab': lab['@id'],
         'schema_version': '28',
         'relevant_timepoint': '3',
-        'relevant_timepoint_units': 'stage'
+        'relevant_timepoint_units': 'stage',
+        'notes': 'Lorem ipsum'
     }
