@@ -100,7 +100,7 @@ $form-bg: #f3f3f3;
     @at-root #{&}__data-row {
         margin-left: 25px;
         line-height: 1.4;
-        overflow-wrap: anywhere;
+        word-break: break-all;
 
         ul {
             text-decoration: none;
