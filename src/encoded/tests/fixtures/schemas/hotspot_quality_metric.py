@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def hotspot_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, encode_lab):
     item = {
-        'SPOT1 score': 0.3345,
+        'spot1_score': 0.3345,
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file_bam_1_1['@id']],
         'award': award['@id'],
@@ -14,11 +14,11 @@ def hotspot_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, 
 
 
 @pytest.fixture
-def hotspot_quality_metric_8(testapp, analysis_step_run_bam, file_bam_1_1, award, encode_lab):
+def hotspot_quality_metric_8(testapp, award, encode_lab):
     item = {
         'SPOT1 score': 0.5555,
         'award': award['@id'],
         'lab': encode_lab['@id'],
-        'schema_version': 8
+        'schema_version': '8'
     }
     return item
