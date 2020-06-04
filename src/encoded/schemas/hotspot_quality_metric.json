@@ -53,22 +53,26 @@
         },
         "five_percent_allcalls_count": {
             "title": "Five percent all calls count",
-            "type": "number",
+            "type": "integer",
+            "minimum": 0,
             "description": "Count of five percent calls"
         },
         "five_percent_hotspots_count": {
             "title": "Five percent hotspots count",
-            "type": "number",
+            "type": "integer",
+            "minimum": 0,
             "description": "Count of five percent hotspots"
         },
         "five_percent_narrowpeaks_count": {
             "title": "Five percent narrowpeaks count",
-            "type": "number",
+            "type": "integer",
+            "minimum": 0,
             "description": "Count of five percent narrowpeaks"
         },
         "tenth_of_one_percent_narrowpeaks_count": {
             "title": "Tenth of one percent narrowpeaks count",
-            "type": "number",
+            "type": "integer",
+            "minimum": 0,
             "description": "Count of tenth of one percent narrowpeaks"
         }
     },
