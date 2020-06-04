@@ -3688,5 +3688,51 @@
         "assembly": "GRCh38",
         "md5sum": "d53c4aee0153037136cab8c35d2bb6ca",
         "derived_from": ["ENCFF718LJW"]
+    },
+    {
+        "_test": "chromosome sizes",
+        "dataset": "ENCSR000AJK",
+        "status": "released",
+        "award": "U54HG006998",
+        "assembly": "GRCh38",
+        "md5sum": "3ac0aba77bf0e77a81aba54d947a8bf9",
+        "uuid": "b12c451a-2f10-49d6-9b8a-bf2273b3dbfc",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "chromosome sizes",
+        "file_format": "tsv",
+        "lab": "ali-mortazavi",
+        "accession": "ENCFF314NBV",
+        "file_size": 132245
+    },
+    {
+        "_test": "smoothed methylation stage",
+        "dataset": "ENCSR000AJK",
+        "status": "released",
+        "award": "U54HG006998",
+        "assembly": "GRCh38",
+        "md5sum": "47bdf23be9e5fd78428ce1016c0e19ef",
+        "uuid": "c6373e40-817f-436f-9c7c-8211e5a2aaec",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "smoothed methylation stage at CpG",
+        "file_format": "bed",
+        "lab": "ali-mortazavi",
+        "file_format_type": "bedMethyl",
+        "accession": "ENCFF812BBM",
+        "file_size": 1322632
+    },
+    {
+        "_test": "ranked gRNAs",
+        "dataset": "ENCSR000AJK",
+        "status": "released",
+        "award": "U54HG006998",
+        "assembly": "GRCh38",
+        "md5sum": "f6607a271984ce6aa091e17135bb621f",
+        "uuid": "a0e9b03c-985a-447e-91e3-6733acf86d2e",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "ranked gRNAs",
+        "file_format": "tsv",
+        "lab": "ali-mortazavi",
+        "accession": "ENCFF617GRA",
+        "file_size": 132245
     }
 ]

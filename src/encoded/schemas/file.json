@@ -1371,6 +1371,7 @@
                         "candidate promoters",
                         "chromatin interactions",
                         "chromosomes reference",
+                        "chromosome sizes",
                         "consensus DNase hypersensitivity sites (cDHSs)",
                         "mapping quality thresholded chromatin interactions",
                         "conservative IDR thresholded peaks",
@@ -1446,6 +1447,7 @@
                         "raw normalized signal",
                         "raw plus strand signal",
                         "raw signal",
+                        "ranked gRNAs",
                         "read-depth normalized signal",
                         "reads",
                         "reference variants",
@@ -1466,6 +1468,7 @@
                         "signal of unique reads",
                         "signal p-value",
                         "spike-in sequence",
+                        "smoothed methylation stage at CpG",
                         "splice junctions",
                         "stable peaks",
                         "subreads",
@@ -1939,6 +1942,7 @@
         "motif model": "quantification",
         "differential expression quantifications": "quantification",
         "differential splicing quantifications": "quantification",
+        "smoothed methylation stage at CpG": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",
@@ -1997,6 +2001,7 @@
         "safe-targeting gRNAs": "annotation",
         "regulatory elements": "annotation",
         "gRNAs": "annotation",
+        "ranked gRNAs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
@@ -2027,6 +2032,7 @@
         "hotspots2 reference": "reference",
         "mitochondrial genome index": "reference",
         "mitochondrial genome reference": "reference",
+        "chromosome sizes": "reference",
 
         "enhancer validation": "validation",
         "validation": "validation",

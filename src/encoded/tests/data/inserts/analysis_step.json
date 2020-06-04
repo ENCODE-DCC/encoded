@@ -491,5 +491,32 @@
         ],
         "analysis_step_types": ["fastq demultiplexing", "fastq concatenation", "alignment", "filtering"],
         "uuid": "664aee68-83ca-40ee-a074-f3f239044fab"
+    },
+    {
+        "step_label": "grna-generation-step",
+        "major_version": 1,
+        "title": "gRNA Generation Step",
+        "input_file_types": [
+            "elements reference",
+            "chromosome sizes"
+        ],
+        "output_file_types": [
+            "ranked gRNAs"
+        ],
+        "analysis_step_types": ["gRNA generation"],
+        "uuid": "41baa364-a877-4858-99bd-e5cd250ae386"
+    },
+    {
+        "step_label": "wgbs-quantification-step",
+        "major_version": 1,
+        "title": "WGBS Quantification Step",
+        "input_file_types": [
+            "alignments"
+        ],
+        "output_file_types": [
+            "smoothed methylation stage at CpG"
+        ],
+        "analysis_step_types": ["quantification"],
+        "uuid": "51bea210-a877-4858-99bd-e5cd250ae386"
     }
 ]
