@@ -109,6 +109,19 @@ export const dbxrefPrefixMap = {
     },
     FactorBook: {
         pattern: 'https://factorbook.org/experiment/{0}',
+        preprocessor: (context, dbxref) => {
+            // For dbxrefs in targets, use an alternate URL for human targets.
+            const value = dbxref.split(':');
+            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Homo sapiens') {
+                return { altUrlPattern: 'https://factorbook.org/tf/human/{0}/function' };
+            }
+            // For dbxrefs in targets, use an alternate URL and alternate value for mouse targets.
+            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') {
+                return { altValue: value.charAt(0) + value.slice(1).toLowerCase(),
+                    altUrlPattern: 'https://factorbook.org/tf/mouse/{0}/function' };
+            }
+            return {};
+        },
     },
     FlyBase: {
         pattern: 'http://flybase.org/search/symbol/{0}',

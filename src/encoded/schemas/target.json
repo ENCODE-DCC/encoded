@@ -84,13 +84,7 @@
         }
     ],
     "dependencies": {
-        "modifications": ["genes"],
-        "dbxrefs": {
-            "comment": "Only non-gene targets can specify dbxrefs.",
-            "not": {
-                "required": ["genes"]
-            }
-        }
+        "modifications": ["genes"]
     },
     "tag_modifications": {
         "enum": [
