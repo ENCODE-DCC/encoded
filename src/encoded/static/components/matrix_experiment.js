@@ -177,7 +177,7 @@ const convertExperimentToDataTable = (context, getRowCategories, getRowSubCatego
                 cells[columnIndex] = {
                     content: (
                         cellData.doc_count > 0 ?
-                            <a href={`${baseUrlWithoutSubNorColCategoriesType}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}`} style={{ color: textColor }}>{cellData.doc_count}</a>
+                            <a href={`${baseUrlWithoutSubNorColCategoriesType}&${mappedSubCategoryQuery}&${columnCategoryType}=${encoding.encodedURIComponentOLD(colCategoryNames[columnIndex])}&biosample_ontology.classification=${rowCategoryBucket.key}`} style={{ color: textColor }}>{cellData.doc_count}</a>
                         :
                             <div />
                     ),
