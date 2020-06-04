@@ -239,13 +239,8 @@
     line-height: 1;
     left: 5px;
     text-align: left;
-    background-color: #f2f2f2;
-    border: 1px solid #BFBFBF;
-    padding: 7px 20px;
     height: 50px;
     width: 176px;
-    font-size: 14px;
-    border-radius: 4px;
     display: flex;
     .icon-undo {
         padding-right: 5px;
@@ -254,6 +249,19 @@
     .reset-title {
         flex: 0 1 auto;
     }
+}
+
+.expand-all-tracks-button, .collapse-all-tracks-button, .reset-browser-button {
+    background-color: #f2f2f2;
+    border: 1px solid #BFBFBF;
+    padding: 7px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.expand-all-tracks-button, .collapse-all-tracks-button {
+    margin-top: 100px;
+    display: block;
 }
 
 .gb-accession {
