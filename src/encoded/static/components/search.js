@@ -530,8 +530,9 @@ globals.listingViews.register(Target, 'Target');
 class PatientComponent extends React.Component {
     render() {
         const result = this.props.context;
-        const age = (result.diagnosis.age && result.diagnosis.age !== 'Unknown') ? ` ${result.diagnosis.age}` : '';
-        const ageUnits = (result.diagnosis.age_unit && result.diagnosis.age_unit !== 'Unknown' && age) ? ` ${result.diagnosis.age_unit}` : '';
+        let age = result.diagnosis.age;
+        const hasAge = (age != "Unknown") ? true : false;       
+        const ageUnit = (result.diagnosis.age_unit && hasAge && age != "90 or above") ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
             <li>
@@ -545,8 +546,8 @@ class PatientComponent extends React.Component {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {`${result.accession} (`}
-                            {`${age}${ageUnits} )`}
+                            {`${result.accession}`}
+                            {hasAge &&`(${age}${ageUnit})`}
                         </a>
                     </div>
                     <div className="data-row">
@@ -2384,5 +2385,6 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
 
 

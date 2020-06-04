@@ -91,6 +91,8 @@ class Patient extends React.Component {
       { id: <i>{context.accession}</i> },
     ];
     const crumbsReleased = (context.status === 'released');
+    const ageUnit = (context.diagnosis.age_unit && context.diagnosis.age != "90 or above" && context.diagnosis.age != "Unknown") ? ` ${context.diagnosis.age_unit}` : '';
+
     let hasLabs = false;
     let hasVitals = false;
     let hasPath = false;
@@ -185,9 +187,7 @@ class Patient extends React.Component {
 
               <div data-test="age">
                 <dt>Age at diagnosis</dt>
-                <dd className="sentence-case">
-                  {formatMeasurement(context.diagnosis.age, context.diagnosis.age_unit)}
-                </dd>
+                <dd>{`${context.diagnosis.age}${ageUnit}`}</dd>
               </div>
 
               <div data-test="diagnosis_date">
@@ -232,4 +232,5 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
 

@@ -455,15 +455,14 @@ class Patient(Item):
                 "title": "Diagnosis age",
                 "description": "The age of diagnosis.",
                 "type": "string",
-                "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+                "pattern": "^((unknown)|([1-8]?\\d)|(90 or above))$"
             },
             "age_unit": {
                 "title": "Diagnosis age unit",
                 "type": "string",
                 "default": "year",                    
                 "enum": [
-                    "year",
-                    "month"
+                    "year"
                 ]
             },
             "age_range": {
@@ -816,4 +815,5 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
