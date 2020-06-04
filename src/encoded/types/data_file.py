@@ -83,18 +83,18 @@ def file_is_md5sum_constrained(properties):
 
 
 @abstract_collection(
-    name='files',
+    name='data-files',
     unique_key='accession',
     properties={
-        'title': 'Files',
-        'description': 'Listing of all types of file.',
+        'title': 'Data Files',
+        'description': 'Listing of all types of data file.',
     })
-class File(Item):
-    base_types = ['File'] + Item.base_types
+class DataFile(Item):
+    base_types = ['DataFile'] + Item.base_types
     name_key = 'accession'
     rev = {
-        'paired_with': ('File', 'paired_with'),
-        'superseded_by': ('File', 'supersedes'),
+        'paired_with': ('DataFile', 'paired_with'),
+        'superseded_by': ('DataFile', 'supersedes'),
     }
     embedded = []
     audit_inherit = []
@@ -135,7 +135,7 @@ class File(Item):
 
 
     def unique_keys(self, properties):
-        keys = super(File, self).unique_keys(properties)
+        keys = super(DataFile, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
@@ -245,7 +245,7 @@ class File(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "File.supersedes",
+            "linkFrom": "DataFile.supersedes",
         },
         "notSubmittable": True,
     })
@@ -367,7 +367,7 @@ class File(Item):
                 s3_transfer_allow=asbool(s3_transfer_allow),
                 s3_transfer_buckets=registry.settings.get('external_aws_s3_transfer_buckets'),
             )
-        return super(File, cls).create(registry, uuid, properties, sheets)
+        return super(DataFile, cls).create(registry, uuid, properties, sheets)
 
     def _get_external_sheet(self):
         external = self.propsheets.get('external', {})
@@ -412,7 +412,7 @@ class File(Item):
         return True
 
     def set_status(self, new_status, request, parent=True):
-        status_set = super(File, self).set_status(
+        status_set = super(DataFile, self).set_status(
             new_status,
             request,
             parent=parent,
@@ -467,7 +467,7 @@ class File(Item):
         return (return_flag, current_path, base_uri.format(private_bucket, current_key))
 
 
-@view_config(name='upload', context=File, request_method='GET',
+@view_config(name='upload', context=DataFile, request_method='GET',
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
@@ -485,7 +485,7 @@ def get_upload(context, request):
     }
 
 
-@view_config(name='upload', context=File, request_method='POST',
+@view_config(name='upload', context=DataFile, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
     properties = context.upgrade_properties()
@@ -548,7 +548,7 @@ def post_upload(context, request):
     return result
 
 
-@view_config(name='download', context=File, request_method='GET',
+@view_config(name='download', context=DataFile, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties()
@@ -590,7 +590,7 @@ def download(context, request):
     raise HTTPTemporaryRedirect(location=location)
 
 
-@view_config(context=File, permission='edit_bucket', request_method='PATCH',
+@view_config(context=DataFile, permission='edit_bucket', request_method='PATCH',
              name='update_bucket')
 def file_update_bucket(context, request):
     new_bucket = request.json_body.get('new_bucket')
@@ -626,11 +626,11 @@ def file_update_bucket(context, request):
         'title': "Analysis Files",
         'description': "",
     })
-class AnalysisFile(File):
+class AnalysisFile(DataFile):
     item_type = 'analysis_file'
-    base_types = ['AnalysisFile'] + File.base_types
+    base_types = ['AnalysisFile'] + DataFile.base_types
     schema = load_schema('encoded:schemas/analysis_file.json')
-    embedded = File.embedded + []
+    embedded = DataFile.embedded + []
 
 
 @collection(
@@ -653,10 +653,10 @@ class SequenceAlignmentFile(AnalysisFile):
         'title': "Reference Files",
         'description': "",
     })
-class ReferenceFile(File):
+class ReferenceFile(DataFile):
     item_type = 'reference_file'
     schema = load_schema('encoded:schemas/reference_file.json')
-    embedded = File.embedded + []
+    embedded = DataFile.embedded + []
 
 
 @collection(
@@ -666,10 +666,10 @@ class ReferenceFile(File):
         'title': "Raw Sequence Files",
         'description': "",
     })
-class RawSequenceFile(File):
+class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    embedded = File.embedded + []
+    embedded = DataFile.embedded + []
 
 
 @collection(

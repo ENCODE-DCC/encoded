@@ -1,8 +1,8 @@
 {
-    "title": "Experiment",
-    "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
-    "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
-    "id": "/profiles/experiment.json",
+    "title": "Dataset",
+    "description": "Schema for submitting metadata for a dataset.",
+    "comment": "",
+    "id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab"],
@@ -193,7 +193,7 @@
             "items": {
                     "comment": "See experiment.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "Experiment"
+                    "linkTo": "Dataset"
             }
         },
         "related_files": {
@@ -206,7 +206,7 @@
                 "title": "Data file",
                 "comment": "See file.json for available identifiers.",
                 "type": "string",
-                "linkTo": "File"
+                "linkTo": "DataFile"
             }
         },
         "internal_status": {
@@ -253,7 +253,7 @@
                             "title": "Analysis file",
                             "comment": "See file.json for available identifiers.",
                             "type": "string",
-                            "linkTo": "File"
+                            "linkTo": "DataFile"
                         }
                     },
                     "assemblies": {
@@ -390,5 +390,5 @@
         }
     },
     "boost_values": {},
-    "changelog": "/profiles/changelogs/experiment.md"
+    "changelog": "/profiles/changelogs/Dataset.md"
 }

@@ -487,7 +487,7 @@ def audit_file_matching_md5sum(value, system):
 function_dispatcher = {}
 
 
-@audit_checker('File',
+@audit_checker('DataFile',
                frame=['derived_from',
                       'replicate',
                       'library',

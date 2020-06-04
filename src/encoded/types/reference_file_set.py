@@ -64,7 +64,7 @@ class ReferenceFileSet(Item):
     set_status_down = []
     name_key = 'accession'
     rev = {
-        'original_files': ('File', 'dataset'),
+        'original_files': ('DataFile', 'dataset'),
     }
 
     @calculated_property(schema={
@@ -72,7 +72,7 @@ class ReferenceFileSet(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "File.dataset",
+            "linkFrom": "DataFile.dataset",
         },
         "notSubmittable": True,
     })
@@ -84,7 +84,7 @@ class ReferenceFileSet(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "File",
+            "linkTo": "DataFile",
         },
     })
     def contributing_files(self, request, original_files, status):
@@ -111,7 +111,7 @@ class ReferenceFileSet(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "File",
+            "linkTo": "DataFile",
         },
     })
     def files(self, request, original_files, status):
@@ -131,7 +131,7 @@ class ReferenceFileSet(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "File",
+            "linkTo": "DataFile",
         },
     })
     def revoked_files(self, request, original_files):

@@ -18,7 +18,7 @@
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/url"},
         {"$ref": "mixins.json#/uuid"},
-        {"$ref": "file.json#/properties"},
+        {"$ref": "data_file.json#/properties"},
         {"$ref": "analysis_file.json#/properties"}
     ],
     "dependencies": {
@@ -125,7 +125,7 @@
             "default": "1"
         },
         "dataset": {
-            "linkTo": "Experiment"
+            "linkTo": "Dataset"
         },
         "derived_from": {
             "items": {

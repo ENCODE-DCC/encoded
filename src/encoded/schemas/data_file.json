@@ -1,7 +1,7 @@
 {
     "title": "Data file",
     "description": "Schema for submitting metadata for a data file.",
-    "id": "/profiles/file.json",
+    "id": "/profiles/data_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["dataset", "file_format", "output_type", "md5sum"],
@@ -96,7 +96,7 @@
             "items": {
                 "comment": "The files in this list should be archived or revoked.",
                 "type": "string",
-                "linkTo": "File"
+                "linkTo": "DataFile"
             }
         },
         "dataset": {
@@ -172,5 +172,5 @@
     },
     "columns": {},
     "boost_values": {},
-    "changelog": "/profiles/changelogs/file.md"
+    "changelog": "/profiles/changelogs/data_file.md"
 }

@@ -111,7 +111,7 @@
                 "title": "Data file",
                 "comment": "See file.json for available identifiers.",
                 "type": "string",
-                "linkTo": "File"
+                "linkTo": "DataFile"
             }
         }
     },

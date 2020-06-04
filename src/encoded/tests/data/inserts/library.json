@@ -23,7 +23,7 @@
         "dbxrefs": [
             "GEO:GSM433174"
         ],
-        "experiment": "ENCSR000AJK",
+        "dataset": "ENCSR000AJK",
         "biosamples": [
             "ENCBS000AAA"
         ]
@@ -47,7 +47,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "rna_integrity_number": 2.0,
         "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
-        "experiment": "ENCSR000AHF",
+        "dataset": "ENCSR000AHF",
         "biosamples": [
             "ENCBS001AAA"
         ]
@@ -74,7 +74,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "rna_integrity_number": 7.3,
         "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c",
-        "experiment": "ENCSR000AEM",
+        "dataset": "ENCSR000AEM",
         "biosamples": [
             "ENCBS039ENC"
         ]
@@ -104,7 +104,7 @@
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407",
-        "experiment": "ENCSR000AEM",
+        "dataset": "ENCSR000AEM",
         "biosamples": [
             "ENCBS044ENC"
         ]
@@ -122,7 +122,7 @@
         "size_range": ">200",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5",
-        "experiment": "ENCSR000AER",
+        "dataset": "ENCSR000AER",
         "biosamples": [
             "ENCBS222SCS"
         ]
@@ -141,7 +141,7 @@
         "strand_specificity": "reverse",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e4824882-0ad8-4009-a169-44d5955800af",
-        "experiment": "ENCSR000AER",
+        "dataset": "ENCSR000AER",
         "biosamples": [
             "ENCBS026ENC"
         ]
@@ -165,7 +165,7 @@
         "strand_specificity": "forward",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
-        "experiment": "ENCSR000AES",
+        "dataset": "ENCSR000AES",
         "biosamples": [
             "ENCBS128ENC"
         ]
@@ -189,7 +189,7 @@
         "strand_specificity": "reverse",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565",
-        "experiment": "ENCSR000AES",
+        "dataset": "ENCSR000AES",
         "biosamples": [
             "ENCBS175ENC"
         ]
@@ -212,7 +212,7 @@
         "strand_specificity": "forward",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
-        "experiment": "ENCSR999NOF",
+        "dataset": "ENCSR999NOF",
         "biosamples": [
             "ENCBS417ENC"
         ]
@@ -232,7 +232,7 @@
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
-        "experiment": "ENCSR000ADI",
+        "dataset": "ENCSR000ADI",
         "biosamples": [
             "ENCBS000RNA"
         ]
@@ -252,7 +252,7 @@
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "835e166d-0253-41ce-add2-de67429a3612",
-        "experiment": "ENCSR000ADH",
+        "dataset": "ENCSR000ADH",
         "biosamples": [
             "ENCBS175SCS"
         ]
@@ -272,7 +272,7 @@
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77",
-        "experiment": "ENCSR000AJK",
+        "dataset": "ENCSR000AJK",
         "biosamples": [
             "ENCBS356AAA"
         ]
@@ -292,7 +292,7 @@
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f",
-        "experiment": "ENCSR001ADI",
+        "dataset": "ENCSR001ADI",
         "biosamples": [
             "ENCBS492ENC"
         ]
@@ -312,7 +312,7 @@
         "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b",
-        "experiment": "ENCSR001ADI",
+        "dataset": "ENCSR001ADI",
         "biosamples": [
             "ENCBS493ENC"
         ]
@@ -334,7 +334,7 @@
         "size_range": ">200",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
-        "experiment": "ENCSR999NOF",
+        "dataset": "ENCSR999NOF",
         "biosamples": [
             "ENCBS044RNA"
         ]
@@ -350,7 +350,7 @@
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "9a230485-0062-4590-be42-6ea7c4258941",
-        "experiment": "ENCSR000ACY",
+        "dataset": "ENCSR000ACY",
         "biosamples": [
             "ENCBS278TPS"
         ]
@@ -367,7 +367,7 @@
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79",
-        "experiment": "ENCSR000ACT",
+        "dataset": "ENCSR000ACT",
         "biosamples": [
             "ENCBS804RUL"
         ]
@@ -386,7 +386,7 @@
         "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
         "size_range": "100-300",
-        "experiment": "/experiments/ENCSR765JPC/",
+        "dataset": "ENCSR765JPC/",
         "biosamples": [
             "ENCBS376EJL"
         ]
@@ -399,7 +399,7 @@
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29",
-        "experiment": "/experiments/ENCSR751ISO/",
+        "dataset": "ENCSR751ISO/",
         "biosamples": [
             "ENCBS009WOO"
         ]
@@ -412,7 +412,7 @@
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26",
-        "experiment": "ENCSR808QCJ",
+        "dataset": "ENCSR808QCJ",
         "biosamples": [
             "ENCBS061XGD"
         ]
@@ -425,7 +425,7 @@
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "de797662-a71b-45d5-96bf-9dd800194907",
-        "experiment": "ENCSR000DZQ",
+        "dataset": "ENCSR000DZQ",
         "biosamples": [
             "ENCBS204NZH"
         ]
@@ -439,7 +439,7 @@
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939",
-        "experiment": "ENCSR706IDL",
+        "dataset": "ENCSR706IDL",
         "biosamples": [
             "ENCBS123AAA"
         ]
@@ -453,7 +453,7 @@
         "uuid": "2b0693ed-6f10-449f-82c2-ca3bd6b34daa",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010",
-        "experiment": "ENCSR751YPU",
+        "dataset": "ENCSR751YPU",
         "biosamples": [
             "ENCBS123AAB"
         ]
@@ -472,7 +472,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB001SER",
         "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a",
-        "experiment": "/experiments/ENCSR001SER/",
+        "dataset": "ENCSR001SER/",
         "biosamples": [
             "ENCBS123AAC"
         ]
@@ -491,7 +491,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB002SER",
         "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef",
-        "experiment": "/experiments/ENCSR002SER/",
+        "dataset": "ENCSR002SER/",
         "biosamples": [
             "ENCBS123AAD"
         ]
@@ -510,7 +510,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB003SER",
         "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e",
-        "experiment": "/experiments/ENCSR003SER/",
+        "dataset": "ENCSR003SER/",
         "biosamples": [
             "ENCBS123AAE"
         ]
@@ -529,7 +529,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB001CON",
         "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89",
-        "experiment": "/experiments/ENCSR001CON/",
+        "dataset": "ENCSR001CON/",
         "biosamples": []
     },
     {
@@ -546,7 +546,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB002CON",
         "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d",
-        "experiment": "/experiments/ENCSR002CON/",
+        "dataset": "ENCSR002CON/",
         "biosamples": []
     },
     {
@@ -563,7 +563,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB003CON",
         "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d",
-        "experiment": "/experiments/ENCSR003CON/",
+        "dataset": "ENCSR003CON/",
         "biosamples": []
     },
     {
@@ -580,7 +580,7 @@
         "extraction_method": "Trizol",
         "accession": "ENCLB001EPI",
         "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc",
-        "experiment": "/experiments/ENCSR001EPI/",
+        "dataset": "ENCSR001EPI/",
         "biosamples": []
     },
     {
@@ -593,7 +593,7 @@
         "size_range": "150-200",
         "accession": "ENCLB002EPI",
         "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91",
-        "experiment": "/experiments/ENCSR002EPI/",
+        "dataset": "ENCSR002EPI/",
         "biosamples": []
     },
     {
@@ -606,7 +606,7 @@
         "size_range": "150-200",
         "accession": "ENCLB003EPI",
         "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89",
-        "experiment": "/experiments/ENCSR003EPI/",
+        "dataset": "ENCSR003EPI/",
         "biosamples": []
     },
     {
@@ -619,7 +619,7 @@
         "size_range": "150-200",
         "accession": "ENCLB004EPI",
         "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62",
-        "experiment": "/experiments/ENCSR004EPI/",
+        "dataset": "ENCSR004EPI/",
         "biosamples": []
     },
     {
@@ -632,7 +632,7 @@
         "size_range": "150-200",
         "accession": "ENCLB005EPI",
         "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba",
-        "experiment": "/experiments/ENCSR005EPI/",
+        "dataset": "ENCSR005EPI/",
         "biosamples": []
     },
     {
@@ -645,7 +645,7 @@
         "size_range": "150-200",
         "accession": "ENCLB006EPI",
         "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa",
-        "experiment": "/experiments/ENCSR006EPI/",
+        "dataset": "ENCSR006EPI/",
         "biosamples": []
     },
     {
@@ -658,7 +658,7 @@
         "size_range": "150-200",
         "accession": "ENCLB007EPI",
         "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137",
-        "experiment": "/experiments/ENCSR007EPI/",
+        "dataset": "ENCSR007EPI/",
         "biosamples": []
     },
     {
@@ -671,7 +671,7 @@
         "size_range": "150-200",
         "accession": "ENCLB008EPI",
         "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c",
-        "experiment": "/experiments/ENCSR008EPI/",
+        "dataset": "ENCSR008EPI/",
         "biosamples": []
     },
     {
@@ -684,7 +684,7 @@
         "size_range": "150-200",
         "accession": "ENCLB009EPI",
         "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136",
-        "experiment": "/experiments/ENCSR009EPI/",
+        "dataset": "ENCSR009EPI/",
         "biosamples": []
     },
     {
@@ -697,7 +697,7 @@
         "size_range": "150-200",
         "accession": "ENCLB001REP",
         "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6",
-        "experiment": "/experiments/ENCSR001REP/",
+        "dataset": "ENCSR001REP/",
         "biosamples": []
     },
     {
@@ -710,7 +710,7 @@
         "size_range": "150-250",
         "accession": "ENCLB002REP",
         "uuid": "1ed1c288-0541-46b8-a827-b771cef26970",
-        "experiment": "/experiments/ENCSR002REP/",
+        "dataset": "ENCSR002REP/",
         "biosamples": []
     },
     {
@@ -723,7 +723,7 @@
         "size_range": "170-200",
         "accession": "ENCLB003REP",
         "uuid": "cc6238c1-5650-4139-8927-7150154d18e0",
-        "experiment": "/experiments/ENCSR003REP/",
+        "dataset": "ENCSR003REP/",
         "biosamples": []
     },
     {
@@ -735,7 +735,7 @@
         "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010",
-        "experiment": "/experiments/ENCSR000AAL/",
+        "dataset": "ENCSR000AAL/",
         "biosamples": []
     },
     {
@@ -747,7 +747,7 @@
         "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010",
-        "experiment": "/experiments/ENCSR000AAL/",
+        "dataset": "ENCSR000AAL/",
         "biosamples": []
     },
     {
@@ -759,7 +759,7 @@
         "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010",
-        "experiment": "/experiments/ENCSR000AAL/",
+        "dataset": "ENCSR000AAL/",
         "biosamples": []
     },
     {
@@ -776,7 +776,7 @@
             "ali-mortazavi:K562-Lib1"
         ],
         "lab": "/labs/ali-mortazavi/",
-        "experiment": "/experiments/ENCSR123MRN/",
+        "dataset": "ENCSR123MRN/",
         "biosamples": []
     },
     {
@@ -793,7 +793,7 @@
         "size_range": "<30",
         "lab": "/labs/ali-mortazavi/",
         "status": "released",
-        "experiment": "/experiments/ENCSR123MRN/",
+        "dataset": "ENCSR123MRN/",
         "biosamples": []
     },
     {
@@ -808,7 +808,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5",
-        "experiment": "ENCSR458AOS",
+        "dataset": "ENCSR458AOS",
         "biosamples": []
     },
     {
@@ -823,7 +823,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416",
-        "experiment": "ENCSR459AOS",
+        "dataset": "ENCSR459AOS",
         "biosamples": []
     },
     {
@@ -838,7 +838,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa",
-        "experiment": "ENCSR460AOS",
+        "dataset": "ENCSR460AOS",
         "biosamples": []
     },
     {
@@ -853,7 +853,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c",
-        "experiment": "ENCSR856XLJ",
+        "dataset": "ENCSR856XLJ",
         "biosamples": []
     },
     {
@@ -868,7 +868,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d",
-        "experiment": "ENCSR123AAA",
+        "dataset": "ENCSR123AAA",
         "biosamples": []
     },
     {
@@ -883,7 +883,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e",
-        "experiment": "ENCSR123AAB",
+        "dataset": "ENCSR123AAB",
         "biosamples": []
     },
     {
@@ -898,7 +898,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f",
-        "experiment": "ENCSR123AAC",
+        "dataset": "ENCSR123AAC",
         "biosamples": []
     },
     {
@@ -913,7 +913,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ee43e476d",
-        "experiment": "ENCSR123AAD",
+        "dataset": "ENCSR123AAD",
         "biosamples": []
     },
     {
@@ -928,7 +928,7 @@
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e",
-        "experiment": "ENCSR123AAE",
+        "dataset": "ENCSR123AAE",
         "biosamples": []
     }
 ]

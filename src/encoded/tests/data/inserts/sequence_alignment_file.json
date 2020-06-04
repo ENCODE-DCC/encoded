@@ -492,7 +492,7 @@
         "award": "U54HG006998",
         "dataset": "ENCSR751ISO",
         "derived_from": [
-            "/files/ENCFF001ISO/"
+            "ENCFF001ISO/"
         ],
         "file_format": "bam",
         "file_size": 398856,
@@ -514,7 +514,7 @@
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
-            "/files/ENCFF002ISO/"
+            "ENCFF002ISO/"
         ],
         "file_format": "bam",
         "genome_annotation": "V24",

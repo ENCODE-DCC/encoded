@@ -1073,7 +1073,7 @@ def audit_experiment_control(value, system, excluded_types):
 
 
 def is_matching_biosample_control(dataset, biosample_term_id):
-    if dataset['@type'][0] in ['Experiment', 'Annotation']:
+    if dataset['@type'][0] in ['Dataset']:
         return dataset.get('biosample_ontology', {}).get('term_id') == biosample_term_id
     elif (not dataset.get('biosample_ontology') or
          any([term['term_id'] != biosample_term_id
@@ -1922,7 +1922,7 @@ function_dispatcher_with_files = {}
 
 
 @audit_checker(
-    'Experiment',
+    'Dataset',
     frame=[
         'biosample_ontology',
         'award',
@@ -1952,7 +1952,7 @@ def audit_experiment(value, system):
 
     return
 
-@audit_checker('Experiment', frame=['original_files'])
+@audit_checker('Dataset', frame=['original_files'])
 def audit_experiment_released_with_unreleased_files(value, system):
     if value['status'] != 'released':
         return
@@ -1971,7 +1971,7 @@ def audit_experiment_released_with_unreleased_files(value, system):
     return
 
 
-@audit_checker('Experiment', frame=['original_files'])
+@audit_checker('Dataset', frame=['original_files'])
 def audit_dataset_with_uploading_files(value, system):
     for file in value['original_files']:
         category = None

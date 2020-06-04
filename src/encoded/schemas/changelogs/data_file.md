@@ -1,4 +1,4 @@
-## Changelog for file.json
+## Changelog for data_file.json
 
 ### Schema version 18
 * Added dependency restrictions for files of *output_type* subreads, preventing specification of *assembly* and requiring that *platform* be one of the Pacific Biosciences platforms.

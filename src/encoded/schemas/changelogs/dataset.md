@@ -1,4 +1,4 @@
-## Changelog for experiment.json
+## Changelog for dataset.json
 
 ### Minor changes since schema version 28
 

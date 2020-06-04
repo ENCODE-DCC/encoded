@@ -33,7 +33,7 @@ ORDER = [
     'cell_culture',
     'organoid',
     'platform',
-    'experiment',
+    'dataset',
     'reference_file_set',
     'library',
     'software',
@@ -543,7 +543,7 @@ PHASE1_PIPELINES = {
     'library': [
         remove_keys('spikeins_used', 'adapters'),
     ],
-    'experiment': [
+    'dataset': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
     'mouse_donor': [
@@ -593,7 +593,7 @@ PHASE2_PIPELINES = {
     'library': [
         skip_rows_missing_all_keys('spikeins_used', 'adapters'),
     ],
-    'experiment': [
+    'dataset': [
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
     'human_donor': [

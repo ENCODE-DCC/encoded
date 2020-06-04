@@ -44,12 +44,12 @@
                 "pattern": "^(ENCLB\\d{3}[A-Z]{3})$|^(TSTLB\\d{6})$"
             }
         },
-        "experiment": {
-            "title": "Experiment",
-            "description": "The experiment the replicate belongs to.",
-            "comment": "See experiment.json for available identifiers.",
+        "dataset": {
+            "title": "Dataset",
+            "description": "The dataset the replicate belongs to.",
+            "comment": "See dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Experiment"]
+            "linkTo": ["Dataset"]
         },
         "spikeins_used": {
             "title": "Spike-ins datasets used",
@@ -386,7 +386,7 @@
             "title": "",
             "description": "",
             "type": "string",
-            "linkTo": "File"
+            "linkTo": "DataFile"
         },
         "cdna_library_amplification_method": {
             "title": "",

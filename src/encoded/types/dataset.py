@@ -28,15 +28,15 @@ def calculate_assembly(request, files_list, status):
 
 
 @collection(
-    name='experiments',
+    name='dataset',
     unique_key='accession',
     properties={
-        'title': 'Experiments',
-        'description': 'Listing of Experiments',
+        'title': 'Datasets',
+        'description': 'Listing of Datasets',
     })
-class Experiment(Item):
-    item_type = 'experiment'
-    schema = load_schema('encoded:schemas/experiment.json')
+class Dataset(Item):
+    item_type = 'dataset'
+    schema = load_schema('encoded:schemas/dataset.json')
     embedded = []
     audit_inherit = []
     set_status_up = [
@@ -48,9 +48,9 @@ class Experiment(Item):
         'original_files',
     ]
     rev = {
-        'superseded_by': ('Experiment', 'supersedes'),
-        'libraries': ('Library','experiment'),
-        'original_files': ('File','dataset')
+        'superseded_by': ('Dataset', 'supersedes'),
+        'libraries': ('Library','dataset'),
+        'original_files': ('DataFile','dataset')
     }
 
     @calculated_property(schema={
@@ -58,7 +58,7 @@ class Experiment(Item):
             "type": "array",
             "items": {
                 "type": ['string', 'object'],
-                "linkFrom": "Experiment.supersedes",
+                "linkFrom": "Dataset.supersedes",
             },
             "notSubmittable": True,
     })
@@ -70,7 +70,7 @@ class Experiment(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "Library.experiment",
+            "linkFrom": "Library.dataset",
         },
         "notSubmittable": True,
     })
@@ -237,7 +237,7 @@ class Experiment(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "File.dataset",
+            "linkFrom": "DataFile.dataset",
         },
         "notSubmittable": True,
     })
@@ -249,7 +249,7 @@ class Experiment(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "File",
+            "linkTo": "DataFile",
         },
     })
     def contributing_files(self, request, original_files, status):
@@ -276,7 +276,7 @@ class Experiment(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "File",
+            "linkTo": "DataFile",
         },
     })
     def files(self, request, original_files, status):
@@ -296,7 +296,7 @@ class Experiment(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "File",
+            "linkTo": "DataFile",
         },
     })
     def revoked_files(self, request, original_files):
