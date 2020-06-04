@@ -10,5 +10,4 @@ def test_upgrade_hotspot_quality_metric_8_9(upgrader, hotspot_quality_metric_8):
     )
     assert value['schema_version'] == '9'
     assert 'SPOT1 score' not in value
-    assert 'spot1_score' in value
-    assert 'spot1_score' == 0.5555
+    assert value['spot1_score'] == 0.5555
