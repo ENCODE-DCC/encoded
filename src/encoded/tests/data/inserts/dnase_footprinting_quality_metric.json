@@ -1,0 +1,12 @@
+[
+    {
+        "status": "in progress",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "f04a106e-9d40-44c4-8535-5185232eb20e",
+        "assay_term_name": "DNase-seq",
+        "quality_metric_of": ["62ad78ab-19e0-4551-b2b9-9d7392f9866e"],
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "footprint_count": 50
+    }
+]
