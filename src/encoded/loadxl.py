@@ -125,6 +125,7 @@ IS_ATTACHMENT = [
     'tss_enrichment_plot',
     'fragment_length_distribution_plot',
     'peak_width_distribution_plot',
+    'dispersion_model',
 ]
 
 
