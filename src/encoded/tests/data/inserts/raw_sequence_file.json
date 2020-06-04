@@ -1,7 +1,6 @@
 [
     {
         "accession": "ENCFF001MYM",
-        "award": "U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
@@ -28,7 +27,6 @@
     },
     {
         "accession": "ENCFF002MYM",
-        "award": "U41HG006992",
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
@@ -56,7 +54,6 @@
     {
         "accession": "ENCFF001MXF",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
@@ -81,7 +78,6 @@
     },
     {
         "accession": "ENCFF002MXF",
-        "award": "U41HG006992",
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -108,7 +104,6 @@
     {
         "accession": "ENCFF001MXH",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2010-05-12T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
@@ -134,7 +129,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDZ",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_size": 20,
@@ -161,7 +155,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF002RDZ",
-        "award": "U41HG006992",
         "dataset": "ENCSR001ADI",
         "file_size": 20,
         "date_created": "2013-06-13T16:46:18.670068+00:00",
@@ -189,7 +182,6 @@
         "_project": "encode3",
         "accession": "ENCFF001RED",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
@@ -214,7 +206,6 @@
     },
     {
         "accession": "ENCFF001RDB",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
@@ -242,7 +233,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDC",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -271,7 +261,6 @@
         "_project": "encode3",
         "accession": "ENCFF001RCT",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -300,7 +289,6 @@
         "_project": "encode3",
         "accession": "ENCFF001IND",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-07-19T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -322,7 +310,6 @@
         "_project": "encode3",
         "accession": "ENCFF001RCU",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -365,7 +352,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF666MOO",
-        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
@@ -393,7 +379,6 @@
         "_project": "encode3",
         "accession": "ENCFF001RDX",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -422,7 +407,6 @@
         "file_size": 20,
         "_project": "encode3",
         "accession": "ENCFF001RES",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -451,7 +435,6 @@
         "_test": "not in edw test",
         "_project": "encode3",
         "accession": "ENCFF001RET",
-        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
@@ -480,7 +463,6 @@
         "_test": "not in edw test",
         "_project": "encode3",
         "accession": "ENCFF001REL",
-        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
@@ -507,7 +489,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001REQ",
-        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
@@ -542,7 +523,6 @@
         "uuid": "f2bab944-8db9-4f2e-b569-a13d5a221a83",
         "file_format": "fastq",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "award": "U54HG006998",
         "lab": "richard-myers",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "output_type": "reads",
@@ -571,7 +551,6 @@
         "flowcell_details": [],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
         "output_type": "reads",
         "read_length": 50,
@@ -597,7 +576,6 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
-        "award": "/awards/U54HG006998/",
         "output_type": "reads",
         "read_length": 50,
         "md5sum": "5f3232d8937b53c296507f6516f0db8f",
@@ -620,7 +598,6 @@
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
-        "award": "/awards/U54HG006998/",
         "output_type": "reads",
         "read_length": 50,
         "md5sum": "ef3a148b24fde7501a8a229f3de603f9",
@@ -643,7 +620,6 @@
         "lab": "john-stamatoyannopoulos",
         "submitted_file_name": "human/submission/fastq-combined/UwStam_Brain_Midbrain-DS23429-FCC1FB1-L001_R1.fastq.gz",
         "dataset": "ENCSR706IDL/",
-        "award": "U54HG007010",
         "file_format": "fastq",
         "library": "ENCLB376WDO"
     },
@@ -657,7 +633,6 @@
         "dataset": "ENCSR751YPU/",
         "content_md5sum": "7dad2371f43128103106312c795de447",
         "accession": "ENCFF477MLC",
-        "award": "U54HG007010",
         "platform": "/platforms/OBI%3A0002002/",
         "sequencing_run_type": "single-ended",
         "md5sum": "99c57d24b11f839feea4824565f4ff1a",
@@ -680,7 +655,6 @@
         "aliases": [
             "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0"
         ],
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "a321bb52bad46e43b5d196f6fed8ce76",
@@ -703,7 +677,6 @@
         "aliases": [
             "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
         ],
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "c321bb52bad46e43b5d196f6fed8ce76",
@@ -726,7 +699,6 @@
         "aliases": [
             "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
         ],
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "91be75b6e11515593507f4ebfa65d78c",
@@ -749,7 +721,6 @@
         "aliases": [
             "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
         ],
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "91be74b6e11515393507f7ebfa66d77a",
@@ -772,7 +743,6 @@
         "aliases": [
             "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
         ],
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "91be74b6e66515393507f4ebfa66d77a",
@@ -795,7 +765,6 @@
         "aliases": [
             "robert-waterston:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
         ],
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "91be94a6e11515393507f4ebfa66d78c",
@@ -815,7 +784,6 @@
         "dataset": "ENCSR003REP/",
         "content_md5sum": "91be74b6e1151539f5073febfa66d77a",
         "accession": "ENCFF004REP",
-        "award": "/awards/U41HG007355/",
         "platform": "/platforms/OBI%3A0002003/",
         "sequencing_run_type": "single-ended",
         "md5sum": "91be74b6e11533393507f4ebfa66d78c",
@@ -831,7 +799,6 @@
         "sequencing_run_type": "paired-ended",
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
         "file_format": "fasta",
-        "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
         "fastq_signature": [],
         "platform": "/platforms/OBI:0000696/",
@@ -858,7 +825,6 @@
         "status": "released",
         "accession": "ENCFF000LAZ",
         "platform": "/platforms/OBI%3A0000696/",
-        "award": "/awards/U54HG006996/",
         "paired_with": "ENCFF000LBA/",
         "dataset": "ENCSR751YPU",
         "file_format": "fasta",
@@ -878,7 +844,6 @@
         "status": "released",
         "accession": "ENCFF010LAO",
         "platform": "/platforms/OBI%3A0000696/",
-        "award": "/awards/U54HG006996/",
         "dataset": "ENCSR751YPU",
         "file_format": "fasta",
         "lab": "/labs/michael-snyder/",
@@ -902,7 +867,6 @@
         "dbxrefs": [
             "SRA:SRR1270627"
         ],
-        "award": "U54HG006998",
         "sequencing_run_type": "single-ended",
         "platform": "/platforms/OBI%3A0002000/",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -913,7 +877,6 @@
     {
         "accession": "ENCFF001MRN",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -932,7 +895,6 @@
     {
         "accession": "ENCFF002MRN",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -952,7 +914,6 @@
         "_test": "rep1 reads for long read RNA-seq experiment",
         "accession": "ENCFF001ISO",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -971,7 +932,6 @@
     {
         "accession": "ENCFF002ISO",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
@@ -1006,7 +966,6 @@
     },
     {
         "_test": "ATAC-seq rep1 reads",
-        "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
         "dataset": "ENCSR808QCJ",
         "status": "released",
@@ -1024,7 +983,6 @@
     },
     {
         "_test": "PacBio subreads",
-        "award": "/awards/U54HG006996/",
         "lab": "/labs/ali-mortazavi/",
         "dataset": "ENCSR751ISO",
         "status": "released",

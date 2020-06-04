@@ -167,7 +167,7 @@
             }
         }
     },
-    "attribution": {
+    "lab": {
         "lab": {
             "title": "Lab",
             "description": "Lab associated with the submission.",
@@ -175,7 +175,9 @@
             "type": "string",
             "linkTo": "Lab",
             "linkSubmitsFor": true
-        },
+        }
+    },
+    "award": {
         "award": {
             "title": "Award",
             "description": "Grant associated with the submission.",

@@ -24,8 +24,7 @@ class GeneticModification(Item):
     embedded = [
         'modified_site_by_target_id',
         'modified_site_by_target_id.genes',
-        'treatments',
-        'lab'
+        'treatments'
     ]
     set_status_up = [
         'reagents.source',

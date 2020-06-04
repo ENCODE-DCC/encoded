@@ -4,7 +4,7 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab"],
+    "required": ["lab"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,7 +19,7 @@
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/source"},
         {"$ref": "mixins.json#/dbxrefs"},
-        {"$ref": "mixins.json#/attribution"}
+        {"$ref": "mixins.json#/lab"}
     ],
     "dependencies": {
         "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
@@ -452,9 +452,6 @@
     "columns": {
         "accession": {
             "title": "Accession"
-        },
-        "award": {
-            "title": "Award"
         },
         "lab": {
             "title": "Lab"

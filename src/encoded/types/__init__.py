@@ -117,7 +117,7 @@ class AnalysisStep(Item):
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
-    embedded = ['lab', 'award', 'submitted_by']
+    embedded = ['submitted_by']
 
 
 @collection(

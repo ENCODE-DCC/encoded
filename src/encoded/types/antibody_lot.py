@@ -21,7 +21,6 @@ class AntibodyLot(SharedItem):
     name_key = 'accession'
     rev = {}
     embedded = [
-        'award',
         'source',
         'host_organism',
         'targets',

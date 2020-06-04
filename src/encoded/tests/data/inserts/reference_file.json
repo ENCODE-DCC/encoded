@@ -1,11 +1,9 @@
 [
     {
         "accession": "ENCFF814ELR",
-        "award": "U41HG006992",
         "dataset": "ENCSR500ELM",
         "date_created": "2019-04-18T16:46:18.670068+00:00",
         "file_format": "fasta",
-        "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "2a7111b6ea473ea6f26869771fa96843",
         "output_type": "transcriptome reference",
         "status": "released",
@@ -22,11 +20,9 @@
         "md5sum": "f90591615acba490111f273b1d459784",
         "accession": "ENCFF019HGN",
         "file_format": "fasta",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "file_size": 8856340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome reference",
         "aliases": [],
         "reference_version": "hg19"
@@ -39,12 +35,13 @@
         "md5sum": "da020ee1443358bff9219104d27a1a11",
         "accession": "ENCFF019HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
-        "alternate_accessions": ["ENCFF020HBG", "ENCFF021HBG"],
+        "alternate_accessions": [
+            "ENCFF020HBG",
+            "ENCFF021HBG"
+        ],
         "file_size": 5836340790,
-        "lab":"j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -56,10 +53,8 @@
         "accession": "ENCFF120KLS",
         "file_format": "idx",
         "reference_version": "hg19",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "file_size": 583336340790,
-        "lab": "j-michael-cherry",
         "output_type": "transcriptome index"
     },
     {
@@ -70,12 +65,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a12",
         "accession": "ENCFF020HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -86,12 +79,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a13",
         "accession": "ENCFF021HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -102,12 +93,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a14",
         "accession": "ENCFF022HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -118,12 +107,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a15",
         "accession": "ENCFF023HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -134,12 +121,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a16",
         "accession": "ENCFF024HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -150,12 +135,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a17",
         "accession": "ENCFF025HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -166,12 +149,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a18",
         "accession": "ENCFF026HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -182,12 +163,10 @@
         "md5sum": "da020ee1443358bff9219104d27a1a19",
         "accession": "ENCFF027HBG",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     },
     {
@@ -199,10 +178,8 @@
         "md5sum": "bfaec7aa18211d36b0b9578c01d07b01",
         "accession": "ENCFF240XVJ",
         "file_format": "tar",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR001REF",
         "file_size": 6252517704,
-        "lab": "j-michael-cherry",
         "output_type": "genome index"
     }
 ]

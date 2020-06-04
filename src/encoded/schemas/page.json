@@ -184,9 +184,6 @@
     "facets": {
         "news_keywords": {
             "title": "News keywords"
-        },
-        "award.project": {
-            "title": "Project"
         }
     },
     "columns": {

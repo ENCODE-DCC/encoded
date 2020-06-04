@@ -145,12 +145,6 @@
         },
         "lab.title": {
             "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
         }
     },
     "columns": {
@@ -164,10 +158,6 @@
         },
         "lab.title": {
             "title": "Lab",
-            "type": "string"
-        },
-        "award.project": {
-            "title": "Project",
             "type": "string"
         },
         "status": {

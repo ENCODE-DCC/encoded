@@ -13,7 +13,6 @@
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},
-        {"$ref": "mixins.json#/attribution"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/url"},
@@ -186,9 +185,6 @@
         "platform.term_name": {
             "title": "Platform"
         },
-        "award.project": {
-            "title": "Project"
-        },
         "lab.title": {
             "title": "Lab"
         },
@@ -259,9 +255,6 @@
         },
         "lab.title": {
             "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
         },
         "date_created": {
             "title": "Date created"

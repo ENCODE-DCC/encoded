@@ -4,13 +4,12 @@
         "accession": "ENCSR000AER",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
-        "lab": "thomas-gingeras",
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
         "internal_tags": [
-          "DREAM",
-          "ENCORE"
+            "DREAM",
+            "ENCORE"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
@@ -20,11 +19,10 @@
         "accession": "ENCSR000AEM",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
         "status": "released",
         "date_submitted": "2015-02-20",
         "supersedes": [
-          "ENCSR000AES"
+            "ENCSR000AES"
         ],
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -35,7 +33,6 @@
         "accession": "ENCSR000AES",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
         "date_submitted": "2015-03-20",
         "status": "archived",
         "date_released": "2016-01-01",
@@ -47,15 +44,14 @@
         "accession": "ENCSR000ADH",
         "award": "ENCODE2-Mouse",
         "dbxrefs": [
-          "UCSC-ENCODE-mm9:wgEncodeEM002001",
-          "GEO:GSM798326",
-          "GEO:GSE32218"
+            "UCSC-ENCODE-mm9:wgEncodeEM002001",
+            "GEO:GSM798326",
+            "GEO:GSE32218"
         ],
         "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-          "encode:Snyder_Histone_Mouse_protocol"
+            "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "lab": "sherman-weissman",
         "status": "released",
         "date_submitted": "2015-04-20",
         "date_released": "2016-01-01",
@@ -67,16 +63,15 @@
         "accession": "ENCSR000ADI",
         "award": "ENCODE2-Mouse",
         "dbxrefs": [
-          "UCSC-ENCODE-mm9:wgEncodeEM002004",
-          "GEO:GSM798327",
-          "GEO:GSE32218",
-          "4DN:4DNESUCQ2Q6H"
+            "UCSC-ENCODE-mm9:wgEncodeEM002004",
+            "GEO:GSM798327",
+            "GEO:GSE32218",
+            "4DN:4DNESUCQ2Q6H"
         ],
         "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-          "encode:Snyder_Histone_Mouse_protocol"
+            "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "lab": "sherman-weissman",
         "status": "released",
         "date_submitted": "2015-05-20",
         "date_released": "2016-01-01",
@@ -88,15 +83,14 @@
         "accession": "ENCSR001ADI",
         "award": "ENCODE2-Mouse",
         "dbxrefs": [
-          "UCSC-ENCODE-mm9:wgEncodeEM002004",
-          "GEO:GSM798327",
-          "GEO:GSE32218"
+            "UCSC-ENCODE-mm9:wgEncodeEM002004",
+            "GEO:GSM798327",
+            "GEO:GSE32218"
         ],
         "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-          "encode:Snyder_Histone_Mouse_protocol"
+            "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "lab": "sherman-weissman",
         "status": "released",
         "date_submitted": "2015-06-20",
         "date_released": "2016-01-01",
@@ -108,14 +102,13 @@
         "accession": "ENCSR000AHF",
         "award": "ENCODE2",
         "dbxrefs": [
-          "UCSC-ENCODE-hg19:wgEncodeEH003317",
-          "GEO:GSM1010811"
+            "UCSC-ENCODE-hg19:wgEncodeEH003317",
+            "GEO:GSM1010811"
         ],
         "description": "HAIB ChIP TAF1 in MCF-7",
         "documents": [
-          "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "lab": "richard-myers",
         "status": "released",
         "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
@@ -128,15 +121,14 @@
         "accession": "ENCSR000ACY",
         "award": "ENCODE2",
         "dbxrefs": [
-          "UCSC-ENCODE-hg19:wgEncodeEH002229",
-          "GEO:GSM999346",
-          "GEO:GSE40699"
+            "UCSC-ENCODE-hg19:wgEncodeEH002229",
+            "GEO:GSM999346",
+            "GEO:GSE40699"
         ],
         "description": "UW  SAEC",
         "documents": [
-          "encode:Myers_Methyl450_protocol"
+            "encode:Myers_Methyl450_protocol"
         ],
-        "lab": "richard-myers",
         "status": "released",
         "date_submitted": "2015-08-20",
         "date_released": "2016-01-01",
@@ -148,7 +140,6 @@
         "accession": "ENCSR000AJK",
         "award": "U54HG006998",
         "description": "Irvine Hi-C GM12878",
-        "lab": "ali-mortazavi",
         "status": "released",
         "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
@@ -161,15 +152,14 @@
         "award": "U54HG007005",
         "description": "RNA Evaluation K562 Long Total from Graveley",
         "internal_tags": [
-          "dbGaP"
+            "dbGaP"
         ],
-        "lab": "brenton-graveley",
         "status": "released",
         "date_submitted": "2015-10-20",
         "date_released": "2016-01-01",
         "references": [
-          "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
-          "b163ba10-bd4a-11e4-bb52-0800200c9a66"
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
@@ -179,7 +169,6 @@
         "accession": "ENCSR000AAL",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
         "status": "released",
         "date_submitted": "2015-11-20",
         "date_released": "2016-01-01",
@@ -191,7 +180,6 @@
         "accession": "ENCSR999NOF",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "lab": "thomas-gingeras",
         "status": "released",
         "date_submitted": "2015-12-20",
         "date_released": "2016-01-01",
@@ -203,7 +191,6 @@
         "accession": "ENCSR000ACT",
         "award": "ENCODE2",
         "description": "UW  SAEC",
-        "lab": "richard-myers",
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
@@ -215,14 +202,13 @@
         "accession": "ENCSR001ACT",
         "award": "ENCODE2",
         "description": "UW  SAEC",
-        "lab": "richard-myers",
         "status": "released",
         "date_submitted": "2015-02-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25",
         "supersedes": [
-          "ENCSR000ACT"
+            "ENCSR000ACT"
         ]
     },
     {
@@ -230,23 +216,21 @@
         "accession": "ENCSR002ACT",
         "award": "ENCODE2",
         "description": "UW  SAEC",
-        "lab": "richard-myers",
         "status": "released",
         "date_submitted": "2015-03-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf",
         "supersedes": [
-          "ENCSR000ACT",
-          "ENCSR001ACT"
+            "ENCSR000ACT",
+            "ENCSR001ACT"
         ]
     },
     {
         "_test": "Bind and Seq",
         "accession": "ENCSR666EMD",
         "award": "ENCODE2",
-        "description": "Sample “RNA Bind-n-Seq” (RBNS) experiment against PTBP1",
-        "lab": "chris-burge",
+        "description": "Sample \u201cRNA Bind-n-Seq\u201d (RBNS) experiment against PTBP1",
         "status": "released",
         "date_submitted": "2015-04-20",
         "date_released": "2016-01-01",
@@ -257,16 +241,13 @@
     {
         "_test": "DNA-me pipeline test",
         "accession": "ENCSR765JPC",
-        "dbxrefs": [
-          
-        ],
+        "dbxrefs": [],
         "uuid": "e998735d-9a72-453f-b947-5fb604027d01",
         "award": "U54HG006998",
         "status": "released",
         "date_submitted": "2015-05-20",
         "date_released": "2016-01-01",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
-        "lab": "richard-myers",
         "submitted_by": "facilisi.tristique@potenti.vivamus"
     },
     {
@@ -274,11 +255,10 @@
         "accession": "ENCSR000EYX",
         "award": "ENCODE2/",
         "dbxrefs": [
-          "UCSC-ENCODE-hg19:wgEncodeEH000625",
-          "GEO:GSM935413"
+            "UCSC-ENCODE-hg19:wgEncodeEH000625",
+            "GEO:GSM935413"
         ],
         "description": "Control ChIP-seq on human GM12878",
-        "lab": "michael-snyder",
         "status": "released",
         "date_submitted": "2015-06-20",
         "date_released": "2016-01-01",
@@ -290,11 +270,10 @@
         "accession": "ENCSR000DZQ",
         "award": "ENCODE2/",
         "dbxrefs": [
-          "UCSC-ENCODE-hg19:wgEncodeEH001832",
-          "GEO:GSM935375"
+            "UCSC-ENCODE-hg19:wgEncodeEH001832",
+            "GEO:GSM935375"
         ],
         "description": "EBF1 ChIP-seq on human GM12878 produced by the Snyder lab",
-        "lab": "michael-snyder/",
         "status": "released",
         "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
@@ -306,7 +285,6 @@
         "accession": "ENCSR001CTL",
         "award": "U54HG007004",
         "description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-08-20",
         "date_released": "2016-01-01",
@@ -318,7 +296,6 @@
         "accession": "ENCSR001SER",
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
@@ -331,7 +308,6 @@
         "accession": "ENCSR002SER",
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-10-20",
         "date_released": "2016-01-01",
@@ -343,7 +319,6 @@
         "accession": "ENCSR003SER",
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 12 hours.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-11-20",
         "date_released": "2016-01-01",
@@ -355,7 +330,6 @@
         "accession": "ENCSR001CON",
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-12-20",
         "date_released": "2016-01-01",
@@ -367,7 +341,6 @@
         "accession": "ENCSR002CON",
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 80 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
         "status": "in progress",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4c1be4ea-22ae-4880-9002-03617e3dde92"
@@ -377,7 +350,6 @@
         "accession": "ENCSR003CON",
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 60 nM dexamethasone for 8 hours.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
@@ -389,12 +361,11 @@
         "accession": "ENCSR374GSQ",
         "award": "U41HG007355",
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-02-20",
         "date_released": "2016-01-01",
         "aliases": [
-          "robert-waterston:experiment_RB884_80_1"
+            "robert-waterston:experiment_RB884_80_1"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "25ee48a4-d372-42a8-9366-33a8ca387daf"
@@ -404,12 +375,11 @@
         "accession": "ENCSR375GSQ",
         "award": "U41HG007355",
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_released": "2016-01-01",
         "date_submitted": "2015-02-21",
         "aliases": [
-          "robert-waterston:life_stage_bug_experiment"
+            "robert-waterston:life_stage_bug_experiment"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "21ee48a4-d172-42a2-9306-13a8ca317daf"
@@ -419,12 +389,11 @@
         "accession": "ENCSR862BAF",
         "award": "U41HG007355",
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 680 minutes after egg bleaching.",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-03-20",
         "date_released": "2016-01-01",
         "aliases": [
-          "robert-waterston:experiment_RB884_680_1"
+            "robert-waterston:experiment_RB884_680_1"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8669b9e5-5b8e-4814-8625-6fbb29372b84"
@@ -434,12 +403,11 @@
         "accession": "ENCSR787DGZ",
         "award": "U41HG007355",
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 880 minutes after egg bleaching.",
-        "lab": "robert-waterston",
         "status": "revoked",
         "date_submitted": "2015-08-24",
         "date_released": "2016-01-01",
         "aliases": [
-          "robert-waterston:experiment_RB884_880_1"
+            "robert-waterston:experiment_RB884_880_1"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "785f86d8-9d3e-4c29-b007-b1b615ba6076"
@@ -449,7 +417,6 @@
         "accession": "ENCSR001REP",
         "award": "ENCODE2",
         "description": "Repli-seq on SK-N-SH cell line at G2 phase.",
-        "lab": "john-stamatoyannopoulos",
         "status": "released",
         "date_submitted": "2015-04-20",
         "date_released": "2016-01-01",
@@ -461,7 +428,6 @@
         "accession": "ENCSR002REP",
         "award": "ENCODE2",
         "description": "Repli-seq on SK-N-SH cell line at S1 phase.",
-        "lab": "john-stamatoyannopoulos",
         "status": "released",
         "date_submitted": "2015-05-20",
         "date_released": "2016-01-01",
@@ -473,7 +439,6 @@
         "accession": "ENCSR003REP",
         "award": "ENCODE2",
         "description": "Repli-seq on SK-N-SH cell line at S2 phase.",
-        "lab": "john-stamatoyannopoulos",
         "status": "released",
         "date_submitted": "2015-06-20",
         "date_released": "2016-01-01",
@@ -485,7 +450,6 @@
         "accession": "ENCSR001EPI",
         "award": "ENCODE2",
         "description": "RNA-seq of K562",
-        "lab": "thomas-gingeras",
         "status": "released",
         "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
@@ -497,7 +461,6 @@
         "accession": "ENCSR002EPI",
         "award": "ENCODE2",
         "description": "WGBS of K562",
-        "lab": "richard-myers",
         "status": "released",
         "date_submitted": "2015-08-20",
         "date_released": "2016-01-01",
@@ -509,7 +472,6 @@
         "accession": "ENCSR003EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
@@ -521,7 +483,6 @@
         "accession": "ENCSR004EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-10-20",
         "date_released": "2016-01-01",
@@ -533,7 +494,6 @@
         "accession": "ENCSR005EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-11-20",
         "date_released": "2016-01-01",
@@ -545,7 +505,6 @@
         "accession": "ENCSR006EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-12-20",
         "date_released": "2016-01-01",
@@ -557,7 +516,6 @@
         "accession": "ENCSR007EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
@@ -569,7 +527,6 @@
         "accession": "ENCSR008EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-02-20",
         "date_released": "2016-01-01",
@@ -581,7 +538,6 @@
         "accession": "ENCSR009EPI",
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
-        "lab": "bradley-bernstein",
         "status": "released",
         "date_submitted": "2015-03-20",
         "date_released": "2016-01-01",
@@ -590,7 +546,6 @@
     },
     {
         "_test": "Paired set series 1",
-        "lab": "john-stamatoyannopoulos",
         "status": "in progress",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010",
@@ -604,7 +559,6 @@
         "status": "released",
         "date_submitted": "2015-04-20",
         "award": "U54HG007010",
-        "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR751YPU",
         "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b2"
@@ -615,7 +569,6 @@
         "status": "released",
         "date_submitted": "2015-04-20",
         "award": "U54HG007010",
-        "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR751YPT",
         "uuid": "d53d6a59-a444-49d1-b9f8-c4502c7cc4b2"
@@ -626,7 +579,6 @@
         "status": "released",
         "date_submitted": "2015-04-20",
         "award": "U54HG007010",
-        "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR751ISO",
         "uuid": "6dde71b6-555c-4bed-9bb7-7bec3771893b"
@@ -637,7 +589,6 @@
         "status": "released",
         "date_submitted": "2015-04-20",
         "award": "U54HG007010",
-        "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR751STT",
         "uuid": "03485813-0362-41f0-afd5-2bef9f5c52ef"
@@ -648,7 +599,6 @@
         "status": "released",
         "date_submitted": "2015-04-20",
         "award": "U54HG007010",
-        "lab": "/labs/john-stamatoyannopoulos/",
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
@@ -659,7 +609,6 @@
         "status": "released",
         "date_submitted": "2019-05-03",
         "award": "UM1HG009442",
-        "lab": "/labs/michael-snyder/",
         "date_released": "2019-05-09",
         "accession": "ENCSR808QCJ",
         "uuid": "1b85ee28-66f1-49ad-940d-ba22acf85e08"
@@ -672,9 +621,8 @@
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
         "internal_tags": [
-          "ENTEx"
+            "ENTEx"
         ],
-        "lab": "encode2-project",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "8b39716c-b810-4a7a-81ea-6e5f41b3c103"
@@ -687,9 +635,8 @@
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
         "internal_tags": [
-          "ENTEx"
+            "ENTEx"
         ],
-        "lab": "encode2-project",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "d7ed67c8-85ea-403a-b295-32d1278411cd"
@@ -702,9 +649,8 @@
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
         "internal_tags": [
-          "ENTEx"
+            "ENTEx"
         ],
-        "lab": "encode2-project",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "db57b7e6-7366-41b6-b50d-b8c944342c34"
@@ -717,9 +663,8 @@
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
         "internal_tags": [
-          "ENTEx"
+            "ENTEx"
         ],
-        "lab": "encode2-project",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1425296d-10bc-4d50-b071-2c019a711bfb"
@@ -728,7 +673,6 @@
         "_test": "PRO-cap example",
         "accession": "ENCSR999PRO",
         "award": "U54HG007004",
-        "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2019-01-01",
         "date_released": "2020-01-13",
@@ -739,7 +683,6 @@
         "_test": "icLASER test",
         "accession": "ENCSR124LAS",
         "award": "UM1HG009442",
-        "lab": "john-stamatoyannopoulos",
         "status": "released",
         "date_submitted": "2019-09-01",
         "date_released": "2020-01-20",
@@ -751,7 +694,6 @@
         "accession": "ENCSR000INT",
         "award": "UM1HG009442",
         "description": "ChIP-seq on midbrain tissue",
-        "lab": "john-stamatoyannopoulos/",
         "status": "released",
         "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
@@ -763,7 +705,6 @@
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
         "date_submitted": "2019-07-31",
-        "lab": "robert-waterston",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cb3-46f4-8e92-2db70533a222"
@@ -775,7 +716,6 @@
         "date_released": "2019-11-08",
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
-        "lab": "robert-waterston",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cb3-46f4-8e92-2db70533a223"
@@ -787,7 +727,6 @@
         "date_released": "2019-11-08",
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
-        "lab": "robert-waterston",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "e89c07df-0961-4f21-a235-0b7945ef2aa4"
@@ -798,7 +737,6 @@
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
         "date_submitted": "2019-07-31",
-        "lab": "robert-waterston",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cbc-46f4-8e92-2db70533a222"
@@ -810,7 +748,6 @@
         "date_released": "2019-11-08",
         "date_submitted": "2019-07-31",
         "internal_status": "pipeline completed",
-        "lab": "robert-waterston",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cc3-46f4-8e92-2db70533a223"
@@ -819,7 +756,6 @@
         "_test": "SPRITE test",
         "accession": "ENCSR323SPR",
         "award": "U54HG006991",
-        "lab": "michael-snyder",
         "status": "released",
         "date_submitted": "2019-12-01",
         "date_released": "2020-02-20",

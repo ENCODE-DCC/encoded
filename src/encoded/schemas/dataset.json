@@ -5,7 +5,7 @@
     "id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab"],
+    "required": ["award"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -13,7 +13,7 @@
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/aliases"},
-        {"$ref": "mixins.json#/attribution"},
+        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/references"},

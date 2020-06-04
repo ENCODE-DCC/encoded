@@ -4,7 +4,7 @@
     "id": "/profiles/software.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "description", "title", "award", "lab"],
+    "required": ["name", "description", "title"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "alias", "title", "name"],
     "mixinProperties": [
@@ -16,8 +16,7 @@
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/description" },
-        { "$ref": "mixins.json#/attribution" }
+        { "$ref": "mixins.json#/description" }
     ],
     "properties": {
         "schema_version": {

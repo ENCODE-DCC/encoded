@@ -2,7 +2,6 @@
     {
         "accession": "ENCFF001MWZ",
         "assembly": "mm9",
-        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
@@ -18,7 +17,6 @@
     {
         "accession": "ENCFF002MWZ",
         "assembly": "mm9",
-        "award": "U41HG006992",
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
@@ -34,7 +32,6 @@
     {
         "accession": "ENCFF001MXA",
         "assembly": "mm10",
-        "award": "U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_size": 20,
@@ -51,7 +48,6 @@
         "_project": "encode3",
         "accession": "ENCFF001RCV",
         "file_size": 20,
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "assembly": "hg19",
         "genome_annotation": "V19",
@@ -73,7 +69,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001XCV",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
@@ -91,7 +86,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF002XCV",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
@@ -110,7 +104,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF003XCV",
-        "award": "U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
@@ -128,7 +121,6 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RCW",
-        "award": "U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AEN",
         "assembly": "hg19",
@@ -156,7 +148,6 @@
         "md5sum": "1555c19cce3d261f487fdd29f8c6274c",
         "accession": "ENCFF434GXF",
         "file_format": "bam",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR765JPC",
         "flowcell_details": [],
         "alternate_accessions": [],
@@ -183,7 +174,6 @@
         "md5sum": "1455c19cce3d261f487fdd29f8c6274c",
         "accession": "ENCFF444GXF",
         "file_format": "bam",
-        "award": "/awards/U54HG006998/",
         "dataset": "ENCSR765JPC",
         "flowcell_details": [],
         "alternate_accessions": [],
@@ -210,7 +200,6 @@
     {
         "accession": "ENCFF000VWO",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR000EYX",
         "file_format": "bam",
         "file_size": 462139262,
@@ -225,7 +214,6 @@
     {
         "accession": "ENCFF000VUQ",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR000DZQ",
         "file_format": "bam",
         "file_size": 456470369,
@@ -240,7 +228,6 @@
     {
         "accession": "ENCFF000VUS",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR000ACY",
         "file_format": "bam",
         "file_size": 473944988,
@@ -256,7 +243,6 @@
         "_test": "alignments file for reference epigenome series RNA seq",
         "accession": "ENCFF002EPI",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR001EPI",
         "file_format": "bam",
         "file_size": 473944988,
@@ -272,7 +258,6 @@
         "_test": "alignments file for reference epigenome series WGBS",
         "accession": "ENCFF004EPI",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR002EPI",
         "file_format": "bam",
         "file_size": 473944988,
@@ -288,7 +273,6 @@
         "_test": "alignments file for reference epigenome series WGBS",
         "accession": "ENCFF008EPI",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR006EPI",
         "file_format": "bam",
         "file_size": 473944988,
@@ -304,7 +288,6 @@
         "_test": "alignments file for reference epigenome series WGBS",
         "accession": "ENCFF009EPI",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR007EPI",
         "file_format": "bam",
         "file_size": 473944988,
@@ -320,7 +303,6 @@
         "_test": "alignments file for reference epigenome series WGBS",
         "accession": "ENCFF010EPI",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR008EPI",
         "file_format": "bam",
         "file_size": 473944988,
@@ -336,7 +318,6 @@
         "_test": "alignments file for reference epigenome series control",
         "accession": "ENCFF011EPI",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR009EPI",
         "file_format": "bam",
         "file_size": 4739449988,
@@ -352,7 +333,6 @@
         "_test": "alignments file for treatment concentration series 1",
         "accession": "ENCFF001CON",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR001CON",
         "file_format": "bam",
         "file_size": 3473944988,
@@ -368,7 +348,6 @@
         "_test": "alignments file for treatment concentration series 2",
         "accession": "ENCFF002CON",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR002CON",
         "file_format": "bam",
         "file_size": 4734944988,
@@ -384,7 +363,6 @@
         "_test": "alignments file for treatment concentration series 3",
         "accession": "ENCFF003CON",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR003CON",
         "file_format": "bam",
         "file_size": 473944998854,
@@ -400,7 +378,6 @@
         "_test": "alignments file for treatment concentration series 1",
         "accession": "ENCFF001REP",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR001REP",
         "file_format": "bam",
         "file_size": 1988,
@@ -416,7 +393,6 @@
         "_test": "alignments file for treatment concentration series 2",
         "accession": "ENCFF002REP",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR002REP",
         "file_format": "bam",
         "file_size": 2988,
@@ -432,7 +408,6 @@
         "_test": "alignments file for treatment concentration series 3",
         "accession": "ENCFF003REP",
         "assembly": "hg19",
-        "award": "ENCODE2",
         "dataset": "ENCSR003REP",
         "file_format": "bam",
         "file_size": 398854,
@@ -447,7 +422,6 @@
     {
         "accession": "ENCFF003MRN",
         "assembly": "GRCh38",
-        "award": "U41HG006992",
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
@@ -468,7 +442,6 @@
     {
         "accession": "ENCFF004MRN",
         "assembly": "GRCh38",
-        "award": "U41HG006992",
         "dataset": "ENCSR123MRN",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
@@ -489,7 +462,6 @@
         "_test": "rep1 bam file for long read RNA-seq experiment",
         "accession": "ENCFF003ISO",
         "assembly": "GRCh38",
-        "award": "U54HG006998",
         "dataset": "ENCSR751ISO",
         "derived_from": [
             "ENCFF001ISO/"
@@ -510,7 +482,6 @@
         "_test": "rep2 bam file for long read RNA-seq experiment",
         "accession": "ENCFF004ISO",
         "assembly": "GRCh38",
-        "award": "U41HG006992",
         "dataset": "ENCSR751ISO",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "derived_from": [
@@ -529,7 +500,6 @@
     },
     {
         "_test": "ATAC-seq rep1 alignment file",
-        "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
         "dataset": "ENCSR808QCJ",
         "status": "released",

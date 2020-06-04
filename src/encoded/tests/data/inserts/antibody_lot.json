@@ -3,30 +3,28 @@
         "_test": "untagged target and unknown lot",
         "accession": "ENCAB000AFU",
         "antigen_description": "E2F1(KH20 and KH95) Epitope for KH20 has been mapped to amino acids 1-89; KH95 to amino acids 342-386.",
-        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:E2F1"
         ],
         "host_organism": "mouse",
-        "lab": "michael-snyder",
         "lot_id": "unknown",
         "product_id": "05-379",
         "source": "millipore",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "url": "http://www.millipore.com/catalogue/item/05-379#",
         "uuid": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
-        "targets": ["/targets/E2F1-human"],
+        "targets": [
+            "/targets/E2F1-human"
+        ],
         "status": "in progress"
     },
     {
         "_test": "several variations of different lots, aliases, alternate accessions",
         "accession": "ENCAB000ASG",
         "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
-        "award": "ROADMAP",
         "clonality": "polyclonal",
         "host_organism": "rabbit",
-        "lab": "roadmap-epigenomics",
         "lot_id": "R0903B0054",
         "product_id": "07-473",
         "purifications": [
@@ -36,7 +34,9 @@
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9",
-        "targets": ["/targets/H3K4me3-human"],
+        "targets": [
+            "/targets/H3K4me3-human"
+        ],
         "status": "in progress"
     },
     {
@@ -45,20 +45,21 @@
         "alternate_accessions": [
             "ENCAB000ATG"
         ],
-        "award": "ENCODE2",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:H3K4me3"
         ],
         "host_organism": "rabbit",
-        "lab": "michael-snyder",
         "lot_id": "JBC1888194",
         "product_id": "07-473",
         "source": "millipore",
         "submitted_by": "fames.at@per.varius",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
-        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-alt-human"],
+        "targets": [
+            "/targets/H3K4me3-human",
+            "/targets/H3K4me3-alt-human"
+        ],
         "status": "in progress"
     },
     {
@@ -69,13 +70,11 @@
             "ENCAB000ASF",
             "ENCAB000AUQ"
         ],
-        "award": "U54HG006991",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:H3K4me3"
         ],
         "host_organism": "rabbit",
-        "lab": "bradley-bernstein",
         "lot_id": "DAM1623866",
         "lot_id_alias": [
             "DAM1644057",
@@ -88,7 +87,10 @@
         "submitted_by": "sit.nascetur@accumsan.quis",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
-        "targets": ["/targets/H3K4me3-human", "/targets/H3K4me3-mouse"],
+        "targets": [
+            "/targets/H3K4me3-human",
+            "/targets/H3K4me3-mouse"
+        ],
         "status": "released"
     },
     {
@@ -99,14 +101,12 @@
             "ENCAB000AOV"
         ],
         "antigen_description": "Synthetic peptide: ARTKQTARAcKSTG-C conjugated to KLH, corresponding to amino acids 1-12 of Human Histone H3.",
-        "award": "ENCODE2",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:H3K9ac"
         ],
         "host_organism": "rabbit",
         "isotype": "IgG",
-        "lab": "bradley-bernstein",
         "lot_id": "455103",
         "lot_id_alias": [
             "550799"
@@ -119,36 +119,37 @@
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "url": "http://www.abcam.com/index.html?datasheet=4441",
         "uuid": "f211c027-6613-4998-8cf0-90e9041ad254",
-        "targets": ["/targets/H3K9ac-human", "/targets/H3K9ac-mouse"],
+        "targets": [
+            "/targets/H3K9ac-human",
+            "/targets/H3K9ac-mouse"
+        ],
         "status": "released"
     },
     {
         "_test": "refer to same target",
         "accession": "ENCAB000AUZ",
         "antigen_sequence": "MSKSESPKEPEQLRKLFIGGLSFETTDESLRSHFEQWGTLTDCVVMRDPN",
-        "award": "U54HG007005",
         "clonality": "polyclonal",
         "host_organism": "rabbit",
         "isotype": "IgG",
-        "lab": "xiang-dong-fu",
         "lot_id": "QC9473-091124",
         "product_id": "ARP40383_T100",
         "source": "aviva",
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-n-terminal-region-arp40383-t100.html",
         "uuid": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
-        "targets": ["/targets/HNRNPA1-human"],
+        "targets": [
+            "/targets/HNRNPA1-human"
+        ],
         "status": "in progress"
     },
     {
         "_test": "refer to same target and lab self-fail",
         "accession": "ENCAB000AVA",
         "antigen_sequence": "NQSSNFGPMKGGNFGGRSSGPYGGGGQYFAKPRNQGGYGGSSSSSSYGSG",
-        "award": "U54HG007005",
         "clonality": "polyclonal",
         "host_organism": "rabbit",
         "isotype": "IgG",
-        "lab": "xiang-dong-fu",
         "lot_id": "QC9474",
         "notes": "This was a self fail.",
         "product_id": "ARP40384_T100",
@@ -156,7 +157,9 @@
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-c-terminal-region-arp40384-t100.html",
         "uuid": "81d1f148-323c-4420-a05e-62427394fd6b",
-        "targets": ["/targets/HNRNPA1-human"],
+        "targets": [
+            "/targets/HNRNPA1-human"
+        ],
         "status": "released"
     },
     {
@@ -166,13 +169,11 @@
             "j-michael-cherry:Control"
         ],
         "antigen_description": "Anti-mouse",
-        "award": "ENCODE2",
         "dbxrefs": [
             "UCSC-ENCODE-cv:IgG-Yale"
         ],
         "host_organism": "mouse",
         "isotype": "IgG",
-        "lab": "michael-snyder",
         "lot_id": "unknown",
         "product_id": "IgG-Yale",
         "source": "santa-cruz-biotech",
@@ -186,87 +187,85 @@
         "accession": "ENCAB000ASV",
         "antigen_description": "Clone 16B12 was raised against the twelve amino acid peptide CYPYDVPDYASL. This second-generation HA antibody is an excellent substitute for the 12CA5 monoclonal antibody. The HA.11 antibody recognizes the influenza hemagglutinin epitope (YPYDVPDYA) which has been used extensively as a general epitope tag in expression vectors. The extreme specificity of the antibody allows unambiguous identification and quantitative analysis of the tagged protein. The HA.11 antibody recognizes HA epitopes located in the middle of protein sequences as well as at the N- or C-terminus.",
         "antigen_sequence": "CYPYDVPDYASL",
-        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:HA-E2F1"
         ],
         "host_organism": "mouse",
-        "lab": "michael-snyder",
         "lot_id": "unknown",
         "product_id": "MMS-101P",
         "source": "covance",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "url": "https://store.crpinc.com/datasheet.aspx?catalogno=MMS-101P",
         "uuid": "981a4b17-65b6-4535-9515-786ecbfeaed8",
-        "targets": ["/targets/HA-influenza"],
+        "targets": [
+            "/targets/HA-influenza"
+        ],
         "status": "released"
     },
     {
         "_test": "frowny gel",
         "accession": "ENCAB000ADQ",
         "antigen_description": "Peptide region of the protein sequence according to NP_055408",
-        "award": "U54HG006998",
         "clonality": "polyclonal",
         "host_organism": "rabbit",
-        "lab": "richard-myers",
         "lot_id": "QC12000",
         "product_id": "SAB2103447",
         "source": "sigma",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/sab2103447?lang=en&region=US",
         "uuid": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
-        "targets": ["/targets/CXXC1-human"],
+        "targets": [
+            "/targets/CXXC1-human"
+        ],
         "status": "released"
     },
     {
         "_test": "refer to same target",
         "accession": "ENCAB000AXP",
-        "award": "U54HG007005",
         "clonality": "monoclonal",
         "host_organism": "mouse",
         "isotype": "IgG2a",
-        "lab": "xiang-dong-fu",
         "lot_id": "E1011",
         "product_id": "SC-32301",
         "source": "santa-cruz-biotech",
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.scbt.jp/datasheet-32301-hnrnp-a1-4b10-antibody.html",
         "uuid": "c8001233-050d-4dab-bf73-f47133b2e2a3",
-        "targets": ["/targets/HNRNPA1-human"],
+        "targets": [
+            "/targets/HNRNPA1-human"
+        ],
         "status": "in progress"
     },
     {
         "_test": "ENCODE2 dbxref with special characters",
         "accession": "ENCAB000AFR",
         "antigen_description": "Epitope mapping at the N-terminus of CTCF of human origin.",
-        "award": "ENCODE2",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:CTCF_(SC-5916)"
         ],
         "host_organism": "goat",
         "isotype": "IgG",
-        "lab": "richard-myers",
         "lot_id": "K0902",
         "product_id": "sc-5916",
         "source": "santa-cruz-biotech",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "url": "http://www.scbt.com/datasheet-5916-ctcf-n-17-antibody.html",
         "uuid": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3",
-        "targets": ["/targets/CTCF-human"],
+        "targets": [
+            "/targets/CTCF-human"
+        ],
         "status": "in progress"
     },
     {
         "_test": "has lot aliases",
         "accession": "ENCAB000ALM",
-        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:TAF1"
         ],
         "host_organism": "mouse",
-        "lab": "richard-myers",
         "lot_id": "K0905",
         "lot_id_alias": [
             "F2706",
@@ -277,25 +276,27 @@
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "url": "http://www.scbt.com/product.php?datasheet=735",
         "uuid": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
-        "targets": ["/targets/TAF1-human"],
+        "targets": [
+            "/targets/TAF1-human"
+        ],
         "status": "released"
     },
     {
         "_test": "has tsv validation",
         "accession": "ENCAB000ACQ",
         "antigen_description": "TCF4 (NP_005019, a.a. 1-366) full length recombinant protein with GST tag.",
-        "award": "U54HG006998",
         "clonality": "monoclonal",
         "host_organism": "mouse",
         "isotype": "IgG1\u03ba",
-        "lab": "richard-myers",
         "lot_id": "12262-1F6",
         "product_id": "WH0006925M2",
         "source": "sigma",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/wh0006925m2?lang=en&region=US",
         "uuid": "907ced83-e4bb-4d77-8d97-e969db915533",
-        "targets": ["/targets/TCF4-human"],
+        "targets": [
+            "/targets/TCF4-human"
+        ],
         "status": "in progress"
     },
     {
@@ -303,8 +304,6 @@
         "accession": "ENCAB728YTO",
         "antigen_description": "Antisera raised against a peptide from the GFP protein. Produced commercially for the modENCODE Project by K. White's group and Millipore.",
         "antigen_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTLTYGVQCFSRYPDHMKRHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
-        "award": "U54HG006996",
-        "lab": "kevin-white",
         "clonality": "polyclonal",
         "product_id": "goat-anti-GFP-UC",
         "source": "kevin-white",
@@ -319,20 +318,20 @@
         "host_organism": "goat",
         "submitted_by": "eni.lectus@nullam.sed",
         "uuid": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
-        "targets": ["/targets/eGFP-avictoria"],
+        "targets": [
+            "/targets/eGFP-avictoria"
+        ],
         "status": "in progress"
     },
     {
         "accession": "ENCAB000AFX",
         "antigen_description": "Raised against a.a. 1-300 mapping at the N-terminus of EBF of human origin.",
-        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:EBF1_(SC-137065)"
         ],
         "host_organism": "mouse",
         "isotype": "IgG",
-        "lab": "richard-myers",
         "lot_id": "J0505",
         "product_id": "sc-137065",
         "source": "santa-cruz-biotech",
@@ -347,14 +346,18 @@
     {
         "_test": "synthetic tag",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f3165?lang=en&region=US",
-        "award": "U54HG006998",
-        "dbxrefs": ["AR:AB_259529"],
-        "lab": "richard-myers",
+        "dbxrefs": [
+            "AR:AB_259529"
+        ],
         "antigen_sequence": "DYKDDDDK",
-        "targets": ["FLAG-synthetic_tag"],
+        "targets": [
+            "FLAG-synthetic_tag"
+        ],
         "product_id": "F3165",
         "clonality": "monoclonal",
-        "purifications": ["Protein A/G"],
+        "purifications": [
+            "Protein A/G"
+        ],
         "status": "released",
         "host_organism": "mouse",
         "isotype": "IgG1",
@@ -368,19 +371,23 @@
     {
         "_test": "synthetic tag with 2nd characterization",
         "status": "released",
-        "lab": "/labs/richard-myers/",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/f1804?lang=en&region=US",
-        "dbxrefs": ["AR:AB_262044"],
+        "dbxrefs": [
+            "AR:AB_262044"
+        ],
         "lot_id": "SLBK1346V",
         "accession": "ENCAB697XQW",
-        "award": "U54HG006998",
         "host_organism": "/organisms/mouse/",
         "isotype": "IgG1",
-        "purifications": ["affinity"],
+        "purifications": [
+            "affinity"
+        ],
         "antigen_description": "Recognizes the FLAG peptide sequence: DYKDDDDK",
         "source": "/sources/sigma/",
         "product_id": "F1804",
-        "targets": ["/targets/FLAG-synthetic_tag/"],
+        "targets": [
+            "/targets/FLAG-synthetic_tag/"
+        ],
         "submitted_by": "76091563-a959-4a9c-929c-9acfa1a0a078",
         "clonality": "monoclonal",
         "uuid": "534171de-26f6-4363-8a1e-a353357daea9"
@@ -388,14 +395,14 @@
     {
         "_test": "ENCODE4 antibody",
         "accession": "ENCAB264EPV",
-        "award": "UM1HG009442",
-        "lab": "kevin-white",
         "product_id": "rabbit-anti-GFP-UC",
         "source": "kevin-white",
         "lot_id": "unknown",
         "host_organism": "rabbit",
         "uuid": "d19e14dd-4ae9-4439-9825-0ccb53578562",
-        "targets": ["/targets/eGFP-avictoria"],
+        "targets": [
+            "/targets/eGFP-avictoria"
+        ],
         "status": "in progress"
     }
 ]

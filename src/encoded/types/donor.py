@@ -23,8 +23,6 @@ class Donor(Item):
     embedded = [
         'organism',
         'documents',
-        'documents.award',
-        'documents.lab',
         'documents.submitted_by'
     ]
     set_status_up = [

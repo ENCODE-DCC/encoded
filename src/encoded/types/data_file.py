@@ -76,7 +76,6 @@ RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts
 
 def file_is_md5sum_constrained(properties):
     conditions = [
-        properties.get('lab') != ENCODE_PROCESSING_PIPELINE_UUID,
         properties.get('output_type') in RAW_OUTPUT_TYPES
     ]
     return any(conditions)

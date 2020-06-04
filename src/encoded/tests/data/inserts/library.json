@@ -4,7 +4,6 @@
         "aliases": [
             "richard-myers:SL14572"
         ],
-        "award": "ENCODE2",
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
@@ -33,7 +32,6 @@
         "aliases": [
             "richard-myers:SL16339"
         ],
-        "award": "ENCODE2",
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
@@ -57,7 +55,6 @@
         "aliases": [
             "thomas-gingeras:SID38806"
         ],
-        "award": "U54HG007004",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
@@ -84,7 +81,6 @@
         "aliases": [
             "thomas-gingeras:SID38807"
         ],
-        "award": "U54HG007004",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
@@ -114,7 +110,6 @@
         "aliases": [
             "thomas-gingeras:SID38815"
         ],
-        "award": "U54HG007004",
         "construction_platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
@@ -132,7 +127,6 @@
         "aliases": [
             "thomas-gingeras:SID38816"
         ],
-        "award": "U54HG007004",
         "construction_platform": "bab144b6-97b5-4dfb-b307-ff2997b73550",
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
@@ -151,7 +145,6 @@
         "aliases": [
             "thomas-gingeras:SID38822"
         ],
-        "award": "U54HG007004",
         "depleted_in_term_name": [
             "polyadenylated mRNA"
         ],
@@ -175,7 +168,6 @@
         "aliases": [
             "thomas-gingeras:SID38823"
         ],
-        "award": "U54HG007004",
         "depleted_in_term_name": [
             "polyadenylated mRNA"
         ],
@@ -196,7 +188,6 @@
     },
     {
         "accession": "ENCLB057ZZZ",
-        "award": "U54HG007005",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
@@ -219,7 +210,6 @@
     },
     {
         "accession": "ENCLB072ZZZ",
-        "award": "ENCODE2-Mouse",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -239,7 +229,6 @@
     },
     {
         "accession": "ENCLB304ZZZ",
-        "award": "ENCODE2-Mouse",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -259,7 +248,6 @@
     },
     {
         "accession": "ENCLB071ZZZ",
-        "award": "ENCODE2-Mouse",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -279,7 +267,6 @@
     },
     {
         "accession": "ENCLB000ANI",
-        "award": "ENCODE2-Mouse",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -299,7 +286,6 @@
     },
     {
         "accession": "ENCLB001ANI",
-        "award": "ENCODE2-Mouse",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
@@ -319,7 +305,6 @@
     },
     {
         "accession": "ENCLB058ZZZ",
-        "award": "U54HG007005",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
@@ -341,7 +326,6 @@
     },
     {
         "accession": "ENCLB163ZZZ",
-        "award": "ENCODE2",
         "documents": [
             "encode:Myers_Methyl450_protocol"
         ],
@@ -358,7 +342,6 @@
     {
         "_test": "test -new",
         "accession": "ENCLB158ZZZ",
-        "award": "ENCODE2",
         "documents": [
             "encode:Myers_Methyl450_protocol"
         ],
@@ -383,7 +366,6 @@
         ],
         "status": "in progress",
         "biological_macromolecule_term_name": "DNA",
-        "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
         "size_range": "100-300",
         "dataset": "ENCSR765JPC/",
@@ -393,7 +375,6 @@
     },
     {
         "accession": "ENCLB723GTS",
-        "award": "ENCODE2",
         "lab": "michael-snyder/",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -406,7 +387,6 @@
     },
     {
         "accession": "ENCLB209APR",
-        "award": "ENCODE2",
         "lab": "michael-snyder",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -419,7 +399,6 @@
     },
     {
         "accession": "ENCLB209APS",
-        "award": "ENCODE2",
         "lab": "michael-snyder",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -435,7 +414,6 @@
         "lab": "john-stamatoyannopoulos",
         "accession": "ENCLB376WDO",
         "status": "released",
-        "award": "U54HG007010",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939",
@@ -452,7 +430,6 @@
         "biological_macromolecule_term_name": "DNA",
         "uuid": "2b0693ed-6f10-449f-82c2-ca3bd6b34daa",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010",
         "dataset": "ENCSR751YPU",
         "biosamples": [
             "ENCBS123AAB"
@@ -464,7 +441,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -483,7 +459,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -502,7 +477,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -521,7 +495,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -538,7 +511,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -555,7 +527,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -572,7 +543,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "RNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "350-600",
         "fragmentation_methods": [
             "sonication (Bioruptor generic)"
@@ -589,7 +559,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB002EPI",
         "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91",
@@ -602,7 +571,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB003EPI",
         "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89",
@@ -615,7 +583,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB004EPI",
         "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62",
@@ -628,7 +595,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB005EPI",
         "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba",
@@ -641,7 +607,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB006EPI",
         "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa",
@@ -654,7 +619,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB007EPI",
         "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137",
@@ -667,7 +631,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB008EPI",
         "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c",
@@ -680,7 +643,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB009EPI",
         "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136",
@@ -693,7 +655,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-200",
         "accession": "ENCLB001REP",
         "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6",
@@ -706,7 +667,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "150-250",
         "accession": "ENCLB002REP",
         "uuid": "1ed1c288-0541-46b8-a827-b771cef26970",
@@ -719,7 +679,6 @@
         "status": "released",
         "biological_macromolecule_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
         "size_range": "170-200",
         "accession": "ENCLB003REP",
         "uuid": "cc6238c1-5650-4139-8927-7150154d18e0",
@@ -734,7 +693,6 @@
         "biological_macromolecule_term_name": "DNA",
         "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010",
         "dataset": "ENCSR000AAL/",
         "biosamples": []
     },
@@ -746,7 +704,6 @@
         "biological_macromolecule_term_name": "DNA",
         "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010",
         "dataset": "ENCSR000AAL/",
         "biosamples": []
     },
@@ -758,7 +715,6 @@
         "biological_macromolecule_term_name": "DNA",
         "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010",
         "dataset": "ENCSR000AAL/",
         "biosamples": []
     },
@@ -771,7 +727,6 @@
         "uuid": "75ff4e2c-7e70-4084-9b57-9f34e4afcdcb",
         "status": "released",
         "size_range": "<30",
-        "award": "/awards/U54HG006998/",
         "aliases": [
             "ali-mortazavi:K562-Lib1"
         ],
@@ -784,7 +739,6 @@
         "date_created": "2018-07-04T00:03:13.133968+00:00",
         "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
         "biological_macromolecule_term_name": "miRNA",
-        "award": "/awards/U54HG006998/",
         "uuid": "2e836c5c-29a7-472b-b224-4c31329a4c44",
         "aliases": [
             "ali-mortazavi:K562-Lib2"
@@ -802,7 +756,6 @@
         "aliases": [
             "john-stamatoyannopoulos:56768A"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -817,7 +770,6 @@
         "aliases": [
             "john-stamatoyannopoulos:58768A"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -832,7 +784,6 @@
         "aliases": [
             "john-stamatoyannopoulos:58288A"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -847,7 +798,6 @@
         "aliases": [
             "john-stamatoyannopoulos:57126A"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -862,7 +812,6 @@
         "aliases": [
             "john-stamatoyannopoulos:57126B"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -877,7 +826,6 @@
         "aliases": [
             "john-stamatoyannopoulos:57126C"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -892,7 +840,6 @@
         "aliases": [
             "john-stamatoyannopoulos:57126D"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -907,7 +854,6 @@
         "aliases": [
             "john-stamatoyannopoulos:57126E"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
@@ -922,7 +868,6 @@
         "aliases": [
             "john-stamatoyannopoulos:57126F"
         ],
-        "award": "UM1HG009390",
         "lab": "encode2-project",
         "biological_macromolecule_term_name": "DNA",
         "status": "released",
