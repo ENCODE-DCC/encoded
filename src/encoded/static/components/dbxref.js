@@ -117,7 +117,7 @@ export const dbxrefPrefixMap = {
             }
             // For dbxrefs in targets, use an alternate URL and alternate value for mouse targets.
             if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') {
-                return { altValue: value.charAt(0) + value.slice(1).toLowerCase(),
+                return { altValue: value[1].charAt(0) + value[1].slice(1).toLowerCase(),
                     altUrlPattern: 'https://factorbook.org/tf/mouse/{0}/function' };
             }
             return {};
