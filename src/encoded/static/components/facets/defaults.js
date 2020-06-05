@@ -1019,31 +1019,33 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         <div className="facet">
             <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
             <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
-            {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-            <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''} ${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
-                <ul onScroll={handleScroll} ref={scrollingElement}>
-                    {(filteredTerms.length === 0) ?
-                        <div className="searcherror">
-                            Try a different search term for results.
-                        </div>
-                    :
-                        <React.Fragment>
-                            <FacetTerms
-                                facet={facet}
-                                results={results}
-                                mode={mode}
-                                relevantFilters={relevantFilters}
-                                pathname={pathname}
-                                queryString={queryString}
-                                filteredTerms={filteredTerms}
-                                onFilter={onFilter}
-                                allowNegation={allowNegation}
-                            />
-                            <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
-                            <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
-                        </React.Fragment>
-                    }
-                </ul>
+            <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
+                {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
+                <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
+                    <ul onScroll={handleScroll} ref={scrollingElement}>
+                        {(filteredTerms.length === 0) ?
+                            <div className="searcherror">
+                                Try a different search term for results.
+                            </div>
+                        :
+                            <React.Fragment>
+                                <FacetTerms
+                                    facet={facet}
+                                    results={results}
+                                    mode={mode}
+                                    relevantFilters={relevantFilters}
+                                    pathname={pathname}
+                                    queryString={queryString}
+                                    filteredTerms={filteredTerms}
+                                    onFilter={onFilter}
+                                    allowNegation={allowNegation}
+                                />
+                                <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
+                                <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
+                            </React.Fragment>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     );
