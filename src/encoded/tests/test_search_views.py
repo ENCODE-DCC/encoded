@@ -343,7 +343,7 @@ def test_search_views_report_view_values_no_type(index_workbook, testapp):
 def test_search_views_matrix_raw_view_raw_response(index_workbook, testapp):
     r = testapp.get('/matrixv2_raw/?type=Experiment')
     assert 'hits' in r.json
-    assert r.json['hits']['total'] >= 22
+    assert r.json['hits']['total']['value'] >= 22
     assert len(r.json['hits']['hits']) == 0
     assert 'aggregations' in r.json
     assert 'x' in r.json['aggregations']

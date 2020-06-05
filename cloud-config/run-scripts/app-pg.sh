@@ -59,6 +59,7 @@ echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Setup aws keys for wal
 # Downlaod postgres demo aws keys
 pg_keys_dir='/home/ubuntu/pg-aws-keys'
 mkdir "$pg_keys_dir"
+sudo pip3 install --upgrade awscli
 aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/pg-aws-keys "$pg_keys_dir"
 if [ ! -f "$pg_keys_dir/credentials" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
@@ -68,13 +69,6 @@ if [ ! -f "$pg_keys_dir/credentials" ]; then
 fi
 
 ## Copy postgres aws to home
-pg_keys_dir='/home/ubuntu/pg-aws-keys'
-if [ ! -f "$pg_keys_dir/credentials" ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
-    # Build has failed
-    touch "$encd_failed_flag"
-    exit 1
-fi
 sudo -u root mkdir /var/lib/postgresql/.aws
 sudo -u root cp /home/ubuntu/pg-aws-keys/* ~postgres/.aws/
 sudo -u root chown -R postgres:postgres /var/lib/postgresql/.aws/
