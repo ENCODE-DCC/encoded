@@ -812,6 +812,8 @@ class App extends React.Component {
 
     /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
     handleClick(event) {
+        const options = {};
+
         // https://github.com/facebook/react/issues/1691
         if (event.isDefaultPrevented()) {
             return;
@@ -839,6 +841,12 @@ class App extends React.Component {
             event.preventDefault();
             this.trigger(dataTrigger);
             return;
+        }
+
+        // data-noscroll attribute prevents scrolling to the top when clicking a link.
+        const dataNoScroll = target.getAttribute('data-noscroll');
+        if (dataNoScroll !== null) {
+            options.noscroll = true;
         }
 
         // Ensure this is a plain click
@@ -883,7 +891,7 @@ class App extends React.Component {
         // through the navigate method.
         if (this.constructor.historyEnabled) {
             event.preventDefault();
-            this.navigate(href);
+            this.navigate(href, options);
         }
     }
 
@@ -985,6 +993,7 @@ class App extends React.Component {
 
         // options.skipRequest only used by collection search form
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
+        // options.noscroll to prevent scrolling to the top of the page after navigating.
         let mutatableHref = url.resolve(this.state.href, href);
 
         // Strip url fragment.
@@ -1070,7 +1079,8 @@ class App extends React.Component {
             return response.json();
         }).catch(globals.parseAndLogError.bind(undefined, 'contextRequest')).then(this.receiveContextResponse);
 
-        if (!mutatableOptions.replace) {
+        // Scroll to the top of the page unless replacing the URL or option to not scroll given.
+        if (!mutatableOptions.replace && !mutatableOptions.noscroll) {
             promise.then(this.constructor.scrollTo);
         }
 

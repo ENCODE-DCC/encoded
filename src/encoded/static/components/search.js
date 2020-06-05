@@ -874,7 +874,7 @@ FacetList.propTypes = {
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
     /** True to supress the display of facet-list title */
     supressTitle: PropTypes.bool,
-    /** Special search-result click handler */
+    /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
     /** True if the collapsible, false otherwise  */
     isExpandable: PropTypes.bool,
