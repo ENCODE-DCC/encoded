@@ -32,12 +32,13 @@ def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server
     settings['queue_worker_chunk_size'] = 5000
     settings['queue_worker_batch_size'] = 2000
     settings['visindexer'] = True
-    settings['regionindexer'] = True
+    settings['regionindexer'] = False
     return settings
 
 
 
 @pytest.fixture(scope='session')
+#@pytest.fixture
 def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
@@ -59,12 +60,14 @@ def _app(app_settings):
 
 
 @pytest.yield_fixture(scope='session')
+#@pytest.yield_fixture
 def app(app_settings):
     for app in _app(app_settings):
         yield app
 
 
 @pytest.fixture(scope='session')
+#@pytest.fixture
 def DBSession(app):
     from snovault import DBSESSION
     return app.registry[DBSESSION]
@@ -72,6 +75,8 @@ def DBSession(app):
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
+    from snovault.elasticsearch import INDEXER
+    app.registry[INDEXER].shutdown()
     from snovault.elasticsearch import create_mapping
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
@@ -117,22 +122,18 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 2
 
 
-def test_indexing_workbook(testapp, indexer_testapp):
+def test_indexing_workbook(app, testapp, indexer_testapp):
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
-
-    from encoded.loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
+    from encoded.loadxl import load_test_data
+    load_test_data(app)
     res = indexer_testapp.post_json('/index', {'record': True, 'is_testing_full': True})
     assert res.json['updated']
     assert res.json['indexed']
     ### OPTIONAL: audit via 2-pass is coming...
-    #assert res.json['pass2_took']
+    # assert res.json['pass2_took']
     ### OPTIONAL: audit via 2-pass is coming...
 
     # NOTE: Both vis and region indexers are "followup" or secondary indexers
@@ -140,11 +141,6 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index_vis', {'record': True})
     assert res.json['cycle_took']
     assert res.json['title'] == 'vis_indexer'
-
-    res = indexer_testapp.post_json('/index_region', {'record': True})
-    assert res.json['cycle_took']
-    assert res.json['title'] == 'region_indexer'
-    assert res.json['indexed'] > 0
 
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
