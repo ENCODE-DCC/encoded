@@ -61,7 +61,6 @@ const portal = {
                 { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'mouse-development-matrix', title: 'Mouse development matrix', url: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus', tag: 'collection' },
                 { id: 'sep-mm-3' },
-                { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
             ],
         },

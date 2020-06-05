@@ -1576,10 +1576,17 @@ class VisCache(object):
         if not self.es:
             return None
         if not self.es.indices.exists(self.index):
-            one_shard = {'index': {'number_of_shards': 1, 'max_result_window': 99999 }}
-            mapping = {'default': {"enabled": False}}
+            one_shard = {
+                'settings': {
+                    'index': {
+                        'number_of_shards': 1,
+                        'max_result_window': 99999
+                    }
+                }
+            }
+            mapping = {"enabled": False}
             self.es.indices.create(index=self.index, body=one_shard, wait_for_active_shards=1)
-            self.es.indices.put_mapping(index=self.index, doc_type='default', body=mapping)
+            self.es.indices.put_mapping(index=self.index, body=mapping)
             log.debug("created %s index" % self.index)
 
     def add(self, vis_id, vis_dataset):
@@ -1589,7 +1596,7 @@ class VisCache(object):
         if not self.es.indices.exists(self.index):
             self.create_cache()  # Only bother creating on add
 
-        self.es.index(index=self.index, doc_type='default', body=vis_dataset, id=vis_id)
+        self.es.index(index=self.index, body=vis_dataset, id=vis_id)
 
     def get(self, vis_id=None, accession=None, assembly=None):
         '''Returns the vis_dataset json object from elastic-search, or None if not found.'''
@@ -1597,7 +1604,7 @@ class VisCache(object):
             vis_id = accession + '_' + ASSEMBLY_TO_UCSC_ID.get(assembly, assembly)
         if self.es:
             try:
-                result = self.es.get(index=self.index, doc_type='default', id=vis_id)
+                result = self.es.get(index=self.index, id=vis_id)
                 return result['_source']
             except:
                 pass  # Missing index will return None
@@ -1610,7 +1617,7 @@ class VisCache(object):
             vis_ids = [accession + "_" + ucsc_assembly for accession in accessions]
             try:
                 query = {"query": {"ids": {"values": vis_ids}}}
-                res = self.es.search(body=query, index=self.index, doc_type='default', size=99999)  # size=200?
+                res = self.es.search(body=query, index=self.index, size=99999)  # size=200?
                 hits = res.get("hits", {}).get("hits", [])
                 results = {}
                 for hit in hits:

@@ -11,8 +11,6 @@ EPILOG = __doc__
 log = logging.getLogger(__name__)
 
 index = 'annotations'
-doc_type = 'default'
-
 
 def json_from_path(path, default=None):
     if path is None:
@@ -21,11 +19,13 @@ def json_from_path(path, default=None):
 
 def index_settings():
     return {
-        'index': {
-            'number_of_shards': 1,
-            'max_result_window': 99999
-        },
-        'analysis.analyzer': 'standard'
+        'settings': {
+            'index': {
+                'number_of_shards': 1,
+                'max_result_window': 99999
+            },
+            'analysis.analyzer': 'standard'
+        }
     }
 
 
@@ -48,11 +48,10 @@ def run(app):
     try:
         es.indices.put_mapping(
             index=index,
-            doc_type=doc_type,
-            body={doc_type: mapping}
+            body=mapping
         )
     except:
-        print("Could not create mapping for the collection %s", doc_type)
+        print("Could not create mapping for annotations")
     else:
         es.indices.refresh(index=index)
 
