@@ -124,3 +124,13 @@ def pce_fcc_experiment_2(pce_fcc_experiment):
         'schema_version': '4'
     })
     return item
+
+
+@pytest.fixture
+def pce_fcc_other_experiment(pce_fcc_experiment):
+    item = pce_fcc_experiment.copy()
+    item.update({
+        'schema_version': '5',
+        'plasmids_library_type': 'other'
+    })
+    return item

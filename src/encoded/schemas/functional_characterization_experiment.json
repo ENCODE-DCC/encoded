@@ -104,7 +104,7 @@
     "properties": {
         "schema_version": {
 
-            "default": "5"
+            "default": "6"
         },
         "assay_term_name": {
             "title": "Assay name",

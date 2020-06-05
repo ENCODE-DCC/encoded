@@ -1,6 +1,6 @@
 ## Changelog for functional_characterization_experiment.json
 
-### Minor changes since schema version 5
+### Schema version 6
 
 * *plasmids_library_type* value *other* was removed.
 
