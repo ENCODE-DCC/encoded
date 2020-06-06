@@ -73,6 +73,7 @@
                 "index",
                 "genome",
                 "mappability",
+                "sequence barcodes",
                 "spike-in",
                 "functional elements",
                 "sequence adapters"
