@@ -1,5 +1,8 @@
 ## Changelog for pipeline.json
 
+### Minor changes since schema version 10
+* *reference_filesets* property was added to link related reference file sets to each pipeline
+
 ### Schema version 10
 
 * *assay_term_names* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
