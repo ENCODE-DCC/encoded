@@ -62,21 +62,23 @@ const _mapSourceToSourceOrganization = (source) => {
     };
 };
 
-const _mapSubmitterToCreator = (submittedBy) => {
-    if (!submittedBy) {
+const _mapAwardToCreator = (award) => {
+    if (!award || !award.pi) {
         return {};
     }
 
+    const pi = award.pi;
+
     return {
         '@type': 'Person',
-        identifier: submittedBy.uuid,
-        name: submittedBy.title,
+        identifier: award.uuid,
+        name: pi.title,
         worksFor: {
             '@type': 'EducationalOrganization',
-            sameAs: `${baseUrl}${submittedBy.lab}`,
-            url: `${baseUrl}${submittedBy.lab}`,
+            sameAs: `${baseUrl}${pi.lab ? pi.lab['@id'] : ''}`,
+            url: `${baseUrl}${pi.lab ? pi.lab['@id'] : ''}`,
         },
-        memberOf: !submittedBy.submits_for ? [] : submittedBy.submits_for.map(submitsFor => ({
+        memberOf: !pi.submits_for ? [] : pi.submits_for.map(submitsFor => ({
             '@type': 'EducationalOrganization',
             url: `${baseUrl}${submitsFor}`,
         })),
@@ -136,8 +138,8 @@ const jsonldFormatter = (context, url) => {
         mappedData.sourceOrganization = _mapSourceToSourceOrganization(context.source);
     }
 
-    if (context.submitted_by) {
-        mappedData.creator = _mapSubmitterToCreator(context.submitted_by);
+    if (context.award) {
+        mappedData.creator = _mapAwardToCreator(context.award);
     }
 
     return mappedData;
