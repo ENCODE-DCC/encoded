@@ -1082,6 +1082,7 @@
                         "gff2",
                         "gff3",
                         "idr_peak",
+                        "idr_ranked_peak",
                         "narrowPeak",
                         "tss_peak"
                     ]
