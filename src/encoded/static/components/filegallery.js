@@ -658,7 +658,10 @@ class RawSequencingTable extends React.Component {
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
                                 const groupFiles = pairedRepGroups[pairedRepKey].sort((a, b) => (a.pairSortKey < b.pairSortKey ? -1 : 1));
-                                const bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+
+                                // Draw bottom border if this isn't the last paired replicate, or
+                                // it is but non-paired files follow.
+                                const bottomClass = j < (pairedRepKeys.length - 1) || nonpairedFiles.length > 0 ? 'merge-bottom' : '';
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
@@ -670,7 +673,15 @@ class RawSequencingTable extends React.Component {
                                         // Must be an index reads file if it's not paired-ended.
                                         pairClass = 'index-reads';
                                     }
-                                    if (groupFiles[i + 1] && groupFiles[i + 1].pairSortId !== file.pairSortId) {
+
+                                    // Draw bottom border if second file of pair and no index reads
+                                    // follow, or file *is* index reads, but not if last row of
+                                    // table.
+                                    const isNextInGroupIndexReads = groupFiles[i + 1] && groupFiles[i + 1].output_type === 'index reads';
+                                    if (
+                                        (file.output_type === 'index reads' || (file.paired_end === '2' && !isNextInGroupIndexReads))
+                                        && !(i === groupFiles.length - 1 && j === pairedRepKeys.length - 1 && nonpairedFiles.length === 0)
+                                    ) {
                                         pairClass = `${pairClass} pair-bottom`;
                                     }
 
@@ -746,7 +757,7 @@ class RawSequencingTable extends React.Component {
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="12" />
                         </tr>
                     </tfoot>
                 </table>
