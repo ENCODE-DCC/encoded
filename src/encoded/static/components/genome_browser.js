@@ -19,6 +19,7 @@ const dummyFiles = [
         assembly: 'GRCh38',
         file_type: 'bigWig',
         assay_term_name: 'shRNA knockdown followed by RNA-seq',
+        dataset: '/experiments/ENCSR585KOJ/',
         biosample_ontology: {
             term_name: 'HepG2',
         },
@@ -26,6 +27,7 @@ const dummyFiles = [
             title: 'ENCODE Processing Pipeline',
         },
         status: 'released',
+        title: 'ENCFF425LKJ',
     },
     {
         file_format: 'bigWig',
@@ -36,6 +38,7 @@ const dummyFiles = [
         assembly: 'GRCh38',
         file_type: 'bigWig',
         assay_term_name: 'shRNA knockdown followed by RNA-seq',
+        dataset: '/experiments/ENCSR585KOJ/',
         biosample_ontology: {
             term_name: 'HepG2',
         },
@@ -43,6 +46,7 @@ const dummyFiles = [
             title: 'ENCODE Processing Pipeline',
         },
         status: 'released',
+        title: 'ENCFF638QHN',
     },
     {
         file_format: 'bigWig',
@@ -52,6 +56,7 @@ const dummyFiles = [
         href: '/files/ENCFF541XFO/@@download/ENCFF541XFO.bigWig',
         assembly: 'GRCh38',
         file_type: 'bigWig',
+        dataset: '/experiments/ENCSR585KOJ/',
         assay_term_name: 'shRNA knockdown followed by RNA-seq',
         biosample_ontology: {
             term_name: 'HepG2',
@@ -60,6 +65,7 @@ const dummyFiles = [
             title: 'ENCODE Processing Pipeline',
         },
         status: 'released',
+        title: 'ENCFF541XFO',
     },
     {
         file_format: 'bigBed bedRNAElements',
@@ -69,6 +75,7 @@ const dummyFiles = [
         href: '/files/ENCFF517WSY/@@download/ENCFF517WSY.bigBed',
         assembly: 'GRCh38',
         file_type: 'bigBed tss_peak',
+        dataset: '/experiments/ENCSR000CIS/',
         assay_term_name: 'shRNA knockdown followed by RNA-seq',
         biosample_ontology: {
             term_name: 'HepG2',
@@ -77,6 +84,7 @@ const dummyFiles = [
             title: 'ENCODE Processing Pipeline',
         },
         status: 'released',
+        title: 'ENCFF517WSY',
     },
     {
         file_format: 'bigBed',
@@ -86,6 +94,7 @@ const dummyFiles = [
         href: '/files/ENCFF026DAN/@@download/ENCFF026DAN.bigBed',
         assembly: 'hg19',
         file_type: 'bigBed narrowPeak',
+        dataset: '/experiments/ENCSR683CSF/',
         assay_term_name: 'ChIP-seq',
         biosample_ontology: {
             term_name: 'HepG2',
@@ -94,6 +103,7 @@ const dummyFiles = [
             title: 'ENCODE Processing Pipeline',
         },
         status: 'released',
+        title: 'ENCFF026DAN',
     },
     {
         file_format: 'bigBed',
@@ -103,6 +113,7 @@ const dummyFiles = [
         href: '/files/ENCFF847CBY/@@download/ENCFF847CBY.bigBed',
         assembly: 'hg19',
         file_type: 'bigBed narrowPeak',
+        dataset: '/experiments/ENCSR683CSF/',
         assay_term_name: 'ChIP-seq',
         biosample_ontology: {
             term_name: 'HepG2',
@@ -111,6 +122,7 @@ const dummyFiles = [
             title: 'ENCODE Processing Pipeline',
         },
         status: 'released',
+        title: 'ENCFF847CBY',
     },
 ];
 
