@@ -114,6 +114,7 @@ def _tag_ec2_instance(
         # the role tags for data machines are used for nagios monitoring
         tags_dict['Role'] += '-data'
         tags_dict['elasticsearch'] = 'yes'
+        tags_dict['kibana'] = tag_data['kibana']
         tags_dict['auto_resize'] = 'na'
         tags_dict['elastic_ip_swtich_datatime'] = 'na'
         if cluster_master:
@@ -321,6 +322,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
         'name': main_args.name,
         'username': None,
         'build_type': build_type_template_name,
+        'kibana': 'true' if main_args.kibana else 'false',
         'is_qa_demo': main_args.is_qa_demo,
     }
     subprocess.check_output(['git', 'fetch', '--tags'])
@@ -364,7 +366,7 @@ def _get_ec2_client(main_args, instances_tag_data):
     ec2 = session.resource('ec2')
     name_to_check = instances_tag_data['name']
     if main_args.node_name:
-        if int(main_args.cluster_size) != 1:
+        if main_args.cluster_size != 1:
             print('--node-name can only be used --cluster-size 1')
             return None
         name_to_check = main_args.node_name
@@ -394,6 +396,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'ES_IP': main_args.es_ip,
         'ES_PORT': main_args.es_port,
         'ES_OPT_FILENAME': 'notused',
+        'KIBANA': 'false',
+        'MONITOR': 'true' if main_args.monitor else 'false',
         'FE_IP': main_args.fe_ip,
         'FULL_BUILD': main_args.full_build,
         'GIT_BRANCH': main_args.branch,
@@ -418,8 +422,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'SCRIPTS_DIR': "{}/run-scripts".format(main_args.conf_dir_remote),
         'WALE_S3_PREFIX': main_args.wale_s3_prefix,
     }
-    if build_type == 'es-nodes':
-        count = int(main_args.cluster_size)
+    if build_type in ['es-nodes', 'es-monitoring']:
+        count = main_args.cluster_size
         security_groups = ['elasticsearch-https']
         iam_role = main_args.iam_role_es
         es_opt = 'es-cluster-wait.yml' if main_args.es_wait else 'es-cluster-elect.yml'
@@ -435,6 +439,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             master_data_insert = copy.copy(data_insert)
             master_data_insert.update({
                 'ES_OPT_FILENAME': 'es-cluster-head.yml',
+                'KIBANA': 'true' if main_args.kibana else 'false'
             })
             master_user_data = _get_user_data(
                 config_yaml,
@@ -570,8 +575,10 @@ def _get_cloud_config_yaml(main_args):
         return None, None, None
     # Determine template 
     template_name = 'app-es-pg'
-    if main_args.es_elect or main_args.es_wait:
+    if (main_args.es_elect or main_args.es_wait) and not main_args.kibana:
         template_name = 'es-nodes'
+    elif (main_args.es_elect or main_args.es_wait) and main_args.kibana:
+        template_name = 'es-monitoring'
     elif main_args.cluster_name:
         if not main_args.es_ip == 'localhost' and main_args.pg_ip == '':
             # Standard cluster frontend with remote es and local pg
@@ -679,7 +686,7 @@ def main():
         _write_config_to_file(assembled_template, save_path, template_name)
         sys.exit(0)
     # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
-    indexing = False if main_args.no_indexing or template_name == 'app' else True
+    indexing = False if main_args.no_indexing or main_args.kibana or template_name == 'app' else True
     print(f'\nDeploying {template_name} with indexing={indexing}')
     print("$ {}".format(' '.join(sys.argv)))
     instances_tag_data, is_tag, is_branch = _get_instances_tag_data(main_args, template_name)
@@ -1021,6 +1028,10 @@ def _parse_args():
     parser.add_argument('--fe-ip', default='localhost', help="Primary frontend ip address")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
 
+    # Kibana monitoring
+    parser.add_argument('--kibana', action='store_true', help='Make monitoring cluster with kibana')
+    parser.add_argument('--monitor', action='store_true', help='Connect front-end to Kibana')
+
     # Database
     parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
     parser.add_argument('--pg-open', action='store_true', help="Allow all connections on postgres post.")
@@ -1171,7 +1182,7 @@ def _parse_args():
         if args.name is None:
             args.name = cluster_name
         # adding a single node to a pre existing cluster
-        if args.node_name and int(args.cluster_size) != 1:
+        if args.node_name and args.cluster_size != 1:
             raise ValueError(
                 'Adding a node to a preexisting cluster. '
                 '--cluster-size must be 1.'
@@ -1180,7 +1191,7 @@ def _parse_args():
         # hard coded discovery size in es-cluster-elect.yml
         if (
                 args.node_name is None and args.es_elect and (
-                    int(args.cluster_size) < 4 or int(args.cluster_size) > 5
+                    args.cluster_size < 4 or args.cluster_size > 5
                 )
         ):
             raise ValueError(
