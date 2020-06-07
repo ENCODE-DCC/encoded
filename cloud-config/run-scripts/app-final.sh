@@ -33,6 +33,8 @@ sudo service postfix restart
 auth_keys_file='/home/ubuntu/.ssh/authorized_keys'
 auth_keys_file2='/home/ubuntu/.ssh/authorized_keys2'
 mv "$auth_keys_file" "$auth_keys_file2"
+sudo apt install python3-pip
+sudo pip3 install --upgrade awscli
 aws s3 cp --region=us-west-2 $ENCD_S3_AUTH_KEYS "$auth_keys_file"
 if [ ! -f "$auth_keys_file" ] || [ ! -f "$auth_keys_file2" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ssh auth keys"

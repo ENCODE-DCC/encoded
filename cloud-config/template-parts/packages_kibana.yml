@@ -1,0 +1,5 @@
+# Works when listed after packages_es.yml
+- awscli
+- nginx
+- apache2-utils
+- kibana

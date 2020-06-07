@@ -12,5 +12,6 @@ thread_pool:
   search:
     size: 100
     queue_size: 2000
-  index:
+  write:
     queue_size: 400
+
