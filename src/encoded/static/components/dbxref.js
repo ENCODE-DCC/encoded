@@ -110,13 +110,13 @@ export const dbxrefPrefixMap = {
     FactorBook: {
         pattern: 'https://factorbook.org/experiment/{0}',
         preprocessor: (context, dbxref) => {
-            // For dbxrefs in targets, use an alternate URL for human targets.
+            // For dbxrefs in targets or target dbxrefs in experiments, use an alternate URL for human targets.
             const value = dbxref.split(':');
-            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Homo sapiens') {
+            if ((context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Homo sapiens') || (context['@type'][0] === 'Experiment' && value[1].substr(0, 5) !== 'ENCSR' && context.target && context.target.organism && context.target.organism.scientific_name === 'Homo sapiens')) {
                 return { altUrlPattern: 'https://factorbook.org/tf/human/{0}/function' };
             }
-            // For dbxrefs in targets, use an alternate URL and alternate value for mouse targets.
-            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') {
+            // For dbxrefs in targets or target dbxrefs in experiments, use an alternate URL and alternate value for mouse targets.
+            if ((context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') || (context['@type'][0] === 'Experiment' && value[1].substr(0, 5) !== 'ENCSR' && context.target && context.target.organism && context.target.organism.scientific_name === 'Mus musculus')) {
                 return { altValue: value[1].charAt(0) + value[1].slice(1).toLowerCase(),
                     altUrlPattern: 'https://factorbook.org/tf/mouse/{0}/function' };
             }
