@@ -54,6 +54,7 @@ seq_assays = [
     'PLAC-seq',
     'microRNA-seq',
     'long read RNA-seq',
+    'ATAC-seq',
 ]
 
 
@@ -550,7 +551,8 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                             'whole-genome shotgun bisulfite sequencing',
                                             'genetic modification followed by DNase-seq',
                                             'microRNA-seq',
-                                            'long read RNA-seq', 'icSHAPE']:
+                                            'long read RNA-seq', 'icSHAPE',
+                                            'ATAC-seq']:
         return
     if not value.get('original_files'):
         return
@@ -618,6 +620,12 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             files_structure,
             organism_name,
             desired_assembly)
+        return
+
+    if value['assay_term_name'] == 'ATAC-seq':
+        yield from check_experiment_atac_encode4_qc_standards(
+            value,
+            files_structure)
         return
 
 
@@ -4106,6 +4114,145 @@ def audit_biosample_perturbed_mixed(value, system, excluded_types):
     if len(bio_perturbed) > 1:
         detail = 'Experiment {} contains both perturbed and non-perturbed biosamples'.format(audit_link(path_to_text(value['@id']), value['@id']))
         yield AuditFailure('mixed biosample perturbations', detail, level='ERROR')
+
+
+def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
+    # https://encodedcc.atlassian.net/browse/ENCD-5255
+    alignment_files = files_structure.get('alignments').values()
+    assay_term_name = experiment['assay_term_name']
+    if assay_term_name != 'ATAC-seq':
+        return
+
+    pipeline_title = scanFilesForPipelineTitle_not_chipseq(
+        alignment_files, ['GRCh38', 'mm10'],
+        ['ATAC-seq (unreplicated)',
+        'ATAC-seq (replicated)'])
+    if pipeline_title is False:
+        return
+
+    alignment_metrics = get_metrics(alignment_files, 'AtacAlignmentQualityMetric')
+    align_enrich_metrics = get_metrics(alignment_files, 'AtacAlignmentEnrichmentQualityMetric')
+    library_metrics = get_metrics(alignment_files, 'AtacLibraryQualityMetric')
+
+    # Checks in AtacAlignmentQualityMetric
+    if alignment_metrics is not None and len(alignment_metrics) > 0:
+        for metric in alignment_metrics:
+            if 'pct_mapped_reads' in metric and 'quality_metric_of' in metric:
+                alignment_file = files_structure.get(
+                    'alignments')[metric['quality_metric_of'][0]]
+                pct_mapped = str(metric['pct_mapped_reads'])
+                detail = (
+                    f'Alignment file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} has '
+                    f'{pct_mapped}% mapped reads. '
+                    f'According to ENCODE4 standards, ATAC-seq assays processed '
+                    f'by the uniform processing pipeline require a minimum of 80% '
+                    f'reads mapped. The recommended value is over 95%, but 80-95% is acceptable.'
+                    )
+                if metric['pct_mapped_reads'] <= 95 and metric['pct_mapped_reads'] >= 80:
+                    yield AuditFailure('acceptable alignment rate', detail, level='WARNING')
+                elif metric['pct_mapped_reads'] < 80:
+                    yield AuditFailure('low alignment rate', detail, level='NOT_COMPLIANT')
+
+    # Checks in AtacAlignmentEnrichmentQualityMetric
+    if align_enrich_metrics is not None and len(align_enrich_metrics) > 0:
+        for metric in align_enrich_metrics:
+            if 'tss_enrichment' in metric and 'quality_metric_of' in metric:
+                alignment_file = files_structure.get(
+                    'alignments')[metric['quality_metric_of'][0]]
+                tss = metric['tss_enrichment']
+                assembly = alignment_file.get('assembly')
+                
+                if assembly and assembly == 'mm10':
+                    mouse_detail = (
+                        f'Transcription Start Site (TSS) enrichment values for alignments '
+                        f'to the mouse genome mm10 are concerning when < 10, acceptable '
+                        f'between 10 and 15, and ideal when > 15. ENCODE processed '
+                        f'file {audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                        f'has a TSS enrichment value of {tss}.'
+                        )
+                    if tss < 10:
+                        yield AuditFailure('low TSS enrichment', mouse_detail, level='NOT_COMPLIANT')
+                    elif tss >= 10 and tss <= 15:
+                        yield AuditFailure('moderate TSS enrichment', mouse_detail, level='WARNING')
+                
+                if assembly and assembly == 'GRCh38':
+                    human_detail = (
+                        f'Transcription Start Site (TSS) enrichment values for alignments '
+                        f'to the human genome GRCh38 are concerning when < 5, acceptable '
+                        f'between 5 and 7, and ideal when > 7. ENCODE processed '
+                        f'file {audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                        f'has a TSS enrichment value of {tss}.'
+                        )
+                    if tss < 5:
+                        yield AuditFailure('low TSS enrichment', human_detail, level='NOT_COMPLIANT')
+                    elif tss >= 5 and tss <= 7:
+                        yield AuditFailure('moderate TSS enrichment', human_detail, level='WARNING')
+
+    # Checks in AtacLibraryQualityMetric
+    if library_metrics is not None and len(library_metrics) > 0:
+        for metric in library_metrics:
+            alignment_file = files_structure.get(
+                    'alignments')[metric['quality_metric_of'][0]]
+            
+            if 'NRF' in metric and 'quality_metric_of' in metric:
+                NRF_value = float(metric['NRF'])
+                detail = (
+                    f'NRF (Non Redundant Fraction) is equal to the result of the '
+                    f'division of the number of reads after duplicates removal by '
+                    f'the total number of reads. '
+                    f'An NRF value < 0.7 is poor complexity, '
+                    f'between 0.7 and 0.9 is moderate complexity, '
+                    f'and >= 0.9 high complexity. NRF value > 0.9 is recommended, '
+                    f'but > 0.7 is acceptable. ENCODE processed file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                    f'was generated from a library with NRF value of {NRF_value}.'
+                    )
+                if NRF_value < 0.7:
+                    yield AuditFailure('poor library complexity', detail, level='NOT_COMPLIANT')
+                elif NRF_value >= 0.7 and NRF_value < 0.9:
+                    yield AuditFailure('moderate library complexity', detail, level='WARNING')
+
+            if 'PBC1' in metric and 'quality_metric_of' in metric:
+                PBC1 = float(metric['PBC1'])
+                pbc1_detail = (
+                    f'PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) '
+                    f'is the ratio of the number of genomic locations where  '
+                    f'exactly one read maps uniquely (M1) to the number of '
+                    f'genomic locations where some reads map (M_distinct). '
+                    f'A PBC1 value in the range 0 - 0.5 is severe bottlenecking, '
+                    f'0.5 - 0.8 is moderate bottlenecking, 0.8 - 0.9 is mild '
+                    f'bottlenecking, and > 0.9 is no bottlenecking. PBC1 value > '
+                    f'0.9 is recommended, but > 0.7 is acceptable. ENCODE processed file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                    f'was generated from a library with a PBC1 value of {PBC1:.2f}.'
+                    )
+                if PBC1 < 0.7:
+                    yield AuditFailure('severe bottlenecking', pbc1_detail, level='NOT_COMPLIANT')
+                elif PBC1 >= 0.7 and PBC1 <= 0.9:
+                    yield AuditFailure('mild to moderate bottlenecking', pbc1_detail, level='WARNING')
+
+            if 'PBC2' in metric and 'quality_metric_of' in metric:
+                PBC2_raw = metric['PBC2']
+                if PBC2_raw == 'Infinity':
+                    PBC2 = float('inf')
+                else:
+                    PBC2 = float(metric['PBC2'])
+                pbc2_detail = (
+                    f'PBC2 (PCR Bottlenecking Coefficient 2, M1/M2) is the ratio of '
+                    f'the number of genomic locations where exactly one read maps '
+                    f'uniquely (M1) to the number of genomic locations where two reads '
+                    f'map uniquely (M2). A PBC2 value in the range 0 - 1 is severe '
+                    f'bottlenecking, 1 - 3 is moderate bottlenecking, 3 - 10 is mild '
+                    f'bottlenecking, > 10 is no bottlenecking. PBC2 value > 10 is '
+                    f'recommended, but > 3 is acceptable. ENCODE processed file '
+                    f'{audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                    f'was generated from a library with a PBC2 value of {PBC2:.2f}.'
+                    )
+                if PBC2 < 1:
+                    yield AuditFailure('severe bottlenecking', pbc2_detail, level='NOT_COMPLIANT')
+                elif PBC2 >= 1 and PBC2 <= 3:
+                    yield AuditFailure('mild to moderate bottlenecking', pbc2_detail, level='WARNING')
 
 
 #######################

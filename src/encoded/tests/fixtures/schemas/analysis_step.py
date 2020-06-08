@@ -132,3 +132,28 @@ def analysis_step_chip_encode4(testapp):
         'major_version': 1
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_atac_encode4_alignment(testapp):
+    item = {
+        'step_label': 'atac-seq-alignment-step',
+        'title': 'ATAC seq alignment step',
+        'input_file_types': ['reads'],
+        'output_file_types': ['alignments', 'unfiltered alignments'],
+        'analysis_step_types': ['read trimming', 'alignment', 'filtering', 'file format conversion'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_atac_encode4_replicate_concordance(testapp):
+    item = {
+        'step_label': 'atac-seq-replicated-overlap-step',
+        'title': 'ATAC seq replicated-overlap step',
+        'input_file_types': ['alignments', 'blacklisted regions'],
+        'analysis_step_types': ['peak calling', 'replicate concordance'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]

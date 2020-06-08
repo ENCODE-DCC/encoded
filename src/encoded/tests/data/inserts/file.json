@@ -3639,6 +3639,7 @@
         "uuid": "be4c17df-e5f0-44f9-997a-f9caef22be08"
     },
     {
+<<<<<<< HEAD
         "_test": "DNase-seq rep1 reads",
         "award": "/awards/U54HG007010/",
         "lab": "/labs/john-stamatoyannopoulos/",
@@ -3690,6 +3691,7 @@
         "derived_from": ["ENCFF718LJW"]
     },
     {
+<<<<<<< HEAD
         "_test": "chromosome sizes",
         "dataset": "ENCSR000AJK",
         "status": "released",
@@ -3734,5 +3736,47 @@
         "lab": "ali-mortazavi",
         "accession": "ENCFF617GRA",
         "file_size": 132245
+    },
+    {
+        "_test": "ATAC for ENCODE4 pipeline",
+        "accession": "ENCFF324ATA",
+        "award": "/awards/U54HG006996/",
+        "content_md5sum": "558e8ab60f0f21a2955f2c6a481861cf",
+        "dataset": "ENCSR808ATA",
+        "fastq_signature": [
+            "TEMP:6:1::@HWI-ST1133R:5:1101:1411:2138#CACCGGGTTCAG/1"
+        ],
+        "file_format": "fastq",
+        "file_size": 536419139,
+        "lab": "michael-snyder",
+        "md5sum": "b6576d70703d48fe73143f77ab6d1858",
+        "no_file_available": false,
+        "output_type": "reads",
+        "platform": "/platforms/OBI:0002002/",
+        "read_count": 21432984,
+        "read_length": 20,
+        "replicate": "9287fe0e-59a4-45ef-87fb-4b3b285a64c8",
+        "run_type": "single-ended",
+        "status": "released",
+        "submitted_by": "accumsan.egestas@imperdiet.rutrum",
+        "submitted_file_name": "/ATACrun.fastq.gz",
+        "uuid": "8d5cc3cd-ec39-4eb0-9f0e-cd04d46b65cb"
+    },
+    {
+        "_test": "ATAC-seq rep1 pipeline alignment file",
+        "award": "/awards/U54HG006996/",
+        "lab": "encode-processing-pipeline",
+        "dataset": "ENCSR808ATA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "4f150408-3e77-47c1-8028-6866ed2facba",
+        "accession": "ENCFF032ATB",
+        "file_format": "bam",
+        "output_type": "alignments",
+        "file_size": 1,
+        "assembly": "GRCh38",
+        "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
+        "derived_from": ["ENCFF324ATA"],
+        "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     }
 ]

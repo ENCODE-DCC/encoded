@@ -851,5 +851,17 @@
         "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
         "library": "ENCLB000RCC",
         "uuid": "e11915f9-6f11-4383-a943-669edaa15d47"
+    },
+    {
+        "aliases": [
+            "michael-snyder:ATACrun_replicate1"
+        ],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR808ATA",
+        "library": "ENCLB723ATA",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "technical_replicate_number": 1,
+        "uuid": "9287fe0e-59a4-45ef-87fb-4b3b285a64c8"
     }
 ]

@@ -1016,5 +1016,18 @@
         "date_released": "2020-01-04",
         "accession": "ENCSR604DNT",
         "uuid": "8550abc8-d594-4a56-9b1f-60bbb3911908"
+    },
+    {
+        "_test": "ATAC-seq ENCODE4",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "status": "released",
+        "date_submitted": "2020-06-09",
+        "biosample_ontology": "cell_line_EFO_0002784",
+        "award": "UM1HG009442",
+        "assay_term_name": "ATAC-seq",
+        "lab": "/labs/michael-snyder/",
+        "date_released": "2020-06-09",
+        "accession": "ENCSR808ATA",
+        "uuid": "2c96ee28-66f1-49ad-940d-ba22acf85e08"
     }
 ]

@@ -1039,5 +1039,15 @@
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "0e71dd42-2565-4720-bf3b-db9bc296f02e"
+    },
+    {
+        "accession": "ENCLB723ATA",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS630AAA",
+        "lab": "michael-snyder/",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "60c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
     }
 ]

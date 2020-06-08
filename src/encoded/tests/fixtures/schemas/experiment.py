@@ -719,3 +719,14 @@ def experiment_v28(root, experiment):
             'notes': 'Insert essential details here'
     })
     return properties
+
+
+@pytest.fixture
+def ATAC_experiment(testapp, lab, award, cell_free):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ATAC-seq',
+        'biosample_ontology': cell_free['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]

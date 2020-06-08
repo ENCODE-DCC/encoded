@@ -518,5 +518,16 @@
         ],
         "analysis_step_types": ["quantification"],
         "uuid": "51bea210-a877-4858-99bd-e5cd250ae386"
+    },
+    {
+        "step_label": "atac-seq-alignment-step",
+        "major_version": 1,
+        "title": "ATAC seq alignment step",
+        "analysis_step_types": ["alignment", "read trimming",
+            "filtering", "file format conversion"],
+        "input_file_types": ["reads"],
+        "output_file_types": ["alignments", "unfiltered alignments"],
+        "status": "released",
+        "uuid": "5014594f-cef4-4f78-baaa-ef9e7fdecac8"
     }
 ]
