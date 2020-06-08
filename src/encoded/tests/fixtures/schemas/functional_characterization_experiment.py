@@ -134,3 +134,17 @@ def pce_fcc_other_experiment(pce_fcc_experiment):
         'plasmids_library_type': 'other'
     })
     return item
+
+
+@pytest.fixture
+def pooled_clone_sequencing(testapp, lab, award, liver):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'pooled clone sequencing',
+        'biosample_ontology': liver['uuid'],
+        'plasmids_library_type': 'elements cloning'
+    }
+    return testapp.post_json(
+        '/functional_characterization_experiment', item
+    ).json['@graph'][0]
