@@ -141,7 +141,17 @@ class Biosample(Item):
     @calculated_property(define=True,
                          schema={"title": "Age",
                                  "type": "string"})
-    def age(self, request, donor=None, model_organism_age=None, organism=None):
+    def age(
+        self,
+        request,
+        donor=None,
+        model_organism_age=None,
+        organism=None,
+        sample_collection_age=None,
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5272
+        if sample_collection_age is not None:
+            return sample_collection_age
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -166,7 +176,17 @@ class Biosample(Item):
     @calculated_property(define=True,
                          schema={"title": "Age units",
                                  "type": "string"})
-    def age_units(self, request, donor=None, model_organism_age_units=None, organism=None):
+    def age_units(
+        self,
+        request,
+        donor=None,
+        model_organism_age_units=None,
+        organism=None,
+        sample_collection_age_units=None,
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5272
+        if sample_collection_age_units is not None:
+            return sample_collection_age_units
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -311,9 +331,27 @@ class Biosample(Item):
         "title": "Age display",
         "type": "string",
     })
-    def age_display(self, request, donor=None, model_organism_age=None,
-                    model_organism_age_units=None, post_synchronization_time=None,
-                    post_synchronization_time_units=None):
+    def age_display(
+        self,
+        request,
+        donor=None,
+        model_organism_age=None,
+        model_organism_age_units=None,
+        post_synchronization_time=None,
+        post_synchronization_time_units=None,
+        sample_collection_age=None,
+        sample_collection_age_units=None,
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5272
+        if sample_collection_age is not None:
+            if sample_collection_age == 'unknown':
+                return ''
+            if sample_collection_age_units is not None:
+                return u'{}'.format(
+                    pluralize(
+                        sample_collection_age, sample_collection_age_units
+                    )
+                )
         if post_synchronization_time is not None and post_synchronization_time_units is not None:
             return u'{}'.format(
                 pluralize(post_synchronization_time, post_synchronization_time_units)
