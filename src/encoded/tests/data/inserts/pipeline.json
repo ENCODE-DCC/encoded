@@ -177,6 +177,10 @@
         "title": "microRNA-seq pipeline",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
+        "reference_filesets": [
+            "ENCSR156CIL",
+            "ENCSR704RSS"
+        ],
         "uuid": "cd340a00-50aa-11e4-916c-0800200c9a66"
     }
 ]
