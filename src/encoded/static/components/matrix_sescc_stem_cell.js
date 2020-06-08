@@ -330,6 +330,9 @@ const MatrixHeader = ({ context }) => {
                 </div>
                 <div className="matrix-tags sescc_matrix__title">
                     <MatrixInternalTags context={context} />
+                    <div className="matrix-description">
+                        Project data of the epigenomic profiles of cell types differentiated from the H9 cell line provided by the Southeast Stem Cell Consortium (SESCC).
+                    </div>
                 </div>
             </div>
             <div className="matrix-header__controls">

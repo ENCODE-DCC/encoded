@@ -586,6 +586,9 @@ const MatrixHeader = ({ context }) => (
             <h1>{context.title}</h1>
             <div className="matrix-tags">
                 <MatrixInternalTags context={context} />
+                <div className="matrix-description">
+                    The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
+                </div>
             </div>
         </div>
     </div>

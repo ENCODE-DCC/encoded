@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import QueryString from '../libs/query_string';
 import _ from 'underscore';
 import url from 'url';
+import QueryString from '../libs/query_string';
 import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { svgIcon } from '../libs/svg-icons';
@@ -292,12 +292,21 @@ const MatrixHeader = ({ context }) => {
         }
     }
 
+    // If the user has requested an ENCORE matrix, generate a matrix description.
+    const query = new QueryString(context.search_base);
+    const matrixDescription = query.getKeyValues('internal_tags').includes('ENCORE') ?
+        'The ENCORE project aims to study protein-RNA interactions by creating a map of RNA binding proteins (RBPs) encoded in the human genome and identifying the RNA elements that the RBPs bind to.'
+    : '';
+
     return (
         <div className="matrix-header">
             <div className="matrix-header__title">
                 <h1>{type ? `${type} ` : ''}{context.title}</h1>
                 <div className="matrix-tags">
                     <MatrixInternalTags context={context} />
+                    {matrixDescription ?
+                        <div className="matrix-description">{matrixDescription}</div>
+                    : null}
                 </div>
             </div>
             <div className="matrix-header__controls">

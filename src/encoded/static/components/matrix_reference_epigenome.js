@@ -368,12 +368,26 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
 
     const rowCount = matrix => matrix.y['biosample_ontology.classification'].buckets.reduce((currentTotalCount, termName) => currentTotalCount + termName['biosample_ontology.term_name'].buckets.length, 0);
 
+    const query = new QueryString(context.search_base);
+    let organism = '';
+    if (query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name').includes('Mus musculus')) {
+        organism = 'mouse';
+    } else if (query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name').includes('Homo sapiens')) {
+        organism = 'human';
+    }
+    const matrixDescription = organism ?
+        <span>Project data from {organism} tissue, cell line, primary cell, and in vitro differentiated cell biosamples organized as reference epigenomes following guidelines set out by IHEC.</span>
+    : null;
+
     return (
         <div className="matrix-header">
             <div className="matrix-header__title">
                 <h1>{context.title}</h1>
                 <div className="matrix-tags">
                     <MatrixInternalTags context={context} />
+                    {matrixDescription ?
+                        <div className="matrix-description">{matrixDescription}</div>
+                    : null}
                 </div>
             </div>
             {showProjects ?
