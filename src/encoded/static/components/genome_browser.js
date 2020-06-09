@@ -11,13 +11,13 @@ const domainName = 'https://www.encodeproject.org';
 // Icons to collapse and expand track header.
 const ExpandLessIcon = () => (
     <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
-        <path d="M6,0L0,6l1.4,1.4L6,2.8l4.6,4.6L12,6L6,0z"/>
+        <path d="M6,0L0,6l1.4,1.4L6,2.8l4.6,4.6L12,6L6,0z" />
     </svg>
 );
 
 const ExpandMoreIcon = () => (
     <svg version="1.1" focusable="false" viewBox="0 0 12 7.4">
-        <path d="M10.6,0L6,4.6L1.4,0L0,1.4l6,6l6-6L10.6,0z"/>
+        <path d="M10.6,0L6,4.6L1.4,0L0,1.4l6,6l6-6L10.6,0z" />
     </svg>
 );
 
@@ -654,6 +654,14 @@ class GenomeBrowser extends React.Component {
             <React.Fragment>
                 {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
                     <React.Fragment>
+                        <button className="expand-all-tracks-button" onClick={this.expandTracks}>
+                            <ExpandMoreIcon />
+                            <span className="reset-title">Expand all tracks</span>
+                        </button>
+                        <button className="collapse-all-tracks-button" onClick={this.collapseTracks}>
+                            <ExpandLessIcon />
+                            <span className="reset-title">Collapse all tracks</span>
+                        </button>
                         { (this.state.genome.indexOf('GRC') !== -1) ?
                             <div className="gene-search">
                                 <i className="icon icon-search" />
@@ -682,14 +690,6 @@ class GenomeBrowser extends React.Component {
                             <button className="reset-browser-button" onClick={this.resetLocation}>
                                 <i className="icon icon-undo" />
                                 <span className="reset-title">Reset coordinates</span>
-                            </button>
-                            <button className="expand-all-tracks-button" onClick={this.expandTracks}>
-                                <ExpandMoreIcon />
-                                <span className="reset-title">Expand all tracks</span>
-                            </button>
-                            <button className="collapse-all-tracks-button" onClick={this.collapseTracks}>
-                                <ExpandLessIcon />
-                                <span className="reset-title">Collapse all tracks</span>
                             </button>
                             <div ref={(div) => { this.chartdisplay = div; }} className="valis-browser" />
                         </div>

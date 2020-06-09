@@ -242,6 +242,7 @@
     height: 50px;
     width: 176px;
     display: flex;
+    font-size: 14px;
     .icon-undo {
         padding-right: 5px;
         flex: 0 1 20px;
@@ -255,13 +256,18 @@
     background-color: #f2f2f2;
     border: 1px solid #BFBFBF;
     padding: 7px 20px;
-    font-size: 14px;
     border-radius: 4px;
+    font-size: 0.8rem;
+    svg {
+        width: 15px;
+        margin-right: 5px;
+    }
 }
 
 .expand-all-tracks-button, .collapse-all-tracks-button {
-    margin-top: 100px;
     display: block;
+    margin: 5px;
+    float: left;
 }
 
 .gb-accession {
