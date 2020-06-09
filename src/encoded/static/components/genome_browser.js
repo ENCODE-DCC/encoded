@@ -251,6 +251,7 @@ class GenomeBrowser extends React.Component {
         this.compileFiles = this.compileFiles.bind(this);
         this.setGenomeAndTracks = this.setGenomeAndTracks.bind(this);
         this.resetLocation = this.resetLocation.bind(this);
+        this.expandCollapseAllTracks = this.expandCollapseAllTracks.bind(this);
     }
 
     componentDidMount() {
@@ -649,16 +650,22 @@ class GenomeBrowser extends React.Component {
         this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
     }
 
+    expandCollapseAllTracks(param) {
+        console.log(param);
+        console.log(this);
+        console.log('clicky');
+    }
+
     render() {
         return (
             <React.Fragment>
                 {(this.state.trackList.length > 0 && this.state.genome !== null && !(this.state.disableBrowserForIE)) ?
                     <React.Fragment>
-                        <button className="expand-all-tracks-button" onClick={this.expandTracks}>
+                        <button className="expand-all-tracks-button" onClick={() => this.expandCollapseAllTracks('expand')}>
                             <ExpandMoreIcon />
                             <span className="reset-title">Expand all tracks</span>
                         </button>
-                        <button className="collapse-all-tracks-button" onClick={this.collapseTracks}>
+                        <button className="collapse-all-tracks-button" onClick={() => this.expandCollapseAllTracks('collapse')}>
                             <ExpandLessIcon />
                             <span className="reset-title">Collapse all tracks</span>
                         </button>
