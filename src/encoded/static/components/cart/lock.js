@@ -36,7 +36,7 @@ const CartLockTriggerComponent = ({ savedCartObj, inProgress, onLock }) => {
             : null}
             <button
                 onClick={handleLockClick}
-                className="btn btn-sm btn-warning btn-inline"
+                className="btn btn-sm btn-warning btn-inline cart-lock-trigger"
                 disabled={inProgress || savedCartObj.status === 'deleted' || savedCartObj.status === 'disabled'}
                 aria-label={`${savedCartObj.locked ? 'Unlock' : 'Lock'} cart`}
             >
