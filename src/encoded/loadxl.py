@@ -127,6 +127,8 @@ IS_ATTACHMENT = [
     'fragment_length_distribution_plot',
     'peak_width_distribution_plot',
     'dispersion_model',
+    'mapq_plot',
+    'insert_size_plot',
 ]
 
 
