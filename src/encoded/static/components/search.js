@@ -529,6 +529,7 @@ globals.listingViews.register(Target, 'Target');
 /* eslint-disable react/prefer-stateless-function */
 class PatientComponent extends React.Component {
     render() {
+        const { cartControls } = this.props;
         const result = this.props.context;
         let age = result.diagnosis.age;
         const hasAge = (age != "Unknown") ? true : false;       
@@ -565,6 +566,7 @@ class PatientComponent extends React.Component {
 
 PatientComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
+    cartControls: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
