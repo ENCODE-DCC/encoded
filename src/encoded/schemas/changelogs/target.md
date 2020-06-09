@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 14
 
-* Removed dependency restricting *dbxrefs* to non-gene targets.
+* Removed dependency restricting *dbxrefs* to non-gene targets. *dbxrefs* value formatting is now enforced with regex for UniProtKB and FactorBook.
 
 ### Schema version 14
 
