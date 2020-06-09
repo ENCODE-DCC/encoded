@@ -1878,6 +1878,7 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
                                    level='WARNING')
 
 
+
 def check_file_chip_seq_read_depth(file_to_check,
                                    control_type,
                                    organism_name,
