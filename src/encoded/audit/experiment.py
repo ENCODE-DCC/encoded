@@ -4310,11 +4310,10 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                         else:
                             return int(mappedReads)
                     else:
-                        if ("read1" in metric and "read2" in metric)):
+                        if ("read1" in metric and "read2" in metric):
                             return int(mappedReads / 2)
                         else:
-                            return int(mappedReads)
-                    
+                            return int(mappedReads)     
         else:
             # not exception (useful fragments)
             for metric in quality_metrics:
@@ -4331,7 +4330,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                         else:
                             return int(totalReads)
                     else:
-                        if ("read1" in metric and "read2" in metric)):
+                        if ("read1" in metric and "read2" in metric):
                             return int(totalReads / 2)
                         else:
                             return int(totalReads)
