@@ -52,6 +52,10 @@ const qcAttachmentProperties = {
     AtacReplicationQualityMetric: [
         { idr_dispersion_plot: 'IDR dispersion plot' },
     ],
+    GembsAlignmentQualityMetric: [
+        { mapq_plot: 'MAPQ plot' },
+        { insert_size_plot: 'Insert size plot' },
+    ],
     DnaseFootprintingQualityMetric: [
         { dispersion_model: 'Dispersion model' },
     ],
