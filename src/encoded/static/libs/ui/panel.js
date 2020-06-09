@@ -272,15 +272,16 @@ class TabItem extends React.Component {
     }
 
     clickHandler() {
-        if (!(this.props.children.props.className && this.props.children.props.className.includes('disabled'))) {
+        if (!(this.props.children && this.props.children.props && this.props.children.props.className && this.props.children.props.className.includes('disabled'))) {
             this.props.handleClick(this.props.tab);
         }
     }
 
     render() {
         const tab = this.props.tab;
+        const isDisabled = this.props.children && this.props.children.props && this.props.children.props.className && this.props.children.props.className.includes('disabled');
         return (
-            <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab" disabled={this.props.children.props.className && this.props.children.props.className.includes('disabled')}>
+            <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab" disabled={isDisabled}>
                 {this.props.children}
             </a>
         );
