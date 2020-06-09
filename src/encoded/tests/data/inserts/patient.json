@@ -1,8 +1,6 @@
 [
     {
         "accession": "KCEPT359MHZ",
-        "age": "60",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Female",
@@ -15,8 +13,6 @@
     },
     {
         "accession": "KCEPT708IJT",
-        "age": "55",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
@@ -29,8 +25,6 @@
     },
     {
         "accession": "KCEPT026PGS",
-        "age": "72",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
@@ -41,8 +35,6 @@
     },
     {
         "accession": "KCEPT925TMI",
-        "age": "34",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
@@ -53,8 +45,6 @@
     },
     {
         "accession": "KCEPT480NBU",
-        "age": "34",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
@@ -67,8 +57,6 @@
     },
     {
         "accession": "KCEPT873QVK",
-        "age": "79",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Unknown",
         "gender": "Female",
@@ -79,8 +67,6 @@
     },
     {
         "accession": "KCEPT802XRB",
-        "age": "62",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Male",
@@ -93,8 +79,6 @@
     },
     {
         "accession": "KCEPT240HMN",
-        "age": "82",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
@@ -105,8 +89,6 @@
     },
     {
         "accession": "KCEPT186NZW",
-        "age": "28",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Unknown",
         "gender": "Female",
@@ -117,8 +99,6 @@
     },
     {
         "accession": "KCEPT139SOR",
-        "age": "78",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
@@ -129,8 +109,6 @@
     },
     {
         "accession": "KCEPT021XWS",
-        "age": "23",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",
@@ -141,8 +119,6 @@
     },
     {
         "accession": "KCEPT604LAK",
-        "age": "21",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
@@ -153,8 +129,6 @@
     },
     {
         "accession": "KCEPT805NRD",
-        "age": "44",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Male",
@@ -165,8 +139,6 @@
     },
     {
         "accession": "KCEPT692UHR",
-        "age": "38",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Hispanic",
         "gender": "Female",
@@ -177,8 +149,6 @@
     },
     {
         "accession": "KCEPT294KIZ",
-        "age": "90 or above",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Unknown",
         "gender": "Female",
@@ -189,8 +159,6 @@
     },
     {
         "accession": "KCEPT398JLK",
-        "age": "47",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Declined",
         "gender": "Male",
@@ -201,8 +169,6 @@
     },
     {
         "accession": "KCEPT756AEN",
-        "age": "54",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
@@ -213,8 +179,6 @@
     },
     {
         "accession": "KCEPT396JUN",
-        "age": "71",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Declined",
         "gender": "Female",
@@ -225,8 +189,6 @@
     },
     {
         "accession": "KCEPT078DUA",
-        "age": "67",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Male",
@@ -237,8 +199,6 @@
     },
     {
         "accession": "KCEPT318AXY",
-        "age": "60",
-        "age_units": "year",
         "alternate_accessions": [],
         "ethnicity": "Non-hispanic",
         "gender": "Female",

@@ -531,35 +531,31 @@ class PatientComponent extends React.Component {
     render() {
         const { cartControls } = this.props;
         const result = this.props.context;
-        const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
-        const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
+        let age = result.diagnosis.age;
+        const hasAge = (age != "Unknown") ? true : false;       
+        const ageUnit = (result.diagnosis.age_unit && hasAge && age != "90 or above") ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
-          <li>
-              <div className="clearfix">
-                  <PickerActions {...this.props} />
-                  <div className="pull-right search-meta">
-                      <p className="type meta-title">Patient</p>
-                      <p className="type">{` ${result.accession}`}</p>
-                      <Status item={result.status} badgeSize="small" css="result-table__status" />
-                      {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                  </div>
-                  <div className="accession">
-                      <a href={result['@id']}>
-                          {`${result.accession} (`}
-                          {`${age}${ageUnits} )`}
-                      </a>
-                  </div>
-                  <div className="data-row">
-                      <div><strong>Gender: </strong>{result.gender}</div>
-                      <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
-                      <div><strong>Race: </strong>{result.race}</div>
-                  </div>
-                    {cartControls ?
-                        <div className="result-item__cart-control">
-                            <CartToggle element={result} />
-                        </div>
-                        : null}
+            <li>
+                <div className="clearfix">
+                    <PickerActions {...this.props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Patient</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {`${result.accession}`}
+                            {hasAge &&`(${age}${ageUnit})`}
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        <div><strong>Gender: </strong>{result.gender}</div>
+                        <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
+                        <div><strong>Race: </strong>{result.race}</div>
+                    </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
@@ -2391,4 +2387,6 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
+
 

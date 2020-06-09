@@ -91,6 +91,8 @@ class Patient extends React.Component {
       { id: <i>{context.accession}</i> },
     ];
     const crumbsReleased = (context.status === 'released');
+    const ageUnit = (context.diagnosis.age_unit && context.diagnosis.age != "90 or above" && context.diagnosis.age != "Unknown") ? ` ${context.diagnosis.age_unit}` : '';
+
     let hasLabs = false;
     let hasVitals = false;
     let hasPath = false;
@@ -138,7 +140,7 @@ class Patient extends React.Component {
       <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
     );
     const radiationPanelBody = (
-      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis_date} death_date={context.death_date}></Radiation>
+      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Radiation>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -187,14 +189,12 @@ class Patient extends React.Component {
 
               <div data-test="age">
                 <dt>Age at diagnosis</dt>
-                <dd className="sentence-case">
-                  {formatMeasurement(context.age, context.age_units)}
-                </dd>
+                <dd>{`${context.diagnosis.age}${ageUnit}`}</dd>
               </div>
 
               <div data-test="diagnosis_date">
                 <dt>Diagnosis Date</dt>
-                <dd>{context.diagnosis_date}</dd>
+                <dd>{context.diagnosis.diagnosis_date}</dd>
               </div>
 
               <div data-test="last_follow_up_date">
@@ -234,3 +234,5 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
+
