@@ -217,9 +217,14 @@
 
         &:hover {
             background-color: #e0e0e0;
+
+            &:disabled {
+                background-color: #fff;
+            }
         }
 
         &:disabled {
+            cursor: default;
             stroke: #a0a0a0;
             fill: #a0a0a0;
         }
@@ -1123,8 +1128,17 @@ $file-type-colors: (
 }
 
 // Button to lock/unlock cart
-.cart-lock-trigger {
+.btn.cart-lock-trigger {
     width: 85px;
+    color: #000;
+
+    &:disabled {
+        color: #000;
+    }
+
+    .svg-icon {
+        fill: #000;
+    }
 }
 
 // Lock icon in the menu.
