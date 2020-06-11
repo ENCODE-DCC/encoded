@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 29
+* Remove enum *stage* from *relevant_timepoint* property.
+
 ### Schema version 28
 * Updated *representative DNase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *annotation_type*.
 

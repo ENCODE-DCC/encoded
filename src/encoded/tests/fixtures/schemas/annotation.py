@@ -127,3 +127,15 @@ def annotation_27(award, lab):
         'schema_version': '27',
         'annotation_type': 'representative DNase hypersensitivity sites',
     }
+
+
+@pytest.fixture
+def annotation_28(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '28',
+        'relevant_timepoint': '3',
+        'relevant_timepoint_units': 'stage',
+        'notes': 'Lorem ipsum'
+    }

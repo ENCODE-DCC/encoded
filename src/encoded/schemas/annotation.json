@@ -68,7 +68,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "28"
+            "default": "29"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -147,8 +147,7 @@
                 "day",
                 "week",
                 "month",
-                "year",
-                "stage"
+                "year"
             ]
         },
         "relevant_life_stage": {

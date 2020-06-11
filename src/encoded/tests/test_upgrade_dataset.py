@@ -405,3 +405,12 @@ def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
         'reference', upgrade_18_19_reference, current_version='18', target_version='19')
     assert value['schema_version'] == '19'
     assert 'examined_loci' not in value
+
+
+def test_upgrade_annotation_27_to_28(upgrader, annotation_28):
+    value = upgrader.upgrade(
+        'annotation', annotation_28, current_version='28', target_version='29'
+    )
+    assert value['notes'] == 'Lorem ipsum. Removed timepoint metadata: 3 stage'
+    assert 'relevant_timepoint' not in value
+    assert 'relevant_timepoint_units' not in value
