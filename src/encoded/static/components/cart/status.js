@@ -101,7 +101,7 @@ class CartStatusComponent extends React.Component {
             const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
             const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
-            const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cart</button>;
+            const clearCartItem = !locked ? <button key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
             const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
             if (loggedIn) {
                 menuItems.push(
