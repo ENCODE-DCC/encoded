@@ -237,9 +237,9 @@ const highlightOrgan = (e) => {
     }
 };
 
-// Checks to see if "b" (string) is included in "selectedOrgan" (string or list)
-// "checkClass" is used to set an active class on buttons or images based on whether or not they are a selected organ
-const checkClass = (selectedOrgan, b) => ((typeof selectedOrgan === 'string' && selectedOrgan === b) || (typeof selectedOrgan !== 'string' && selectedOrgan.includes(b)));
+// Checks to see if "organ" is included in "selectedOrgan"
+// checkClass is used to set an active class on buttons or images based on whether or not they are selected
+const checkClass = (selectedOrgan, organ) => selectedOrgan.includes(organ);
 
 // The BodyMap component is comprised of several different elements:
 // (1) List of system slims ("central nervous system", "skeletal system", "digestive system")
