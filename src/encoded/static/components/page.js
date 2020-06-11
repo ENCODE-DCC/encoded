@@ -26,12 +26,9 @@ const Page = (props) => {
         );
     }
 
-    // Non-news page; render as title, then content box
+    // Non-news page; only layout displayed
     return (
         <div>
-            <header>
-                <h1 className="page-title">{context.title}</h1>
-            </header>
             <Layout value={context.layout} />
         </div>
     );
