@@ -912,3 +912,63 @@ def test_audit_self_matching_md5sum(testapp, file7):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent matching_md5sum'
                for error in errors_list)
+
+
+def test_audit_incorrect_index(testapp, fastq_index, single_fastq_indexed, base_experiment):
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert 'inconsistent index file' not in (error['category']
+            for error in errors_list)
+    testapp.patch_json(
+        single_fastq_indexed['@id'],
+        {
+            'dataset': base_experiment['@id']
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+               for error in errors_list)
+
+
+def test_audit_mispaired_index(testapp,
+                               fastq_index,
+                               single_fastq_indexed,
+                               second_fastq_indexed,
+                               incorrect_paired_fastq_indexed):
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                single_fastq_indexed['@id'],
+                second_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+               for error in errors_list)
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                incorrect_paired_fastq_indexed['@id'],
+                second_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+            for error in errors_list)
