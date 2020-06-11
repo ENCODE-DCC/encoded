@@ -121,6 +121,53 @@
                 "linkTo": "Biosample"
             }
         },
+        "element_location": {
+            "title": "Element location",
+            "description": "The genomic coordinates specifying the location of the tested element.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "assembly",
+                "chromosome",
+                "start",
+                "end"
+            ],
+            "properties": {
+                "assembly": {
+                    "title": "Mapping assembly",
+                    "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
+                    "type": "string",
+                    "enum": [
+                        "ce11",
+                        "ce10",
+                        "dm6",
+                        "dm3",
+                        "GRCh38",
+                        "hg19",
+                        "mm10",
+                        "mm9"
+                    ]
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                    "type": "string",
+                    "pattern": "^(chr[0-9A-Za-z]+)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate.",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
         "tissue_with_enhancer_activity": {
             "title": "Tissues with enhancer activity",
             "description": "The tissue(s) in which enhancer activity was detected.",

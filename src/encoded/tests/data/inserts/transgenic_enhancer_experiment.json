@@ -13,6 +13,12 @@
             "eye (UBERON:0000970)",
             "limb (UBERON:0002101)"
         ],
+        "element_location": {
+            "assembly": "mm10",
+            "chromosome": "chr7",
+            "start": 5300,
+            "end": 6400
+        },
         "description": "Mouse transgenic enhancer1 experiment",
         "lab": "len-pennacchio",
         "status": "in progress",
@@ -35,6 +41,12 @@
             "heart (UBERON:0000948)",
             "neural tube (UBERON:0001049)"
         ],
+        "element_location": {
+            "assembly": "GRCh38",
+            "chromosome": "chr16",
+            "start": 20000,
+            "end": 21000
+        },
         "description": "Mouse transgenic enhancer2 experiment",
         "lab": "len-pennacchio",
         "status": "in progress",
