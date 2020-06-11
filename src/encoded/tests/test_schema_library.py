@@ -43,7 +43,7 @@ def test_library_adapters(testapp, library, file):
         **library,
         'adapters': [
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'file': file['@id'],
             },
         ]
@@ -53,11 +53,11 @@ def test_library_adapters(testapp, library, file):
         **library,
         'adapters': [
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'sequence': 'GGGGGGCNA',
             },
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'sequence': 'GGGGGGCNAT',
             },
         ]
@@ -67,7 +67,7 @@ def test_library_adapters(testapp, library, file):
         **library,
         'adapters': [
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'file': file['@id'],
                 'sequence': 'GGGGGGCNA',
             },
@@ -78,11 +78,11 @@ def test_library_adapters(testapp, library, file):
         **library,
         'adapters': [
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'file': file['@id'],
             },
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'file': file['@id'],
                 'sequence': 'GGGGGGCNA',
             },
@@ -93,13 +93,35 @@ def test_library_adapters(testapp, library, file):
         **library,
         'adapters': [
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'file': file['@id'],
             },
             {
-                'type': "3' adapter",
+                'type': "read1 3' adapter",
                 'sequence': 'GGGGGGCNA',
             },
         ]
     }
     testapp.post_json('/library', mixed_adapters, status=422)
+
+
+def test_library_adapters_type(testapp, library, file):
+    adapters = {
+        **library,
+        'adapters': [
+            {
+                'type': "read1 3' adapter",
+                'file': file['@id'],
+            },
+        ]
+    }
+    testapp.post_json('/library', adapters, status=201)
+    adapters_missing_type = {
+        **library,
+        'adapters': [
+            {
+                'sequence': 'GGGGGGCNA',
+            }
+        ]
+    }
+    testapp.post_json('/library', adapters_missing_type, status=422)

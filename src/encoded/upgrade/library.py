@@ -247,3 +247,16 @@ def library_11_12(value, system):
             if 'chemical (HindIII restriction)' not in frag_methods:
                 frag_methods.append('chemical (HindIII restriction)')
             value['fragmentation_methods'] = frag_methods
+
+
+@upgrade_step('library', '12', '13')
+def library_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5297
+    if 'adapters' in value:
+        for adapter in value['adapters']:
+            if 'type' in adapter:
+                if adapter['type'] == '5\' adapter': adapter['type'] = 'read1 5\' adapter'
+                if adapter['type'] == '3\' adapter': adapter['type'] = 'read1 3\' adapter'
+            else:
+                adapter['type'] = 'unspecified adapter'
+

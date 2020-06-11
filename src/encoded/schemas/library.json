@@ -44,7 +44,7 @@
                     "properties": {
                         "adapters": {
                             "items": {
-                                "required": ["file"],
+                                "required": ["file", "type"],
                                 "not": {
                                     "required": ["sequence"]
                                 }
@@ -56,7 +56,7 @@
                     "properties": {
                         "adapters": {
                             "items": {
-                                "required": ["sequence"],
+                                "required": ["sequence", "type"],
                                 "not": {
                                     "required": ["file"]
                                 }
@@ -69,7 +69,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         },
         "accession": {
             "accessionType": "LB"
@@ -480,11 +480,24 @@
                 "properties": {
                     "type": {
                         "title": "Adapter type",
-                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be feed to a pipeline.",
+                        "description": "Information (type or name) for adapter(s) specified in the adapter file. This info will be used to identify how the adapter file should be fed to a pipeline.",
                         "type": "string",
-                        "enum": [
-                            "5' adapter",
-                            "3' adapter"
+                        "oneOf": [
+                            {
+                                "enum": [
+                                    "read1 5' adapter",
+                                    "read2 5' adapter",
+                                    "read1 3' adapter",
+                                    "read2 3' adapter"
+                                ]
+                            },
+                            {
+                                "comment": "Adapters lacking end and read information, not for new submissions.",
+                                "permissions": "import_items",
+                                "enum": [
+                                    "unspecified adapter"
+                                ]
+                            }
                         ]
                     },
                     "file": {

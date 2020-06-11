@@ -78,3 +78,10 @@ def test_library_upgrade_11_to_12(upgrader, library_schema_11a, library_schema_1
     assert 'chemical (DpnII restriction)' in value['fragmentation_methods']
     assert 'chemical (HindIII restriction)' in value['fragmentation_methods']
     assert 'chemical (HindIII/DpnII restriction)' not in value['fragmentation_methods']
+
+
+def test_library_upgrade_12_to_13(upgrader, library_schema_12):
+    value = upgrader.upgrade('library', library_schema_12, target_version='13')
+    assert value['schema_version'] == '13'
+    assert value['adapters'][0]['type'] == 'read1 3\' adapter'
+    assert value['adapters'][1]['type'] == 'unspecified adapter'
