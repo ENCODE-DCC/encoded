@@ -98,27 +98,97 @@ from time import sleep
 
 from difflib import Differ
 from os.path import expanduser
+from datetime import datetime
 
 import boto3
 
 
 # AWS/EC2 - Deploy Cloud Config
-def _tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
-    tags = [
-        {'Key': 'Name', 'Value': tag_data['name']},
-        {'Key': 'branch', 'Value': tag_data['branch']},
-        {'Key': 'commit', 'Value': tag_data['commit']},
-        {'Key': 'started_by', 'Value': tag_data['username']},
-    ]
+def _tag_ec2_instance(
+        instance,
+        tag_data,
+        elasticsearch,
+        cluster_name,
+        image_id,
+        role='demo',
+        profile_name='default',
+        dry_run=False,
+        arm_arch=False,
+        cluster_master=False,
+    ):
+    # Defaults to demo development
+    tags_dict = {
+        # Org
+        'project': 'encoded',
+        'section': 'app',
+        'account': 'cherry-lab',
+        'started_by': tag_data['username'],
+        # Instance
+        'Name': tag_data['name'],
+        'arch': 'x86_64',
+        'branch': tag_data['branch'],
+        'commit': tag_data['commit'],
+        'elasticsearch': 'no',
+        'elasticsearch_head': 'no',
+        'ec_cluster_name': 'single', 
+        'lcl_deploy_datetime': str(datetime.today()),
+        'utc_deploy_datetime': str(datetime.utcnow()),
+        # Devops
+        'auto_shutdown': 'true',
+        'auto_resize': 'c5.4xlarge',
+        'elastic_ip_swtich_datatime': 'na',
+        'Role': 'encd',
+        # User: User editable tags for personal use.
+        'detailA': 'notused',
+        'detailB': 'notused',
+        'detailC': 'notused',
+    }
+    if profile_name == 'default': 
+        if role == 'rc':
+            tags_dict['Role'] += '-new-rc'
+            tags_dict['section'] += '-rc'
+            tags_dict['ec_cluster_name'] = cluster_name
+            tags_dict['auto_shutdown'] = 'false'
+            tags_dict['auto_resize'] = 'na'
+        elif role == 'test':
+            tags_dict['Role'] += '-new-test'
+            tags_dict['section'] += '-test'
+            tags_dict['ec_cluster_name'] = cluster_name
+            tags_dict['auto_shutdown'] = 'false'
+            tags_dict['auto_resize'] = 'na'
+            tags_dict['elastic_ip_swtich_datatime'] = 'pending'
+        elif tag_data['is_qa_demo']:
+            tags_dict['Role'] += '-qa'
+            tags_dict['section'] += '-qa'
+        else:
+            tags_dict['Role'] += '-dev'
+            tags_dict['section'] += '-dev'
+    elif profile_name == 'production':
+        if role == 'candidate':
+            tags_dict['Role'] += '-new-prod'
+            tags_dict['section'] += '-prod'
+            tags_dict['ec_cluster_name'] = cluster_name
+            tags_dict['auto_shutdown'] = 'false'
+            tags_dict['auto_resize'] = 'na'
+            tags_dict['elastic_ip_swtich_datatime'] = 'pending'
     if elasticsearch:
-        tags.append({'Key': 'elasticsearch', 'Value': 'yes'})
-        # This if for integration with nagios server.
-        # Only used on production.
-        tags.append({'Key': 'Role', 'Value': 'data'})
-    if cluster_name is not None:
-        tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
-    instance.create_tags(Tags=tags)
-    return instance
+        # the role tags for data machines are used for nagios monitoring
+        tags_dict['Role'] += '-data'
+        tags_dict['elasticsearch'] = 'yes'
+        tags_dict['auto_resize'] = 'na'
+        tags_dict['elastic_ip_swtich_datatime'] = 'na'
+        if cluster_master:
+            tags_dict['elasticsearch_head'] += 'yes'
+            tags_dict['Role'] += '-datahead'
+    if arm_arch:
+        tags_dict['arch'] = 'arm'
+    # Create tags list
+    tags = []
+    for key, val in tags_dict.items():
+        tags.append({'Key': key, 'Value': val})
+    if not dry_run and instance:
+        instance.create_tags(Tags=tags)
+    return tags, tags_dict
 
 
 def _wait_and_tag_instances(
@@ -126,6 +196,7 @@ def _wait_and_tag_instances(
         run_args,
         instances_tag_data,
         instances,
+        image_id,
         cluster_master=False
 ):
     tmp_name = instances_tag_data['name']
@@ -181,6 +252,11 @@ def _wait_and_tag_instances(
             instance, instances_tag_data,
             (main_args.es_wait or main_args.es_elect),
             main_args.cluster_name,
+            role=main_args.role,
+            profile_name=main_args.profile_name,
+            arm_arch=main_args.arm_image_id,
+            image_id=image_id,
+            cluster_master=cluster_master,
         )
         # Create return info
         instances_info[info_type] = {
@@ -306,6 +382,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
         'name': main_args.name,
         'username': None,
         'build_type': build_type_template_name,
+        'is_qa_demo': main_args.is_qa_demo,
     }
     instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
     # check if commit is a tag first then branch
@@ -655,6 +732,19 @@ def main():
                 print(line)
         print('\ninstances_tag_data', instances_tag_data)
         print('\nis_tag:', is_tag, ', is_branch:', is_branch)
+        print('\nInstance Tags:')
+        tags, tags_dict = _tag_ec2_instance(
+            None, instances_tag_data,
+            (main_args.es_wait or main_args.es_elect),
+            main_args.cluster_name,
+            role=main_args.role,
+            profile_name=main_args.profile_name,
+            dry_run=True,
+            arm_arch=main_args.arm_image_id,
+            image_id=main_args.image_id,
+        )
+        for key, val in tags_dict.items():
+            print(f"{key:20}:'{val}'")
         print('Dry Run')
         sys.exit(0)
     # AWS - Below
@@ -681,7 +771,13 @@ def main():
         },
         KeyName=run_args['key-pair-name'],
     )
-    instances_info = _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
+    instances_info = _wait_and_tag_instances(
+        main_args,
+        run_args,
+        instances_tag_data,
+        instances,
+        main_args.image_id,
+    )
     # Create aws es_wait frontend instance
     if main_args.es_wait and run_args.get('master_user_data'):
         instances = ec2_client.create_instances(
@@ -707,6 +803,7 @@ def main():
                 run_args,
                 instances_tag_data,
                 instances,
+                main_args.eshead_image_id,
                 cluster_master=True,
             )
         )
@@ -848,6 +945,7 @@ def _parse_args():
         dest='role',
         help="Set role"
     )
+    parser.add_argument('--is-qa-demo', action='store_true', help="Flagged as qa demo")
     parser.add_argument(
         '--git-repo',
         default='https://github.com/ENCODE-DCC/encoded.git',
@@ -957,6 +1055,11 @@ def _parse_args():
         help=('Demo, Frontend, and es data node override default image ami')
     )
     parser.add_argument(
+        '--arm-image-id',
+        action='store_true',
+        help=('Override default image ami for demo to use arm')
+    )
+    parser.add_argument(
         '--eshead-image-id',
         help=('ES head node override default image ami')
     )
@@ -984,6 +1087,7 @@ def _parse_args():
     ami_map = {
         # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
         'default': 'ami-0d1cd67c26f5fca19',
+        'arm_default': 'ami-003b90277095b7a42',
 
         # Private AMIs: Add comments to each build
 
@@ -1048,6 +1152,8 @@ def _parse_args():
                     args.image_id = ami_map['frontend']
         else:
             args.image_id = ami_map['demo']
+    elif args.arm_image_id:
+        args.image_id = ami_map['arm_default']
     else:
         args.image_id = ami_map['default']
     # Aws instance size.  If instance type is not specified, choose based on build type
@@ -1057,6 +1163,9 @@ def _parse_args():
             args.instance_type = 'm5.xlarge'
             # Head node
             args.eshead_instance_type = 'm5.xlarge'
+        elif args.arm_image_id:
+            # Type/Size for arm architecture
+            args.instance_type = 'm6g.4xlarge'
         else:
             # frontend
             args.instance_type = 'c5.9xlarge'
@@ -1126,6 +1235,9 @@ def _parse_args():
         args.branch = subprocess.check_output(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
         ).decode('utf-8').strip()
+    # arm arch only available on demo
+    if not args.role == 'demo' and args.arm_image_id:
+        raise ValueError('Arm architecture is only available on demos')
     return args
 
 
