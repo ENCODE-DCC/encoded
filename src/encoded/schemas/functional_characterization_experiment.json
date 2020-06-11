@@ -104,7 +104,7 @@
     "properties": {
         "schema_version": {
 
-            "default": "5"
+            "default": "6"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -219,21 +219,10 @@
             "title": "Plasmids library type",
             "description": "The purpose of a pooled clone sequencing experiment.",
             "type": "string",
-            "oneOf": [
-                {
-                    "enum": [
-                        "elements cloning",
-                        "elements mapping",
-                        "gRNA cloning"
-                    ]
-                },
-                {
-                    "comment": "Temporary choice for the requirement of this property.",
-                    "permission": "import_items",
-                    "enum": [
-                        "other"
-                    ]
-                }
+            "enum": [
+                "elements cloning",
+                "elements mapping",
+                "gRNA cloning"
             ]
         },
         "examined_loci": {
