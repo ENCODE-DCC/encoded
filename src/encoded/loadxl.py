@@ -80,6 +80,7 @@ ORDER = [
     'chip_peak_enrichment_quality_metric',
     'chip_replication_quality_metric',
     'chipseq_filter_quality_metric',
+    'dnase_footprinting_quality_metric',
     'micro_rna_quantification_quality_metric',
     'micro_rna_mapping_quality_metric',
     'long_read_rna_mapping_quality_metric',
@@ -124,6 +125,7 @@ IS_ATTACHMENT = [
     'tss_enrichment_plot',
     'fragment_length_distribution_plot',
     'peak_width_distribution_plot',
+    'dispersion_model',
 ]
 
 

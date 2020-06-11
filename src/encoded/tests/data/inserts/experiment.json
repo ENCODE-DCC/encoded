@@ -1003,5 +1003,18 @@
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "574dba3f-4f38-4acd-9378-a2e1498b671f"
+    },
+    {
+        "_test": "DNase test",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "status": "released",
+        "date_submitted": "2019-05-03",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "award": "U54HG007010",
+        "assay_term_name": "DNase-seq",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "date_released": "2020-01-04",
+        "accession": "ENCSR604DNT",
+        "uuid": "8550abc8-d594-4a56-9b1f-60bbb3911908"
     }
 ]
