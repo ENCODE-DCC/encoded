@@ -230,7 +230,7 @@ def sescc_stem_cell_matrix(context, request):
         },
         response_fields=[
             TitleResponseField(
-                title='SESCC Stem Cell Development Matrix'
+                title='Stem Cell Development Matrix (SESCC)'
             ),
             TypeResponseField(
                 at_type=['SESCCStemCellMatrix']
@@ -317,7 +317,7 @@ def entex_matrix(context, request):
         },
         response_fields=[
             TitleResponseField(
-                title='ENTEx Matrix'
+                title='Epigenomes from four individuals (ENTEx)'
             ),
             TypeResponseField(
                 at_type=['EntexMatrix']
