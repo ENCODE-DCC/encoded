@@ -237,6 +237,10 @@ const highlightOrgan = (e) => {
     }
 };
 
+// Checks to see if "b" (string) is included in "selectedOrgan" (string or list)
+// "checkClass" is used to set an active class on buttons or images based on whether or not they are a selected organ
+const checkClass = (selectedOrgan, b) => ((typeof selectedOrgan === 'string' && selectedOrgan === b) || (typeof selectedOrgan !== 'string' && selectedOrgan.includes(b)));
+
 // The BodyMap component is comprised of several different elements:
 // (1) List of system slims ("central nervous system", "skeletal system", "digestive system")
 // (2) Diagram of body in svg format with selectable organs
@@ -617,7 +621,7 @@ class BodyMap extends React.Component {
                         {Object.keys(SystemsList).map(b =>
                             <li key={b}>
                                 <button
-                                    className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
+                                    className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
                                     id={b}
                                     onClick={e => this.chooseOrgan(e)}
                                     onMouseEnter={e => highlightOrgan(e)}
@@ -645,7 +649,7 @@ class BodyMap extends React.Component {
                             {Object.keys(BodyList).map(b =>
                                 <li key={b}>
                                     <button
-                                        className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
+                                        className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
                                         onClick={e => this.chooseOrgan(e)}
                                         onMouseEnter={e => highlightOrgan(e)}
                                         onMouseLeave={unHighlightOrgan}
@@ -660,7 +664,7 @@ class BodyMap extends React.Component {
                     <div className="body-inset-container">
                         {Object.keys(CellsList).map(image =>
                             <button
-                                className={`body-inset ${image.replace(' ', '-')} ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === image) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(image))) ? 'active' : ''}`}
+                                className={`body-inset ${image.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, image) ? 'active' : ''}`}
                                 id={image}
                                 onClick={e => this.chooseOrgan(e)}
                                 onMouseEnter={e => highlightOrgan(e)}
@@ -681,7 +685,7 @@ class BodyMap extends React.Component {
                             {Object.keys(CellsList).map(b =>
                                 <li key={b}>
                                     <button
-                                        className={`body-list-element ${b.replace(' ', '-')} ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
+                                        className={`body-list-element ${b.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
                                         id={b}
                                         onClick={e => this.chooseOrgan(e)}
                                         onMouseEnter={e => highlightOrgan(e)}

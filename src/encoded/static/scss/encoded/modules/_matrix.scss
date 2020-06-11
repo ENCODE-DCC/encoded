@@ -3,9 +3,6 @@ $col-category-header-height: 200px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
 
-$Homo-sapiens: #63326E;
-$Mus-musculus: #3D518C;
-
 // Add a shadow to the right edge of the first column's cells.
 @mixin matrix-freeze-shadow {
     content: "";
@@ -27,7 +24,7 @@ $Mus-musculus: #3D518C;
     &.expanded {
         max-width: 675px;
         position: absolute;
-        z-index: 99999;
+        z-index: 9999;
         background: white;
         left: 0;
         right: 0;
@@ -61,7 +58,7 @@ $Mus-musculus: #3D518C;
             display: inline;
             &:after {
                 content: " ";
-                word-spacing: 0em;
+                word-spacing: 0;
                 letter-spacing: 1em;
                 background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=) center center no-repeat;
             }
@@ -104,15 +101,19 @@ $Mus-musculus: #3D518C;
     }
     .body-facet :nth-child(1) {
         order: 1;
+        -webkit-order: 1;
     }
     .body-facet :nth-child(2) {
         order: 2;
+        -webkit-order: 2;
     }
     .body-facet :nth-child(3) {
         order: 4;
+        -webkit-order: 4;
     }
     .body-facet :nth-child(4) {
         order: 3;
+        -webkit-order: 3;
     }
     .clickable-diagram-container {
         .body-list-inner {
@@ -130,6 +131,7 @@ $Mus-musculus: #3D518C;
     top: 43px;
     left: 5px;
 }
+
 .expand-arrows {
     fill: $Homo-sapiens;
     @media screen and (max-width: $screen-sm-min) {
@@ -142,6 +144,7 @@ $Mus-musculus: #3D518C;
         top: 3px;
     }
 }
+
 .collapse-arrows {
     fill: white;
     top: 2px;
@@ -155,6 +158,7 @@ $Mus-musculus: #3D518C;
         top: 3px;
     }
 }
+
 .body-map-expander, .body-map-collapser {
     background: $Homo-sapiens;
     text-align: center;

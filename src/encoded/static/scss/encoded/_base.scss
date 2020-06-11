@@ -16,6 +16,12 @@ $std-href-color:               #428bca;
 $site-font:                    'Helvetica Neue', sans-serif;
 $brand-font:                   'Helvetica Neue', sans-serif;
 
+$Homo-sapiens:                  #63326E;
+$Mus-musculus:                  #3D518C;
+$Caenorhabditis-elegans:        #77878B;
+$Drosophila-melanogaster:       #335C67;
+
+
 // Pass value with CSS units and get just the value back
 @function strip-units($value) {
     @return $value / ($value * 0 + 1);

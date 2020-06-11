@@ -25,11 +25,7 @@ const SUB_CATEGORY_SHORT_SIZE = 10;
 
 // Organisms for which we display tabs
 // Names for the tabs are hard-coded because we want to display disabled tabs for tabs for which there are no results
-// Mapping of shortened organism name and full scientific organism name is used for human and mouse thumbnail images
-const organismTerms = {
-    'Homo sapiens': 'human',
-    'Mus musculus': 'mouse',
-};
+const organismTerms = ['Homo sapiens', 'Mus musculus'];
 
 // Reference epigenome category properties we use.
 const ROW_CATEGORY = 'biosample_ontology.classification';
@@ -426,12 +422,14 @@ MatrixHeader.contextTypes = {
 };
 
 const ClickableThumbnail = (props) => {
-    const expandedThumbnail = props.expandedThumbnail;
-    const expandThumbnail = props.expandThumbnail;
+    // "isThumbnailExpanded" checks if the pop-up should be displayed
+    const isThumbnailExpanded = props.isThumbnailExpanded;
+    // "toggleThumbnail" toggles whether or not the pop-up is displayed
+    const toggleThumbnail = props.toggleThumbnail;
     return (
         <button
-            className={`body-image-thumbnail ${expandedThumbnail ? 'expanded' : 'collapsed'}`}
-            onClick={() => expandThumbnail()}
+            className={`body-image-thumbnail ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}
+            onClick={() => toggleThumbnail()}
         >
             <div className="body-map-expander">Filter results by body diagram</div>
             {svgIcon('expandArrows')}
@@ -456,8 +454,8 @@ const ClickableThumbnail = (props) => {
 };
 
 ClickableThumbnail.propTypes = {
-    expandedThumbnail: PropTypes.bool.isRequired,
-    expandThumbnail: PropTypes.func.isRequired,
+    isThumbnailExpanded: PropTypes.bool.isRequired,
+    toggleThumbnail: PropTypes.func.isRequired,
 };
 
 const SelectedFilters = (props) => {
@@ -487,13 +485,13 @@ SelectedFilters.propTypes = {
 };
 
 const BodyMapModal = (props) => {
-    const expandedThumbnail = props.expandedThumbnail;
-    const expandThumbnail = props.expandThumbnail;
+    const isThumbnailExpanded = props.isThumbnailExpanded;
+    const toggleThumbnail = props.toggleThumbnail;
     const context = props.context;
     return (
         <div className="modal" style={{ display: 'block' }}>
-            <div className={`epigenome-body-map-container ${expandedThumbnail ? 'expanded' : 'collapsed'}`}>
-                <button className="collapse-body-map" onClick={() => expandThumbnail()}>
+            <div className={`epigenome-body-map-container ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}>
+                <button className="collapse-body-map" onClick={() => toggleThumbnail()}>
                     {svgIcon('collapseArrows')}
                     <div className="body-map-collapser">Hide body diagram</div>
                 </button>
@@ -507,8 +505,8 @@ const BodyMapModal = (props) => {
 };
 
 BodyMapModal.propTypes = {
-    expandedThumbnail: PropTypes.bool.isRequired,
-    expandThumbnail: PropTypes.func.isRequired,
+    isThumbnailExpanded: PropTypes.bool.isRequired,
+    toggleThumbnail: PropTypes.func.isRequired,
     context: PropTypes.object.isRequired,
 };
 
@@ -531,7 +529,7 @@ class MatrixPresentation extends React.Component {
         this.handleOnScroll = this.handleOnScroll.bind(this);
         this.handleScrollIndicator = this.handleScrollIndicator.bind(this);
         this.handleTabClick = this.handleTabClick.bind(this);
-        this.expandThumbnail = this.expandThumbnail.bind(this);
+        this.toggleThumbnail = this.toggleThumbnail.bind(this);
         this.clearOrgans = this.clearOrgans.bind(this);
 
         // Determine whether biosample classifications have been specified in the query string to
@@ -551,7 +549,7 @@ class MatrixPresentation extends React.Component {
             scrolledRight: false,
             /** True to view the organism chooser modal; only set to true when mounted */
             organismChooserVisible: false,
-            expandedThumbnail: false,
+            isThumbnailExpanded: false,
         };
 
         this.initialSelectedTab = this.getInitialSelectedTab();
@@ -577,7 +575,7 @@ class MatrixPresentation extends React.Component {
             // display.
             organismChooserVisible: this.initialSelectedTab === null,
             // Check if modal should be open
-            expandedThumbnail: this.context.location_href.includes('#openModal'),
+            isThumbnailExpanded: this.context.location_href.includes('#openModal'),
         });
     }
 
@@ -620,8 +618,8 @@ class MatrixPresentation extends React.Component {
         // We use "organisms" to determine if a tab should be disabled or not
         const organisms = this.getAvailableOrganisms();
         const organismTabs = {};
-        Object.keys(organismTerms).forEach((organismName) => {
-            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismTerms[organismName]}.png`} alt={organismName} /><span>{organismName}</span></div>;
+        organismTerms.forEach((organismName) => {
+            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.png`} alt={organismName} /><span>{organismName}</span></div>;
         });
         return organismTabs;
     }
@@ -740,9 +738,9 @@ class MatrixPresentation extends React.Component {
         this.context.navigate(`${baseMatrixUrl}?${query.format()}`);
     }
 
-    expandThumbnail() {
+    toggleThumbnail() {
         this.setState(prevState => ({
-            expandedThumbnail: !prevState.expandedThumbnail,
+            isThumbnailExpanded: !prevState.isThumbnailExpanded,
         }));
     }
 
@@ -801,9 +799,9 @@ class MatrixPresentation extends React.Component {
                     <div className="matrix-facet-container">
                         {(this.initialSelectedTab === 'Homo sapiens') ?
                             <React.Fragment>
-                                <ClickableThumbnail expandedThumbnail={this.state.expandedThumbnail} expandThumbnail={this.expandThumbnail} />
-                                {this.state.expandedThumbnail ?
-                                    <BodyMapModal expandedThumbnail={this.state.expandedThumbnail} expandThumbnail={this.expandThumbnail} context={context} />
+                                <ClickableThumbnail isThumbnailExpanded={this.state.isThumbnailExpanded} toggleThumbnail={this.toggleThumbnail} />
+                                {this.state.isThumbnailExpanded ?
+                                    <BodyMapModal isThumbnailExpanded={this.state.isThumbnailExpanded} toggleThumbnail={this.toggleThumbnail} context={context} />
                                 : null}
                             </React.Fragment>
                         : null}

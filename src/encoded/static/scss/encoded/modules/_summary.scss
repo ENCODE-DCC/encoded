@@ -1,8 +1,3 @@
-$Homo-sapiens: #63326E;
-$Mus-musculus: #3D518C;
-$Caenorhabditis-elegans: #77878B;
-$Drosophila-melanogaster: #335C67;
-
 $inset-size: 65px;
 $small-inset-size: 55px;
 $smallest-inset-size: 45px;
@@ -484,26 +479,34 @@ $results-background: #E9E9E9;
 
 .body-facet :nth-child(1) {
     order: 1;
+    -webkit-order: 1;
 }
 .body-facet :nth-child(2) {
     order: 2;
+    -webkit-order: 2;
 }
 .body-facet :nth-child(3) {
     order: 3;
+    -webkit-order: 3;
     @media screen and (max-width: $screen-sm-min) {
         order: 4;
+        -webkit-order: 4;
     }
     @media screen and (max-width: $screen-xs-min) {
         order: 3;
+        -webkit-order: 3;
     }
 }
 .body-facet :nth-child(4) {
     order: 4;
+    -webkit-order: 4;
     @media screen and (max-width: $screen-sm-min) {
         order: 3;
+        -webkit-order: 3;
     }
     @media screen and (max-width: $screen-xs-min) {
         order: 4;
+        -webkit-order: 4;
     }
 }
 

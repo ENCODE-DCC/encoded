@@ -264,6 +264,10 @@ TabPanel.defaultProps = {
 };
 
 
+// Check to see if child of tab has "disabled" class
+const checkIfDisabled = (input) => input.children && input.children.props && input.children.props.className && input.children.props.className.includes('disabled');
+
+
 class TabItem extends React.Component {
     constructor(props) {
         super(props);
@@ -272,14 +276,14 @@ class TabItem extends React.Component {
     }
 
     clickHandler() {
-        if (!(this.props.children && this.props.children.props && this.props.children.props.className && this.props.children.props.className.includes('disabled'))) {
+        if (!checkIfDisabled(this.props)) {
             this.props.handleClick(this.props.tab);
         }
     }
 
     render() {
         const tab = this.props.tab;
-        const isDisabled = this.props.children && this.props.children.props && this.props.children.props.className && this.props.children.props.className.includes('disabled');
+        const isDisabled = checkIfDisabled(this.props);
         return (
             <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab" disabled={isDisabled}>
                 {this.props.children}
