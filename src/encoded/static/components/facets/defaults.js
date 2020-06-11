@@ -943,6 +943,8 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     // For straightforward numerical facets, just sort by value
     const processedTerms = significantTerms.every(numericalTest) ? _.sortBy(significantTerms, obj => obj.key) : significantTerms;
 
+    const disabledCss = filters => filters.some(f => f.field.indexOf('!') !== -1 && f.term.trim() === '*');
+
     // Filter the list of facet terms to those allowed by the optional typeahead field. Memoize the
     // resulting list to avoid needlessly rerendering the facet-term list that can get very long.
     const filteredTerms = React.useMemo(() => {
@@ -1017,31 +1019,33 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         <div className="facet">
             <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
             <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
-            {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-            <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
-                <ul onScroll={handleScroll} ref={scrollingElement}>
-                    {(filteredTerms.length === 0) ?
-                        <div className="searcherror">
-                            Try a different search term for results.
-                        </div>
-                    :
-                        <React.Fragment>
-                            <FacetTerms
-                                facet={facet}
-                                results={results}
-                                mode={mode}
-                                relevantFilters={relevantFilters}
-                                pathname={pathname}
-                                queryString={queryString}
-                                filteredTerms={filteredTerms}
-                                onFilter={onFilter}
-                                allowNegation={allowNegation}
-                            />
-                            <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
-                            <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
-                        </React.Fragment>
-                    }
-                </ul>
+            <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
+                {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
+                <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
+                    <ul onScroll={handleScroll} ref={scrollingElement}>
+                        {(filteredTerms.length === 0) ?
+                            <div className="searcherror">
+                                Try a different search term for results.
+                            </div>
+                        :
+                            <React.Fragment>
+                                <FacetTerms
+                                    facet={facet}
+                                    results={results}
+                                    mode={mode}
+                                    relevantFilters={relevantFilters}
+                                    pathname={pathname}
+                                    queryString={queryString}
+                                    filteredTerms={filteredTerms}
+                                    onFilter={onFilter}
+                                    allowNegation={allowNegation}
+                                />
+                                <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
+                                <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
+                            </React.Fragment>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     );

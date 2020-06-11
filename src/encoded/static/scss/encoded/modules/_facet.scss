@@ -165,6 +165,13 @@ fieldset.facet {
     }
 }
 
+.facet-list-disabled {
+    background-color: ghostwhite;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 9999;
+}
+
 .facet-list {
     margin: 0;
 }
