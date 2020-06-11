@@ -612,3 +612,11 @@ def annotation_28_29(value, system):
         else:
             value['notes'] = info
     return
+
+
+@upgrade_step('experiment', '28', '29')
+def experiment_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5343
+    if value.get('internal_status') in ['requires lab review', 'unrunnable']:
+        value['internal_status'] = 'unreviewed'
+    return

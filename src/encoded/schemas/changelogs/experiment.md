@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 29
+
+* The *internal_status* enum was adjusted to remove *requires lab review* and *unrunnable*; *pre-pipeline review* and *post-pipeline review* were added.
+
 ### Minor changes since schema version 28
 
 * Removed FCC *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen*, and *pooled clone sequencing* from Experiment schema. They are to be used only in FunctionalCharacterizationExperiment objects

@@ -414,3 +414,10 @@ def test_upgrade_annotation_27_to_28(upgrader, annotation_28):
     assert value['notes'] == 'Lorem ipsum. Removed timepoint metadata: 3 stage'
     assert 'relevant_timepoint' not in value
     assert 'relevant_timepoint_units' not in value
+
+
+def test_upgrade_experiment_28_to_29(upgrader, experiment_v28):
+    assert experiment_v28['schema_version'] == '28'
+    value = upgrader.upgrade('experiment', experiment_v28, current_version='28', target_version='29')
+    assert experiment_v28['schema_version'] == '29'
+    assert value['internal_status'] == 'unreviewed'
