@@ -30,6 +30,10 @@
         {
             "$ref": "mixins.json#/accessioned_status"
         },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
+
+
         {
             "$ref": "mixins.json#/attribution"
         },
@@ -150,7 +154,28 @@
                 "functional genomics assay",
                 "functional characterization assay"
             ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External resources",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+                "type":  "string",
+                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
+            }
+        },
+        "documents": {
+            "description": "Protocols or other documents that describe the assay or the results (not data files)."
         }
+        
+        
+
     },
     "facets": {
         "status": {
