@@ -83,7 +83,7 @@ class SurgeryChart extends React.Component {
         if (deceasedDate != null) {
             trace2 = {
                 x: [deceasedDate],
-                y: ["Deceased date"],
+                y: ["  "],
                 mode: 'markers+text',
                 type: 'scatter',
                 name: '',
@@ -103,7 +103,7 @@ class SurgeryChart extends React.Component {
         } else if (lastFollowUpDate!= null) {
             trace2 = {
                 x: [lastFollowUpDate],
-                y: ["Date of last follow up"],
+                y: ["  "],
                 mode: 'markers+text',
                 type: 'scatter',
                 name: '',
@@ -213,7 +213,7 @@ class SurgeryChart extends React.Component {
         if (diagnosisDate != null) {
             trace1 = {
                 x: [diagnosisDate],
-                y: ["Date of diagnosis"],
+                y: [" "],
                 mode: 'markers+text',
                 type: 'scatter',
                 name: '',
