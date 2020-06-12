@@ -123,7 +123,7 @@ for (let i = 0; i < ganttData.length; i++) {
         y: [yLabels.indexOf(ganttData[i].id)],
         xaxis: 'x2',
         mode: 'markers',
-        marker: {color: '29A2CC',
+        marker: {color: '#29A2CC',
                  size: 1
                 },
         type: 'scatter',

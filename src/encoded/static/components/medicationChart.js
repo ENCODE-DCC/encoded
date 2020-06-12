@@ -94,13 +94,13 @@ class MedicationChart extends React.Component {
         mode: 'markers+text',
         marker: {
           symbol: 'triangle-right',
-          color: 'red',
-          size: 16
+          color: '#D31E1E',
+          size: 15
         },
         text: 'Diagnosis date',
         textfont: {
           family: "Georgia",
-          size: 16,
+          size: 15,
           color: "black"
         },
         textposition: 'right',
@@ -128,13 +128,13 @@ class MedicationChart extends React.Component {
         mode: 'markers+text',
         marker: {
           symbol: 'triangle-left',
-          color: 'red',
-          size: 16
+          color: '#D31E1E',
+          size: 15
         },
         text: 'Deceaced date',
         textfont: {
           family: "Georgia",
-          size: 16,
+          size: 15,
           color: "black"
         },
         textposition: 'left',
@@ -155,13 +155,13 @@ class MedicationChart extends React.Component {
         mode: 'markers+text',
         marker: {
           symbol: 'triangle-left',
-          color: 'red',
-          size: 16
+          color: '#D31E1E',
+          size: 15
         },
         text: 'Date of last follow up',
         textfont: {
           family: "Georgia",
-          size: 16,
+          size: 15,
           color: "black"
         },
         textposition: 'left',
@@ -207,7 +207,7 @@ class MedicationChart extends React.Component {
       font: {
         family: "Georgia",
         fontweight: "bold",
-        size: 16,
+        size: 15,
       },
       margin: {
         l: 150,

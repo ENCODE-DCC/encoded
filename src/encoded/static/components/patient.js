@@ -133,7 +133,7 @@ class Patient extends React.Component {
       <PatientChart chartId="vitalChart" data={context.vitals} ></PatientChart>
     );
     const surgeryPanelBody = (
-      <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time"></SurgeryChart>
+      <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></SurgeryChart>
     );
 
     const medicationPanelBody = (
