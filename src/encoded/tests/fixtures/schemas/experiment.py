@@ -714,7 +714,7 @@ def experiment_v28(root, experiment):
     properties = item.properties.copy()
     properties.update({
             'schema_version': '28',
-            'internal_status': 'pipeline_error',
+            'internal_status': 'pipeline error',
             'pipeline_error_detail': 'The pipeline didn\'t work for reasons',
             'notes': 'Insert essential details here'
     })
