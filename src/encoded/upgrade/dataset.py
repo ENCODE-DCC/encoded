@@ -617,6 +617,19 @@ def annotation_28_29(value, system):
 @upgrade_step('experiment', '28', '29')
 def experiment_28_29(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5343
-    if value.get('internal_status') in ['requires lab review', 'unrunnable']:
-        value['internal_status'] = 'unreviewed'
+    unrunnable = f'Previous internal_status claimed this experiment was unrunnable on a pipeline'
+    if 'pipeline_error_detail' in value:
+        error_detail = f'Previous internal_status claimed a pipeline error: {value.get("pipeline_error_detail")}'
+        value.pop('pipeline_error_detail')
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {error_detail}'
+        else:
+            value['notes'] = error_detail
+    if value.get('internal_status') == 'unrunnable':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {unrunnable}'
+        else:
+            value['notes'] = unrunnable
+
+    value['internal_status'] = 'unreviewed'
     return

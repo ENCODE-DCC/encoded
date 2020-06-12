@@ -420,4 +420,6 @@ def test_upgrade_experiment_28_to_29(upgrader, experiment_v28):
     assert experiment_v28['schema_version'] == '28'
     value = upgrader.upgrade('experiment', experiment_v28, current_version='28', target_version='29')
     assert experiment_v28['schema_version'] == '29'
+    assert 'pipeline_error_detail' not in value
+    assert 'Previous internal_status' in value['notes']
     assert value['internal_status'] == 'unreviewed'
