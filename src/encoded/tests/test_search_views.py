@@ -648,7 +648,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     assert 'aggregations' not in r.json
     assert 'facets' in r.json
     assert 'total' in r.json
-    assert r.json['title'] == ''
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['@type'] == ['EntexMatrix']
     assert r.json['@id'] == (
         '/entex-matrix/'
