@@ -91,7 +91,8 @@ class SurgeryChart extends React.Component {
                 hovertemplate: "Deceased date: " + this.props.death_date,
                 textposition: 'left',
                 textfont: {
-                    family:  'Raleway, sans-serif'
+                    family:  'Raleway, sans-serif',
+                    size: 15
                 },
                 marker: { 
                     color: '#D31E1E',
@@ -110,7 +111,8 @@ class SurgeryChart extends React.Component {
                 hovertemplate: "Date of last follow up: " + this.props.last_follow_up_date,
                 textposition: 'left',
                 textfont: {
-                family:  'Raleway, sans-serif'
+                    family:  'Raleway, sans-serif',
+                    size: 15
                 },
                 marker: { 
                 color: '#D31E1E',
@@ -219,7 +221,8 @@ class SurgeryChart extends React.Component {
                 hovertemplate: "Date of diagnosis: " + this.props.diagnosis_date,
                 textposition: 'right',
                 textfont: {
-                    family:  'Raleway, sans-serif'
+                    family:  'Raleway, sans-serif',
+                    size: 15
                 },
                 marker: { 
                     color: '#D31E1E',

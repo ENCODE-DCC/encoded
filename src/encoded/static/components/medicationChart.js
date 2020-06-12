@@ -97,15 +97,14 @@ class MedicationChart extends React.Component {
           color: '#D31E1E',
           size: 15
         },
-        text: 'Diagnosis date',
+        text: 'Date of diagnosis',
         textfont: {
-          family: "Georgia",
-          size: 15,
-          color: "black"
+          family:  'Raleway, sans-serif',
+          size: 15
         },
         textposition: 'right',
         showlegend: false,
-        hovertemplate: "Diagnosis date: " + minDate + "<extra></extra>",
+        hovertemplate: "Date of diagnosis: " + minDate + "<extra></extra>",
         xaxis: 'x2',
       };
       
@@ -133,9 +132,8 @@ class MedicationChart extends React.Component {
         },
         text: 'Deceaced date',
         textfont: {
-          family: "Georgia",
-          size: 15,
-          color: "black"
+          family:  'Raleway, sans-serif',
+          size: 15
         },
         textposition: 'left',
         showlegend: false,
@@ -160,9 +158,8 @@ class MedicationChart extends React.Component {
         },
         text: 'Date of last follow up',
         textfont: {
-          family: "Georgia",
-          size: 15,
-          color: "black"
+          family:  'Raleway, sans-serif',
+          size: 15
         },
         textposition: 'left',
         showlegend: false,
