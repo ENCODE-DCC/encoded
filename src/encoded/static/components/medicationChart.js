@@ -84,6 +84,7 @@ class MedicationChart extends React.Component {
 
     if (this.props.diagnosis_date != "Not available") {
       minDateUnix = Date.parse(this.props.diagnosis_date + ' 00:00:00' );
+      minDate = this.unixToDate(minDateUnix);
 
       let trace2 = {};
       trace2 = {
@@ -118,6 +119,7 @@ class MedicationChart extends React.Component {
     if (this.props.death_date != null){
       deceasedDate = new Date(this.props.death_date + ' 00:00:00');
       maxDateUnix = Date.parse(this.props.death_date + ' 00:00:00');
+      maxDate = this.unixToDate(maxDateUnix);
       trace3 = {
         type: 'scatter',
         x: [maxDateUnix],
@@ -144,6 +146,7 @@ class MedicationChart extends React.Component {
     } else if(this.props.last_follow_up_date != "Not available") {
       lastFollowUpDate = new Date(this.props.last_follow_up_date + ' 00:00:00');
       maxDateUnix = Date.parse(this.props.last_follow_up_date + ' 00:00:00');
+      maxDate = this.unixToDate(maxDateUnix);
       trace3 = {
         type: 'scatter',
         x: [maxDateUnix],
