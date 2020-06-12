@@ -81,54 +81,96 @@ class MedicationChart extends React.Component {
       yIndex += 1;
     };
     //for Diagnosis marker:
-    let trace2 = {};
-    trace2 = {
-      type: 'scatter',
-      x: [minDateUnix],
-      y: [0],
-      mode: 'markers+text',
-      marker: {
-        symbol: 'triangle-right',
-        color: 'red',
-        size: 16
-      },
-      text: 'Diagnosis date',
-      textfont: {
-        family: "Georgia",
-        size: 16,
-        color: "black"
-      },
-      textposition: 'right',
-      showlegend: false,
-      hovertemplate: "Diagnosis date: " + minDate + "<extra></extra>",
-      xaxis: 'x2',
-    };
+
+    if (this.props.diagnosis_date != "Not available") {
+      minDateUnix = Date.parse(this.props.diagnosis_date + ' 00:00:00' );
+
+      let trace2 = {};
+      trace2 = {
+        type: 'scatter',
+        x: [minDateUnix],
+        y: [0],
+        mode: 'markers+text',
+        marker: {
+          symbol: 'triangle-right',
+          color: 'red',
+          size: 16
+        },
+        text: 'Diagnosis date',
+        textfont: {
+          family: "Georgia",
+          size: 16,
+          color: "black"
+        },
+        textposition: 'right',
+        showlegend: false,
+        hovertemplate: "Diagnosis date: " + minDate + "<extra></extra>",
+        xaxis: 'x2',
+      };
+      
+      traceData.push(trace2);
+    }
     //for deceaced marker:
     let trace3 = {};
-    trace3 = {
-      type: 'scatter',
-      x: [maxDateUnix],
-      y: [yIndex],
+    let deceasedDate;
+    let lastFollowUpDate;
 
-      mode: 'markers+text',
-      marker: {
-        symbol: 'triangle-left',
-        color: 'red',
-        size: 16
-      },
-      text: 'Deceaced date',
-      textfont: {
-        family: "Georgia",
-        size: 16,
-        color: "black"
-      },
-      textposition: 'left',
-      showlegend: false,
-      hovertemplate: 'Deceased date: ' + maxDate + '<extra></extra>',
-      xaxis: 'x2',
-    };
-    traceData.push(trace2);
-    traceData.push(trace3);
+    if (this.props.death_date != null){
+      deceasedDate = new Date(this.props.death_date + ' 00:00:00');
+      maxDateUnix = Date.parse(this.props.death_date + ' 00:00:00');
+      trace3 = {
+        type: 'scatter',
+        x: [maxDateUnix],
+        y: [yIndex],
+  
+        mode: 'markers+text',
+        marker: {
+          symbol: 'triangle-left',
+          color: 'red',
+          size: 16
+        },
+        text: 'Deceaced date',
+        textfont: {
+          family: "Georgia",
+          size: 16,
+          color: "black"
+        },
+        textposition: 'left',
+        showlegend: false,
+        hovertemplate: 'Deceased date: ' + maxDate + '<extra></extra>',
+        xaxis: 'x2',
+      };
+      traceData.push(trace3);
+    } else if(this.props.last_follow_up_date != "Not available") {
+      lastFollowUpDate = new Date(this.props.last_follow_up_date + ' 00:00:00');
+      maxDateUnix = Date.parse(this.props.last_follow_up_date + ' 00:00:00');
+      trace3 = {
+        type: 'scatter',
+        x: [maxDateUnix],
+        y: [yIndex],
+  
+        mode: 'markers+text',
+        marker: {
+          symbol: 'triangle-left',
+          color: 'red',
+          size: 16
+        },
+        text: 'Date of last follow up',
+        textfont: {
+          family: "Georgia",
+          size: 16,
+          color: "black"
+        },
+        textposition: 'left',
+        showlegend: false,
+        hovertemplate: 'Date of last follow up: ' + maxDate + '<extra></extra>',
+        xaxis: 'x2',
+      };
+      traceData.push(trace3);
+    }
+
+    
+    
     var layout = {
       autosize: true,
       height: yIndex*80,

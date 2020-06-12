@@ -137,7 +137,7 @@ class Patient extends React.Component {
     );
 
     const medicationPanelBody = (
-      <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
+      <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></MedicationChart>
     );
     const radiationPanelBody = (
       <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Radiation>
