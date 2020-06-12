@@ -1538,6 +1538,7 @@ def incorrect_paired_fastq_indexed(testapp, lab, award, experiment, base_replica
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
 def file_fastq_1_atac(testapp, lab, award, ATAC_experiment, replicate_ATAC_seq, platform1):
     item = {
         'dataset': ATAC_experiment['@id'],
