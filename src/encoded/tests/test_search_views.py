@@ -442,7 +442,7 @@ def test_sescc_stem_cell_matrix(workbook, testapp):
     assert res['@id'] == '/sescc-stem-cell-matrix/?type=Experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
-    assert res['title'] == 'SESCC Stem Cell Development Matrix'
+    assert res['title'] == 'Stem Cell Development Matrix (SESCC)'
     assert res['total'] > 0
     assert 'filters' in res
     assert 'matrix' in res
@@ -648,7 +648,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     assert 'aggregations' not in r.json
     assert 'facets' in r.json
     assert 'total' in r.json
-    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['@type'] == ['EntexMatrix']
     assert r.json['@id'] == (
         '/entex-matrix/'
@@ -656,7 +656,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     )
     assert r.json['@context'] == '/terms/'
     assert r.json['notification'] == 'Success'
-    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['total'] >= 4
     assert 'filters' in r.json
     assert 'matrix' in r.json

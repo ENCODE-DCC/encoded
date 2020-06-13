@@ -581,8 +581,12 @@ $row-data-header-width: 200px;
     border-bottom: 1px solid #ccc;
 
     @at-root #{&}__title {
-        display: flex;
-        justify-content: space-between;
+        margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            justify-content: space-between;
+        }
 
         h1 {
             flex: 0 1 auto;
@@ -591,12 +595,22 @@ $row-data-header-width: 200px;
         }
 
         .matrix-tags {
-            flex: 0 1 auto;
+            margin: 20px 0;
+
+            @media screen and (min-width: $screen-sm-min) {
+                margin: 0;
+                flex: 0 1 40%;
+                text-align: right;
+            }
 
             img {
                 display: inline-block;
                 margin-left: 5px;
                 height: 22px;
+            }
+
+            .matrix-description {
+                color: #606060;
             }
         }
     }

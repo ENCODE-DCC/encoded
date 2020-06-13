@@ -471,6 +471,9 @@ const MatrixHeader = ({ context }) => {
                 <h1>{context.title}</h1>
                 <div className="matrix-tags">
                     <MatrixInternalTags context={context} />
+                    <div className="matrix-description">
+                        ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.
+                    </div>
                 </div>
             </div>
             <div className="matrix-header__controls">
