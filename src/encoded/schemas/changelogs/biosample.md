@@ -6,6 +6,7 @@
 * Added *perturbed* calculated property to indicate if the biosample has been perturbed using a treatment or a genetic modification for non-tagging purposes.
 * Added *post_nucleic_acid_delivery_time* and *post_nucleic_acid_delivery_time_units* properties.
 * The *summary* property has been updated to include post nucleic acid delivery time.
+* Added *sample_collection_age* and *sample_collection_age_units* for cases where more than one biosamples are collected from the same human donor at different ages.
 
 ### Schema version 24
 

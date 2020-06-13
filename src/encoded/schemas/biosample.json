@@ -288,6 +288,63 @@
                     "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
                 }
             }
+        },
+        "sample_collection_age": {
+            "allOf": [
+                {
+                    "comment": "Only human biosamples can specify the age it was collected.",
+                    "properties": {
+                        "organism": {
+                            "linkTo": "Organism",
+                            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+                        }
+                    }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "sample_collection_age": {
+                                    "enum": ["unknown"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["sample_collection_age_units"],
+                            "properties": {
+                                "sample_collection_age_units": {
+                                    "enum": ["year"]
+                                },
+                                "sample_collection_age": {
+                                    "pattern": "^(([1-8]?\\d)|(90 or above))$"
+                                }
+                            }
+                        },
+                        {
+                            "required": ["sample_collection_age_units"],
+                            "properties": {
+                                "sample_collection_age_units": {
+                                    "enum": ["day", "week", "month"]
+                                },
+                                "sample_collection_age": {
+                                    "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)$"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "sample_collection_age_units":  {
+            "comment":"Age units is required if age is specified as anything but unknown.",
+            "required": ["sample_collection_age"],
+            "not": {
+                "properties": {
+                    "sample_collection_age": {
+                        "enum": ["unknown"]
+                    }
+                }
+            }
         }
     },
     "properties": {
@@ -379,6 +436,23 @@
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
+        },
+        "sample_collection_age": {
+            "title": "Sample collection age",
+            "description": "The age or age range of the donor when the biosample was collected.",
+            "comment": "This is designed specifically for cases where more than one biosamples are collected from the same human donor at different ages. Otherwise, you can considering using the age property of human donor.",
+            "type": "string",
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+        },
+        "sample_collection_age_units": {
+            "title": "Sample collection age units",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "year"
+            ]
         },
         "passage_number": {
             "title": "Passage number",
