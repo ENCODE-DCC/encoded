@@ -176,6 +176,10 @@ $small-font-size: 0.8rem;
         }
     }
 
+    @at-root #{&}__group-gutter {
+        margin-top: 5px;
+    }
+
     @at-root #{&}__organism {
         font-style: italic;
         font-weight: bold;
