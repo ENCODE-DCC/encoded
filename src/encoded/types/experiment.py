@@ -338,8 +338,8 @@ class Experiment(Dataset,
         return False
 
     @calculated_property(schema={
-        "title": "[Deprecated] Analysis",
-        "description": "A list of analyses.",
+        "title": "Analysis objects",
+        "description": "A list of analysis objects.",
         "comment": "Will transfer to analyses property in the future release.",
         "type": "array",
         "items": {

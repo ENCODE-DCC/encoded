@@ -55,8 +55,8 @@ class Analysis(Item):
     )
 
     @calculated_property(schema={
-        "title": "Assemblies",
-        "description": "A list of genome assemblies on which this analysis is performed.",
+        "title": "Assembly",
+        "description": "A genome assembly on which this analysis is performed.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
         "type": "string",
         "notSubmittable": True,
@@ -81,8 +81,8 @@ class Analysis(Item):
             return
 
     @calculated_property(schema={
-        "title": "Genome Annotations",
-        "description": "A list of genome annotations on which this analysis is performed.",
+        "title": "Genome Annotation",
+        "description": "A genome annotation on which this analysis is performed.",
         "comment": "Do not submit. This field is calculated from files in this analysis.",
         "type": "string",
         "notSubmittable": True,
