@@ -197,6 +197,18 @@
             "comment": "Please increment as whole numbers starting from 1.",
             "type": "integer",
             "minimum": 1
+        },
+        "reference_filesets": {
+            "title": "Reference File Sets",
+            "description": "The reference file set that contains references and indexes for a pipeline.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Reference File Set",
+                "description": "A particular file set containing references and indexes used by the pipeline.",
+                "type": "string",
+                "linkTo": "Reference"
+            }
         }
     },
     "facets": {
@@ -243,6 +255,9 @@
         },
         "analysis_steps.versions.software_versions.software.name": {
             "title": "Software used"
+        },
+        "reference_filesets": {
+            "title": "Reference File Sets"
         }
     },
     "boost_values": {

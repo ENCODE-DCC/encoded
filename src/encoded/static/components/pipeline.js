@@ -447,6 +447,20 @@ class PipelineComponent extends React.Component {
                                 </div>
                             : null}
 
+                            {context.reference_filesets && context.reference_filesets.length > 0 ?
+                                <div data-test="referencefilesets">
+                                    <dt>Reference File Sets</dt>
+                                    <dd>
+                                        {context.reference_filesets.map((fileset, i) =>
+                                            <React.Fragment>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={fileset['@id']}>{fileset.accession}</a>
+                                            </React.Fragment>
+                                        )}
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.standards_page ?
                                 <div data-test="standardspage">
                                     <dt>Pipeline standards</dt>
