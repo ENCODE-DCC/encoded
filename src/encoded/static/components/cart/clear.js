@@ -120,7 +120,7 @@ class CartClearButtonComponent extends React.Component {
 
     render() {
         const { elements, inProgress } = this.props;
-        if (elements.length > 0) {
+        if (elements.length > 0 && !this.props.locked) {
             return (
                 <React.Fragment>
                     <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm btn-inline">Clear cart</button>
@@ -139,16 +139,20 @@ CartClearButtonComponent.propTypes = {
     elements: PropTypes.array,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool,
+    /** True if cart is locked */
+    locked: PropTypes.bool,
 };
 
 CartClearButtonComponent.defaultProps = {
     elements: [],
     inProgress: false,
+    locked: false,
 };
 
 CartClearButtonComponent.mapStateToProps = state => ({
     elements: state.elements,
     inProgress: state.inProgress,
+    locked: state.locked,
 });
 const CartClearButton = connect(CartClearButtonComponent.mapStateToProps)(CartClearButtonComponent);
 

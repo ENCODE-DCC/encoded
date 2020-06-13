@@ -96,7 +96,7 @@ class CartAddAllSearchComponent extends React.Component {
         return (
             <React.Fragment>
                 <button
-                    disabled={inProgress}
+                    disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
                     onClick={this.handleClick}
                     title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
@@ -186,7 +186,7 @@ class CartAddAllElementsComponent extends React.Component {
         return (
             <div className="cart__add-all-element-control">
                 <button
-                    disabled={inProgress}
+                    disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
                     onClick={this.handleClick}
                     title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}

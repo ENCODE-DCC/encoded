@@ -16,7 +16,7 @@ import CartShare from './share';
 /**
  * Renders the cart icon menu and count or in-progress spinner in the nav bar.
  */
-const CartNavTitle = ({ elements, inProgress }) => {
+const CartNavTitle = ({ elements, inProgress, locked }) => {
     let status;
     let iconClass = '';
 
@@ -30,7 +30,7 @@ const CartNavTitle = ({ elements, inProgress }) => {
     return (
         <div className="cart__nav">
             <div className={`cart__nav-icon${status ? '' : ' cart__nav-icon--empty'}`}>
-                {svgIcon('cart')}
+                {svgIcon('cart', { fill: locked ? '#e59545' : '#fff' })}
             </div>
             {status ? <div className={iconClass}>{status}</div> : null}
         </div>
@@ -42,6 +42,8 @@ CartNavTitle.propTypes = {
     elements: PropTypes.array.isRequired,
     /** True if global cart operation in progress */
     inProgress: PropTypes.bool.isRequired,
+    /** True if cart is locked */
+    locked: PropTypes.bool.isRequired,
 };
 
 
@@ -92,15 +94,22 @@ class CartStatusComponent extends React.Component {
 
     render() {
         const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
+        const locked = !!(savedCartObj && savedCartObj.locked);
 
         if (loggedIn || elements.length > 0 || inProgress) {
             // Define the menu items for the Cart Status menu.
             const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
             const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
-            const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cart</button>;
+            const clearCartItem = !locked ? <button key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
+            const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
             if (loggedIn) {
-                menuItems.push(<span key="name" className="disabled-menu-item">{`Current: ${cartName}`}</span>, <DropdownMenuSep key="sep-1" />);
+                menuItems.push(
+                    <span key="name" className="disabled-menu-item">
+                        {`Current: ${cartName}`}{lockIcon}
+                    </span>,
+                    <DropdownMenuSep key="sep-1" />
+                );
                 if (elements.length > 0) {
                     menuItems.push(
                         viewCartItem,
@@ -117,10 +126,10 @@ class CartStatusComponent extends React.Component {
             return (
                 <NavItem
                     dropdownId="cart-control"
-                    dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
+                    dropdownTitle={<CartNavTitle elements={elements} locked={locked} inProgress={inProgress} />}
                     openDropdown={openDropdown}
                     dropdownClick={dropdownClick}
-                    label={`Cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+                    label={`${locked ? 'locked' : ''} cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
                     buttonCss="cart__nav-button"
                 >
                     <DropdownMenu label="cart-control">

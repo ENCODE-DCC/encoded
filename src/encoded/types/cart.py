@@ -63,6 +63,7 @@ def _create_cart(request, user, name=None, identifier=None, status=None):
         'submitted_by': str(user.uuid),
         'status': status or 'current',
         'name': cart_name,
+        'locked': False,
         'elements': []
     }
     if identifier:
