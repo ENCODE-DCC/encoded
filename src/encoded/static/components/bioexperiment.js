@@ -18,6 +18,7 @@ import { singleTreatment, DisplayAsJson, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import BioreplicateTable from './bioreplicateTable';
 
 class Bioexperiment extends React.Component {
     constructor(props) {
@@ -25,7 +26,11 @@ class Bioexperiment extends React.Component {
     }
     render() {
         const context = this.props.context;
-        console.log(context);
+        // console.log(context);
+        let bioreplicate=context.bioreplicate;//Array 
+        // console.log(bioreplicate);
+
+
         const itemClass = globals.itemClass(context, 'view-item');
         // Set up breadcrumbs
         const crumbs = [
@@ -228,6 +233,8 @@ class Bioexperiment extends React.Component {
                         </div>
                     </PanelBody>
                 </Panel>
+                {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
+
             </div>
         )
     }
