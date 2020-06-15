@@ -408,3 +408,13 @@ class GeneTypeQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class DnaseFootprintingQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'dnase_footprinting_quality_metric'
     schema = load_schema('encoded:schemas/dnase_footprinting_quality_metric.json')
+
+
+@collection(
+    name='gembs-alignment-quality-metrics',
+    properties={
+        'title': "gemBS Alignment Quality Metrics",
+    })
+class GembsAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'gembs_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/gembs_alignment_quality_metric.json')

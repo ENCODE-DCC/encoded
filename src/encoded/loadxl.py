@@ -100,6 +100,7 @@ ORDER = [
     'histone_chipseq_quality_metric',
     'generic_quality_metric',
     'gencode_category_quality_metric',
+    'gembs_alignment_quality_metric',
     'image',
     'page',
     'cart',
@@ -126,6 +127,8 @@ IS_ATTACHMENT = [
     'fragment_length_distribution_plot',
     'peak_width_distribution_plot',
     'dispersion_model',
+    'mapq_plot',
+    'insert_size_plot',
 ]
 
 
