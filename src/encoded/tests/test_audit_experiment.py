@@ -1346,6 +1346,28 @@ def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol(testapp
                'insufficient read depth' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol_wmapped_run_type(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   file_fastq_1_chip,
+                                                   file_bam_1_chip,
+                                                   file_bam_2_chip,
+                                                   chip_alignment_quality_metric_extremely_low_read_depth_no_read1_read2,
+                                                   chip_alignment_quality_metric_insufficient_read_depth_no_read1_read2,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+    testapp.patch_json(file_bam_1_chip['@id'], {'mapped_run_type': 'paired-ended',
+                                                'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bam_2_chip['@id'], {'mapped_run_type': 'single-ended',
+                                                'step_run': analysis_step_run_chip_encode4['@id']})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'extremely low read depth' for error in collect_audit_errors(res))
+    assert any(error['category'] ==
+               'insufficient read depth' for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_chip_seq_standards_missing_read_depth_encode4_wcontrol(testapp,
                                                    experiment_chip_H3K27me3,
                                                    file_fastq_control_chip,

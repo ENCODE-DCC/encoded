@@ -4292,6 +4292,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                 return unique + multi
 
     elif assay_name in ['ChIP-seq']:
+        mapped_run_type = alignment_file.get('mapped_run_type', None)
         if target is not False and \
            'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
             # exception (mapped)
@@ -4303,10 +4304,16 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                 if 'processing_stage' in metric and \
                     metric['processing_stage'] == 'unfiltered' and \
                         ('mapped' in metric or 'mapped_reads' in metric):
-                    if "read1" in metric and "read2" in metric:
-                        return int(mappedReads / 2)
+                    if mapped_run_type:
+                        if  mapped_run_type == 'paired-ended':
+                            return int(mappedReads / 2)
+                        else:
+                            return int(mappedReads)
                     else:
-                        return int(mappedReads)
+                        if ("read1" in metric and "read2" in metric):
+                            return int(mappedReads / 2)
+                        else:
+                            return int(mappedReads)     
         else:
             # not exception (useful fragments)
             for metric in quality_metrics:
@@ -4317,10 +4324,16 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                 if ('total' in metric or 'total_reads' in metric) and \
                    (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
                         ('processing_stage' not in metric)):
-                    if "read1" in metric and "read2" in metric:
-                        return int(totalReads / 2)
+                    if mapped_run_type:
+                        if mapped_run_type == 'paired-ended':
+                            return int(totalReads / 2)
+                        else:
+                            return int(totalReads)
                     else:
-                        return int(totalReads)
+                        if ("read1" in metric and "read2" in metric):
+                            return int(totalReads / 2)
+                        else:
+                            return int(totalReads)
     return False
 
 
