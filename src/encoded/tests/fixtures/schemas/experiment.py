@@ -706,3 +706,16 @@ def experiment_28(testapp, lab, award, heart):
         'status': 'in progress'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_v28(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+            'schema_version': '28',
+            'internal_status': 'pipeline error',
+            'pipeline_error_detail': 'The pipeline didn\'t work for reasons',
+            'notes': 'Insert essential details here'
+    })
+    return properties
