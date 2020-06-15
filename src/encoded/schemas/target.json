@@ -84,13 +84,7 @@
         }
     ],
     "dependencies": {
-        "modifications": ["genes"],
-        "dbxrefs": {
-            "comment": "Only non-gene targets can specify dbxrefs.",
-            "not": {
-                "required": ["genes"]
-            }
-        }
+        "modifications": ["genes"]
     },
     "tag_modifications": {
         "enum": [
@@ -116,16 +110,18 @@
         },
         "dbxrefs": {
             "title": "External resources",
-            "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
+            "description": "Unique identifiers from external resources (e.g. UniProtKB or FactorBook).",
             "type": "array",
             "uniqueItems": true,
             "minItems": 1,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
-                "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
-                "type":  "string"
-            }
+                "description": "A unique identifier from external resource (e.g. UniProtKB or FactorBook).",
+                "comment": "Submit as database name:target name (e.g. FactorBook:HMFN0395)",
+                "type":  "string",
+                "pattern": "^((UniProtKB:[0-9A-Z]+)|(FactorBook:[0-9a-zA-Z-]+))$"
+            },
+            "permission": "import_items"
         },
         "target_organism": {
             "title": "Target organism",

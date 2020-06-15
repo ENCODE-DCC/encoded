@@ -10,6 +10,7 @@
         "genes": ["10664"],
         "label": "CTCF",
         "status": "released",
+        "dbxrefs": ["FactorBook:CTCF"],
         "investigated_as": ["transcription factor"],
         "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
     },

@@ -1,5 +1,9 @@
 ## Changelog for target.json
 
+### Minor changes since schema version 14
+
+* Removed dependency restricting *dbxrefs* to non-gene targets. *dbxrefs* value formatting is now enforced with regex for UniProtKB and FactorBook.
+
 ### Schema version 14
 
 * Property *dbxref* was renamed to *dbxrefs* and restricted to non-gene targets.
