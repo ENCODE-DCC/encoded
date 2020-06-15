@@ -22,7 +22,7 @@ $row-data-header-width: 200px;
         border-top: 0;
     }
     &.expanded {
-        max-width: 675px;
+        max-width: 690px;
         position: absolute;
         z-index: 9999;
         background: white;
@@ -334,7 +334,6 @@ $row-data-header-width: 200px;
     }
     .matrix-facet-container {
         display: flex;
-        align-items: baseline;
         border: 0;
         @media screen and (max-width: $screen-sm-min) {
             flex-wrap: wrap;
@@ -350,6 +349,7 @@ $row-data-header-width: 200px;
             font-size: 1rem;
             margin: 0 0 10px 0;
             padding: 0;
+            height: min-content;
             @media screen and (max-width: $screen-sm-min) {
                 flex: 0 1 100%;
                 margin: 0 5px 10px 5px;
