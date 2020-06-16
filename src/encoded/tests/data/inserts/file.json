@@ -3690,7 +3690,6 @@
         "derived_from": ["ENCFF718LJW"]
     },
     {
-<<<<<<< HEAD
         "_test": "chromosome sizes",
         "dataset": "ENCSR000AJK",
         "status": "released",
