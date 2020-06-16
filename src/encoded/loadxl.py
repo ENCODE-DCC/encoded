@@ -101,6 +101,7 @@ ORDER = [
     'generic_quality_metric',
     'gencode_category_quality_metric',
     'gembs_alignment_quality_metric',
+    'analysis',
     'image',
     'page',
     'cart',

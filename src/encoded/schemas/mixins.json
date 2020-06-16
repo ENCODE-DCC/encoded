@@ -265,6 +265,7 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
+                        "application/json",
                         "application/pdf",
                         "image/gif",
                         "image/jpeg",
