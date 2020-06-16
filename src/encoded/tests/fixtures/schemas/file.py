@@ -1536,3 +1536,79 @@ def incorrect_paired_fastq_indexed(testapp, lab, award, experiment, base_replica
             'status': 'in progress'
         }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_1_atac(testapp, lab, award, ATAC_experiment, replicate_ATAC_seq, platform1):
+    item = {
+        'dataset': ATAC_experiment['@id'],
+        'replicate': replicate_ATAC_seq['@id'],
+        'file_format': 'fastq',
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '32cd74b6e19115393507f4ebfa66d77a',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_fastq_2_atac(testapp, lab, award, ATAC_experiment, replicate_ATAC_seq_2, platform1):
+    item = {
+        'dataset': ATAC_experiment['@id'],
+        'replicate': replicate_ATAC_seq_2['@id'],
+        'file_format': 'fastq',
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '21ab74b6e22625393507f4ebfa66d77a',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def ATAC_bam(testapp, encode_lab, award, ATAC_experiment, replicate_ATAC_seq,
+            analysis_step_run_atac_encode4_alignment, file_fastq_1_atac):
+    item = {
+        'dataset': ATAC_experiment['@id'],
+        'replicate': replicate_ATAC_seq['@id'],
+        'file_format': 'bam',
+        'md5sum': 'e52e9cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'derived_from': [file_fastq_1_atac['@id']],
+        'assembly': 'GRCh38',
+        'lab': encode_lab['@id'],
+        'file_size': 34,
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_atac_encode4_alignment['@id'],
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bed_IDR_thresholded_peaks_atac(testapp, ATAC_experiment, ATAC_bam, award, encode_lab):
+    item = {
+        'dataset': ATAC_experiment['@id'],
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'derived_from': [ATAC_bam['@id']],
+        'file_format': 'bed',
+        'file_format_type': 'idr_peak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'f119ab102df36d93dd070ef0712b8ee7',
+        'output_type': 'IDR thresholded peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]

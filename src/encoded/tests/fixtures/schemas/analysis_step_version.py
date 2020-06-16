@@ -48,3 +48,28 @@ def analysis_step_version_chip_encode4(testapp, analysis_step_chip_encode4, soft
         ],
     }
     return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_atac_encode4_alignment(testapp, analysis_step_atac_encode4_alignment, software_version):
+    item = {
+        'analysis_step': analysis_step_atac_encode4_alignment['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_atac_encode4_replicate_concordance(testapp,
+                analysis_step_atac_encode4_replicate_concordance, software_version):
+    item = {
+        'analysis_step': analysis_step_atac_encode4_replicate_concordance['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]

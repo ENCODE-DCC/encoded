@@ -321,3 +321,25 @@ def replicate_2_fce(testapp, functional_characterization_experiment_disruption_s
         'experiment': functional_characterization_experiment_disruption_screen['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_ATAC_seq(testapp, ATAC_experiment, library_1):
+    item = {
+        'experiment': ATAC_experiment['@id'],
+        'library': library_1['@id'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_ATAC_seq_2(testapp, ATAC_experiment, library_2):
+    item = {
+        'experiment': ATAC_experiment['@id'],
+        'library': library_2['@id'],
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]
