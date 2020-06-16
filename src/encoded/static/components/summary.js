@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import QueryString from '../libs/query_string';
@@ -44,12 +43,12 @@ function generateStatusData(buckets, labels) {
 const organismField = 'replicates.library.biosample.donor.organism.scientific_name';
 
 // Mapping of shortened organism name and full scientific organism name
-const organismTerms = {
-    'Homo sapiens': 'human',
-    'Mus musculus': 'mouse',
-    'Drosophila melanogaster': 'fly',
-    'Caenorhabditis elegans': 'worm',
-};
+const organismTerms = [
+    'Homo sapiens',
+    'Mus musculus',
+    'Drosophila melanogaster',
+    'Caenorhabditis elegans',
+];
 
 // Column graph of experiment statuses.
 class SummaryStatusChart extends React.Component {
@@ -369,14 +368,14 @@ class SummaryBody extends React.Component {
                 <div className="summary-controls">
                     <div className="organism-button-instructions">Choose an organism:</div>
                     <div className="organism-button-container">
-                        {Object.keys(organismTerms).map(term =>
+                        {organismTerms.map(term =>
                             <button
                                 id={term}
                                 onClick={e => this.chooseOrganism(e)}
                                 className={`organism-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
                                 key={term}
                             >
-                                <img src={`/static/img/bodyMap/organisms/${organismTerms[term]}.png`} alt={term} />
+                                <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.png`} alt={term} />
                                 <span>{term}</span>
                             </button>
                         )}

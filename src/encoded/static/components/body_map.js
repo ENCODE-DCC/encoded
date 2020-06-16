@@ -17,7 +17,7 @@ export const organField = 'biosample_ontology.organ_slims';
 // As another type of example, note that "skeleton" highlights "bone element" but not the other way around
 // A third case is "esophagus" and "trachea": they each highlight the same paths but are not the same organ
 //     Because of the way the code works, we need to include both the paths and the synonymous term for each
-const BodyList = {
+export const BodyList = {
     'adrenal gland': ['cls-34'],
     'arterial blood vessel': ['cls-11'],
     'bone element': ['cls-65', 'cls-77', 'cls-78', 'cls-80', 'cls-81'],
@@ -70,7 +70,7 @@ const BodyList = {
 // Mapping from cells and tissue types to inset images
 // All mappings are empty because there are no paths or shapes that correspond to the inset images
 //     (each has one associated image with a name corresponding to the cell or tissue term)
-const CellsList = {
+export const CellsList = {
     'adipose tissue': [],
     blood: [],
     'blood vessel': [],
@@ -86,7 +86,7 @@ const CellsList = {
 
 // Mapping for systems slims
 // Systems slims are mapped to organs in the "BodyList"
-const SystemsList = {
+export const SystemsList = {
     'central nervous system': ['brain', 'spinal chord'],
     'circulatory system': ['blood', 'blood vessel', 'arterial blood vessel', 'heart', 'pericardium', 'vein', 'lymphatic vessel'],
     'digestive system': ['esophagus', 'intestine', 'small intestine', 'large intestine', 'liver', 'gallbladder', 'mouth', 'spleen', 'stomach', 'tongue', 'colon'],
@@ -124,6 +124,34 @@ const addingClass = (changedClass, matchingString, removeFlag = false) => {
             el.classList.add(changedClass);
         });
     }
+};
+
+// Set body map diagram colors based on url, when component mounts
+export const initializeBodyMap = (searchQuery) => {
+    const query = new QueryString(searchQuery);
+    const terms = query.getKeyValues(organField);
+    if (terms.length > 0) {
+        terms.forEach((term) => {
+            if (BodyList[term]) {
+                BodyList[term].forEach((bodyClass) => {
+                    addingClass('active', bodyClass);
+                });
+            }
+            if (SystemsList[term]) {
+                document.getElementById(term).classList.add('active');
+            }
+        });
+    }
+};
+
+// Clearing organ and systems key value selections from a url
+export const clearBodyMapSelectionsFromUrl = (originalUrl) => {
+    const parsedUrl = url.parse(originalUrl);
+    const query = new QueryString(parsedUrl.query);
+    query.deleteKeyValue(organField);
+    query.deleteKeyValue(systemsField);
+    const href = `?${query.format()}`;
+    return href;
 };
 
 // Highlight all of the svg paths / shapes corresponding to a hovered-over svg path / shape and highlight corresponding term(s)
@@ -209,6 +237,10 @@ const highlightOrgan = (e) => {
     }
 };
 
+// Checks to see if "organ" is included in "selectedOrgan"
+// checkClass is used to set an active class on buttons or images based on whether or not they are selected
+const checkClass = (selectedOrgan, organ) => selectedOrgan.includes(organ);
+
 // The BodyMap component is comprised of several different elements:
 // (1) List of system slims ("central nervous system", "skeletal system", "digestive system")
 // (2) Diagram of body in svg format with selectable organs
@@ -263,20 +295,7 @@ class BodyMap extends React.Component {
     // and highlight the body map elements which correspond to those terms
     componentDidMount() {
         const searchQuery = url.parse(this.props.context['@id']).search;
-        const query = new QueryString(searchQuery);
-        const terms = query.getKeyValues(organField);
-        if (terms.length > 0) {
-            terms.forEach((term) => {
-                if (BodyList[term]) {
-                    BodyList[term].forEach((bodyClass) => {
-                        addingClass('active', bodyClass);
-                    });
-                }
-                if (SystemsList[term]) {
-                    document.getElementById(term).classList.add('active');
-                }
-            });
-        }
+        initializeBodyMap(searchQuery);
     }
 
     // Clear all organ and system slims selections (clear state and navigate to new url)
@@ -287,11 +306,7 @@ class BodyMap extends React.Component {
             // Removing class "active" from all elements with an "active" class (removeFlag = true)
             addingClass('active', 'active', true);
             // Renavigate to fresh url
-            const parsedUrl = url.parse(this.props.context['@id']);
-            const query = new QueryString(parsedUrl.query);
-            query.deleteKeyValue(organField);
-            query.deleteKeyValue(systemsField);
-            const href = `?${query.format()}`;
+            const href = clearBodyMapSelectionsFromUrl(this.props.context['@id']);
             this.context.navigate(href);
         }
     }
@@ -477,7 +492,7 @@ class BodyMap extends React.Component {
                 });
             }
         }
-        const href = `?${query.format()}`;
+        const href = `?${query.format()}#openModal`;
         this.context.navigate(href);
     }
 
@@ -592,7 +607,7 @@ class BodyMap extends React.Component {
                         });
                     }
                 }
-                const href = `?${query.format()}`;
+                const href = `?${query.format()}#openModal`;
                 this.context.navigate(href);
             }
         }
@@ -602,24 +617,25 @@ class BodyMap extends React.Component {
         return (
             <div className="body-facet-container">
                 <div className="body-list body-list-top">
-                    <div className="body-list-inner">
+                    <ul className="body-list-inner">
                         {Object.keys(SystemsList).map(b =>
-                            <button
-                                className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
-                                id={b}
-                                onClick={e => this.chooseOrgan(e)}
-                                onMouseEnter={e => highlightOrgan(e)}
-                                onMouseLeave={unHighlightOrgan}
-                                key={b}
-                            >
-                                {b}
-                            </button>
+                            <li key={b}>
+                                <button
+                                    className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                    id={b}
+                                    onClick={e => this.chooseOrgan(e)}
+                                    onMouseEnter={e => highlightOrgan(e)}
+                                    onMouseLeave={unHighlightOrgan}
+                                >
+                                    {b}
+                                </button>
+                            </li>
                         )}
                         <button className="clear-organs" onClick={this.clearOrgans}>
                             <i className="icon icon-times-circle" />
                             Clear body map selections
                         </button>
-                    </div>
+                    </ul>
                 </div>
                 <div className="body-facet">
                     <div className="body-image-container">
@@ -629,25 +645,26 @@ class BodyMap extends React.Component {
                         />
                     </div>
                     <div className="body-list">
-                        <div className="body-list-inner">
+                        <ul className="body-list-inner">
                             {Object.keys(BodyList).map(b =>
-                                <button
-                                    className={`body-list-element ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
-                                    id={b}
-                                    onClick={e => this.chooseOrgan(e)}
-                                    onMouseEnter={e => highlightOrgan(e)}
-                                    onMouseLeave={unHighlightOrgan}
-                                    key={b}
-                                >
-                                    {b}
-                                </button>
+                                <li key={b}>
+                                    <button
+                                        className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                        onClick={e => this.chooseOrgan(e)}
+                                        onMouseEnter={e => highlightOrgan(e)}
+                                        onMouseLeave={unHighlightOrgan}
+                                        id={b}
+                                    >
+                                        {b}
+                                    </button>
+                                </li>
                             )}
-                        </div>
+                        </ul>
                     </div>
                     <div className="body-inset-container">
                         {Object.keys(CellsList).map(image =>
                             <button
-                                className={`body-inset ${image.replace(' ', '-')} ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === image) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(image))) ? 'active' : ''}`}
+                                className={`body-inset ${image.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, image) ? 'active' : ''}`}
                                 id={image}
                                 onClick={e => this.chooseOrgan(e)}
                                 onMouseEnter={e => highlightOrgan(e)}
@@ -664,20 +681,21 @@ class BodyMap extends React.Component {
                         )}
                     </div>
                     <div className="body-list body-list-narrow">
-                        <div className="body-list-inner">
+                        <ul className="body-list-inner">
                             {Object.keys(CellsList).map(b =>
-                                <button
-                                    className={`body-list-element ${b.replace(' ', '-')} ${((typeof this.state.selectedOrgan === 'string' && this.state.selectedOrgan === b) || (typeof this.state.selectedOrgan !== 'string' && this.state.selectedOrgan.includes(b))) ? 'active' : ''}`}
-                                    id={b}
-                                    onClick={e => this.chooseOrgan(e)}
-                                    onMouseEnter={e => highlightOrgan(e)}
-                                    onMouseLeave={unHighlightOrgan}
-                                    key={b}
-                                >
-                                    {b}
-                                </button>
+                                <li key={b}>
+                                    <button
+                                        className={`body-list-element ${b.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                        id={b}
+                                        onClick={e => this.chooseOrgan(e)}
+                                        onMouseEnter={e => highlightOrgan(e)}
+                                        onMouseLeave={unHighlightOrgan}
+                                    >
+                                        {b}
+                                    </button>
+                                </li>
                             )}
-                        </div>
+                        </ul>
                     </div>
                 </div>
             </div>

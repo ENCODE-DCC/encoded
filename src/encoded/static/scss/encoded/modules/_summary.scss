@@ -1,8 +1,3 @@
-$Homo-sapiens: #63326E;
-$Mus-musculus: #3D518C;
-$Caenorhabditis-elegans: #77878B;
-$Drosophila-melanogaster: #335C67;
-
 $inset-size: 65px;
 $small-inset-size: 55px;
 $smallest-inset-size: 45px;
@@ -49,6 +44,13 @@ $results-background: #E9E9E9;
         margin: auto;
         margin-bottom: 10px;
         max-width: 1600px;
+    }
+
+    .body-facet-container {
+        li {
+            list-style: none;
+            display: inline;
+        }
     }
 }
 
@@ -267,7 +269,7 @@ $results-background: #E9E9E9;
     }
 }
 
-.results-controls, .results-count {
+.results-controls {
     display: inline-block;
 }
 
@@ -402,7 +404,7 @@ $results-background: #E9E9E9;
     border-radius: 3px;
     background: #e0e0e0;
     position: absolute;
-    bottom: -40px;
+    bottom: -50px;
     right: 10px;
     .icon {
         margin-right: 3px;
@@ -413,16 +415,16 @@ $results-background: #E9E9E9;
     }
     @media screen and (max-width: $screen-md-min) {
         left: 10px;
-        bottom: -50px;
+        bottom: -60px;
     }
     @media screen and (max-width: $screen-sm-min) {
         font-size: 0.8rem;
-        bottom: -70px;
+        bottom: -80px;
         left: 10px;
         width: 100px;
     }
     @media screen and (max-width: $screen-xs-min) {
-        bottom: -70px;
+        bottom: -90px;
     }
 }
 
@@ -477,26 +479,34 @@ $results-background: #E9E9E9;
 
 .body-facet :nth-child(1) {
     order: 1;
+    -webkit-order: 1;
 }
 .body-facet :nth-child(2) {
     order: 2;
+    -webkit-order: 2;
 }
 .body-facet :nth-child(3) {
     order: 3;
+    -webkit-order: 3;
     @media screen and (max-width: $screen-sm-min) {
         order: 4;
+        -webkit-order: 4;
     }
     @media screen and (max-width: $screen-xs-min) {
         order: 3;
+        -webkit-order: 3;
     }
 }
 .body-facet :nth-child(4) {
     order: 4;
+    -webkit-order: 4;
     @media screen and (max-width: $screen-sm-min) {
         order: 3;
+        -webkit-order: 3;
     }
     @media screen and (max-width: $screen-xs-min) {
         order: 4;
+        -webkit-order: 4;
     }
 }
 
