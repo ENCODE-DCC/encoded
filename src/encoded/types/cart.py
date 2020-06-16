@@ -20,6 +20,7 @@ from encoded.cart_view import (
     get_userid,
     get_cart_objects_by_user,
     CART_USER_MAX,
+    CART_ADMIN_MAX,
 )
 
 
@@ -108,7 +109,9 @@ def get_or_create_cart_by_user(context, request):
 def create_cart_by_user(context, request):
     userid = get_userid(request)
     user = _get_user(request, userid)
-    blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
+    is_admin = 'group.admin' in request.effective_principals 
+    blocked_statuses = ['deleted'] if not is_admin else []
+    cart_max_count = CART_ADMIN_MAX if is_admin else CART_USER_MAX
     carts = get_cart_objects_by_user(request, userid, blocked_statuses=blocked_statuses)
     cart_status = request.json.get('status')
     cart_name = request.json.get('name', '').strip()
@@ -119,8 +122,8 @@ def create_cart_by_user(context, request):
             for cart in carts
             if cart['status'] not in ['disabled', 'deleted']
         ]
-        if len(countable_carts) >= CART_USER_MAX:
-            msg = 'Users cannot have more than {} carts'.format(CART_USER_MAX)
+        if len(countable_carts) >= cart_max_count:
+            msg = 'Users cannot have more than {} carts'.format(cart_max_count)
             raise HTTPBadRequest(explanation=msg)
         conflicting_names = [
             cart
