@@ -20,7 +20,7 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
         padding: 0;
 
         & > .panel-heading {
-            background-color: #d8d8d8;
+            // background-color: #d8d8d8;
 
             h1, h2, h3, h4, h5, h6 {
                 margin: 0;
@@ -120,7 +120,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .panel__split {
     display: block;
-    padding: 0;
+    padding: 20px;
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
@@ -133,7 +133,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 50%;
-            border-left: 1px solid #c0c0c0;
+            // border-left: 1px solid #c0c0c0;
 
             &:first-child {
                 border-left: 0;
@@ -146,7 +146,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         margin-left: -$panel-body-inset;
         margin-right: -$panel-body-inset;
         padding: 10px;
-        background-color: #d8d8d8;
+        // background-color: #d8d8d8;
 
         h4 {
             margin: 0;
@@ -351,7 +351,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
                 display: none;
             }
         }
-        
+
         &.collapsed {
             flex: 0 1 30px;
             @media screen and (max-width: $screen-md-min) {
@@ -447,7 +447,7 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     display: flex;
     align-items: center;
     padding: 5px;
-    
+
     @media screen and (max-width: $screen-sm-min) {
         display: block;
         select {

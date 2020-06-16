@@ -1,0 +1,41 @@
+.test-warning {
+    display: none !important;
+}
+
+body {
+    background: white;
+    font-family: Mada;
+}
+
+.panel {
+    border: none;
+}
+
+
+.panel__split-element {
+    padding: 0;
+    .key-value {
+        div {
+            padding: 3px;
+        }
+        dt {
+            flex: 0 0 auto;
+            padding: 0;
+            text-transform: uppercase;
+            color: #929191;
+            font-weight: normal;
+            padding-right: 5px;
+        }
+        dd {
+            flex: none;
+            padding: 0;
+            font-weight: 600;
+        }
+    }
+}
+
+.panel-body {
+    &.panel__split {
+        border: 2px solid #d3d3d3;
+    }
+}

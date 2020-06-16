@@ -510,6 +510,18 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
 
+    // ADD THIS!!!!!!!!!
+    //<ProjectBadge award={context.award} addClasses="badge-heading" />
+    // <div data-test="status">
+    //     <dt>Status</dt>
+    //     <dd>
+    //         <Status item={context} css="dd-status" title="Experiment status" inline />
+    //         {adminUser && context.internal_status ?
+    //             <Status item={context.internal_status} title="Internal status" inline />
+    //         : null}
+    //     </dd>
+    // </div>
+
     return (
         <div className={itemClass}>
             <header>
@@ -522,19 +534,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <Panel>
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
-                        <div className="panel__split-heading panel__split-heading--experiment">
-                            <h4>Summary</h4>
-                        </div>
                         <dl className="key-value">
-                            <div data-test="status">
-                                <dt>Status</dt>
-                                <dd>
-                                    <Status item={context} css="dd-status" title="Experiment status" inline />
-                                    {adminUser && context.internal_status ?
-                                        <Status item={context.internal_status} title="Internal status" inline />
-                                    : null}
-                                </dd>
-                            </div>
 
                             <div data-test="assay">
                                 <dt>Assay</dt>
@@ -684,10 +684,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                     </div>
 
                     <div className="panel__split-element">
-                        <div className="panel__split-heading panel__split-heading--experiment">
-                            <h4>Attribution</h4>
-                            <ProjectBadge award={context.award} addClasses="badge-heading" />
-                        </div>
                         <dl className="key-value">
                             <div data-test="lab">
                                 <dt>Lab</dt>
