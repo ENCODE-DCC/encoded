@@ -8,7 +8,7 @@ import FacetRegistry from './registry';
  * The type facet renders like the default facet, but often gets hidden unless conditions allow for
  * its display.
  */
-const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => {
+const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, expandedFacets, handleExpanderClick, handleKeyDown, setFieldAsNotNewlyLoaded }) => {
     // Get "normal" facets, meaning non-audit facets.
     const nonAuditFacets = results.facets.filter(resultFacets => resultFacets.field.substring(0, 6) !== 'audit.');
 
@@ -33,6 +33,10 @@ const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryStrin
                 pathname={pathname}
                 queryString={queryString}
                 allowNegation={false}
+                expandedFacets={expandedFacets}
+                handleExpanderClick={handleExpanderClick}
+                handleKeyDown={handleKeyDown}
+                setFieldAsNotNewlyLoaded={setFieldAsNotNewlyLoaded}
             />
         );
     }
@@ -54,11 +58,23 @@ TypeFacet.propTypes = {
     pathname: PropTypes.string.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
+    /** List of expanded facets */
+    expandedFacets: PropTypes.object,
+    /** Expand or collapse facet */
+    handleExpanderClick: PropTypes.func,
+    /** Handles key-press and toggling facet */
+    handleKeyDown: PropTypes.func,
+    /** Mark field as newly loaded */
+    setFieldAsNotNewlyLoaded: PropTypes.func,
 };
 
 TypeFacet.defaultProps = {
     mode: '',
     queryString: '',
+    expandedFacets: new Set([]),
+    handleExpanderClick: () => {},
+    handleKeyDown: () => {},
+    setFieldAsNotNewlyLoaded: () => {},
 };
 
 FacetRegistry.Facet.register('type', TypeFacet);

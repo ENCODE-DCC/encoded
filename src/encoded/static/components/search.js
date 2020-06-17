@@ -77,6 +77,11 @@ const datasetTypes = {
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
 
+// session storage used to preserve opened/closed facets
+const FACET_STORAGE = 'FACET_STORAGE';
+
+// marker for determining user just opened the page
+const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -700,11 +705,93 @@ TextFilter.propTypes = {
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
     const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
+
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
+
+    React.useEffect(() => {
+        // Get facets from storage that need to be expanded
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, []);
+
+    const setFieldAsNotNewlyLoaded = (facet, relevantFilters) => {
+        if (!facet || !facet.field) {
+            return;
+        }
+
+        // Get facets from storage that need to be expanded
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+        const field = facet.field;
+
+        // This determines if facet has just loaded check if anything needs
+        // to be expanded
+        const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+        const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+
+        if (!isFacetNewlyLoaded) {
+            // sessions storage set to prevent this if-statement from running again on the field
+            sessionStorage.setItem(newlyLoadedFacetStorage, field);
+
+            // auto-open facets based on selected terms
+            if ((relevantFilters && relevantFilters.length > 0) || facet.openOnLoad === 'True') {
+                facetList.add(facet.field);
+            }
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    };
+
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
 
     const parsedUrl = context && context['@id'] && url.parse(context['@id']);
+
+    /**
+     * Handlers opening or closing a tab
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+     */
+    const handleExpanderClick = (e, status, field) => {
+        let facetList = null;
+
+        if (e.altKey) {
+            // user has held down option-key (alt-key in Windows and Linux)
+            sessionStorage.removeItem(FACET_STORAGE);
+            facetList = new Set(status ? [] : facets.map(f => f.field));
+        } else {
+            facetList = new Set(expandedFacets);
+            facetList[status ? 'delete' : 'add'](field);
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
+        setExpandFacets(facetList); // controls open/closed facets
+    };
+
+    /**
+     * Called when user types a key while focused on a facet term. If the user types a space or
+     * return we call the term click handler -- needed for a11y because we have a <div> acting as a
+     * button instead of an actual <button>.
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+    */
+    const handleKeyDown = (e, status, field) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            // keyCode: 13 = enter-key. 32 = spacebar
+            e.preventDefault();
+            handleExpanderClick(e, status, field);
+        }
+    };
 
     // See if we need the Clear filters link based on combinations of query-string parameters.
     let clearButton = false;
@@ -765,6 +852,10 @@ export const FacetList = (props) => {
                             pathname={parsedUrl.pathname}
                             queryString={parsedUrl.query}
                             onFilter={onFilter}
+                            expandedFacets={expandedFacets}
+                            handleExpanderClick={handleExpanderClick}
+                            handleKeyDown={handleKeyDown}
+                            setFieldAsNotNewlyLoaded={setFieldAsNotNewlyLoaded}
                         />;
                     })}
                 </div>
