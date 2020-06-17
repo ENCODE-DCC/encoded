@@ -234,7 +234,9 @@ class Bioexperiment extends React.Component {
                     </PanelBody>
                 </Panel>
                 {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
-
+                {combinedDocuments.length ?
+                    <DocumentsPanelReq documents={combinedDocuments} />
+                : null}
             </div>
         )
     }
