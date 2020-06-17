@@ -1,5 +1,87 @@
 [
     {
+        "accession": "ENCBS006ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "23679aea-49bb-4aae-8af9-d535b0c1e9f6",
+        "derived_from": [
+            "ENCBS002ABC"
+        ],
+        "derivation_process": "aliquot suspension",
+        "suspension_type": "cell"
+    },
+    {
+        "accession": "ENCBS005ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "1be68c02-22be-4e10-9379-321110a643c6",
+        "derived_from": [
+            "ENCBS002ABC"
+        ],
+        "derivation_process": "aliquot suspension",
+        "suspension_type": "cell"
+    },
+    {
+        "accession": "ENCBS004ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "a64e1d1e-61b1-4ed0-b48e-42bfe6742ad5",
+        "derived_from": [
+            "ENCBS001ABC"
+        ],
+        "derivation_process": "aliquot suspension",
+        "suspension_type": "cell"
+    },
+    {
+        "accession": "ENCBS003ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "12bd59db-93d0-441d-a2f9-c2e6955bf66a",
+        "derived_from": [
+            "ENCBS001ABC"
+        ],
+        "derivation_process": "aliquot suspension",
+        "suspension_type": "cell"
+    },
+    {
+        "accession": "ENCBS002ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "6dbdb485-154d-44c0-84f4-397db06748b2",
+        "derived_from": [
+            "ENCBS200XYZ"
+        ],
+        "derivation_process": "tissue dissociaton",
+        "single_cell_isolation_method": "10X",
+        "single_cell_isolation_method_version": 3,
+        "suspension_type": "cell"
+    },
+    {
+        "accession": "ENCBS001ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "c25970d6-61aa-449e-b8b0-ebc4a93e5328",
+        "derived_from": [
+            "ENCBS100XYZ"
+        ],
+        "derivation_process": "tissue dissociaton",
+        "single_cell_isolation_method": "10X",
+        "single_cell_isolation_method_version": 3,
+        "suspension_type": "cell"
+    },
+    {
         "accession": "ENCBS026ENC",
         "biosample_ontology": "NTR_0000031",
         "description": "liver fraction CD117+,CD71+,TER119-",

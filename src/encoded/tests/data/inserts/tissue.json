@@ -1,5 +1,31 @@
 [
     {
+        "accession": "ENCBS100XYZ",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "liver from a 34 year old male",
+        "documents": [],
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "a94c6e56-4c7a-4e98-8f3d-34e8f448f31d",
+        "derived_from": [
+            "ENCDO058AAA"
+        ],
+        "derivation_process": "physical separation",
+        "source": "barbara-wold"
+    },
+    {
+        "accession": "ENCBS200XYZ",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "liver from a 21 year old male",
+        "documents": [],
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "bc5c3a0b-c771-4e24-a6ff-96dc94fce89e",
+        "derived_from": [
+            "ENCDO017AAA"
+        ],
+        "derivation_process": "physical separation",
+        "source": "barbara-wold"
+    },
+    {
         "accession": "ENCBS356AAA",
         "biosample_ontology": "UBERON_0000006",
         "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",

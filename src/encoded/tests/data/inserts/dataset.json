@@ -1,5 +1,15 @@
 [
     {
+        "accession": "ENCSR123ABC",
+        "award": "CZI004LIV",
+        "description": "Some liver scRNA & scATAC data",
+        "status": "released",
+        "date_submitted": "2020-01-20",
+        "date_released": "2020-04-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "8fdf11b4-4f00-453d-94cd-ab6a2bedd804"
+    },
+    {
         "_test": "shared biosample",
         "accession": "ENCSR000AER",
         "award": "U54HG007004",

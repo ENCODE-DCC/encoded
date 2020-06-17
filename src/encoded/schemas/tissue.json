@@ -5,7 +5,7 @@
     "id": "/profiles/tissue.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["source", "biosample_ontology"],
+    "required": ["biosample_ontology"],
     "identifyingProperties": ["uuid", "accession", "aliases", "derived_from", "derivation_process"],
     "additionalProperties": false,
     "mixinProperties": [

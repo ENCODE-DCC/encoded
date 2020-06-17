@@ -91,7 +91,8 @@
                 "modENCODE",
                 "modERN",
                 "Roadmap",
-                "ENCORE"
+                "ENCORE",
+                "CZI Seed Networks"
             ]
         },
         "viewing_group": {
@@ -104,7 +105,8 @@
                 "ENCODE4",
                 "GGR",
                 "REMC",
-                "ENCORE"
+                "ENCORE",
+                "CZISN"
             ]
         },
         "component": {

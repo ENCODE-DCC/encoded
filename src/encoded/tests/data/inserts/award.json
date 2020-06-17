@@ -1,5 +1,19 @@
 [
     {
+        "description": "This team will analyze single cells and develop computational tools to build a single cell map of the human liver, combining transcriptomics, spatial organization, and cell-cell interactions across diverse individuals and developmental stages.",
+        "end_date": "2022-02-22",
+        "name": "CZI004LIV",
+        "principal_investigators": [
+            "blandit.orci@conubia.magna"
+        ],
+        "project": "CZI Seed Networks",
+        "start_date": "2019-10-14",
+        "status": "current",
+        "title": "A Reference Cell Atlas of Human Liver Diversity Over a Lifespan",
+        "url": "https://chanzuckerberg.com/science/programs-resources/humancellatlas/seednetworks/a-reference-cell-atlas-of-human-liver-diversity-over-a-lifespan/",
+        "viewing_group": "CZISN"
+    },
+    {
         "name": "ENCODE2",
         "project": "ENCODE",
         "status": "deleted",

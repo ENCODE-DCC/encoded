@@ -1,5 +1,87 @@
 [
     {
+        "accession": "ENCLB999MNO",
+        "aliases": [],
+        "documents": [],
+        "fragmentation_methods": [],
+        "lab": "j-michael-cherry",
+        "library_size_selection_method": "",
+        "biological_macromolecule_term_name": "RNA",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "size_range": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "292131f2-4ca9-47de-b7de-9fb51d0f214c",
+        "dataset": "ENCSR123ABC",
+        "biosamples": [
+            "ENCBS005ABC"
+        ],
+        "construction_platform": "10X",
+        "construction_platform_version": 3,
+        "assay_type": "RNA-seq"
+    },
+    {
+        "accession": "ENCLB888MNO",
+        "aliases": [],
+        "documents": [],
+        "fragmentation_methods": [],
+        "lab": "j-michael-cherry",
+        "library_size_selection_method": "",
+        "biological_macromolecule_term_name": "RNA",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "size_range": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9ae29882-7982-434e-b855-4c192fcc8763",
+        "dataset": "ENCSR123ABC",
+        "biosamples": [
+            "ENCBS004ABC"
+        ],
+        "construction_platform": "10X",
+        "construction_platform_version": 3,
+        "assay_type": "RNA-seq"
+    },
+    {
+        "accession": "ENCLB777MNO",
+        "documents": [],
+        "fragmentation_methods": [],
+        "lab": "j-michael-cherry",
+        "library_size_selection_method": "",
+        "biological_macromolecule_term_name": "DNA",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "size_range": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "a7e1e3fb-d9b1-44e3-adb0-39359f01dd22",
+        "dataset": "ENCSR123ABC",
+        "biosamples": [
+            "ENCBS005ABC"
+        ],
+        "construction_platform": "10X",
+        "construction_platform_version": 3,
+        "assay_type": "ATAC-seq"
+    },
+    {
+        "accession": "ENCLB666MNO",
+        "documents": [],
+        "fragmentation_methods": [],
+        "lab": "j-michael-cherry",
+        "library_size_selection_method": "",
+        "biological_macromolecule_term_name": "DNA",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "size_range": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "aa83fd8e-f4c4-4438-b25e-5a22333d27e9",
+        "dataset": "ENCSR123ABC",
+        "biosamples": [
+            "ENCBS003ABC"
+        ],
+        "construction_platform": "10X",
+        "construction_platform_version": 3,
+        "assay_type": "ATAC-seq"
+    },
+    {
         "accession": "ENCLB309ZZZ",
         "aliases": [
             "richard-myers:SL14572"

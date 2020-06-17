@@ -122,8 +122,7 @@
             "title": "Platform",
             "description": "The device used to construct the library.",
             "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
-            "type": "string",
-            "linkTo": "Platform"
+            "type": "string"
         },
         "construction_platform_version": {
             "title": "Platform version",
