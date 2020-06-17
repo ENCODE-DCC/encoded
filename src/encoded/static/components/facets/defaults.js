@@ -923,7 +923,7 @@ FacetTerms.defaultProps = {
 /**
  * Display the default text facet with optional typeahead field.
  */
-export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation }) => {
+export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation, expandedFacets, handleExpanderClick, handleKeyDown, setFieldAsNotNewlyLoaded }) => {
     const [initialState, setInitialState] = React.useState(true);
     const [topShadingVisible, setTopShadingVisible] = React.useState(false);
     const [bottomShadingVisible, setBottomShadingVisible] = React.useState(false);
@@ -1010,41 +1010,62 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         setInitialState(false);
     }, [handleScrollShading, facet, typeaheadTerm]);
 
+    React.useEffect(() => {
+        setFieldAsNotNewlyLoaded(facet, relevantFilters);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // Callback to handle typeahead input events.
     const handleTypeAhead = (event) => {
         setTypeaheadTerm(event.target.value);
     };
 
+    const isExpanded = expandedFacets && expandedFacets.has(facet.field);
+
     return (
         <div className="facet">
-            <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
+            <div
+                className="facet__expander--header"
+                tabIndex="0"
+                role="button"
+                aria-label={facet.field}
+                aria-pressed={isExpanded}
+                onClick={e => handleExpanderClick(e, isExpanded, facet.field)}
+                onKeyDown={e => handleKeyDown(e, isExpanded, facet.field)}
+            >
+                <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
+                <i className={`icon icon-chevron-${isExpanded ? 'up' : 'down'}`} />
+            </div>
             <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
             <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
-                {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
-                <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
-                    <ul onScroll={handleScroll} ref={scrollingElement}>
-                        {(filteredTerms.length === 0) ?
-                            <div className="searcherror">
-                                Try a different search term for results.
-                            </div>
-                        :
-                            <React.Fragment>
-                                <FacetTerms
-                                    facet={facet}
-                                    results={results}
-                                    mode={mode}
-                                    relevantFilters={relevantFilters}
-                                    pathname={pathname}
-                                    queryString={queryString}
-                                    filteredTerms={filteredTerms}
-                                    onFilter={onFilter}
-                                    allowNegation={allowNegation}
-                                />
-                                <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
-                                <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
-                            </React.Fragment>
-                        }
-                    </ul>
+                <div className={`facet-content facet-${isExpanded ? 'open' : 'close'}`}>
+                    {facet.type === 'typeahead' ? <Typeahead typeaheadTerm={typeaheadTerm} facet={facet} handleTypeAhead={handleTypeAhead} /> : null}
+                    <div className={`facet__content${facet.type === 'typeahead' ? ' facet__content--typeahead' : ''}`}>
+                        <ul onScroll={handleScroll} ref={scrollingElement}>
+                            {(filteredTerms.length === 0) ?
+                                <div className="searcherror">
+                                    Try a different search term for results.
+                                </div>
+                            :
+                                <React.Fragment>
+                                    <FacetTerms
+                                        facet={facet}
+                                        results={results}
+                                        mode={mode}
+                                        relevantFilters={relevantFilters}
+                                        pathname={pathname}
+                                        queryString={queryString}
+                                        filteredTerms={filteredTerms}
+                                        onFilter={onFilter}
+                                        allowNegation={allowNegation}
+                                    />
+                                    <div className={`top-shading${topShadingVisible ? '' : ' hide-shading'}`} />
+                                    <div className={`bottom-shading${bottomShadingVisible ? '' : ' hide-shading'}`} />
+                                </React.Fragment>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1068,6 +1089,14 @@ DefaultFacet.propTypes = {
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
+    /** List of expanded facets */
+    expandedFacets: PropTypes.object,
+    /** Expand or collapse facet */
+    handleExpanderClick: PropTypes.func,
+    /** Handles key-press and toggling facet */
+    handleKeyDown: PropTypes.func,
+    /** Mark field as newly loaded */
+    setFieldAsNotNewlyLoaded: PropTypes.func,
 };
 
 DefaultFacet.defaultProps = {
@@ -1075,4 +1104,8 @@ DefaultFacet.defaultProps = {
     queryString: '',
     onFilter: null,
     allowNegation: true,
+    expandedFacets: new Set([]),
+    handleExpanderClick: () => {},
+    handleKeyDown: () => {},
+    setFieldAsNotNewlyLoaded: () => {},
 };
