@@ -67,6 +67,62 @@ class SurgeryChart extends React.Component {
 
         let data = [];
         let traceNeph = {};
+
+        //add deceasedDate or lastFollowUpDate
+        let deceasedDate;
+        let lastFollowUpDate;
+        if (this.props.death_date != null){
+        deceasedDate = new Date(this.props.death_date + ' 00:00:00');
+        maxDateUnix = Date.parse(this.props.death_date + ' 00:00:00');
+        } else if(this.props.last_follow_up_date != "Not available") {
+        lastFollowUpDate = new Date(this.props.last_follow_up_date + ' 00:00:00');
+        maxDateUnix = Date.parse(this.props.last_follow_up_date + ' 00:00:00');
+        }
+
+        let trace2 = {};
+        if (deceasedDate != null) {
+            trace2 = {
+                x: [deceasedDate],
+                y: ["  "],
+                mode: 'markers+text',
+                type: 'scatter',
+                name: '',
+                text: ['Deceased date'],
+                hovertemplate: "Deceased date: " + this.props.death_date,
+                textposition: 'left',
+                textfont: {
+                    family:  'Raleway, sans-serif',
+                    size: 15
+                },
+                marker: { 
+                    color: '#D31E1E',
+                    size: 15
+                }
+            };
+            data.push(trace2);
+        } else if (lastFollowUpDate!= null) {
+            trace2 = {
+                x: [lastFollowUpDate],
+                y: ["  "],
+                mode: 'markers+text',
+                type: 'scatter',
+                name: '',
+                text: ['Date of last follow up'],
+                hovertemplate: "Date of last follow up: " + this.props.last_follow_up_date,
+                textposition: 'left',
+                textfont: {
+                    family:  'Raleway, sans-serif',
+                    size: 15
+                },
+                marker: { 
+                color: '#D31E1E',
+                size: 15
+                }
+            };
+            data.push(trace2);
+        }
+       
+        
         if (nephDataPoints.length > 0) {
             for (let i = 0; i < nephDataPoints.length; i++) {
                 traceNeph = {
@@ -75,9 +131,9 @@ class SurgeryChart extends React.Component {
                     y: [nephDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'blue',
+                        color: '#29A2CC',
                         symbol: 'diamond',
-                        size: '16'
+                        size: '15'
                     },
                     text: nephDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -96,9 +152,9 @@ class SurgeryChart extends React.Component {
                     y: [metDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'red',
+                        color: '#29A2CC',
                         symbol: 'circle',
-                        size: '16'
+                        size: '15'
                     },
                     text: metDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -117,9 +173,9 @@ class SurgeryChart extends React.Component {
                     y: [ablaDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'green',
+                        color: '#29A2CC',
                         symbol: 'square',
-                        size: '16'
+                        size: '15'
                     },
                     text: ablaDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -136,9 +192,9 @@ class SurgeryChart extends React.Component {
                     y: [biopsyDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'orange',
+                        color: '#29A2CC',
                         symbol: 'oval',
-                        size: '16'
+                        size: '15'
                     },
                     text: biopsyDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -147,6 +203,34 @@ class SurgeryChart extends React.Component {
                 data.push(traceAbla);
             };
         };
+        let trace1 ={};
+        //add Date of diagnosis
+        let diagnosisDate;
+        if (this.props.diagnosis_date != "Not available") {
+            diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
+            minDateUnix = Date.parse(this.props.diagnosis_date + ' 00:00:00');
+        }
+        if (diagnosisDate != null) {
+            trace1 = {
+                x: [diagnosisDate],
+                y: [" "],
+                mode: 'markers+text',
+                type: 'scatter',
+                name: '',
+                text: ['Date of diagnosis'],
+                hovertemplate: "Date of diagnosis: " + this.props.diagnosis_date,
+                textposition: 'right',
+                textfont: {
+                    family:  'Raleway, sans-serif',
+                    size: 15
+                },
+                marker: { 
+                    color: '#D31E1E',
+                    size: 15
+                }
+            };
+            data.push(trace1)
+        }
         var layout = {
 
             autosize: true,
@@ -171,7 +255,7 @@ class SurgeryChart extends React.Component {
             },
             font: {
                 family: "Georgia",
-                size: 16,
+                size: 15,
             },
             hovermode: 'closest',
             showlegend: false,

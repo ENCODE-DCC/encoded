@@ -123,7 +123,7 @@ for (let i = 0; i < ganttData.length; i++) {
         y: [yLabels.indexOf(ganttData[i].id)],
         xaxis: 'x2',
         mode: 'markers',
-        marker: {color: '29A2CC',
+        marker: {color: '#29A2CC',
                  size: 1
                 },
         type: 'scatter',
@@ -197,7 +197,8 @@ if (diagnosisDate != null) {
   hovertemplate: "Date of diagnosis: " + diagnosisDate.toISOString().split('T')[0],
   textposition: 'right',
   textfont: {
-    family:  'Raleway, sans-serif'
+    family:  'Raleway, sans-serif',
+    size: 15
   },
   marker: { 
     color: '#D31E1E',
@@ -218,7 +219,8 @@ if (deceasedDate != null) {
   hovertemplate: "Deceased date: " + deceasedDate.toISOString().split('T')[0],
   textposition: 'left',
   textfont: {
-    family:  'Raleway, sans-serif'
+    family:  'Raleway, sans-serif',
+    size: 15
   },
   marker: { 
     color: '#D31E1E',
@@ -237,7 +239,8 @@ if (deceasedDate != null) {
     hovertemplate: "Date of last follow up: " + lastFollowUpDate.toISOString().split('T')[0],
     textposition: 'left',
     textfont: {
-      family:  'Raleway, sans-serif'
+      family:  'Raleway, sans-serif',
+      size: 15
     },
     marker: { 
       color: '#D31E1E',
