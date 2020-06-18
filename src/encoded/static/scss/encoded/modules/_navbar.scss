@@ -220,7 +220,6 @@ $navbar-bg-color:            #0a253d;
 .dropdown__menu {
     padding: 0;
     background-color: transparent;
-    overflow: hidden;
     list-style: none;
 
     @media screen and (min-width: $screen-md-min) {
@@ -230,6 +229,7 @@ $navbar-bg-color:            #0a253d;
     }
 
     & > li {
+        position: relative;
         &>a, &>button, &>span {
             display: block;
             padding: 5px 15px 5px 25px;
@@ -252,9 +252,40 @@ $navbar-bg-color:            #0a253d;
         padding-left: 40px;
     }
 
+    .icon-container {
+        position: relative;
+        display: inline-block;
+        pointer-events: all;
+    }
+
+    .icon-question-circle {
+        color: #b3b3b3;
+        pointer-events: all;
+        padding: 2px 2px 1px;
+        margin-left: 2px;
+    }
+
+    a {
+        color: #444;
+        &:hover {
+            text-decoration: none;
+        }
+        @media screen and (max-width: $screen-md-min) {
+            color: #fff;
+        }
+    }
+
     .disabled-menu-item {
         pointer-events: none;
         font-weight: 400;
+        position: relative;
+        padding: 2px 30px 2px 20px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        font-size: 1.1rem;
+        @media screen and (max-width: $screen-md-min) {
+            font-size: 0.9rem;
+        }
     }
 
      @media screen and (min-width: $screen-md-min) {
@@ -267,7 +298,7 @@ $navbar-bg-color:            #0a253d;
         border-bottom-left-radius:  3px;
 
         &>li {
-            &>a, &>button, &>span {
+            &>a, &>button, &>span &>div {
                 display: block;
                 width: 100%;
                 margin: 0;
@@ -282,18 +313,54 @@ $navbar-bg-color:            #0a253d;
                 font-weight: 300;
                 white-space: nowrap;
                 max-width: 400px;
+                position: relative;
 
-                &:hover,&:active {
-                    border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    background-color: $navbar-inverse-link-active-bg;
-                    color: #fff;
+                &:not(.disabled-menu-item) {
+                    &:hover,&:active {
+                        border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                        border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                        background-color: $navbar-inverse-link-active-bg;
+                        color: #fff;
+                    }
                 }
             }
         }
 
         .navbar-right & {
             right: -1px;
+        }
+    }
+}
+
+.disabled-menu-item {
+    @media screen and (max-width: $screen-md-min) {
+        font-size: 0.9rem;
+    }
+}
+
+.hoverable {
+    font-weight: 300;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+    padding: 2px 30px 2px 20px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    @media screen and (min-width: $screen-md-min) {
+        &:hover,&:active {
+            a {
+                color: #fff;
+            }
+            border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
+            border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+            background-color: $navbar-inverse-link-active-bg;
+        }
+    }
+    @media screen and (max-width: $screen-md-min) {
+        &.sub-menu {
+            font-size: 0.9rem;
+        }
+        a {
+            color: #fff;
         }
     }
 }

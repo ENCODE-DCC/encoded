@@ -69,7 +69,11 @@ class EncodeSearch extends React.Component {
                         <legend className="sr-only">Encode search</legend>
                         <div className="site-search__input">
                             <label htmlFor="encode-search" className="label--inline">Search ENCODE portal</label>
-                            <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
+                            <Tooltip
+                                trigger={<i className="icon icon-info-circle" />}
+                                tooltipId="search-encode"
+                                css="tooltip-home-info"
+                            >
                                 Search the entire ENCODE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
                             </Tooltip>
                             <input id="encode-search" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
