@@ -6,7 +6,7 @@
 * Added *pseudoalignment based quantification* to the enum list for *analysis_step_types*
 * Added *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference* to the enum list for *input_file_types* and *output_file_types*
 * Added *fastq demultiplexing* and *gRNA generation* to the enum list for *analysis_step_types*
-* Added *chromosome sizes*, *ranked gRNAs*, and *smoothed methylation stage at CpG* to the enum list for *input_file_types* and *output_file_types*
+* Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 9
 * Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enums for *output_file_types* and *input_file_types*.
