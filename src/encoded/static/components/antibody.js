@@ -348,7 +348,6 @@ const AntibodyStatus = (props) => {
                                 const terms = Object.keys(organisms[organism]);
                                 return (
                                     <>
-                                        {i !== 0 ? <div className="antibody-status__group-gutter" /> : null }
                                         <div key={i} className="antibody-status__group">
                                             <div className="antibody-status__organism">
                                                 {organism}
