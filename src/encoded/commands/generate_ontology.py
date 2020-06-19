@@ -210,7 +210,9 @@ preferred_name = {
     "OBI:0002629": "direct RNA-seq",
     "OBI:0002144": "Circulome-seq",
     "OBI:0002459": "genotyping HiC",
-    "OBI:0002675": "MPRA"
+    "OBI:0002675": "MPRA",
+    "OBI:0002571": "polyA plus RNA-seq",
+    "OBI:0002572": "polyA minus RNA-seq"
 }
 
 category_slims = {
