@@ -761,12 +761,12 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 </PanelBody>
             </Panel>
 
+            {/* Display the file widget with the facet, graph, and tables */}
+            <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+
             {Object.keys(condensedReplicates).length > 0 ?
                 <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
             : null}
-
-            {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
