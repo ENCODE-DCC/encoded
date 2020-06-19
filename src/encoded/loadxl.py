@@ -19,7 +19,7 @@ ORDER = [
     'image',
     'page',
     'publication',
-    # 'document',
+    'document',
     'patient',
     'surgery',
     'pathology_report',

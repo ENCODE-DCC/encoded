@@ -10,7 +10,9 @@
       "status": "released",
       "submitted_by": "dignissim.euismod@amet.habitant",
       "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
-      "documents":
+     
+      "documents": ["9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
+    ],
       "experiment_classification": "functional genomics assay"
       
     },
@@ -26,6 +28,8 @@
       "status": "released",
       "submitted_by": "dignissim.euismod@amet.habitant",
       "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
+      "documents": ["11e2d7d3-d43a-4b5a-bf3e-136948efc023"
+      ],
       "experiment_classification": "functional genomics assay"
     },
     {
@@ -39,6 +43,9 @@
       "status": "released",
       "submitted_by": "amet.fusce@est.fermentum",
       "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
+      "dbxrefs": ["UCSC-ENCODE-mm9:wgEncodeEM002004",
+        "GEO:GSM798327",
+        "GEO:GSE32218"],
       "experiment_classification": "functional genomics assay"
     }
     

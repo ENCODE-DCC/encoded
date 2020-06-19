@@ -1,5 +1,13 @@
 [
     {       
+        "award": "Kidney-SPORE",
+        "description": "RNA extraction protocol from Qiagen",
+        "document_type": "extraction protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
+    },
+    {       
         "attachment": "PathologyImage_CMU-1.svs",
         "award": "ENCODE2",
         "description": "Example of high resolution pathology image in SVS format",
