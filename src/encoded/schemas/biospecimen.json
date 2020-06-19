@@ -13,6 +13,7 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/attribution"},
+        { "$ref": "mixins.json#/documents" },
         {"$ref": "mixins.json#/uuid"}
     ],
     "properties": {
@@ -154,6 +155,9 @@
                 "Yes",
                 "No"
             ]
+        },
+        "documents": {
+            "description": "Protocols or other documents that describe the sample collection or sample fixation or procession(not data files)."
         }
 
 

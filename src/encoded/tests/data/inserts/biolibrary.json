@@ -4,6 +4,9 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "uuid": "e6f6c49d-89d4-4adb-baa4-38c103b1583c",
+        "documents": [
+            "f8599a9f-4095-4b9a-b11a-ea022e2af1f7"
+        ],
         "accession": "KCELB012FAA"
     },
     {

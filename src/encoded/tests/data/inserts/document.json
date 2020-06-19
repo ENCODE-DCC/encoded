@@ -8,6 +8,30 @@
         "uuid": "9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
     },
     {       
+        "award": "Kidney-SPORE",
+        "description": "RNA extraction protocol from Qiagen",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "e0376e86-79d2-4041-80c2-4c8dfef83371"
+    },
+    {       
+        "award": "Kidney-SPORE",
+        "description": "Kidney biopsy collection from patient",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "ea0125c1-97c8-4921-ba7a-b7eeb75ec4bd"
+    },
+    {       
+        "award": "Kidney-SPORE",
+        "description": "Chip-seq protocol",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "f8599a9f-4095-4b9a-b11a-ea022e2af1f7"
+    },
+    {       
         "attachment": "PathologyImage_CMU-1.svs",
         "award": "ENCODE2",
         "description": "Example of high resolution pathology image in SVS format",

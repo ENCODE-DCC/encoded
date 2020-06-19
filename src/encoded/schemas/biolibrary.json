@@ -12,7 +12,9 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/submitted" }
+        
     ],
     "facets": {
         "status": {
@@ -117,6 +119,9 @@
             "title": "Source",
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA).",
             "type": "string"
+        },
+        "documents": {
+            "description": "Protocols or other documents that describe library construction and sample treatment before sequencing."
         }
     },
     "columns": {

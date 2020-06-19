@@ -33,6 +33,9 @@
         "status": "released",
         "host": "Human",
         "primary_site": "kidney",
+        "documents": [
+            "ea0125c1-97c8-4921-ba7a-b7eeb75ec4bd"
+        ],
         "surgery": "KCESX708FIJ"
     },
     {
@@ -170,6 +173,10 @@
         "tissue_type":"malignant metastasis",
         "anatomic_site":"liver",
         "uuid": "c58dd4d7-418a-4482-84c8-4d5ee6f29ea5",
+        "documents": [
+            "e0376e86-79d2-4041-80c2-4c8dfef83371"
+        ],
+        
         "status": "released",
         "host": "Human",
         "primary_site": "kidney"

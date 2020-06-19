@@ -29,6 +29,7 @@ class Biolibrary(Item):
         'biospecimen',
         'biofile',
         'bioreplicate',
+        'documents'
     ]
     audit_inherit = [
     ]
