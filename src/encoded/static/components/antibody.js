@@ -347,19 +347,17 @@ const AntibodyStatus = (props) => {
                             {Object.keys(organisms).map((organism, i) => {
                                 const terms = Object.keys(organisms[organism]);
                                 return (
-                                    <>
-                                        <div key={i} className="antibody-status__group">
-                                            <div className="antibody-status__organism">
-                                                {organism}
-                                            </div>
-                                            <div className="antibody-status__terms">
-                                                {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
-                                            </div>
-                                            <div className="antibody-status__status">
-                                                <Status item={status} inline />
-                                            </div>
+                                    <div key={i} className="antibody-status__group">
+                                        <div className="antibody-status__organism">
+                                            {organism}
                                         </div>
-                                    </>
+                                        <div className="antibody-status__terms">
+                                            {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
+                                        </div>
+                                        <div className="antibody-status__status">
+                                            <Status item={status} inline />
+                                        </div>
+                                    </div>
                                 );
                             })}
                         </div>
