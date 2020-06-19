@@ -39,3 +39,13 @@ body {
         border: 2px solid #d3d3d3;
     }
 }
+
+.file-gallery-container {
+    border: 2px solid #d2d2d2;
+    .nav-tabs {
+        display: none;
+    }
+    .file-gallery__inclusion-selector {
+        padding: 5px;
+    }
+}

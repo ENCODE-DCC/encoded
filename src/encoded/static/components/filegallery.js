@@ -2869,81 +2869,93 @@ class FileGalleryRendererComponent extends React.Component {
         };
         const modalClass = meta ? `graph-modal--${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
-        const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        const tabs1 = { browser: 'Genome browser' };
+        const tabs2 = { graph: 'Association graph' };
+        const tabs3 = { tables: 'File details' };
 
         return (
             <Panel>
-                <PanelHeading addClasses="file-gallery-heading">
-                    <h4>Files</h4>
-                </PanelHeading>
-
                 { (!hideGraph) ?
-                    <div className="file-gallery-container">
-                        <TabPanelFacets
-                            open={this.state.facetsOpen}
-                            currentTab={this.state.currentTab}
-                            filters={this.state.fileFilters}
-                            allFiles={facetFiles}
-                            filterFiles={this.filterFiles}
-                            toggleFacets={this.toggleFacets}
-                            clearFileFilters={this.clearFileFilters}
-                            experimentType={this.experimentType}
-                            analyses={this.state.compiledAnalyses}
-                            selectedAnalysesIndex={this.state.selectedAnalysesIndex}
-                            handleAnalysesSelection={this.handleAnalysesSelection}
-                        />
-                        <TabPanel
-                            tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
-                            tabs={tabs}
-                            decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
-                            decorationClasses="file-gallery__inclusion-selector"
-                            selectedTab={this.state.currentTab}
-                            handleTabClick={this.handleTabClick}
-                        >
-                            <TabPanelPane key="browser">
-                                <GenomeBrowser
-                                    files={includedFiles}
-                                    label={'file gallery'}
-                                    expanded={this.state.facetsOpen}
-                                    assembly={this.state.selectedAssembly}
-                                />
-                            </TabPanelPane>
-                            <TabPanelPane key="graph">
-                                <FileGraph
-                                    dataset={context}
-                                    files={graphIncludedFiles}
-                                    highlightedFiles={highlightedFiles}
-                                    infoNode={this.state.infoNode}
-                                    selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
-                                    selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
-                                    schemas={schemas}
-                                    colorize={this.state.inclusionOn}
-                                    handleNodeClick={this.handleNodeClick}
-                                    loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
-                                    auditIndicators={this.props.auditIndicators}
-                                    auditDetail={this.props.auditDetail}
-                                />
-                            </TabPanelPane>
-                            <TabPanelPane key="tables">
-                                <FilterControls
-                                    selectedFilterValue={this.state.selectedFilterValue}
-                                    filterOptions={this.state.availableAssembliesAnnotations}
-                                    inclusionOn={this.state.inclusionOn}
-                                    browsers={browsers}
-                                    currentBrowser={this.state.currentBrowser}
-                                    selectedBrowserFiles={this.state.selectedBrowserFiles}
-                                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
-                                    handleInclusionChange={this.handleInclusionChange}
-                                    browserChangeHandler={this.handleBrowserChange}
-                                    visualizeHandler={this.handleVisualize}
-                                />
-                                {/* If logged in and dataset is released, need to combine search of files that reference
-                                    this dataset to get released and unreleased ones. If not logged in, then just get
-                                    files from dataset.files */}
-                                {fileTable}
-                            </TabPanelPane>
-                        </TabPanel>
-                    </div>
+                    <>
+                        <h4>Genome browser</h4>
+                        <div className="file-gallery-container">
+                            <TabPanelFacets
+                                open={this.state.facetsOpen}
+                                currentTab={this.state.currentTab}
+                                filters={this.state.fileFilters}
+                                allFiles={facetFiles}
+                                filterFiles={this.filterFiles}
+                                toggleFacets={this.toggleFacets}
+                                clearFileFilters={this.clearFileFilters}
+                                experimentType={this.experimentType}
+                                analyses={this.state.compiledAnalyses}
+                                selectedAnalysesIndex={this.state.selectedAnalysesIndex}
+                                handleAnalysesSelection={this.handleAnalysesSelection}
+                            />
+                            <TabPanel
+                                tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
+                                tabs={tabs1}
+                                decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                                decorationClasses="file-gallery__inclusion-selector"
+                                selectedTab={'browser'}
+                                handleTabClick={this.handleTabClick}
+                            >
+                                <TabPanelPane key="browser">
+                                    <GenomeBrowser
+                                        files={includedFiles}
+                                        label={'file gallery'}
+                                        expanded={this.state.facetsOpen}
+                                        assembly={this.state.selectedAssembly}
+                                    />
+                                </TabPanelPane>
+                            </TabPanel>
+                        </div>
+                        <h4>File graph</h4>
+                        <div className="file-gallery-container">
+                            <TabPanelFacets
+                                open={this.state.facetsOpen}
+                                currentTab={this.state.currentTab}
+                                filters={this.state.fileFilters}
+                                allFiles={facetFiles}
+                                filterFiles={this.filterFiles}
+                                toggleFacets={this.toggleFacets}
+                                clearFileFilters={this.clearFileFilters}
+                                experimentType={this.experimentType}
+                                analyses={this.state.compiledAnalyses}
+                                selectedAnalysesIndex={this.state.selectedAnalysesIndex}
+                                handleAnalysesSelection={this.handleAnalysesSelection}
+                            />
+                            <TabPanel
+                                tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
+                                tabs={tabs2}
+                                decoration={<InclusionSelector inclusionOn={this.state.inclusionOn} handleInclusionChange={this.handleInclusionChange} />}
+                                decorationClasses="file-gallery__inclusion-selector"
+                                selectedTab={'graph'}
+                                handleTabClick={this.handleTabClick}
+                            >
+                                <TabPanelPane key="graph">
+                                    <FileGraph
+                                        dataset={context}
+                                        files={graphIncludedFiles}
+                                        highlightedFiles={highlightedFiles}
+                                        infoNode={this.state.infoNode}
+                                        selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
+                                        selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
+                                        schemas={schemas}
+                                        colorize={this.state.inclusionOn}
+                                        handleNodeClick={this.handleNodeClick}
+                                        loggedIn={!!(this.context.session && this.context.session['auth.userid'])}
+                                        auditIndicators={this.props.auditIndicators}
+                                        auditDetail={this.props.auditDetail}
+                                    />
+                                </TabPanelPane>
+                            </TabPanel>
+                        </div>
+                        <h4>Raw files</h4>
+                        <div className="file-gallery-container">
+                            {fileTable}
+                        </div>
+                    </>
                 :
                     <div>
                         <FilterControls
