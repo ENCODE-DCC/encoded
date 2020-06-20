@@ -48,6 +48,9 @@ class Pipeline(Item):
         'documents',
     ]
     set_status_down = []
+    audit_inherit = [
+        'analysis_steps',
+    ]
 
 
 @collection(
