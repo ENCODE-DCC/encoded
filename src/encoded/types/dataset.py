@@ -245,15 +245,20 @@ class TransgenicEnhancerExperiment(
     def biosample_summary(self, request, biosamples=None):
         drop_age_sex_flag = False
         dictionaries_of_phrases = []
+        biosample_accessions = set()
         if biosamples is not None:
             for bs in biosamples:
                 biosampleObject = request.embed(bs, '@@object')
-                biosample_info = biosample_summary_information(request, biosampleObject)
-                biosample_summary_dictionary = biosample_info[0]
-                biosample_drop_age_sex_flag = biosample_info[1]
-                dictionaries_of_phrases.append(biosample_summary_dictionary)
-                if biosample_drop_age_sex_flag is True:
-                    drop_age_sex_flag = True
+                if biosampleObject['status'] == 'deleted':
+                    continue
+                if biosampleObject['accession'] not in biosample_accessions:
+                    biosample_accessions.add(biosampleObject['accession'])
+                    biosample_info = biosample_summary_information(request, biosampleObject)
+                    biosample_summary_dictionary = biosample_info[0]
+                    biosample_drop_age_sex_flag = biosample_info[1]
+                    dictionaries_of_phrases.append(biosample_summary_dictionary)
+                    if biosample_drop_age_sex_flag is True:
+                        drop_age_sex_flag = True
 
         if drop_age_sex_flag is True:
             sentence_parts = [
