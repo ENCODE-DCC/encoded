@@ -1457,86 +1457,6 @@ def file_chip_enrichment(testapp, experiment_chip_CTCF, award, lab):
         'md5sum': 'a2d0dde9ea1cbc8ec24d74c413a897f1',
         'status': 'in progress'
     }
-<<<<<<< HEAD
-
-
-@pytest.fixture
-def fastq_index(testapp, lab, award, experiment, base_replicate_two, platform1, single_fastq_indexed):
-    item = {
-        'dataset': experiment['@id'],
-        'file_format': 'fastq',
-        'md5sum': '11bd74b6e11515393507f4ebfa66d78c',
-        'replicate': base_replicate_two['@id'],
-        'output_type': 'index reads',
-        'read_length': 36,
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',
-        'index_of': [single_fastq_indexed['@id']]
-        }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def single_fastq_indexed(testapp, lab, award, experiment, base_replicate, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'file_format': 'fastq',
-        'md5sum': '91be74b6e11515393507f4ebfa66d78b',
-        'replicate': base_replicate['@id'],
-        'output_type': 'reads',
-        'read_length': 36,
-        'file_size': 34,
-        'platform': platform1['@id'],
-        'run_type': 'single-ended',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def second_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, platform1):
-    item = {
-        'dataset': experiment['@id'],
-        'file_format': 'fastq',
-        'md5sum': '82cd66b6f21515393507f4ebfa66d78b',
-        'replicate': base_replicate_two['@id'],
-        'output_type': 'reads',
-        'read_length': 36,
-        'file_size': 68,
-        'platform': platform1['@id'],
-        'run_type': 'paired-ended',
-        'paired_end': '1',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def incorrect_paired_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, platform1, single_fastq_indexed):
-    item = {
-            'dataset': experiment['@id'],
-            'file_format': 'fastq',
-            'md5sum': '82cd66b6f21515393507f4ebfa55e77c',
-            'replicate': base_replicate_two['@id'],
-            'output_type': 'reads',
-            'read_length': 36,
-            'file_size': 72,
-            'platform': platform1['@id'],
-            'run_type': 'paired-ended',
-            'paired_with': single_fastq_indexed['@id'],
-            'paired_end': '2',
-            'lab': lab['@id'],
-            'award': award['@id'],
-            'status': 'in progress'
-        }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
@@ -1613,5 +1533,3 @@ def file_bed_IDR_thresholded_peaks_atac(testapp, ATAC_experiment, ATAC_bam, awar
         'status': 'in progress',  # avoid s3 upload codepath
     }
     return testapp.post_json('/file', item).json['@graph'][0]
-=======
->>>>>>> parent of aa3e39ad3... ENCD-5252-add-index-reads-audit (#3308)
