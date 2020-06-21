@@ -1457,6 +1457,7 @@ def file_chip_enrichment(testapp, experiment_chip_CTCF, award, lab):
         'md5sum': 'a2d0dde9ea1cbc8ec24d74c413a897f1',
         'status': 'in progress'
     }
+<<<<<<< HEAD
 
 
 @pytest.fixture
@@ -1612,3 +1613,5 @@ def file_bed_IDR_thresholded_peaks_atac(testapp, ATAC_experiment, ATAC_bam, awar
         'status': 'in progress',  # avoid s3 upload codepath
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+=======
+>>>>>>> parent of aa3e39ad3... ENCD-5252-add-index-reads-audit (#3308)
