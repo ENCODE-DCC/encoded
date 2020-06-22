@@ -263,10 +263,6 @@ slim_shims = {
         'EFO:0009500': ['colon', 'intestine', 'large intestine'],
         'EFO:0000586': ['connective tissue'],
         'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
-        'EFO:0005916': ['embryo'],
-        'EFO:0005904': ['embryo'],
-        'EFO:0005914': ['embryo'],
-        'EFO:0005915': ['embryo'],
         'EFO:0004038': ['embryo'],
         'EFO:0002055': ['embryo'],
         'EFO:0002034': ['embryo'],
@@ -276,7 +272,6 @@ slim_shims = {
         'EFO:0005650': ['limb'],
         'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
         'EFO:0002787': ['lymphoid tissue'],
-        'EFO:0002324': ['lymphoid tissue'],
         'EFO:0007095': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
         'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based

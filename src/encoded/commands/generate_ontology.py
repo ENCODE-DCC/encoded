@@ -582,22 +582,24 @@ def getTermStructure():
 
 
 def main():
-    ''' Downloads UBERON, EFO and OBI ontologies and create a JSON file '''
+    ''' Downloads UBERON, EFO, OBI and CLO ontologies and create a JSON file '''
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="Get Uberon, EFO and OBI ontologies and generate the JSON file", epilog=EPILOG,
+        description="Get Uberon, EFO, OBI, and CLO ontologies and generate the JSON file", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--obi-url', help="OBI version URL")
+    parser.add_argument('--clo-url', help="CLO version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     obi_url = args.obi_url
-    urls = [obi_url, uberon_url, efo_url]
+    clo_url = args.clo_url
+    urls = [obi_url, uberon_url, efo_url, clo_url]
 
     terms = {}
     for url in urls:
