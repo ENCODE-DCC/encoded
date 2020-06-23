@@ -136,8 +136,8 @@ organ_slims = {
     'UBERON:0000414': 'mucous gland',
     'UBERON:0001821': 'sebaceous gland',
     'UBERON:0000998': 'seminal vesicle',
-    'UBERON:0001820': 'sweat gland'
-
+    'UBERON:0001820': 'sweat gland',
+    'UBERON:0001471': 'skin of prepuce of penis'
 }
 
 cell_slims = {
