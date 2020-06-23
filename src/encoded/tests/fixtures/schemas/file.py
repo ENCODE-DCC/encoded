@@ -1627,12 +1627,11 @@ def pacbio_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, pl
     item = {
             'dataset': experiment['@id'],
             'file_format': 'fastq',
-            'md5sum': '93cd66b6f21515393507f4ebfa55e77c',
+            'md5sum': '04cd66b6f21515393507f4ebfa55e77c',
             'replicate': base_replicate_two['@id'],
             'output_type': 'reads',
-            'read_length': 150,
             'file_size': 720,
-            'platform': platform3['@id'],
+            'platform': platform3['uuid'],
             'lab': lab['@id'],
             'award': award['@id'],
             'status': 'in progress'

@@ -941,7 +941,9 @@ def test_audit_mispaired_index(testapp,
                                fastq_index,
                                single_fastq_indexed,
                                second_fastq_indexed,
-                               incorrect_paired_fastq_indexed):
+                               incorrect_paired_fastq_indexed,
+                               pacbio_fastq_indexed,
+                               bam_file, ATAC_experiment):
     testapp.patch_json(
         fastq_index['@id'],
         {
@@ -955,8 +957,10 @@ def test_audit_mispaired_index(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+    # One SE and one PE fastq together is disallowed
     assert any(error['category'] == 'inconsistent index file'
                for error in errors_list)
+
     testapp.patch_json(
         fastq_index['@id'],
         {
@@ -970,5 +974,62 @@ def test_audit_mispaired_index(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+    # Two PE fastq that aren't paired with each other is disallowed
     assert any(error['category'] == 'inconsistent index file'
             for error in errors_list)
+
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                pacbio_fastq_indexed['@id'],
+                single_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    # A PacBio fastq with any second file is disallowed
+    assert any(error['category'] == 'inconsistent index file'
+            for error in errors_list)
+
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                bam_file['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    print(errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    # Any non-fastq file is disallowed
+    assert any(error['category'] == 'inconsistent index file'
+            for error in errors_list)
+
+    testapp.patch_json(
+        single_fastq_indexed['@id'],
+        {
+            'dataset': ATAC_experiment['@id']
+        }
+    )
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                single_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    # Indexed files from other experiments are disallowed
+    assert any(error['category'] == 'inconsistent index file'
+               for error in errors_list)
