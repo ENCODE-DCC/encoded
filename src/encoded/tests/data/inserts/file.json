@@ -3794,7 +3794,7 @@
         "derived_from": ["ENCFF324ATA"],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
     },
-        {
+    {
         "_test": "ATAC-seq enhancers reference",
         "award": "/awards/U54HG006996/",
         "lab": "encode-processing-pipeline",
@@ -3878,5 +3878,21 @@
         "md5sum": "8ab21565b23e202e0560c79756199801",
         "derived_from": ["ENCFF324ATA"],
         "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
+    },
+    {
+        "_test": "PacBio subreads",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/ali-mortazavi/",
+        "dataset": "ENCSR751ISO",
+        "replicate": "3b427e79-556e-4125-8102-f6723471807e",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "cb54ea6a-3fab-43c8-9e9b-f0217ac4035e",
+        "accession": "ENCFF333FSQ",
+        "file_format": "fastq",
+        "output_type": "reads",
+        "file_size": 67890,
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
+        "md5sum": "b72ba395c73713edf8b7cddd92dce969"
     }
 ]

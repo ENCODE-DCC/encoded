@@ -553,11 +553,6 @@ def audit_file_index_of(value, system):
                         incorrect_pairings += 1
             elif 'platform' in indexed_file and indexed_file['platform']['uuid'] in pacbio_platforms:
                 run_type.add('none')
-        print(run_type)
-        print(count_indexed_files)
-        print(indexed_files_with_expts)
-        print(indexed_fastq_with_pair)
-
         if len(indexed_fastq_with_pair) == 2:
             if indexed_fastq_with_pair[0][0] != indexed_fastq_with_pair[1][1]:
                 incorrect_pairings +=1
