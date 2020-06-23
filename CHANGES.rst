@@ -1,5 +1,48 @@
 Changes
 =======
+102.0 (released) snovault 1.0.45
+--------------------------------------------------------------------
+	1.	ENCD-5361-bug-fix-biosample-summary (#3378)
+	2.	Update to snovault 1.0.45 (#3376)
+	3.	ENCD-5268-analysis-object (#3323)
+		SNO-154 fix magic to add json types
+	5.	SNO-156 Use pyramid_retry 2.1.1 (#3359)
+	6.	ENCD-5353-cart-limit (#3375)
+	7.	ENCD-5237 add body map to reference epigenome (#3366)
+	8.	ENCD-5255-add-encode4-atac-seq-qc-audits (#3368)
+	9.	ENCD-5331-target-factorbook-dbxref (#3360)
+	10.	ENCD-5343-adjusting-internal-status-property (#3372)
+	11.	ENCD-5185-fix-replication-type-for-pooled-clone-sequencing-experiments (#3361)
+	12.	ENCD-5329-read-depth-audit-update (#3369)
+	13.	ENCD-5315 gemBS alignment QC (#3365)
+	14.	ENCD-5272-Model-donor-age-when-biosample-is-collected (#3362)
+	15.	ENCD-5341-update-deployment-tags (#3371)
+	16.	ENCD-5314-add-new-output-types (#3354)
+	17.	ENCD-5298-add-fileset-to-pipeline-object (#3358)
+	18.	ENCD-5336-matrix-desc (#3370)
+	19.	ENCD-5309-cart-locks (#3355)
+	20.	ENCD-5308-fix-react-error-on-summary-page (#3348)
+	21.	ENCD-5307-add-dnase-footprints-quality-metric (#3356)
+	22.	ENCD-5303-remove-other-plasmid-lib-type (#3347)
+	23.	ENCD-5239-fix-css-problem-on-examine-loci-reference-form(#3318)
+	24.	ENCD-3470-blocked-out-facet-setting (#3357)
+	25.	ENCD-5342-remove-page-titles (#3363)
+	26.	ENCD-5349-add-element-location-transgenic-expt (#3364)
+	27.	ENCD-5297-add-ATAC-adapters-to-library (#3353)
+	28.	ENCD-4438-remove-stage-timepoint (#3349)
+	29.	ENCD-5338-add-idr-ranked-peak-file-format-type (#3350)
+	30.	ENCD-5333-fix-google-dataset-author (#3344)
+	31.	ENCD-5327-fastq-demultiplex-analysis-step-type (#3342)
+	32.	ENCD-5113 fix curl command to get metadata.tsv(#3343)
+	33.	ENCD-5320-fix-sescc-element-url (#3337)
+	34.	ENCD-5321-remove-lib-frag-method-enum (#3339)
+	35.	ENCD-5306-update-hotspot-qc-metric (#3352)
+	36.	ENCD-5310-choose-analysis (#3340)
+	37.	ENCD-5285-table-lines (#3330)
+	38.	ENCD-5332-sequence-barcodes-reference-type (#3351)
+	39.	ENCD-4857-add-biosample_ontology.classification-to-matrix (#3331)
+	40.	ENCD-5328 fix released start date (#3346)
+
 v101.0 (released) snovault 1.0.44
 --------------------------------------------------------------------
 	1.	ENCD-5324-experiment-perturbed (#3338)
