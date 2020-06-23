@@ -1533,3 +1533,11 @@ def file_bed_IDR_thresholded_peaks_atac(testapp, ATAC_experiment, ATAC_bam, awar
         'status': 'in progress',  # avoid s3 upload codepath
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_21_22(file_subreads):
+    item = file_subreads.copy()
+    item.update({'notes': 'Prior entry.'})
+    item.pop('replicate')
+    return item

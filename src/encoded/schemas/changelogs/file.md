@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 22
+* bam files with *output_type: subreads* must have a replicate object specified.
+
 ### Minor changes since schema version 21
 * The *file_format_type* enum was updated to include *idr_ranked_peak*.
 * Added *chromosome sizes*, *ranked gRNAs*, and *smoothed methylation stage at CpG* to the enum list for *output_type*.

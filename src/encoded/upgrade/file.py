@@ -684,3 +684,14 @@ def file_20_21(value, system):
     if assay_type == 'DNase-seq' and output_type == 'enrichment':
         value['output_type'] = 'FDR cut rate'
     return
+
+
+@upgrade_step('file', '21', '22')
+def file_21_22(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5286
+    output_type = value.get('output_type', None)
+    notes = value.get('notes', '')
+    if output_type == 'subreads':
+        if 'replicate' not in value:
+            value['replicate'] = '70d6e704-bba5-4475-97b8-03bf717eecf3'
+            value['notes'] = notes + ' This file lacks its correct replicate specified.'
