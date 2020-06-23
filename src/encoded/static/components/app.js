@@ -1229,6 +1229,7 @@ class App extends React.Component {
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
                     <link href="https://fonts.googleapis.com/css?family=Mada:200,400,500,600,700" rel="stylesheet" />
+                    <link href="https://fonts.googleapis.com/css2?family=Acme&family=Julius+Sans+One&family=Mada:wght@200;400;500;600;700&family=Open+Sans:wght@300;600;700&family=Oswald:wght@200;400&family=Quicksand:wght@300;400;600&family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
                     <script async src="//www.google-analytics.com/analytics.js" />
                     <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
