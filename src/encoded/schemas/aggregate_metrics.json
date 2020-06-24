@@ -1,0 +1,90 @@
+{
+    "title": "Aggregate metrics",
+    "description": "Schema for submitting metadata for aggregate metrics.",
+    "id": "/profiles/aggregate_metrics.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/schema_version"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "quality_metric_of": {
+            "title": "Quality Metric of",
+            "description": "",
+            "type": "string",
+            "uniqueItems": true,
+            "comment": "See file.json for a list of available identifiers.",
+            "linkTo": "MatrixFile"
+        },
+        "filtered_bcs_transcriptome_union": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "total_reads": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "multi_transcriptome_total_raw_reads_per_filtered_bc": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "lowest_frac_reads_kept": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "library_metrics": {
+            "title": "",
+            "description": "",
+            "type": "array",
+            "items": {
+                "title": "",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "library": {
+                        "title": "",
+                        "type": "string",
+                        "linkTo": "Library"
+                    },
+                    "pre_normalization_raw_reads_per_filtered_bc": {
+                        "title": "",
+                        "type": "",
+                        "type": "integer"
+                    },
+                    "pre_normalization_cmb_reads_per_filtered_bc": {
+                        "title": "",
+                        "type": "",
+                       "type": "integer"
+                    },
+                    "frac_reads_kept": {
+                        "title": "",
+                        "type": "",
+                        "type": "integer"
+                    }
+                }
+            }
+        }
+    },
+    "facets": {},
+    "columns": {},
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/aggregate_metrics.md"
+}
+

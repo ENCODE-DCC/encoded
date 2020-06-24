@@ -1,0 +1,112 @@
+{
+    "title": "Antibody capture metrics",
+    "description": "Schema for submitting metadata for metrics of an antibody capture library.",
+    "id": "/profiles/antibody_capture_metrics.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/schema_version"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "quality_metric_of": {
+            "title": "Quality Metric of",
+            "description": "",
+            "type": "string",
+            "uniqueItems": true,
+            "comment": "See file.json for a list of available identifiers.",
+            "linkTo": "MatrixFile"
+        },
+        "number_of_reads": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "mean_reads_per_cell": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "valid_barcodes": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "fraction_reads_in_barcodes_with_high_umi_counts": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "sequencing_saturation": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "q30_bases_in_barcode": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "q30_bases_in_antibody_read": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "q30_bases_in_sample_index": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "q30_bases_in_umi": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "fraction_antibody_reads": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "fraction_antibody_reads_usable": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "antibody_reads_usable_per_cell": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "fraction_unrecognized_antibody": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "antibody_reads_in_cells": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "median_umis_per_cell": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        }
+    },
+    "facets": {},
+    "columns": {},
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/antibody_capture_metrics.md"
+}
