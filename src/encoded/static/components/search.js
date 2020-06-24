@@ -736,14 +736,6 @@ export const FacetList = (props) => {
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
-                    {(!supressTitle || clearButton) ?
-                        <div className="search-header-control">
-                            <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
-                            {context.clear_filters ?
-                                <ClearFilters searchUri={context.clear_filters} enableDisplay={clearButton} />
-                            : null}
-                        </div>
-                    : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
                     {facets.map((facet) => {
                         // Filter the filters to just the ones relevant to the current facet,
@@ -971,6 +963,12 @@ export class ResultTable extends React.Component {
                 />
                 {context.notification === 'Success' ?
                     <div className="search-results__result-list">
+                        <div className="search-header-control">
+                            <DocTypeTitle searchResults={context} wrapper={children => <h1>{children}</h1>} />
+                            {context.clear_filters ?
+                                <ClearFilters searchUri={context.clear_filters} />
+                            : null}
+                        </div>
                         <h4>Showing {results.length} of {total} {label}</h4>
                         <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
                         {!(actions && actions.length > 0) ?
