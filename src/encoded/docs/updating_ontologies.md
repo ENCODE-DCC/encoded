@@ -41,7 +41,7 @@ How to update the ontology versions
 6.  Update the following information
     
     Site release version: 103
-    ontology.json file: ontology-2020-05-07.json
+    ontology.json file: ontology-2020-06-24.json
     [UBERON release date]: 2020-05-06
     [OBI release date]: 2020-04-23
     [EFO release date]: 2020-06-15
