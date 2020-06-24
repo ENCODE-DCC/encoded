@@ -289,7 +289,7 @@
     "facets": {
         "assay_slims": {
             "title": "Assay type",
-            "openOnLoad": "True"
+            "open_on_load": true
         },
         "assay_title": {
             "title": "Assay title",
@@ -297,7 +297,7 @@
         },
         "status": {
             "title": "Status",
-            "openOnLoad": "True"
+            "open_on_load": true
         },
         "award.project": {
             "title": "Project"
@@ -315,7 +315,7 @@
             "title": "Target of assay",
             "type": "typeahead",
             "length": "long",
-            "openOnLoad": "True"
+            "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism"
@@ -327,7 +327,7 @@
             "title": "Biosample term name",
             "type": "typeahead",
             "length": "long",
-            "openOnLoad": "True"
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -369,7 +369,7 @@
         },
         "perturbed": {
             "title": "Perturbation",
-            "openOnLoad": "True"
+            "open_on_load": true
         },
         "date_released": {
             "title": "Date released",

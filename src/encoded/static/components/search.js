@@ -737,8 +737,8 @@ export const FacetList = (props) => {
             // sessions storage set to prevent this if-statement from running again on the field
             sessionStorage.setItem(newlyLoadedFacetStorage, field);
 
-            // auto-open facets based on selected terms
-            if ((relevantFilters && relevantFilters.length > 0) || facet.openOnLoad === 'True') {
+            // auto-open facets based on selected terms or it set in the schema
+            if ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true) {
                 facetList.add(facet.field);
             }
         }
