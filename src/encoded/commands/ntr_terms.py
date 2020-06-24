@@ -52,19 +52,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0003082": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "single cell isolation followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "scRNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0004774": {
         "assay": ['DNA accessibility'],
         "category": [],

@@ -1,5 +1,9 @@
 ## Changelog for award.json
 
+### Schema version 8
+
+* *assay_term_name* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
 ### Schema version 7
 
 * *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*

@@ -33,6 +33,7 @@ slim_shims = {
         'CL:0000837': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
         'CL:0001059': ['hematopoietic cell', 'progenitor cell'], # 'hematopoietic cell' is ontology-based
         'CL:0002351': ['progenitor cell'],
+        'CL:0011020': ['progenitor cell'],
         'EFO:0000681': ['cancer cell'],
         'EFO:0002074': ['cancer cell'],
         'EFO:0002179': ['cancer cell'],
@@ -46,6 +47,7 @@ slim_shims = {
         'CL:0002451': ['ectoderm'],
         'CL:0011012': ['ectoderm'],
         'CL:0002319': ['ectoderm'],
+        'CL:0011020': ['ectoderm'],
         'CL:2000054': ['endoderm'],
         'CL:0001053': ['endoderm', 'mesoderm'],
         'CL:0000842': ['endoderm', 'mesoderm'],
@@ -270,6 +272,7 @@ slim_shims = {
     },
     'system': {
         'CL:0000103': ['central nervous system'],
+        'CL:0011020': ['central nervous system'],
         'CL:0008030': ['central nervous system', 'peripheral nervous system'],
         'CL:0002319': ['central nervous system', 'peripheral nervous system'],
         'CL:0000540': ['central nervous system', 'peripheral nervous system'], # 'central nervous system' is ontology-based

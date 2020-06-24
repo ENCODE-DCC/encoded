@@ -407,7 +407,7 @@ def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
     assert 'examined_loci' not in value
 
 
-def test_upgrade_annotation_27_to_28(upgrader, annotation_28):
+def test_upgrade_annotation_28_to_29(upgrader, annotation_28):
     value = upgrader.upgrade(
         'annotation', annotation_28, current_version='28', target_version='29'
     )
@@ -423,3 +423,10 @@ def test_upgrade_experiment_28_to_29(upgrader, experiment_v28):
     assert 'pipeline_error_detail' not in value
     assert 'Previous internal_status' in value['notes']
     assert value['internal_status'] == 'unreviewed'
+
+
+def test_upgrade_experiment_29_to_30(upgrader, experiment_29):
+    assert experiment_29['schema_version'] == '29'
+    value = upgrader.upgrade('experiment', experiment_29, current_version='29', target_version='30')
+    assert value['schema_version'] == '30'
+    assert value['assay_term_name'] == 'single-cell RNA sequencing assay'

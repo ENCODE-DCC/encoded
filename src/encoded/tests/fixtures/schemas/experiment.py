@@ -730,3 +730,14 @@ def ATAC_experiment(testapp, lab, award, cell_free):
         'biosample_ontology': cell_free['uuid']
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_29(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '29',
+        'assay_term_name': 'single cell isolation followed by RNA-seq'
+    })
+    return properties

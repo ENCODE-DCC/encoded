@@ -33,7 +33,7 @@ controlRequiredAssayList = [
     'RAMPAGE',
     'CAGE',
     'eCLIP',
-    'single cell isolation followed by RNA-seq',
+    'single-cell RNA sequencing assay',
     'shRNA knockdown followed by RNA-seq',
     'siRNA knockdown followed by RNA-seq',
     'CRISPR genome editing followed by RNA-seq',
@@ -42,6 +42,8 @@ controlRequiredAssayList = [
 
 seq_assays = [
     'RNA-seq',
+    'polyA plus RNA-seq',
+    'polyA minus RNA-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'MeDIP-seq',
@@ -545,12 +547,12 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     '''
     if value.get('status') in ['revoked', 'deleted', 'replaced']:
         return
-    if value.get('assay_term_name') not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
+    if value.get('assay_term_name') not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'polyA plus RNA-seq', 'polyA minus RNA-seq', 'ChIP-seq', 'CAGE',
                                             'shRNA knockdown followed by RNA-seq',
                                             'siRNA knockdown followed by RNA-seq',
                                             'CRISPRi followed by RNA-seq',
                                             'CRISPR genome editing followed by RNA-seq',
-                                            'single cell isolation followed by RNA-seq',
+                                            'single-cell RNA sequencing assay',
                                             'whole-genome shotgun bisulfite sequencing',
                                             'genetic modification followed by DNase-seq',
                                             'microRNA-seq',
@@ -593,12 +595,12 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             '/data-standards/dnase-seq/')
         return
 
-    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
+    if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'polyA minus RNA-seq', 'polyA plus RNA-seq', 'CAGE',
                                     'shRNA knockdown followed by RNA-seq',
                                     'siRNA knockdown followed by RNA-seq',
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
-                                    'single cell isolation followed by RNA-seq',
+                                    'single-cell RNA sequencing assay',
                                     'microRNA-seq',
                                     'icSHAPE', 'long read RNA-seq']:
         yield from check_experiment_rna_seq_standards(
@@ -1177,7 +1179,7 @@ def check_experiment_long_rna_standards(experiment,
                         pipeline_title,
                         pipelines[0],
                         standards_link)
-                elif experiment['assay_term_name'] in ['single cell isolation followed by RNA-seq']:
+                elif experiment['assay_term_name'] in ['single-cell RNA sequencing assay']:
                     yield from check_file_read_depth(
                         f, read_depth, 5000000, 5000000, 500000,
                         experiment['assay_term_name'],
@@ -1203,7 +1205,7 @@ def check_experiment_long_rna_standards(experiment,
                               desired_assembly,
                               desired_annotation)
 
-    if experiment['assay_term_name'] != 'single cell isolation followed by RNA-seq':
+    if experiment['assay_term_name'] != 'single-cell RNA sequencing assay':
         yield from check_spearman(
             mad_metrics, experiment['replication_type'],
             0.9, 0.8, pipeline_title)
@@ -1641,7 +1643,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                                 ('/files/ENCFF001RTP/' == f) or
                                 ('/files/ENCFF001RTO/' == f and
                                  experiment['assay_term_name'] ==
-                                 'single cell isolation followed by RNA-seq')):
+                                 'single-cell RNA sequencing assay')):
                             ercc_flag = True
 
         if ercc_flag is False:
@@ -2788,7 +2790,7 @@ def audit_experiment_replicated(value, system, excluded_types):
     Excluding RNA-bind-and-Seq from the replication requirment
     Excluding genetic modification followed by DNase-seq from the replication requirement
     '''
-    if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
+    if value['assay_term_name'] in ['single-cell RNA sequencing assay',
                                     'RNA Bind-n-Seq',
                                     'genetic modification followed by DNase-seq']:
         return
@@ -3055,7 +3057,7 @@ def audit_experiment_replicates_biosample(value, system, excluded_types):
 
             else:
                 if biosample['accession'] != biological_replicates_dict[bio_rep_num] and \
-                   assay_name != 'single cell isolation followed by RNA-seq':
+                   assay_name != 'single-cell RNA sequencing assay':
                     detail = ('Experiment {} has technical replicates '
                         'associated with the different biosamples'.format(
                             audit_link(path_to_text(value['@id']), value['@id'])
@@ -3236,7 +3238,7 @@ def audit_experiment_control(value, system, excluded_types):
 
     # single cell RNA-seq in E4 do not require controls (ticket WOLD-6)
     # single cell RNA-seq in E3 also do not require controls (ENCD-4984, WOLD-52)
-    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
+    if value.get('assay_term_name') == 'single-cell RNA sequencing assay' and \
             check_award_condition(value, [
                 "ENCODE4",
                 "ENCODE3",
@@ -3461,7 +3463,7 @@ def audit_experiment_spikeins(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') != 'RNA-seq':
+    if value.get('assay_term_name') not in ['RNA-seq', 'polyA plus RNA-seq', 'polyA minus RNA-seq']:
         return
 
     for rep in value['replicates']:
@@ -3826,7 +3828,9 @@ def audit_RNA_library_RIN(value, system, excluded_types):
                  'OBI:0001864', # RAMPAGE
                  'OBI:0001463', # RNA microarray
                  'OBI:0001850', # RNA-PET
-                 'OBI:0001271', # RNA-seq (poly(A)-, poly(A)+, small, and total)
+                 'OBI:0001271', # RNA-seq (small and total)
+                 'OBI:0002571', # polyA plus RNA-seq
+                 'OBI:0002572', # polyA minus RNA-seq
                  'NTR:0000762', # shRNA RNA-seq
                  'NTR:0000763'  # siRNA RNA-seq
                 ]

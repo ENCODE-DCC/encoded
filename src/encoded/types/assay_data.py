@@ -14,7 +14,7 @@ assay_terms = {
       'RAMPAGE': 'OBI:0001864',
       'comparative genomic hybridization by array': 'OBI:0001393',
       'CAGE': 'OBI:0001674',
-      'scRNA-seq': 'OBI:0002631',
+      'single-cell RNA sequencing assay': 'OBI:0002631',
       'Repli-seq': 'OBI:0001920',
       'microRNA-seq': 'OBI:0001922',
       'microRNA counts': 'OBI:0002142',
