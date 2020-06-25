@@ -37,16 +37,6 @@
         "schema_version": {
             "default": "1"
         },
-        "preservation_method": {
-            "title": "Preservation method",
-            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
-            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
-            "type": "string",
-            "enum": [
-                "cryopreservation",
-                "flash-freezing"
-            ]
-        },
         "postmortem_interval": {
             "title": "Post-mortem interval",
             "description": "The amount of time elapsed since death.",
