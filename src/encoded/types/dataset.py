@@ -400,7 +400,7 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'files.library',
+        'files.library'
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -465,6 +465,45 @@ class Annotation(FileSet, CalculatedVisualize):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Biochemical profile inputs",
+        "description": "The data used to generate a cCRE annotation for a given cell type or biosample",
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
+    })
+    def biochemical_inputs(
+        self,
+        request,
+        annotation_type,
+        encyclopedia_version=None,
+        contributing_files=None
+    ):
+        inputs_list = []
+        if encyclopedia_version is not None and \
+            encyclopedia_version in (
+                'ENCODE v4', 'ENCODE v5', 'ENCODE v6'
+                ):
+            if annotation_type == 'candidate Cis-Regulatory Elements':
+                if contributing_files is not None:
+                    for input_file in contributing_files:
+                        file = request.embed(input_file, '@@object')
+                        if file['dataset']:
+                            properties = request.embed(file['dataset'], '@@object')
+                            if 'assay_term_name' in properties:
+                                if properties['assay_term_name'] == 'ChIP-seq':
+                                    inputs_list.append(properties['target'])
+                                elif properties['assay_term_name'] == 'DNase-seq':
+                                    inputs_list.append('DNase-seq')
+                            elif file['output_type'] == 'candidate Cis-Regulatory Elements':
+                                derived_from_file = request.embed(file['derived_from'][0], '@@object')
+                                if derived_from_file['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)':
+                                    inputs_list.append('rDHS')
+                                if derived_from_file['output_type'] == 'consensus DNase hypersensitivity sites (cDHSs)':
+                                    inputs_list.append('cDHS')
+        return list(inputs_list)
 
 
 @collection(
