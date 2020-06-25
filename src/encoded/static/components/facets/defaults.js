@@ -1035,7 +1035,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
                 onKeyDown={e => handleKeyDown(e, isExpanded, facet.field)}
             >
                 <TitleComponent facet={facet} results={results} mode={mode} pathname={pathname} queryString={queryString} />
-                <i className={`icon icon-chevron-${isExpanded ? 'up' : 'down'}`} />
+                <i className={`facet-chevron icon icon-chevron-${isExpanded ? 'up' : 'down'}`} />
             </div>
             <SelectedFilters facet={facet} selectedTerms={relevantFilters} />
             <div className={`${disabledCss(relevantFilters) ? 'facet-list-disabled' : ''}`}>
