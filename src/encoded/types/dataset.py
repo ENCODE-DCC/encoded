@@ -298,7 +298,7 @@ class FileSet(Dataset):
     schema = load_schema('encoded:schemas/file_set.json')
     embedded = Dataset.embedded
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Contributing files",
         "type": "array",
         "items": {
@@ -466,7 +466,7 @@ class Annotation(FileSet, CalculatedVisualize):
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
-    @calculated_property(schema={
+    @calculated_property(condition='contributing_files', schema={
         "title": "Biochemical profile inputs",
         "description": "The data used to generate a cCRE annotation for a given cell type or biosample",
         "type": "array",
@@ -481,6 +481,7 @@ class Annotation(FileSet, CalculatedVisualize):
         encyclopedia_version=None,
         contributing_files=None
     ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5288
         inputs_list = []
         if encyclopedia_version is not None and \
             encyclopedia_version in (
