@@ -48,6 +48,18 @@
             "comment": "",
             "type": "string"
         },
+        "mycoplasma_testing_method": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "mycoplasma_testing_results": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
         "derived_from": {
             "items": {
                 "comment": "",
