@@ -708,44 +708,39 @@ export const FacetList = (props) => {
 
     const [expandedFacets, setExpandFacets] = React.useState(new Set());
 
+    // Get facets from storage that need to be expanded
     React.useEffect(() => {
-        // Get facets from storage that need to be expanded
         const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
         const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
-
 
         sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
         setExpandFacets(facetList); // initalize facet collapse-state
     }, []);
 
-    const setFieldAsNotNewlyLoaded = (facet, relevantFilters) => {
-        if (!facet || !facet.field) {
-            return;
-        }
-
-        // Get facets from storage that need to be expanded
+    // Only on initialize load, get facets from facet-section and schema that need to be expanded
+    React.useEffect(() => {
         const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
         const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
-        const field = facet.field;
 
-        // This determines if facet has just loaded check if anything needs
-        // to be expanded
-        const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
-        const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+        facets.forEach((facet) => {
+            const field = facet.field;
+            const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+            const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
 
-        if (!isFacetNewlyLoaded) {
-            // sessions storage set to prevent this if-statement from running again on the field
-            sessionStorage.setItem(newlyLoadedFacetStorage, field);
+            const relevantFilters = context && context.filters.filter(filter => (
+                filter.field === facet.field || filter.field === `${facet.field}!`
+            ));
 
-            // auto-open facets based on selected terms or it set in the schema
-            if ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true) {
+            // auto-open facets based on selected terms (see url) or it set in the schema (open_on_load)
+            if (!isFacetNewlyLoaded && ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true)) {
+                sessionStorage.setItem(newlyLoadedFacetStorage, field); // ensure this is not called again on this active session storage
                 facetList.add(facet.field);
             }
-        }
+        });
 
         sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
         setExpandFacets(facetList); // initalize facet collapse-state
-    };
+    }, [context, facets]);
 
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
@@ -843,6 +838,7 @@ export const FacetList = (props) => {
                         // facet if a renderer exists. A non-existing renderer supresses the
                         // display of a facet.
                         const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                        const isExpanded = expandedFacets.has(facet.field);
                         return FacetRenderer && <FacetRenderer
                             key={facet.field}
                             facet={facet}
@@ -852,10 +848,9 @@ export const FacetList = (props) => {
                             pathname={parsedUrl.pathname}
                             queryString={parsedUrl.query}
                             onFilter={onFilter}
-                            expandedFacets={expandedFacets}
+                            isExpanded={isExpanded}
                             handleExpanderClick={handleExpanderClick}
                             handleKeyDown={handleKeyDown}
-                            setFieldAsNotNewlyLoaded={setFieldAsNotNewlyLoaded}
                         />;
                     })}
                 </div>

@@ -923,7 +923,7 @@ FacetTerms.defaultProps = {
 /**
  * Display the default text facet with optional typeahead field.
  */
-export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation, expandedFacets, handleExpanderClick, handleKeyDown, setFieldAsNotNewlyLoaded }) => {
+export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, onFilter, allowNegation, isExpanded, handleExpanderClick, handleKeyDown }) => {
     const [initialState, setInitialState] = React.useState(true);
     const [topShadingVisible, setTopShadingVisible] = React.useState(false);
     const [bottomShadingVisible, setBottomShadingVisible] = React.useState(false);
@@ -1010,18 +1010,10 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         setInitialState(false);
     }, [handleScrollShading, facet, typeaheadTerm]);
 
-    React.useEffect(() => {
-        setFieldAsNotNewlyLoaded(facet, relevantFilters);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     // Callback to handle typeahead input events.
     const handleTypeAhead = (event) => {
         setTypeaheadTerm(event.target.value);
     };
-
-    const isExpanded = expandedFacets && expandedFacets.has(facet.field);
 
     return (
         <div className="facet">
@@ -1089,14 +1081,12 @@ DefaultFacet.propTypes = {
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
-    /** List of expanded facets */
-    expandedFacets: PropTypes.object,
+    /** True if facet is to be expanded */
+    isExpanded: PropTypes.bool,
     /** Expand or collapse facet */
     handleExpanderClick: PropTypes.func,
     /** Handles key-press and toggling facet */
     handleKeyDown: PropTypes.func,
-    /** Mark field as newly loaded */
-    setFieldAsNotNewlyLoaded: PropTypes.func,
 };
 
 DefaultFacet.defaultProps = {
@@ -1104,8 +1094,7 @@ DefaultFacet.defaultProps = {
     queryString: '',
     onFilter: null,
     allowNegation: true,
-    expandedFacets: new Set([]),
+    isExpanded: false,
     handleExpanderClick: () => {},
     handleKeyDown: () => {},
-    setFieldAsNotNewlyLoaded: () => {},
 };
