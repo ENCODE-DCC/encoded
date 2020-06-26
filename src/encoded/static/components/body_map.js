@@ -620,15 +620,18 @@ class BodyMap extends React.Component {
                     <ul className="body-list-inner">
                         {Object.keys(SystemsList).map(b =>
                             <li key={b}>
-                                <button
-                                    className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                <span
                                     id={b}
+                                    className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                    role="button"
+                                    tabIndex="0"
                                     onClick={e => this.chooseOrgan(e)}
+                                    onKeyPress={e => this.chooseOrgan(e)}
                                     onMouseEnter={e => highlightOrgan(e)}
                                     onMouseLeave={unHighlightOrgan}
                                 >
                                     {b}
-                                </button>
+                                </span>
                             </li>
                         )}
                         <button className="clear-organs" onClick={this.clearOrgans}>
@@ -648,15 +651,18 @@ class BodyMap extends React.Component {
                         <ul className="body-list-inner">
                             {Object.keys(BodyList).map(b =>
                                 <li key={b}>
-                                    <button
+                                    <span
+                                        id={b}
                                         className={`body-list-element ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                        role="button"
+                                        tabIndex="0"
                                         onClick={e => this.chooseOrgan(e)}
+                                        onKeyPress={e => this.chooseOrgan(e)}
                                         onMouseEnter={e => highlightOrgan(e)}
                                         onMouseLeave={unHighlightOrgan}
-                                        id={b}
                                     >
                                         {b}
-                                    </button>
+                                    </span>
                                 </li>
                             )}
                         </ul>
@@ -664,8 +670,8 @@ class BodyMap extends React.Component {
                     <div className="body-inset-container">
                         {Object.keys(CellsList).map(image =>
                             <button
-                                className={`body-inset ${image.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, image) ? 'active' : ''}`}
                                 id={image}
+                                className={`body-inset ${image.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, image) ? 'active' : ''}`}
                                 onClick={e => this.chooseOrgan(e)}
                                 onMouseEnter={e => highlightOrgan(e)}
                                 onMouseLeave={unHighlightOrgan}
@@ -684,15 +690,18 @@ class BodyMap extends React.Component {
                         <ul className="body-list-inner">
                             {Object.keys(CellsList).map(b =>
                                 <li key={b}>
-                                    <button
-                                        className={`body-list-element ${b.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                    <span
                                         id={b}
+                                        className={`body-list-element ${b.replace(' ', '-')} ${checkClass(this.state.selectedOrgan, b) ? 'active' : ''}`}
+                                        role="button"
+                                        tabIndex="0"
                                         onClick={e => this.chooseOrgan(e)}
+                                        onKeyPress={e => this.chooseOrgan(e)}
                                         onMouseEnter={e => highlightOrgan(e)}
                                         onMouseLeave={unHighlightOrgan}
                                     >
                                         {b}
-                                    </button>
+                                    </span>
                                 </li>
                             )}
                         </ul>

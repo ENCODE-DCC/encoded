@@ -30,6 +30,7 @@ $row-data-header-width: 200px;
         right: 0;
         margin: auto;
         top: 120px;
+        margin: auto auto 30px;
         @media screen and (max-width: $screen-sm-min) {
             width: 95%;
         }
@@ -119,6 +120,7 @@ $row-data-header-width: 200px;
         .body-list-inner {
             .body-list-element {
                 width: auto;
+                white-space: nowrap;
             }
         }
     }
@@ -271,6 +273,27 @@ $row-data-header-width: 200px;
             }
         }
     }
+    .filter-container {
+        font-family: Mada;
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+    }
+    .results-count {
+        font-family: Mada;
+        font-size: 1rem;
+        margin: 20px 0;
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+        .bold-total {
+            font-size: 1.1rem;
+            @media screen and (max-width: $screen-xs-min) {
+                font-size: 0.9rem;
+            }
+        }
+        text-align: left;
+    }
     .matrix-header__filter-controls {
         display: block;
         flex: unset;
@@ -305,20 +328,6 @@ $row-data-header-width: 200px;
         .general-search-entry {
             padding-right: 0;
         }
-    }
-    .results-count {
-        font-size: 1rem;
-        margin: 0 0 20px;
-        @media screen and (max-width: $screen-xs-min) {
-            font-size: 0.8rem;
-        }
-        .bold-total {
-            font-size: 1.1rem;
-            @media screen and (max-width: $screen-xs-min) {
-                font-size: 0.9rem;
-            }
-        }
-        text-align: left;
     }
     .matrix-facet-container {
         border-top: 1px solid #ccc;
