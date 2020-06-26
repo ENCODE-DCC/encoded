@@ -238,6 +238,8 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     // in the matrix header.
     const sortedCols = Object.keys(colMap).map(assayColKey => colMap[assayColKey]).sort((colInfoA, colInfoB) => colInfoA.col - colInfoB.col);
 
+    console.log(sortedCols);
+
     const colCategoryNames = [];
     sortedCols.forEach((col) => {
         if (col.subcategory) {
@@ -253,6 +255,9 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 
     const { rowCategoryData, rowCategoryNames } = getRowCategories();
     const rowKeys = ['column-categories'];
+
+    console.log(rowCategoryData);
+    console.log(rowCategoryNames);
 
     // loop through row data to combine gendered mouse stage/ages into single row
     const combinedRowCategoryData = JSON.parse(JSON.stringify(rowCategoryData));
@@ -371,9 +376,12 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     let dataTableCount = 0;
     newRowCategoryData.forEach((rowCategoryBucket) => {
         const rowSubcategoryBuckets = rowCategoryBucket[rowSubcategory].buckets;
+        console.log(rowSubcategoryBuckets);
         const subCategorySums = analyzeSubCategoryData(rowSubcategoryBuckets, COL_CATEGORY, colMap, colCount, stageFilter);
         dataTableCount += subCategorySums.reduce((a, b) => a + b);
     });
+
+    console.log(newRowCategoryData);
 
     // Generate the main table content including the data hierarchy, where the upper level of the
     // hierarchy gets referred to here as "rowCategory" and the lower-level gets referred to as
@@ -486,8 +494,11 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 
             // Add a single term-name row's data and left header to the matrix.
             rowKeys[matrixRow] = `${rowCategoryBucket.key}|${rowSubcategoryBucket.key}`;
+            console.log(rowCategoryBucket.key);
+            console.log(rowSubcategoryBucket.key);
             matrixRow += 1;
             const newLabel = rowSubcategoryBucket.key.split(rowCategoryBucket.key)[1];
+            console.log(newLabel);
             const labelStage = newLabel.split(' (')[0];
             const labelLength = newLabel.split('(')[1].slice(0, -1);
             return {
