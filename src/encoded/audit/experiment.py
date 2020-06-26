@@ -2932,7 +2932,7 @@ def audit_experiment_technical_replicates_same_library(value, system, excluded_t
 
 
 def audit_experiment_tagging_genetic_modification(value, system, excluded_types):
-    if check_award_condition(value, ["ENCODE4"]):
+    if check_award_condition(value, ["ENCODE4"]) and value.get('assay_term_name') == 'ChIP-seq':
         level = 'ERROR'
     else:
         level = 'WARNING'
@@ -2956,8 +2956,7 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                 modification['purpose'] == 'tagging' and
                 not modification.get('characterizations')):
                     detail = ('Genetic modification {} performed for the '
-                        'purpose of {} is missing validating characterization '
-                        'that is required by ENCODE4 standards.'.format(
+                        'purpose of {} is missing validating characterization.'.format(
                             audit_link(path_to_text(modification['@id']), modification['@id']),
                             modification['purpose']
                         )
@@ -2965,7 +2964,8 @@ def audit_experiment_tagging_genetic_modification(value, system, excluded_types)
                     yield AuditFailure(
                         'missing genetic modification characterization',
                         detail,
-                        level)
+                        level
+                    )
 
 
 def is_tagging_genetic_modification(modification):
@@ -2975,7 +2975,7 @@ def is_tagging_genetic_modification(modification):
 
 
 def audit_experiment_biosample_characterization(value, system, excluded_types):
-    detail = ''
+    detail_list = []
     no_characterizations = False
     if 'replicates' in value:
         needs_characterization_flag = False
@@ -3002,23 +3002,23 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                     for mod in modifications:
                         mods.append(mod['@id'])
                     mods_link = [audit_link(path_to_text(mod), mod) for mod in mods]
-                    detail += ('Biosample {} which has been modified by genetic modification {} '
-                        'is missing characterization validating the modification, '.format(
+                    detail_list.append('Biosample {} which has been modified by genetic modification {} '
+                        'is missing characterization validating the modification.'.format(
                             audit_link(path_to_text(biosample['@id']), biosample['@id']),
                             ', '.join(mods_link)
                         )
                     )
-        if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag:
+        if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag and value.get('assay_term_name') == 'ChIP-seq':
             level = 'ERROR'
         else:
             level = 'WARNING'
         if no_characterizations:
-            detail = 'B' + detail[1:-2] + '.'
-            yield AuditFailure(
-                'missing biosample characterization',
-                detail,
-                level
-            )
+            for detail in detail_list:
+                yield AuditFailure(
+                    'missing biosample characterization',
+                    detail,
+                    level
+                )
 
 
 def audit_experiment_replicates_biosample(value, system, excluded_types):
