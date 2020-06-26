@@ -497,7 +497,8 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
             console.log(rowCategoryBucket.key);
             console.log(rowSubcategoryBucket.key);
             matrixRow += 1;
-            const newLabel = rowSubcategoryBucket.key.split(rowCategoryBucket.key)[1];
+            const splitBucket = rowSubcategoryBucket.key.split(rowCategoryBucket.key);
+            const newLabel = splitBucket[splitBucket.length - 1];
             console.log('problem is here');
             console.log(rowSubcategoryBucket.key.split(rowCategoryBucket.key));
             console.log(newLabel);
