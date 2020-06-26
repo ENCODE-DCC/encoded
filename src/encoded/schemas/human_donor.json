@@ -218,6 +218,50 @@
                 "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(NIH:NIHhESC-[\\d]{2}-[\\d]{4})|(GEO:SAMN\\d+))$"
             }
         },
+        "genotype": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "times_pregnant": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "family_history_breast_cancer": {
+            "title": "Family history breast cancer",
+            "description": "",
+            "comment":"",
+            "type":  "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "",
+                "description": "",
+                "comment": "For human biosamples, see human_donor.json for available identifiers.",
+                "type": "string",
+                "enum": [
+                    "none",
+                    "mother",
+                    "sister",
+                    "daughter",
+                    "maternal aunt",
+                    "maternal grandmother",
+                    "maternal cousin",
+                    "sororal niece",
+                    "paternal aunt",
+                    "paternal grandmother",
+                    "paternal cousin",
+                    "fraternal niece",
+                    "maternal grandmother's mother",
+                    "maternal grandfather's mother",
+                    "paternal grandmother's mother",
+                    "paternal grandfather's mother"
+                ]
+            }
+        },
         "cause_of_death": {
             "title": "",
             "description": "",

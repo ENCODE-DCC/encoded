@@ -11,6 +11,6 @@
         "derived_from": [
             "ENCBS000AAA"
         ],
-        "derivation_process": "organoid growth"
+        "derivation_process": ["organoid growth"]
     }
 ]

@@ -9,7 +9,7 @@
         "derived_from": [
             "ENCDO058AAA"
         ],
-        "derivation_process": "physical separation",
+        "derivation_process": ["physical separation"],
         "source": "barbara-wold"
     },
     {
@@ -22,7 +22,7 @@
         "derived_from": [
             "ENCDO017AAA"
         ],
-        "derivation_process": "physical separation",
+        "derivation_process": ["physical separation"],
         "source": "barbara-wold"
     },
     {
@@ -42,7 +42,7 @@
         "derived_from": [
             "ENCDO017AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS492ENC",
@@ -55,7 +55,7 @@
         "derived_from": [
             "ENCDO058AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS493ENC",
@@ -68,7 +68,7 @@
         "derived_from": [
             "ENCDO000HUM"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS044RNA",
@@ -91,7 +91,7 @@
         "derived_from": [
             "ENCDO106AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "status": "released",
@@ -106,7 +106,7 @@
         "derived_from": [
             "ENCDO275AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "status": "released",
@@ -121,7 +121,7 @@
         "derived_from": [
             "ENCDO276AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS376EJL",
@@ -136,7 +136,7 @@
         "derived_from": [
             "ENCDO568ESC"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS009WOO",
@@ -152,7 +152,7 @@
         "derived_from": [
             "ENCDO000AAK"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS061XGD",
@@ -168,7 +168,7 @@
         "derived_from": [
             "ENCDO003HUM"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS204NZH",
@@ -184,7 +184,7 @@
         "derived_from": [
             "ENCDO793LXB"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS123AAA",
@@ -197,7 +197,7 @@
         "derived_from": [
             "ENCDO012AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS123AAB",
@@ -210,7 +210,7 @@
         "derived_from": [
             "ENCDO075AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS123AAC",
@@ -223,7 +223,7 @@
         "derived_from": [
             "ENCDO015AAA"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS123AAD",
@@ -236,7 +236,7 @@
         "derived_from": [
             "ENCDO000MUS"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     },
     {
         "accession": "ENCBS123AAE",
@@ -249,6 +249,6 @@
         "derived_from": [
             "ENCDO003MUS"
         ],
-        "derivation_process": "physical separation"
+        "derivation_process": ["physical separation"]
     }
 ]

@@ -19,7 +19,8 @@
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/description"},
-        {"$ref": "mixins.json#/dbxrefs"}
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/url"}
     ],
     "dependencies": {
         "status": {

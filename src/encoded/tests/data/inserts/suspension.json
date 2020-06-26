@@ -9,7 +9,7 @@
         "derived_from": [
             "ENCBS002ABC"
         ],
-        "derivation_process": "aliquot suspension",
+        "derivation_process": ["aliquot suspension"],
         "suspension_type": "cell"
     },
     {
@@ -22,7 +22,7 @@
         "derived_from": [
             "ENCBS002ABC"
         ],
-        "derivation_process": "aliquot suspension",
+        "derivation_process": ["aliquot suspension"],
         "suspension_type": "cell"
     },
     {
@@ -35,7 +35,7 @@
         "derived_from": [
             "ENCBS001ABC"
         ],
-        "derivation_process": "aliquot suspension",
+        "derivation_process": ["aliquot suspension"],
         "suspension_type": "cell"
     },
     {
@@ -48,7 +48,7 @@
         "derived_from": [
             "ENCBS001ABC"
         ],
-        "derivation_process": "aliquot suspension",
+        "derivation_process": ["aliquot suspension"],
         "suspension_type": "cell"
     },
     {
@@ -61,7 +61,7 @@
         "derived_from": [
             "ENCBS200XYZ"
         ],
-        "derivation_process": "tissue dissociaton",
+        "derivation_process": ["tissue dissociaton"],
         "single_cell_isolation_method": "10X",
         "single_cell_isolation_method_version": 3,
         "suspension_type": "cell"
@@ -76,7 +76,7 @@
         "derived_from": [
             "ENCBS100XYZ"
         ],
-        "derivation_process": "tissue dissociaton",
+        "derivation_process": ["tissue dissociaton"],
         "single_cell_isolation_method": "10X",
         "single_cell_isolation_method_version": 3,
         "suspension_type": "cell"
@@ -99,7 +99,7 @@
         "derived_from": [
             "ENCBS222SCS"
         ],
-        "derivation_process": "organoid dissociation"
+        "derivation_process": ["organoid dissociation"]
     },
     {
         "accession": "ENCBS128ENC",
@@ -114,7 +114,7 @@
         "derived_from": [
             "ENCBS356AAA"
         ],
-        "derivation_process": "cell dissociaton"
+        "derivation_process": ["cell dissociaton"]
     },
     {
         "accession": "ENCBS175ENC",
@@ -132,7 +132,7 @@
         "derived_from": [
             "ENCDO017AAA"
         ],
-        "derivation_process": "cell dissociaton"
+        "derivation_process": ["cell dissociaton"]
     },
     {
         "accession": "ENCBS417ENC",
@@ -152,7 +152,7 @@
         "derived_from": [
             "ENCBS123AAC"
         ],
-        "derivation_process": "cell dissociaton"
+        "derivation_process": ["cell dissociaton"]
     },
     {
         "accession": "ENCBS000RNA",
@@ -177,7 +177,7 @@
         "derived_from": [
             "ENCBS123AAC"
         ],
-        "derivation_process": "cell dissociaton"
+        "derivation_process": ["cell dissociaton"]
     },
     {
         "accession": "ENCBS175SCS",
@@ -189,7 +189,7 @@
         "derived_from": [
             "ENCBS123AAE"
         ],
-        "derivation_process": "cell dissociaton"
+        "derivation_process": ["cell dissociaton"]
     },
     {
         "accession": "ENCBS111JAH",
@@ -201,7 +201,7 @@
         "derived_from": [
             "ENCBS009WOO"
         ],
-        "derivation_process": "cell dissociaton"
+        "derivation_process": ["cell dissociaton"]
     },
     {
         "accession": "ENCBS222JAH",
@@ -214,6 +214,6 @@
             "ENCBS128ENC",
             "ENCBS111JAH"
         ],
-        "derivation_process": "pooling"
+        "derivation_process": ["pooling"]
     }
 ]

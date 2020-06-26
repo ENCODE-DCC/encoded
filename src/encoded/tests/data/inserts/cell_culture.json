@@ -26,7 +26,7 @@
         "derived_from": [
             "ENCBS128ENC"
         ],
-        "derivation_process": "cell differentation"
+        "derivation_process": ["cell differentation"]
     },
     {
         "accession": "ENCBS001AAA",
@@ -53,7 +53,7 @@
         "derived_from": [
             "ENCBS417ENC"
         ],
-        "derivation_process": "cell differentation"
+        "derivation_process": ["cell differentation"]
     },
     {
         "accession": "ENCBS039ENC",
@@ -73,7 +73,7 @@
         "derived_from": [
             "ENCBS417ENC"
         ],
-        "derivation_process": "cell differentation"
+        "derivation_process": ["cell differentation"]
     },
     {
         "accession": "ENCBS044ENC",
@@ -88,6 +88,6 @@
         "derived_from": [
             "ENCBS175SCS"
         ],
-        "derivation_process": "cell differentation"
+        "derivation_process": ["cell differentation"]
     }
 ]

@@ -162,12 +162,6 @@
             "comment": "",
             "type": "string"
         },
-        "genotype": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
-        },
         "derived_from": {
             "title": "Derived from",
             "description": "",
@@ -178,7 +172,12 @@
             "title": "",
             "description": "",
             "comment": "",
-            "type": "string"
+            "type": "array",
+            "items": {
+                "title": "",
+                "description": "",
+                "type":  "string"
+            }
         },
         "preservation_method": {
             "title": "Preservation method",
