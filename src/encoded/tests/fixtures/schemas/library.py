@@ -259,3 +259,13 @@ def library_schema_12(library, award, lab, biosample_human_2):
             }
         ]
     }
+
+
+@pytest.fixture
+def library_schema_13(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'depleted_in_term_name': ['polyadenylated mRNA'],
+        'nucleic_acid_term_name': 'polyadenylated mRNA'
+    }

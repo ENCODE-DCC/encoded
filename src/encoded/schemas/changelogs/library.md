@@ -1,5 +1,9 @@
 ## Changelog for library.json
 
+### Schema version 14
+
+* Added dependency that does not allow *nucleic_acid_term_name* and *depleted_in_term_name* to have the same value of *polyadenylated mRNA*.
+
 ### Schema version 13
 
 * The *adapter* enum list of *type* options was adjusted to make sequencing adapters specific to each read; now *read1 5' adapter*, *read2 5' adapter*, *read1 3' adapter*, and *read2 3' adapter* are available.

@@ -85,3 +85,10 @@ def test_library_upgrade_12_to_13(upgrader, library_schema_12):
     assert value['schema_version'] == '13'
     assert value['adapters'][0]['type'] == 'read1 3\' adapter'
     assert value['adapters'][1]['type'] == 'unspecified adapter'
+
+
+def test_library_upgrade_13_to_14(upgrader, library_schema_13):
+    value = upgrader.upgrade('library', library_schema_13, target_version='14')
+    assert value['schema_version'] == '14'
+    assert value['nucleic_acid_term_name'] == 'RNA'
+    assert value['notes'] == 'The nucleic_acid_term_name of this library was automatically upgraded by ENCD-5368.'
