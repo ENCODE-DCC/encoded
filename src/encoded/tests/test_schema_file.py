@@ -243,3 +243,9 @@ def test_hotspots_prefix_dependency_requirement(testapp, file_hotspots_prefix, f
     testapp.post_json('/file', file_hotspots1_reference, status=422)
     file_hotspots1_reference.update({'hotspots_prefix': 'mm10'})
     testapp.post_json('/file', file_hotspots1_reference, status=201)
+
+
+def test_subreads_bam_replicate(testapp, file_subreads):
+    item = file_subreads.copy()
+    item.pop('replicate', None)
+    testapp.post_json('/file', item, status=422)

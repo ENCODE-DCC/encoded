@@ -152,3 +152,11 @@ def test_file_upgrade_20_to_21(root, testapp, upgrader, registry, file_dnase_enr
     value = upgrader.upgrade('file', file_chip_enrichment, registry=registry, current_version='20', target_version='21')
     assert value['schema_version'] == '21'
     assert value['output_type'] == 'enrichment'
+
+
+def test_file_upgrade_21_to_22(root, testapp, upgrader, registry, file_21_22):
+    # https://encodedcc.atlassian.net/browse/ENCD-5286
+    value = upgrader.upgrade('file', file_21_22, current_version='21', target_version='22')
+    assert value['schema_version'] == '22'
+    assert value['replicate'] == '70d6e704-bba5-4475-97b8-03bf717eecf3'
+    assert value['notes'] == 'Prior entry. This file lacks its correct replicate specified.'
