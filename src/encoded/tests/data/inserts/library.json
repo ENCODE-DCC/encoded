@@ -18,7 +18,7 @@
         ],
         "construction_platform": "10X",
         "construction_platform_version": 3,
-        "assay_type": "RNA-seq"
+        "library_type": "RNA-seq"
     },
     {
         "accession": "ENCLB888MNO",
@@ -39,7 +39,7 @@
         ],
         "construction_platform": "10X",
         "construction_platform_version": 3,
-        "assay_type": "RNA-seq"
+        "library_type": "RNA-seq"
     },
     {
         "accession": "ENCLB777MNO",
@@ -59,7 +59,7 @@
         ],
         "construction_platform": "10X",
         "construction_platform_version": 3,
-        "assay_type": "ATAC-seq"
+        "library_type": "ATAC-seq"
     },
     {
         "accession": "ENCLB666MNO",
@@ -79,7 +79,7 @@
         ],
         "construction_platform": "10X",
         "construction_platform_version": 3,
-        "assay_type": "ATAC-seq"
+        "library_type": "ATAC-seq"
     },
     {
         "accession": "ENCLB309ZZZ",

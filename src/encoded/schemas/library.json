@@ -301,11 +301,6 @@
                 ]
             }
         },
-        "assay_type": {
-            "title": "",
-            "description": "",
-            "type": "string"
-        },
         "biological_macromolecule_term_id": {
             "title": "",
             "description": "",
@@ -407,7 +402,16 @@
             "description": "",
             "type": "string"
         },
-        "primer": {
+        "first_strand_primer": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "poly-dT",
+                "random"
+            ]
+        },
+        "second_strand_primer": {
             "title": "",
             "description": "",
             "type": "string",
