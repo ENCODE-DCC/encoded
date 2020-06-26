@@ -94,8 +94,8 @@
                 }
             }
         },
-        "biosamples": {
-            "title": "Biosample",
+        "derived_from": {
+            "title": "Derived from",
             "description": "The biosample that nucleic acid was isolated from to generate the library.",
             "comment": "See biosample.json for available identifiers.",
             "type": "array",
@@ -455,7 +455,7 @@
         "lab": {
             "title": "Lab"
         },
-        "biosamples.biosample_ontology.term_name": {
+        "derived_from.biosample_ontology.term_name": {
             "title": "Biosample term name"
         }
     },
