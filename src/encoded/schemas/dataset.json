@@ -13,7 +13,6 @@
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/aliases"},
-        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/references"},
@@ -196,6 +195,20 @@
                     "type": "string",
                     "linkTo": "Dataset"
             }
+        },
+        "award": {
+            "title": "Award",
+            "description": "Grant associated with the submission.",
+            "comment": "Required. See award.json for list of available identifiers.",
+            "type": "string",
+            "linkTo": "Award"
+        },
+        "contact": {
+            "title": "Contact",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "linkTo": "User"
         },
         "related_files": {
             "title": "Additional data files",

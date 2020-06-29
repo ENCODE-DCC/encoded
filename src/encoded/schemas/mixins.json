@@ -177,15 +177,6 @@
             "linkSubmitsFor": true
         }
     },
-    "award": {
-        "award": {
-            "title": "Award",
-            "description": "Grant associated with the submission.",
-            "comment": "Required. See award.json for list of available identifiers.",
-            "type": "string",
-            "linkTo": "Award"
-        }
-    },
     "attachment": {
         "attachment": {
             "title": "Attachment",
