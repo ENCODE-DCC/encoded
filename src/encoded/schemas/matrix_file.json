@@ -148,18 +148,33 @@
                 "peaks"
             ]
         },
-        "matrix_type": {
+        "value_scale": {
             "title": "",
             "description": "",
             "comment": "",
             "type": "string",
             "enum": [
-                "cell x gene",
-                "cell x transcript",
-                "cell x peak",
-                "nucleus x gene",
-                "nucleus x transcript",
-                "nucleus x peak"
+                "linear",
+                "natural log",
+                "log2",
+                "log10"
+            ]
+        },
+        "value_units": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "enum": [
+                "UQ",
+                "SF",
+                "RPM",
+                "RPKM",
+                "FPKM",
+                "TPM",
+                "TMM",
+                "UMI",
+                "expected count"
             ]
         }
     },
