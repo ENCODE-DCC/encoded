@@ -160,7 +160,13 @@
             "database"
         ],
         "datasets": [
-            "/experiments/ENCSR000DZQ/"
+            "/experiments/ENCSR000DZQ/",
+            "/experiments/ENCSR003CON/",
+            "/experiments/ENCSR002CON/",
+            "/experiments/ENCSR001CON/",
+            "/experiments/ENCSR002SER/",
+            "/experiments/ENCSR001SER/",
+            "/experiments/ENCSR000INT/"
         ],
         "date_published": "2012 Jan",
         "issue": "Database issue",

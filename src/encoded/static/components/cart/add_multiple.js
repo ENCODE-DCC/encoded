@@ -176,8 +176,7 @@ class CartAddAllElementsComponent extends React.Component {
      * Handle a click in the button to add all datasets from a list to the current cart.
      */
     handleClick() {
-        const elementAtIds = this.props.elements.map(element => element['@id']);
-        this.props.addAllResults(elementAtIds);
+        this.props.addAllResults(this.props.elements);
     }
 
     render() {
@@ -201,7 +200,7 @@ class CartAddAllElementsComponent extends React.Component {
 CartAddAllElementsComponent.propTypes = {
     /** Current cart saved object */
     savedCartObj: PropTypes.object,
-    /** New elements to add to cart as array of dataset objects */
+    /** New elements to add to cart as array of @ids */
     elements: PropTypes.array.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,
@@ -232,7 +231,7 @@ export const CartAddAllElements = ({ elements }, reactContext) => (
 );
 
 CartAddAllElements.propTypes = {
-    /** New elements to add to cart as array of dataset objects */
+    /** New elements to add to cart as array of @ids */
     elements: PropTypes.array,
 };
 
