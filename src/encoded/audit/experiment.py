@@ -240,10 +240,13 @@ def check_control_target_failures(control_id, control_objects, bam_id, bam_type)
                 level='WARNING'
             )
         )
-    elif 'input library' not in control['control_type']:
+    elif (
+        ('input library' not in control['control_type'])
+        and ('wild type' not in control['control_type'])
+    ):
         detail = (
             'Control {} file {} has a wrong control type {} '
-            'which is not "input library".'
+            'which is not "input library" or "wild type".'
         ).format(
             bam_type,
             audit_link(path_to_text(bam_id), bam_id),
@@ -3381,10 +3384,13 @@ def audit_experiment_ChIP_control(value, system, files_structure):
     if not value['possible_controls']:
         return
 
-    num_IgG_controls = 0
+    tagged = value.get('protein_tags')
+    has_input_control = False
+    has_wt_control = False
 
     for control_dataset in value['possible_controls']:
-        if not is_control_dataset(control_dataset):
+        control_type = control_dataset.get('control_type')
+        if not control_type:
             detail = (
                 'Experiment {} is ChIP-seq but its control {} does not '
                 'have a valid "control_type".'.format(
@@ -3395,28 +3401,46 @@ def audit_experiment_ChIP_control(value, system, files_structure):
             yield AuditFailure('invalid possible_control', detail, level='ERROR')
             return
 
-        if not control_dataset.get('replicates'):
-            continue
+        if control_type == 'input library':
+            has_input_control = True
 
-        if 'antibody' in control_dataset.get('replicates')[0]:
-            num_IgG_controls += 1
+        if control_type == 'wild type':
+            has_wt_control = True
 
-    # If all of the possible_control experiments are mock IP control experiments
-    if num_IgG_controls == len(value['possible_controls']):
-        if value.get('assay_term_name') == 'ChIP-seq':
-            # The binding group agreed that ChIP-seqs all should have an input control.
-            detail = ('Experiment {} is ChIP-seq and requires at least one input control,'
-                ' as agreed upon by the binding group. Experiment {} is not an input control'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    audit_link(path_to_text(control_dataset['@id']), control_dataset['@id'])
+        if has_input_control and has_wt_control:
+            break
+
+    if (not has_input_control) and (not tagged):
+        detail = (
+            'Experiment {} is ChIP-seq with no epitope tag. It requires at '
+            'least one input control as agreed upon by the binding group. '
+            'None of {} is not an input control'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(
+                    audit_link(path_to_text(ctrl['@id']), ctrl['@id'])
+                    for ctrl in value['possible_controls']
                 )
             )
-            yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
-    return
+        )
+        yield AuditFailure(
+            'missing input control', detail, level='NOT_COMPLIANT'
+        )
 
-
-def is_control_dataset(dataset):
-    return bool(dataset.get('control_type'))
+    if tagged and (not has_wt_control) and (not has_input_control):
+        detail = (
+            'Experiment {} is epitope tagged ChIP-seq. It requires at least '
+            'one input control or wild type control as agreed upon by the '
+            'binding group. None of {} satisfies this requirement.'.format(
+                audit_link(path_to_text(value['@id']), value['@id']),
+                ', '.join(
+                    audit_link(path_to_text(ctrl['@id']), ctrl['@id'])
+                    for ctrl in value['possible_controls']
+                )
+            )
+        )
+        yield AuditFailure(
+            'missing input control', detail, level='NOT_COMPLIANT'
+        )
 
 
 def audit_experiment_spikeins(value, system, excluded_types):

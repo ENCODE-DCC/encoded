@@ -199,7 +199,8 @@
                 "input library",
                 "mock input",
                 "no protein target",
-                "non-specific target"
+                "non-specific target",
+                "wild type"
             ]
         },
         "analyses": {
