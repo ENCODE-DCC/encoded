@@ -289,11 +289,12 @@
     "facets": {
         "assay_slims": {
             "title": "Assay type",
-            "open_on_load": true
+            "open_on_load": false
         },
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": true
         },
         "status": {
             "title": "Status",
