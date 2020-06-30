@@ -487,7 +487,8 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
             // Add a single term-name row's data and left header to the matrix.
             rowKeys[matrixRow] = `${rowCategoryBucket.key}|${rowSubcategoryBucket.key}`;
             matrixRow += 1;
-            const newLabel = rowSubcategoryBucket.key.split(rowCategoryBucket.key)[1];
+            const splitBucket = rowSubcategoryBucket.key.split(rowCategoryBucket.key);
+            const newLabel = splitBucket[splitBucket.length - 1];
             const labelStage = newLabel.split(' (')[0];
             const labelLength = newLabel.split('(')[1].slice(0, -1);
             return {
