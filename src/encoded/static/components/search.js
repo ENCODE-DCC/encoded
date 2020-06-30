@@ -704,7 +704,7 @@ TextFilter.propTypes = {
 
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable } = props;
 
     const [expandedFacets, setExpandFacets] = React.useState(new Set());
 
@@ -851,6 +851,7 @@ export const FacetList = (props) => {
                             isExpanded={isExpanded}
                             handleExpanderClick={handleExpanderClick}
                             handleKeyDown={handleKeyDown}
+                            isExpandable={isExpandable}
                         />;
                     })}
                 </div>
@@ -875,6 +876,8 @@ FacetList.propTypes = {
     supressTitle: PropTypes.bool,
     /** Special search-result click handler */
     onFilter: PropTypes.func,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
 };
 
 FacetList.defaultProps = {
@@ -885,6 +888,7 @@ FacetList.defaultProps = {
     docTypeTitleSuffix: 'search',
     supressTitle: false,
     onFilter: null,
+    isExpandable: true,
 };
 
 FacetList.contextTypes = {
