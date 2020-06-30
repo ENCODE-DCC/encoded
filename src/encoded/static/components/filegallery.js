@@ -1205,6 +1205,7 @@ function qcAbbr(qc) {
         ComplexityXcorrQualityMetric: 'CX',
         CorrelationQualityMetric: 'CN',
         CpgCorrelationQualityMetric: 'CC',
+        DNaseAlignmentQualityMetirc: 'DA',
         DuplicatesQualityMetric: 'DS',
         EdwbamstatsQualityMetric: 'EB',
         FilteringQualityMetric: 'FG',

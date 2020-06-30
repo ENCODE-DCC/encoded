@@ -1,0 +1,14 @@
+[
+    {
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "f04a106e-9d40-44c4-8535-5185232eb20f",
+        "assay_term_name": "DNase-seq",
+        "quality_metric_of": ["ENCFF718LJW"],
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "award": "/awards/U54HG007010/",
+        "fourier_transform_eleven": 48,
+        "insert_size_histogram": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "insert_size_metric": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
+    }
+]

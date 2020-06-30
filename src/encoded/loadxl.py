@@ -80,6 +80,7 @@ ORDER = [
     'chip_peak_enrichment_quality_metric',
     'chip_replication_quality_metric',
     'chipseq_filter_quality_metric',
+    'dnase_alignment_quality_metric',
     'dnase_footprinting_quality_metric',
     'micro_rna_quantification_quality_metric',
     'micro_rna_mapping_quality_metric',
@@ -130,6 +131,10 @@ IS_ATTACHMENT = [
     'dispersion_model',
     'mapq_plot',
     'insert_size_plot',
+    'insert_size_histogram',
+    'insert_size_metric',
+    'nuclear_preseq',
+    'nuclear_preseq_targets'
 ]
 
 
