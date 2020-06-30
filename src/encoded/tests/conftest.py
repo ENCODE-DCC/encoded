@@ -48,7 +48,6 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.computational_model',
     'encoded.tests.fixtures.schemas.correlation_quality_metric',
     'encoded.tests.fixtures.schemas.dataset',
-    'encoded.tests.fixtures.schemas.dnase_alignment_quality_metric',
     'encoded.tests.fixtures.schemas.document',
     'encoded.tests.fixtures.schemas.duplicates_quality_metric',
     'encoded.tests.fixtures.schemas.experiment_series',
