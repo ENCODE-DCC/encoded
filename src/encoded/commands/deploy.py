@@ -1234,7 +1234,7 @@ def _parse_args():
             args.region_indexer = False
     elif args.role == 'demo':
         if args.smalldb:
-            args.role ='smalldb'
+            args.role = 'smalldb'
         args.region_indexer = False
     else:
         args.region_indexer = True
