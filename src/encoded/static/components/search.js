@@ -532,7 +532,7 @@ class PatientComponent extends React.Component {
         const { cartControls } = this.props;
         const result = this.props.context;
         let age = result.diagnosis.age;
-        const hasAge = (age != "Unknown") ? true : false;       
+        const hasAge = (age != "Unknown") ? true : false;
         const ageUnit = (result.diagnosis.age_unit && hasAge && age != "90 or above") ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
@@ -552,7 +552,7 @@ class PatientComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Gender: </strong>{result.gender}</div>
+                        <div><strong>Sex: </strong>{result.sex}</div>
                         <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
                         <div><strong>Race: </strong>{result.race}</div>
                     </div>
@@ -2387,6 +2387,3 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
-
-
-

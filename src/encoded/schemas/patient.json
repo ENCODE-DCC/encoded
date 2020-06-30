@@ -4,7 +4,7 @@
     "id": "/profiles/patient.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "identifyingProperties": ["uuid", "accession", "aliases"],
-    "required": ["gender", "race", "ethnicity"],
+    "required": ["sex", "race", "ethnicity"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -23,8 +23,8 @@
         "accession": {
             "accessionType": "PT"
         },
-        "gender": {
-            "title": "Gender",
+        "sex": {
+            "title": "Sex",
             "type": "string",
             "enum": [
                 "Female",
@@ -63,7 +63,7 @@
             "permission": "import_items",
             "uniqueKey": true
         },
-        
+
         "death_date": {
             "title": "Death Date",
             "description": "Death date of patient.",
@@ -91,8 +91,8 @@
         "diagnosis.age_range": {
             "title": "Age at Diagnosis"
         },
-        "gender": {
-            "title": "Gender"
+        "sex": {
+            "title": "Sex"
         },
         "ethnicity": {
             "title": "Ethnicity"
@@ -216,8 +216,8 @@
         "diagnosis.age_unit": {
             "title": "Diagnosis age units"
         },
-        "gender": {
-            "title": "Gender"
+        "sex": {
+            "title": "Sex"
         },
         "ethnicity": {
             "title": "Ethnicity"
@@ -269,7 +269,7 @@
     },
     "boost_values": {
         "accession": 1.0,
-        "gender": 1.0,
+        "sex": 1.0,
         "ethnicity": 1.0,
         "race": 1.0,
         "germline.target": 1.0,
@@ -288,5 +288,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-
-
