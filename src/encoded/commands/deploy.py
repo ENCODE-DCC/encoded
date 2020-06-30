@@ -913,6 +913,7 @@ def _parse_args():
     parser.add_argument('-n', '--name', default=None, type=hostname, help="Instance name")
     parser.add_argument('--candidate', action='store_true', help="Prod candidate Flag")
     parser.add_argument('--release-candidate', action='store_true', help="RC Flag")
+    parser.add_argument('--smalldb', action='store_true', help="Only index uuids from sorted_uuid.tsv list")
     parser.add_argument(
         '--test',
         action='store_const',
@@ -1232,6 +1233,8 @@ def _parse_args():
         else:
             args.region_indexer = False
     elif args.role == 'demo':
+        if args.smalldb:
+            args.role =='smalldb'
         args.region_indexer = False
     else:
         args.region_indexer = True
