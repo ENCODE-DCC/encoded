@@ -40,6 +40,21 @@
                 "nucleus"
             ]
         },
+        "cell_concentration": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "cell_concentration_units": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "enum": [
+                "cells/μl"
+            ]
+        },
         "cell_viability_method": {
             "title": "",
             "description": "",
@@ -66,12 +81,6 @@
             }
         },
         "enrichment_factors": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
-        },
-        "enrichment_method": {
             "title": "",
             "description": "",
             "comment": "",
@@ -120,8 +129,8 @@
             "comment": "",
             "type": "integer"
         },
-        "cell_dissociation_method": {
-            "title": "Cell dissociation method",
+        "medium": {
+            "title": "",
             "description": "",
             "comment": "",
             "type": "string"
