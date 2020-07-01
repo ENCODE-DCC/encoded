@@ -529,5 +529,43 @@
         "output_file_types": ["alignments", "unfiltered alignments"],
         "status": "released",
         "uuid": "5014594f-cef4-4f78-baaa-ef9e7fdecac8"
+    },
+    {
+        "step_label": "atac-seq-alignment-references-step",
+        "major_version": 1,
+        "title": "ATAC seq alignment references step",
+        "analysis_step_types": ["alignment", "read trimming",
+            "filtering", "file format conversion"],
+        "input_file_types": [
+                "enhancers reference",
+                "promoters reference",
+                "DHS regions reference"
+        ],
+        "output_file_types": [
+                "enhancers reference",
+                "promoters reference",
+                "DHS regions reference"
+        ],
+        "status": "released",
+        "uuid": "92a17bc4-26f1-4b3c-8553-902817da4095"
+    },
+    {
+        "step_label": "bru-seq-quantification-step",
+        "major_version": 1,
+        "title": "Bru seq quantification step",
+        "analysis_step_types": ["quantification"],
+        "input_file_types": [
+                "alignments",
+                "merged transcription segment quantifications",
+                "transcribed region quantifications",
+                "transcription segment quantifications"
+        ],
+        "output_file_types": [
+                "merged transcription segment quantifications",
+                "transcribed region quantifications",
+                "transcription segment quantifications"
+        ],
+        "status": "released",
+        "uuid": "71a92bc4-26f1-4b3c-8553-902817da4095"
     }
 ]
