@@ -355,7 +355,7 @@ const AntibodyStatus = (props) => {
                                             {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
                                         </div>
                                         <div className="antibody-status__status">
-                                            {i === 0 ? <Status item={status} inline /> : null}
+                                            <Status item={status} inline />
                                         </div>
                                     </div>
                                 );
