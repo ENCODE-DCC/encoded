@@ -21,6 +21,9 @@
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "873440f2-13a2-4564-a127-3c88c9a33c8e",
+        "documents": [
+            "6ab18a00-50aa-11e4-916c-0800200c9a66","e0376e86-79d2-4041-80c2-4c8dfef83371"
+        ],
         "accession": "KCELB038EAA"
     },
     {
