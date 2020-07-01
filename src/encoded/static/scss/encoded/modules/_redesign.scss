@@ -5,6 +5,34 @@
 body {
     background: white;
     font-family: Mada;
+    button {
+        font-family: Quicksand;
+    }
+}
+
+h1, h2, h3 {
+    font-family: Oswald;
+    font-weight: 400;
+}
+
+h2, h3 {
+    border-bottom: 2px solid #d2d2d2;
+}
+
+h4 {
+    font-weight: 400;
+    a {
+        font-family: Mada;
+        font-weight: 400;
+    }
+}
+
+.navbar__nav {
+    .dropdown {
+        .dropdown__toggle {
+            padding: 11px 15px;
+        }
+    }
 }
 
 .panel {
@@ -12,17 +40,8 @@ body {
 }
 
 .block {
-    box-shadow: none;
+    box-shadow: none !important;
 }
-
-// font-family: 'Acme', sans-serif;
-// font-family: 'Julius Sans One', sans-serif;
-// font-family: 'Mada', sans-serif;
-// font-family: 'Open Sans', sans-serif;
-// font-family: 'Oswald', sans-serif;
-// font-family: 'Quicksand', sans-serif;
-// font-family: 'Roboto Condensed', sans-serif;
-
 
 .panel__split-element {
     padding: 0;
