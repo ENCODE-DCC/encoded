@@ -64,6 +64,13 @@ const mouseMatrixColors = {
 };
 
 /**
+ * Parse string (longString) on potentially repeated substring (splitString)
+ */
+function parseString(longString, splitString) {
+    return longString.substring(longString.indexOf(splitString) + splitString.length + 1);
+}
+
+/**
  * Increment subCategorySums value for bucket keys matching a column name
  */
 function updateColumnCount(value, colMap, subCategorySums) {
@@ -259,7 +266,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     rowCategoryData.forEach((row, rowIdx) => {
         const newRowAgeArray = [];
         row.biosample_summary.buckets.forEach((bucket) => {
-            const newAge = bucket.key.split(`${row.key} `)[1].replace('male ', '').replace('female ', '');
+            const newAge = parseString(bucket.key, row.key).replace('male ', '').replace('female ', '');
             if (newRowAgeArray.indexOf(newAge) === -1) {
                 newRowAgeArray.push(newAge);
             }
@@ -267,7 +274,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         newRowAgeArray.sort(sortMouseArray);
         const fullRowAgeArray = [];
         row.biosample_summary.buckets.forEach((bucket) => {
-            const newAge = bucket.key.split(`${row.key} `)[1];
+            const newAge = parseString(bucket.key, row.key);
             if (fullRowAgeArray.indexOf(newAge) === -1) {
                 fullRowAgeArray.push(newAge);
             }
@@ -277,10 +284,11 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         row.biosample_summary.buckets.forEach((bucket) => {
             let temp;
             // if there is already a bucket, add to it
-            const bucketName = bucket.key.split(`${row.key} `)[1].replace('male ', '').replace('female ', '');
+            const bucketName = parseString(bucket.key, row.key).replace('male ', '').replace('female ', '');
             if (newRowBucketsNames.indexOf(bucketName) > -1) {
                 newRowBuckets.forEach((bucket2) => {
-                    if (bucket2.key.split(`${row.key} `)[1] === bucketName) {
+                    const bucket2Key = parseString(bucket2.key, row.key);
+                    if (bucket2Key === bucketName) {
                         const comboBuckets = [];
                         bucket.assay_title.buckets.forEach((b) => {
                             comboBuckets.push(b);
@@ -304,7 +312,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
                 temp = Object.assign({}, bucket);
                 temp.key = temp.key.replace('male ', '').replace('female ', '');
                 newRowBuckets.push(temp);
-                newRowBucketsNames.push(temp.key.split(`${row.key} `)[1]);
+                newRowBucketsNames.push(parseString(temp.key, row.key));
             }
         });
         combinedRowCategoryData[rowIdx].biosample_summary.buckets = newRowBuckets;
@@ -315,13 +323,13 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     combinedRowCategoryData.forEach((row, rowIdx) => {
         const rowAgeArray = [];
         row.biosample_summary.buckets.forEach((bucket) => {
-            rowAgeArray.push(bucket.key.split(`${row.key} `)[1]);
+            rowAgeArray.push(parseString(bucket.key, row.key));
         });
         rowAgeArray.sort(sortMouseArray);
         const newBuckets = [];
         rowAgeArray.forEach((age) => {
             row.biosample_summary.buckets.forEach((bucket, idx) => {
-                const ageKey = bucket.key.split(row.key)[1].slice(1);
+                const ageKey = parseString(bucket.key, row.key);
                 if (age === ageKey) {
                     newBuckets.push(row.biosample_summary.buckets[idx]);
                 }
@@ -487,8 +495,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
             // Add a single term-name row's data and left header to the matrix.
             rowKeys[matrixRow] = `${rowCategoryBucket.key}|${rowSubcategoryBucket.key}`;
             matrixRow += 1;
-            const splitBucket = rowSubcategoryBucket.key.split(rowCategoryBucket.key);
-            const newLabel = splitBucket[splitBucket.length - 1];
+            const newLabel = parseString(rowSubcategoryBucket.key, rowCategoryBucket.key);
             const labelStage = newLabel.split(' (')[0];
             const labelLength = newLabel.split('(')[1].slice(0, -1);
             return {
@@ -691,7 +698,7 @@ class MatrixPresentation extends React.Component {
 
     updateWindowWidth() {
         this.setState({
-            windowWidth: window.innerWidth,
+            windowWidth: screen.width,
         });
     }
 
@@ -851,7 +858,7 @@ class MatrixPresentation extends React.Component {
         const mouseAgeFullArray = [];
         rowCategoryData.forEach((datum) => {
             datum.biosample_summary.buckets.forEach((bucket) => {
-                mouseAgeFullArray.push(bucket.key.split(`${datum.key} `)[1].replace('male ', '').replace('female ', ''));
+                mouseAgeFullArray.push(parseString(bucket.key, datum.key).replace('male ', '').replace('female ', ''));
             });
         });
         mouseAgeFullArray.sort(sortMouseArray);
