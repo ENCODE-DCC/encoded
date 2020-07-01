@@ -291,7 +291,7 @@ class Patient(Item):
                 dose_range.append("4000 - 6000")
         return dose_range
 
-    
+
 
     @calculated_property(condition='radiation', schema={
         "title": "Radiation Fractions",
@@ -438,7 +438,7 @@ class Patient(Item):
                 surgery_summary = "No Treatment Received"
             return surgery_summary
 
-   
+
 
     @calculated_property(schema={
         "title": "Diagnosis",
@@ -460,7 +460,7 @@ class Patient(Item):
             "age_unit": {
                 "title": "Diagnosis age unit",
                 "type": "string",
-                "default": "year",                    
+                "default": "year",
                 "enum": [
                     "year"
                 ]
@@ -470,7 +470,7 @@ class Patient(Item):
                 "type": "string"
 
             }
-            
+
         },
     })
     def diagnosis(self, request, surgery, radiation, medication):
@@ -511,7 +511,7 @@ class Patient(Item):
             birth_date = datetime.strptime("1800-01-01", "%Y-%m-%d")
             end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
             age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
-            ageString = str(age) 
+            ageString = str(age)
             if age >= 90:
                 ageString = "90 or above"
 
@@ -532,14 +532,14 @@ class Patient(Item):
         diagnosis['age'] = ageString
         diagnosis['age_unit'] = "year"
         diagnosis['age_range'] = age_range
-        
+
         return diagnosis
 
     matrix = {
         'y': {
             'facets': [
                 'status',
-                'gender',
+                'sex',
                 'race',
                 'ethnicity',
                 'surgery_summary',
@@ -557,7 +557,7 @@ class Patient(Item):
                 'ihc.result',
 
             ],
-            'group_by': ['race', 'gender'],
+            'group_by': ['race', 'sex'],
             'label': 'race',
         },
         'x': {
@@ -575,13 +575,13 @@ class Patient(Item):
             'facets': [
 
                 'status',
-                'gender',
+                'sex',
                 'race',
                 'radiation_summary',
 
             ],
-            'group_by': ['gender', 'radiation_summary'],
-            'label': 'Gender',
+            'group_by': ['sex', 'radiation_summary'],
+            'label': 'Sex',
         },
         'x': {
             'facets': [
@@ -590,7 +590,7 @@ class Patient(Item):
             'group_by': 'race',
             'label': 'Race',
         },
-        'grouping': ['gender', 'status'],
+        'grouping': ['sex', 'status'],
     }
 
 
@@ -808,12 +808,10 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
-
-

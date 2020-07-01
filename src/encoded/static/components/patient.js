@@ -172,9 +172,9 @@ class Patient extends React.Component {
                 <dt>Status</dt>
                 <dd><Status item={context} inline /></dd>
               </div>
-              <div data-test="gender">
-                <dt>Gender</dt>
-                <dd>{context.gender}</dd>
+              <div data-test="sex">
+                <dt>Sex</dt>
+                <dd>{context.sex}</dd>
               </div>
 
               <div data-test="ethnicity">
@@ -234,5 +234,3 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
-
-
