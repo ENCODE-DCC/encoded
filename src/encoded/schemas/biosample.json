@@ -12,7 +12,9 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/description"},
-        {"$ref": "mixins.json#/accession"}
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/diseases"}
     ],
     "dependencies": {
         "post_treatment_time": {
@@ -86,18 +88,12 @@
             }
         },
         "treatments": {
-            "title": "Treatments",
             "description": "A list of treatments applied to the biosample.",
-            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Treatment",
-                "comment": "See treatment.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Treatment"
-            }
+            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified."
+        },
+        "diseases": {
+            "description": "Known diseases of the specific sample",
+            "comment": ""
         },
         "dbxrefs": {
             "items": {
@@ -155,12 +151,6 @@
                 "month",
                 "stage"
             ]
-        },
-        "diseases": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
         },
         "derived_from": {
             "title": "Derived from",

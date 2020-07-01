@@ -23,6 +23,8 @@
         {"$ref": "mixins.json#/accession" },
         {"$ref": "mixins.json#/uuid" },
         {"$ref": "mixins.json#/schema_version" },
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/dbxrefs"}
     ],
     "dependencies": {

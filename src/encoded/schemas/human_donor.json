@@ -19,6 +19,8 @@
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/diseases"},
         {"$ref": "donor.json#/properties"}
     ],
     "dependencies": {
@@ -135,10 +137,6 @@
                 "month",
                 "year"
             ]
-        },
-        "diseases": {
-            "title": "Diseases",
-            "type": "string"
         },
         "ethnicity": {
             "title": "Ethnicity",
@@ -334,9 +332,6 @@
         },
         "age_units": {
             "title": "Age units"
-        },
-        "diseases": {
-            "title": "Diseases"
         },
         "life_stage": {
             "title": "Life stage"

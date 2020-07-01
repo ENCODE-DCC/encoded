@@ -306,5 +306,32 @@
                 "linkTo": "Document"
             }
         }
+    },
+    "treatments": {
+        "treatments": {
+            "title": "Treatments",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Treatment",
+                "comment": "See treatment.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Treatment"
+            }
+        }
+    },
+    "diseases": {
+        "diseases": {
+            "title": "Diseases",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "",
+                "comment": "",
+                "type": "string"
+            }
+        }
     }
 }

@@ -21,6 +21,8 @@
         {"$ref": "mixins.json#/source"},
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/diseases"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {},
