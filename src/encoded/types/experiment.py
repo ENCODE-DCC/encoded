@@ -395,7 +395,7 @@ class Experiment(Dataset,
         },
     }
 
-    summary = {
+    summary_matrix = {
         'x': {
             'group_by': 'status'
         },
