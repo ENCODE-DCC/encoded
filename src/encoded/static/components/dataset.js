@@ -1348,8 +1348,8 @@ const organismDevelopmentSeriesTableColumns = {
         title: 'Assay',
     },
 
-    relative_age: {
-        title: 'Relative age',
+    age: {
+        title: 'Age',
         display: (experiment) => {
             let biosamples;
             let synchronizationBiosample;
