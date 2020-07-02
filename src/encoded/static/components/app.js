@@ -844,8 +844,7 @@ class App extends React.Component {
         }
 
         // data-noscroll attribute prevents scrolling to the top when clicking a link.
-        const dataNoScroll = target.getAttribute('data-noscroll');
-        if (dataNoScroll !== null) {
+        if (target.getAttribute('data-noscroll') !== null) {
             options.noscroll = true;
         }
 
