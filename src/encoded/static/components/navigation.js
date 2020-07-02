@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartStatus } from './cart';
 import { productionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
+import { BrowserFeat } from './browserfeat';
 
 /**
  * Navigation bar home-page button.
@@ -36,16 +37,6 @@ HomeBrand.contextTypes = {
     portal: PropTypes.object,
 };
 
-// Check if device has touch events
-function isMobile() {
-    try {
-        document.createEvent('TouchEvent');
-        return true;
-    } catch (evt) {
-        return false;
-    }
-}
-
 export default class Navigation extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -56,14 +47,12 @@ export default class Navigation extends React.Component {
             openDropdown: '',
             /** True if test warning banner visible; default depends on domain */
             testWarning: !productionHost[url.parse(context.location_href).hostname],
-            isMobileDevice: false,
         };
 
         // Bind this to non-React methods.
         this.handleClickWarning = this.handleClickWarning.bind(this);
         this.documentClickHandler = this.documentClickHandler.bind(this);
         this.dropdownClick = this.dropdownClick.bind(this);
-        this.updateIsMobile = this.updateIsMobile.bind(this);
     }
 
     // Initialize current React component context for others to inherit.
@@ -77,24 +66,11 @@ export default class Navigation extends React.Component {
     componentDidMount() {
         // Add a click handler to the DOM document -- the entire page
         document.addEventListener('click', e => this.documentClickHandler(e));
-        this.updateIsMobile();
-        window.addEventListener('resize', this.updateIsMobile);
     }
 
     componentWillUnmount() {
         // Remove the DOM document click handler now that the DropdownButton is going away.
         document.removeEventListener('click', e => this.documentClickHandler(e));
-        window.removeEventListener('resize', this.updateIsMobile);
-    }
-
-    updateIsMobile() {
-        let isMobileDevice = false;
-        if (window.innerWidth <= 800 && isMobile()) {
-            isMobileDevice = true;
-        }
-        this.setState({
-            isMobileDevice,
-        });
     }
 
     /**
@@ -119,12 +95,13 @@ export default class Navigation extends React.Component {
         // so depending on the device we want user actions have different results
         // We do enable clicks on non-touch devices so that menus are available by keyboard (tab)
         let activateMenuItem = false;
+        const isMobile = BrowserFeat.getBrowserCaps('touchEnabled');
         const dropdownIdIsString = typeof dropdownId === 'string';
         if (e) {
             // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
             e.nativeEvent.stopImmediatePropagation();
             // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
-            if (e.type === 'click' && this.state.isMobileDevice) {
+            if (e.type === 'click' && isMobile) {
                 activateMenuItem = dropdownId !== this.state.openDropdown;
                 this.setState(prevState => ({
                     openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
@@ -138,7 +115,7 @@ export default class Navigation extends React.Component {
                 });
             // On non-touch devices, activate menu item on mouseenter or deactivate on mouseleave
             // Note that mouseenter and mouseleave are not available on touch devices
-            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !(this.state.isMobileDevice)) {
+            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !isMobile) {
                 // On mousenter, activate menu item
                 if (e.type === 'mouseenter') {
                     activateMenuItem = true;
@@ -152,7 +129,7 @@ export default class Navigation extends React.Component {
                 });
             }
         // If there is no event trigger, user's cursor has left dropdown so we want to close it
-        } else if (!this.state.isMobileDevice) {
+        } else if (!isMobile) {
             this.setState({ openDropdown: '' });
         }
     }
@@ -188,7 +165,7 @@ export default class Navigation extends React.Component {
                     openDropdown={this.state.openDropdown}
                     navClasses="navbar-main"
                 >
-                    <GlobalSections isMobileDevice={this.state.isMobileDevice} />
+                    <GlobalSections />
                     <SecondarySections isHomePage={this.props.isHomePage} />
                 </Navbar>
                 {this.state.testWarning ?
@@ -252,7 +229,6 @@ const GlobalSections = (props, context) => {
                                         timerFlag={false}
                                         innerCss={`menu-tooltip ${childAction.tag ? 'sub-menu' : ''}`}
                                         relativeTooltipFlag
-                                        isMobileDevice={props.isMobileDevice}
                                     >
                                         {glossaryMatch.definition}
                                     </Tooltip>
@@ -278,13 +254,11 @@ GlobalSections.propTypes = {
     openDropdown: PropTypes.string,
     /** Function to call when dropdown clicked */
     dropdownClick: PropTypes.func,
-    isMobileDevice: PropTypes.bool,
 };
 
 GlobalSections.defaultProps = {
     openDropdown: '',
     dropdownClick: null,
-    isMobileDevice: false,
 };
 
 GlobalSections.contextTypes = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { BrowserFeat } from '../../components/browserfeat';
 
 // This module lets you have a tooltip pop up when any component is hovered over or focused. The
 // general usage is:
@@ -16,11 +16,14 @@ import PropTypes from 'prop-types';
 
 const Tooltip = (props) => {
     const [showDefinition, setDefinition] = React.useState(false);
-    const { trigger, position, tooltipId, css, innerCss, children, timerFlag, relativeTooltipFlag, isMobileDevice } = props;
+    const [isMobile, setIsMobile] = React.useState(false);
+    const { trigger, position, tooltipId, css, innerCss, children, timerFlag, relativeTooltipFlag } = props;
     const wrapperCss = `tooltip-container${css ? ` ${css}` : ''}`;
     const tooltipCss = `${innerCss || `tooltip ${position}`}`;
 
+    // Display or hide tooltip pop-up
     const setDefinitionVisibility = (param, e) => {
+        // Set delay on hiding the pop-up on "mouseleave" unless timerFlag is set to false
         if (timerFlag && e.type === 'mouseleave') {
             setTimeout(() => {
                 setDefinition(param);
@@ -30,8 +33,19 @@ const Tooltip = (props) => {
         }
     };
 
+    // Check to see if device is mobile (small width with touch screen)
+    React.useEffect(() => {
+        const updateWidth = () => {
+            const screenWidth = Math.min(screen.width, window.innerWidth);
+            setIsMobile(BrowserFeat.feat.touchEnabled && screenWidth <= 800);
+        };
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
+    }, [isMobile, setIsMobile]);
+
     // Special case for menu tooltips on mobile to allow the pop-up to be displayed as position relative on devices smaller than 800px wide with touch screens
-    if (isMobileDevice && relativeTooltipFlag) {
+    if (isMobile && relativeTooltipFlag) {
         return (
             <React.Fragment>
                 <button
@@ -50,7 +64,6 @@ const Tooltip = (props) => {
                         role="tooltip"
                         id={tooltipId}
                     >
-                        <div className="tooltip-arrow" />
                         <div className="tooltip-inner">{children}</div>
                     </div>
                 : null}
@@ -92,7 +105,6 @@ Tooltip.propTypes = {
     children: PropTypes.node, // Tooltip pop-up component
     timerFlag: PropTypes.bool, // Optional flag for when timer should be implemented on mouseLeave
     relativeTooltipFlag: PropTypes.bool, // Optional flag for tooltips that have relative position (touch device only)
-    isMobileDevice: PropTypes.bool, // Optional flag for touch devices smaller than 800 pixels wide
 };
 
 Tooltip.defaultProps = {
@@ -102,7 +114,6 @@ Tooltip.defaultProps = {
     children: null,
     timerFlag: true,
     relativeTooltipFlag: false,
-    isMobileDevice: false,
 };
 
 export default Tooltip;
