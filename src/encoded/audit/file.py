@@ -556,7 +556,7 @@ def audit_file_index_of(value, system):
         if len(indexed_fastq_with_pair) == 2:
             if indexed_fastq_with_pair[0][0] != indexed_fastq_with_pair[1][1]:
                 incorrect_pairings +=1
-        
+
         if len(indexed_files_with_expts) > 0:
             fastq_links = ', '.join(audit_link(path_to_text(m[0]), m[0]) for m in indexed_files_with_expts)
             expts_links = ', '.join(audit_link(path_to_text(m[1]), m[1]) for m in indexed_files_with_expts)
@@ -603,7 +603,7 @@ def audit_file_index_of(value, system):
             )
             yield AuditFailure('inconsistent index file', detail, level='ERROR')
 
-        if 'none' in run_type and run_type == 1:
+        if 'none' in run_type and (count_indexed_files - non_fastqs) > 1:
             detail = (
                 f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
                 f'is incorrectly specified for multiple PacBio fastq files.'

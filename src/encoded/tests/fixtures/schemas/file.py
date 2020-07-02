@@ -1602,6 +1602,27 @@ def second_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, pl
 
 
 @pytest.fixture
+def correct_paired_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, platform1, second_fastq_indexed):
+    item = {
+            'dataset': experiment['@id'],
+            'file_format': 'fastq',
+            'md5sum': '23cd66b6f21515393507f4ebfa55e77c',
+            'replicate': base_replicate_two['@id'],
+            'output_type': 'reads',
+            'read_length': 36,
+            'file_size': 72,
+            'platform': platform1['@id'],
+            'run_type': 'paired-ended',
+            'paired_with': second_fastq_indexed['@id'],
+            'paired_end': '2',
+            'lab': lab['@id'],
+            'award': award['@id'],
+            'status': 'in progress'
+        }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def incorrect_paired_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, platform1, single_fastq_indexed):
     item = {
             'dataset': experiment['@id'],
@@ -1629,6 +1650,23 @@ def pacbio_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, pl
             'file_format': 'fastq',
             'md5sum': '04cd66b6f21515393507f4ebfa55e77c',
             'replicate': base_replicate_two['@id'],
+            'output_type': 'reads',
+            'file_size': 720,
+            'platform': platform3['uuid'],
+            'lab': lab['@id'],
+            'award': award['@id'],
+            'status': 'in progress'
+        }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def second_pacbio_fastq_indexed(testapp, lab, award, experiment, base_replicate, platform3):
+    item = {
+            'dataset': experiment['@id'],
+            'file_format': 'fastq',
+            'md5sum': '15dd66b6f21515393507f4ebfa55e77c',
+            'replicate': base_replicate['@id'],
             'output_type': 'reads',
             'file_size': 720,
             'platform': platform3['uuid'],
