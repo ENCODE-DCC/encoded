@@ -200,6 +200,7 @@ const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
             addClasses={`summary-horizontal-facets facet-num-${horizFacets.length - 1} ${facetList}`}
             supressTitle
             orientation="horizontal"
+            isExpandable={false}
         />
     );
 };

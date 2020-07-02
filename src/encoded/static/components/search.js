@@ -77,6 +77,11 @@ const datasetTypes = {
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
 
+// session storage used to preserve opened/closed facets
+const FACET_STORAGE = 'FACET_STORAGE';
+
+// marker for determining user just opened the page
+const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -699,12 +704,89 @@ TextFilter.propTypes = {
 
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable } = props;
+
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
+
+    // Get facets from storage that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, []);
+
+    // Only on initialize load, get facets from facet-section and schema that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        facets.forEach((facet) => {
+            const field = facet.field;
+            const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+            const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+
+            const relevantFilters = context && context.filters.filter(filter => (
+                filter.field === facet.field || filter.field === `${facet.field}!`
+            ));
+
+            // auto-open facets based on selected terms (see url) or it set in the schema (open_on_load)
+            if (!isFacetNewlyLoaded && ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true)) {
+                sessionStorage.setItem(newlyLoadedFacetStorage, field); // ensure this is not called again on this active session storage
+                facetList.add(facet.field);
+            }
+        });
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, [context, facets]);
+
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
 
     const parsedUrl = context && context['@id'] && url.parse(context['@id']);
+
+    /**
+     * Handlers opening or closing a tab
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+     */
+    const handleExpanderClick = (e, status, field) => {
+        let facetList = null;
+
+        if (e.altKey) {
+            // user has held down option-key (alt-key in Windows and Linux)
+            sessionStorage.removeItem(FACET_STORAGE);
+            facetList = new Set(status ? [] : facets.map(f => f.field));
+        } else {
+            facetList = new Set(expandedFacets);
+            facetList[status ? 'delete' : 'add'](field);
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
+        setExpandFacets(facetList); // controls open/closed facets
+    };
+
+    /**
+     * Called when user types a key while focused on a facet term. If the user types a space or
+     * return we call the term click handler -- needed for a11y because we have a <div> acting as a
+     * button instead of an actual <button>.
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+    */
+    const handleKeyDown = (e, status, field) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            // keyCode: 13 = enter-key. 32 = spacebar
+            e.preventDefault();
+            handleExpanderClick(e, status, field);
+        }
+    };
 
     // See if we need the Clear filters link based on combinations of query-string parameters.
     let clearButton = false;
@@ -735,7 +817,7 @@ export const FacetList = (props) => {
     return (
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
+                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
                     {(!supressTitle || clearButton) ?
                         <div className="search-header-control">
                             <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
@@ -756,6 +838,7 @@ export const FacetList = (props) => {
                         // facet if a renderer exists. A non-existing renderer supresses the
                         // display of a facet.
                         const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                        const isExpanded = expandedFacets.has(facet.field);
                         return FacetRenderer && <FacetRenderer
                             key={facet.field}
                             facet={facet}
@@ -765,6 +848,10 @@ export const FacetList = (props) => {
                             pathname={parsedUrl.pathname}
                             queryString={parsedUrl.query}
                             onFilter={onFilter}
+                            isExpanded={isExpanded}
+                            handleExpanderClick={handleExpanderClick}
+                            handleKeyDown={handleKeyDown}
+                            isExpandable={isExpandable}
                         />;
                     })}
                 </div>
@@ -789,6 +876,8 @@ FacetList.propTypes = {
     supressTitle: PropTypes.bool,
     /** Special search-result click handler */
     onFilter: PropTypes.func,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
 };
 
 FacetList.defaultProps = {
@@ -799,6 +888,7 @@ FacetList.defaultProps = {
     docTypeTitleSuffix: 'search',
     supressTitle: false,
     onFilter: null,
+    isExpandable: true,
 };
 
 FacetList.contextTypes = {
