@@ -341,8 +341,8 @@ slim_shims = {
         'CL:0000746': ['musculature', 'circulatory system'], # 'circulatory system' is ontology-based
         'CL:0000062': ['skeletal system'],
         'CLO:0007052': ['endocrine system'],
-        'CLO:0007123': ['execretory system'],
-        'CLO:0003771': ['execretory system'],
+        'CLO:0007123': ['excretory system'],
+        'CLO:0003771': ['excretory system'],
         'CLO:0021754': ['digestive system'],
         'CLO:0007045': ['immune system'],
         'CLO:0011092': ['integumental system'],
