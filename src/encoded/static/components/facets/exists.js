@@ -38,5 +38,6 @@ ExistsFacet.defaultProps = {
     queryString: '',
 };
 
-FacetRegistry.Facet.register('datasets.accession', ExistsFacet);
+FacetRegistry.Facet.register('datasets', ExistsFacet);
+FacetRegistry.Facet.register('publication_data', ExistsFacet);
 FacetRegistry.Facet.register('nih_institutional_certification', ExistsFacet);

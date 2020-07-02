@@ -217,9 +217,13 @@
         "published_by": {
             "title": "Published by"
         },
-        "datasets.accession": {
+        "datasets": {
             "type": "exists",
             "title": "Associated dataset"
+        },
+        "publication_data": {
+            "type": "exists",
+            "title": "Publication data"
         }
     },
     "columns": {
