@@ -260,3 +260,13 @@ def library_12_13(value, system):
             else:
                 adapter['type'] = 'unspecified adapter'
 
+
+@upgrade_step('library', '13', '14')
+def library_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5368
+    notes = value.get('notes', '')
+    if 'depleted_in_term_name' in value:
+        if 'polyadenylated mRNA' in value['depleted_in_term_name']:
+            if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                value['nucleic_acid_term_name'] = 'RNA'
+                value['notes'] = (notes + ' The nucleic_acid_term_name of this library was automatically upgraded by ENCD-5368.').strip()
