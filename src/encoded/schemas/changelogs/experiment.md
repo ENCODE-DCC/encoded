@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 29
+* Added *wild type* enum to *control_type*
+
 ### Schema version 29
 
 * The *internal_status* enum was adjusted to remove *requires lab review* and *unrunnable*; *pre-pipeline review* and *post-pipeline review* were added.

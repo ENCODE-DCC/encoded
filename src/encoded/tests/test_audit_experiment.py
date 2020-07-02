@@ -128,14 +128,71 @@ def test_ChIP_possible_control_roadmap(testapp, base_experiment, ctrl_experiment
                for error in collect_audit_errors(res))
 
 
-def test_audit_input_control(testapp, base_experiment,
-                             ctrl_experiment, IgG_ctrl_rep):
-    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'control'})
-    testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
-                                                'assay_term_name': 'ChIP-seq'})
+def test_audit_input_control(
+    testapp,
+    base_experiment,
+    ctrl_experiment,
+    construct_genetic_modification,
+    base_biosample,
+    base_library,
+    base_replicate,
+):
+    # Non-tagged ChIP
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'possible_controls': [ctrl_experiment['@id']],
+            'assay_term_name': 'ChIP-seq'
+        }
+    )
+    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'wild type'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'missing input control'
-               for error in collect_audit_errors(res))
+    assert any(
+        error['category'] == 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        ctrl_experiment['@id'], {'control_type': 'input library'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+
+    # Tagged ChIP
+    testapp.patch_json(
+        construct_genetic_modification['@id'],
+        {'introduced_tags': [{'name': 'FLAG', 'location': 'internal'}]}
+    )
+    testapp.patch_json(
+        base_biosample['@id'],
+        {'genetic_modifications': [construct_genetic_modification['@id']]}
+    )
+    testapp.patch_json(
+        base_replicate['@id'], {'library': base_library['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        ctrl_experiment['@id'], {'control_type': 'control'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        ctrl_experiment['@id'], {'control_type': 'wild type'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
 
 
 def test_audit_experiment_target(testapp, base_experiment):
@@ -3132,27 +3189,6 @@ def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment):
     bio = testapp.get(biosample['@id'] + '@@index-data')
     bio_embedded = bio.json['embedded']
     assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_ontology']['term_id']) == True
-
-
-def test_is_control_dataset(testapp, ctrl_experiment, publication_data, treatment_time_series):
-    from encoded.audit.experiment import is_control_dataset
-    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
-    exp_embedded = exp.json['embedded']
-    assert is_control_dataset(exp_embedded) == False
-    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'control'})
-    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
-    exp_embedded = exp.json['embedded']
-    assert is_control_dataset(exp_embedded) == True
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_control_dataset(series_embedded) == False
-    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id']]})
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_control_dataset(series_embedded) == True
-    file_set = testapp.get(publication_data['@id'] + '@@index-data')
-    file_set_embedded = file_set.json['embedded']
-    assert is_control_dataset(file_set_embedded) == False
 
 
 def test_audit_experiment_histone_characterized_no_primary(testapp,
