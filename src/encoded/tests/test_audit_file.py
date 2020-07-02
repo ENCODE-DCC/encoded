@@ -1007,6 +1007,23 @@ def test_audit_incorrect_index(testapp,
         and 'fastq that are not paired with each other' in error['detail']
         for error in errors_list)
 
+    # A PE fastq without its mate is disallowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                incorrect_paired_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'index_of only one paired-end fastq file' in error['detail']
+        for error in errors_list)
+
     # A PacBio fastq with a Illumina fastq is disallowed
     testapp.patch_json(
         fastq_index['@id'],
