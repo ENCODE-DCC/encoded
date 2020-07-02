@@ -91,7 +91,10 @@ class Dataset(Item):
         'documents.lab',
     ]
     set_status_up = [
-        'documents'
+        'original_files',
+        'replicates',
+        'documents',
+        'target',
     ]
     set_status_down = []
     name_key = 'accession'
