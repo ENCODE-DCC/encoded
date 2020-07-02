@@ -698,7 +698,7 @@ class MatrixPresentation extends React.Component {
 
     updateWindowWidth() {
         this.setState({
-            windowWidth: screen.width,
+            windowWidth: Math.min(screen.width, window.innerWidth),
         });
     }
 
