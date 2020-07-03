@@ -5,6 +5,7 @@ module.exports = {
     "identifiers": [
         "PMID:23000965"
     ],
+    "publication_data": [],
     "status": "released",
     "title": "Systems-wide analysis of ubiquitylation dynamics reveals a key role for PAF15 ubiquitylation in DNA-damage bypass.",
     "uuid": "4cb65ec0-bd49-11e4-bb52-0800200c9a66"

@@ -329,3 +329,21 @@ form.table-filter {
 .table-raw-separator td {
     border-top: 2px solid #606060;
 }
+
+
+// Header for a SortTable including a pager.
+.header-paged-sorttable {
+    display: flex;
+    justify-content: space-between;
+
+    @at-root #{&}__controls {
+        display: flex;
+        margin-top: -3px;
+        margin-right: -3px;
+        margin-bottom: -3px;
+
+        .pager {
+            margin-left: 5px;
+        }
+    }
+}

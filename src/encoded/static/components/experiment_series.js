@@ -521,10 +521,11 @@ class ExperimentSeriesComponent extends React.Component {
         const viewableDatasets = this.state.viewableDatasets;
         if (Object.keys(viewableDatasets).length > 0) {
             // Add the "Add all to cart" button and internal tags from all related datasets.
+            const experimentIds = Object.values(viewableDatasets).map(experiment => experiment['@id']);
             addAllToCartControl = (
                 <div className="experiment-table__header">
                     <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
-                    <CartAddAllElements elements={Object.values(viewableDatasets)} />
+                    <CartAddAllElements elements={experimentIds} />
                 </div>
             );
 

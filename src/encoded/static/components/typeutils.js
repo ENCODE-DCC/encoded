@@ -582,7 +582,7 @@ const derivingCols = {
 };
 
 
-const PAGED_FILE_TABLE_MAX = 50; // Maximnum number of files per page
+const PAGED_FILE_TABLE_MAX = 25; // Maximnum number of files per page
 const PAGED_FILE_CACHE_MAX = 10; // Maximum number of pages to cache
 
 
@@ -608,6 +608,33 @@ const getPageFiles = (files, pageNo) => {
         return files.slice(start, start + PAGED_FILE_TABLE_MAX);
     }
     return [];
+};
+
+
+/**
+ * Display the header for the file table, including the pager.
+ */
+const FileTableHeader = ({ title, currentPage, totalPageCount, updateCurrentPage }) => (
+    <div className="header-paged-sorttable">
+        {title}
+        <div className="header-paged-sorttable__controls">
+            {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
+        </div>
+    </div>
+);
+
+FileTableHeader.propTypes = {
+    /** Title of table */
+    title: PropTypes.oneOfType([
+        PropTypes.element, // Title is a React component
+        PropTypes.string, // Title is an unformatted string
+    ]).isRequired,
+    /** Current displayed page number, 0 based */
+    currentPage: PropTypes.number.isRequired,
+    /** Total number of pages */
+    totalPageCount: PropTypes.number.isRequired,
+    /** Called with the new page number the user selected */
+    updateCurrentPage: PropTypes.func.isRequired,
 };
 
 
@@ -690,18 +717,17 @@ export const FileTablePaged = ({ fileIds, files, title }) => {
     if (currentPageFiles.length > 0) {
         const headerTitle = typeof title === 'string' ? <h4>{title}</h4> : title;
         const fileCount = fileIds ? fileIds.length : files.length;
-        const fileCountDisplay = <div className="file-table-paged__count">{`${fileCount} file${fileCount === 1 ? '' : 's'}`}</div>;
-
-        // If we have more than one page of files to display, render a pager component in the
-        // footer.
-        const pager = totalPages > 1 ? <Pager total={totalPages} current={currentPageNum} updateCurrentPage={updateCurrentPage} /> : null;
+        const fileCountDisplay = <div className="table-paged__count">{`${fileCount} file${fileCount === 1 ? '' : 's'}`}</div>;
 
         return (
-            <SortTablePanel title={headerTitle} subheader={fileCountDisplay} css="file-table-paged">
+            <SortTablePanel
+                header={<FileTableHeader title={headerTitle} currentPage={currentPageNum} totalPageCount={totalPages} updateCurrentPage={updateCurrentPage} />}
+                subheader={fileCountDisplay}
+                css="table-paged"
+            >
                 <SortTable
                     list={currentPageFiles}
                     columns={derivingCols}
-                    footer={pager}
                 />
             </SortTablePanel>
         );

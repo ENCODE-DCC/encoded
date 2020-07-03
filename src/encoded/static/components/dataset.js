@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import DropdownButton from '../libs/ui/button';
-import { DropdownMenu } from '../libs/ui/dropdown-menu';
 import { CartToggle, CartAddAllElements } from './cart';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
@@ -441,7 +440,7 @@ const ComputationalModelComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-    const fileCountDisplay = <div className="file-table-paged__count">{`${context.files.length} file${context.files.length === 1 ? '' : 's'}`}</div>;
+    const fileCountDisplay = <div className="table-paged__count">{`${context.files.length} file${context.files.length === 1 ? '' : 's'}`}</div>;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -677,10 +676,10 @@ const ReferenceComponent = (props, reactContext) => {
                                     <dt>Examined loci</dt>
                                     <dd>
                                         <ul>
-                                            {context.examined_loci.map(examined_locus => (
-                                                <li key={examined_locus['@id']} className="multi-comma">
-                                                    <a href={examined_locus['@id']}>
-                                                        {examined_locus.symbol}
+                                            {context.examined_loci.map(examinedLocus => (
+                                                <li key={examinedLocus['@id']} className="multi-comma">
+                                                    <a href={examinedLocus['@id']}>
+                                                        {examinedLocus.symbol}
                                                     </a>
                                                 </li>
                                             ))}
@@ -1496,10 +1495,11 @@ export const SeriesComponent = (props, reactContext) => {
     // them to the current cart.
     let addAllToCartControl;
     if (experimentList.length > 0) {
+        const experimentIds = experimentList.map(experiment => experiment['@id']);
         addAllToCartControl = (
             <div className="experiment-table__header">
                 <h4 className="experiment-table__title">{`Experiments in ${seriesTitle} ${context.accession}`}</h4>
-                <CartAddAllElements elements={experimentList} />
+                <CartAddAllElements elements={experimentIds} />
             </div>
         );
     }

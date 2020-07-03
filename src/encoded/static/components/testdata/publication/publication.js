@@ -11,6 +11,7 @@ module.exports = {
     volume: '489',
     issue: '7414',
     page: '57-74',
+    publication_data: [],
     status: 'in progress',
     urls: ['http://www.millipore.com/catalogue/item/05-379#', 'http://www.millipore.com/catalogue/item/07-473'],
     uuid: '52e85c70-fe2d-11e3-9191-0800200c9a66',
