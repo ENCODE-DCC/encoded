@@ -98,7 +98,7 @@ module.exports = {
             field: 'type',
             total: 2,
             title: 'Data Type',
-            appended: 'false',
+            appended: false,
         },
         {
             terms: [
@@ -115,7 +115,7 @@ module.exports = {
             field: 'assay_slims',
             total: 46,
             title: 'Assay type',
-            appended: 'false',
+            appended: false,
         },
         {
             terms: [
@@ -144,7 +144,7 @@ module.exports = {
             field: 'files.file_type',
             total: 2,
             title: 'Available file types',
-            appended: 'false',
+            appended: false,
         },
         {
             terms: [
@@ -157,7 +157,7 @@ module.exports = {
             field: 'assembly',
             total: 2,
             title: 'Genome assembly',
-            appended: 'false',
+            appended: false,
         },
     ],
     filters: [

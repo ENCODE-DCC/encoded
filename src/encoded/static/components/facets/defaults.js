@@ -934,7 +934,7 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
     const TitleComponent = FacetRegistry.Title.lookup(facet.field);
 
     // Filter out terms with a zero doc_count, as seen in region-search results.
-    const significantTerms = facet.appended !== 'true' ? facet.terms.filter(term => term.doc_count > 0) : facet.terms;
+    const significantTerms = !facet.appended ? facet.terms.filter(term => term.doc_count > 0) : facet.terms;
 
     // Sort numerical terms by value not by frequency
     // This should ultimately be accomplished in the back end, but the front end fix is much simpler so we are starting with that
