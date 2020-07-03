@@ -747,7 +747,7 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
 
     return (
         <li className="facet-term">
-            <a href={href} onClick={href ? onFilter : null} className={`facet-term__item${termCss}`}>
+            <a href={href} onClick={mode === 'picker' ? onFilter : null} className={`facet-term__item${termCss}`}>
                 <div className="facet-term__text">
                     <TermNameComponent
                         termName={term.key}
@@ -789,7 +789,7 @@ DefaultTerm.propTypes = {
     pathname: PropTypes.string.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
-    /** Special search-result click handler */
+    /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
@@ -906,7 +906,7 @@ FacetTerms.propTypes = {
     queryString: PropTypes.string,
     /** Array of terms to render */
     filteredTerms: PropTypes.array.isRequired,
-    /** Special search-result click handler */
+    /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
@@ -1077,7 +1077,7 @@ DefaultFacet.propTypes = {
     pathname: PropTypes.string.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
-    /** Special search-result click handler */
+    /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
     /** True to display negation control */
     allowNegation: PropTypes.bool,
