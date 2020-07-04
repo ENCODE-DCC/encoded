@@ -26,9 +26,75 @@ class Bioexperiment extends React.Component {
     }
     render() {
         const context = this.props.context;
-        // console.log(context);
-        let bioreplicate=context.bioreplicate;//Array 
-        // console.log(bioreplicate);
+        console.log('context', context);
+        //collect all the documents
+        let bioexperimentDoc = [];
+        //Get experiment documents
+        let bioexperimentDoc1 = [];
+        if (context.documents.length > 0) {
+            bioexperimentDoc1 = context.documents
+        }
+
+        bioexperimentDoc.push(bioexperimentDoc1);
+        // bioexperimentDoc.unique();
+        // bioexperimentDoc=_.uniq(bioexperimentDoc);
+        console.log('bioexperimentdoc1', bioexperimentDoc1);
+
+        //Get library documents:
+        let bioreplicates = context.bioreplicate;
+        let biolibraryDoc = [];
+        if (bioreplicates.length > 0) {
+
+            biolibraryDoc =[...new Set(bioreplicates.filter(i=>i.biolibrary.documents.length>0).map(i => (i.biolibrary.documents)))];
+        }
+        // biolibraryDoc.unique();
+        console.log('biolibrarydoc', biolibraryDoc);
+        //get biospecimen documents
+
+        let biospecimenDoc = [];
+        if (bioreplicates.length > 0) {
+            biospecimenDoc = [...new Set(bioreplicates.filter(i=>i.biolibrary.biospecimen.documents.length>0).map(i => (i.biolibrary.biospecimen.documents)))];
+        }
+        // biospecimenDoc.unique();
+        console.log('biospecimenDoc', biospecimenDoc);
+
+        // combineDoc.push(bioexperimentDoc,biolibraryDoc,biospecimenDoc);
+        // console.log('combineDoc', combineDoc);
+        let combinedDocuments = [];
+        // combinedDocuments = [].concat(
+        //     // bioexperimentDoc,
+        //     // biospecimenDoc,
+        //     biolibraryDoc
+        // );
+        combinedDocuments=bioexperimentDoc1;
+        // combinedDocuments.unique();
+        console.log("combinedDocuments", combinedDocuments);
+
+        // Make a list of reference links, if any.
+        const references = pubReferenceList(context.references);
+
+        // const documents = (context.documents.length > 0) ? context.documents : [];
+        // const libraryDocs = [];
+        // let biosamples = [];
+        // if (replicates.length) {
+        //     biosamples = _.compact(replicates.map((replicate) => {
+        //         if (replicate.library) {
+        //             if (replicate.library.documents && replicate.library.documents.length) {
+        //                 Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+        //             }
+
+        //             return replicate.library.biosample;
+        //         }
+        //         return null;
+        //     }));
+        // }
+        // // Compile the document list.
+        // const combinedDocuments = _.uniq(documents.concat(
+        //     biosampleDocs,
+        //     libraryDocs,
+        //     pipelineDocs,
+        //     analysisStepDocs
+        // ));
 
 
         const itemClass = globals.itemClass(context, 'view-item');
@@ -67,9 +133,7 @@ class Bioexperiment extends React.Component {
                                         <dt>Status</dt>
                                         <dd>
                                             <Status item={context} css="dd-status" title="Experiment status" inline />
-                                            {/* {adminUser && context.internal_status ?
-                                                <Status item={context.internal_status} title="Internal status" inline />
-                                            : null} */}
+                                           
                                         </dd>
                                     </div>
 
@@ -171,33 +235,33 @@ class Bioexperiment extends React.Component {
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} />
+                                    {/* <AwardRef context={context} /> */}
 
                                     <div data-test="project">
                                         <dt>Project</dt>
                                         <dd>{context.award.project}</dd>
                                     </div>
 
-                                    {/* {context.dbxrefs.length ?
+                                    {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
-                                    {/* {references ?
+                                    {references?
                                         <div data-test="references">
                                             <dt>References</dt>
                                             <dd>{references}</dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
-                                    {/* {context.aliases.length ?
+                                    {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd>{context.aliases.join(', ')}</dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
                                     {context.date_submitted ?
                                         <div data-test="date-submitted">
@@ -212,20 +276,13 @@ class Bioexperiment extends React.Component {
                                             <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
                                         </div>
                                         : null}
-                                    {/* 
-                                    {seriesList.length ?
-                                        <div data-test="relatedseries">
-                                            <dt>Related datasets</dt>
-                                            <dd><RelatedSeriesList seriesList={seriesList} /></dd>
-                                        </div>
-                                    : null} */}
 
-                                    {/* {context.submitter_comment ?
+                                    {context.submitter_comment ?
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
                                     {/* {libSubmitterComments} */}
                                 </dl>
@@ -234,9 +291,10 @@ class Bioexperiment extends React.Component {
                     </PanelBody>
                 </Panel>
                 {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
-                {/* {combinedDocuments.length ?
-                    <DocumentsPanelReq documents={combinedDocuments} />
-                : null} */}
+                {combinedDocuments.length ?
+                    <DocumentsPanelReq documents={combinedDocuments}></DocumentsPanelReq>
+                    : null}
+
             </div>
         )
     }

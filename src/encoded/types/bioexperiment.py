@@ -30,10 +30,12 @@ class Bioexperiment(Item):
         'lab',
         "submitted_by", #link to User
         # 'biospecimen',
-        'documents',#link to Document
+        'documents', #link to Document
         'bioreplicate',
         'bioreplicate.biolibrary',
+        'bioreplicate.biolibrary.documents',
         'bioreplicate.biolibrary.biospecimen',
+        'bioreplicate.biolibrary.biospecimen.documents',
         "references" #link to Publication
         
 

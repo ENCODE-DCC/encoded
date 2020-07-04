@@ -94,6 +94,7 @@ const DocumentsPanelRenderer = (props) => {
     }
     return null;
 };
+// console.log('documentSpecs',documentSpecs);
 
 DocumentsPanelRenderer.propTypes = {
     documentSearch: PropTypes.object, // Search result object; this uses its @graph to get the documents,
@@ -108,7 +109,8 @@ DocumentsPanelRenderer.defaultProps = {
 // display the resulting documents in a documents panel.
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
-
+    // console.log('this.documents', this.props.documents);
+    console.log('documents', documents);
     if (documents && documents.length) {
         return (
             <FetchedData>
@@ -172,7 +174,8 @@ export class Document extends React.Component {
 
     render() {
         const context = this.props.context;
-
+        console.log('context',context);
+        
         // Set up rendering components
         const DocumentHeaderView = globals.documentViews.header.lookup(context);
         const DocumentCaptionView = globals.documentViews.caption.lookup(context);

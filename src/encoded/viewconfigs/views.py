@@ -40,7 +40,10 @@ DEFAULT_DOC_TYPES = [
     'Biofile',
     'PathologyReport',
     'Surgery',
+    # 'doc'
+
     'Bioexperiment'
+    
 ]
 
 

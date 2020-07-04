@@ -1,52 +1,84 @@
 [
-    {
-      "accession": "KCEBE000AER",
-      "assay_term_name": "RAMPAGE",
-      "biospecimen": "KCEBS708IJT",
-      "award": "Kidney-SPORE",
-      "lab": "thomas-gingeras",
-      "experiment_description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
-      "date_released": "2015-01-10",
-      "status": "released",
-      "submitted_by": "dignissim.euismod@amet.habitant",
-      "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
-     
-      "documents": ["9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
+  {
+    "accession": "KCEBE000AER",
+    "assay_term_name": "RAMPAGE",
+    "biospecimen": "KCEBS708IJT",
+    "award": "Kidney-SPORE",
+    "lab": "thomas-gingeras",
+    "experiment_description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
+    "date_released": "2015-01-10",
+    "status": "released",
+    "date_submitted": "2015-01-08",
+    "submitted_by": "dignissim.euismod@amet.habitant",
+    "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
+    "documents": [
+      "9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
     ],
-      "experiment_classification": "functional genomics assay"
-      
-    },
-    
-    {
-      "accession": "KCEBE000AES",
-      "assay_term_name": "RNA-seq",
-      "biospecimen": "KCEBS000AAA",
-      "award": "Kidney-SPORE",
-      "lab": "thomas-gingeras",
-      "experiment_description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-      "date_released": "2015-01-10",
-      "status": "released",
-      "submitted_by": "dignissim.euismod@amet.habitant",
-      "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
-      "documents": ["11e2d7d3-d43a-4b5a-bf3e-136948efc023"
-      ],
-      "experiment_classification": "functional genomics assay"
-    },
-    {
-      "accession": "KCEBE000ADH",
-      "assay_term_name": "ChIP-seq",
-      "biospecimen": "KCEBS087RNA",
-      "award": "Kidney-SPORE",
-      "lab": "sherman-weissman",
-      "experiment_description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
-      "date_released": "2015-01-10",
-      "status": "released",
-      "submitted_by": "amet.fusce@est.fermentum",
-      "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
-      "dbxrefs": ["UCSC-ENCODE-mm9:wgEncodeEM002004",
-        "GEO:GSM798327",
-        "GEO:GSE32218"],
-      "experiment_classification": "functional genomics assay"
-    }
-    
-  ]
+    "references": [
+      "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
+    ],
+    "dbxrefs": [
+      "UCSC-ENCODE-hg19:wgEncodeEH001832",
+      "GEO:GSM935375"
+    ],
+    "aliases": [
+      "James-Brugarolas:experiment_RB884_680_1"
+    ],
+    "submitter_comment": "The lab tissue was FFPE fixed and be put in room temperature for 30min.",
+    "experiment_classification": "functional genomics assay"
+  },
+  {
+    "accession": "KCEBE000AES",
+    "assay_term_name": "RNA-seq",
+    "biospecimen": "KCEBS000AAA",
+    "award": "Kidney-SPORE",
+    "lab": "thomas-gingeras",
+    "experiment_description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
+    "date_submitted": "2015-01-08",
+    "date_released": "2015-01-10",
+    "status": "released",
+    "submitted_by": "dignissim.euismod@amet.habitant",
+    "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
+    "documents": [
+      "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
+    ],
+    "references": [
+      "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd",
+      "caa8db45-32e3-4fb5-8cc0-885325fb7fc8"
+    ],
+    "dbxrefs": [
+      "UCSC-ENCODE-hg19:wgEncodeEH003317",
+      "GEO:GSM1010811"
+    ],
+    "aliases": [
+      "Payal-Kapur:experiment_RB884_880_1"
+    ],
+    "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing.",
+    "experiment_classification": "functional genomics assay"
+  },
+  {
+    "accession": "KCEBE000ADH",
+    "assay_term_name": "ChIP-seq",
+    "biospecimen": "KCEBS087RNA",
+    "award": "Kidney-SPORE",
+    "lab": "sherman-weissman",
+    "experiment_description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
+    "date_submitted": "2015-01-02",
+    "date_released": "2015-01-10",
+    "status": "released",
+    "submitted_by": "amet.fusce@est.fermentum",
+    "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
+    "dbxrefs": [
+      "UCSC-ENCODE-mm9:wgEncodeEM002004",
+      "GEO:GSM798327",
+      "GEO:GSE32218"
+    ],
+    "references": [
+      "5a4ffbb9-2a6f-4620-8196-7bfb1b441051"
+    ],
+    "aliases": [
+      "James-Brugarolas:experiment_RB884_681_1"
+    ],
+    "experiment_classification": "functional genomics assay"
+  }
+]

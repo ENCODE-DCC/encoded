@@ -5,6 +5,7 @@ require('./app');
 require('./award');
 require('./image');
 require('./biosample');
+
 require('./cart');
 require('./collection');
 require('./datacolors');
@@ -44,6 +45,8 @@ require('./experiment_series');
 require('./surgery');
 require('./pathology_report');
 require('./biospecimen');
+// require('./doc');
+
 require('./bioexperiment');
 
 require('./biofile');
