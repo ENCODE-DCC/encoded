@@ -6,7 +6,7 @@ class Radiation extends React.Component {
 
     this.radiationAppointments = this.props.data;
     this.plotlyConfig = {
-      displayModeBar: true,     
+      displayModeBar: true,
       displaylogo: false,
       modeBarButtonsToRemove: [
               "sendDataToCloud",
@@ -24,7 +24,7 @@ class Radiation extends React.Component {
 
   containsObject(obj, list) {
     for (let i = 0; i < list.length; i++) {
-      if (list[i].id === obj.id && list[i].start === obj.start) {
+      if (list[i].id === obj.id && list[i].startDate === obj.startDate) {
         return true;
       }
     }
@@ -32,16 +32,18 @@ class Radiation extends React.Component {
   }
   filterData(dataPoint, ganttData) {
     for (let i = 0; i < ganttData.length; i++) {
-      if (ganttData[i].id === dataPoint.id && ganttData[i].start === dataPoint.start) {
+      if (ganttData[i].id === dataPoint.id && ganttData[i].startDate === dataPoint.startDate) {
+        console.log(ganttData[i]);
+        console.log(dataPoint);
+        console.log("same");
         ganttData[i].numberOfSite++;
         //compare DosagePerFraction
         ganttData[i].maxDosagePerFraction = Math.max(ganttData[i].maxDosagePerFraction, dataPoint.maxDosagePerFraction);
         ganttData[i].minDosagePerFraction = Math.min(ganttData[i].minDosagePerFraction, dataPoint.minDosagePerFraction);
 
         //compare end date
-        if (ganttData[i].end != ganttData[i].end) {
-          ganttData[i].end = Math.max(ganttData[i].end, dataPoint.end);
-          ganttData[i].endDate = new Date(ganttData[i].end);
+        if (ganttData[i].endDate !== dataPoint.endDate) {
+          ganttData[i].endDate = Math.max(ganttData[i].endDate, dataPoint.endDate);
         }
       }
     }
@@ -75,21 +77,21 @@ class Radiation extends React.Component {
         maxDosagePerFraction: this.radiationAppointments[i].dose_per_fraction,
         minDosagePerFraction: this.radiationAppointments[i].dose_per_fraction
       };
-      if (!this.containsObject(dataPoint, ganttData)) {
-        ganttData.push(dataPoint);
-      } else {
+      if (this.containsObject(dataPoint, ganttData)) {
         this.filterData(dataPoint, ganttData);
+      } else {
+        ganttData.push(dataPoint);
       }
     }
 
-      
-      ganttData.sort((a, b) => a.start - b.start);
+
+      ganttData.sort((a, b) => a.startDate - b.startDate);
       let yLabels = [];
-    
+
 let scaleYIndex = 0;
 
 let yTickvals = [];
-     
+
 for (var i = 0; i < ganttData.length; i++) {
     if (yLabels.indexOf(ganttData[i].id) == -1) {
         yLabels[scaleYIndex] = ganttData[i].id;
@@ -98,7 +100,7 @@ for (var i = 0; i < ganttData.length; i++) {
         scaleYIndex += 1;
     }
 }
-    
+
 let data = [];
 let hoverData = [];
 let dumbbellData = [];
@@ -111,7 +113,7 @@ for (let i = 0; i < ganttData.length; i++) {
       }
     };
     let midDate = new Date((new Date(ganttData[i].startDate).getTime() + new Date(ganttData[i].endDate).getTime()) / 2);
-  
+
     let dosage = "";
     if (ganttData[i].minDosagePerFraction === ganttData[i].maxDosagePerFraction) {
         dosage = "<br>Dosage per fraction: "+ ganttData[i].maxDosagePerFraction;
@@ -200,7 +202,7 @@ if (diagnosisDate != null) {
     family:  'Raleway, sans-serif',
     size: 15
   },
-  marker: { 
+  marker: {
     color: '#D31E1E',
     size: 15
   }
@@ -222,7 +224,7 @@ if (deceasedDate != null) {
     family:  'Raleway, sans-serif',
     size: 15
   },
-  marker: { 
+  marker: {
     color: '#D31E1E',
     size: 15
   }
@@ -242,7 +244,7 @@ if (deceasedDate != null) {
       family:  'Raleway, sans-serif',
       size: 15
     },
-    marker: { 
+    marker: {
       color: '#D31E1E',
       size: 15
     }
@@ -255,50 +257,50 @@ data = data.concat(hoverData);
 data = data.concat(dumbbellData);
 
 let layout = {
-    
-  height: (scaleYIndex+ 2)*65, 
+
+  height: (scaleYIndex+ 2)*65,
   margin: {
-                
+
     r: 20,
     b: 20,
     t: 60,
     pad: 4
   },
   xaxis: {
-    type: 'date', 
-    showgrid: true, 
-    zeroline: false, 
+    type: 'date',
+    showgrid: true,
+    zeroline: false,
     showline: true,
     range: [minX, maxX],
     automargin: true
- 
-  }, 
+
+  },
   xaxis2: {
-    type: 'date', 
+    type: 'date',
     side: 'top',
-    anchor: 'y', 
+    anchor: 'y',
     overlaying: 'x',
-    showgrid: true, 
-    zeroline: false, 
+    showgrid: true,
+    zeroline: false,
     showline: true,
     range: [minX, maxX],
     automargin: true
- 
-  }, 
+
+  },
   yaxis: {
-    range: [-1, yLabels.length], 
+    range: [-1, yLabels.length],
     autorange: "reversed",
-    showgrid: true, 
+    showgrid: true,
     tickvals: yTickvals,
-    ticktext: yLabels, 
-    zeroline: false, 
+    ticktext: yLabels,
+    zeroline: false,
     showline: true,
     automargin: true,
     fixedrange: true
-    
-  }, 
- 
-  hovermode: 'closest', 
+
+  },
+
+  hovermode: 'closest',
   showlegend: false,
 
 };
@@ -316,6 +318,3 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
-
-
-
