@@ -40,9 +40,6 @@
         ],
         "tumor_size_units": [
             "tumor_size"
-        ],
-        "sarcomatoid_percentage": [
-            "sarcomatoid"
         ]
     },
     "properties": {
@@ -134,21 +131,23 @@
                 "Cystic nephroma",
                 "HLRCC",
                 "Leiomyoma",
+                "Leiomyosarcoma",
                 "Metanephric adenoma",
                 "Mucinous tubular and spindle cell carcinoma",
                 "multilocular cystic renal neoplasm of low malignant potential",
                 "PRCC",
                 "Renal medullary carcinoma",
+                "Renal Cell Carcinoma, NOS",
                 "RO",
                 "RON",
-                "RON,favor ChRCC",
-                "RON,favor RO",
-                "Sarcomatoid,NOS",
+                "RON, favor ChRCC",
+                "RON, favor RO",
+                "Sarcomatoid, NOS",
                 "Sarcoma",
                 "MiT family translocation RCC",
                 "Tubulocystic RCC",
                 "Unclassified",
-                "Nephroblastoma(Wilms tumor)",
+                "Nephroblastoma (Wilms tumor)",
                 "Soft tissue neoplasm, NOS",
                 "SDH deficient RCC"
             ]
@@ -321,7 +320,8 @@
                 "pT3b",
                 "pT3c",
                 "pT4",
-                "pTX"
+                "pTX",
+                "Not applicable"
             ]
         },
         "n_stage": {
@@ -375,7 +375,8 @@
                 "1",
                 "2",
                 "3",
-                "4"
+                "4",
+                "Not applicable"
             ]
         },
         "ajcc_p_stage": {
@@ -392,7 +393,8 @@
                 "3A",
                 "3B",
                 "3C",
-                "4"
+                "4",
+                "Not applicable"
             ]
         },
         "report_source": {
@@ -448,77 +450,25 @@
     "oneOf": [
         {
             "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_nephrectomy"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "Not applicable"
-                    ]
+                "sarcomatoid": {
+                    "enum": ["Present"]
+                }
+            },
+            "required": ["sarcomatoid_percentage"]
+        },
+        {
+            "properties": {
+                "sarcomatoid": {
+                    "enum": ["Absent", "Not applicable", "Not available"]
                 }
             },
             "allOf": [
                 {
                     "not": {
-                        "required": [
-                            "metasis_details"
-                        ]
+                        "required": ["sarcomatoid_percentage"]
                     }
                 }
             ]
-        },
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_metasis"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "pM1"
-                    ]
-                }
-            }
-        },
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_biopsy"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "pM0"
-                    ]
-                }
-            },
-            "allOf": [
-                {
-                    "not": {
-                        "required": [
-                            "metasis_details"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_biopsy"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "pM1"
-                    ]
-                }
-            }
         }
     ],
     "facets": {

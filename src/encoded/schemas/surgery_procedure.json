@@ -12,7 +12,7 @@
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/standard_status"}
     ],
-    
+
     "properties": {
         "schema_version": {
             "default": "1"
@@ -33,7 +33,9 @@
                     "Metastectomy",
                     "Biopsy",
                     "Excision",
-                    "Fine needle aspiration"
+                    "Fine needle aspiration",
+                    "Reamings",
+                    "Not available"
                 ]
         },
         "nephrectomy_details": {
