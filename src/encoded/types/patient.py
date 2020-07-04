@@ -267,7 +267,7 @@ class Patient(Item):
     })
     def vital_status(self, request, death_date=None):
         if death_date is None:
-            vital_status = "Alived"
+            vital_status = "Alive"
         else:
             vital_status = "Deceased"
         return vital_status
