@@ -40,6 +40,9 @@
         ],
         "tumor_size_units": [
             "tumor_size"
+        ],
+        "sarcomatoid_percentage" : [
+          "sarcomatoid"
         ]
     },
     "properties": {
@@ -448,30 +451,6 @@
             }
         }
     },
-    "oneOf": [
-        {
-            "properties": {
-                "sarcomatoid": {
-                    "enum": ["Present"]
-                }
-            },
-            "required": ["sarcomatoid_percentage"]
-        },
-        {
-            "properties": {
-                "sarcomatoid": {
-                    "enum": ["Absent", "Not applicable", "Not available"]
-                }
-            },
-            "allOf": [
-                {
-                    "not": {
-                        "required": ["sarcomatoid_percentage"]
-                    }
-                }
-            ]
-        }
-    ],
     "facets": {
         "status": {
             "title": "Status"
