@@ -45,7 +45,7 @@ class Bioexperiment extends React.Component {
         let biolibraryDoc = [];
         if (bioreplicates.length > 0) {
 
-            biolibraryDoc =[...new Set(bioreplicates.filter(i=>i.biolibrary.documents.length>0).map(i => (i.biolibrary.documents)))];
+            biolibraryDoc = [...new Set(bioreplicates.filter(i => i.biolibrary.documents.length > 0).map(i => (i.biolibrary.documents)))];
         }
         // biolibraryDoc.unique();
         console.log('biolibrarydoc', biolibraryDoc);
@@ -53,7 +53,7 @@ class Bioexperiment extends React.Component {
 
         let biospecimenDoc = [];
         if (bioreplicates.length > 0) {
-            biospecimenDoc = [...new Set(bioreplicates.filter(i=>i.biolibrary.biospecimen.documents.length>0).map(i => (i.biolibrary.biospecimen.documents)))];
+            biospecimenDoc = [...new Set(bioreplicates.filter(i => i.biolibrary.biospecimen.documents.length > 0).map(i => (i.biolibrary.biospecimen.documents)))];
         }
         // biospecimenDoc.unique();
         console.log('biospecimenDoc', biospecimenDoc);
@@ -66,35 +66,22 @@ class Bioexperiment extends React.Component {
         //     // biospecimenDoc,
         //     biolibraryDoc
         // );
-        combinedDocuments=bioexperimentDoc1;
+        combinedDocuments = bioexperimentDoc1;
         // combinedDocuments.unique();
         console.log("combinedDocuments", combinedDocuments);
 
         // Make a list of reference links, if any.
         const references = pubReferenceList(context.references);
 
-        // const documents = (context.documents.length > 0) ? context.documents : [];
-        // const libraryDocs = [];
-        // let biosamples = [];
-        // if (replicates.length) {
-        //     biosamples = _.compact(replicates.map((replicate) => {
-        //         if (replicate.library) {
-        //             if (replicate.library.documents && replicate.library.documents.length) {
-        //                 Array.prototype.push.apply(libraryDocs, replicate.library.documents);
-        //             }
+        // Determine this experiment's ENCODE version.
+        const encodevers = globals.encodeVersion(context);
 
-        //             return replicate.library.biosample;
-        //         }
-        //         return null;
-        //     }));
-        // }
-        // // Compile the document list.
-        // const combinedDocuments = _.uniq(documents.concat(
-        //     biosampleDocs,
-        //     libraryDocs,
-        //     pipelineDocs,
-        //     analysisStepDocs
-        // ));
+        // // Make list of statuses.
+        // const statuses = [{ status: context.status, title: 'Status' }];
+        // // Determine whether the experiment is isogenic or anisogenic. No replication_type
+        // // indicates isogenic.
+        const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
+        const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
 
         const itemClass = globals.itemClass(context, 'view-item');
@@ -133,7 +120,7 @@ class Bioexperiment extends React.Component {
                                         <dt>Status</dt>
                                         <dd>
                                             <Status item={context} css="dd-status" title="Experiment status" inline />
-                                           
+
                                         </dd>
                                     </div>
 
@@ -141,9 +128,6 @@ class Bioexperiment extends React.Component {
                                         <dt>Assay</dt>
                                         <dd>
                                             {context.assay_term_name}
-                                            {/* {context.assay_term_name !== context.assay_title ?
-                                                <span>{` (${context.assay_title})`}</span>
-                                            : null} */}
                                         </dd>
                                     </div>
 
@@ -247,21 +231,21 @@ class Bioexperiment extends React.Component {
                                             <dt>External resources</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                         </div>
-                                    : null}
+                                        : null}
 
-                                    {references?
+                                    {references ?
                                         <div data-test="references">
                                             <dt>References</dt>
                                             <dd>{references}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
                                             <dd>{context.aliases.join(', ')}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.date_submitted ?
                                         <div data-test="date-submitted">
@@ -282,7 +266,7 @@ class Bioexperiment extends React.Component {
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {/* {libSubmitterComments} */}
                                 </dl>
@@ -294,7 +278,10 @@ class Bioexperiment extends React.Component {
                 {combinedDocuments.length ?
                     <DocumentsPanelReq documents={combinedDocuments}></DocumentsPanelReq>
                     : null}
+                {/* Display the file widget with the facet, graph, and tables */}
+                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
+                {/* <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} /> */}
             </div>
         )
     }

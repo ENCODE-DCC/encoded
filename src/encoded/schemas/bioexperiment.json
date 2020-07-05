@@ -163,6 +163,20 @@
                 "functional characterization assay"
             ]
         },
+        "possible_controls": {
+            "title": "Controls",
+            "description": "Dataset that contain files that can serve as scientific controls for this experiment.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Control",
+                "description": "A dataset that contains files that can serve as a scientific control for this experiment.",
+                "comment": "See bioexperiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
+                "type": "string",
+                "linkTo": "Bioexperiment"
+            }
+        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",

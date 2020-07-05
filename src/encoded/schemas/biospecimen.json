@@ -158,9 +158,174 @@
         },
         "documents": {
             "description": "Protocols or other documents that describe the sample collection or sample fixation or procession(not data files)."
+        },
+        "organism": {
+            "title": "Organism",
+            "description": "The organism the biosample was originated from.",
+            "comment": "See organism.json for available identifiers.",
+            "type": "string",
+            "enum": [
+                "Human",
+                "Mouse"
+            ]
+        },
+        "sample_type":{
+            "title": "Sample Type",
+            "description": "The type of the biospecimen when it was taken.",
+            "type": "string",
+            "enum": [
+                "Blood",
+                "Fluid",
+                "Tissue",
+                "Molecule"
+            ]
+        },
+        "sub_sample_type":{
+            "title": "Preserved_Sample Type",
+            "description": "The type of the biospecimen when it was taken.",
+            "type": "string",
+            "enum": [
+                "Whole Blood",
+                "Plasma",
+                "Serum",
+                "PBMC",
+                "Platelets",
+                "Buffy Coat",
+                "Tumor",
+                "Normal Kidney",
+                "Other tissue",
+                "Ascites Fluid",
+                "Pleural Fluid",
+                "Cerebrospinal Fluid",
+                "Synovial Fluid",
+                "Protein+RNA",
+                "RNAt",
+                "RNA",
+                "miRNA",
+                "DNA",
+                "Protein",
+                "cDNA",
+                "FF",
+                "FFPE",
+                "DMSO"
+            ]
+        },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the biosample was originated from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Donor"
+        },
+        "treatments": {
+            "title": "Treatments",
+            "description": "A list of treatments applied to the biosample.",
+            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Treatment",
+                "comment": "See treatment.json for available identifiers.",
+                "type": "string",
+                "enum": [
+                    "Acriflavin",
+                    "cGAMP",
+                    "Dovitinib",
+                    "Erlotinib",
+                    "EZH2-1",
+                    "HHT",
+                    "HHT+Rapamycin",
+                    "HIF2a",
+                    "Non-Treated",
+                    "PT2399",
+                    "PT2399 to Vehicle",
+                    "Rapamycin",
+                    "Rapamycin+PT2399",
+                    "Sunitinib",
+                    "Sunitinib to PT2399",
+                    "Sunitinib to Rapamycin",
+                    "Sunitinib to Rapamycin+PT2399",
+                    "Vehicle",
+                    "Vehicle to PT2399",
+                    "Vehicle to Rapamycin",
+                    "Vehicle to Rapamycin+PT2399",
+                    "Hydroxychloroquine",
+                    "Cabozantinib",
+                    "TAK243"
+                ]
+            }
+        },
+        "host_biosample": {
+            "title": "Host biosample",
+            "description": "A biosample that was hosting this biosample.",
+            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation. See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biospecimen"
+        },
+        "pooled_from": {
+            "title": "Pooled from",
+            "description": "The biosamples from which aliquots were pooled to form the biosample.",
+            "comment": "A list of biosamples used to create the biosample, if specified, it requires minimum of two entries.",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "description": "A biosample from which an aliquot was taken to form the biosample.",
+                "comment": "See biosample.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Biospecimen"
+            }
+        },
+        "part_of": {
+            "title": "Separated from",
+            "description": "A biosample from which a discrete component was taken. That component is this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biospecimen"
+        },
+        "starting_amount": {
+            "title": "Starting amount",
+            "description": "The initial quantity of cells, tissue or animals obtained.",
+            "type": "number",
+            "minimum":0
+        },
+        "starting_amount_units": {
+            "title": "Starting amount units",
+            "description": "The units used to quantify the amount of cells or tissue obtained.",
+            "type": "string",
+            "enum": [
+                "cells",
+                "cells/ml",
+                "g",
+                "items",
+                "mg",
+                "whole animals",
+                "whole embryos",
+                "μg"
+            ]
+        },
+        "preservation_method": {
+            "title": "Preservation method",
+            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
+            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
+            "type": "string",
+            "enum": [
+                "cryopreservation",
+                "flash-freezing"
+            ]
+        },
+        "mouse_life_stage": {
+            "title": "Mouse life stage",
+            "type": "string",
+            "description": "The life stage of the mouse biosample.",
+            "comment": "mouse_life_stage is not valid for a human biosample.",
+            "enum": [
+                "embryonic",
+                "postnatal",
+                "adult",
+                "unknown"
+            ]
         }
-
-
 
     },
     "oneOf": [
