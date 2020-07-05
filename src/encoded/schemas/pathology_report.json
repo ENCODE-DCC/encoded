@@ -113,7 +113,8 @@
             "enum": [
                 "Unifocal",
                 "Multifocal",
-                "Not applicable"
+                "Not applicable",
+                "Not available"
             ]
         },
         "histology": {
