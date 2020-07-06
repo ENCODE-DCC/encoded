@@ -636,10 +636,12 @@
             "comment": "",
             "type": "string",
             "enum": [
-                "read1",
-                "read2",
-                "reads1,2",
-                "index"
+                "Read 1",
+                "Read 2",
+                "Reads 1,2",
+                "index",
+                "Read 1N",
+                "Read 2N"
             ]
         },
         "sequence_type": {
