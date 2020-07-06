@@ -390,9 +390,18 @@
     @at-root #{&}__submit {
         display: flex;
         flex-wrap: wrap;
+        margin-top: 10px;
+        margin-right: -3px;
+        margin-left: -3px;
+
+        a {
+            flex: 1 1 auto;
+            margin: 3px;
+        }
 
         &-element {
-            flex: 0 1 auto;
+            flex: 1 1 auto;
+            margin: 3px;
 
             .icon {
                 margin-left: 5px;
@@ -460,13 +469,6 @@
         font-size: 0.9rem;
         font-weight: normal;
         font-style: italic;
-    }
-
-    @at-root #{&}__submit {
-        margin-top: 10px;
-        a {
-            flex: 1 1 auto;
-        }
     }
 }
 
