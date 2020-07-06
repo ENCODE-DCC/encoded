@@ -76,28 +76,6 @@
                             }
                         }
                     }
-                },
-                {
-                    "oneOf": [
-                        {
-                            "properties": {
-                                "sequencing_run_type": {
-                                    "enum": ["single-ended"]
-                                }                        
-                            }
-                        },
-                        {
-                            "required": ["read_type"],
-                            "properties": {
-                                "sequencing_run_type": {
-                                    "enum": ["paired-ended"]
-                                },
-                                "read_type":{
-                                    "enum": ["read1", "read2","reads1,2"]
-                                }
-                            }
-                        }
-                    ]
                 }
             ]           
         },
@@ -141,7 +119,7 @@
                    "required": ["paired_with", "sequencing_run_type"],
                     "properties": {
                         "read_type": {
-                            "enum": ["read2"]
+                            "enum": ["Read 2"]
                         },
                         "sequencing_run_type": {
                             "enum": ["paired-ended"]
@@ -152,7 +130,7 @@
                     "required": ["sequencing_run_type"],
                     "properties": {
                         "read_type": {
-                            "enum": ["read1"]
+                            "enum": ["Read 1"]
                         },
                         "sequencing_run_type": {
                             "enum": ["paired-ended"]
@@ -166,7 +144,7 @@
                             "enum": ["sra"]
                         },
                         "read_type": {
-                            "enum": ["reads1,2"]
+                            "enum": ["Reads 1,2"]
                         },
                         "sequencing_run_type": {
                             "enum": ["paired-ended"]

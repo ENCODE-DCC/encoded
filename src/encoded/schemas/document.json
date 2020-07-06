@@ -58,7 +58,12 @@
                 "standards document",
                 "strain generation protocol",
                 "transfection protocol",
-                "treatment protocol"
+                "treatment protocol",
+                "enrichment protocol",
+                "library preparation protocol",
+                "sequencing protocol",
+                "depletion protocol",
+                "tissue collection protocol"
            ]
         },
         "description": {

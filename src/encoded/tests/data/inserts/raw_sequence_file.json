@@ -222,7 +222,7 @@
         "output_type": "reads",
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
-        "read_type": "read1",
+        "read_type": "Read 1",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
@@ -249,7 +249,7 @@
         "output_type": "reads",
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
-        "read_type": "read1",
+        "read_type": "Read 1",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "in progress",
         "submitted_by": "platea.a@volutpat.viverra",
@@ -276,7 +276,7 @@
         "output_type": "reads",
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
-        "read_type": "read2",
+        "read_type": "Read 2",
         "paired_with": "ENCFF001RDB",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "released",
@@ -340,7 +340,7 @@
         "output_type": "reads",
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
-        "read_type": "read2",
+        "read_type": "Read 2",
         "paired_with": "ENCFF001RDC",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "released",
@@ -393,7 +393,7 @@
         "md5sum": "689e73dd026e24ed347378b6ec578521",
         "output_type": "reads",
         "read_length": 50,
-        "read_type": "read1",
+        "read_type": "Read 1",
         "sequencing_run_type": "paired-ended",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "in progress",
@@ -422,7 +422,7 @@
         "output_type": "reads",
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
-        "read_type": "read2",
+        "read_type": "Read 2",
         "paired_with": "ENCFF001RDX",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "in progress",
@@ -451,7 +451,7 @@
         "output_type": "reads",
         "sequencing_run_type": "paired-ended",
         "read_length": 50,
-        "read_type": "read1",
+        "read_type": "Read 1",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
@@ -513,7 +513,7 @@
         "derived_from": "2f631ab4-83ac-4bc6-9acb-81654eaba017"
     },
     {
-        "read_type": "read1",
+        "read_type": "Read 1",
         "sequencing_run_type": "paired-ended",
         "accession": "ENCFF431TKZ",
         "dataset": "ENCSR765JPC",
@@ -538,7 +538,7 @@
         "derived_from": "ENCLB742NWU"
     },
     {
-        "read_type": "read1",
+        "read_type": "Read 1",
         "sequencing_run_type": "paired-ended",
         "accession": "ENCFF504RKH",
         "dataset": "ENCSR765JPC",
@@ -560,7 +560,7 @@
         "derived_from": "ENCLB742NWU"
     },
     {
-        "read_type": "read2",
+        "read_type": "Read 2",
         "sequencing_run_type": "paired-ended",
         "accession": "ENCFF958GWJ",
         "dataset": "ENCSR765JPC",
@@ -582,7 +582,7 @@
         "derived_from": "ENCLB742NWU"
     },
     {
-        "read_type": "read2",
+        "read_type": "Read 2",
         "accession": "ENCFF360FSI",
         "dataset": "ENCSR765JPC",
         "paired_with": "ENCFF431TKZ/",
@@ -811,12 +811,12 @@
         "read_length": 25,
         "status": "released",
         "dataset": "ENCSR751YPU",
-        "read_type": "read1",
+        "read_type": "Read 1",
         "derived_from": "ENCLB033CJI"
     },
     {
         "output_type": "reads",
-        "read_type": "read2",
+        "read_type": "Read 2",
         "read_length": 25,
         "content_md5sum": "69de5eb9cb7d09c799fa958f0dc3edfa",
         "file_size": 2314662239,
