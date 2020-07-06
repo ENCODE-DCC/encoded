@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import url from 'url';
+import { svgIcon } from '../libs/svg-icons';
 import QueryString from '../libs/query_string';
 import BodyDiagram from '../img/bodyMap/Deselected_Body';
 
@@ -719,6 +720,111 @@ BodyMap.propTypes = {
 BodyMap.contextTypes = {
     navigate: PropTypes.func,
     location_href: PropTypes.string,
+};
+
+// Clickable thumbnail
+// Comprised of body map svg and inset images, with expand icon and instructions
+// Button to display the actual body map facet <BodyMapModal>
+export const ClickableThumbnail = (props) => {
+    // "toggleThumbnail" toggles whether or not the pop-up is displayed
+    const toggleThumbnail = props.toggleThumbnail;
+    return (
+        <button
+            className="body-image-thumbnail"
+            onClick={() => toggleThumbnail()}
+        >
+            <div className="body-map-expander">Filter results by body diagram</div>
+            {svgIcon('expandArrows')}
+            <BodyDiagram />
+            <div className="body-list body-list-narrow">
+                <ul className="body-list-inner">
+                    {Object.keys(CellsList).map(image =>
+                        <div
+                            className={`body-inset ${image}`}
+                            id={image}
+                            key={image}
+                        >
+                            <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}.svg`} alt={image} />
+                            <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}_deselected.svg`} alt={image} />
+                            <div className="overlay" />
+                        </div>
+                    )}
+                </ul>
+            </div>
+        </button>
+    );
+};
+
+ClickableThumbnail.propTypes = {
+    toggleThumbnail: PropTypes.func.isRequired,
+};
+
+// Pop-up body map facet
+// Displayed when you click on <ClickableThumbnail>
+// Allows you to select organ / system filters
+export const BodyMapModal = (props) => {
+    const isThumbnailExpanded = props.isThumbnailExpanded;
+    const toggleThumbnail = props.toggleThumbnail;
+    const context = props.context;
+    return (
+        <div className="modal" style={{ display: 'block' }}>
+            <div className={`body-map-container-pop-up ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}>
+                <button className="collapse-body-map" onClick={() => toggleThumbnail()}>
+                    {svgIcon('collapseArrows')}
+                    <div className="body-map-collapser">Hide body diagram</div>
+                </button>
+                <div className="clickable-diagram-container">
+                    <BodyMap context={context} />
+                </div>
+            </div>
+            <div className="modal-backdrop in" />
+        </div>
+    );
+};
+
+BodyMapModal.propTypes = {
+    isThumbnailExpanded: PropTypes.bool.isRequired,
+    toggleThumbnail: PropTypes.func.isRequired,
+    context: PropTypes.object.isRequired,
+};
+
+// Combining the body map thumbnail and the body map modal into one component
+export const BodyMapThumbnailAndModal = (props) => {
+    const [isThumbnailExpanded, setIsThumbnailExpanded] = React.useState(false);
+
+    React.useEffect(() => {
+        // Display modal if page has just refreshed because of user selection from body map
+        setIsThumbnailExpanded(props.location.includes('#openModal'));
+
+        // Highlight body map selections based on url
+        const searchQuery = url.parse(props.context['@id']).search;
+        initializeBodyMap(searchQuery);
+        const query = new QueryString(searchQuery);
+        const terms = query.getKeyValues(organField);
+        terms.forEach((term) => {
+            if (CellsList[term] && document.getElementById(term)) {
+                document.getElementById(term).classList.add('active');
+            }
+        });
+    }, [setIsThumbnailExpanded, props.context, props.location]);
+
+    const toggleThumbnail = () => {
+        setIsThumbnailExpanded(!isThumbnailExpanded);
+    };
+
+    return (
+        <div className="body-map-thumbnail-and-modal">
+            <ClickableThumbnail toggleThumbnail={toggleThumbnail} />
+            {isThumbnailExpanded ?
+                <BodyMapModal isThumbnailExpanded toggleThumbnail={toggleThumbnail} context={props.context} />
+            : null}
+        </div>
+    );
+};
+
+BodyMapThumbnailAndModal.propTypes = {
+    context: PropTypes.object.isRequired,
+    location: PropTypes.string.isRequired, // Should be context.location_href from parent
 };
 
 export default BodyMap;
