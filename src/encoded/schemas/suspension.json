@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
+        {"$ref": "mixins.json#/references"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {},
@@ -134,6 +135,23 @@
             "description": "",
             "comment": "",
             "type": "string"
+        },
+        "collection_to_dissociation_interval": {
+            "title": "Collection-to-dissociation interval",
+            "description": "The amount of time elapsed between tissue collection and cell dissociation.",
+            "comment": "",
+            "type": "integer"
+        },
+        "collection_to_dissociation_interval_units": {
+            "title": "Collection-to-dissociation interval units",
+            "description": "The unit in which the collection-to-dissociation time was reported.",
+            "comment": "",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour"
+            ]
         },
         "derived_from": {
             "items": {

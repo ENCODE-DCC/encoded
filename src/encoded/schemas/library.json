@@ -445,6 +445,13 @@
                 "i5 index",
                 "i7 index"
             ]
+        },
+        "date_constructed": {
+            "title": "Date constructed",
+            "description": "The date the library was created.",
+            "comment": "Date should be submitted in as YYYY-MM-DD.",
+            "type": "string",
+            "format": "date"
         }
     },
     "facets": {

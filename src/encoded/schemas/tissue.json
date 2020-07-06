@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
+        {"$ref": "mixins.json#/references"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
@@ -72,6 +73,12 @@
             "type": "integer"
         },
         "ischemic_time_units": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "spatial_information": {
             "title": "",
             "description": "",
             "comment": "",

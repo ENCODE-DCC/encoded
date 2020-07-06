@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
+        {"$ref": "mixins.json#/references"},
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],
