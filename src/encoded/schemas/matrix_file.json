@@ -176,6 +176,18 @@
                 "UMI",
                 "expected count"
             ]
+        },
+        "normalized": {
+            "title": "Normalized",
+            "description": "",
+            "comment": "",
+            "type": "boolean"
+        },
+        "normalization_method": {
+            "title": "Normalization method",
+            "description": "",
+            "comment": "",
+            "type": "string"
         }
     },
     "facets": {},
