@@ -634,6 +634,13 @@
                 "cell barcode",
                 "sample index,UMI"
             ]
+        },
+        "software_version": {
+            "title": "Software version",
+            "description": "The software version used to generate the raw data file from the BCL",
+            "comment": "",
+            "type": "string",
+            "linkTo": "SoftwareVersion"
         }
     },
     "facets": {
