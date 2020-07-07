@@ -600,10 +600,11 @@ def main():
     efo_url = args.efo_url
     obi_url = args.obi_url
     clo_url = args.clo_url
-    urls = [obi_url, uberon_url, efo_url, clo_url]
+    whitelist = [uberon_url, efo_url, obi_url]
 
     terms = {}
-    for url in urls:
+    # Run on ontologies defined in whitelist
+    for url in whitelist:
         data = Inspector(url)
         for c in data.allclasses:
             if isBlankNode(c):
@@ -689,6 +690,21 @@ def main():
                         terms[term_id]['synonyms'].append(syn.__str__())
                     except:
                         pass
+
+    # Get only CLO terms from the CLO owl file
+    data = Inspector(clo_url)
+    for c in data.allclasses:
+        if c.startswith('http://purl.obolibrary.org/obo/CLO'):
+            term_id = splitNameFromNamespace(c)[0].replace('_', ':')
+            if term_id not in terms:
+                terms[term_id] = getTermStructure()
+                terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
+            for syn in data.entitySynonyms(c):
+                try:
+                    terms[term_id]['synonyms'].append(syn.__str__())
+                except:
+                    pass
+
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
