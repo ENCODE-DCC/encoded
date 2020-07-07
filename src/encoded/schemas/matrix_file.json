@@ -188,6 +188,42 @@
             "description": "",
             "comment": "",
             "type": "string"
+        },
+        "filtering_cutoffs": {
+            "title": "Filtering cutoffs",
+            "description": "",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Filtering cutoff",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "cutoff_value": {
+                        "title": "Cutoff value",
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "cutoff_units": {
+                        "title": "Cutoff units",
+                        "type": "string",
+                        "enum": [
+                            "genes/cell",
+                            "genes/nuclei",
+                            "umi/cell",
+                            "umi/nuclei"
+                        ]
+                    },
+                    "cutoff_type": {
+                        "title": "Cutoff type",
+                        "type": "string",
+                        "enum": [
+                            "minimum",
+                            "maximum"
+                        ]
+                    }
+                }
+            }
         }
     },
     "facets": {},
