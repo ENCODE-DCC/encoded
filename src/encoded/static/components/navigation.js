@@ -80,7 +80,13 @@ export default class Navigation extends React.Component {
         const className = e.target.className;
         // Only close navigation hamburger when user does not click on tooltip icon
         // Note: "toString" is required for hamburger SVG on mobile which does not have a className that is a string
-        if (!(className && (className.toString().indexOf('icon-question-circle') > -1)) && e.target.tagName !== 'LI') {
+        // Elements with validClassName and validTagName should not close the menu when clicked on
+        let validClassName = false;
+        if (className) {
+            validClassName = (className.toString().indexOf('icon-question-circle') > -1) || (className.toString().indexOf('tooltip-container__trigger') > -1);
+        }
+        const validTagName = e.target.tagName === 'LI' || e.target.tagName === 'I';
+        if (!(validClassName || validTagName)) {
             this.setState({ openDropdown: '' });
         }
     }

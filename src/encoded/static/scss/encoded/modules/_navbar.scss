@@ -258,11 +258,18 @@ $navbar-bg-color:            #0a253d;
         pointer-events: all;
     }
 
+    .tooltip-container__trigger {
+        cursor: pointer;
+        pointer-events: all;
+    }
+
     .icon-question-circle {
         color: #b3b3b3;
         pointer-events: all;
+        cursor: pointer;
         padding: 2px 2px 1px;
-        margin-left: 2px;
+        margin-left: 4px;
+        font-size: 1.1rem;
     }
 
     a {
