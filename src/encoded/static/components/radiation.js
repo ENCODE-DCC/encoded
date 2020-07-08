@@ -83,7 +83,7 @@ class Radiation extends React.Component {
     }
 
       
-      ganttData.sort((a, b) => a.start - b.start);
+      ganttData.sort((a, b) => new Date(a.startDate) - new Date(b.endDate));
       let yLabels = [];
     
 let scaleYIndex = 0;
@@ -316,6 +316,7 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
+
 
 
 
