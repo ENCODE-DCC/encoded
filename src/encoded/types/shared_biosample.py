@@ -62,6 +62,7 @@ def biosample_summary_information(request, biosampleObject):
         biosampleObject.get('starting_amount'),
         biosampleObject.get('starting_amount_units'),
         biosampleObject.get('depleted_in_term_name'),
+        biosampleObject.get('disease_term_name'),
         biosampleObject.get('phase'),
         biosampleObject.get('subcellular_fraction_term_name'),
         biosampleObject.get('synchronization'),

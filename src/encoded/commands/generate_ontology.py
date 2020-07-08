@@ -594,13 +594,15 @@ def main():
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--obi-url', help="OBI version URL")
     parser.add_argument('--clo-url', help="CLO version URL")
+    parser.add_argument('--doid-url', help="DOID version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     obi_url = args.obi_url
     clo_url = args.clo_url
-    whitelist = [uberon_url, efo_url, obi_url]
+    doid_url = args.doid_url
+    whitelist = [uberon_url, efo_url, obi_url, doid_url]
 
     terms = {}
     # Run on ontologies defined in whitelist

@@ -436,6 +436,7 @@ class Biosample(Item):
                 starting_amount=None,
                 starting_amount_units=None,
                 depleted_in_term_name=None,
+                disease_term_name=None,
                 phase=None,
                 synchronization=None,
                 subcellular_fraction_term_name=None,
@@ -462,6 +463,7 @@ class Biosample(Item):
             'term_phrase',
             'modifications_list',
             'originated_from',
+            'disease_term_name',
             'treatments_phrase',
             'post_nucleic_acid_delivery_time',
             'preservation_method',
@@ -537,6 +539,7 @@ class Biosample(Item):
             starting_amount,
             starting_amount_units,
             depleted_in_term_name,
+            disease_term_name,
             phase,
             subcellular_fraction_term_name,
             synchronization,
@@ -588,6 +591,7 @@ def generate_summary_dictionary(
         starting_amount=None,
         starting_amount_units=None,
         depleted_in_term_name=None,
+        disease_term_name=None,
         phase=None,
         subcellular_fraction_term_name=None,
         synchronization=None,
@@ -608,6 +612,7 @@ def generate_summary_dictionary(
         'genotype_strain': '',
         'term_phrase': '',
         'phase': '',
+        'disease_term_name': '',
         'fractionated': '',
         'sex_stage_age': '',
         'synchronization': '',
@@ -713,6 +718,9 @@ def generate_summary_dictionary(
 
     if phase is not None:
         dict_of_phrases['phase'] = phase + ' phase'
+
+    if disease_term_name is not None:
+        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
 
     if subcellular_fraction_term_name is not None:
         if subcellular_fraction_term_name == 'nucleus':
@@ -925,6 +933,7 @@ def get_applied_modifications(genetic_modifications=None, model_organism_donor_m
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
         'phase': 'unspecified phase',
+        'disease_term_name': 'no disease',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',
