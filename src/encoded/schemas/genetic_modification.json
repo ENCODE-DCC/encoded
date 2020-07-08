@@ -901,6 +901,19 @@
                 "mouse pronuclear microinjection"
             ]
         },
+        "nucleic_acid_delivery_method": {
+            "title": "Nucleic acid delivery method",
+            "description": "The method used to deliver nucleic acid that produces the genetic modification.",
+            "type": "string",
+            "enum":[
+                "bombardment",
+                "microinjection",
+                "stable transfection",
+                "transduction",
+                "transient transfection",
+                "mouse pronuclear microinjection"
+            ]
+        },
         "treatments": {
             "title": "Treatments",
             "description": "Relevant mutagenesis treatments applied to result in the modification.",
