@@ -36,8 +36,8 @@ dl.key-value, dl.key-value-doc {
     }
 
     dt {
-        font-weight: bold;
-      
+        font-weight: 600;
+
         &:after {
             content: ":";
         }

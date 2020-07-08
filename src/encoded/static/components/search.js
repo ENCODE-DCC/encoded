@@ -827,33 +827,35 @@ export const FacetList = (props) => {
                         </div>
                     : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
-                    {facets.map((facet) => {
-                        // Filter the filters to just the ones relevant to the current facet,
-                        // matching negation filters too.
-                        const relevantFilters = context && context.filters.filter(filter => (
-                            filter.field === facet.field || filter.field === `${facet.field}!`
-                        ));
+                    <div className="facet-wrapper">
+                        {facets.map((facet) => {
+                            // Filter the filters to just the ones relevant to the current facet,
+                            // matching negation filters too.
+                            const relevantFilters = context && context.filters.filter(filter => (
+                                filter.field === facet.field || filter.field === `${facet.field}!`
+                            ));
 
-                        // Look up the renderer registered for this facet and use it to render this
-                        // facet if a renderer exists. A non-existing renderer supresses the
-                        // display of a facet.
-                        const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
-                        const isExpanded = expandedFacets.has(facet.field);
-                        return FacetRenderer && <FacetRenderer
-                            key={facet.field}
-                            facet={facet}
-                            results={context}
-                            mode={mode}
-                            relevantFilters={relevantFilters}
-                            pathname={parsedUrl.pathname}
-                            queryString={parsedUrl.query}
-                            onFilter={onFilter}
-                            isExpanded={isExpanded}
-                            handleExpanderClick={handleExpanderClick}
-                            handleKeyDown={handleKeyDown}
-                            isExpandable={isExpandable}
-                        />;
-                    })}
+                            // Look up the renderer registered for this facet and use it to render this
+                            // facet if a renderer exists. A non-existing renderer supresses the
+                            // display of a facet.
+                            const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                            const isExpanded = expandedFacets.has(facet.field);
+                            return FacetRenderer && <FacetRenderer
+                                key={facet.field}
+                                facet={facet}
+                                results={context}
+                                mode={mode}
+                                relevantFilters={relevantFilters}
+                                pathname={parsedUrl.pathname}
+                                queryString={parsedUrl.query}
+                                onFilter={onFilter}
+                                isExpanded={isExpanded}
+                                handleExpanderClick={handleExpanderClick}
+                                handleKeyDown={handleKeyDown}
+                                isExpandable={isExpandable}
+                            />;
+                        })}
+                    </div>
                 </div>
             </div>
         </div>

@@ -193,10 +193,10 @@ $audit-types:
     }
 
     .audit-item-#{$audit-type} {
-        padding: 5px 10px 5px 50px;
+        padding: 7px 10px 7px 50px;
         background-color: darken(fg-to-bg-color($color), 10%);
         border-top: 1px solid #a0a0a0;
-        font-weight: bold;
+        font-weight: 400;
     }
 }
 

@@ -132,6 +132,7 @@ form.table-filter {
                 vertical-align: middle;
                 border-left: 1px solid #e0e0e0;
                 text-align: left;
+                font-weight: 600;
 
                 &:first-child {
                     border-left: none;
@@ -173,6 +174,7 @@ form.table-filter {
     th {
         padding: 0 !important;
         height: auto !important;
+        font-weight: 600;
     }
 }
 
@@ -216,7 +218,7 @@ form.table-filter {
     td {
         background-color: #606060 !important;
         color: #fff;
-        font-weight: bold;
+        font-weight: 400;
 
         a {
             color: #fff !important;

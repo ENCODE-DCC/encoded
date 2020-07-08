@@ -118,7 +118,7 @@
     }
 }
 
-// Adds blue outline to rectangles 
+// Adds blue outline to rectangles
 .rectangle-box {
     stroke-width: 6px;
     stroke: #0000EE;
@@ -374,7 +374,6 @@
 
 .news-header {
     @extend .twitter-header;
-    border-bottom: 1px solid #e0e0e0;
 }
 
 .site-search {
@@ -389,7 +388,9 @@
 
         label {
             color: #000;
-            font-weight: bold;
+            font-weight: 600;
+            line-height: 1;
+            padding: 10px 0 0;
         }
 
         .icon {
