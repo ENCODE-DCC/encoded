@@ -140,7 +140,48 @@ _tsv_mapping_annotation = OrderedDict([
     ('Restricted', ['files.restricted'])
 ])
 
+_tsv_mapping_publicationdata = OrderedDict([
+    ('File accession', ['files.title']),
+    ('File dataset', ['files.dataset.accession']),
+    ('File type', ['files.file_format']),
+    ('File format', ['files.file_type']),
+    ('File output type', ['files.output_type']),
+    ('Assay term name', ['files.assay_term_name']),
+    ('Biosample term id', ['files.biosample_ontology.term_id']),
+    ('Biosample term name', ['files.biosample_ontology.term_name']),
+    ('Biosample type', ['files.biosample_ontology.classification']),
+    ('File target', ['files.target.label']),
+    ('Dataset accession', ['accession']),
+    ('Dataset date released', ['date_released']),
+    ('Project', ['award.project']),
+    ('Lab', ['files.lab.title']),
+    ('md5sum', ['files.md5sum']),
+    ('dbxrefs', ['files.dbxrefs']),
+    ('File download URL', ['files.href']),
+    ('Assembly', ['files.assembly']),
+    ('Controlled by', ['files.controlled_by']),
+    ('File status', ['files.status']),
+    ('Derived from', ['files.derived_from']),
+    ('S3 URL', ['files.cloud_metadata.url']),
+    ('Size', ['files.file_size']),
+])
+
 _excluded_columns = ('Restricted', 'No File Available')
+
+# Attributes of files to extract for metadata.tsv.
+default_file_attributes = [
+    'files.title',
+    'files.file_type',
+    'files.file_format',
+    'files.file_format_type',
+    'files.output_type',
+    'files.assembly'
+]
+
+# For extracting accession from @id paths
+accession_re = re.compile(r'^/[a-z-]+/([A-Z0-9]+)/$')
+# For extracting object type from @id paths
+type_re = re.compile(r'^/([a-z-]+)/[A-Z0-9]+/$')
 
 
 def get_file_uuids(result_dict):
@@ -291,6 +332,148 @@ def _get_annotation_metadata(request, search_path, param_list):
         content_disposition='attachment;filename="%s"' % 'metadata.tsv'
     )
 
+def _get_publicationdata_metadata(request):
+    """
+    Generate PublicationData metadata.tsv.
+
+        :param request: Pyramid request
+    """
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
+
+    # Get the required "dataset={path}" parameter
+    dataset_path = param_list.get('dataset', [''])[0]
+
+    # Open the metadata.tsv file for writing
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+
+    # Build the column-title header row and write it to the file.
+    header = [header for header in _tsv_mapping_publicationdata if header not in _excluded_columns]
+    writer.writerow(header)
+
+    # Load the specified PublicationData object and extract its files to build the rows
+    dataset = request.embed(dataset_path, as_user=True)
+    file_ids = dataset.get('files', [])
+    if file_ids:
+        # For each file, load the file object and use its properties to build each row of the table.
+        for file_id in file_ids:
+            # Load the file object and disqualify those we don't handle.
+            file = request.embed(file_id, as_user=True)
+            biosample_ontology = file.get('biosample_ontology', {})
+            if restricted_files_present(file):
+                continue
+            if is_no_file_available(file):
+                continue
+
+            # Extract the file's dataset accession from the @id; avoids loading the dataset object.
+            dataset_accession = ''
+            accession_match = accession_re.match(file.get('dataset', ''))
+            if accession_match:
+                dataset_accession = accession_match.group(1)
+
+            # Extract the file's derived_from accessions from their @id
+            derived_from_accessions = []
+            derived_from_file_ids = file.get('derived_from', '')
+            for derived_from_file_id in derived_from_file_ids:
+                accession_match = accession_re.match(derived_from_file_id)
+                if accession_match:
+                    derived_from_accessions.append(accession_match.group(1))
+
+            # Build the row's data; much sync with _tsv_mapping_publicationdata.
+            row = [
+                file.get('title', ''),
+                dataset_accession,
+                file.get('file_format', ''),
+                file.get('file_type', ''),
+                file.get('output_type', ''),
+                file.get('assay_term_name', ''),
+                biosample_ontology.get('term_id'),
+                biosample_ontology.get('term_name'),
+                biosample_ontology.get('classification'),
+                file.get('target', {}).get('label', ''),
+                dataset.get('accession', ''),
+                dataset.get('date_released', ''),
+                dataset.get('award', {}).get('project', ''),
+                file.get('lab', {}).get('title', ''),
+                file.get('md5sum', ''),
+                ', '.join(file.get('dbxrefs', '')),
+                file.get('href', ''),
+                file.get('assembly', ''),
+                ', '.join(file.get('controlled_by', '')),
+                file.get('status', ''),
+                ', '.join(derived_from_accessions),
+                file.get('cloud_metadata', {}).get('url', ''),
+                file.get('file_size', ''),
+            ]
+            writer.writerow(row)
+        return Response(
+            content_type='text/tsv',
+            body=fout.getvalue(),
+            content_disposition='attachment;filename="%s"' % 'metadata.tsv'
+        )
+
+
+def _batch_download_publicationdata(request):
+    """
+    Generate PublicationData files.txt.
+
+        :param request: Pyramid request
+    """
+
+    # Parse the batch_download request query string.
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
+
+    # Get the required "dataset={path}" parameter
+    dataset_path = param_list.get('dataset', [''])[0]
+
+    # Retrieve the files property of the requested object.
+    object = request.embed(dataset_path, as_user=True)
+    file_ids = object.get('files', [])
+
+    # Generate the metadata link that heads the file.
+    metadata_link = '{host_url}/metadata/?{search_params}'.format(
+        host_url=request.host_url,
+        search_params=qs._get_original_query_string()
+    )
+
+    # Generate the content of files.txt starting with the metadata.tsv download line and then each
+    # file's download URL.
+    files = [metadata_link]
+    dataset_type = ''
+    for file_id in file_ids:
+        file = request.embed(file_id, as_user=True)
+
+        # All file datasets need to belong to the same type of dataset.
+        if dataset_type:
+            # See if subsequent dataset types match the first one we found.
+            file_dataset_type_match = type_re.match(file.get('dataset', ''))
+            if file_dataset_type_match and file_dataset_type_match.group(1) != dataset_type:
+                raise HTTPBadRequest(explanation='File dataset types must be homogeneous')
+        else:
+            # Establish the first dataset type we find.
+            dataset_type_match = type_re.match(file.get('dataset', ''))
+            if dataset_type_match:
+                dataset_type = dataset_type_match.group(1)
+        if restricted_files_present(file):
+            continue
+        if is_no_file_available(file):
+            continue
+        files.append(
+            '{host_url}{href}'.format(
+                host_url=request.host_url,
+                href=file['href']
+            )
+        )
+
+    # Initiate the files.txt download.
+    return Response(
+        content_type='text/plain',
+        body='\n'.join(files),
+        content_disposition='attachment; filename="%s"' % 'files.txt'
+    )
+
 
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
@@ -353,8 +536,11 @@ def metadata_tsv(context, request):
     else:
         search_path = '/search/'
     type_param = param_list.get('type', [''])[0]
-    if type_param and type_param.lower() == 'annotation':
-        return _get_annotation_metadata(request, search_path, param_list)
+    if type_param:
+        if type_param.lower() == 'annotation':
+            return _get_annotation_metadata(request, search_path, param_list)
+        if type_param.lower() == 'publicationdata':
+            return _get_publicationdata_metadata(request)
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -491,6 +677,12 @@ def batch_download(context, request):
             key_and_value_condition=lambda k, _: k.startswith('files.')
         )
     )
+
+    # Process PublicationData batch downloads separately.
+    type_param = param_list.get('type', [''])[0]
+    if type_param and type_param.lower() == 'publicationdata':
+        return _batch_download_publicationdata(request)
+
     file_fields = [
         ('field', k)
         for k in file_filters

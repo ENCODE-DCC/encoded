@@ -391,20 +391,13 @@ BatchDownloadButton.defaultProps = {
 /**
  * Display batch download button if the search results qualify for one.
  */
-export class BatchDownloadControls extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-    }
+export const BatchDownloadControls = ({ results, queryString }, reactContext) => {
+    const handleDownloadClick = () => {
+        const downloadQueryString = results ? getQueryFromFilters(results.filters) : queryString;
+        reactContext.navigate(`/batch_download/?${downloadQueryString}`);
+    };
 
-    handleDownloadClick() {
-        const queryString = getQueryFromFilters(this.props.results.filters);
-        this.context.navigate(`/batch_download/?${queryString}`);
-    }
-
-    render() {
-        const { results } = this.props;
-
+    if (results) {
         // No Download button if the search path is prohibited.
         const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some(path => results['@id'].startsWith(path));
         if (hasProhibitedPath) {
@@ -422,14 +415,27 @@ export class BatchDownloadControls extends React.Component {
         if (!hasFiles) {
             return null;
         }
-
-        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} />;
     }
-}
+
+    return <BatchDownloadButton handleDownloadClick={handleDownloadClick} />;
+};
+
+const testBatchDownloadControlsProps = (props, propName, componentName) => {
+    if (!(props.results || props.queryString) || (props.results && props.queryString)) {
+        return new Error(`Props 'results' or 'queryString' but not both required in '${componentName}'.`);
+    }
+    return null;
+};
 
 BatchDownloadControls.propTypes = {
     /** Search results object */
-    results: PropTypes.object.isRequired,
+    results: testBatchDownloadControlsProps,
+    queryString: testBatchDownloadControlsProps,
+};
+
+BatchDownloadControls.defaultProps = {
+    results: null,
+    queryString: '',
 };
 
 BatchDownloadControls.contextTypes = {

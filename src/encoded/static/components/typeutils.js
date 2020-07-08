@@ -6,6 +6,7 @@ import * as globals from './globals';
 import { requestFiles, AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
+import { BatchDownloadControls } from './view_controls';
 
 
 // BIOSAMPLE UTILITIES
@@ -614,10 +615,11 @@ const getPageFiles = (files, pageNo) => {
 /**
  * Display the header for the file table, including the pager.
  */
-const FileTableHeader = ({ title, currentPage, totalPageCount, updateCurrentPage }) => (
+const FileTableHeader = ({ title, currentPage, totalPageCount, control, updateCurrentPage }) => (
     <div className="header-paged-sorttable">
         {title}
         <div className="header-paged-sorttable__controls">
+            {control}
             {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
         </div>
     </div>
@@ -633,8 +635,14 @@ FileTableHeader.propTypes = {
     currentPage: PropTypes.number.isRequired,
     /** Total number of pages */
     totalPageCount: PropTypes.number.isRequired,
+    /** React component to render in the header next to the pager */
+    control: PropTypes.element,
     /** Called with the new page number the user selected */
     updateCurrentPage: PropTypes.func.isRequired,
+};
+
+FileTableHeader.defaultProps = {
+    control: null,
 };
 
 
@@ -643,7 +651,7 @@ FileTableHeader.propTypes = {
  * objects, performing fetches of the complete file objects for the former. If the number of files
  * exceeds PAGED_FILE_TABLE_MAX, the user can use a pager to scroll between pages of files.
  */
-export const FileTablePaged = ({ fileIds, files, title }) => {
+export const FileTablePaged = ({ context, fileIds, files, title }) => {
     // Initialize or load the page cache. Keyed by `currentPageNum`.
     const pageCache = React.useRef({});
     // Calculate the total number of pages given the array of files.
@@ -721,7 +729,15 @@ export const FileTablePaged = ({ fileIds, files, title }) => {
 
         return (
             <SortTablePanel
-                header={<FileTableHeader title={headerTitle} currentPage={currentPageNum} totalPageCount={totalPages} updateCurrentPage={updateCurrentPage} />}
+                header={
+                    <FileTableHeader
+                        title={headerTitle}
+                        currentPage={currentPageNum}
+                        totalPageCount={totalPages}
+                        control={context ? <BatchDownloadControls queryString={`type=${context['@type'][0]}&dataset=${context['@id']}`} /> : null}
+                        updateCurrentPage={updateCurrentPage}
+                    />
+                }
                 subheader={fileCountDisplay}
                 css="table-paged"
             >
@@ -750,6 +766,8 @@ const testFileTablePagedProps = (props, propName, componentName) => {
 };
 
 FileTablePaged.propTypes = {
+    /** Object being displayed that includes the file table */
+    context: PropTypes.object,
     /** Array of all file @ids to include in table on all pages */
     fileIds: testFileTablePagedProps,
     /** Alternative array of file objects to include in table on all pages */
@@ -762,6 +780,7 @@ FileTablePaged.propTypes = {
 };
 
 FileTablePaged.defaultProps = {
+    context: null,
     fileIds: null,
     files: null,
 };
