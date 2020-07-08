@@ -3412,9 +3412,10 @@ def audit_experiment_ChIP_control(value, system, files_structure):
 
     if (not has_input_control) and (not tagged):
         detail = (
-            'Experiment {} is ChIP-seq with no epitope tag. It requires at '
-            'least one input control as agreed upon by the binding group. '
-            'None of {} is not an input control'.format(
+            'ChIP-seq experiment {} is required to specify at least one '
+            '"input library" control experiment. None of the experiments '
+            'listed as possible controls ({}) satisfied this '
+            'requirement.'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
                 ', '.join(
                     audit_link(path_to_text(ctrl['@id']), ctrl['@id'])
@@ -3428,9 +3429,10 @@ def audit_experiment_ChIP_control(value, system, files_structure):
 
     if tagged and (not has_wt_control) and (not has_input_control):
         detail = (
-            'Experiment {} is epitope tagged ChIP-seq. It requires at least '
-            'one input control or wild type control as agreed upon by the '
-            'binding group. None of {} satisfies this requirement.'.format(
+            'Epitope-tagged ChIP-seq experiment {} is required to specify '
+            'either "input library" or "wild-type" as a control experiment. '
+            'None of the experiments listed as possible controls ({}) '
+            'satisfied this requirement.'.format(
                 audit_link(path_to_text(value['@id']), value['@id']),
                 ', '.join(
                     audit_link(path_to_text(ctrl['@id']), ctrl['@id'])
