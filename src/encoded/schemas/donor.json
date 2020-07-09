@@ -1,7 +1,7 @@
 {
     "title": "Donor",
-    "description": "Base schema for donors or strains.",
-    "comment": "Human donors and model organism strains derive from this base object.",
+    "description": "Base schema for donors.",
+    "comment": "Human and model organism donors derive from this base object.",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -32,6 +32,8 @@
         "organism": {
             "title": "Organism",
             "description": "Organism of the donor.",
+            "comment": "Do not submit, value is assigned by the object.",
+            "permission": "import_items",
             "type": "string",
             "linkTo": "Organism"
         },
@@ -41,7 +43,39 @@
         },
         "diseases": {
             "description": "Known diseases"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+                "female",
+                "male",
+                "mixed",
+                "unknown"
+            ]
+        },
+        "genotype": {
+            "title": "Genotype",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "weight": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "weight_unit": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
         }
-    },
-    "boost_values": {}
+    }
 }

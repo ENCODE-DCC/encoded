@@ -25,9 +25,10 @@ ORDER = [
     'antibody_lot',
     'biosample_type',
     'treatment',
-    'mouse_donor',
-    'human_donor',
-    'genetic_modification',
+    'human_postnatal_donor',
+    'human_prenatal_donor',
+    'mouse_postnatal_donor',
+    'mouse_prenatal_donor',
     'tissue',
     'suspension',
     'cell_culture',
@@ -546,10 +547,7 @@ PHASE1_PIPELINES = {
     'dataset': [
         remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
     ],
-    'mouse_donor': [
-        remove_keys('parent_strains', 'genetic_modifications'),
-    ],
-    'human_donor': [
+    'human_postnatal_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
     ],
     'publication': [
@@ -596,11 +594,8 @@ PHASE2_PIPELINES = {
     'dataset': [
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
     ],
-    'human_donor': [
+    'human_postnatal_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
-    ],
-    'mouse_donor': [
-        skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'reference_file_set': [
         skip_rows_missing_all_keys('related_files', 'software_used'),

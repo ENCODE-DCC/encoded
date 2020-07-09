@@ -10,6 +10,34 @@
         "uuid": "8fdf11b4-4f00-453d-94cd-ab6a2bedd804"
     },
     {
+        "accession": "ENCSR000AHF",
+        "award": "ENCODE2",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH003317",
+            "GEO:GSM1010811"
+        ],
+        "description": "Some mouse postnatal data",
+        "documents": [
+            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "status": "released",
+        "date_submitted": "2015-07-20",
+        "date_released": "2016-01-01",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
+        "submitter_comment": "The lab plant died and everyone was sad that week so it may have affected the results."
+    },
+    {
+        "accession": "ENCSR003SER",
+        "award": "U54HG007004",
+        "description": "Some mouse prenatal data",
+        "status": "released",
+        "date_submitted": "2015-11-20",
+        "date_released": "2016-01-01",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
+    },
+    {
         "_test": "shared biosample",
         "accession": "ENCSR000AER",
         "award": "U54HG007004",
@@ -26,20 +54,6 @@
     },
     {
         "_test": "shared biosample",
-        "accession": "ENCSR000AEM",
-        "award": "U54HG007004",
-        "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
-        "status": "released",
-        "date_submitted": "2015-02-20",
-        "supersedes": [
-            "ENCSR000AES"
-        ],
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
-    },
-    {
-        "_test": "shared biosample",
         "accession": "ENCSR000AES",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
@@ -48,45 +62,6 @@
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
-    },
-    {
-        "_test": "control chip-seq with files",
-        "accession": "ENCSR000ADH",
-        "award": "ENCODE2-Mouse",
-        "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002001",
-            "GEO:GSM798326",
-            "GEO:GSE32218"
-        ],
-        "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
-    },
-    {
-        "_test": "refers to the control dataset",
-        "accession": "ENCSR000ADI",
-        "award": "ENCODE2-Mouse",
-        "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002004",
-            "GEO:GSM798327",
-            "GEO:GSE32218",
-            "4DN:4DNESUCQ2Q6H"
-        ],
-        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
-        ],
-        "status": "released",
-        "date_submitted": "2015-05-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
     },
     {
         "_test": "anisogenic experiemnt",
@@ -106,25 +81,6 @@
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "2629336f-0f99-4f30-9457-b2a4834e9e69"
-    },
-    {
-        "_test": "human chip-seq",
-        "accession": "ENCSR000AHF",
-        "award": "ENCODE2",
-        "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH003317",
-            "GEO:GSM1010811"
-        ],
-        "description": "HAIB ChIP TAF1 in MCF-7",
-        "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
-        ],
-        "status": "released",
-        "date_submitted": "2015-07-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
-        "submitter_comment": "The lab plant died and everyone was sad that week so it may have affected the results."
     },
     {
         "_test": "methy array",
@@ -184,17 +140,6 @@
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
-    },
-    {
-        "_test": "replicates no files",
-        "accession": "ENCSR999NOF",
-        "award": "U54HG007004",
-        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "status": "released",
-        "date_submitted": "2015-12-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
     },
     {
         "_test": "patch users",
@@ -300,40 +245,6 @@
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e162561a-08c0-463c-93d8-c4f924584e13"
-    },
-    {
-        "_test": "treatment time series 1",
-        "accession": "ENCSR001SER",
-        "award": "U54HG007004",
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
-        "status": "released",
-        "date_submitted": "2015-09-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919",
-        "submitter_comment": "There may have been additional treatment stemming from the techs constant sneezing."
-    },
-    {
-        "_test": "treatment time series 2",
-        "accession": "ENCSR002SER",
-        "award": "U54HG007004",
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.",
-        "status": "released",
-        "date_submitted": "2015-10-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
-    },
-    {
-        "_test": "treatment time series 3 missing possible_controls",
-        "accession": "ENCSR003SER",
-        "award": "U54HG007004",
-        "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 12 hours.",
-        "status": "released",
-        "date_submitted": "2015-11-20",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
     },
     {
         "_test": "treatment concentration series 1",
@@ -553,25 +464,6 @@
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ce9bb310-d52d-464c-9e2d-c250ab287c7a"
-    },
-    {
-        "_test": "Paired set series 1",
-        "status": "in progress",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010",
-        "accession": "ENCSR706IDL",
-        "date_submitted": "2015-08-31",
-        "uuid": "529ea39a-58a7-4a9d-8a86-2e5da2e1e1fb"
-    },
-    {
-        "_test": "Paired set series 2",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "status": "released",
-        "date_submitted": "2015-04-20",
-        "award": "U54HG007010",
-        "date_released": "2015-08-31",
-        "accession": "ENCSR751YPU",
-        "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b2"
     },
     {
         "_test": "Paired set series 3",

@@ -2,7 +2,7 @@
     {
         "accession": "ENCFF001MWZ",
         "assembly": "mm9",
-        "dataset": "ENCSR000ADI",
+        "dataset": "ENCSR000AHF",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
         "file_size": 20,
@@ -32,7 +32,7 @@
     {
         "accession": "ENCFF001MXA",
         "assembly": "mm10",
-        "dataset": "ENCSR000ADI",
+        "dataset": "ENCSR000AHF",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "bam",

@@ -1,7 +1,7 @@
 [
     {
         "accession": "ENCFF001MYM",
-        "dataset": "ENCSR000ADH",
+        "dataset": "ENCSR003SER",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
         "file_format": "fastq",
@@ -27,7 +27,7 @@
     },
     {
         "accession": "ENCFF002MYM",
-        "dataset": "ENCSR000ADH",
+        "dataset": "ENCSR003SER",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
         "file_format": "fastq",
@@ -54,7 +54,7 @@
     {
         "accession": "ENCFF001MXF",
         "file_size": 20,
-        "dataset": "ENCSR000ADI",
+        "dataset": "ENCSR000AHF",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
         "file_format": "fastq",
@@ -104,7 +104,7 @@
     {
         "accession": "ENCFF001MXH",
         "file_size": 20,
-        "dataset": "ENCSR000ADI",
+        "dataset": "ENCSR000AHF",
         "date_created": "2010-05-12T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
         "file_format": "fastq",
@@ -129,7 +129,7 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDZ",
-        "dataset": "ENCSR000AEM",
+        "dataset": "ENCSR000AHF",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_size": 20,
         "sequencing_run_type": "single-ended",
@@ -182,7 +182,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RED",
         "file_size": 20,
-        "dataset": "ENCSR000AEM",
+        "dataset": "ENCSR000AHF",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "sequencing_run_type": "single-ended",
         "file_format": "fastq",
@@ -619,7 +619,7 @@
         "platform": "/platforms/OBI%3A0002001/",
         "lab": "john-stamatoyannopoulos",
         "submitted_file_name": "human/submission/fastq-combined/UwStam_Brain_Midbrain-DS23429-FCC1FB1-L001_R1.fastq.gz",
-        "dataset": "ENCSR706IDL/",
+        "dataset": "ENCSR000AHF/",
         "file_format": "fastq",
         "derived_from": "ENCLB376WDO"
     },
@@ -630,7 +630,7 @@
         "file_format": "fastq",
         "status": "released",
         "output_type": "reads",
-        "dataset": "ENCSR751YPU/",
+        "dataset": "ENCSR003SER/",
         "content_md5sum": "7dad2371f43128103106312c795de447",
         "accession": "ENCFF477MLC",
         "platform": "/platforms/OBI%3A0002002/",
@@ -810,7 +810,7 @@
         "file_size": 2307361344,
         "read_length": 25,
         "status": "released",
-        "dataset": "ENCSR751YPU",
+        "dataset": "ENCSR003SER",
         "read_type": "Read 1",
         "derived_from": "ENCLB033CJI"
     },
@@ -826,7 +826,7 @@
         "accession": "ENCFF000LAZ",
         "platform": "/platforms/OBI%3A0000696/",
         "paired_with": "ENCFF000LBA/",
-        "dataset": "ENCSR751YPU",
+        "dataset": "ENCSR003SER",
         "file_format": "fasta",
         "md5sum": "20125f316dafa4daed390afae59e7bb2",
         "lab": "/labs/michael-snyder/",
@@ -844,7 +844,7 @@
         "status": "released",
         "accession": "ENCFF010LAO",
         "platform": "/platforms/OBI%3A0000696/",
-        "dataset": "ENCSR751YPU",
+        "dataset": "ENCSR003SER",
         "file_format": "fasta",
         "lab": "/labs/michael-snyder/",
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",

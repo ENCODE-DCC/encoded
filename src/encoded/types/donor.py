@@ -25,9 +25,7 @@ class Donor(Item):
         'documents',
         'documents.submitted_by'
     ]
-    set_status_up = [
-        'documents',
-    ]
+    set_status_up = []
     set_status_down = []
     name_key = 'accession'
     rev = {}
@@ -40,35 +38,35 @@ class Donor(Item):
         return keys
 
 
-@collection(
+    @calculated_property(define=True,
+                        schema={
+                        "title": "Age display",
+                        "type": "string"})
+    def age_display(self, request, age=None, age_units=None):
+        if age != None and age_units !=None:
+            if age == 'unknown':
+                return 'unknown'
+            else:
+                return u'{}'.format(pluralize(age, age_units))
+        else:
+            return None
+
+
+@abstract_collection(
     name='mouse-donors',
     unique_key='accession',
-    acl=[],
     properties={
         'title': 'Mouse donors',
         'description': 'Listing Biosample Donors'
     })
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
+    base_types = ['MouseDonor'] + Donor.base_types
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments']
-    set_status_up = [
-        'source',
-        'genetic_modifications',
-        'parent_strains',
-        'documents',
-    ]
-    set_status_down = []
-
-    def __ac_local_roles__(self):
-        # Disallow lab submitter edits
-        return {Authenticated: 'role.viewing_group_member'}
+    embedded = Donor.embedded + []
 
 
-@collection(
+@abstract_collection(
     name='human-donors',
     unique_key='accession',
     properties={
@@ -77,7 +75,60 @@ class MouseDonor(Donor):
     })
 class HumanDonor(Donor):
     item_type = 'human_donor'
+    base_types = ['HumanDonor'] + Donor.base_types
     schema = load_schema('encoded:schemas/human_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='mouse-prenatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Mouse prenatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class MousePrenatalDonor(MouseDonor):
+    item_type = 'mouse_prenatal_donor'
+    schema = load_schema('encoded:schemas/mouse_prenatal_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='mouse-postnatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Mouse postnatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class MousePostnatalDonor(MouseDonor):
+    item_type = 'mouse_postnatal_donor'
+    schema = load_schema('encoded:schemas/mouse_postnatal_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='human-prenatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Human prenatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class HumanPrenatalDonor(HumanDonor):
+    item_type = 'human_prenatal_donor'
+    schema = load_schema('encoded:schemas/human_prenatal_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='human-postnatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Human postnatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class HumanPostnatalDonor(HumanDonor):
+    item_type = 'human_postnatal_donor'
+    schema = load_schema('encoded:schemas/human_postnatal_donor.json')
     embedded = Donor.embedded + []
     rev = {
         'children': ('HumanDonor', 'parents')
@@ -96,20 +147,6 @@ class HumanDonor(Donor):
     })
     def children(self, request, children):
         return paths_filtered_by_status(request, children)
-
-
-    @calculated_property(define=True,
-                        schema={
-                        "title": "Age display",
-                        "type": "string"})
-    def age_display(self, request, age=None, age_units=None):
-        if age != None and age_units !=None:
-            if age == 'unknown':
-                return 'unknown'
-            else:
-                return u'{}'.format(pluralize(age, age_units))
-        else:
-            return None
 
 
 def pluralize(value, value_units):

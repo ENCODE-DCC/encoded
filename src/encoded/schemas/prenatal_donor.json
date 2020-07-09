@@ -1,0 +1,96 @@
+{
+    "title": "Prenatal donor",
+    "description": "Base schema for donors or strains.",
+    "comment": "Human donors and model organism strains derive from this base object.",
+    "id": "/profiles/donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "mixinProperties": [
+        {"$ref": "mixins.json#/schema_version"}
+    ],
+    "dependencies": {
+        "carnegie_stage_basis": {
+            "required":["carnegie_stage"]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
+        "gestational_age": {
+            "title": "Gestational age",
+            "description": "The age or age range of the donor when biological material was sampled.",
+            "comment": "This is gestational time for fetal and embryonic samples",
+            "type": "string",
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+        },
+        "gestational_age_units": {
+            "title": "Gestational age units",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month"
+            ]
+        },
+        "crown_rump_length": {
+            "title": "Crown-rump length",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "crown_rump_length_units": {
+            "title": "Crown-rump length units",
+            "type": "string"
+        },
+        "life_stage": {
+            "default": "embryonic",
+            "enum": ["embryonic"]
+        },
+        "carnegie_stage": {
+            "title": "Carnegie stage",
+            "description": "",
+            "comment": "",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 23
+        },
+        "carnegie_stage_basis": {
+            "title": "Carnegie stage basis",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "foot_length": {
+            "title": "Foot length",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "foot_length_units": {
+            "title": "Foot length units",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "knee_heel_length": {
+            "title": "Knee-heel length",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "knee_heel_length_units": {
+            "title": "Knee-heel length units",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "somite_count": {
+            "title": "Somite count",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        }
+    }
+}
