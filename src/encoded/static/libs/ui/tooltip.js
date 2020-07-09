@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BrowserFeat } from '../../components/browserfeat';
 
 // This module lets you have a tooltip pop up when any component is hovered over or focused. The
 // general usage is:
@@ -37,8 +36,7 @@ const Tooltip = (props) => {
     React.useEffect(() => {
         const updateWidth = () => {
             const screenWidth = Math.min(screen.width, window.innerWidth);
-            // setIsMobile(BrowserFeat.feat.touchEnabled && screenWidth <= 800);
-            setIsMobile(screenWidth <= 800);
+            setIsMobile(screenWidth <= 960);
         };
         updateWidth();
         window.addEventListener('resize', updateWidth);
