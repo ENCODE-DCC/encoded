@@ -16,7 +16,7 @@ dayjs.extend(utc);
 // Convert the selected organisms and assays into an encoded query.
 function generateQuery(selectedOrganisms, selectedAssayCategory) {
     // Make the base query.
-    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=ENCODE+v4' : '?type=Experiment&status=released';
+    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=ENCODE+v5' : '?type=Experiment&status=released';
 
     // Add the selected assay category, if any (doesn't apply to Computational Predictions).
     if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
@@ -444,7 +444,7 @@ class ScreenSearch extends React.Component {
             <div className="site-search__screen">
                 <div className="site-search__reference">
                     <a href="/data/annotations/" className="btn btn-info btn-sm">About ENCODE Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=ENCODE+v4&annotation_type=candidate+Cis-Regulatory+Elements" className="btn btn-info btn-sm">candidate Cis-Regulatory Elements</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type=candidate+Cis-Regulatory+Elements" className="btn btn-info btn-sm">candidate Cis-Regulatory Elements</a>
                 </div>
                 <form>
                     <fieldset>
