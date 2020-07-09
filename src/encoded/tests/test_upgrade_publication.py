@@ -100,3 +100,10 @@ def test_publication_upgrade_6_7(
         publication_6['@id'] + '@@index-data'
     ).json['object']
     assert publication_data['@id'] in new_publication['publication_data']
+
+
+def test_publication_upgrade_7_8(upgrader, publication_7):
+    value = upgrader.upgrade('publication', publication_7, current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert 'Incorrect date_published formatting: 3/30/20' in value['notes']
+    assert 'date_published' not in value

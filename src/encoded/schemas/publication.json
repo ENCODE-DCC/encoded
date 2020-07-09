@@ -37,7 +37,8 @@
         },
         "date_published": {
             "title": "Publication date",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[0-9]{4}.*$"
         },
         "date_revised": {
             "title": "Date revised",
@@ -220,11 +221,11 @@
         },
         "datasets": {
             "type": "exists",
-            "title": "Associated dataset"
+            "title": "Publication dataset"
         },
         "publication_data": {
             "type": "exists",
-            "title": "Publication data"
+            "title": "Publication file data"
         }
     },
     "columns": {

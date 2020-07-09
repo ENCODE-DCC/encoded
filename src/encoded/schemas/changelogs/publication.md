@@ -1,5 +1,8 @@
 ## Changelog for publication.json
 
+### Schema version 8
+* The *publication_date* property is restricted to a format starting with the year (e.g., 2020-07-08 or 2020 Jul 8.).
+
 ### Minor changes since schema version 7
 * The *documents* property is now available to provide relevant documents associated with the Publication.
 

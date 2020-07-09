@@ -96,3 +96,14 @@ def publication_6_7(value, system):
         value.pop('datasets', None)
     else:
         value['datasets'] = new_datasets
+
+
+@upgrade_step('publication', '7', '8')
+def publication_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5381
+    notes = value.get('notes', '')
+    if 'date_published' in value:
+        likely_year = value['date_published'][:4]
+        if not likely_year.isdigit():
+            value['notes'] = (notes + 'Incorrect date_published formatting: ' + value['date_published']).strip()
+            value.pop('date_published')

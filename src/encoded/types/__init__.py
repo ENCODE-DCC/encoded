@@ -247,7 +247,7 @@ class Publication(Item):
         "type": "string",
     })
     def publication_year(self, date_published):
-        return date_published.partition(' ')[0]
+        return int(date_published[:4])
 
     @calculated_property(schema={
         "title": "Publication Data",
