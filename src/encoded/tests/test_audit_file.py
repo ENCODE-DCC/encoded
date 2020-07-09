@@ -929,7 +929,7 @@ def test_audit_correct_index(testapp, fastq_index,
     assert 'inconsistent index file' not in (error['category']
             for error in errors_list)
 
-    # One PacBio fastq is allowed
+    # One PacBio or Oxford Nanopore fastq is allowed
     testapp.patch_json(
         fastq_index['@id'],
         {
@@ -969,7 +969,7 @@ def test_audit_incorrect_index(testapp,
                                second_fastq_indexed,
                                incorrect_paired_fastq_indexed,
                                pacbio_fastq_indexed,
-                               second_pacbio_fastq_indexed,
+                               oxford_nanopore_fastq_indexed,
                                bam_file, ATAC_experiment):
     # One SE and one PE fastq together is disallowed
     testapp.patch_json(
@@ -1024,7 +1024,7 @@ def test_audit_incorrect_index(testapp,
         and 'index_of only one paired-end fastq file' in error['detail']
         for error in errors_list)
 
-    # A PacBio fastq with a Illumina fastq is disallowed
+    # Any non-Illumina fastq with a Illumina fastq is disallowed
     testapp.patch_json(
         fastq_index['@id'],
         {
@@ -1039,8 +1039,8 @@ def test_audit_incorrect_index(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent index file'
-        and 'incorrectly specified for both PacBio and Illumina fastq files'
-            in error['detail']
+        and 'fastq files sequenced using different platforms' in error['detail']
+        and 'multiple non-Illumina fastq' not in error['detail']
             for error in errors_list)
 
     # Any non-fastq file is disallowed
@@ -1083,13 +1083,13 @@ def test_audit_incorrect_index(testapp,
         and 'is from experiment' in error['detail']
         for error in errors_list)
 
-    # Two PacBio fastq are disallowed
+    # Two non-Illumina fastq are disallowed (PacBio, Oxford Nanopore)
     testapp.patch_json(
         fastq_index['@id'],
         {
             'index_of': [
                 pacbio_fastq_indexed['@id'],
-                second_pacbio_fastq_indexed['@id']]
+                oxford_nanopore_fastq_indexed['@id']]
         }
     )
     res = testapp.get(fastq_index['@id'] + '@@index-data')
@@ -1098,5 +1098,5 @@ def test_audit_incorrect_index(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent index file'
-        and 'multiple PacBio fastq files' in error['detail']
+        and 'multiple non-Illumina fastq' in error['detail']
         for error in errors_list)

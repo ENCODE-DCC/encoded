@@ -1661,15 +1661,15 @@ def pacbio_fastq_indexed(testapp, lab, award, experiment, base_replicate_two, pl
 
 
 @pytest.fixture
-def second_pacbio_fastq_indexed(testapp, lab, award, experiment, base_replicate, platform3):
+def oxford_nanopore_fastq_indexed(testapp, lab, award, experiment, base_replicate, platform4):
     item = {
             'dataset': experiment['@id'],
             'file_format': 'fastq',
             'md5sum': '15dd66b6f21515393507f4ebfa55e77c',
             'replicate': base_replicate['@id'],
             'output_type': 'reads',
-            'file_size': 720,
-            'platform': platform3['uuid'],
+            'file_size': 800,
+            'platform': platform4['uuid'],
             'lab': lab['@id'],
             'award': award['@id'],
             'status': 'in progress'

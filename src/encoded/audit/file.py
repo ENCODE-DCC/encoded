@@ -531,7 +531,7 @@ def audit_file_index_of(value, system):
         incorrect_pairings = 0
         non_fastqs = 0
         run_type = set()
-        pacbio_platforms = [
+        non_illumina_platforms = [
                 "ced61406-dcc6-43c4-bddd-4c977cc676e8",
                 "c7564b38-ab4f-4c42-a401-3de48689a998",
                 "e2be5728-5744-4da4-8881-cb9526d0389e",
@@ -541,7 +541,7 @@ def audit_file_index_of(value, system):
         for indexed_file in value['index_of']:
             count_indexed_files += 1
             if indexed_file['file_format'] != 'fastq':
-                non_fastqs +=1
+                non_fastqs += 1
             if index_exp != indexed_file['dataset']:
                 indexed_files_with_expts.append(tuple((indexed_file['@id'], indexed_file['dataset'])))
             if 'run_type' in indexed_file:
@@ -551,11 +551,11 @@ def audit_file_index_of(value, system):
                         indexed_fastq_with_pair.append(tuple((indexed_file['@id'], indexed_file['paired_with'])))
                     else:
                         incorrect_pairings += 1
-            elif 'platform' in indexed_file and indexed_file['platform']['uuid'] in pacbio_platforms:
+            elif 'platform' in indexed_file and indexed_file['platform']['uuid'] in non_illumina_platforms:
                 run_type.add('none')
         if len(indexed_fastq_with_pair) == 2:
             if indexed_fastq_with_pair[0][0] != indexed_fastq_with_pair[1][1]:
-                incorrect_pairings +=1
+                incorrect_pairings += 1
 
         if len(indexed_files_with_expts) > 0:
             fastq_links = ', '.join(audit_link(path_to_text(m[0]), m[0]) for m in indexed_files_with_expts)
@@ -599,17 +599,16 @@ def audit_file_index_of(value, system):
         if 'none' in run_type and len(run_type) > 1:
             detail = (
                 f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
-                f'is incorrectly specified for both PacBio and Illumina fastq files.'
+                f'is incorrectly specified for fastq files sequenced using different platforms.'
             )
             yield AuditFailure('inconsistent index file', detail, level='ERROR')
 
-        if 'none' in run_type and (count_indexed_files - non_fastqs) > 1:
+        if run_type == {'none'} and (count_indexed_files - non_fastqs) > 1:
             detail = (
                 f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
-                f'is incorrectly specified for multiple PacBio fastq files.'
+                f'is incorrectly specified for multiple non-Illumina fastq files.'
             )
             yield AuditFailure('inconsistent index file', detail, level='ERROR')
-
 
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
