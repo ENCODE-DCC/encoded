@@ -37,7 +37,8 @@ const Tooltip = (props) => {
     React.useEffect(() => {
         const updateWidth = () => {
             const screenWidth = Math.min(screen.width, window.innerWidth);
-            setIsMobile(BrowserFeat.feat.touchEnabled && screenWidth <= 800);
+            // setIsMobile(BrowserFeat.feat.touchEnabled && screenWidth <= 800);
+            setIsMobile(screenWidth <= 800);
         };
         updateWidth();
         window.addEventListener('resize', updateWidth);
