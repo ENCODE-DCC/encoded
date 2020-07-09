@@ -6,8 +6,6 @@ import { BrowserFeat } from './browserfeat';
 import { filterForVisualizableFiles } from './objectutils';
 import AutocompleteBox from './region_search';
 
-const domainName = 'https://www.encodeproject.org';
-
 // Files to be displayed for local version of browser
 const dummyFiles = [
     {
@@ -28,6 +26,7 @@ const dummyFiles = [
         },
         status: 'released',
         title: 'ENCFF425LKJ',
+        biological_replicates: [1],
     },
     {
         file_format: 'bigWig',
@@ -47,6 +46,7 @@ const dummyFiles = [
         },
         status: 'released',
         title: 'ENCFF638QHN',
+        biological_replicates: [2],
     },
     {
         file_format: 'bigWig',
@@ -66,6 +66,7 @@ const dummyFiles = [
         },
         status: 'released',
         title: 'ENCFF541XFO',
+        biological_replicates: [1],
     },
     {
         file_format: 'bigBed bedRNAElements',
@@ -85,6 +86,7 @@ const dummyFiles = [
         },
         status: 'released',
         title: 'ENCFF517WSY',
+        biological_replicates: [1],
     },
     {
         file_format: 'bigBed',
@@ -104,6 +106,7 @@ const dummyFiles = [
         },
         status: 'released',
         title: 'ENCFF026DAN',
+        biological_replicates: [2],
     },
     {
         file_format: 'bigBed',
@@ -123,6 +126,7 @@ const dummyFiles = [
         },
         status: 'released',
         title: 'ENCFF847CBY',
+        biological_replicates: [1, 2],
     },
 ];
 
@@ -154,6 +158,27 @@ function mapGenome(inputAssembly) {
     }
     return genome;
 }
+
+// Map the name of a sort parameter to a file object property and convert to form that can be compared
+// Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
+// Multiplication by 1000 orders the replicates with a single replicate at the end
+const sortLookUp = (obj, param) => {
+    if (param === 'Replicates') {
+        if (obj.biological_replicates.length > 1) {
+            return +obj.biological_replicates.join('');
+        }
+        return +obj.biological_replicates * 1000;
+    } else if (param === 'Output type') {
+        return obj.output_type.toLowerCase();
+    } else if (param === 'File type') {
+        return obj.file_type.toLowerCase();
+    } else if (param === 'Assay term name') {
+        return obj.assay_term_name.toLowerCase();
+    } else if (param === 'Biosample term name') {
+        return obj.biosample_ontology.term_name.toLowerCase();
+    }
+    return null;
+};
 
 /**
  * Display a label for a file’s track.
@@ -226,6 +251,8 @@ class GenomeBrowser extends React.Component {
             x1: 59e6,
             pinnedFiles: [],
             disableBrowserForIE: false,
+            sortToggle: this.props.sortParam.map(() => true), // Indicates ascending or descending order for each sort parameter; true is descending and false is ascending
+            primarySort: this.props.sortParam[0] || 'Replicates', // Indicates the final (primary) sort applied to the list of files
         };
         this.setBrowserDefaults = this.setBrowserDefaults.bind(this);
         this.clearBrowserMemory = this.clearBrowserMemory.bind(this);
@@ -235,9 +262,10 @@ class GenomeBrowser extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleOnFocus = this.handleOnFocus.bind(this);
-        this.compileFiles = this.compileFiles.bind(this);
         this.setGenomeAndTracks = this.setGenomeAndTracks.bind(this);
         this.resetLocation = this.resetLocation.bind(this);
+        this.sortFiles = this.sortFiles.bind(this);
+        this.sortAndRefresh = this.sortAndRefresh.bind(this);
     }
 
     componentDidMount() {
@@ -276,34 +304,9 @@ class GenomeBrowser extends React.Component {
             }
 
             if (!(_.isEqual(this.props.files, prevProps.files))) {
-                let newFiles = [];
-                let files = [];
-                let domain = `${window.location.protocol}//${window.location.hostname}`;
-                if (domain.includes('localhost')) {
-                    domain = domainName;
-                    newFiles = [...this.state.pinnedFiles, ...dummyFiles];
-                } else {
-                    const propsFiles = filterForVisualizableFiles(this.props.files);
-                    files = _.chain(propsFiles)
-                        .sortBy(obj => obj.output_type)
-                        .sortBy((obj) => {
-                            if (obj.biological_replicates.length > 1) {
-                                return +obj.biological_replicates.join('');
-                            }
-                            return +obj.biological_replicates * 1000;
-                        })
-                        .value();
-                    newFiles = [...this.state.pinnedFiles, ...files];
-                }
-                let tracks = [];
-                if (files.length > 0) {
-                    tracks = this.filesToTracks(newFiles, this.props.label, domain);
-                }
-                this.setState({ trackList: tracks }, () => {
-                    if (this.chartdisplay && tracks !== []) {
-                        this.drawTracks(this.chartdisplay);
-                    }
-                });
+                const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
+                const primarySortToggle = this.state.sortToggle[primarySortIndex];
+                this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
             }
         }
     }
@@ -433,16 +436,9 @@ class GenomeBrowser extends React.Component {
         });
         // Make sure that we have these pinned files before we convert the files to tracks and chart them
         genomePromise.then(() => {
-            const domain = `${window.location.protocol}//${window.location.hostname}`;
-            const files = this.compileFiles(domain);
-            if (files.length > 0) {
-                const tracks = this.filesToTracks(files, this.props.label, domain);
-                this.setState({ trackList: tracks }, () => {
-                    this.drawTracks(this.chartdisplay);
-                });
-            } else {
-                this.setState({ trackList: [] });
-            }
+            const primarySortIndex = this.props.sortParam.indexOf(this.state.primarySort);
+            const primarySortToggle = this.state.sortToggle[primarySortIndex];
+            this.sortAndRefresh(this.state.primarySort, primarySortToggle, primarySortIndex, false);
         });
     }
 
@@ -456,37 +452,88 @@ class GenomeBrowser extends React.Component {
         }
     }
 
-    compileFiles(domain) {
-        let newFiles = [];
+    // Sort file object by an arbitrary number of sort parameters
+    // "primarySort" is the primary sort parameter
+    // "sortDirection" refers to ascending or descending order
+    // "sortIdx" keeps track of the index of the primarySort in this.state.sortToggle
+    // "toggleFlag" indicates whether the primarySort has changed and if its sortDirection should be reversed
+    //      (i.e., whether this function is being called upon initialization or upon the user clicking on a sort button)
+    sortFiles(primarySort, sortDirection, sortIdx, toggleFlag) {
+        let propsFiles = [];
+        const domain = `${window.location.protocol}//${window.location.hostname}`;
+
+        // Make sure that the sorting parameter "primarySort" is the last element in the sort array
+        const orderedSortParam = [...this.props.sortParam];
+        const fromIdx = orderedSortParam.indexOf(primarySort);
+        orderedSortParam.splice((orderedSortParam.length - 1), 0, orderedSortParam.splice(fromIdx, 1)[0]);
+
+        // The sort button for "Output type" is secretly also a sort button for "File type", so that all the bigWigs and bigBeds are grouped with each other
+        // Here we add "File type" to the sort array if it's not already there and make sure that it is the sort parameter after "Output type"
+        const fileIdx = orderedSortParam.indexOf('File type');
+        const outputIdx = orderedSortParam.indexOf('Output type');
+        if (fileIdx > -1) {
+            orderedSortParam.splice((outputIdx + 1), 0, orderedSortParam.splice(fileIdx, 1)[0]);
+        } else {
+            orderedSortParam.splice((outputIdx + 1), 0, 'File type');
+        }
+
+        // Initialize files
         if (domain.includes('localhost')) {
-            // Locally we will display some default tracks
-            newFiles = [...this.state.pinnedFiles, ...dummyFiles];
+            propsFiles = dummyFiles;
         } else {
             // Filter files to include only bigWig and bigBed formats, and not 'bigBed bedMethyl' formats and only released or in progress files
-            const propsFiles = filterForVisualizableFiles(this.props.files);
-            // Set default ordering of tracks to be first by replicate then by output_type
-            // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
-            // Multiplication by 1000 orders the replicates with a single replicate at the end
-            const files = _.chain(propsFiles)
-                .sortBy(obj => obj.output_type)
-                .sortBy((obj) => {
-                    if (obj.biological_replicates.length > 1) {
-                        return +obj.biological_replicates.join('');
-                    }
-                    return +obj.biological_replicates * 1000;
-                })
-                .value();
-            if (files.length > 0) {
-                newFiles = [...this.state.pinnedFiles, ...files];
-            }
+            propsFiles = filterForVisualizableFiles(this.props.files);
         }
-        return newFiles;
+        let files = propsFiles;
+
+        // Apply sort parameters
+        orderedSortParam.forEach((param) => {
+            files = _.chain(files)
+                .sortBy(obj => sortLookUp(obj, param));
+        });
+        files = files.value();
+
+        // sortBy sorts in ascending order and sortDirection is true if descending
+        // We want to reverse the sort order when the sort is toggled and ascending (to make it descending)
+        if (sortDirection && toggleFlag) {
+            files = files.reverse();
+        }
+
+        // Update state if function has been triggered by button click and sort and sort direction are new
+        if (toggleFlag) {
+            const newSortToggle = [...this.state.sortToggle];
+            newSortToggle[sortIdx] = !newSortToggle[sortIdx];
+            this.setState({
+                primarySort,
+                sortToggle: newSortToggle,
+            });
+        }
+        return files;
+    }
+
+    // Call sortFiles() to sort file object by an arbitrary number of sort parameters
+    // Re-draw the tracks on the genome browser
+    sortAndRefresh(primarySort, sortDirection, sortIdx, toggleFlag) {
+        let files = [];
+        let newFiles = [];
+        const domain = `${window.location.protocol}//${window.location.hostname}`;
+        files = this.sortFiles(primarySort, sortDirection, sortIdx, toggleFlag);
+        newFiles = [...this.state.pinnedFiles, ...files];
+        let tracks = [];
+        if (files.length > 0) {
+            tracks = this.filesToTracks(newFiles, this.props.label, domain);
+        }
+        this.setState({ trackList: tracks }, () => {
+            if (this.chartdisplay && tracks !== []) {
+                this.drawTracks(this.chartdisplay);
+            }
+        });
     }
 
     filesToTracks(files, label, domain) {
         const tracks = files.map((file) => {
             let labelLength = 0;
-            const defaultHeight = 32;
+            const defaultHeight = 34;
             const extraLineHeight = 12;
             const maxCharPerLine = 30;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
@@ -500,7 +547,7 @@ class GenomeBrowser extends React.Component {
             }
             if (file.name) {
                 const trackObj = {};
-                trackObj.name = <i>{file.name}</i>;
+                trackObj.name = <div className="gb-info"><i>{file.name}</i></div>;
                 trackObj.type = 'signal';
                 trackObj.path = file.href;
                 trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
@@ -517,7 +564,7 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             } else if (file.file_format === 'vdna-dir') {
                 const trackObj = {};
-                trackObj.name = this.props.assembly.split(' ')[0];
+                trackObj.name = <ul className="gb-info"><li>{this.props.assembly.split(' ')[0]}</li></ul>;
                 trackObj.type = 'sequence';
                 trackObj.path = file.href;
                 trackObj.heightPx = 40;
@@ -525,7 +572,7 @@ class GenomeBrowser extends React.Component {
                 return trackObj;
             } else if (file.file_format === 'vgenes-dir') {
                 const trackObj = {};
-                trackObj.name = file.title;
+                trackObj.name = <ul className="gb-info"><li>{file.title}</li></ul>;
                 trackObj.type = 'annotation';
                 trackObj.path = file.href;
                 trackObj.heightPx = 120;
@@ -567,6 +614,7 @@ class GenomeBrowser extends React.Component {
     drawTracks(container) {
         const visualizer = new this.GV.GenomeVisualizer({
             clampToTracks: true,
+            reorderTracks: true,
             removableTracks: false,
             panels: [{
                 location: { contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 },
@@ -665,6 +713,12 @@ class GenomeBrowser extends React.Component {
                                 <button className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
                             </div>
                         : null}
+                        {this.props.displaySort ?
+                            <div className="sort-control-container">
+                                <div className="sort-label">Sort by: </div>
+                                {this.props.sortParam.map((param, paramIdx) => <button className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
+                            </div>
+                        : null}
                         <div className="browser-container">
                             <button className="reset-browser-button" onClick={this.resetLocation}>
                                 <i className="icon icon-undo" />
@@ -692,10 +746,14 @@ GenomeBrowser.propTypes = {
     expanded: PropTypes.bool.isRequired,
     assembly: PropTypes.string,
     label: PropTypes.string.isRequired,
+    sortParam: PropTypes.array,
+    displaySort: PropTypes.bool,
 };
 
 GenomeBrowser.defaultProps = {
     assembly: '',
+    sortParam: ['Replicates', 'Output type'], // Array of parameters for sorting file object
+    displaySort: false, // Determines if sort buttons should be displayed
 };
 
 GenomeBrowser.contextTypes = {
