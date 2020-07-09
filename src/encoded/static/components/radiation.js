@@ -258,7 +258,7 @@ let layout = {
     
   height: (scaleYIndex+ 2)*65, 
   margin: {
-                
+    l: 120,          
     r: 20,
     b: 20,
     t: 60,
