@@ -324,7 +324,7 @@ def audit_biosample_post_differentiation_time(value, system):
 
 def audit_biosample_disease_term(value, system):
     '''
-    The diseae_term_id should be in the ontology.
+    The disease_term_id should be in the ontology.
     The disease_term_name should match the disease_term_id.
     '''
 
