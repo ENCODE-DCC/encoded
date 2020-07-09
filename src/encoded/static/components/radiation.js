@@ -83,7 +83,7 @@ class Radiation extends React.Component {
     }
 
       
-      ganttData.sort((a, b) => new Date(a.startDate) - new Date(b.endDate));
+      ganttData.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
       let yLabels = [];
     
 let scaleYIndex = 0;
@@ -113,11 +113,18 @@ for (let i = 0; i < ganttData.length; i++) {
     let midDate = new Date((new Date(ganttData[i].startDate).getTime() + new Date(ganttData[i].endDate).getTime()) / 2);
   
     let dosage = "";
-    if (ganttData[i].minDosagePerFraction === ganttData[i].maxDosagePerFraction) {
+    if (isNaN(ganttData[i].minDosagePerFraction) && isNaN(ganttData[i].maxDosagePerFraction) ){
+        dosage = "<br>Dosage per fraction: Not available";
+    } else if (ganttData[i].minDosagePerFraction === ganttData[i].maxDosagePerFraction) {
         dosage = "<br>Dosage per fraction: "+ ganttData[i].maxDosagePerFraction;
     } else {
         dosage = "<br>Dosage per fraction: "+ ganttData[i].minDosagePerFraction + " - " + ganttData[i].maxDosagePerFraction;
     }
+    let endDate = "<br>End date: Not available";
+    if (ganttData[i].endDate.split(" ")[0] !== "undefined") {
+        endDate = "<br>End date: "+ganttData[i].endDate.split(" ")[0]
+    }
+    
     hoverData[i] = {
         x: [midDate],
         y: [yLabels.indexOf(ganttData[i].id)],
@@ -131,7 +138,7 @@ for (let i = 0; i < ganttData.length; i++) {
           bgcolor: '#29A2CC',
           font: {color: 'white'}
         },
-        customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +"<br>End date: "+ganttData[i].endDate.split(" ")[0]],
+        customdata: ["Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +endDate],
         hovertemplate: "%{customdata}<extra></extra>"
 
     }
@@ -154,7 +161,7 @@ for (let i = 0; i < ganttData.length; i++) {
         bgcolor: '#29A2CC',
         font: {color: 'white'}
       },
-      hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] +"<br>End date: "+ganttData[i].endDate.split(" ")[0] + "<extra></extra>"
+      hovertemplate: "Site: " + ganttData[i].id + "<br>Number of lesions: "+ ganttData[i].numberOfSite + dosage + "<br>Start date: "+ganttData[i].startDate.split(" ")[0] + endDate + "<extra></extra>"
     }
 }
 
@@ -316,6 +323,7 @@ this.plotly.newPlot(this.props.chartId, data, layout, this.plotlyConfig);
 }
 
 export default Radiation;
+
 
 
 
