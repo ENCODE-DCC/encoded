@@ -284,7 +284,8 @@
     "facets": {
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": true
         },
         "status": {
             "title": "Status"
@@ -299,7 +300,8 @@
             "title": "Genome assembly"
         },
         "target.investigated_as": {
-            "title": "Target category"
+            "title": "Target category",
+            "open_on_load": false
         },
         "target.label": {
             "title": "Target of assay",
