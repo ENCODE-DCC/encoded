@@ -230,7 +230,7 @@
         },
         "datasets": {
             "type": "exists",
-            "title": "Publication dataset"
+            "title": "Associated dataset"
         },
         "publication_data": {
             "type": "exists",
