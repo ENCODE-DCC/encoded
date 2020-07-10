@@ -1,5 +1,9 @@
 ## Changelog for pipeline.json
 
+### Schema version 11
+
+* *assay_term_names* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
 ### Minor changes since schema version 10
 * *reference_filesets* property was added to link related reference file sets to each pipeline
 

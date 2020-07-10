@@ -633,3 +633,10 @@ def experiment_28_29(value, system):
 
     value['internal_status'] = 'unreviewed'
     return
+
+
+@upgrade_step('experiment', '29', '30')
+def experiment_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
+        value['assay_term_name'] = 'single-cell RNA sequencing assay'

@@ -14,7 +14,7 @@ assay_terms = {
       'RAMPAGE': 'OBI:0001864',
       'comparative genomic hybridization by array': 'OBI:0001393',
       'CAGE': 'OBI:0001674',
-      'single cell isolation followed by RNA-seq': 'NTR:0003082',
+      'single-cell RNA sequencing assay': 'OBI:0002631',
       'Repli-seq': 'OBI:0001920',
       'microRNA-seq': 'OBI:0001922',
       'microRNA counts': 'OBI:0002142',
@@ -67,5 +67,7 @@ assay_terms = {
       'PRO-cap': 'NTR:0000536',
       'icLASER': 'NTR:0000538',
       'SPRITE': 'NTR:0000544',
-      'transgenic enhancer assay': 'NTR:0000551'
+      'transgenic enhancer assay': 'NTR:0000551',
+      'polyA plus RNA-seq': 'OBI:0002571',
+      'polyA minus RNA-seq': 'OBI:0002572'
 }

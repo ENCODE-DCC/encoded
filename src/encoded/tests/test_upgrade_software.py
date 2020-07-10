@@ -18,3 +18,14 @@ def test_software_upgrade_5_6(upgrader, software_1):
         sorted(value['purpose']),
         sorted(['single-nucleus ATAC-seq', 'HiC'])
     )
+
+
+def test_software_upgrade_6_7(upgrader, software_1):
+    software_1['schema_version'] = '6'
+    software_1['purpose'] = ['single cell isolation followed by RNA-seq', 'RNA-seq']
+    value = upgrader.upgrade('software', software_1, target_version='7')
+    assert value['schema_version'] == '7'
+    TestCase().assertListEqual(
+        sorted(value['purpose']),
+        sorted(['single-cell RNA sequencing assay', 'RNA-seq'])
+    )

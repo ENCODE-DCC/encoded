@@ -10,7 +10,7 @@ Feature: Matrix
         And I wait for the content to load
         Then the title should contain the text "Reference Epigenome Matrix – ENCODE"
         And I should see at least 5 elements with the css selector "tbody > tr"
-        And I should see at least 16 elements with the css selector "tr > th"
+        And I should see at least 15 elements with the css selector "tr > th"
 
         When I click the link with text that contains "Mus musculus"
         Then I should see at least 4 elements with the css selector "tbody > tr"
@@ -26,4 +26,4 @@ Feature: Matrix
         And I wait for the content to load
         Then I should not see an element with the css selector ".modal"
         And I should see at least 5 elements with the css selector "tbody > tr"
-        And I should see at least 16 elements with the css selector "tr > th"
+        And I should see at least 15 elements with the css selector "tr > th"

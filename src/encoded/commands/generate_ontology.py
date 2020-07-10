@@ -136,8 +136,8 @@ organ_slims = {
     'UBERON:0000414': 'mucous gland',
     'UBERON:0001821': 'sebaceous gland',
     'UBERON:0000998': 'seminal vesicle',
-    'UBERON:0001820': 'sweat gland'
-
+    'UBERON:0001820': 'sweat gland',
+    'UBERON:0001471': 'skin of prepuce of penis'
 }
 
 cell_slims = {
@@ -210,7 +210,10 @@ preferred_name = {
     "OBI:0002629": "direct RNA-seq",
     "OBI:0002144": "Circulome-seq",
     "OBI:0002459": "genotyping HiC",
-    "OBI:0002675": "MPRA"
+    "OBI:0002675": "MPRA",
+    "OBI:0002571": "polyA plus RNA-seq",
+    "OBI:0002572": "polyA minus RNA-seq",
+    "OBI:0002631": "scRNA-seq"
 }
 
 category_slims = {
@@ -580,25 +583,28 @@ def getTermStructure():
 
 
 def main():
-    ''' Downloads UBERON, EFO and OBI ontologies and create a JSON file '''
+    ''' Downloads UBERON, EFO, OBI and CLO ontologies and create a JSON file '''
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="Get Uberon, EFO and OBI ontologies and generate the JSON file", epilog=EPILOG,
+        description="Get Uberon, EFO, OBI, and CLO ontologies and generate the JSON file", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--obi-url', help="OBI version URL")
+    parser.add_argument('--clo-url', help="CLO version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     obi_url = args.obi_url
-    urls = [obi_url, uberon_url, efo_url]
+    clo_url = args.clo_url
+    whitelist = [uberon_url, efo_url, obi_url]
 
     terms = {}
-    for url in urls:
+    # Run on ontologies defined in whitelist
+    for url in whitelist:
         data = Inspector(url)
         for c in data.allclasses:
             if isBlankNode(c):
@@ -684,6 +690,21 @@ def main():
                         terms[term_id]['synonyms'].append(syn.__str__())
                     except:
                         pass
+
+    # Get only CLO terms from the CLO owl file
+    data = Inspector(clo_url)
+    for c in data.allclasses:
+        if c.startswith('http://purl.obolibrary.org/obo/CLO'):
+            term_id = splitNameFromNamespace(c)[0].replace('_', ':')
+            if term_id not in terms:
+                terms[term_id] = getTermStructure()
+                terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
+            for syn in data.entitySynonyms(c):
+                try:
+                    terms[term_id]['synonyms'].append(syn.__str__())
+                except:
+                    pass
+
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))

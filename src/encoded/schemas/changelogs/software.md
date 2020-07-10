@@ -1,5 +1,9 @@
 ## Changelog for software.json
 
+### Schema version 7
+
+* *purpose* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
 ### Schema version 6
 
 * *purpose* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*

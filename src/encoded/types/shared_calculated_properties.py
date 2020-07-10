@@ -323,14 +323,6 @@ class CalculatedAssayTitle:
                             library_object['size_range'] == '<200':
                                 preferred_name = 'small RNA-seq'
                                 break
-                            elif 'depleted_in_term_name' in library_object and \
-                                'polyadenylated mRNA' in library_object['depleted_in_term_name']:
-                                preferred_name = 'polyA minus RNA-seq'
-                                break
-                            elif 'nucleic_acid_term_name' in library_object and \
-                                library_object['nucleic_acid_term_name'] == 'polyadenylated mRNA':
-                                preferred_name = 'polyA plus RNA-seq'
-                                break
                         else:
                             continue
                         break

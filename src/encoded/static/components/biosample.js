@@ -466,6 +466,7 @@ const urlMap = {
     EFO: 'http://www.ebi.ac.uk/efo/',
     UBERON: 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
     CL: 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/',
+    CLO: 'http://www.ontobee.org/ontology/CLO?iri=http://purl.obolibrary.org/obo/',
 };
 
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix

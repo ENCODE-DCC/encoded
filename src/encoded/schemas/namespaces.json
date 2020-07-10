@@ -19,6 +19,7 @@
     "doi": "https://doi.org/doi:",
     "EFO": "http://www.ebi.ac.uk/efo/EFO_",
     "CL": "http://purl.obolibrary.org/obo/CL_",
+    "CLO": "http://purl.obolibrary.org/obo/CLO_",
     "UBERON": "http://purl.obolibrary.org/obo/UBERON_",
     "OBI": "http://purl.obolibrary.org/obo/OBI_",
     "FBbt": "http://purl.obolibrary.org/obo/FBbt_",
