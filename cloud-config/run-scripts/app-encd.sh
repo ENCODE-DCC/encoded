@@ -55,10 +55,10 @@ if [ ! -f "$some_other_bin_path" ]; then
     exit 1
 fi
 
-# Downlaod encoded demo aws keys
+# Download encoded demo aws keys
 encd_keys_dir=/home/ubuntu/encd-aws-keys
 mkdir "$encd_keys_dir"
-aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/encd-aws-keys "$encd_keys_dir"
+aws s3 cp --region=$ENCD_AWS_REGION --recursive $ENCD_S3_CONF_BUCKET/encd-aws-keys "$encd_keys_dir"
 if [ ! -f "$encd_keys_dir/credentials" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home encd aws creds"
     # Build has failed

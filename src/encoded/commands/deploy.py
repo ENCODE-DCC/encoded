@@ -1,7 +1,5 @@
 """
-Encoded Application AWS Deployment Helper
-
-- SpotClient was removed in EPIC-ENCD-4716/ENCD-4688-remove-unused-code-from-deploy.
+Lattice Application AWS Deployment Helper
 
 # Creating private AMIs
 
@@ -101,6 +99,47 @@ from os.path import expanduser
 from datetime import datetime
 
 import boto3
+
+DEFAULT_GIT_REPO = 'https://github.com/Lattice-Data/encoded.git'
+DEFAULT_WALE_S3 = 's3://latticed-backups-prod/'
+DEFAULT_S3_CONF_BUCKET = 's3://latticed-conf-prod'
+DEFAULT_IAM_ROLE = 'latticed-instance'
+DEFAULT_KEY_PAIR_NAME = 'lattice_ec2'
+DEFAULT_REGION_NAME = 'us-west-1'  # N. California
+DEFAULT_AVAILABILITY_ZONE = 'us-west-1b'
+INSTANCE_TYPE_ES_DATA = 'm5.xlarge'
+INSTANCE_TYPE_ES_HEAD = 'c5.9xlarge'
+INSTANCE_TYPE_FRONTEND = 'c5.9xlarge'
+
+AMI_MAP = {
+    # AWS Launch wizard: Ubuntu Server 18.04 LTS (HVM), SSD Volume Type
+    'default': 'ami-0d705db840ec5f0c5',
+
+    # Private AMIs: Add comments to each build
+
+    # encdami-demo
+    'demo': 'ami-05d68447800511bb2',
+    # encdami-es-wait-head build on 2020-02-27 17:12:49.808527: encdami-es-wait-head-2020-02-27_171249
+    'es-wait-head': 'ami-0dcd11e4701f5f45c',
+    # encdami-es-wait-node build on 2020-02-27 17:13:29.261061: encdami-es-wait-node-2020-02-27_171329
+    'es-wait-node': 'ami-0ce548b66f9934fbf',
+    #  ES elect builds were not bulit since we rarely use them
+    'es-elect-head': None,
+    'es-elect-node': None,
+    # encdami-frontend build on 2020-02-27 17:18:11.694340: encdami-frontend-2020-02-27_171811
+    'frontend': 'ami-0661ab83587c0a6ae',
+
+    # Production Private AMIs: Add comments to each build
+
+    #  ES wait builds have not been built
+    'es-wait-head-prod': None,
+    'es-wait-node-prod': None,
+    #  ES elect builds were not bulit since we rarely use them
+    'es-elect-head-prod': None,
+    'es-elect-node-prod': None,
+    #  Frontend build have not been built
+    'fe-cluster-prod': None,
+}
 
 
 # AWS/EC2 - Deploy Cloud Config
@@ -360,7 +399,7 @@ def _get_user_data(config_yaml, data_insert, main_args):
         )
     data_insert['SSH_KEY'] = ssh_pub_key
     # aws s3 authorized_keys folder
-    auth_base = 's3://encoded-conf-prod/ssh-keys'
+    auth_base = f'{DEFAULT_S3_CONF_BUCKET}/ssh-keys'
     auth_type = 'prod'
     if main_args.profile_name != 'production':
         auth_type = 'demo'
@@ -425,7 +464,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
 
 
 def _get_ec2_client(main_args, instances_tag_data):
-    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
+    session = boto3.Session(region_name=DEFAULT_REGION_NAME, profile_name=main_args.profile_name)
     ec2 = session.resource('ec2')
     name_to_check = instances_tag_data['name']
     if main_args.node_name:
@@ -451,6 +490,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     cc_dir = '/home/ubuntu/encoded/cloud-config'
     data_insert = {
         'APP_WORKERS': 'notused',
+        'AWS_REGION': DEFAULT_REGION_NAME,
         'BATCHUPGRADE': 'true' if main_args.do_batchupgrade else 'false',
         'BATCHUPGRADE_VARS': 'notused',
         'BUILD_TYPE': build_type,
@@ -478,6 +518,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'REDIS_PORT': main_args.redis_port,
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
+        'S3_CONF_BUCKET': DEFAULT_S3_CONF_BUCKET,
         'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
         'WALE_S3_PREFIX': main_args.wale_s3_prefix,
     }
@@ -551,7 +592,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
-        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
+        'key-pair-name': DEFAULT_KEY_PAIR_NAME if main_args.role != 'candidate' else 'encoded-prod'
     }
     if main_args.profile_name == 'production' and main_args.role != 'candidate':
         run_args['key-pair-name'] += '-prod'
@@ -759,6 +800,7 @@ def main():
         sys.exit(20)
     # Create aws demo instance or frontend instance
     # OR instances for es_wait nodes, es_elect nodes depending on count
+
     instances = ec2_client.create_instances(
         ImageId=main_args.image_id,
         MinCount=run_args['count'],
@@ -936,7 +978,7 @@ def _parse_args():
         return value
 
     parser = argparse.ArgumentParser(
-        description="Deploy ENCODE on AWS",
+        description="Deploy Lattice (ENCODE) on AWS",
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', default=None, type=hostname, help="Instance name")
@@ -953,7 +995,7 @@ def _parse_args():
     parser.add_argument('--is-qa-demo', action='store_true', help="Flagged as qa demo")
     parser.add_argument(
         '--git-repo',
-        default='https://github.com/ENCODE-DCC/encoded.git',
+        default=DEFAULT_GIT_REPO,
         help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git"
     )
 
@@ -1038,11 +1080,11 @@ def _parse_args():
     parser.add_argument('--pg-ip', default='', help="Skip pg install script, setup app to connect to remote ip.")
     parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
+    parser.add_argument('--wale-s3-prefix', default=DEFAULT_WALE_S3)
 
     # AWS
     parser.add_argument('--profile-name', default='default', help="AWS creds profile")
-    parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
+    parser.add_argument('--iam-role', default=DEFAULT_IAM_ROLE, help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
         '--build-ami',
@@ -1070,7 +1112,7 @@ def _parse_args():
     )
     parser.add_argument(
         '--availability-zone',
-        default='us-west-2a',
+        default=DEFAULT_AVAILABILITY_ZONE,
         help="Set EC2 availabilty zone"
     )
     parser.add_argument(
@@ -1088,84 +1130,53 @@ def _parse_args():
         help="Size of disk. Allowed values 120, 200, and 500"
     )
     args = parser.parse_args()
-    # Set AMI per build type
-    ami_map = {
-        # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
-        'default': 'ami-0d1cd67c26f5fca19',
-        'arm_default': 'ami-003b90277095b7a42',
 
-        # Private AMIs: Add comments to each build
-
-        # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
-        'demo': 'ami-02ee743e10e6bca42',
-        # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
-        'es-wait-head': 'ami-04637560d9b9c4cb9',
-        # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
-        'es-wait-node': 'ami-03c53286feed8040f',
-        #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head': None,
-        'es-elect-node': None,
-        # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
-        'frontend': 'ami-004367e4b7cdfc264',
-
-        # Production Private AMIs: Add comments to each build
-
-        # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
-        'es-wait-head-prod': 'ami-03530bdf05c08bf32',
-        # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
-        'es-wait-node-prod': 'ami-0de906a6f1894057b',
-        #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head-prod': None,
-        'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
-        'frontend-prod': 'ami-0e13a1f4c36d19ac1',
-    }
     if not args.image_id:
         # Select ami by build type.  
         if args.build_ami:
             # Building new amis or making full builds from scratch
             # should start from base ubutnu image
-            args.image_id = ami_map['default']
-            args.eshead_image_id = ami_map['default']
+            args.image_id = AMI_MAP['default']
+            args.eshead_image_id = AMI_MAP['default']
             # We only need one es node to make an ami
             args.cluster_size = 1
         elif args.full_build:
             # Full builds from scratch
             # should start from base ubutnu image
-            args.image_id = ami_map['default']
-            args.eshead_image_id = ami_map['default']
+            args.image_id = AMI_MAP['default']
+            args.eshead_image_id = AMI_MAP['default']
         elif args.cluster_name:
             # Cluster builds have three prebuilt priviate amis
             if args.es_wait:
                 if args.profile_name == 'production':
-                    args.eshead_image_id = ami_map['es-wait-head-prod']
-                    args.image_id = ami_map['es-wait-node-prod']
+                    args.eshead_image_id = AMI_MAP['es-wait-head-prod']
+                    args.image_id = AMI_MAP['es-wait-node-prod']
                 else:
-                    args.eshead_image_id = ami_map['es-wait-head']
-                    args.image_id = ami_map['es-wait-node']
+                    args.eshead_image_id = AMI_MAP['es-wait-head']
+                    args.image_id = AMI_MAP['es-wait-node']
             elif args.es_elect and args.profile_name != 'production':
                 if args.profile_name == 'production':
-                    args.eshead_image_id = ami_map['es-elect-head-prod']
-                    args.image_id = ami_map['es-elect-node-prod']
+                    args.eshead_image_id = AMI_MAP['es-elect-head-prod']
+                    args.image_id = AMI_MAP['es-elect-node-prod']
                 else:
-                    args.eshead_image_id = ami_map['es-elect-head']
-                    args.image_id = ami_map['es-elect-node']
+                    args.eshead_image_id = AMI_MAP['es-elect-head']
+                    args.image_id = AMI_MAP['es-elect-node']
             else:
                 if args.profile_name == 'production':
-                    args.image_id = ami_map['frontend-prod']
+                    args.image_id = AMI_MAP['frontend-prod']
                 else:
-                    args.image_id = ami_map['frontend']
+                    args.image_id = AMI_MAP['frontend']
         else:
-            args.image_id = ami_map['demo']
+            args.image_id = AMI_MAP['demo']
     elif args.arm_image_id:
-        args.image_id = ami_map['arm_default']
+        args.image_id = AMI_MAP['arm_default']
     else:
-        args.image_id = ami_map['default']
+        args.image_id = AMI_MAP['default']
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
             # datanode
-            args.instance_type = 'm5.xlarge'
+            args.instance_type = INSTANCE_TYPE_ES_DATA
             # Head node
             args.eshead_instance_type = 'm5.xlarge'
         elif args.arm_image_id:
@@ -1173,7 +1184,7 @@ def _parse_args():
             args.instance_type = 'm6g.4xlarge'
         else:
             # frontend
-            args.instance_type = 'c5.9xlarge'
+            args.instance_type = INSTANCE_TYPE_FRONTEND
     # Check cluster name overrides name
     if args.cluster_name:
         cluster_tag = '-cluster'

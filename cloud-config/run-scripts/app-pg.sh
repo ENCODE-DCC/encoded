@@ -59,7 +59,7 @@ echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Setup aws keys for wal
 # Downlaod postgres demo aws keys
 pg_keys_dir='/home/ubuntu/pg-aws-keys'
 mkdir "$pg_keys_dir"
-aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/pg-aws-keys "$pg_keys_dir"
+aws s3 cp --region=$ENCD_AWS_REGION --recursive $ENCD_S3_CONF_BUCKET/pg-aws-keys "$pg_keys_dir"
 if [ ! -f "$pg_keys_dir/credentials" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
     # Build has failed
