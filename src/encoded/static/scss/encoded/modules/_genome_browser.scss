@@ -67,18 +67,17 @@
 // styles for bigBed files / annotation files
 .hpgv_track-annotation {
     --transcript-arrow: rgba(0, 0, 0, 1.0);
-    --transcript: #BDC5C0;
+    /* --transcript: #bf513b; */
     --coding: #575F5A;
     --non-coding: #F9CE70;
-    --untranslated: #C14953;
-
+    --untranslated: #1f2533;
     --coding-max-score: #575F5A;
     --non-coding-max-score: #575F5A;
 }
 
-// styles for signal track
+// styles for signal track (like bigwig)
 .hpgv_track-signal {
-    --signal-color: #2A6496;
+    --signal-color: #3d2531;
 }
 
 .hpgv_track {
