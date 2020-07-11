@@ -513,6 +513,103 @@ def audit_file_matching_md5sum(value, system):
     yield AuditFailure('matching md5 sums', detail, level='WARNING')
 
 
+def audit_file_index_of(value, system):
+    '''
+    Files with output_type: index reads may specify that they are index_of
+    either 1 SE or 2 PE files. The SE/PE files must be fastq files, from the
+    same experiment as index. Other combinations (including mispaired PE files)
+    are flagged as an ERROR.
+    https://encodedcc.atlassian.net/browse/ENCD-5252
+    '''
+    if value['output_type'] != 'index reads':
+        return
+    if 'index_of' in value:
+        index_exp = value['dataset']['@id']
+        indexed_files_with_expts = []
+        indexed_fastq_with_pair = []
+        count_indexed_files = 0
+        incorrect_pairings = 0
+        non_fastqs = 0
+        run_type = set()
+        non_illumina_platforms = [
+                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                "c7564b38-ab4f-4c42-a401-3de48689a998",
+                "e2be5728-5744-4da4-8881-cb9526d0389e",
+                "6c275b37-018d-4bf8-85f6-6e3b830524a9",
+                "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
+                ]
+        for indexed_file in value['index_of']:
+            count_indexed_files += 1
+            if indexed_file['file_format'] != 'fastq':
+                non_fastqs += 1
+            if index_exp != indexed_file['dataset']:
+                indexed_files_with_expts.append(tuple((indexed_file['@id'], indexed_file['dataset'])))
+            if 'run_type' in indexed_file:
+                run_type.add(indexed_file['run_type'])
+                if indexed_file['run_type'] == 'paired-ended':
+                    if 'paired_with' in indexed_file:
+                        indexed_fastq_with_pair.append(tuple((indexed_file['@id'], indexed_file['paired_with'])))
+                    else:
+                        incorrect_pairings += 1
+            elif 'platform' in indexed_file and indexed_file['platform']['uuid'] in non_illumina_platforms:
+                run_type.add('none')
+        if len(indexed_fastq_with_pair) == 2:
+            if indexed_fastq_with_pair[0][0] != indexed_fastq_with_pair[1][1]:
+                incorrect_pairings += 1
+
+        if len(indexed_files_with_expts) > 0:
+            fastq_links = ', '.join(audit_link(path_to_text(m[0]), m[0]) for m in indexed_files_with_expts)
+            expts_links = ', '.join(audit_link(path_to_text(m[1]), m[1]) for m in indexed_files_with_expts)
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is from experiment {audit_link(path_to_text(value["dataset"]["@id"]), value["dataset"]["@id"])} '
+                f'but it is used as an index for '
+                f'file(s) {fastq_links} from experiment(s) {expts_links}.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
+        if non_fastqs > 0:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is incorrectly specified for non-fastq file(s).'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
+        if 'single-ended' in run_type and 'paired-ended' in run_type:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is incorrectly specified for both single- and paired-end fastq files.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
+        if count_indexed_files == 1 and 'paired-ended' in run_type:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'specifies that it is index_of only one paired-end fastq file.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
+        if incorrect_pairings > 0 and run_type == {'paired-ended'}:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'specifies that it is index_of 2 paired-end fastq that are not paired with each other.'
+                )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
+        if 'none' in run_type and len(run_type) > 1:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is incorrectly specified for fastq files sequenced using different platforms.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
+        if run_type == {'none'} and (count_indexed_files - non_fastqs) > 1:
+            detail = (
+                f'Index file {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                f'is incorrectly specified for multiple non-Illumina fastq files.'
+            )
+            yield AuditFailure('inconsistent index file', detail, level='ERROR')
+
 function_dispatcher = {
     'audit_step_run': audit_file_processed_step_run,
     'audit_derived_from': audit_file_processed_derived_from,
@@ -524,7 +621,8 @@ function_dispatcher = {
     'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
     'audit_file_in_correct_bucket': audit_file_in_correct_bucket,
     'audit_read_structure': audit_read_structure,
-    'audit_file_matching_md5sum': audit_file_matching_md5sum
+    'audit_file_matching_md5sum': audit_file_matching_md5sum,
+    'audit_file_index_of': audit_file_index_of,
 }
 
 
@@ -547,6 +645,8 @@ function_dispatcher = {
                       'controlled_by.platform',
                       'quality_metrics',
                       'matching_md5sum',
+                      'index_of',
+                      'index_of.platform',
                       ]
                )
 def audit_file(value, system):
