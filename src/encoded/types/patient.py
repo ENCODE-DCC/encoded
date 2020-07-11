@@ -152,7 +152,10 @@ class Patient(Item):
         if len(radiation) > 0:
             for obj in radiation:
                 r_obj = request.embed(obj, "@@object")
-                rad_dates=r_obj.get("end_date")
+                if 'end_date' in r_obj:
+                    rad_dates=r_obj.get("end_date")
+                else:
+                    rad_dates=r_obj.get("start_date")
                 all_traced_dates.append(rad_dates)
         if len(medical_imaging) > 0:
             for obj in medical_imaging:
@@ -272,47 +275,9 @@ class Patient(Item):
             vital_status = "Deceased"
         return vital_status
 
-    @calculated_property(condition='radiation', schema={
-        "title": "Dose per Fraction",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def dose_range(self, request, radiation):
-        dose_range = []
-        for treatment in radiation:
-            treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['dose']/treatment_object['fractions'] < 2000:
-                dose_range.append("200 - 2000")
-            elif treatment_object['dose']/treatment_object['fractions'] < 4000:
-                dose_range.append("2000 - 4000")
-            else:
-                dose_range.append("4000 - 6000")
-        return dose_range
 
 
-
-    @calculated_property(condition='radiation', schema={
-        "title": "Radiation Fractions",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def fractions_range(self, request, radiation):
-        fractions_range = []
-        for treatment in radiation:
-            treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['fractions'] < 5:
-                fractions_range.append("1 - 5")
-            elif treatment_object['fractions'] < 10:
-                fractions_range.append("5 - 10")
-            elif treatment_object['fractions'] < 15:
-                fractions_range.append("10 - 15")
-            else:
-                fractions_range.append("15 and up")
-        return fractions_range
+    
 
 
     @calculated_property(schema={
@@ -749,6 +714,38 @@ class Radiation(Item):
         dose_per_fraction = dose/fractions
         return dose_per_fraction
 
+    @calculated_property(condition='dose', schema={
+        "title": "Dosage range per fraction",
+        "type": "string",
+
+    })
+    def dose_range(self, request, dose, fractions):
+        dose_per_fraction = dose/fractions
+        if dose_per_fraction < 2000:
+            return "200 - 2000"
+        elif dose_per_fraction < 4000:
+            return "2000 - 4000"
+        else:
+            return "4000 - 6000"
+
+    @calculated_property(condition='fractions', schema={
+        "title": "Fractions range",
+        "type": "string",
+        
+    })
+    def fractions_range(self, request, fractions):
+        
+        if fractions < 5:
+            return "1 - 5"
+        elif fractions < 10:
+            return "5 - 10"
+        elif fractions < 15:
+            return "10 - 15"
+        else:
+            return "15 and up"
+        
+
+
 
 @collection(
     name='medical_imaging',
@@ -808,10 +805,11 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
+
