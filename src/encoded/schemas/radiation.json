@@ -4,7 +4,7 @@
     "id": "/profiles/radiation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention", "dose", "dose_units", "fractions" ],
+    "required": ["patient", "site_specific", "site_general", "start_date", "treatment_intention" ],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -14,8 +14,10 @@
         { "$ref": "mixins.json#/submitted" }
     ],
     "dependencies": {
-      "dose": ["dose_units"],
-      "dose_units": ["dose"]
+      "dose": ["dose_units","fractions"],
+      "dose_units": ["dose", "fractions"],
+      "fractions": ["dose", "dose_units"]
+
     },
     "properties": {
         "schema_version": {
@@ -29,7 +31,6 @@
         "dose_units": {
             "title": "Dose units",
             "type": "string",
-            "default": "cGy",
             "enum": [
                 "cGy"
             ]
@@ -122,6 +123,12 @@
         "site_general":  {
             "title": "Site General"
         },
+        "dose_range": {
+            "title": "Radiation Dose per Fraction"
+        },
+        "fractions_range": {
+            "title": "Radiation Fractions"
+        },
         "status": {
             "title": "Status"
         }
@@ -129,3 +136,4 @@
     "changelog": "/profiles/changelogs/radiation.md"
 
 }
+
