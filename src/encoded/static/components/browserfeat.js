@@ -34,6 +34,16 @@ module.exports.BrowserFeat = {
                 return 'flexBasis' in elem.style;
             })();
 
+            // Detect touch events
+            this.feat.touchEnabled = (() => {
+                try {
+                    document.createEvent('TouchEvent');
+                    return true;
+                } catch (evt) {
+                    return false;
+                }
+            })();
+
             // Detect hidden scroll bars
             this.feat.hiddenscroll = (() => {
                 const scrollDiv = document.createElement('div');
