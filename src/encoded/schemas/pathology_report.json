@@ -94,7 +94,8 @@
                 "Bilateral, Horseshoe",
                 "Bilateral, Synchronous",
                 "Left",
-                "Right"
+                "Right",
+                "Not Available"
             ]
         },
         "tumor_size": {
@@ -325,7 +326,7 @@
                 "pT3c",
                 "pT4",
                 "pTX",
-                "Not applicable"
+                "Not applicable",
             ]
         },
         "n_stage": {
@@ -380,7 +381,8 @@
                 "2",
                 "3",
                 "4",
-                "Not applicable"
+                "Not applicable",
+                "Not available"
             ]
         },
         "ajcc_p_stage": {
@@ -398,7 +400,8 @@
                 "3B",
                 "3C",
                 "4",
-                "Not applicable"
+                "Not applicable",
+                "Not available"
             ]
         },
         "report_source": {

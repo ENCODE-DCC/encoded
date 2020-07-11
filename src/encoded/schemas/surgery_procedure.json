@@ -46,7 +46,6 @@
             "required": [
                 "type",
                 "approach",
-                "robotic_assist"
             ],
             "properties": {
                 "type": {
@@ -54,7 +53,8 @@
                     "type": "string",
                     "enum": [
                         "Partial",
-                        "Total"
+                        "Total",
+                        "Not available",
                     ]
                 },
                 "approach": {
@@ -62,7 +62,8 @@
                     "type": "string",
                     "enum": [
                         "Laparoscopic",
-                        "Open"
+                        "Open",
+                        "Not available",
                     ]
                 },
                 "robotic_assist": {
