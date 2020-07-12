@@ -44,20 +44,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "17"
-        },
-        "references": {
-            "title": "References",
-            "description": "The publications that provide more information about the object.",
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
-            "items": {
-                "title": "Reference",
-                "description": "A publication that provides more information about the object.",
-                "type": "string",
-                "linkTo": "Publication"
-            }
+            "default": "18"
         }
     },
     "facets": {

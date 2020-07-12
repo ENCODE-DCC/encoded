@@ -14,7 +14,6 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
@@ -54,7 +53,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "related_datasets": {
             "title": "Additional datasets",

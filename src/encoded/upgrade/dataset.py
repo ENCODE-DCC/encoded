@@ -640,3 +640,30 @@ def experiment_29_30(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5304
     if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
         value['assay_term_name'] = 'single-cell RNA sequencing assay'
+
+# Check versions while updating json schema
+@upgrade_step('aggregate_series', '3', '4')
+@upgrade_step('annotation', '29', '30')
+@upgrade_step('computational_model', '1', '2')
+@upgrade_step('experiment', '30', '31')
+@upgrade_step('functional_characterization_experiment', '6', '7')
+@upgrade_step('functional_characterization_series', '3', '4')
+@upgrade_step('matched_set', '17', '18')
+@upgrade_step('organism_development_series', '17', '18')
+@upgrade_step('project', '17', '18')
+@upgrade_step('publication_data', '17', '18')
+@upgrade_step('reference', '19', '20')
+@upgrade_step('reference_epigenome', '17', '18')
+@upgrade_step('replication_timing_series', '17', '18')
+@upgrade_step('single_cell_rna_series', '3', '4')
+@upgrade_step('transgenic_enhancer_experiment', '1', '2')
+@upgrade_step('treatment_concentration_series', '17', '18')
+@upgrade_step('treatment_time_series', '18', '19')
+@upgrade_step('ucsc_browser_composite', '17', '18')
+def dataset_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5386
+    notes = value.get('notes', '')
+    if 'references' in value:
+        refs = value['references']
+        value['notes'] = (notes + 'Publication reference:' + refs)
+        value.pop('references')

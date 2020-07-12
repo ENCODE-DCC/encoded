@@ -100,6 +100,7 @@ class Dataset(Item):
     name_key = 'accession'
     rev = {
         'original_files': ('File', 'dataset'),
+        'references': ('Publication', 'datasets')
     }
 
     @calculated_property(schema={
@@ -191,6 +192,21 @@ class Dataset(Item):
     })
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
+
+    @calculated_property(schema={
+        "title": "References",
+        "description": "The publications that provide more information about the object.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Publication.datasets",
+        },
+        })
+    def references(self, request, references):
+        return paths_filtered_by_status(
+            request, references,
+            exclude=('revoked', 'deleted', 'replaced'),
+        )
 
 
 @collection(
