@@ -205,6 +205,18 @@ class Biosample(Item):
         else:
             return model_organism_age_units
 
+    @calculated_property(condition='disease_term_id', schema={
+        "title": "Disease term name",
+        "description": "Ontology term describing the disease affecting the biosample.",
+        "type": "string",
+        "notSubmittable": True,
+    })
+    def disease_term_name(self, registry, disease_term_id):
+        term_name = None
+        if disease_term_id in registry['ontology']:
+            term_name = registry['ontology'][disease_term_id]['name']
+        return term_name
+
     @calculated_property(define=True,
                          schema={"title": "Health status",
                                  "type": "string"})

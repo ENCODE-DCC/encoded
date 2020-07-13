@@ -75,14 +75,6 @@
                 }
             ]
         },
-        "disease_term_id": {
-            "required": ["disease_term_name"],
-            "comment": "Biosample with a specified disease_term_id requires disease_term_name specification."
-        },
-        "disease_term_name": {
-            "required": ["disease_term_id"],
-            "comment": "Biosample with a specified disease_term_name requires disease_term_id specification."
-        },
         "post_treatment_time": {
             "required":["post_treatment_time_units", "treatments"],
             "comment": "Biosample with a specified post_treatment_time requires non-empty treatments list and post_treatment_time_units specification.",
@@ -891,17 +883,8 @@
         "disease_term_id": {
             "title": "Disease ontology ID",
             "description": "An ontology identifier describing the disease affecting the biosample.",
-            "permission": "import_items",
             "type": "string",
             "pattern": "^DOID:[0-9]{2,7}$"
-        },
-        "disease_term_name": {
-            "title": "Disease term name",
-            "description": "Ontology term describing the disease affecting the biosample.",
-            "comment": "The term should match the ontology identifier specified in disease_term_id.",
-            "permission": "import_items",
-            "pattern": "^(?![\\s\"'])[\\S|\\s]*[^\\s\"']$",
-            "type":  "string"
         }
     },
     "facets": {
