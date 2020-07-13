@@ -289,9 +289,9 @@ $navbar-bg-color:            #0a253d;
         padding: 2px 30px 2px 20px;
         font-weight: 400;
         letter-spacing: 1px;
-        font-size: 1.1rem;
-        @media screen and (max-width: $screen-md-min) {
-            font-size: 0.9rem;
+        font-size: 0.9rem;
+        @media screen and (min-width: $screen-md-min) {
+            font-size: 1.1rem;
         }
     }
 
@@ -305,7 +305,7 @@ $navbar-bg-color:            #0a253d;
         border-bottom-left-radius:  3px;
 
         &>li {
-            &>a, &>button, &>span &>div {
+            &>a, &>button, &>span, &>div {
                 display: block;
                 width: 100%;
                 margin: 0;
@@ -329,6 +329,14 @@ $navbar-bg-color:            #0a253d;
                         background-color: $navbar-inverse-link-active-bg;
                         color: #fff;
                     }
+                }
+
+                // Dropdown menu separator item
+                &.dropdown-sep {
+                    pointer-events: none;
+                    margin: 5px 0 0;
+                    border-top: 1px solid #c0c0c0;
+                    border-bottom: 1px solid #fff;
                 }
             }
         }
@@ -371,14 +379,6 @@ $navbar-bg-color:            #0a253d;
         }
     }
 }
-
-// Dropdown menu separator item
-.dropdown-sep {
-    margin: 5px 0;
-    border-top: 1px solid #c0c0c0;
-    border-bottom: 1px solid #fff;
-}
-
 
 // Wrapper for <GlobalSections> and <CartStatus>
 .navbar__global-cart {
