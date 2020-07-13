@@ -40,7 +40,7 @@ _tsv_mapping = OrderedDict([
     ('Output type', ['files.output_type']),
     ('File assembly', ['files.assembly']),
     ('Experiment accession', ['accession']),
-    ('Assay', ['assay_term_name']),
+    ('Assay', ['assay_title']),
     ('Biosample term id', ['biosample_ontology.term_id']),
     ('Biosample term name', ['biosample_ontology.term_name']),
     ('Biosample type', ['biosample_ontology.classification']),
