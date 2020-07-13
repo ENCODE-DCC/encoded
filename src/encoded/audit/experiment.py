@@ -120,8 +120,8 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
-    # relevant only for ChIP-seq
-    if value.get('assay_term_id') != 'OBI:0000716':
+    # relevant only for ChIP-seq and MINT
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:
         return
 
     if value.get('target') and 'name' in value.get('target'):
