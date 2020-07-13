@@ -11,6 +11,7 @@ from .standards_data import pipelines_with_read_depth, minimal_read_depth_requir
 
 
 targetBasedAssayList = [
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'ChIA-PET',
@@ -27,6 +28,7 @@ targetBasedAssayList = [
 ]
 
 controlRequiredAssayList = [
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'RIP-seq',
@@ -44,6 +46,7 @@ seq_assays = [
     'RNA-seq',
     'polyA plus RNA-seq',
     'polyA minus RNA-seq',
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'MeDIP-seq',
