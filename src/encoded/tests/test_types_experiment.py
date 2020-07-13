@@ -178,9 +178,41 @@ def test_experiment_biosample_summary_3(testapp,
     testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
-    print(res)
     assert res.json['object']['biosample_summary'] == \
         'epiblast cell not treated and treated with ethanol'
+
+
+def test_experiment_biosample_summary_4(testapp,
+                                        base_experiment,
+                                        donor_1,
+                                        donor_2,
+                                        biosample_1,
+                                        biosample_2,
+                                        library_1,
+                                        library_2,
+                                        replicate_1_1,
+                                        replicate_2_1,
+                                        epidermis):
+    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'life_stage': 'child'})
+    testapp.patch_json(donor_2['@id'], {'age_units': 'day', 'age': '10', 'life_stage': 'child'})
+    testapp.patch_json(donor_1['@id'], {'sex': 'male'})
+    testapp.patch_json(donor_2['@id'], {'sex': 'male'})
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
+                                            'biosample_ontology': epidermis['uuid'],
+                                            'disease_term_id': 'DOID:2513'})
+
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
+                                            'biosample_ontology': epidermis['uuid']})
+
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],
+                                                               replicate_2_1['@id']]})
+    res = testapp.get(base_experiment['@id']+'@@index-data')
+    assert res.json['object']['biosample_summary'] == \
+        'skin epidermis male child (10 days) with basal cell carcinoma and without disease'
 
 
 def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, biosample_1, biosample_2, construct_genetic_modification, construct_genetic_modification_N, library_1, library_2, replicate_1_1, replicate_2_1):

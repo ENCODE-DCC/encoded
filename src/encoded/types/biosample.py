@@ -205,16 +205,18 @@ class Biosample(Item):
         else:
             return model_organism_age_units
 
-    @calculated_property(condition='disease_term_id', schema={
-        "title": "Disease term name",
-        "description": "Ontology term describing the disease affecting the biosample.",
-        "type": "string",
-        "notSubmittable": True,
-    })
-    def disease_term_name(self, registry, disease_term_id):
+    @calculated_property(define=True,
+                        schema={
+                            "title": "Disease term name",
+                            "description": "Ontology term describing the disease affecting the biosample.",
+                            "type": "string",
+                            "notSubmittable": True,
+                        })
+    def disease_term_name(self, request, registry, disease_term_id=None):
         term_name = None
-        if disease_term_id in registry['ontology']:
-            term_name = registry['ontology'][disease_term_id]['name']
+        if disease_term_id is not None:
+            if disease_term_id in registry['ontology']:
+                term_name = registry['ontology'][disease_term_id]['name']
         return term_name
 
     @calculated_property(define=True,
@@ -724,15 +726,15 @@ def generate_summary_dictionary(
             dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
                 str(starting_amount_units)
 
+    if disease_term_name is not None:
+        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
+
     if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
                                             str(depleted_in_term_name).replace('\'', '')[1:-1]
 
     if phase is not None:
         dict_of_phrases['phase'] = phase + ' phase'
-
-    if disease_term_name is not None:
-        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
 
     if subcellular_fraction_term_name is not None:
         if subcellular_fraction_term_name == 'nucleus':
@@ -945,7 +947,7 @@ def get_applied_modifications(genetic_modifications=None, model_organism_donor_m
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
         'phase': 'unspecified phase',
-        'disease_term_name': 'no disease',
+        'disease_term_name': 'without disease',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',

@@ -273,7 +273,8 @@ class TransgenicEnhancerExperiment(
                 'modifications_list',
                 'originated_from',
                 'treatments_phrase',
-                'depleted_in'
+                'depleted_in',
+                'disease_term_name'
             ]
         else:
             sentence_parts = [
@@ -286,7 +287,8 @@ class TransgenicEnhancerExperiment(
                 'modifications_list',
                 'originated_from',
                 'treatments_phrase',
-                'depleted_in'
+                'depleted_in',
+                'disease_term_name'
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)

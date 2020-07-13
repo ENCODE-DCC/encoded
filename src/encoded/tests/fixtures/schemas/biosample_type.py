@@ -237,3 +237,13 @@ def epiblast(testapp):
         'classification': 'in vitro differentiated cells',
     }
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def epidermis(testapp):
+    item = {
+        'term_id': 'UBERON:0001003',
+        'term_name': 'skin epidermis',
+        'classification': 'tissue',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]

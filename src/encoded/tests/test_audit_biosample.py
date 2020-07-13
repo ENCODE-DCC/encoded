@@ -1,5 +1,5 @@
 import pytest
-
+from .test_audit_experiment import collect_audit_errors
 
 def test_audit_biosample_modifications_whole_organism(
         testapp, base_biosample,
@@ -300,3 +300,16 @@ def test_audit_biosample_CRISPR_modifications(
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'multiple CRISPR characterization genetic modifications' for error in errors_list)
+
+
+def test_audit_disease_term_id(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {
+        'disease_term_id': 'DOID:0080600'
+    })
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    assert not any(error['category'] == 'disease_term_id not in ontology' for error in collect_audit_errors(res))
+    testapp.patch_json(base_biosample['@id'], {
+        'disease_term_id': 'DOID:002'
+    })
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    assert any(error['category'] == 'disease_term_id not in ontology' for error in collect_audit_errors(res))
