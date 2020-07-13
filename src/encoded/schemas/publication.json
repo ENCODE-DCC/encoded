@@ -13,6 +13,7 @@
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/attribution"},
         {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/documents"}
     ],
     "properties": {
@@ -37,6 +38,7 @@
         },
         "date_published": {
             "title": "Publication date",
+            "description": "The date the publication or communication was published; must be in YYYY-MM-DD format.",
             "type": "string",
             "oneOf": [
                 {
@@ -45,7 +47,7 @@
                 {
                     "comment": "Historical date formats, not valid for new submissions.",
                     "permission": "import_items",
-                    "pattern": "^[0-9]{4}[^-].*$"
+                    "pattern": "^[0-9]{4}[^-]*$"
                 }
             ]
         },
