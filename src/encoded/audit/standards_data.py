@@ -53,8 +53,18 @@ pipelines_with_read_depth = {
             'low': 5000000
         }
     },
-    'Transcription factor ChIP-seq pipeline (modERN)': 3000000
-    }
+    'Transcription factor ChIP-seq pipeline (modERN)': 3000000,
+    'ATAC-seq (replicated)': {
+        'recommended': 25000000,
+        'minimal': 20000000,
+        'low': 5000000
+    },
+    'ATAC-seq (unreplicated)': {
+        'recommended': 25000000,
+        'minimal': 20000000,
+        'low': 5000000
+    },
+}
 
 
 special_assays_with_read_depth = {

@@ -3774,22 +3774,43 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
         analysis_step_atac_encode4_alignment,
         atac_alignment_quality_metric_low,
         atac_library_complexity_quality_metric_poor,
-        atac_align_enrich_quality_metric_med):
+        atac_align_enrich_quality_metric_med,
+        atac_peak_enrichment_quality_metric_2, file_fastq_1_atac,
+        analysis_step_atac_encode4_pseudoreplicate_concordance,
+        file_bed_stable_peaks_atac, ATAC_experiment_replicated,
+        file_bed_replicated_peaks_atac, replicate_ATAC_seq,
+        atac_replication_quality_metric_borderline_replicate_concordance,
+        library_1, biosample_human_1, library_2, biosample_human_2
+        ):
     # https://encodedcc.atlassian.net/browse/ENCD-5255
-    testapp.patch_json(ATAC_pipeline['@id'],
-                        {'analysis_steps': [analysis_step_atac_encode4_alignment['@id']]})
+    # https://encodedcc.atlassian.net/browse/ENCD-5350
     testapp.patch_json(atac_alignment_quality_metric_low['@id'],
                         {'quality_metric_of': [ATAC_bam['@id']]})
     testapp.patch_json(atac_library_complexity_quality_metric_poor['@id'],
                         {'quality_metric_of': [ATAC_bam['@id']]})
     testapp.patch_json(atac_align_enrich_quality_metric_med['@id'],
                         {'quality_metric_of': [ATAC_bam['@id']]})
+    testapp.patch_json(atac_peak_enrichment_quality_metric_2['@id'],
+                        {'quality_metric_of': [file_bed_stable_peaks_atac['@id']]})
     res = testapp.get(ATAC_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'low alignment rate' for error in collect_audit_errors(res))
     assert any(error['category'] == 'poor library complexity' for error in collect_audit_errors(res))
     assert any(error['category'] == 'mild to moderate bottlenecking' for error in collect_audit_errors(res))
     assert any(error['category'] == 'severe bottlenecking' for error in collect_audit_errors(res))
     assert any(error['category'] == 'moderate TSS enrichment' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'extremely low read depth' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'no peaks in nucleosome-free regions' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'low FRiP score' for error in collect_audit_errors(res))
+
+    testapp.patch_json(atac_replication_quality_metric_borderline_replicate_concordance['@id'],
+                        {'quality_metric_of': [file_bed_replicated_peaks_atac['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_human_1['uuid']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_human_2['uuid']})
+    testapp.patch_json(replicate_ATAC_seq['@id'], {'experiment': ATAC_experiment_replicated['@id']})
+    testapp.patch_json(file_fastq_1_atac['@id'], {'dataset': ATAC_experiment_replicated['@id']})
+    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
+    assert any(error['category'] == 'borderline replicate concordance' for error in collect_audit_errors(res2))
+    assert 'moderate number of reproducible peaks' not in collect_audit_errors(res2)
 
 
 def test_audit_experiment_analysis_files(

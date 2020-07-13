@@ -73,3 +73,16 @@ def analysis_step_version_atac_encode4_replicate_concordance(testapp,
         ],
     }
     return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_atac_encode4_pseudoreplicate_concordance(testapp,
+                analysis_step_atac_encode4_pseudoreplicate_concordance, software_version):
+    item = {
+        'analysis_step': analysis_step_atac_encode4_pseudoreplicate_concordance['@id'],
+        'minor_version': 0,
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]

@@ -755,3 +755,14 @@ def experiment_mint_chip(testapp, lab, award, heart, target_H3K27me3, experiment
         'possible_controls': [experiment_chip_control['uuid']]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def ATAC_experiment_replicated(testapp, lab, award, heart):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ATAC-seq',
+        'biosample_ontology': heart['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]

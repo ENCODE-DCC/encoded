@@ -139,3 +139,13 @@ def analysis_step_run_atac_encode4_replicate_concordance(testapp,
         'status': 'released'
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_atac_encode4_pseudoreplicate_concordance(testapp,
+                    analysis_step_version_atac_encode4_pseudoreplicate_concordance):
+    item = {
+        'analysis_step_version': analysis_step_version_atac_encode4_pseudoreplicate_concordance['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
