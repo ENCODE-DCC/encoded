@@ -291,18 +291,6 @@
             "title": "Status",
             "open_on_load": true
         },
-        "award.project": {
-            "title": "Project",
-            "open_on_load": false
-        },
-        "award.rfa": {
-            "title": "RFA",
-            "open_on_load": false
-        },
-        "assembly": {
-            "title": "Genome assembly",
-            "open_on_load": false
-        },
         "target.investigated_as": {
             "title": "Target category",
             "open_on_load": false
@@ -343,6 +331,18 @@
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment",
+            "open_on_load": false
+        },
+        "award.project": {
+            "title": "Project",
+            "open_on_load": false
+        },
+        "award.rfa": {
+            "title": "RFA",
+            "open_on_load": false
+        },
+        "assembly": {
+            "title": "Genome assembly",
             "open_on_load": false
         },
         "files.file_type": {

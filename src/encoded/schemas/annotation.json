@@ -232,29 +232,9 @@
             "title": "Assay name",
             "open_on_load": false
         },
-        "files.file_type": {
-            "title": "Available file types",
-            "open_on_load": false
-        },
-        "files.run_type": {
-            "title": "Run type",
-            "open_on_load": false
-        },
-        "files.read_length": {
-            "title": "Read length (nt)",
-            "open_on_load": false
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)",
-            "open_on_load": false
-        },
         "status": {
             "title": "Status",
             "open_on_load": true
-        },
-        "assembly": {
-            "title": "Genome assembly",
-            "open_on_load": false
         },
         "organism.scientific_name": {
             "title": "Organism",
@@ -268,7 +248,7 @@
             "title": "Target",
             "open_on_load": true
         },
-       "biosample_ontology.classification": {
+        "biosample_ontology.classification": {
             "title": "Biosample classification",
             "open_on_load": false
         },
@@ -296,6 +276,26 @@
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version",
+            "open_on_load": false
+        },
+        "assembly": {
+            "title": "Genome assembly",
+            "open_on_load": false
+        },
+        "files.file_type": {
+            "title": "Available file types",
+            "open_on_load": false
+        },
+        "files.run_type": {
+            "title": "Run type",
+            "open_on_load": false
+        },
+        "files.read_length": {
+            "title": "Read length (nt)",
+            "open_on_load": false
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)",
             "open_on_load": false
         },
         "lab.title": {
