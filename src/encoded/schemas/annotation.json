@@ -225,64 +225,90 @@
     },
     "facets": {
         "annotation_type": {
-            "title": "Annotation type"
+            "title": "Annotation type",
+            "open_on_load": true
         },
         "assay_term_name": {
-            "title": "Assay name"
+            "title": "Assay name",
+            "open_on_load": false
         },
         "files.file_type": {
-            "title": "Available file types"
+            "title": "Available file types",
+            "open_on_load": false
         },
         "files.run_type": {
-            "title": "Run type"
+            "title": "Run type",
+            "open_on_load": false
         },
         "files.read_length": {
-            "title": "Read length (nt)"
+            "title": "Read length (nt)",
+            "open_on_load": false
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
+            "title": "Mapped read length (nt)",
+            "open_on_load": false
         },
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
         "assembly": {
-            "title": "Genome assembly"
+            "title": "Genome assembly",
+            "open_on_load": false
         },
         "organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "targets.investigated_as": {
-            "title": "Target category"
+            "title": "Target category",
+            "open_on_load": false
         },
          "targets.label": {
-            "title": "Target"
+            "title": "Target",
+            "open_on_load": true
         },
        "biosample_ontology.classification": {
-            "title": "Biosample classification"
+            "title": "Biosample classification",
+            "open_on_load": false
+        },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
-            "title": "Organ"
+            "title": "Organ",
+            "open_on_load": false
         },
         "biosample_ontology.cell_slims": {
-            "title": "Cell"
+            "title": "Cell",
+            "open_on_load": false
         },
         "relevant_life_stage": {
-            "title": "Life stage"
+            "title": "Life stage",
+            "open_on_load": false
         },
         "software_used.software.name": {
-            "title": "Software used"
+            "title": "Software used",
+            "open_on_load": false
         },
         "encyclopedia_version": {
-            "title": "Encyclopedia version"
+            "title": "Encyclopedia version",
+            "open_on_load": false
         },
         "lab.title": {
-            "title": "Lab"
+            "title": "Lab",
+            "open_on_load": false
         },
         "award.project": {
-            "title": "Project"
+            "title": "Project",
+            "open_on_load": false
         },
         "award.rfa": {
-            "title": "RFA"
+            "title": "RFA",
+            "open_on_load": false
         }
     },
     "columns": {

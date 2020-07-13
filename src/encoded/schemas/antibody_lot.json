@@ -195,10 +195,13 @@
    },
    "facets": {
         "lot_reviews.status": {
-            "title": "Eligibility status"
+            "title": "Eligibility status",
+            "length": "long",
+            "open_on_load": true
         },
         "targets.organism.scientific_name": {
-            "title": "Target organism"
+            "title": "Target organism",
+            "open_on_load": true
         },
         "targets.investigated_as": {
             "title": "Target category"
@@ -206,22 +209,28 @@
         "targets.label": {
             "title": "Target of antibody",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "characterizations.characterization_method": {
-            "title": "Characterization method"
+            "title": "Characterization method",
+            "open_on_load": false
         },
         "source.title" : {
-            "title": "Source"
+            "title": "Source",
+            "open_on_load": false
         },
         "clonality": {
-            "title": "Clonality"
+            "title": "Clonality",
+            "open_on_load": false
         },
         "host_organism.name": {
-            "title": "Host organism"
+            "title": "Host organism",
+            "open_on_load": false
         },
         "characterizations.lab.title": {
-            "title": "Lab"
+            "title": "Lab",
+            "open_on_load": false
         }
     },
     "columns": {

@@ -26,48 +26,61 @@
     ],
     "facets": {
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
         "output_category": {
-            "title": "Output category"
+            "title": "Output category",
+            "open_on_load": false
         },
         "output_type": {
-            "title": "Output type"
+            "title": "Output type",
+            "open_on_load": false
         },
         "file_format": {
-            "title": "File format"
+            "title": "File format",
+            "open_on_load": true
         },
         "file_format_type": {
-            "title": "File format type"
+            "title": "File format type",
+            "open_on_load": false
         },
         "file_type": {
-            "title": "File type"
+            "title": "File type",
+            "open_on_load": false
         },
         "platform.term_name": {
-            "title": "Platform"
+            "title": "Platform",
+            "open_on_load": false
         },
         "award.project": {
-            "title": "Project"
+            "title": "Project",
+            "open_on_load": false
         },
         "assembly": {
-            "title": "Genome assembly"
+            "title": "Genome assembly",
+            "open_on_load": false
         },
         "lab.title": {
-            "title": "Lab"
+            "title": "Lab",
+            "open_on_load": false
         },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": false
         },
         "assay_term_name": {
             "title": "Assay term name",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": false
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": false
         }
     },
     "dependencies": {
