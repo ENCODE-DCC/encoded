@@ -117,6 +117,18 @@
                 ]
             }
         },
+        "smoking_history": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
+        "alochol_history": {
+            "title": "",
+            "description": "",
+            "comment": "",
+            "type": "string"
+        },
         "cause_of_death": {
             "title": "",
             "description": "",
