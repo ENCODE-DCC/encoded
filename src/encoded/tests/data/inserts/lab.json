@@ -2,9 +2,6 @@
     {
         "address1": "School of Biological Sciences",
         "address2": "2218 Biological Sciences III",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Irvine",
         "country": "USA",
         "fax": "000-000-0000",
@@ -22,9 +19,6 @@
     {
         "address1": "Department of Biochemistry and Molecular Biophysics",
         "address2": "1200 California Blvd; MC156-29",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Pasadena",
         "country": "USA",
         "fax": "000-000-0000",
@@ -42,11 +36,6 @@
     {
         "address1": "Department of Cellular and Molecular Medicine",
         "address2": "9500 Gilman Drive, Room 231",
-        "awards": [
-            "ENCODE2-Mouse",
-            "ENCODE2",
-            "U54HG006997"
-        ],
         "city": "La Jolla",
         "country": "USA",
         "fax": "000-000-0000",
@@ -63,11 +52,6 @@
     {
         "address1": "Massachusetts General Hospital Simches Research Building, CPZN 8234",
         "address2": "185 Cambridge St.",
-        "awards": [
-            "U01ES017155",
-            "ENCODE2",
-            "U54HG006991"
-        ],
         "city": "Boston",
         "country": "USA",
         "fax": "000-000-0000",
@@ -85,9 +69,6 @@
     {
         "address1": "Department of Genetics and Developmental Biology",
         "address2": "400 Farmington Ave.",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "Farmington",
         "country": "USA",
         "fax": "000-000-0000",
@@ -105,9 +86,6 @@
     {
         "address1": "Department of Biology",
         "address2": "31 Ames Street, 68-271A",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "Cambridge",
         "country": "USA",
         "fax": "000-000-0000",
@@ -123,10 +101,6 @@
         "uuid": "bc8e3211-c653-4ae1-92e8-112336199ec7"
     },
     {
-        "awards": [
-            "ENCODE2",
-            "ENCODE2-Mouse"
-        ],
         "fax": "000-000-0000",
         "institute_label": "UCSC",
         "name": "encode2-project",
@@ -139,9 +113,6 @@
     {
         "address1": "Sanford Consortium for Regenerative Medicine",
         "address2": "2880 Torrey Pines Scenic Dr.",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "La Jolla",
         "country": "USA",
         "fax": "000-000-0000",
@@ -158,9 +129,6 @@
     },
     {
         "address1": "601 Genome Way Northwest",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Huntsville",
         "country": "USA",
         "fax": "000-000-0000",
@@ -178,9 +146,6 @@
     {
         "address1": "CIEMAS, 2363B",
         "address2": "101 Science Dr., Box 3382",
-        "awards": [
-            "ENCODE2"
-        ],
         "city": "Durham",
         "country": "USA",
         "fax": "000-000-0000",
@@ -198,9 +163,6 @@
     {
         "address1": "Department of Genetics",
         "address2": "300 Pasteur Drive; MC5120",
-        "awards": [
-            "U41HG006992"
-        ],
         "city": "Stanford",
         "country": "USA",
         "fax": "000-000-0000",
@@ -235,10 +197,6 @@
     {
         "address1": "Department of Biochemistry & Molecular Pharmacology",
         "address2": "364 Plantation Street, LRB-509",
-        "awards": [
-            "ENCODE2",
-            "U54HG007010"
-        ],
         "city": "Worcester",
         "country": "USA",
         "fax": "000-000-0000",
@@ -255,9 +213,6 @@
     },
     {
         "address1": "10010 North Torrey Pines Road",
-        "awards": [
-            "U54HG006997"
-        ],
         "city": "San Diego",
         "country": "USA",
         "fax": "000-000-0000",
@@ -275,9 +230,6 @@
     {
         "address1": "7 Divinity Ave / Rm 205",
         "address2": "7 Cambridge Center/6047-F",
-        "awards": [
-            "U54HG006991"
-        ],
         "city": "Camrbidge",
         "country": "USA",
         "fax": "000-000-0000",
@@ -295,11 +247,6 @@
     {
         "address1": "Department of Genome Sciences and Medicine",
         "address2": "3720 15th Ave. NE, Foege Bldg. Rm. S310",
-        "awards": [
-            "ENCODE2-Mouse",
-            "U54HG007010",
-            "ENCODE2"
-        ],
         "city": "Seattle",
         "country": "USA",
         "fax": "000-000-0000",
@@ -317,9 +264,6 @@
     {
         "address1": "Department of Human Genetics",
         "address2": "900 East 57th Street",
-        "awards": [
-            "U54HG006996"
-        ],
         "city": "Chicago",
         "country": "USA",
         "fax": "000-000-0000",
@@ -337,9 +281,6 @@
     {
         "address1": "2800 Mitchell Drive",
         "address2": "Lawrence Berkley National Labratory",
-        "awards": [
-            "U54HG006997"
-        ],
         "city": "Walnut Creek",
         "country": "USA",
         "fax": "000-000-0000",
@@ -357,11 +298,6 @@
     {
         "address1": "Department of Genetics",
         "address2": "300 Pasteur Drive; MC5120",
-        "awards": [
-            "ENCODE2-Mouse",
-            "ENCODE2",
-            "U54HG006996"
-        ],
         "city": "Stanford",
         "country": "USA",
         "fax": "000-000-0000",
@@ -379,9 +315,6 @@
     {
         "address1": "Department of Biochemistry & Molecular Biology",
         "address2": "1333 San Pablo St.",
-        "awards": [
-            "U54HG006996"
-        ],
         "city": "Los Angeles",
         "country": "USA",
         "fax": "000-000-0000",
@@ -398,10 +331,6 @@
     },
     {
         "address1": "601 Genome Way",
-        "awards": [
-            "ENCODE2",
-            "U54HG006998"
-        ],
         "city": "Huntsville",
         "country": "USA",
         "fax": "000-000-0000",
@@ -417,9 +346,6 @@
         "uuid": "c0a3540e-8ef0-4d4d-a449-ae47c2475838"
     },
     {
-        "awards": [
-            "ROADMAP"
-        ],
         "fax": "000-000-0000",
         "institute_label": "Baylor",
         "name": "roadmap-epigenomics",
@@ -431,9 +357,6 @@
     },
     {
         "address1": "Dr. Aiguader, 88",
-        "awards": [
-            "U54HG007004"
-        ],
         "city": "Barcelona",
         "country": "Spain",
         "fax": "000-000-0000",
@@ -450,10 +373,6 @@
     },
     {
         "address1": "304 Wartik Laboratory",
-        "awards": [
-            "ENCODE2-Mouse",
-            "U54HG006998"
-        ],
         "city": "University Park",
         "country": "USA",
         "fax": "000-000-0000",
@@ -471,9 +390,6 @@
     {
         "address1": "Department of Genetics",
         "address2": "PO Box 208005, 333 Cedar St.",
-        "awards": [
-            "U54HG006996"
-        ],
         "city": "New Haven",
         "country": "USA",
         "fax": "000-000-0000",
@@ -490,10 +406,6 @@
     },
     {
         "address1": "500 Sunnyside Blvd",
-        "awards": [
-            "ENCODE2",
-            "U54HG007004"
-        ],
         "city": "Woodbury",
         "country": "USA",
         "fax": "000-000-0000",
@@ -511,9 +423,6 @@
     {
         "address1": "CIEMAS, Room 2347",
         "address2": "101 Science Drive, IGSP Box 3382",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Durham",
         "country": "USA",
         "fax": "000-000-0000",
@@ -548,10 +457,6 @@
     {
         "address1": "Baskin School of Engineering",
         "address2": "1156 High St.; Mail Stop CBSE/ITI",
-        "awards": [
-            "ENCODE2",
-            "U41HG006992"
-        ],
         "city": "Santa Cruz",
         "country": "USA",
         "fax": "000-000-0000",
@@ -569,9 +474,6 @@
     {
         "address1": "Department of Cellular and Molecular Medicine",
         "address2": "9500 Gilman Drive, Room 231",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "La Jolla",
         "country": "USA",
         "fax": "000-000-0000",
@@ -589,9 +491,6 @@
     {
         "address1": "Department of Genome Sciences",
         "address2": "3720 15th Ave NE, Foege S-350D, Box 355065",
-        "awards": [
-            "U41HG007355"
-        ],
         "city": "Seattle",
         "country": "USA",
         "fax": "000-000-0000",
@@ -608,9 +507,6 @@
     },
     {
         "address1": "DNA Nexus",
-        "awards": [
-            "/awards/U41HG006992/"
-        ],
         "country": "USA",
         "name": "encode-processing-pipeline",
         "phone1": "000-000-0000",
@@ -622,7 +518,6 @@
     },
     {
         "address1": "",
-        "awards": ["U41HG006992"],
         "country": "",
         "name": "encode-consortium",
         "phone1": "",

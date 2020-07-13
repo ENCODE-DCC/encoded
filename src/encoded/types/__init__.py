@@ -30,7 +30,6 @@ class Lab(Item):
     item_type = 'lab'
     schema = load_schema('encoded:schemas/lab.json')
     name_key = 'name'
-    embedded = ['awards']
 
 
 @collection(

@@ -36,20 +36,6 @@
             "type": "string",
             "linkTo": "User"
         },
-        "awards": {
-            "title": "Award",
-            "description": "Grants associated with the lab.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Grant",
-                "description": "A grant associated with the lab.",
-                "comment": "See award.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Award"
-            }
-        },
         "institute_label": {
             "title": "Institute label",
             "description": "An abbreviation for the institute the lab is associated with.",
