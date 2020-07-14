@@ -2994,31 +2994,15 @@ def test_audit_experiment_tagging_biosample_characterization(
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_pooled_biosample_characterization(
+def test_audit_experiment_pooled_biosample_no_characterization(
     testapp,
-    construct_genetic_modification,
-    biosample_characterization,
-    biosample_characterization_no_review,
+    biosample_pooled_from_not_characterized_biosamples,
+    award_encode4,
     base_experiment,
     base_target,
     base_replicate,
     base_library,
-    base_biosample,
-    biosample_1,
-    biosample_2,
-    award_encode4
 ):
-    testapp.patch_json(
-        base_biosample['@id'],
-        {
-            'genetic_modifications': [construct_genetic_modification['@id']],
-            'pooled_from': [biosample_1['@id'], biosample_2['@id']]
-        }
-    )
-    testapp.patch_json(
-        base_library['@id'], {'biosample': base_biosample['@id']}
-    )
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(
         base_experiment['@id'],
         {
@@ -3027,23 +3011,68 @@ def test_audit_experiment_pooled_biosample_characterization(
             'target': base_target['@id']
         }
     )
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(
+        base_library['@id'],
+        {'biosample': biosample_pooled_from_not_characterized_biosamples['@id']}
+    )
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(
         error['category'] == 'missing biosample characterization'
         for error in collect_audit_errors(res, error_types=['ERROR'])
     )
+
+
+def test_audit_experiment_pooled_biosample_partial_characterization(
+    testapp,
+    biosample_pooled_from_characterized_and_not_characterized_biosamples,
+    award_encode4,
+    base_experiment,
+    base_target,
+    base_replicate,
+    base_library,
+):
     testapp.patch_json(
-        biosample_characterization['@id'],
-        {'characterizes': biosample_1['@id']}
+        base_experiment['@id'],
+        {
+            'assay_term_name': 'ChIP-seq',
+            'award': award_encode4['@id'],
+            'target': base_target['@id']
+        }
+    )
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(
+        base_library['@id'],
+        {'biosample': biosample_pooled_from_characterized_and_not_characterized_biosamples['@id']}
     )
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(
         error['category'] == 'missing biosample characterization'
         for error in collect_audit_errors(res, error_types=['ERROR'])
     )
+
+
+def test_audit_experiment_pooled_biosample_characterization(
+    testapp,
+    biosample_pooled_from_characterized_biosamples,
+    award_encode4,
+    base_experiment,
+    base_target,
+    base_replicate,
+    base_library,
+):
     testapp.patch_json(
-        biosample_characterization_no_review['@id'],
-        {'characterizes': biosample_2['@id']}
+        base_experiment['@id'],
+        {
+            'assay_term_name': 'ChIP-seq',
+            'award': award_encode4['@id'],
+            'target': base_target['@id']
+        }
+    )
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(
+        base_library['@id'],
+        {'biosample': biosample_pooled_from_characterized_biosamples['@id']}
     )
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(
