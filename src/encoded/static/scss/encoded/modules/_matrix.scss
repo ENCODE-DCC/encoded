@@ -15,6 +15,63 @@ $row-data-header-width: 200px;
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
 }
 
+.expand-arrows, .collapse-arrows {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    top: 68px;
+    left: 5px;
+}
+
+.expand-arrows {
+    fill: $Homo-sapiens;
+    @media screen and (max-width: $screen-sm-min) {
+        top: 8px;
+        fill: white;
+        height: 20px;
+        width: 20px;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        top: 3px;
+    }
+}
+
+.collapse-arrows {
+    fill: white;
+    top: 2px;
+    z-index: 999;
+    @media screen and (max-width: $screen-sm-min) {
+        top: 8px;
+        height: 20px;
+        width: 20px;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        top: 3px;
+    }
+}
+
+.body-map-expander, .body-map-collapser {
+    background: $Homo-sapiens;
+    text-align: center;
+    font-family: Mada;
+    padding: 10px;
+    color: white;
+    font-weight: 400;
+    cursor: pointer;
+    position: relative;
+    &:hover {
+        background: darken($Homo-sapiens, 10%);
+        font-weight: 600;
+    }
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 1rem;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        padding: 5px;
+        font-size: 0.8rem;
+    }
+}
+
 .ReferenceEpigenomeMatrix {
     .matrix-header__title {
         padding-bottom: 5px;
