@@ -4283,6 +4283,36 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                     yield AuditFailure('mild to moderate bottlenecking', pbc2_detail, level='WARNING')
 
 
+def audit_analysis_files(value, system, excluded_types):
+    if 'analysis_objects' not in value:
+        return
+    experiment_files = (
+        f['@id']
+        for f in (
+            value.get('original_files', [])
+            + value.get('contributing_files', [])
+        )
+    )
+    detail_list = []
+    for analysis in value['analysis_objects']:
+        for f in analysis.get('files', []):
+            if f not in experiment_files:
+                detail_list.append(
+                    'Analysis {} has a file {} which is not belong to this '
+                    'experiment {}.'.format(
+                        audit_link(
+                            path_to_text(analysis['@id']), analysis['@id']
+                        ),
+                        audit_link(path_to_text(f), f),
+                        audit_link(path_to_text(value['@id']), value['@id']),
+                    )
+                )
+                break
+    for detail in detail_list:
+        yield AuditFailure('inconsistent analysis files', detail, 'WARNING')
+
+
+
 #######################
 # utilities
 #######################
@@ -4918,7 +4948,8 @@ function_dispatcher_without_files = {
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
-    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed
+    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
+    'audit_analysis_files': audit_analysis_files,
 }
 
 function_dispatcher_with_files = {
@@ -4941,6 +4972,7 @@ function_dispatcher_with_files = {
 @audit_checker(
     'Experiment',
     frame=[
+        'analysis_objects',
         'biosample_ontology',
         'award',
         'target',

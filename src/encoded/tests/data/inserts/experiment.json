@@ -186,6 +186,7 @@
                 "files": ["ENCFF001RCV", "ENCFF001RCZ"]
             }
         ],
+        "analysis_objects": ["ENCAN050LQR"],
         "assay_term_name": "shRNA knockdown followed by RNA-seq",
         "award": "U54HG007005",
         "biosample_ontology": "cell_line_EFO_0002067",
@@ -781,6 +782,7 @@
                 "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"]
             }
         ],
+        "analysis_objects": ["ENCAN545UKN", "ENCAN820ARO", "ENCAN914ASY"],
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
     },
     {

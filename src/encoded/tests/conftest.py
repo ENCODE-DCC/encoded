@@ -21,6 +21,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.access_key',
     'encoded.tests.fixtures.schemas.analysis_step_version',
     'encoded.tests.fixtures.schemas.analysis_step',
+    'encoded.tests.fixtures.schemas.analysis',
     'encoded.tests.fixtures.schemas.annotation',
     'encoded.tests.fixtures.schemas.antibody_characterization',
     'encoded.tests.fixtures.schemas.atac_alignment_enrichment_quality_metric',
