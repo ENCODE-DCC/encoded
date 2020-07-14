@@ -1382,7 +1382,7 @@ def test_audit_experiment_long_read_rna_standards(
             error['category'] == audit for error in errors
         )
 
-
+ 
 def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol(testapp,
                                                    experiment_chip_H3K27me3,
                                                    file_fastq_1_chip,
@@ -1805,7 +1805,7 @@ def test_audit_experiment_chip_seq_control_standards(
                                                         'total': 1000,
                                                         'mapped': 1000,
                                                         'read1': 100, 'read2': 100})
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20,
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20, 
                                              'dataset': base_experiment['@id'],
                                              'controlled_by': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100,
@@ -1879,7 +1879,7 @@ def test_audit_experiment_chip_seq_peaks_without_controls(
                                                         'total': 1000,
                                                         'mapped': 1000,
                                                         'read1': 100, 'read2': 100})
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20,
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20, 
                                              'dataset': base_experiment['@id'],
                                              'controlled_by': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100,
@@ -1953,7 +1953,7 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
                                                         'total': 1000,
                                                         'mapped': 1000,
                                                         'read1': 100, 'read2': 100})
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20,
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20, 
                                              'dataset': base_experiment['@id'],
                                              'controlled_by': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100,
@@ -1962,7 +1962,7 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
                                              'status': 'in progress',
                                              'assembly': 'mm10', 'dataset': base_experiment['@id'],
                                              'derived_from': [file_fastq_3['@id']]})
-
+    
     testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_1_1['@id'], file_bam_2_1['@id']],
                                              'dataset': base_experiment['@id'],
                                              'file_format_type': 'narrowPeak',
@@ -2034,7 +2034,7 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
                                                         'total': 1000,
                                                         'mapped': 1000,
                                                         'read1': 100, 'read2': 100})
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20,
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20, 
                                              'dataset': base_experiment['@id'],
                                              'controlled_by': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100,
@@ -2108,14 +2108,14 @@ def test_audit_experiment_chip_seq_peaks_with_subsampled_controls(
         pipeline_bam,
         target_H3K9me3):
 
-
+    
     testapp.patch_json(analysis_step_bam['@id'], {'title': 'Alignment pooliing and subsampling step'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id'], file_bam_2_1['@id']],
                                                         'processing_stage': 'filtered',
                                                         'total': 1002,
                                                         'mapped': 1002,
                                                         'read1': 100, 'read2': 100})
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20,
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20, 
                                              'dataset': base_experiment['@id'],
                                              'controlled_by': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_4['@id'], {'read_length': 100,
@@ -2517,7 +2517,7 @@ def test_audit_experiment_wgbs_coverage(testapp,
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'extremely low coverage' for error in collect_audit_errors(res))
-
+   
 def test_audit_experiment_dnase_low_read_length(testapp,
                                                 base_experiment,
                                                 replicate_1_1,
@@ -2932,7 +2932,7 @@ def test_audit_experiment_tagging_genetic_modification_characterization(
     testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [construct_genetic_modification['@id']],
                                             'biosample_ontology': k562['uuid'],
                                             'donor': donor_1['@id']})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})  
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'target': base_target['@id']})
@@ -2986,7 +2986,7 @@ def test_audit_experiment_tagging_biosample_characterization(
                        {'genetic_modifications': [construct_genetic_modification['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing biosample characterization'
-               for error in collect_audit_errors(res, ['ERROR']))
+               for error in collect_audit_errors(res, ['ERROR']))                  
     testapp.patch_json(biosample_characterization['@id'],
                        {'characterizes': biosample_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
