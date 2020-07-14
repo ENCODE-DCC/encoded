@@ -322,30 +322,6 @@ def audit_biosample_post_differentiation_time(value, system):
             )
 
 
-def audit_biosample_disease_term(value, system):
-    '''
-    The disease_term_id should be in the ontology.
-    '''
-
-    if value['status'] in ['deleted']:
-        return
-
-    ontology = system['registry']['ontology']
-    disease_term_id = value.get('disease_term_id', None)
-
-    if disease_term_id is not None and disease_term_id not in ontology:
-        detail = ('Biosample {} specifies a disease_term_id {} '
-            'that is not part of the {} ontology.'.format(
-                audit_link(path_to_text(value['@id']), value['@id']),
-                disease_term_id,
-                disease_term_id.split(':', 1)[0]
-            )
-        )
-        yield AuditFailure('disease_term_id not in ontology', detail,
-                           level='INTERNAL_ACTION')
-        return
-
-
 function_dispatcher = {
     'audit_modification': audit_biosample_modifications,
     'audit_CRISPR_modification': audit_biosample_CRISPR_modifications,
@@ -356,8 +332,7 @@ function_dispatcher = {
     'audit_pmi': audit_biosample_pmi,
     'audit_cell_isolation_method': audit_biosample_cell_isolation_method,
     'audit_depleted_in_term_name': audit_biosample_depleted_in_term_name,
-    'audit_post_differentiation_time': audit_biosample_post_differentiation_time,
-    'audit_disease_term': audit_biosample_disease_term
+    'audit_post_differentiation_time': audit_biosample_post_differentiation_time
 }
 
 @audit_checker('Biosample',

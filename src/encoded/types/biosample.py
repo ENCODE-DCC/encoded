@@ -9,6 +9,8 @@ from .base import (
 )
 import re
 
+from snovault.validation import ValidationFailure
+
 
 @collection(
     name='biosamples',
@@ -209,15 +211,19 @@ class Biosample(Item):
                         schema={
                             "title": "Disease term name",
                             "description": "Ontology term describing the disease affecting the biosample.",
+                            "comment": "Calculated from disease_term_id",
                             "type": "string",
                             "notSubmittable": True,
                         })
     def disease_term_name(self, request, registry, disease_term_id=None):
-        term_name = None
         if disease_term_id is not None:
             if disease_term_id in registry['ontology']:
-                term_name = registry['ontology'][disease_term_id]['name']
-        return term_name
+                return registry['ontology'][disease_term_id]['name']
+            else:
+                msg = 'Disease term ID {} is not a valid ID'.format(
+                    disease_term_id
+                )
+                raise ValidationFailure('body', ['disease_term_id'], msg)
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
