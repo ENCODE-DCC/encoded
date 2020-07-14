@@ -1,5 +1,4 @@
 import pytest
-from .test_audit_experiment import collect_audit_errors
 
 def test_audit_biosample_modifications_whole_organism(
         testapp, base_biosample,
