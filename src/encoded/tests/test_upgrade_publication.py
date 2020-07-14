@@ -107,3 +107,12 @@ def test_publication_upgrade_7_8(upgrader, publication_7):
     assert value['schema_version'] == '8'
     assert 'Incorrect date_published formatting: 3/30/20' in value['notes']
     assert 'date_published' not in value
+
+
+def test_publication_upgrade_8_9(upgrader, publication_8):
+    value = upgrader.upgrade('publication', publication_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert 'datasets' not in value
+    assert 'Publication datasets:' in value['notes']
+    assert '/experiments/' in value['notes']
+    assert '/annotations/' in value['notes']

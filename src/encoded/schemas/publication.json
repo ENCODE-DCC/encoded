@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "title": {
             "title": "Title",
@@ -90,24 +90,6 @@
                 "type": "string",
                 "uniqueKey":  "publication:identifier",
                 "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
-            }
-        },
-        "datasets": {
-            "title": "Dataset",
-            "description": "The datasets referred to by the publication.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Datasets",
-                "description": "A datasets referred to by the publication.",
-                "comment": "See dataset.json for available identifiers.",
-                "type":  "string",
-                "linkTo": [
-                    "Experiment",
-                    "Annotation",
-                    "FunctionalCharacterizationExperiment",
-                    "Reference"
-                ]
             }
         },
         "supplementary_data": {
