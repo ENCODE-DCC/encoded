@@ -201,38 +201,30 @@
     },
     "facets": {
         "status": {
-            "title": "Status",
-            "open_on_load": false
+            "title": "Status"
         },
         "categories": {
-            "title": "Categories",
-            "open_on_load": false
+            "title": "Categories"
         },
         "supplementary_data.supplementary_data_type": {
-            "title": "Available supplemental data",
-            "open_on_load": false
+            "title": "Available supplemental data"
         },
         "publication_year": {
-            "title": "Publication year",
-            "open_on_load": false
+            "title": "Publication year"
         },
         "journal": {
-            "title": "Journal",
-            "open_on_load": false
+            "title": "Journal"
         },
         "published_by": {
-            "title": "Published by",
-            "open_on_load": false
+            "title": "Published by"
         },
         "datasets": {
             "type": "exists",
-            "title": "Associated dataset",
-            "open_on_load": false
+            "title": "Associated dataset"
         },
         "publication_data": {
             "type": "exists",
-            "title": "Publication data",
-            "open_on_load": false
+            "title": "Publication data"
         }
     },
     "columns": {

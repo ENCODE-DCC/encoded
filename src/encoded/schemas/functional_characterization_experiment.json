@@ -292,8 +292,7 @@
             "open_on_load": true
         },
         "target.investigated_as": {
-            "title": "Target category",
-            "open_on_load": false
+            "title": "Target category"
         },
         "target.label": {
             "title": "Target of assay",
@@ -306,8 +305,7 @@
             "open_on_load": true
         },
         "biosample_ontology.classification": {
-            "title": "Biosample classification",
-            "open_on_load": false
+            "title": "Biosample classification"
         },
         "biosample_ontology.term_name" : {
             "title": "Biosample term name",
@@ -317,89 +315,68 @@
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
-            "type": "typeahead",
-            "open_on_load": false
+            "type": "typeahead"
         },
         "biosample_ontology.cell_slims": {
             "title": "Cell",
-            "type": "typeahead",
-            "open_on_load": false
+            "type": "typeahead"
         },
         "replicates.library.biosample.life_stage": {
-            "title": "Life stage",
-            "open_on_load": false
+            "title": "Life stage"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "open_on_load": false
+            "title": "Biosample treatment"
         },
         "award.project": {
-            "title": "Project",
-            "open_on_load": false
+            "title": "Project"
         },
         "award.rfa": {
-            "title": "RFA",
-            "open_on_load": false
+            "title": "RFA"
         },
         "assembly": {
-            "title": "Genome assembly",
-            "open_on_load": false
+            "title": "Genome assembly"
         },
         "files.file_type": {
-            "title": "Available file types",
-            "open_on_load": false
+            "title": "Available file types"
         },
         "files.platform.term_name": {
-            "title": "Platform",
-            "open_on_load": false
+            "title": "Platform"
         },
         "files.run_type": {
-            "title": "Run type",
-            "open_on_load": false
+            "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length (nt)",
-            "open_on_load": false
+            "title": "Read length (nt)"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length (nt)",
-            "open_on_load": false
+            "title": "Mapped read length (nt)"
         },
         "replicates.library.size_range": {
-            "title": "Library fragment size (nt)",
-            "open_on_load": false
+            "title": "Library fragment size (nt)"
         },
         "replicates.library.nucleic_acid_term_name": {
-            "title": "Library material",
-            "open_on_load": false
+            "title": "Library material"
         },
         "replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in",
-            "open_on_load": false
+            "title": "Library depleted in"
         },
         "replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment",
-            "open_on_load": false
+            "title": "Library treatment"
         },
         "date_released": {
-            "title": "Date released",
-            "open_on_load": false
+            "title": "Date released"
         },
         "date_submitted": {
-            "title": "Date submitted",
-            "open_on_load": false
+            "title": "Date submitted"
         },
         "lab.title": {
-            "title": "Lab",
-            "open_on_load": false
+            "title": "Lab"
         },
         "internal_status": {
-            "title": "Internal status",
-            "open_on_load": false
+            "title": "Internal status"
         },
         "replication_type": {
-            "title": "Replication type",
-            "open_on_load": false
+            "title": "Replication type"
         }
     },
     "columns": {

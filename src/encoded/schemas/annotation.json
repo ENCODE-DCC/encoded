@@ -226,11 +226,12 @@
     "facets": {
         "annotation_type": {
             "title": "Annotation type",
+            "type": "typeahead",
+            "length": "long",
             "open_on_load": true
         },
         "assay_term_name": {
-            "title": "Assay name",
-            "open_on_load": false
+            "title": "Assay name"
         },
         "status": {
             "title": "Status",
@@ -241,16 +242,15 @@
             "open_on_load": true
         },
         "targets.investigated_as": {
-            "title": "Target category",
-            "open_on_load": false
+            "title": "Target category"
         },
          "targets.label": {
             "title": "Target",
+            "type": "typeahead",
             "open_on_load": true
         },
         "biosample_ontology.classification": {
-            "title": "Biosample classification",
-            "open_on_load": false
+            "title": "Biosample classification"
         },
         "biosample_ontology.term_name" : {
             "title": "Biosample term name",
@@ -259,56 +259,43 @@
             "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
-            "title": "Organ",
-            "open_on_load": false
+            "title": "Organ"
         },
         "biosample_ontology.cell_slims": {
-            "title": "Cell",
-            "open_on_load": false
+            "title": "Cell"
         },
         "relevant_life_stage": {
-            "title": "Life stage",
-            "open_on_load": false
+            "title": "Life stage"
         },
         "software_used.software.name": {
-            "title": "Software used",
-            "open_on_load": false
+            "title": "Software used"
         },
         "encyclopedia_version": {
-            "title": "Encyclopedia version",
-            "open_on_load": false
+            "title": "Encyclopedia version"
         },
         "assembly": {
-            "title": "Genome assembly",
-            "open_on_load": false
+            "title": "Genome assembly"
         },
         "files.file_type": {
-            "title": "Available file types",
-            "open_on_load": false
+            "title": "Available file types"
         },
         "files.run_type": {
-            "title": "Run type",
-            "open_on_load": false
+            "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length (nt)",
-            "open_on_load": false
+            "title": "Read length (nt)"
         },
         "files.mapped_read_length": {
-            "title": "Mapped read length (nt)",
-            "open_on_load": false
+            "title": "Mapped read length (nt)"
         },
         "lab.title": {
-            "title": "Lab",
-            "open_on_load": false
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "open_on_load": false
+            "title": "Project"
         },
         "award.rfa": {
-            "title": "RFA",
-            "open_on_load": false
+            "title": "RFA"
         }
     },
     "columns": {

@@ -289,8 +289,7 @@
     },
     "facets": {
         "assay_slims": {
-            "title": "Assay type",
-            "open_on_load": false
+            "title": "Assay type"
         },
         "assay_title": {
             "title": "Assay title",
@@ -315,7 +314,8 @@
             "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"

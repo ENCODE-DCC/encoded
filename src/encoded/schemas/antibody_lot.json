@@ -213,24 +213,19 @@
             "open_on_load": true
         },
         "characterizations.characterization_method": {
-            "title": "Characterization method",
-            "open_on_load": false
+            "title": "Characterization method"
         },
         "source.title" : {
-            "title": "Source",
-            "open_on_load": false
+            "title": "Source"
         },
         "clonality": {
-            "title": "Clonality",
-            "open_on_load": false
+            "title": "Clonality"
         },
         "host_organism.name": {
-            "title": "Host organism",
-            "open_on_load": false
+            "title": "Host organism"
         },
         "characterizations.lab.title": {
-            "title": "Lab",
-            "open_on_load": false
+            "title": "Lab"
         }
     },
     "columns": {

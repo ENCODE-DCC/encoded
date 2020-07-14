@@ -30,57 +30,46 @@
             "open_on_load": true
         },
         "output_category": {
-            "title": "Output category",
-            "open_on_load": false
+            "title": "Output category"
         },
         "output_type": {
-            "title": "Output type",
-            "open_on_load": false
+            "title": "Output type"
         },
         "file_format": {
             "title": "File format",
             "open_on_load": true
         },
         "file_format_type": {
-            "title": "File format type",
-            "open_on_load": false
+            "title": "File format type"
         },
         "file_type": {
-            "title": "File type",
-            "open_on_load": false
+            "title": "File type"
         },
         "platform.term_name": {
-            "title": "Platform",
-            "open_on_load": false
+            "title": "Platform"
         },
         "award.project": {
-            "title": "Project",
-            "open_on_load": false
+            "title": "Project"
         },
         "assembly": {
-            "title": "Genome assembly",
-            "open_on_load": false
+            "title": "Genome assembly"
         },
         "lab.title": {
-            "title": "Lab",
-            "open_on_load": false
+            "title": "Lab"
         },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
-            "length": "long",
-            "open_on_load": false
+            "length": "long"
         },
         "assay_term_name": {
             "title": "Assay term name",
-            "type": "typeahead",
-            "open_on_load": false
+            "type": "typeahead"
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead",
-            "length": "long",
-            "open_on_load": false
+            "length": "long"
         }
     },
     "dependencies": {
