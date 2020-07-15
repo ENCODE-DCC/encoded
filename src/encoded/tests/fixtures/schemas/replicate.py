@@ -55,6 +55,27 @@ def replicate_2_chip(testapp, experiment_chip_H3K27me3, library_2_chip):
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def replicate_1_mint_chip(testapp, experiment_mint_chip, library_1_chip):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': experiment_mint_chip['@id'],
+        'library': library_1_chip['@id']
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_2_mint_chip(testapp, experiment_mint_chip, library_2_chip):
+    item = {
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1,
+        'experiment': experiment_mint_chip['@id'],
+        'library': library_2_chip['@id']
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate_rna(testapp, experiment_rna, library_2):

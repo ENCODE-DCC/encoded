@@ -741,3 +741,17 @@ def experiment_29(root, experiment):
         'assay_term_name': 'single cell isolation followed by RNA-seq'
     })
     return properties
+
+
+@pytest.fixture
+def experiment_mint_chip(testapp, lab, award, heart, target_H3K27me3, experiment_chip_control):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'Mint-ChIP-seq',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'target': target_H3K27me3['uuid'],
+        'possible_controls': [experiment_chip_control['uuid']]
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

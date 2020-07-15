@@ -550,17 +550,27 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     '''
     if value.get('status') in ['revoked', 'deleted', 'replaced']:
         return
-    if value.get('assay_term_name') not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'polyA plus RNA-seq', 'polyA minus RNA-seq', 'ChIP-seq', 'CAGE',
-                                            'shRNA knockdown followed by RNA-seq',
-                                            'siRNA knockdown followed by RNA-seq',
-                                            'CRISPRi followed by RNA-seq',
-                                            'CRISPR genome editing followed by RNA-seq',
-                                            'single-cell RNA sequencing assay',
-                                            'whole-genome shotgun bisulfite sequencing',
-                                            'genetic modification followed by DNase-seq',
-                                            'microRNA-seq',
-                                            'long read RNA-seq', 'icSHAPE',
-                                            'ATAC-seq']:
+    if value.get('assay_term_name') not in [
+        'DNase-seq',
+        'RAMPAGE',
+        'RNA-seq',
+        'polyA plus RNA-seq',
+        'polyA minus RNA-seq',
+        'ChIP-seq',
+        'Mint-ChIP-seq',
+        'CAGE',
+        'shRNA knockdown followed by RNA-seq',
+        'siRNA knockdown followed by RNA-seq',
+        'CRISPRi followed by RNA-seq',
+        'CRISPR genome editing followed by RNA-seq',
+        'single-cell RNA sequencing assay',
+        'whole-genome shotgun bisulfite sequencing',
+        'genetic modification followed by DNase-seq',
+        'microRNA-seq',
+        'long read RNA-seq',
+        'icSHAPE',
+        'ATAC-seq'
+    ]:
         return
     if not value.get('original_files'):
         return
@@ -614,7 +624,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             standards_version)
         return
 
-    if value['assay_term_name'] == 'ChIP-seq':
+    if value['assay_term_name'] in ['ChIP-seq', 'Mint-ChIP-seq']:
         yield from check_experiment_chip_seq_standards(
             value,
             files_structure,
