@@ -4283,22 +4283,15 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                     yield AuditFailure('mild to moderate bottlenecking', pbc2_detail, level='WARNING')
 
 
-def audit_analysis_files(value, system, excluded_types):
+def audit_analysis_files(value, system, files_structure):
     if 'analysis_objects' not in value:
         return
-    experiment_files = (
-        f['@id']
-        for f in (
-            value.get('original_files', [])
-            + value.get('contributing_files', [])
-        )
-    )
     detail_list = []
     for analysis in value['analysis_objects']:
         for f in analysis.get('files', []):
-            if f not in experiment_files:
+            if f not in files_structure['original_files']:
                 detail_list.append(
-                    'Analysis {} has a file {} which is not belong to this '
+                    'Analysis {} has a file {} which does not belong to this '
                     'experiment {}.'.format(
                         audit_link(
                             path_to_text(analysis['@id']), analysis['@id']
@@ -4948,8 +4941,7 @@ function_dispatcher_without_files = {
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
-    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
-    'audit_analysis_files': audit_analysis_files,
+    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed
 }
 
 function_dispatcher_with_files = {
@@ -4965,7 +4957,8 @@ function_dispatcher_with_files = {
     'audit_experiment_standards': audit_experiment_standards_dispatcher,
     'audit_submitted_status': audit_experiment_status,
     'audit_no_processed_data': audit_experiment_no_processed_data,
-    'audit_experiment_inconsistent_analyses_files': audit_experiment_inconsistent_analyses_files
+    'audit_experiment_inconsistent_analyses_files': audit_experiment_inconsistent_analyses_files,
+    'audit_analysis_files': audit_analysis_files,
 }
 
 

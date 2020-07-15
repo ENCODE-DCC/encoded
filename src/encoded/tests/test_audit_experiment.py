@@ -3563,14 +3563,9 @@ def test_audit_experiment_analysis_files(
     testapp.patch_json(
         base_analysis['@id'], {'files': [file1['@id'], file2['@id']]}
     )
+    testapp.patch_json(file1['@id'], {'derived_from': [file2['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(
         error['category'] == 'inconsistent analysis files'
-        for error in collect_audit_errors(res)
-    )
-    testapp.patch_json(file1['@id'], {'derived_from': [file2['@id']]})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(
-        error['category'] != 'inconsistent analysis files'
         for error in collect_audit_errors(res)
     )
