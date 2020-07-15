@@ -535,6 +535,92 @@ class Patient(Item):
 
         return diagnosis
 
+    @calculated_property(schema={
+        "title": "Metastasis",
+        "description": "Infomation related to Metastasis",
+        "type": "array",
+        "items": {
+            "title": "Metastasis Record",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "metastasis_date": {
+                    "title": "Date of Metastasis Record",
+                    "description": "Date of Metastasis Record",
+                    "type": "string",
+                },
+                "source": {
+                    "title": "Source",
+                    "description": "Source of the record",
+                    "type": "string",
+                    "enum": [
+                        "Pathology report",
+                        "Radiation treatment"
+                    ]
+                },
+                "site": {
+                    "title": "Metastasis Site",
+                    "type": "string",
+                    "enum": [
+                        "Adrenal gland, left",
+                        "Adrenal gland, right",
+                        "Bone",
+                        "Brain",
+                        "Connective, subcutaneous and other soft tissue, abdomen",
+                        "Connective, subcutaneous and other soft tissues, NOS",
+                        "Gastrointestine/ digestive system & spleen",
+                        "Liver",
+                        "Lung",
+                        "Lung, left",
+                        "Lung, right",
+                        "Lymph node, intra abdominal",
+                        "Lymph node, intrathoracic",
+                        "Lymph node, NOS",
+                        "Lymph node",
+                        "Retroperitoneum & peritoneum",
+                        "Retroperitoneum / renal bed, left",
+                        "Retroperitoneum / renal bed, right",
+                        "Salivary gland",
+                        "Spine",
+                        "Other"
+                    ]
+                }
+
+            },
+        }
+    })
+    def metastasis(self, request, surgery, radiation):
+        records = []
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                path_reports = surgery_object['pathology_report']               
+                if len(path_reports) > 0:                
+                    for path_report in path_reports:
+                        path_report_obj = request.embed(path_report, '@@object')                        
+                        if path_report_obj['path_source_procedure'] == 'path_metasis':                           
+                            record = {
+                                'metastasis_date': path_report_obj['date'],
+                                'source': 'Pathology report',
+                                'site': path_report_obj['metasis_details']['site']
+                            }
+                            if record not in records:
+                                records.append(record)               
+        if len(radiation) > 0 :
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object')               
+                record = {
+                    'metastasis_date': radiation_object['start_date'],
+                    'source': 'Radiation treatment',
+                    'site': radiation_object['site_general']
+                }
+                if record not in records:
+                    records.append(record)
+        print("RECORDS!!!!")           
+        print(records)
+        return records
+
+
     matrix = {
         'y': {
             'facets': [
@@ -815,3 +901,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
