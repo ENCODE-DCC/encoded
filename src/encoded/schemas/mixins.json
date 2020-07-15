@@ -425,6 +425,7 @@
                 "comparative genomic hybridization by array",
                 "CRISPR genome editing followed by RNA-seq",
                 "CRISPRi followed by RNA-seq",
+                "CUT&RUN",
                 "direct RNA-seq",
                 "DNA methylation profiling by array assay",
                 "DNA-PET",

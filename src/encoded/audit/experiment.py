@@ -24,6 +24,7 @@ targetBasedAssayList = [
     'CRISPR genome editing followed by RNA-seq',
     'CRISPRi followed by RNA-seq',
     'PLAC-seq',
+    'CUT&RUN',
 ]
 
 controlRequiredAssayList = [
@@ -57,6 +58,7 @@ seq_assays = [
     'microRNA-seq',
     'long read RNA-seq',
     'ATAC-seq',
+    'CUT&RUN',
 ]
 
 

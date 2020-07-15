@@ -69,5 +69,6 @@ assay_terms = {
       'SPRITE': 'NTR:0000544',
       'transgenic enhancer assay': 'NTR:0000551',
       'polyA plus RNA-seq': 'OBI:0002571',
-      'polyA minus RNA-seq': 'OBI:0002572'
+      'polyA minus RNA-seq': 'OBI:0002572',
+      'CUT&RUN': 'NTR:0000557',
 }
