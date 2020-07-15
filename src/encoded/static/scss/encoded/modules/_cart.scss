@@ -789,13 +789,14 @@ $deleted-bg: #ffe0e0;
 
     @at-root #{&}__count {
         display: none;
-        padding: 0 5px;
+        padding: 1px 7px;
         margin-left: 6px;
         font-size: 0.9rem;
-        font-weight: bold;
+        font-weight: 700;
         color: #fff;
         background-color: green;
-        border-radius: 8px;
+        border-radius: 20px;
+        line-height: 150%;
 
         @media screen and (min-width: $screen-sm-min) {
             display: block;

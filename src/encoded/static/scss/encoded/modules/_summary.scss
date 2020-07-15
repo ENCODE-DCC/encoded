@@ -317,9 +317,14 @@ $results-background: #E9E9E9;
             }
             .horizontal {
                 display: flex;
-                flex-wrap: wrap;
                 justify-content: center;
-                padding: 10px;
+
+                .facet-wrapper {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    padding: 10px;
+                }
             }
         }
     }
