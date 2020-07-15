@@ -1,5 +1,8 @@
 ## Changelog for pipeline.json
 
+### Minor changes since schema version 11
+* Added *CUT&RUN* to *assay_term_names* enum
+
 ### Schema version 11
 
 * *assay_term_names* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
