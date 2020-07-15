@@ -3910,7 +3910,22 @@
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "submitted_file_name": "/Users/cCREfilefromrDHS.bed.gz",
-        "uuid": "02ec6382-9f34-4d5a-ac6c-6920b4c16696"
+        "uuid": "02ec6382-9f34-4d5a-ac6c-6920b4c16696",
+        "derived_from": ["ENCFF880RDH"]
+    },
+    {
+        "dataset": "ENCSR129RHS",
+        "status": "released",
+        "award": "U41HG006992",
+        "assembly": "GRCh38",
+        "md5sum": "d650631e31df3993044cb78128d65de6",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "output_type": "representative DNase hypersensitivity sites (rDHSs)",
+        "file_format": "bed",
+        "lab": "/labs/j-michael-cherry/",
+        "file_format_type": "bed3+",
+        "accession": "ENCFF880RDH",
+        "file_size": 13224
     },
     {
         "_project": "encode3",
