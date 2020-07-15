@@ -174,10 +174,10 @@
         "radiation_summary": {
             "title": "Radiation Treatment Status"
         },
-        "dose_range": {
+        "radiation.dose_range": {
             "title": "Radiation Dose per Fraction"
         },
-        "fractions_range": {
+        "radiation.fractions_range": {
             "title": "Radiation Fractions"
         },
         "radiation.site_general" : {

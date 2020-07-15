@@ -236,7 +236,7 @@ class SurgeryChart extends React.Component {
             autosize: true,
             height: 300,
             xaxis: {
-                range: [minDateUnix - 600000 * 60 * 24 * 30, maxDateUnix + 600000 * 60 * 24 * 30],
+                range: [minDateUnix - 60000 * 60 * 24 * 30, maxDateUnix + 60000 * 60 * 24 * 30],
                 showgrid: true,
                 showline: true,
             },
@@ -247,16 +247,13 @@ class SurgeryChart extends React.Component {
                 fixedrange: true
             },
             margin: {
-                l: 150,
-                r: 40,
-                b: 50,
-                t: 20,
+                l: 120,
+                r: 20,
+                b: 30,
+                t: 60,
                 pad: 4
             },
-            font: {
-                family: "Georgia",
-                size: 15,
-            },
+
             hovermode: 'closest',
             showlegend: false,
         };
@@ -283,3 +280,4 @@ class SurgeryChart extends React.Component {
 }
 
 export default SurgeryChart;
+

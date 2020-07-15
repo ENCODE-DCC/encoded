@@ -93,7 +93,7 @@ class MedicationChart extends React.Component {
         y: [0],
         mode: 'markers+text',
         marker: {
-          symbol: 'triangle-right',
+          symbol: 'circle',
           color: '#D31E1E',
           size: 15
         },
@@ -126,7 +126,7 @@ class MedicationChart extends React.Component {
   
         mode: 'markers+text',
         marker: {
-          symbol: 'triangle-left',
+          symbol: 'circle',
           color: '#D31E1E',
           size: 15
         },
@@ -152,7 +152,7 @@ class MedicationChart extends React.Component {
   
         mode: 'markers+text',
         marker: {
-          symbol: 'triangle-left',
+          symbol: 'circle',
           color: '#D31E1E',
           size: 15
         },
@@ -177,7 +177,7 @@ class MedicationChart extends React.Component {
 
       xaxis: {
         type: 'date',
-        range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
+        range: [minDateUnix - 1000 * 60 * 60 * 24 * 30, maxDateUnix + 1000 * 60 * 60 * 24 * 30],
         anchor: 'x1',
         side: 'bottom',
         showgrid: true,
@@ -195,22 +195,18 @@ class MedicationChart extends React.Component {
       },
       xaxis2: {
         type: 'date',
-        range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
+        range: [minDateUnix - 1000 * 60 * 60 * 24 * 30, maxDateUnix + 1000 * 60 * 60 * 24 * 30],
         overlaying: 'x1',
         anchor: 'x2',
         side: 'top',
         showline: true,
       },
-      font: {
-        family: "Georgia",
-        fontweight: "bold",
-        size: 15,
-      },
+
       margin: {
-        l: 150,
-        r: 40,
-        b: 50,
-        t: 50,
+        l: 120,
+        r: 20,
+        b: 30,
+        t: 60,
         pad: 4
       },
       hovermode: 'closest',
@@ -229,3 +225,4 @@ class MedicationChart extends React.Component {
   }
 }
 export default MedicationChart;
+
