@@ -195,6 +195,13 @@ const AnnotationComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.biochemical_inputs ?
+                                <div data-test="biochemicalinputs">
+                                    <dt>Biochemical inputs</dt>
+                                    <dd>{context.biochemical_inputs}</dd>
+                                </div>
+                            : null}
+
                             {context.lab ?
                                 <div data-test="lab">
                                     <dt>Lab</dt>
