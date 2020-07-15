@@ -204,4 +204,11 @@
     "term_name": "K1",
     "term_id": "CLO:0007052",
     "status": "released"
-}]
+}, {
+    "classification": "tissue",
+    "uuid": "29d35c02-b3ba-468d-9c8c-4deb6789e9f3",
+    "term_name": "skin epidermis",
+    "term_id": "UBERON:0001003",
+    "status": "released"
+}
+]

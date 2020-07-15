@@ -332,7 +332,7 @@ function_dispatcher = {
     'audit_pmi': audit_biosample_pmi,
     'audit_cell_isolation_method': audit_biosample_cell_isolation_method,
     'audit_depleted_in_term_name': audit_biosample_depleted_in_term_name,
-    'audit_post_differentiation_time': audit_biosample_post_differentiation_time
+    'audit_post_differentiation_time': audit_biosample_post_differentiation_time,
 }
 
 @audit_checker('Biosample',

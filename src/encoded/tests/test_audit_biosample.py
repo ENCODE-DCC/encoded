@@ -1,5 +1,6 @@
 import pytest
 
+
 def test_audit_biosample_modifications_whole_organism(
         testapp, base_biosample,
         fly_donor, fly, construct_genetic_modification,
