@@ -480,7 +480,7 @@ class Annotation(FileSet, CalculatedVisualize):
         contributing_files=None
     ):
         # https://encodedcc.atlassian.net/browse/ENCD-5288
-        inputs_list = []
+        inputs_list = set()
         if encyclopedia_version is not None and \
             encyclopedia_version in [
                 'ENCODE v4', 'ENCODE v5', 'ENCODE v6'
@@ -496,10 +496,10 @@ class Annotation(FileSet, CalculatedVisualize):
                                                                                '@@object?skip_calculated=true')
                                     if derived_from_file_embedded['output_type'] == \
                                             'representative DNase hypersensitivity sites (rDHSs)':
-                                        inputs_list.append('rDHS')
+                                        inputs_list.add('rDHS')
                                     if derived_from_file_embedded['output_type'] == \
                                             'consensus DNase hypersensitivity sites (cDHSs)':
-                                        inputs_list.append('cDHS')
+                                        inputs_list.add('cDHS')
                         else:
                             if file['dataset']:
                                 properties = request.embed(file['dataset'], '@@object')
@@ -507,9 +507,9 @@ class Annotation(FileSet, CalculatedVisualize):
                                     if properties['assay_term_name'] == 'ChIP-seq':
                                         target = request.embed(properties['target'],
                                                                '@@object?skip_calculated=true')
-                                        inputs_list.append(target['label'])
+                                        inputs_list.add(target['label'])
                                     elif properties['assay_term_name'] == 'DNase-seq':
-                                        inputs_list.append('DNase-seq')
+                                        inputs_list.add('DNase-seq')
         inputs_list = sorted(inputs_list)
         return ((', ').join([str(each) for each in inputs_list]))
 
