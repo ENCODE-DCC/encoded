@@ -495,15 +495,16 @@ class Annotation(FileSet, CalculatedVisualize):
                             properties = request.embed(file['dataset'], '@@object')
                             if 'assay_term_name' in properties:
                                 if properties['assay_term_name'] == 'ChIP-seq':
-                                    inputs_list.append(properties['target'])
+                                    inputs_list.append(properties['target']['label'])
                                 elif properties['assay_term_name'] == 'DNase-seq':
                                     inputs_list.append('DNase-seq')
                             elif file['output_type'] == 'candidate Cis-Regulatory Elements':
-                                derived_from_file = request.embed(file['derived_from'][0], '@@object')
-                                if derived_from_file['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)':
-                                    inputs_list.append('rDHS')
-                                if derived_from_file['output_type'] == 'consensus DNase hypersensitivity sites (cDHSs)':
-                                    inputs_list.append('cDHS')
+                                if 'derived_from' in file:
+                                    derived_from_file = request.embed(file['derived_from'][0], '@@object')
+                                    if derived_from_file['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)':
+                                        inputs_list.append('rDHS')
+                                    if derived_from_file['output_type'] == 'consensus DNase hypersensitivity sites (cDHSs)':
+                                        inputs_list.append('cDHS')
         return list(inputs_list)
 
 
