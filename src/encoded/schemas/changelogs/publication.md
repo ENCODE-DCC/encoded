@@ -3,6 +3,7 @@
 ### Schema version 9
 * The *datasets* property is no longer submittable on this object; other dataset objects should specify a publication in their own *references* property and the dataset will appear on the publication.
 
+
 ### Schema version 8
 * The *date_published* property is now restricted to a numerical year-month-day date format (e.g., 2020-07-08). The *notes* property is also now available.
 

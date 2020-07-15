@@ -66,7 +66,8 @@ def publication_7(testapp, lab, award):
         'award': award['@id'],
         'lab': lab['@id'],
         'date_published': '3/30/20'
-    }
+        }
+    return item
 
 
 @pytest.fixture
