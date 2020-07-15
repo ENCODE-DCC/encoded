@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Cache from '../libs/cache';
 import Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
-import { CartAddAllElements, CartToggle } from './cart';
+import { CartAddAllElements, CartToggle, cartGetAllowedTypes } from './cart';
 import { auditDecor } from './audit';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
@@ -61,7 +61,13 @@ const datasetsColumns = {
     },
     cart: {
         title: 'Cart',
-        display: dataset => <CartToggle element={dataset} />,
+        display: (dataset) => {
+            const allowedTypes = cartGetAllowedTypes();
+            if (allowedTypes.includes(dataset['@type'][0])) {
+                return <CartToggle element={dataset} />;
+            }
+            return null;
+        },
         sorter: false,
     },
 };

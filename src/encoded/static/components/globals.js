@@ -110,6 +110,17 @@ export function atIdToAccession(atId) {
 }
 
 
+// Take an @id and return the corresponding object type. If no object type could be found in the
+// @id, the empty string is returned.
+export function atIdToType(atId) {
+    const matched = atId.match(/^\/(.+)\/.+\/$/);
+    if (matched && matched.length === 2) {
+        return matched[1];
+    }
+    return '';
+}
+
+
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 /* eslint-disable no-extend-native */
