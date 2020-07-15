@@ -20,6 +20,19 @@ def includeme(config):
 
 
 @collection(
+    name='library_protocols',
+    unique_key='library_protocol:name',
+    properties={
+        'title': 'Library protocols',
+        'description': 'Listing of Library protocols',
+    })
+class LibraryProtocol(Item):
+    item_type = 'library_protocol'
+    schema = load_schema('encoded:schemas/library_protocol.json')
+    name_key = 'name'
+
+
+@collection(
     name='labs',
     unique_key='lab:name',
     properties={

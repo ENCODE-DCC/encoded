@@ -1,0 +1,277 @@
+{
+    "title": "Library protocol",
+    "description": "Schema for submitting a standard protocol used to generate a molecular library.",
+    "id": "/profiles/library_protocol.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["name"],
+    "identifyingProperties": ["uuid", "name"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/shared_status"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "name": {
+            "title": "Name",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "uniqueKey": "library_protocol:name"
+        },
+        "construction_platform": {
+            "title": "Platform",
+            "description": "The device used to construct the library.",
+            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
+            "type": "string",
+            "enum": [
+                "10X",
+                "Smart-seq",
+                "SMARTer",
+                "sci-seq"
+            ]
+        },
+        "construction_platform_version": {
+            "title": "Platform version",
+            "description": "",
+            "comment": "",
+            "type": "integer"
+        },
+        "library_type": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "RNA-seq",
+                "CITE-seq",
+                "ATAC-seq"
+            ]
+        },
+        "biological_macromolecule": {
+            "title": "Library material",
+            "description": "The molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
+            "type": "string",
+            "enum": [
+                "DNA",
+                "protein",
+                "RNA"
+            ]
+        },
+        "extraction_method": {
+            "title": "Extraction method",
+            "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
+            "type": "string",
+            "enum": [
+                "10x GEM generation"
+            ]
+        },
+        "fragmentation_method": {
+            "title": "Fragmentation method",
+            "type": "string",
+            "uniqueItems": true,
+            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
+            "enum": [
+                "enzymatic",
+                "transposition"
+           ]
+        },
+        "library_size_selection_method": {
+            "title": "Size selection method",
+            "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
+            "type": "string",
+            "enum": [
+                "SPRIselect"
+            ]
+        },
+        "lysis_method": {
+            "title": "Lysis method",
+            "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable.",
+            "type": "string",
+            "enum": [
+                "10x GEM generation",
+                "Cell lysis buffer: detergent (Triton X-100)"
+            ]
+        },
+        "size_range": {
+            "title": "Size range",
+            "description": "The measured size range of the purified nucleic acid, in bp.",
+            "type": "string",
+            "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+        },
+        "strand_specificity": {
+            "title": "Strand specificity",
+            "description": "The forward or reverse strandedness of the library resulting from a strand-specific protocol.",
+            "type": "string",
+            "enum": [
+                "first",
+                "second",
+                "unstranded"
+            ]
+        },
+        "depleted_in_term_name": {
+            "type": "array",
+            "title": "Depleted in term",
+            "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "capped mRNA",
+                    "polyadenylated mRNA",
+                    "rRNA"
+                ]
+            }
+        },
+        "depleted_in_term_id": {
+            "title": "",
+            "description": "",
+            "type": "string"
+        },
+        "end_bias": {
+            "title": "End bias",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "3'",
+                "5'",
+                "full length"
+            ]
+        },
+        "library_preparation_environment": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "plate",
+                "valve",
+                "droplet",
+                "nanowell"
+            ]
+        },
+        "polyA_selection": {
+            "title": "",
+            "description": "",
+            "type": "boolean"
+        },
+        "polyA_selection_method": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "poly(dT)"
+            ]
+        },
+        "cell_barcode_length": {
+            "title": "",
+            "description": "",
+            "type": "integer",
+            "minimum": 0
+        },
+        "cell_barcode_offset": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "cell_barcode_whitelist": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "DataFile"
+        },
+        "feature_barcode_length": {
+            "title": "",
+            "description": "",
+            "type": "integer",
+            "minimum": 0
+        },
+        "feature_barcode_offset": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "cdna_library_amplification_method": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "PCR"
+            ]
+        },
+        "library_preamplification_method": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "PCR",
+                "RT-PCR"
+            ]
+        },
+        "first_strand_primer": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "poly-dT",
+                "capture sequence",
+                "TSO",
+                "adapter"
+            ]
+        },
+        "second_strand_primer": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "TSO",
+                "adapter"
+            ]
+        },
+        "umi_length": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "umi_offset": {
+            "title": "",
+            "description": "",
+            "type": "integer"
+        },
+        "umi_read": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "read1",
+                "read2",
+                "i5 index",
+                "i7 index"
+            ]
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "lab": {
+            "title": "Lab"
+        },
+        "derived_from.biosample_ontology.term_name": {
+            "title": "Biosample term name"
+        }
+    },
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/library_protocol.md"
+}

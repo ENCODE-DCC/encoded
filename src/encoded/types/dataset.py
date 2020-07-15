@@ -37,6 +37,7 @@ def calculate_assembly(request, files_list, status):
 class Dataset(Item):
     item_type = 'dataset'
     schema = load_schema('encoded:schemas/dataset.json')
+    name_key = 'accession'
     embedded = []
     audit_inherit = []
     set_status_up = [

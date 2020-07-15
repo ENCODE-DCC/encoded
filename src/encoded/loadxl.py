@@ -22,6 +22,7 @@ ORDER = [
     'target',
     'publication',
     'document',
+    'library_protocol',
     'antibody_lot',
     'biosample_type',
     'treatment',

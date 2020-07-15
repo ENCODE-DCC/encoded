@@ -46,24 +46,17 @@
         },
         "dataset": {
             "title": "Dataset",
-            "description": "The dataset the replicate belongs to.",
+            "description": "The dataset the library belongs to.",
             "comment": "See dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Dataset"]
+            "linkTo": "Dataset"
         },
-        "spikeins_used": {
-            "title": "Spike-ins datasets used",
-            "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items" : {
-                "title": "A spike-ins dataset.",
-                "description": "A specific spike-ins type dataset",
-                "comment": "See dataset.json for available identifiers.",
-                "type": "string",
-                "linkTo": "ReferenceFileSet"
-            }
+        "protocol": {
+            "title": "Protocol",
+            "description": "",
+            "comment": "See library_protocol.json for available identifiers.",
+            "type": "string",
+            "linkTo": "LibraryProtocol"
         },
         "plate_id": {
             "title": "Identifier of the plate the single cell sample originated from",
@@ -104,12 +97,7 @@
                 "description": "",
                 "comment": "",
                 "type": "string",
-                "linkTo": [
-                    "Tissue",
-                    "Organoid",
-                    "CellCulture",
-                    "Suspension"
-                ]
+                "linkTo": "Biosample"
             }
         },
         "product_id": {
@@ -118,32 +106,8 @@
         "lot_id": {
             "description": "The lot identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
-        "construction_platform": {
-            "title": "Platform",
-            "description": "The device used to construct the library.",
-            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
-            "type": "string"
-        },
-        "construction_platform_version": {
-            "title": "Platform version",
-            "description": "",
-            "comment": "",
-            "type": "integer"
-        },
         "source": {
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
-        },
-        "biological_macromolecule_term_name": {
-            "title": "Library material",
-            "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
-            "type": "string",
-            "enum": [
-                "DNA",
-                "miRNA",
-                "polyadenylated mRNA",
-                "protein",
-                "RNA"
-            ]
         },
         "dbxrefs": {
             "items": {
@@ -172,139 +136,12 @@
                 "µg"
             ]
         },
-        "extraction_method": {
-            "title": "Extraction method",
-            "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
-            "type": "string",
-            "enum": [
-                "Ambion mirVana",
-                "ATAC-seq (Greenleaf & Chang Lab protocol)",
-                "C1 fluidigm",
-                "Maxwell 16 LEV simpleRNA Cells Kit (Promega cat#: AS1270)",
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "QIAGEN DNeasy Blood & Tissue Kit",
-                "Qiagen RNA extraction",
-                "RNeasy",
-                "RNeasy Lipid Tissue Mini Kit (QIAGEN cat#74804)",
-                "RNeasy Plus Mini Kit Qiagen cat#74134 plus additional on column Dnase treatment",
-                "Trizol",
-                "Zymo Quick-DNA MicroPrep (D3021)"
-            ]
-        },
-        "fragmentation_methods": {
-            "title": "Fragmentation methods",
-            "type": "array",
-            "uniqueItems": true,
-            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
-            "items":{
-                "title": "Fragmentation method",
-                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation.",
-                "type": "string",
-                "enum": [
-                    "chemical (DNaseI)",
-                    "chemical (DpnII restriction)",
-                    "chemical (generic)",
-                    "chemical (HindIII restriction)",
-                    "chemical (HindIII/DpnII restriction)",
-                    "chemical (Illumina TruSeq)",
-                    "chemical (MboI restriction)",
-                    "chemical (micrococcal nuclease)",
-                    "chemical (NcoI restriction)",
-                    "chemical (Nextera tagmentation)",
-                    "chemical (RNase III)",
-                    "chemical (Tn5 transposase)",
-                    "chemical (MseI restriction)",
-                    "chemical (CviAII restriction)",
-                    "chemical (Csp6I restriction)",
-                    "n/a",
-                    "none",
-                    "see document",
-                    "shearing (Covaris generic)",
-                    "shearing (Covaris LE Series)",
-                    "shearing (Covaris S2)",
-                    "shearing (generic)",
-                    "sonication (Bioruptor generic)",
-                    "sonication (Bioruptor Pico)",
-                    "sonication (Bioruptor Plus)",
-                    "sonication (Bioruptor Twin)",
-                    "sonication (Branson Sonifier 250)",
-                    "sonication (Branson Sonifier 450)",
-                    "sonication (generic microtip)",
-                    "sonication (generic)",
-                    "sonication (Sonics VCX130)"
-               ]
-            }
-        },
-        "library_size_selection_method": {
-            "title": "Size selection method",
-            "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
-            "type": "string",
-            "enum": [
-                "agarose gel extraction",
-                "AMPure XP bead purification",
-                "BluePippin",
-                "BluePippin 2-10Kb",
-                "dual SPRI",
-                "E-Gel",
-                "gel",
-                "gel followed by Amicon filters",
-                "Invitrogen EGel EX 2% agarose (Cat# G402002)",
-                "Pippin HT",
-                "Sera-mag SpeedBeads",
-                "SPRI beads"
-            ]
-        },
-        "lysis_method": {
-            "title": "Lysis method",
-            "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable.",
-            "type": "string",
-            "enum": [
-                "ATAC buffer",
-                "Clontech UltraLow for Illumina sequencing",
-                "RIPA",
-                "SDS"
-            ]
-        },
-        "size_range": {
-            "title": "Size range",
-            "description": "The measured size range of the purified nucleic acid, in bp.",
-            "type": "string",
-            "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
-        },
         "rna_integrity_number": {
             "title": "RNA integrity number",
             "description": "The RNA integrity number (RIN) value.",
             "type": "number",
             "minimum": 1,
             "maximum": 10
-        },
-        "strand_specificity": {
-            "title": "Strand specificity",
-            "description": "The forward or reverse strandedness of the library resulting from a strand-specific protocol.",
-            "type": "string",
-            "enum": [
-                "forward",
-                "reverse"
-            ]
-        },
-        "depleted_in_term_name": {
-            "type": "array",
-            "title": "Depleted in term",
-            "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "enum": [
-                    "capped mRNA",
-                    "polyadenylated mRNA",
-                    "rRNA"
-                ]
-            }
-        },
-        "biological_macromolecule_term_id": {
-            "title": "",
-            "description": "",
-            "type": "string"
         },
         "channel_id": {
             "title": "",
@@ -316,135 +153,24 @@
             "description": "",
             "type": "string"
         },
-        "end_bias": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "3 prime tag",
-                "3 prime end",
-                "5 prime tag",
-                "5 prime end",
-                "full length"
-            ]
-        },
-        "input_material": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "bulk",
-                "single cell",
-                "single nucleus"
-            ],
-            "comment": "this will be calculated based on the object(s) listed in the biosamples property"
-        },
-        "library_preparation_environment": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "plate",
-                "valve",
-                "droplet",
-                "nanowell"
-            ]
-        },
-        "polyA_selection": {
-            "title": "",
-            "description": "",
-            "type": "boolean"
-        },
-        "barcode_length": {
-            "title": "",
-            "description": "",
-            "type": "integer"
-        },
-        "barcode_offset": {
-            "title": "",
-            "description": "",
-            "type": "integer"
-        },
-        "barcode_read": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "read1",
-                "read2",
-                "i5 index",
-                "i7 index"
-            ]
-        },
-        "barcode_whitelist": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "DataFile"
-        },
-        "cdna_library_amplification_method": {
-            "title": "",
-            "description": "",
-            "type": "string"
-        },
-        "depleted_in_term_id": {
-            "title": "",
-            "description": "",
-            "type": "string"
-        },
-        "library_preamplification_method": {
-            "title": "",
-            "description": "",
-            "type": "string"
-        },
-        "library_type": {
-            "title": "",
-            "description": "",
-            "type": "string"
-        },
-        "first_strand_primer": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "poly-dT",
-                "random"
-            ]
-        },
-        "second_strand_primer": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "poly-dT",
-                "random"
-            ]
-        },
         "spike_in_dilution": {
             "title": "",
             "description": "",
             "type": "string"
         },
-        "umi_length": {
-            "title": "",
-            "description": "",
-            "type": "integer"
-        },
-        "umi_offset": {
-            "title": "",
-            "description": "",
-            "type": "integer"
-        },
-        "umi_read": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "read1",
-                "read2",
-                "i5 index",
-                "i7 index"
-            ]
+        "spikeins_used": {
+            "title": "Spike-ins datasets used",
+            "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items" : {
+                "title": "A spike-ins dataset.",
+                "description": "A specific spike-ins type dataset",
+                "comment": "See dataset.json for available identifiers.",
+                "type": "string",
+                "linkTo": "ReferenceFileSet"
+            }
         },
         "date_constructed": {
             "title": "Date constructed",
