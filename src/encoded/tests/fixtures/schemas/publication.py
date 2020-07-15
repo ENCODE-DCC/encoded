@@ -58,3 +58,14 @@ def publication(testapp, lab, award):
     }
     print('submit publication')
     return testapp.post_json('/publication', item).json['@graph'][0]
+
+
+@pytest.fixture
+def publication_7(testapp, lab, award):
+    item = {
+        'title': "Test publication with incorrect date_published",
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'date_published': '3/30/20'
+    }
+    return item
