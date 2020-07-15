@@ -26,7 +26,8 @@
     ],
     "facets": {
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
         "output_category": {
             "title": "Output category"
@@ -35,7 +36,8 @@
             "title": "Output type"
         },
         "file_format": {
-            "title": "File format"
+            "title": "File format",
+            "open_on_load": true
         },
         "file_format_type": {
             "title": "File format type"

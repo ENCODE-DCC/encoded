@@ -289,8 +289,7 @@
     },
     "facets": {
         "assay_slims": {
-            "title": "Assay type",
-            "open_on_load": false
+            "title": "Assay type"
         },
         "assay_title": {
             "title": "Assay title",
@@ -301,14 +300,9 @@
             "title": "Status",
             "open_on_load": true
         },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "assembly": {
-            "title": "Genome assembly"
+        "perturbed": {
+            "title": "Perturbation",
+            "open_on_load": true
         },
         "target.investigated_as": {
             "title": "Target category"
@@ -320,7 +314,8 @@
             "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
@@ -344,6 +339,15 @@
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -369,10 +373,6 @@
         "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in"
         },
-        "perturbed": {
-            "title": "Perturbation",
-            "open_on_load": true
-        },
         "date_released": {
             "title": "Date released",
             "length": "long"
@@ -388,8 +388,7 @@
         },
         "replication_type": {
             "title": "Replication type"
-        }
-        
+        } 
     },
     "columns": {
         "accession": {

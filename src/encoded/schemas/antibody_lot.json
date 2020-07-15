@@ -195,10 +195,13 @@
    },
    "facets": {
         "lot_reviews.status": {
-            "title": "Eligibility status"
+            "title": "Eligibility status",
+            "length": "long",
+            "open_on_load": true
         },
         "targets.organism.scientific_name": {
-            "title": "Target organism"
+            "title": "Target organism",
+            "open_on_load": true
         },
         "targets.investigated_as": {
             "title": "Target category"
@@ -206,7 +209,8 @@
         "targets.label": {
             "title": "Target of antibody",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "characterizations.characterization_method": {
             "title": "Characterization method"

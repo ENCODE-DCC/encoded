@@ -284,19 +284,12 @@
     "facets": {
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": true
         },
         "status": {
-            "title": "Status"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "assembly": {
-            "title": "Genome assembly"
+            "title": "Status",
+            "open_on_load": true
         },
         "target.investigated_as": {
             "title": "Target category"
@@ -304,10 +297,12 @@
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
@@ -315,7 +310,8 @@
         "biosample_ontology.term_name" : {
             "title": "Biosample term name",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -330,6 +326,15 @@
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"

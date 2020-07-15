@@ -225,40 +225,38 @@
     },
     "facets": {
         "annotation_type": {
-            "title": "Annotation type"
+            "title": "Annotation type",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
         },
         "assay_term_name": {
             "title": "Assay name"
         },
-        "files.file_type": {
-            "title": "Available file types"
-        },
-        "files.run_type": {
-            "title": "Run type"
-        },
-        "files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
         "status": {
-            "title": "Status"
-        },
-        "assembly": {
-            "title": "Genome assembly"
+            "title": "Status",
+            "open_on_load": true
         },
         "organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "targets.investigated_as": {
             "title": "Target category"
         },
          "targets.label": {
-            "title": "Target"
+            "title": "Target",
+            "type": "typeahead",
+            "open_on_load": true
         },
-       "biosample_ontology.classification": {
+        "biosample_ontology.classification": {
             "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -274,6 +272,21 @@
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "files.file_type": {
+            "title": "Available file types"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
         },
         "lab.title": {
             "title": "Lab"
