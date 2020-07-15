@@ -143,6 +143,15 @@ _tsv_mapping_annotation = OrderedDict([
 _excluded_columns = ('Restricted', 'No File Available')
 
 
+# Lowercased type={object type} query-string values allowed for download/metadata.
+_allowed_types = [
+    'experiment',
+    'annotation',
+    'functionalcharacterizationexperiment',
+    'publicationdata',
+]
+
+
 def get_file_uuids(result_dict):
     file_uuids = []
     for item in result_dict['@graph']:
@@ -353,8 +362,17 @@ def metadata_tsv(context, request):
     else:
         search_path = '/search/'
     type_param = param_list.get('type', [''])[0]
-    if type_param and type_param.lower() == 'annotation':
+    cart_uuids = param_list.get('cart', [])
+
+    # Only allow specific type= query-string values, or cart=.
+    if not type_param and not cart_uuids:
+        raise HTTPBadRequest(explanation='URL must include a "type" or "cart" parameter.')
+    if not type_param.lower() in _allowed_types:
+        raise HTTPBadRequest(explanation='"{}" not a valid type for metadata'.format(type_param))
+
+    if type_param.lower() == 'annotation':
         return _get_annotation_metadata(request, search_path, param_list)
+
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -366,7 +384,6 @@ def metadata_tsv(context, request):
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
 
     # Handle metadata.tsv lines from cart-generated files.txt.
-    cart_uuids = param_list.get('cart', [])
     if cart_uuids:
         # metadata.tsv line includes cart UUID, so load the specified cart and
         # get its "elements" property for a list of items to retrieve.
@@ -496,6 +513,14 @@ def batch_download(context, request):
         for k in file_filters
     ]
     qs.drop('limit')
+    type_param = param_list.get('type', [''])[0]
+    cart_uuids = param_list.get('cart', [])
+
+    # Only allow specific type= query-string values, or cart=.
+    if not type_param and not cart_uuids:
+        raise HTTPBadRequest(explanation='URL must include a "type" or "cart" parameter.')
+    if not type_param.lower() in _allowed_types:
+        raise HTTPBadRequest(explanation='"{}" not a valid type for metadata'.format(type_param))
 
     # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
     visualizable_only = qs.is_param('option', 'visualizable')
