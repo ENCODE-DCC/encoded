@@ -491,17 +491,22 @@ class Annotation(FileSet, CalculatedVisualize):
                         file = request.embed(input_file, '@@object?skip_calculated=true')
                         if file['output_type'] == 'candidate Cis-Regulatory Elements':
                             if 'derived_from' in file:
-                                derived_from_file = request.embed(file['derived_from'][0], '@@object?skip_calculated=true')
-                                if derived_from_file['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)':
-                                    inputs_list.append('rDHS')
-                                if derived_from_file['output_type'] == 'consensus DNase hypersensitivity sites (cDHSs)':
-                                    inputs_list.append('cDHS')
+                                for derived_from_file in file['derived_from']:
+                                    derived_from_file_embedded = request.embed(derived_from_file,
+                                                                               '@@object?skip_calculated=true')
+                                    if derived_from_file_embedded['output_type'] == \
+                                            'representative DNase hypersensitivity sites (rDHSs)':
+                                        inputs_list.append('rDHS')
+                                    if derived_from_file_embedded['output_type'] == \
+                                            'consensus DNase hypersensitivity sites (cDHSs)':
+                                        inputs_list.append('cDHS')
                         else:
                             if file['dataset']:
                                 properties = request.embed(file['dataset'], '@@object')
                                 if 'assay_term_name' in properties:
                                     if properties['assay_term_name'] == 'ChIP-seq':
-                                        target = request.embed(properties['target'], '@@object?skip_calculated=true')
+                                        target = request.embed(properties['target'],
+                                                               '@@object?skip_calculated=true')
                                         inputs_list.append(target['label'])
                                     elif properties['assay_term_name'] == 'DNase-seq':
                                         inputs_list.append('DNase-seq')
