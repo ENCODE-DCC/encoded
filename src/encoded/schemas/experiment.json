@@ -285,6 +285,16 @@
                     }
                 }
             }
+        },
+        "analysis_objects": {
+            "title": "Analysis objects",
+            "description": "A list of analysis objects.",
+            "comment": "Will transfer to analyses property in the future release.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Analysis"
+            }
         }
     },
     "facets": {

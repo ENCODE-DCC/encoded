@@ -3533,3 +3533,39 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'mild to moderate bottlenecking' for error in collect_audit_errors(res))
     assert any(error['category'] == 'severe bottlenecking' for error in collect_audit_errors(res))
     assert any(error['category'] == 'moderate TSS enrichment' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_analysis_files(
+    testapp,
+    base_experiment,
+    ctrl_experiment,
+    base_analysis,
+    file1,
+    file2
+):
+    testapp.patch_json(file1['@id'], {'dataset': ctrl_experiment['@id']})
+    testapp.patch_json(file2['@id'], {'dataset': ctrl_experiment['@id']})
+    testapp.patch_json(base_analysis['@id'], {'files': [file1['@id']]})
+    testapp.patch_json(
+        base_experiment['@id'], {'analysis_objects': [base_analysis['@id']]}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'inconsistent analysis files'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(file1['@id'], {'dataset': base_experiment['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'inconsistent analysis files'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        base_analysis['@id'], {'files': [file1['@id'], file2['@id']]}
+    )
+    testapp.patch_json(file1['@id'], {'derived_from': [file2['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'inconsistent analysis files'
+        for error in collect_audit_errors(res)
+    )

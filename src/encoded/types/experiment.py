@@ -337,28 +337,6 @@ class Experiment(Dataset,
             return any(bio_perturbed)
         return False
 
-    @calculated_property(schema={
-        "title": "Analysis objects",
-        "description": "A list of analysis objects.",
-        "comment": "Will transfer to analyses property in the future release.",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "Analysis",
-        },
-        "notSubmittable": True,
-    })
-    def analysis_objects(self, request, original_files):
-        analyses = set()
-        for fid in original_files:
-            file_object = request.embed(
-                fid,
-                '@@object_with_select_calculated_properties?field=analyses'
-            )
-            analyses |= set(file_object.get('analyses', []))
-        if analyses:
-            return sorted(analyses)
-
     matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],

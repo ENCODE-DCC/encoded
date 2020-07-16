@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 30
+* Added *analysis_objects* property.
+
 ### Schema version 30
 
 * *assay_term_name* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*

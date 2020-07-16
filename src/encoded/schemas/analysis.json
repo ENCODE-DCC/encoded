@@ -25,6 +25,12 @@
         "accession": {
             "accessionType": "AN"
         },
+        "complete": {
+            "title": "Complete",
+            "description": "Whether the analysis is complete or not.",
+            "type": "boolean",
+            "permission": "import_items"
+        },
         "files": {
             "title": "Analysis files",
             "description": "A list of processed files belonging to this analsis",
