@@ -324,22 +324,41 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
 /**
  * Displays the modal to initiate downloading files. This modal gets displayed unconditionally in
  * this component, so parent components must keep state on whether this modal is visible or not.
+ * The Download button in the modal gets disabled either when told from an external source (e.g. a
+ * cart operation is in progress) or when the user clicks the Download button to prevent multiple
+ * download requests.
  */
-export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler, modalText, canDownload }) => (
-    <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
-        <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
-        <ModalBody>
-            {modalText}
-            <div>{additionalContent}</div>
-        </ModalBody>
-        <ModalFooter
-            closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
-            submitBtn={canDownload ?
-                <button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>
+export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler, modalText, canDownload }) => {
+    /** True to disable the download button in the modal */
+    const [isModalDownloadButtonDisabled, setIsModalDownloadButtonDisabled] = React.useState(false);
+
+    const clickHandler = () => {
+        setIsModalDownloadButtonDisabled(true);
+        downloadClickHandler();
+    };
+
+    return (
+        <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
+            <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
+            <ModalBody>
+                {modalText || modalDefaultText}
+                <div>{additionalContent}</div>
+            </ModalBody>
+            <ModalFooter
+                closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
+                submitBtn={canDownload ?
+                    <button id="batch-download-submit" className="btn btn-info" disabled={disabled || isModalDownloadButtonDisabled} onClick={clickHandler}>Download</button>
+                    : null}
+            >
+                {isModalDownloadButtonDisabled ?
+                    <div className="modal-batch-download__footer-note">
+                        Allow time for files.txt to download. You can close this dialog at any time.
+                    </div>
                 : null}
-        />
-    </Modal>
-);
+            </ModalFooter>
+        </Modal>
+    );
+};
 
 BatchDownloadModal.propTypes = {
     /** Additional content in modal as component */
@@ -410,20 +429,13 @@ BatchDownloadButton.defaultProps = {
 /**
  * Display batch download button if the search results qualify for one.
  */
-export class BatchDownloadControls extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleDownloadClick = this.handleDownloadClick.bind(this);
-    }
+export const BatchDownloadControls = ({ results, queryString, modalText, canDownload }, reactContext) => {
+    const handleDownloadClick = () => {
+        const downloadQueryString = results ? getQueryFromFilters(results.filters) : queryString;
+        reactContext.navigate(`/batch_download/?${downloadQueryString}`);
+    };
 
-    handleDownloadClick() {
-        const queryString = getQueryFromFilters(this.props.results.filters);
-        this.context.navigate(`/batch_download/?${queryString}`);
-    }
-
-    render() {
-        const { results, modalText, canDownload } = this.props;
-
+    if (results) {
         // No Download button if the search path is prohibited.
         const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some(path => results['@id'].startsWith(path));
         if (hasProhibitedPath) {
@@ -441,18 +453,32 @@ export class BatchDownloadControls extends React.Component {
         if (!hasFiles) {
             return null;
         }
-
-        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} modalText={modalText} canDownload={canDownload} />;
     }
-}
+
+    return <BatchDownloadButton handleDownloadClick={handleDownloadClick} modalText={modalText} canDownload={canDownload} />;
+};
+
+const testBatchDownloadControlsProps = (props, propName, componentName) => {
+    if (!(props.results || props.queryString) || (props.results && props.queryString)) {
+        return new Error(`Props 'results' or 'queryString' but not both required in '${componentName}'.`);
+    }
+    return null;
+};
 
 BatchDownloadControls.propTypes = {
     /** Search results object */
-    results: PropTypes.object.isRequired,
+    results: testBatchDownloadControlsProps,
+    /** Query string used directly for /batch_download/ if not using `results` */
+    queryString: testBatchDownloadControlsProps,
     /** Message in modal body */
     modalText: PropTypes.element,
     /** Yes if download option is available, false otherwise */
     canDownload: PropTypes.bool,
+};
+
+BatchDownloadControls.defaultProps = {
+    results: null,
+    queryString: '',
 };
 
 BatchDownloadControls.contextTypes = {

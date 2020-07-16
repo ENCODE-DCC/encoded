@@ -98,3 +98,10 @@
         opacity: 0.3;
     }
 }
+
+
+.modal-batch-download {
+    @at-root #{&}__footer-note {
+        align-self: center;
+    }
+}

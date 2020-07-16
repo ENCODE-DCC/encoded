@@ -6,6 +6,11 @@ import * as globals from './globals';
 import { requestFiles, AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
+import { BatchDownloadControls } from './view_controls';
+
+
+// Maximum number of files before the user can't download them.
+const MAX_DOWNLOADABLE_FILES = 1000;
 
 
 // BIOSAMPLE UTILITIES
@@ -614,10 +619,11 @@ const getPageFiles = (files, pageNo) => {
 /**
  * Display the header for the file table, including the pager.
  */
-const FileTableHeader = ({ title, currentPage, totalPageCount, updateCurrentPage }) => (
+const FileTableHeader = ({ title, currentPage, totalPageCount, control, updateCurrentPage }) => (
     <div className="header-paged-sorttable">
         {title}
         <div className="header-paged-sorttable__controls">
+            {control}
             {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
         </div>
     </div>
@@ -633,9 +639,35 @@ FileTableHeader.propTypes = {
     currentPage: PropTypes.number.isRequired,
     /** Total number of pages */
     totalPageCount: PropTypes.number.isRequired,
+    /** React component to render in the header next to the pager */
+    control: PropTypes.element,
     /** Called with the new page number the user selected */
     updateCurrentPage: PropTypes.func.isRequired,
 };
+
+FileTableHeader.defaultProps = {
+    control: null,
+};
+
+
+/**
+ * Alternate message for the batch-download modal, to indicate the PublicationData set has too many
+ * files to practically download.
+ */
+const AltModalMessage = () => (
+    <div>
+        <p>
+            This dataset is too large to automatically generate a manifest or metadata file. Please
+            see the documents attached on the previous page, files.txt and metadata.tsv. You can
+            save files.txt to any server and use the following command using cURL to download all
+            the files in the list:
+        </p>
+
+        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code>
+
+        <p>Or you can directly access the files in AWS S3: <a href="https://registry.opendata.aws/encode-project/">https://registry.opendata.aws/encode-project/</a></p>
+    </div>
+);
 
 
 /**
@@ -643,7 +675,7 @@ FileTableHeader.propTypes = {
  * objects, performing fetches of the complete file objects for the former. If the number of files
  * exceeds PAGED_FILE_TABLE_MAX, the user can use a pager to scroll between pages of files.
  */
-export const FileTablePaged = ({ fileIds, files, title }) => {
+export const FileTablePaged = ({ context, fileIds, files, title }) => {
     // Initialize or load the page cache. Keyed by `currentPageNum`.
     const pageCache = React.useRef({});
     // Calculate the total number of pages given the array of files.
@@ -719,9 +751,20 @@ export const FileTablePaged = ({ fileIds, files, title }) => {
         const fileCount = fileIds ? fileIds.length : files.length;
         const fileCountDisplay = <div className="table-paged__count">{`${fileCount} file${fileCount === 1 ? '' : 's'}`}</div>;
 
+        // Determine whether too many files exist to download.
+        const canDownload = fileCount <= MAX_DOWNLOADABLE_FILES;
+
         return (
             <SortTablePanel
-                header={<FileTableHeader title={headerTitle} currentPage={currentPageNum} totalPageCount={totalPages} updateCurrentPage={updateCurrentPage} />}
+                header={
+                    <FileTableHeader
+                        title={headerTitle}
+                        currentPage={currentPageNum}
+                        totalPageCount={totalPages}
+                        control={context ? <BatchDownloadControls queryString={`type=${context['@type'][0]}&dataset=${context['@id']}`} modalText={!canDownload ? <AltModalMessage /> : null} canDownload={canDownload} /> : null}
+                        updateCurrentPage={updateCurrentPage}
+                    />
+                }
                 subheader={fileCountDisplay}
                 css="table-paged"
             >
@@ -750,6 +793,8 @@ const testFileTablePagedProps = (props, propName, componentName) => {
 };
 
 FileTablePaged.propTypes = {
+    /** Object being displayed that includes the file table */
+    context: PropTypes.object,
     /** Array of all file @ids to include in table on all pages */
     fileIds: testFileTablePagedProps,
     /** Alternative array of file objects to include in table on all pages */
@@ -762,6 +807,7 @@ FileTablePaged.propTypes = {
 };
 
 FileTablePaged.defaultProps = {
+    context: null,
     fileIds: null,
     files: null,
 };
