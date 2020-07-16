@@ -392,10 +392,8 @@ def metadata_tsv(context, request):
         try:
             cart = request.embed(cart_uuid, '@@object')
         except KeyError:
-            print('\n\nKEYERROR')
-            pass
+            raise HTTPBadRequest(explanation='Specified cart does not exist.')
         else:
-            print('\n\n****** CART {}'.format(cart))
             if cart.get('elements'):
                 param_list['@id'] = cart['elements']
     else:
