@@ -442,7 +442,7 @@ export class BatchDownloadControls extends React.Component {
             return null;
         }
 
-        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} modalText={modalText} showSubmitBtn={canDownload}  />;
+        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} modalText={modalText} canDownload={canDownload} />;
     }
 }
 
