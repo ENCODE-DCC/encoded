@@ -100,6 +100,22 @@ const parentTypes = [
     'Series',
 ];
 
+const modalDefaultText = (
+    <>
+        <p>
+            Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+            The first line of the file has the URL or command line to download the metadata file.
+        </p>
+        <p>
+            Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+        </p>
+        <p>
+            The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+            The following command using cURL can be used to download all the files in the list:
+        </p>
+        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+    </>);
+
 
 /**
  * Manages the view-control registry. Objects (e.g. Experiment) register with a global object of
@@ -309,27 +325,18 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
  * Displays the modal to initiate downloading files. This modal gets displayed unconditionally in
  * this component, so parent components must keep state on whether this modal is visible or not.
  */
-export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler }) => (
+export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler, modalText, canDownload }) => (
     <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
         <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
         <ModalBody>
-            <p>
-                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file has the URL or command line to download the metadata file.
-            </p>
-            <p>
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-            </p>
-            <p>
-                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:
-            </p>
-            <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+            {modalText}
             <div>{additionalContent}</div>
         </ModalBody>
         <ModalFooter
             closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
-            submitBtn={<button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>}
+            submitBtn={canDownload ?
+                <button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>
+                : null}
         />
     </Modal>
 );
@@ -343,18 +350,24 @@ BatchDownloadModal.propTypes = {
     downloadClickHandler: PropTypes.func.isRequired,
     /** Called when the user does something to close the modal */
     closeModalHandler: PropTypes.func.isRequired,
+    /** Message in modal body */
+    modalText: PropTypes.element,
+    /** Yes if download option is available, false otherwise */
+    canDownload: PropTypes.bool,
 };
 
 BatchDownloadModal.defaultProps = {
     additionalContent: null,
     disabled: false,
+    modalText: modalDefaultText,
+    canDownload: true,
 };
 
 
 /**
  * Display the modal for batch download, and pass back clicks in the Download button
  */
-export const BatchDownloadButton = ({ handleDownloadClick, title, additionalContent, disabled }) => {
+export const BatchDownloadButton = ({ handleDownloadClick, title, additionalContent, disabled, modalText, canDownload }) => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
     const openModal = () => { setIsModalOpen(true); };
@@ -364,7 +377,7 @@ export const BatchDownloadButton = ({ handleDownloadClick, title, additionalCont
         <React.Fragment>
             <button className="btn btn-info btn-sm" onClick={openModal} disabled={disabled} data-test="batch-download">{title}</button>
             {isModalOpen ?
-                <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} />
+                <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} modalText={modalText} canDownload={canDownload} />
             : null}
         </React.Fragment>
     );
@@ -379,12 +392,18 @@ BatchDownloadButton.propTypes = {
     disabled: PropTypes.bool,
     /** Additional content in modal as component */
     additionalContent: PropTypes.object,
+    /** Message in modal body */
+    modalText: PropTypes.element,
+    /** Yes if download option is available, false otherwise */
+    canDownload: PropTypes.bool,
 };
 
 BatchDownloadButton.defaultProps = {
     title: 'Download',
     disabled: false,
     additionalContent: null,
+    modalText: modalDefaultText,
+    canDownload: true,
 };
 
 
@@ -403,7 +422,7 @@ export class BatchDownloadControls extends React.Component {
     }
 
     render() {
-        const { results } = this.props;
+        const { results, modalText, canDownload } = this.props;
 
         // No Download button if the search path is prohibited.
         const hasProhibitedPath = BATCH_DOWNLOAD_PROHIBITED_PATHS.some(path => results['@id'].startsWith(path));
@@ -423,15 +442,24 @@ export class BatchDownloadControls extends React.Component {
             return null;
         }
 
-        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} />;
+        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} modalText={modalText} canDownload={canDownload} />;
     }
 }
 
 BatchDownloadControls.propTypes = {
     /** Search results object */
     results: PropTypes.object.isRequired,
+    /** Message in modal body */
+    modalText: PropTypes.element,
+    /** Yes if download option is available, false otherwise */
+    canDownload: PropTypes.bool,
 };
 
 BatchDownloadControls.contextTypes = {
     navigate: PropTypes.func,
+};
+
+BatchDownloadControls.defaultProps = {
+    modalText: modalDefaultText,
+    canDownload: true,
 };
