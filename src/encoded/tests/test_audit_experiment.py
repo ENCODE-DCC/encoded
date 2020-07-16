@@ -160,6 +160,21 @@ def test_audit_input_control(
         for error in collect_audit_errors(res)
     )
 
+    # Non-tagged Mint-ChIP
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'Mint-ChIP-seq'})
+    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'wild type'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'input library'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+
     # Tagged ChIP
     testapp.patch_json(
         construct_genetic_modification['@id'],
@@ -927,6 +942,10 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     assert any(error['category'] == 'mixed read lengths'
                for error in collect_audit_errors(res))
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'eCLIP'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'mixed read lengths'
+               for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'Mint-ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'mixed read lengths'
                for error in collect_audit_errors(res))
@@ -2772,12 +2791,28 @@ def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
                                                            file_fastq_3,
                                                            file_fastq_4,
                                                            file_bam_1_1,
-                                                           file_bam_2_1):
+                                                           file_bam_2_1,
+                                                           experiment_mint_chip,
+                                                           replicate_1_mint_chip):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'out of date analysis' for error in collect_audit_errors(res))
+
+    testapp.patch_json(file_fastq_4['@id'], {
+        'replicate': replicate_1_mint_chip['@id'],
+        'dataset': experiment_mint_chip['@id']
+    })
+    testapp.patch_json(file_fastq_3['@id'], {
+        'replicate': replicate_1_mint_chip['@id'],
+        'dataset': experiment_mint_chip['@id']
+    })
+    testapp.patch_json(file_bam_1_1['@id'], {'dataset': experiment_mint_chip['@id']})
+    testapp.patch_json(file_bam_2_1['@id'], {'dataset': experiment_mint_chip['@id']})
+    res = testapp.get(experiment_mint_chip['@id'] + '@@index-data')
     assert any(error['category'] ==
                'out of date analysis' for error in collect_audit_errors(res))
 
@@ -2789,13 +2824,20 @@ def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
                                                              file_fastq_3,
                                                              file_fastq_4,
                                                              file_bam_1_1,
-                                                             file_bam_2_1):
+                                                             file_bam_2_1,
+                                                             experiment_mint_chip):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'out of date analysis' for error in collect_audit_errors(res))
+
+    testapp.patch_json(file_bam_1_1['@id'], {'dataset': experiment_mint_chip['@id']})
+    testapp.patch_json(file_bam_2_1['@id'], {'dataset': experiment_mint_chip['@id']})
+    res = testapp.get(experiment_mint_chip['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'out of date analysis' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_not_out_of_date_analysis_DNase(testapp,
@@ -3095,6 +3137,11 @@ def test_audit_experiment_missing_unfiltered_bams(testapp,
     assert any(error['category'] ==
                'missing unfiltered alignments' for error in collect_audit_errors(res))
 
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'Mint-ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'missing unfiltered alignments' for error in collect_audit_errors(res))
+
 
 def test_audit_experiment_wrong_modification(
         testapp,
@@ -3148,6 +3195,7 @@ def test_audit_experiment_wrong_modification(
 
 def test_audit_experiment_chip_seq_mapped_read_length(testapp,
                                                       base_experiment,
+                                                      experiment_mint_chip,
                                                       file_fastq_3,
                                                       file_fastq_4,
                                                       file_bam_1_1,
@@ -3165,6 +3213,15 @@ def test_audit_experiment_chip_seq_mapped_read_length(testapp,
 
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'inconsistent mapped reads lengths' for error in collect_audit_errors(res))
+
+    testapp.patch_json(file_fastq_3['@id'], {'dataset': experiment_mint_chip['@id']})
+    testapp.patch_json(file_fastq_4['@id'], {'dataset': experiment_mint_chip['@id']})
+    testapp.patch_json(file_bam_1_1['@id'], {'dataset': experiment_mint_chip['@id']})
+    testapp.patch_json(file_bam_2_1['@id'], {'dataset': experiment_mint_chip['@id']})
+    testapp.patch_json(file_tsv_1_2['@id'], {'dataset': experiment_mint_chip['@id']})
+    res = testapp.get(experiment_mint_chip['@id'] + '@@index-data')
     assert any(error['category'] ==
                'inconsistent mapped reads lengths' for error in collect_audit_errors(res))
 
@@ -3196,8 +3253,10 @@ def test_audit_experiment_chip_seq_consistent_mapped_read_length(
 def test_audit_experiment_chip_seq_read_count(
         testapp,
         base_experiment,
+        experiment_mint_chip,
         file_fastq_3,
-        file_fastq_4):
+        file_fastq_4,
+        replicate_1_mint_chip):
     testapp.patch_json(file_fastq_3['@id'], {'read_count': 124})
     testapp.patch_json(file_fastq_4['@id'], {'read_count': 134})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
@@ -3208,6 +3267,23 @@ def test_audit_experiment_chip_seq_read_count(
     testapp.patch_json(file_fastq_4['@id'], {'read_count': 100000000})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] !=
+               'low read count' for error in collect_audit_errors(res))
+
+    testapp.patch_json(file_fastq_4['@id'], {
+        'replicate': replicate_1_mint_chip['@id'],
+        'dataset': experiment_mint_chip['@id']
+    })
+    testapp.patch_json(file_fastq_3['@id'], {
+        'replicate': replicate_1_mint_chip['@id'],
+        'dataset': experiment_mint_chip['@id']
+    })
+    res = testapp.get(experiment_mint_chip['@id'] + '@@index-data')
+    assert all(error['category'] !=
+               'low read count' for error in collect_audit_errors(res))
+    testapp.patch_json(file_fastq_3['@id'], {'read_count': 124})
+    testapp.patch_json(file_fastq_4['@id'], {'read_count': 134})
+    res = testapp.get(experiment_mint_chip['@id'] + '@@index-data')
+    assert any(error['category'] ==
                'low read count' for error in collect_audit_errors(res))
 
 
