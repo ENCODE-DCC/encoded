@@ -520,6 +520,12 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             data_insert.update({
                 'CLUSTER_NAME': main_args.cluster_name,
             })
+            if main_args.no_indexing:
+                data_insert.update({
+                    'INDEX_PRIMARY': 'false',
+                    'INDEX_VIS': 'false',
+                    'INDEX_REGION': 'false',
+                })
         elif build_type == 'app-pg':
             data_insert.update({
                 'CLUSTER_NAME': main_args.cluster_name,
