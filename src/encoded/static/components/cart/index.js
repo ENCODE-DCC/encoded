@@ -49,7 +49,7 @@ import CartShare from './share';
 import CartStatus from './status';
 import switchCart from './switch';
 import CartToggle from './toggle';
-import { mergeCarts } from './util';
+import { mergeCarts, cartGetAllowedTypes, cartGetAllowedObjectPathTypes } from './util';
 
 
 /**
@@ -209,6 +209,8 @@ export {
     // Export the following for Jest tests
     cartModule,
     CartManager,
+    cartGetAllowedTypes,
+    cartGetAllowedObjectPathTypes,
 };
 
 
