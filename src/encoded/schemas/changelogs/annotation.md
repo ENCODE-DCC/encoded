@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 29
+* The *biochemical_inputs* calculated property now lists the biochemical signal inputs used to generate a candidate Cis-Regulatory Elements (cCRE) annotation.
+
 ### Schema version 29
 * Remove enum *stage* from *relevant_timepoint* property.
 
