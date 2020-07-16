@@ -265,6 +265,26 @@ class Patient(Item):
         return radiation_summary
 
     @calculated_property(define=True, schema={
+        "title": "Metastasis status ",
+        "type": "string",
+    })
+    def metastasis_status(self, request, radiation=None, surgery=None):
+        status = "No"
+        if len(radiation) == 0:
+            status = "Yes"
+        else:
+            if len(surgery) > 0:               
+                for surgery_record in surgery:
+                    surgery_object = request.embed(surgery_record, '@@object')
+                    path_reports = surgery_object['pathology_report']               
+                    if len(path_reports) > 0:                
+                        for path_report in path_reports:
+                            path_report_obj = request.embed(path_report, '@@object')                        
+                            if path_report_obj['path_source_procedure'] == 'path_metasis':                           
+                                status = "yes"                            
+        return status
+
+    @calculated_property(define=True, schema={
         "title": "Vital Status",
         "type": "string",
     })
@@ -581,6 +601,7 @@ class Patient(Item):
                 }
                 if record not in records:
                     records.append(record)
+
         return records
 
 
@@ -896,4 +917,5 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
