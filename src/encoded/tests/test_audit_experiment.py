@@ -204,6 +204,10 @@ def test_audit_experiment_target(testapp, base_experiment):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing target'
                for error in collect_audit_errors(res))
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'CUT&RUN'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing target'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library, a549, single_cell):

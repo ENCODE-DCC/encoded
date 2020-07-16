@@ -99,6 +99,7 @@
                     "CRISPR genome editing followed by RNA-seq",
                     "CRISPR screen",
                     "CRISPRi followed by RNA-seq",
+                    "CUT&RUN",
                     "data QC",
                     "direct RNA-seq",
                     "DNA methylation profiling by array assay",

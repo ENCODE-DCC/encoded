@@ -1,5 +1,8 @@
 ## Changelog for award.json
 
+### Minor changes since schema version 8
+* Added *CUT&RUN* to *milestones.assay_term_name* enum
+
 ### Schema version 8
 
 * *assay_term_name* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*

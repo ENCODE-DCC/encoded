@@ -1031,5 +1031,16 @@
         "date_released": "2020-06-09",
         "accession": "ENCSR808ATA",
         "uuid": "2c96ee28-66f1-49ad-940d-ba22acf85e08"
+    },
+    {
+        "_test": "CUT&RUN test",
+        "uuid": "8d504d86-47d9-42f6-be93-d3f3e3ede50d",
+        "accession": "ENCSR334EJI",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "award": "U54HG007010",
+        "status": "released",
+        "date_released": "2015-08-31",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "assay_term_name": "CUT&RUN"
     }
 ]
