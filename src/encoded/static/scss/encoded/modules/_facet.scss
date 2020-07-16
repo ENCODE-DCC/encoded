@@ -1,16 +1,18 @@
 // Title of page when included in a facet list.
 @mixin facet-title {
-    font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 5px;
     padding-bottom: 5px;
     border-bottom: 1px solid #ccc;
+    line-height: 1.3;
 }
 
-
-.box.facets {
+.facet-wrapper {
     padding: 10px;
     border: 1px #ccc solid;
+}
+
+.box.facets {
     border-radius: 3px;
     overflow: hidden;
 
@@ -131,7 +133,9 @@
             flex-direction: row;
             cursor: pointer;
             justify-content: space-between;
-        }  
+            padding: 10px 10px 0;
+            line-height: 1;
+        }
     }
 
     .hiddenscroll & .facet-chevron {

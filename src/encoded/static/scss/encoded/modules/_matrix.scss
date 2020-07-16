@@ -761,7 +761,6 @@ $row-data-header-width: 200px;
         h1 {
             flex: 0 1 auto;
             margin: 0;
-            font-size: 1.5rem;
         }
 
         .matrix-tags {
@@ -1298,6 +1297,9 @@ $divider-color: #000; // Color of dividers between assays with targets
     @at-root #{&}__show-all {
         font-size: 1.25rem;
         margin-bottom: 30px;
+        .btn {
+            margin-right: 3px;
+        }
     }
 
     @at-root #{&}__germ-layer {

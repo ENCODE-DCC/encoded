@@ -15,7 +15,7 @@ Feature: Search
         And I click the link to "/search/?type=AntibodyLot&status=released"
         And I wait for the content to load
         Then I should see at least 7 elements with the css selector "ul.result-table > li"
-        And I should see at least 5 elements with the css selector "div.box.facets > div.orientation > div.facet"
+        And I should see at least 5 elements with the css selector "div.box.facets > div.orientation > div.facet-wrapper > div.facet"
 
         When I click all elements with the css selector "[data-test='facetcontainer'] .facet__expander--header[aria-pressed='true']"
         And I wait for the content to load
@@ -43,7 +43,7 @@ Feature: Search
         And I click the link to "/search/?type=Experiment&status=released&perturbed=false"
         And I wait for the content to load
         Then I should see at least 25 elements with the css selector "ul.result-table > li"
-        And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet"
+        And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet-wrapper > div.facet"
 
         When I click all elements with the css selector "[data-test='facetcontainer'] .facet__expander--header[aria-pressed='true']"
         And I wait for the content to load

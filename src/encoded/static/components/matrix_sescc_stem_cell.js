@@ -626,8 +626,8 @@ class MatrixPresentation extends React.Component {
                     </div>
                 </div>
                 <div className="sescc_matrix__show-all">
-                    <button className="btn btn-xs btn-info" onClick={() => this.togglePebblesGroupVisibilty(true)}>Show All</button>
-                    <button className="btn btn-xs btn-info" onClick={() => this.togglePebblesGroupVisibilty(false)}>Hide All</button>
+                    <button className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(true)}>Show All</button>
+                    <button className="btn btn-sm btn-info" onClick={() => this.togglePebblesGroupVisibilty(false)}>Hide All</button>
                 </div>
 
                 <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>

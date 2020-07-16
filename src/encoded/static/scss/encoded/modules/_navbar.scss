@@ -119,12 +119,13 @@ $navbar-bg-color:            #0a253d;
     display: block;
     width: 100%;
     height: 100%;
-    padding: 12px 15px;
+    padding: 13px 15px 11px;
     font-size: 1rem;
     text-align: left;
     color: #fff;
     border: none;
     background-color: transparent;
+    line-height: 1;
 }
 
 
@@ -153,7 +154,7 @@ $navbar-bg-color:            #0a253d;
         position: relative;
 
         .dropdown__toggle {
-            @include nav-title;
+            @include nav-title;        
 
             &:hover {
                 background-color: #2f4961;
