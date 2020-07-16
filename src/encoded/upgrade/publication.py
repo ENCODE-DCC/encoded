@@ -113,7 +113,8 @@ def publication_7_8(value, system):
 def publication_8_9(value,system):
     # https://encodedcc.atlassian.net/browse/ENCD-5386
     if 'datasets' in value:
-        datasets = ', '.join(value['datasets'])
-        old_notes = value.get('notes', '')
-        value['notes'] = (old_notes + 'Publication datasets: ' + datasets)
+        if value['datasets'] != []:
+            datasets = ', '.join(value['datasets'])
+            old_notes = value.get('notes', '')
+            value['notes'] = (old_notes + 'Publication datasets: ' + datasets).strip()
         value.pop('datasets')
