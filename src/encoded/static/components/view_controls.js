@@ -107,6 +107,22 @@ const parentTypes = [
 const MAX_DOWNLOADABLE_RESULT = 500;
 
 
+const modelTextDefault = (<>
+    <p>
+        Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+        The first line of the file has the URL or command line to download the metadata file.
+    </p>
+    <p>
+        Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+    </p>
+    <p>
+        The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+        The following command using cURL can be used to download all the files in the list:
+    </p>
+    <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+    </>);
+
+
 /**
  * Manages the view-control registry. Objects (e.g. Experiment) register with a global object of
  * this class to indicate what kinds of view buttons that search results that specify that "type="
@@ -315,39 +331,16 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
  * Displays the modal to initiate downloading files. This modal gets displayed unconditionally in
  * this component, so parent components must keep state on whether this modal is visible or not.
  */
-export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler, resultTotal }) => (
+export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler, modalText, showSubmitBtn }) => (
     <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
         <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
         <ModalBody>
-            {resultTotal < MAX_DOWNLOADABLE_RESULT ?
-                <>
-                    <p>
-                        Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                        The first line of the file has the URL or command line to download the metadata file.
-                    </p>
-                    <p>
-                        Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
-                    </p>
-                    <p>
-                        The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                        The following command using cURL can be used to download all the files in the list:
-                    </p>
-                    <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
-                </>
-            :
-                <>
-                    <p>
-                        This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
-                    </p>
-                    <p>
-                        You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
-                    </p>
-                </>}
+            {modalText}
             <div>{additionalContent}</div>
         </ModalBody>
         <ModalFooter
             closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
-            submitBtn={resultTotal <= MAX_DOWNLOADABLE_RESULT ?
+            submitBtn={showSubmitBtn ?
                 <button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>
                 : null}
         />
@@ -363,14 +356,17 @@ BatchDownloadModal.propTypes = {
     downloadClickHandler: PropTypes.func.isRequired,
     /** Called when the user does something to close the modal */
     closeModalHandler: PropTypes.func.isRequired,
-    /** Total number of search results */
-    resultTotal: PropTypes.number,
+    /** Message in modal body */
+    modalText: PropTypes.element,
+    /** Yes to display the submit button, false otherwise */
+    showSubmitBtn: PropTypes.bool,
 };
 
 BatchDownloadModal.defaultProps = {
     additionalContent: null,
     disabled: false,
-    resultTotal: 25,
+    modalText: modelTextDefault,
+    showSubmitBtn: true,
 };
 
 
@@ -382,12 +378,23 @@ export const BatchDownloadButton = ({ handleDownloadClick, title, additionalCont
 
     const openModal = () => { setIsModalOpen(true); };
     const closeModal = () => { setIsModalOpen(false); };
+    const canDownload = resultTotal <= MAX_DOWNLOADABLE_RESULT;
+    const modalText = canDownload ?
+        modelTextDefault :
+        <>
+            <p>
+                This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
+            </p>
+            <p>
+                You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
+            </p>
+        </>;
 
     return (
         <React.Fragment>
             <button className="btn btn-info btn-sm" onClick={openModal} disabled={disabled} data-test="batch-download">{title}</button>
             {isModalOpen ?
-                <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} resultTotal={resultTotal} />
+                <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} modalText={modalText} showSubmitBtn={canDownload} />
             : null}
         </React.Fragment>
     );
