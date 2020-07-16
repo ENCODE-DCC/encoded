@@ -9,6 +9,8 @@ from .base import (
 )
 import re
 
+from snovault.validation import ValidationFailure
+
 
 @collection(
     name='biosamples',
@@ -204,6 +206,24 @@ class Biosample(Item):
                 return None
         else:
             return model_organism_age_units
+
+    @calculated_property(define=True,
+                        schema={
+                            "title": "Disease term name",
+                            "description": "Ontology term describing the disease affecting the biosample.",
+                            "comment": "Calculated from disease_term_id",
+                            "type": "string",
+                            "notSubmittable": True,
+                        })
+    def disease_term_name(self, request, registry, disease_term_id=None):
+        if disease_term_id is not None:
+            if disease_term_id in registry['ontology']:
+                return registry['ontology'][disease_term_id]['name']
+            else:
+                msg = 'Disease term ID {} is not a valid ID'.format(
+                    disease_term_id
+                )
+                raise ValidationFailure('body', ['disease_term_id'], msg)
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
@@ -436,6 +456,7 @@ class Biosample(Item):
                 starting_amount=None,
                 starting_amount_units=None,
                 depleted_in_term_name=None,
+                disease_term_name=None,
                 phase=None,
                 synchronization=None,
                 subcellular_fraction_term_name=None,
@@ -462,6 +483,7 @@ class Biosample(Item):
             'term_phrase',
             'modifications_list',
             'originated_from',
+            'disease_term_name',
             'treatments_phrase',
             'post_nucleic_acid_delivery_time',
             'preservation_method',
@@ -537,6 +559,7 @@ class Biosample(Item):
             starting_amount,
             starting_amount_units,
             depleted_in_term_name,
+            disease_term_name,
             phase,
             subcellular_fraction_term_name,
             synchronization,
@@ -588,6 +611,7 @@ def generate_summary_dictionary(
         starting_amount=None,
         starting_amount_units=None,
         depleted_in_term_name=None,
+        disease_term_name=None,
         phase=None,
         subcellular_fraction_term_name=None,
         synchronization=None,
@@ -608,6 +632,7 @@ def generate_summary_dictionary(
         'genotype_strain': '',
         'term_phrase': '',
         'phase': '',
+        'disease_term_name': '',
         'fractionated': '',
         'sex_stage_age': '',
         'synchronization': '',
@@ -706,6 +731,9 @@ def generate_summary_dictionary(
         else:
             dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
                 str(starting_amount_units)
+
+    if disease_term_name is not None:
+        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
 
     if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
@@ -925,6 +953,7 @@ def get_applied_modifications(genetic_modifications=None, model_organism_donor_m
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
         'phase': 'unspecified phase',
+        'disease_term_name': 'without disease',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',

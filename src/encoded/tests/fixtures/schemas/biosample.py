@@ -375,4 +375,3 @@ def biosample_23(testapp, lab, award, source, organism, epiblast):
         'source': source['uuid']
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-

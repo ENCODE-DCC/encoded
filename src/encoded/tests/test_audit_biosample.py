@@ -300,3 +300,4 @@ def test_audit_biosample_CRISPR_modifications(
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'multiple CRISPR characterization genetic modifications' for error in errors_list)
+

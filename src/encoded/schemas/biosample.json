@@ -879,6 +879,12 @@
                 "week",
                 "month"
             ]
+        },
+        "disease_term_id": {
+            "title": "Disease ontology ID",
+            "description": "An ontology identifier describing the disease affecting the biosample.",
+            "type": "string",
+            "pattern": "^DOID:[0-9]{2,7}$"
         }
     },
     "facets": {

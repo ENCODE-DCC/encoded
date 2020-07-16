@@ -1230,5 +1230,21 @@
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "9fa06607-ac16-4b57-8f3f-2e3088166454"
+    },
+    {
+        "accession": "ENCBS715CSM",
+        "aliases": [
+            "bradley-bernstein:skin_bc_carcinoma"
+        ],
+        "award": "U54HG006991",
+        "biosample_ontology": "tissue_UBERON_0001003",
+        "donor": "ENCDO000AAK",
+        "disease_term_id": "DOID:2513",
+        "lab": "bradley-bernstein",
+        "organism": "human",
+        "source": "dana-levasseur",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3440ad39-bb3a-488f-8a88-525027b8e943"
     }
 ]
