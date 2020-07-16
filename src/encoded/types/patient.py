@@ -509,7 +509,7 @@ class Patient(Item):
             "type": "object",
             "additionalProperties": False,
             "properties":{
-                "metastasis_date": {
+                "date": {
                     "title": "Date of Metastasis Record",
                     "description": "Date of Metastasis Record",
                     "type": "string",
@@ -565,7 +565,7 @@ class Patient(Item):
                         path_report_obj = request.embed(path_report, '@@object')                        
                         if path_report_obj['path_source_procedure'] == 'path_metasis':                           
                             record = {
-                                'metastasis_date': path_report_obj['date'],
+                                'date': path_report_obj['date'],
                                 'source': 'Pathology report',
                                 'site': path_report_obj['metasis_details']['site']
                             }
@@ -575,14 +575,12 @@ class Patient(Item):
             for radiation_record in radiation:
                 radiation_object = request.embed(radiation_record, '@@object')               
                 record = {
-                    'metastasis_date': radiation_object['start_date'],
+                    'date': radiation_object['start_date'],
                     'source': 'Radiation treatment',
                     'site': radiation_object['site_general']
                 }
                 if record not in records:
                     records.append(record)
-        print("RECORDS!!!!")           
-        print(records)
         return records
 
 
