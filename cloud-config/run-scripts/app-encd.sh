@@ -38,7 +38,7 @@ if [ ! -f "$bin_build_path" ]; then
 fi
 
 # Run bin/buildout
-bin_build_cmd="$ENCD_HOME/bin/buildout -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT buildout:pg-uri=$PG_URI buildout:fe-ip=$ENCD_FE_IP"
+bin_build_cmd="$ENCD_HOME/bin/buildout -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT buildout:pg-uri=$PG_URI buildout:fe-ip=$ENCD_FE_IP buildout:remote_indexing=$ENCD_REMOTE_INDEXING buildout:index_procs=$ENCD_INDEX_PROCS"
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $bin_build_cmd"
 sudo -H -u encoded LANG=en_US.UTF-8 $bin_build_cmd
 if [ $? -gt 0 ]; then

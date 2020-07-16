@@ -469,6 +469,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'INDEX_PRIMARY': 'false',
         'INDEX_VIS': 'false',
         'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
+        'INDEX_PROCS': main_args.index_procs,
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -476,6 +477,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'PG_IP': main_args.pg_ip,
         'PY3_PATH': '/usr/bin/python3.6',
         'REDIS_PORT': main_args.redis_port,
+        'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
         'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
@@ -518,6 +520,12 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             data_insert.update({
                 'CLUSTER_NAME': main_args.cluster_name,
             })
+            if main_args.no_indexing:
+                data_insert.update({
+                    'INDEX_PRIMARY': 'false',
+                    'INDEX_VIS': 'false',
+                    'INDEX_REGION': 'false',
+                })
         elif build_type == 'app-pg':
             data_insert.update({
                 'CLUSTER_NAME': main_args.cluster_name,
@@ -543,6 +551,10 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'ES_OPT_FILENAME': 'es-demo.yml',
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
+            })
+        if main_args.primary_indexing:
+            data_insert.update({
+                'INDEX_PRIMARY': 'true',
             })
         user_data = _get_user_data(config_yaml, data_insert, main_args)
     run_args = {
@@ -1011,7 +1023,22 @@ def _parse_args():
         action='store_true',
         help="Do not add indexing procs to apache"
     )
-
+    parser.add_argument(
+        '--primary-indexing',
+        action='store_true',
+        help="Force primary indexing"
+    )
+    parser.add_argument(
+        '--remote-indexing',
+        action='store_true',
+        help="Remote indexing"
+    )
+    parser.add_argument(
+        '--index-procs',
+        default=16,
+        type=int,
+        help="Remote indexing"
+    )
     # Cluster
     parser.add_argument(
         '--es-elect',
