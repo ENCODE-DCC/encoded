@@ -2995,26 +2995,36 @@ def audit_experiment_biosample_characterization(value, system, excluded_types):
                 
                 biosample = rep['library']['biosample']
                 modifications = biosample.get('applied_modifications')
+                if not modifications:
+                    continue
                 biosample_characterizations = biosample.get('characterizations')
-                if (modifications and 
-                    biosample_characterizations):
+                if biosample_characterizations:
                     return
-                elif (modifications and 
-                    not biosample_characterizations):
-                    for mod in modifications:
-                        if is_tagging_genetic_modification(mod):
-                            needs_characterization_flag = True
+                if not biosample.get('pooled_from'):
                     no_characterizations = True
-                    mods = []
-                    for mod in modifications:
-                        mods.append(mod['@id'])
-                    mods_link = [audit_link(path_to_text(mod), mod) for mod in mods]
-                    detail_list.append('Biosample {} which has been modified by genetic modification {} '
-                        'is missing characterization validating the modification.'.format(
-                            audit_link(path_to_text(biosample['@id']), biosample['@id']),
-                            ', '.join(mods_link)
-                        )
+                else:
+                    for parent in biosample['pooled_from']:
+                        if not system.get('request').embed(
+                            parent,
+                            '@@object_with_select_calculated_properties?field=characterizations'
+                        ).get('characterizations'):
+                            no_characterizations = True
+                            break
+                if not no_characterizations:
+                    return
+                for mod in modifications:
+                    if is_tagging_genetic_modification(mod):
+                        needs_characterization_flag = True
+                mods = []
+                for mod in modifications:
+                    mods.append(mod['@id'])
+                mods_link = [audit_link(path_to_text(mod), mod) for mod in mods]
+                detail_list.append('Biosample {} which has been modified by genetic modification {} '
+                    'is missing characterization validating the modification.'.format(
+                        audit_link(path_to_text(biosample['@id']), biosample['@id']),
+                        ', '.join(mods_link)
                     )
+                )
         if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag and value.get('assay_term_name') == 'ChIP-seq':
             level = 'ERROR'
         else:

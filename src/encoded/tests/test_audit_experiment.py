@@ -2998,6 +2998,93 @@ def test_audit_experiment_tagging_biosample_characterization(
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_pooled_biosample_no_characterization(
+    testapp,
+    biosample_pooled_from_not_characterized_biosamples,
+    award_encode4,
+    base_experiment,
+    base_target,
+    base_replicate,
+    base_library,
+):
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'assay_term_name': 'ChIP-seq',
+            'award': award_encode4['@id'],
+            'target': base_target['@id']
+        }
+    )
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(
+        base_library['@id'],
+        {'biosample': biosample_pooled_from_not_characterized_biosamples['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing biosample characterization'
+        for error in collect_audit_errors(res, error_types=['ERROR'])
+    )
+
+
+def test_audit_experiment_pooled_biosample_partial_characterization(
+    testapp,
+    biosample_pooled_from_characterized_and_not_characterized_biosamples,
+    award_encode4,
+    base_experiment,
+    base_target,
+    base_replicate,
+    base_library,
+):
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'assay_term_name': 'ChIP-seq',
+            'award': award_encode4['@id'],
+            'target': base_target['@id']
+        }
+    )
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(
+        base_library['@id'],
+        {'biosample': biosample_pooled_from_characterized_and_not_characterized_biosamples['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing biosample characterization'
+        for error in collect_audit_errors(res, error_types=['ERROR'])
+    )
+
+
+def test_audit_experiment_pooled_biosample_characterization(
+    testapp,
+    biosample_pooled_from_characterized_biosamples,
+    award_encode4,
+    base_experiment,
+    base_target,
+    base_replicate,
+    base_library,
+):
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'assay_term_name': 'ChIP-seq',
+            'award': award_encode4['@id'],
+            'target': base_target['@id']
+        }
+    )
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(
+        base_library['@id'],
+        {'biosample': biosample_pooled_from_characterized_biosamples['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing biosample characterization'
+        for error in collect_audit_errors(res)
+    )
+
+
 def test_audit_experiment_missing_unfiltered_bams(testapp,
                                                   base_experiment,
                                                   replicate_1_1,
