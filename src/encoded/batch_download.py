@@ -392,8 +392,10 @@ def metadata_tsv(context, request):
         try:
             cart = request.embed(cart_uuid, '@@object')
         except KeyError:
+            print('\n\nKEYERROR')
             pass
         else:
+            print('\n\n****** CART {}'.format(cart))
             if cart.get('elements'):
                 param_list['@id'] = cart['elements']
     else:
@@ -531,7 +533,6 @@ def batch_download(context, request):
         default_params + file_fields
     )
     experiments = []
-    error_message = None
     if request.method == 'POST':
         metadata_link = ''
         cart_uuid = qs.get_one_value(
@@ -543,7 +544,13 @@ def batch_download(context, request):
             elements = request.json.get('elements', [])
         except ValueError:
             elements = []
+
         if cart_uuid:
+            try:
+                request.embed(cart_uuid, '@@object')
+            except KeyError:
+                raise HTTPBadRequest(explanation='Specified cart does not exist.')
+
             # metadata.tsv link includes a cart UUID
             metadata_link = '{host_url}/metadata/?{search_params}'.format(
                 host_url=request.host_url,
@@ -570,6 +577,10 @@ def batch_download(context, request):
             results = request.embed(quote(path), as_user=True)
             experiments.extend(results['@graph'])
     else:
+        # Make sure regular batch download doesn't include a cart parameter; error if it does.
+        if cart_uuids:
+            raise HTTPBadRequest(explanation='You must download cart file manifests from the portal.')
+
         # Regular batch download has single simple call to request.embed
         metadata_link = '{host_url}/metadata/?{search_params}'.format(
             host_url=request.host_url,
