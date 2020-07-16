@@ -21,10 +21,14 @@ class Library(Item):
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
     rev = {}
-    embedded = []
-    audit_inherit = []
-    set_status_up = []
-    set_status_down = []
+    embedded = [
+        'derived_from',
+        'derived_from.biosample_ontology',
+        'protocol',
+        'dataset',
+        'dataset.award',
+        'lab'
+    ]
 
     @calculated_property(condition='biological_macromolecule_term_name', schema={
         "title": "Nucleic acid term ID",

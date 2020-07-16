@@ -330,6 +330,12 @@
         "status": {
             "title": "Status"
         },
+        "libraries.protocol.library_type": {
+            "title": "Library type"
+        },
+        "libraries.protocol.name": {
+            "title": "Library protocols"
+        },
         "award.project": {
             "title": "Project"
         },
@@ -342,16 +348,13 @@
         "files.file_type": {
             "title": "Available file types"
         },
-        "libraries.protocol.name": {
-            "title": "Library protocols"
-        },
         "date_released": {
             "title": "Date released",
             "length": "long"
         },
         "date_submitted": {
             "title": "Date submitted"
-        }        
+        }
     },
     "columns": {
         "accession": {
@@ -363,11 +366,11 @@
         "description": {
             "title": "Description"
         },
-        "lab.title": {
-            "title": "Lab"
-        },
         "award.project": {
             "title": "Project"
+        },
+        "award.name": {
+            "title": "Award name"
         },
         "status": {
             "title": "Status"
@@ -375,17 +378,11 @@
         "files.@id": {
             "title": "Files"
         },
-        "related_series": {
-            "title": "Related series"
+        "libraries.protocol.name": {
+            "title": "Library protocols"
         },
-        "libraries.biosample.accession": {
-            "title": "Biosample accession"
-        },
-        "libraries.biosample.life_stage": {
-            "title": "Life stage"
-        },
-        "libraries.biosample.age_display": {
-            "title": "Biosample age"
+        "libraries.protocol.library_type": {
+            "title": "Library type"
         }
     },
     "boost_values": {},
