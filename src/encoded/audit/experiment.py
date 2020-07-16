@@ -11,6 +11,7 @@ from .standards_data import pipelines_with_read_depth, minimal_read_depth_requir
 
 
 targetBasedAssayList = [
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'ChIA-PET',
@@ -28,6 +29,7 @@ targetBasedAssayList = [
 ]
 
 controlRequiredAssayList = [
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'RIP-seq',
@@ -45,6 +47,7 @@ seq_assays = [
     'RNA-seq',
     'polyA plus RNA-seq',
     'polyA minus RNA-seq',
+    'Mint-ChIP-seq',
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'MeDIP-seq',
@@ -119,8 +122,8 @@ def audit_hic_restriction_enzyme_in_libaries(value, system, excluded_types):
 
 
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
-    # relevant only for ChIP-seq
-    if value.get('assay_term_id') != 'OBI:0000716':
+    # relevant only for ChIP-seq and MINT
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:
         return
 
     if value.get('target') and 'name' in value.get('target'):
@@ -462,7 +465,7 @@ def audit_experiment_pipeline_assay_details(value, system, files_structure):
 
 
 def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
-    if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:  # not a ChIP-seq
         return
 
     # if there are no bam files - we don't know what pipeline, exit
@@ -500,6 +503,7 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
     valid_assay_term_names = [
         'ChIP-seq',
+        'Mint-ChIP-seq',
         'DNase-seq',
         'genetic modification followed by DNase-seq',
     ]
@@ -549,17 +553,27 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     '''
     if value.get('status') in ['revoked', 'deleted', 'replaced']:
         return
-    if value.get('assay_term_name') not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'polyA plus RNA-seq', 'polyA minus RNA-seq', 'ChIP-seq', 'CAGE',
-                                            'shRNA knockdown followed by RNA-seq',
-                                            'siRNA knockdown followed by RNA-seq',
-                                            'CRISPRi followed by RNA-seq',
-                                            'CRISPR genome editing followed by RNA-seq',
-                                            'single-cell RNA sequencing assay',
-                                            'whole-genome shotgun bisulfite sequencing',
-                                            'genetic modification followed by DNase-seq',
-                                            'microRNA-seq',
-                                            'long read RNA-seq', 'icSHAPE',
-                                            'ATAC-seq']:
+    if value.get('assay_term_name') not in [
+        'DNase-seq',
+        'RAMPAGE',
+        'RNA-seq',
+        'polyA plus RNA-seq',
+        'polyA minus RNA-seq',
+        'ChIP-seq',
+        'Mint-ChIP-seq',
+        'CAGE',
+        'shRNA knockdown followed by RNA-seq',
+        'siRNA knockdown followed by RNA-seq',
+        'CRISPRi followed by RNA-seq',
+        'CRISPR genome editing followed by RNA-seq',
+        'single-cell RNA sequencing assay',
+        'whole-genome shotgun bisulfite sequencing',
+        'genetic modification followed by DNase-seq',
+        'microRNA-seq',
+        'long read RNA-seq',
+        'icSHAPE',
+        'ATAC-seq'
+    ]:
         return
     if not value.get('original_files'):
         return
@@ -613,7 +627,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
             standards_version)
         return
 
-    if value['assay_term_name'] == 'ChIP-seq':
+    if value['assay_term_name'] in ['ChIP-seq', 'Mint-ChIP-seq']:
         yield from check_experiment_chip_seq_standards(
             value,
             files_structure,
@@ -1095,6 +1109,7 @@ def check_experiment_chip_seq_standards(
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
     idr_peaks_files = files_structure.get('preferred_default_idr_peaks').values()
+    assay_name = experiment.get('assay_term_name')
 
     upper_limit_read_length = 50
     medium_limit_read_length = 36
@@ -1126,7 +1141,7 @@ def check_experiment_chip_seq_standards(
         if target is False and not experiment.get('control_type'):
             return
 
-        read_depth = get_file_read_depth_from_alignment(f, target, 'ChIP-seq')
+        read_depth = get_file_read_depth_from_alignment(f, target, assay_name)
         yield from check_file_chip_seq_read_depth(
             f,
             experiment.get('control_type'),
@@ -2559,7 +2574,8 @@ def audit_experiment_status(value, system, files_structure):
             if assay_term_name in [
                     'DNase-seq',
                     'genetic modification followed by DNase-seq',
-                    'ChIP-seq']:
+                    'ChIP-seq',
+                    'Mint-ChIP-seq']:
                 replicates_reads = bio_rep_reads
                 part_of_detail = 'biological replicate'
 
@@ -2603,7 +2619,7 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                     file_object['read_length'])
 
             # run type consistency is relevant only for ChIP-seq
-            if assay_term_name == 'ChIP-seq' and 'run_type' in file_object:
+            if assay_term_name in ['Mint-ChIP-seq', 'ChIP-seq'] and 'run_type' in file_object:
                 if bio_rep_number not in replicate_pairing_statuses:
                     replicate_pairing_statuses[bio_rep_number] = set()
                 replicate_pairing_statuses[bio_rep_number].add(
@@ -2665,7 +2681,7 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                                        detail, level='WARNING')
 
     # run type consistency is relevant only for ChIP-seq
-    if assay_term_name == 'ChIP-seq':  
+    if assay_term_name in ['Mint-ChIP-seq', 'ChIP-seq']:
         for key in replicate_pairing_statuses:
             if len(replicate_pairing_statuses[key]) > 1:
                 detail = ('Biological replicate {} '
@@ -3388,7 +3404,7 @@ def audit_experiment_ChIP_control(value, system, files_structure):
         return
 
     # Currently controls are only be required for ChIP-seq
-    if value.get('assay_term_name') != 'ChIP-seq':
+    if value.get('assay_term_name') not in ['Mint-ChIP-seq', 'ChIP-seq']:
         return
 
     # We do not want controls
@@ -3920,7 +3936,7 @@ def audit_missing_modification(value, system, excluded_types):
 
 
 def audit_experiment_mapped_read_length(value, system, files_structure):
-    if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
+    if value.get('assay_term_id') not in ['OBI:0000716', 'OBI:0002160']:  # not a ChIP-seq
         return
     for peaks_file in files_structure.get('peaks_files').values():
         if peaks_file.get('lab') == '/labs/encode-processing-pipeline/':
@@ -4503,7 +4519,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                 multi = metric['Number of reads mapped to multiple loci']
                 return unique + multi
 
-    elif assay_name in ['ChIP-seq']:
+    elif assay_name in ['Mint-ChIP-seq', 'ChIP-seq']:
         mapped_run_type = alignment_file.get('mapped_run_type', None)
         if target is not False and \
            'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
@@ -4789,7 +4805,7 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
 
     # for ChIP-seq we should consider biological replicates
     # for DNase we should consider technial replicates
-    if assay_name != 'ChIP-seq':
+    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq']:
         replicate_type = 'technical_replicates'
     else:
         replicate_type = 'biological_replicates'
@@ -4816,14 +4832,14 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     for file_object in rep_fastqs:
         file_acc = file_object.get('accession')
         # for ChIP even one file out of pair is considerd uptodate
-        if assay_name == 'ChIP-seq' and file_acc not in derived_from_fastq_accessions:
+        if assay_name in ['Mint-ChIP-seq', 'ChIP-seq'] and file_acc not in derived_from_fastq_accessions:
             paired_file_id = file_object.get('paired_with')
             if paired_file_id and paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
                 return True
             elif not paired_file_id:
                 return True
         # for DNase all the files from tech. rep should be in the list of the derived_from
-        elif assay_name != 'ChIP-seq' and file_acc not in derived_from_fastq_accessions:
+        elif assay_name not in ['Mint-ChIP-seq', 'ChIP-seq'] and file_acc not in derived_from_fastq_accessions:
             return True
 
     for f_accession in derived_from_fastq_accessions:
