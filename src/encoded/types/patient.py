@@ -281,7 +281,7 @@ class Patient(Item):
                         for path_report in path_reports:
                             path_report_obj = request.embed(path_report, '@@object')                        
                             if path_report_obj['path_source_procedure'] == 'path_metasis':                           
-                                status = "yes"                            
+                                status = "Yes"                            
         return status
 
     @calculated_property(define=True, schema={
@@ -917,5 +917,6 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
 
