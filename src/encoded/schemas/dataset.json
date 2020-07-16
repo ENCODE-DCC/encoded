@@ -333,8 +333,8 @@
         "award.project": {
             "title": "Project"
         },
-        "award.rfa": {
-            "title": "RFA"
+        "award.name": {
+            "title": "Award name"
         },
         "assembly": {
             "title": "Genome assembly"
@@ -342,17 +342,8 @@
         "files.file_type": {
             "title": "Available file types"
         },
-        "files.platform.term_name": {
-            "title": "Platform"
-        },
-        "files.run_type": {
-            "title": "Run type"
-        },
-        "files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
+        "libraries.protocol.name": {
+            "title": "Library protocols"
         },
         "date_released": {
             "title": "Date released",
@@ -360,12 +351,6 @@
         },
         "date_submitted": {
             "title": "Date submitted"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "internal_status": {
-            "title": "Internal status"
         }        
     },
     "columns": {

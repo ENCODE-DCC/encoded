@@ -38,15 +38,11 @@ class Dataset(Item):
     item_type = 'dataset'
     schema = load_schema('encoded:schemas/dataset.json')
     name_key = 'accession'
-    embedded = []
-    audit_inherit = []
-    set_status_up = [
-        'original_files',
-        'documents',
-        'target',
-    ]
-    set_status_down = [
-        'original_files',
+    embedded = [
+        'libraries',
+        'libraries.protocol',
+        'award',
+        'files'
     ]
     rev = {
         'superseded_by': ('Dataset', 'supersedes'),
