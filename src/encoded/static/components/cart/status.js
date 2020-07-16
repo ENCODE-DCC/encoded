@@ -104,6 +104,8 @@ class CartStatusComponent extends React.Component {
             const clearCartItem = !locked ? <button key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
             const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
             if (loggedIn) {
+                // The href is just to quiet ESLint for the bad href. This code shouldn't do this
+                // but the CSS looks difficult to fix after the tooltip updates.
                 menuItems.push(
                     <span key="name" className="disabled-menu-item">
                         {`Current: ${cartName}`}{lockIcon}

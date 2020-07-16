@@ -24,11 +24,11 @@ const ELEMENT_WARNING_LENGTH_MIN = 500;
  */
 const batchDownload = (cartType, elements, selectedTerms, facets, savedCartObj, sharedCart, setInProgress, options, fetch) => {
     let contentDisposition;
-    let cartUuid;
-    if (!cartType === 'OBJECT') {
-        cartUuid = sharedCart.uuid;
+    let cartId;
+    if (cartType === 'OBJECT') {
+        cartId = sharedCart['@id'];
     } else {
-        cartUuid = savedCartObj && savedCartObj.uuid;
+        cartId = savedCartObj && savedCartObj['@id'];
     }
 
     // Form query string from currently selected file formats.
@@ -48,7 +48,7 @@ const batchDownload = (cartType, elements, selectedTerms, facets, savedCartObj, 
     setInProgress(true);
     const visualizableOption = `${options.visualizable ? '&option=visualizable' : ''}`;
     const rawOption = `${options.raw ? '&option=raw' : ''}`;
-    fetch(`/batch_download/?type=Experiment${cartUuid ? `&cart=${cartUuid}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}`, {
+    fetch(`/batch_download/?type=Experiment${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}`, {
         method: 'POST',
         headers: {
             Accept: 'text/plain',
