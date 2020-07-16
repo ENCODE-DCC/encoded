@@ -267,8 +267,7 @@ globals.contentViews.register(Annotation, 'Annotation');
 
 
 // Display PublicationData page, a subtype of Dataset.
-const PublicationDataComponent = (props, reactContext) => {
-    const { context, auditIndicators, auditDetail } = props;
+const PublicationDataComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
@@ -376,9 +375,9 @@ const PublicationDataComponent = (props, reactContext) => {
                 </PanelBody>
             </Panel>
 
-            <FileTablePaged fileIds={context.files} title="Files" />
+            <FileTablePaged context={context} fileIds={context.files} title="Files" />
 
-            <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+            <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>
