@@ -281,7 +281,7 @@ class Publication(Item):
     })
     def datasets(self, request, datasets):
         allowed_dataset_types = ["/experiments/",
-                                 "/functional_characterization_experiments/",
+                                 "/functional-characterization-experiments/",
                                  "/annotations/", "/references/"]
         filtered = set()
         for d in datasets:
