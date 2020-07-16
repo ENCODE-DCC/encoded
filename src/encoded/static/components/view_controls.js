@@ -337,7 +337,7 @@ export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickH
             :
                 <>
                     <p>
-                        This search is too large (&gt;500 datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
+                        This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
                     </p>
                     <p>
                         You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
@@ -347,7 +347,7 @@ export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickH
         </ModalBody>
         <ModalFooter
             closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
-            submitBtn={resultTotal < MAX_DOWNLOADABLE_RESULT ?
+            submitBtn={resultTotal <= MAX_DOWNLOADABLE_RESULT ?
                 <button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>
                 : null}
         />
@@ -363,7 +363,7 @@ BatchDownloadModal.propTypes = {
     downloadClickHandler: PropTypes.func.isRequired,
     /** Called when the user does something to close the modal */
     closeModalHandler: PropTypes.func.isRequired,
-    /*** Result total */
+    /** Total number of search results */
     resultTotal: PropTypes.number,
 };
 
@@ -402,7 +402,7 @@ BatchDownloadButton.propTypes = {
     disabled: PropTypes.bool,
     /** Additional content in modal as component */
     additionalContent: PropTypes.object,
-    /** Total result count */
+    /** Total number of search results */
     resultTotal: PropTypes.number,
 };
 
