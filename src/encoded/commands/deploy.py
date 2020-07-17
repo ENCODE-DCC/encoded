@@ -470,6 +470,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'INDEX_VIS': 'false',
         'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
         'INDEX_PROCS': main_args.index_procs,
+        'INDEX_CHUNK_SIZE': main_args.index_chunk_size,
         'INSTALL_TAG': 'encd-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
@@ -551,6 +552,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'ES_OPT_FILENAME': 'es-demo.yml',
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
+                'INDEX_CHUNK_SIZE': 256,  # this will hold for all non es-wait or es-elect front ends.
             })
         if main_args.primary_indexing:
             data_insert.update({
@@ -1038,6 +1040,12 @@ def _parse_args():
         default=16,
         type=int,
         help="Remote indexing"
+    )
+    parser.add_argument(
+        '--index-chunk-size',
+        default=512,
+        type=int,
+        help="Should be set lower for single-node demos"
     )
     # Cluster
     parser.add_argument(
