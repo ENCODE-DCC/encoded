@@ -17,6 +17,7 @@ from encoded.batch_download import ELEMENT_CHUNK_SIZE
 from encoded.batch_download import _tsv_mapping
 from encoded.batch_download import _audit_mapping
 from encoded.batch_download import _tsv_mapping_annotation
+from encoded.batch_download import _tsv_mapping_publicationdata
 from encoded.batch_download import _excluded_columns
 from encoded.batch_download import get_biosample_accessions
 
@@ -126,6 +127,7 @@ def test__tsv_mapping_annotation_value():
         ('File accession', ['files.title']),
         ('File format', ['files.file_type']),
         ('Output type', ['files.output_type']),
+        ('Assay term name', ['files.assay_term_name']),
         ('Dataset accession', ['accession']),
         ('Annotation type', ['annotation_type']),
         ('Software used', ['software_used.software.title']),
@@ -148,13 +150,42 @@ def test__tsv_mapping_annotation_value():
         ('Controlled by', ['files.controlled_by']),
         ('File Status', ['files.status']),
         ('Derived from', ['files.derived_from']),
-        ('S3 URL', ['files.cloud_metadata']),
+        ('S3 URL', ['files.cloud_metadata.url']),
         ('Size', ['files.file_size']),
         ('No File Available', ['file.no_file_available']),
         ('Restricted', ['files.restricted'])
     ])
     assert expected == target
 
+def test__tsv_mapping_publicationdata_value():
+    expected = _tsv_mapping_publicationdata
+    target = OrderedDict([
+        ('File accession', ['files.title']),
+        ('File dataset', ['files.dataset']),
+        ('File type', ['files.file_format']),
+        ('File format', ['files.file_type']),
+        ('File output type', ['files.output_type']),
+        ('Assay term name', ['files.assay_term_name']),
+        ('Biosample term id', ['files.biosample_ontology.term_id']),
+        ('Biosample term name', ['files.biosample_ontology.term_name']),
+        ('Biosample type', ['files.biosample_ontology.classification']),
+        ('File target', ['files.target.label']),
+        ('Dataset accession', ['accession']),
+        ('Dataset date released', ['date_released']),
+        ('Project', ['award.project']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Assembly', ['files.assembly']),
+        ('File status', ['files.status']),
+        ('Derived from', ['files.derived_from']),
+        ('S3 URL', ['files.cloud_metadata.url']),
+        ('Size', ['files.file_size']),
+        ('No File Available', ['file.no_file_available']),
+        ('Restricted', ['files.restricted'])
+    ])
+    assert expected == target
 
 def test__excluded_columns_value():
     expected = _excluded_columns
