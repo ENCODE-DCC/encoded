@@ -10,7 +10,7 @@ import { BatchDownloadControls } from './view_controls';
 
 
 // Maximum number of files before the user can't download them.
-const MAX_DOWNLOADABLE_FILES = 1000;
+const MAX_DOWNLOADABLE_FILES = 3;
 
 
 // BIOSAMPLE UTILITIES
@@ -752,7 +752,7 @@ export const FileTablePaged = ({ context, fileIds, files, title }) => {
         const fileCountDisplay = <div className="table-paged__count">{`${fileCount} file${fileCount === 1 ? '' : 's'}`}</div>;
 
         // Determine whether too many files exist to download.
-        const canDownload = fileCount <= MAX_DOWNLOADABLE_FILES;
+        const canDownload = true;
 
         return (
             <SortTablePanel
