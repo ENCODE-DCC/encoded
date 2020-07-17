@@ -113,6 +113,7 @@ _tsv_mapping_annotation = OrderedDict([
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
     ('Output type', ['files.output_type']),
+    ('Assay term name', ['files.assay_term_name']),
     ('Dataset accession', ['accession']),
     ('Annotation type', ['annotation_type']),
     ('Software used', ['software_used.software.title']),
@@ -135,7 +136,7 @@ _tsv_mapping_annotation = OrderedDict([
     ('Controlled by', ['files.controlled_by']),
     ('File Status', ['files.status']),
     ('Derived from', ['files.derived_from']),
-    ('S3 URL', ['files.cloud_metadata']),
+    ('S3 URL', ['files.cloud_metadata.url']),
     ('Size', ['files.file_size']),
     ('No File Available', ['file.no_file_available']),
     ('Restricted', ['files.restricted'])
@@ -304,9 +305,8 @@ def _get_annotation_metadata(request, search_path, param_list):
             row = [
                 result_file.get('title', ''),
                 result_file.get('file_type', ''),
-                result_file.get('file_format'), '',
-                result_file.get('file_format_type', ''),
                 result_file.get('output_type', ''),
+                result_file.get('assay_term_name', ''),
                 result_graph.get('accession', ''),
                 result_graph.get('annotation_type', ''),
                 software_set,
