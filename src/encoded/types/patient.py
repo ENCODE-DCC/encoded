@@ -547,26 +547,13 @@ class Patient(Item):
                     "title": "Metastasis Site",
                     "type": "string",
                     "enum": [
-                        "Adrenal gland, left",
-                        "Adrenal gland, right",
+                        "Adrenal",
                         "Bone",
                         "Brain",
-                        "Connective, subcutaneous and other soft tissue, abdomen",
-                        "Connective, subcutaneous and other soft tissues, NOS",
-                        "Gastrointestine/ digestive system & spleen",
+                        "Kidney"
                         "Liver",
                         "Lung",
-                        "Lung, left",
-                        "Lung, right",
-                        "Lymph node, intra abdominal",
-                        "Lymph node, intrathoracic",
-                        "Lymph node, NOS",
                         "Lymph node",
-                        "Retroperitoneum & peritoneum",
-                        "Retroperitoneum / renal bed, left",
-                        "Retroperitoneum / renal bed, right",
-                        "Salivary gland",
-                        "Spine",
                         "Other"
                     ]
                 }
@@ -593,11 +580,26 @@ class Patient(Item):
                                 records.append(record)               
         if len(radiation) > 0 :
             for radiation_record in radiation:
-                radiation_object = request.embed(radiation_record, '@@object')               
+                radiation_object = request.embed(radiation_record, '@@object') 
+                #site mapping
+                if radiation_object['site_general'] == "Adrenal gland, left" or radiation_object['site_general'] == "Adrenal gland, right":
+                    radiation_site = "Adrenal"
+                elif radiation_object['site_general'] == "Spine" or radiation_object['site_general'] == "Bone":
+                    radiation_site = "Bone"
+                elif radiation_object['site_general'] == "Brain" or radiation_object['site_general'] == "Liver":
+                    radiation_site = radiation_object['site_general']
+                elif radiation_object['site_general'] == "Kidney, right" or radiation_object['site_general'] == "Kidney, thrombus" or radiation_object['site_general'] == "Kidney, left":
+                    radiation_site = "Kidney"
+                elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
+                    radiation_site = "Lung"
+                elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
+                    radiation_site = "Lymph Node"
+                else:
+                    radiation_site = "Other"
                 record = {
                     'date': radiation_object['start_date'],
                     'source': 'Radiation treatment',
-                    'site': radiation_object['site_general']
+                    'site': radiation_site
                 }
                 if record not in records:
                     records.append(record)
@@ -917,6 +919,7 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
 
 
