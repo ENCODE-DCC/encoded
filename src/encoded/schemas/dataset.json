@@ -334,7 +334,7 @@
             "title": "Library type"
         },
         "libraries.protocol.name": {
-            "title": "Library protocols"
+            "title": "Library protocol"
         },
         "award.project": {
             "title": "Project"
@@ -351,9 +351,6 @@
         "date_released": {
             "title": "Date released",
             "length": "long"
-        },
-        "date_submitted": {
-            "title": "Date submitted"
         }
     },
     "columns": {
@@ -379,7 +376,7 @@
             "title": "Files"
         },
         "libraries.protocol.name": {
-            "title": "Library protocols"
+            "title": "Library protocol"
         },
         "libraries.protocol.library_type": {
             "title": "Library type"

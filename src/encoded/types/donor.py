@@ -25,10 +25,7 @@ class Donor(Item):
         'documents',
         'documents.submitted_by'
     ]
-    set_status_up = []
-    set_status_down = []
     name_key = 'accession'
-    rev = {}
 
     def unique_keys(self, properties):
         keys = super(Donor, self).unique_keys(properties)

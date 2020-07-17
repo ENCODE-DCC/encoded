@@ -55,7 +55,7 @@ const portal = {
                 { id: 'cellculture-report', title: 'Cell cultures', url: '/report/?type=CellCulture', tag: 'collection' },
                 { id: 'suspension-report', title: 'Suspensions', url: '/report/?type=Suspension', tag: 'collection' },
                 { id: 'sep-mm-2' },
-                { id: 'publications', title: 'Publications', url: '/publications/' },
+                { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
             ],
         },
         {

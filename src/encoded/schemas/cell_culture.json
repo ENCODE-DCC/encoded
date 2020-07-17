@@ -74,8 +74,58 @@
             }
         }
     },
-    "facets": {},
-    "columns": {},
-    "boost_values": {},
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "biosample_ontology.system_slims": {
+            "title": "System",
+            "type": "typeahead"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ",
+            "type": "typeahead"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name"
+        },
+        "summary": {
+            "title": "Summary"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "biosample_ontology.system_slims": {
+            "title": "System"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "derivation_process": {
+            "title": "Derivation process"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/cell_culture.md"
 }

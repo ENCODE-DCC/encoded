@@ -32,11 +32,14 @@
         }
     },
     "facets": {
-        "life_stage": {
-            "title": "Life stage"
+        "carnegie_stage": {
+            "title": "Carnegie stage"
         },
         "sex": {
             "title": "Sex"
+        },
+        "strain_term_name": {
+            "title": "Strain"
         },
         "status": {
             "title": "Status"
@@ -46,17 +49,11 @@
         "accession": {
             "title": "Accession"
         },
-        "aliases": {
-            "title": "Aliases"
-        },
-        "age": {
+        "age_display": {
             "title": "Age"
         },
-        "age_units": {
-            "title": "Age units"
-        },
-        "life_stage": {
-            "title": "Life stage"
+        "carnegie_stage": {
+            "title": "Carnegie stage"
         },
         "sex": {
             "title": "Sex"
@@ -64,8 +61,8 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "ethnicity": {
-            "title": "Ethnicity"
+        "strain_term_name": {
+            "title": "Strain"
         },
         "status": {
             "title": "Status"

@@ -52,15 +52,9 @@ class Biosample(Item):
     base_types = ['Biosample'] + Item.base_types
     name_key = 'accession'
     rev = {}
-    embedded = []
-    audit_inherit = []
-    set_status_up = [
-        'genetic_modifications',
-        'treatments',
-        'documents',
-        'source'
+    embedded = [
+        'biosample_ontology'
     ]
-    set_status_down = []
 
     @calculated_property(define=True,
                          schema={"title": "Donors",

@@ -28,7 +28,7 @@ def calculate_assembly(request, files_list, status):
 
 
 @collection(
-    name='dataset',
+    name='datasets',
     unique_key='accession',
     properties={
         'title': 'Datasets',

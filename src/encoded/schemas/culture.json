@@ -78,8 +78,5 @@
             "type": "string"
         }
     },
-    "facets": {},
-    "columns": {},
-    "boost_values": {},
     "changelog": "/profiles/changelogs/culture.md"
 }

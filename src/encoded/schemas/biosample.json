@@ -190,8 +190,5 @@
             "type": "integer"
         }
     },
-    "facets": {},
-    "columns": {},
-    "boost_values": {},
     "changelog": "/profiles/changelogs/biosample.md"
 }

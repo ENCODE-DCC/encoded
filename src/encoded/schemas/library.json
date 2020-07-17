@@ -207,7 +207,7 @@
         "accession": {
             "title": "Accession"
         },
-        "dataset": {
+        "dataset.accession": {
             "title": "Dataset"
         },
         "dataset.award.project": {

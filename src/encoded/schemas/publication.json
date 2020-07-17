@@ -197,68 +197,37 @@
         "status": {
             "title": "Status"
         },
-        "categories": {
-            "title": "Categories"
+        "award.project": {
+            "title": "Project"
         },
-        "supplementary_data.supplementary_data_type": {
-            "title": "Available supplemental data"
+        "award.name": {
+            "title": "Award name"
         },
         "publication_year": {
             "title": "Publication year"
         },
         "journal": {
             "title": "Journal"
-        },
-        "published_by": {
-            "title": "Published by"
-        },
-        "datasets.accession": {
-            "type": "exists",
-            "title": "Associated dataset"
         }
     },
     "columns": {
         "title": {
             "title": "Title"
         },
-        "date_published": {
-            "title": "Publication date"
-        },
-        "authors": {
-            "title": "Authors"
-        },
-        "status": {
-            "title": "Status"
-        },
         "journal": {
             "title": "Journal"
         },
-        "volume": {
-            "title": "Volume"
+        "publication_year": {
+            "title": "Publication year"
         },
-        "issue": {
-            "title": "Issue"
+        "award.project": {
+            "title": "Project"
         },
-        "page": {
-            "title": "Page"
+        "award.name": {
+            "title": "Award name"
         },
-        "data_used": {
-            "title": "Data used"
-        },
-        "abstract": {
-            "title": "Abstract"
-        },
-        "supplementary_data.supplementary_data_type": {
-            "title": "Available supplemental data"
-        },
-        "supplementary_data.file_format": {
-            "title": "File format"
-        },
-        "supplementary_data.url": {
-            "title": "Supplementary data URL"
-        },
-        "supplementary_data.data_summary": {
-            "title": "Supplementary data summary"
+        "status": {
+            "title": "Status"
         },
         "identifiers": {
             "title": "Identifiers"

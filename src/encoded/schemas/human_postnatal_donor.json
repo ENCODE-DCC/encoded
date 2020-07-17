@@ -161,6 +161,9 @@
         "sex": {
             "title": "Sex"
         },
+        "ethnicity": {
+            "title": "Ethnicity"
+        },
         "status": {
             "title": "Status"
         }
@@ -169,14 +172,8 @@
         "accession": {
             "title": "Accession"
         },
-        "aliases": {
-            "title": "Aliases"
-        },
-        "age": {
+        "age_display": {
             "title": "Age"
-        },
-        "age_units": {
-            "title": "Age units"
         },
         "life_stage": {
             "title": "Life stage"
@@ -189,6 +186,21 @@
         },
         "ethnicity": {
             "title": "Ethnicity"
+        },
+        "body_mass_index": {
+            "title": "BMI"
+        },
+        "times_pregnant": {
+            "title": "Number of times pregnant"
+        },
+        "family_history_breast_cancer": {
+            "title": "Family history of breast cancer"
+        },
+        "smoking_history": {
+            "title": "Smoking history"
+        },
+        "alochol_history": {
+            "title": "Alcohol history"
         },
         "status": {
             "title": "Status"
