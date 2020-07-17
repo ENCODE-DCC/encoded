@@ -666,13 +666,13 @@ const AllSchemasPage = (props, reactContext) => {
                     <div className="schema-description">
                         <p>
                             Schemas, or profiles, are <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a>-formatted
-                            structures defining each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
-                            To support ENCODE Project submitters and public users alike, this page
+                            structures defining each object housed in <a href="https://github.com/Lattice-Data/encodeD" title="Lattice GitHub repo">encodeD</a>.
+                            To support Lattice submitters and community resource collaborators alike, this page
                             provides a user-friendly visualization method for our schemas to help
                             organize and understand the data.
                         </p>
                         <p>
-                            The links below lead to pages describing each schema ENCODE supports.
+                            The links below lead to pages describing each schema Lattice supports.
                         </p>
                     </div>
                     <div className="schema-list">
