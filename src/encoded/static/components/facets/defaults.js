@@ -1001,6 +1001,13 @@ export const DefaultFacet = ({ facet, results, mode, relevantFilters, pathname, 
         handleScrollShading();
     };
 
+    // Reset shading after facet region is expanded
+    React.useEffect(() => {
+        if (isExpanded) {
+            handleScrollShading();
+        }
+    }, [isExpanded, handleScrollShading]);
+
     // Callback to force reevaulation of scroll shading, normally caused by typing something into
     // the typeahead buffer which can cause the height of the facet to change. This also gets
     // called on component mount to set the initial top and bottom shading state. Also set
