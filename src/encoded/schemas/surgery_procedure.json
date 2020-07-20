@@ -45,7 +45,7 @@
             "permission": "import_items",
             "required": [
                 "type",
-                "approach",
+                "approach"
             ],
             "properties": {
                 "type": {
@@ -54,7 +54,7 @@
                     "enum": [
                         "Partial",
                         "Total",
-                        "Not available",
+                        "Not available"
                     ]
                 },
                 "approach": {
@@ -63,7 +63,7 @@
                     "enum": [
                         "Laparoscopic",
                         "Open",
-                        "Not available",
+                        "Not available"
                     ]
                 },
                 "robotic_assist": {
