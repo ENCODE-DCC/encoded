@@ -77,7 +77,7 @@ class Gene extends React.Component {
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
                     <Breadcrumbs root="/search/?type=Gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
+                    <h1>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h1>
                     <ItemAccessories item={context} />
                 </header>
 

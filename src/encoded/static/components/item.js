@@ -16,7 +16,7 @@ const Fallback = (props, reactContext) => {
     return (
         <div className="view-item">
             <header>
-                <h2>{title}</h2>
+                <h1>{title}</h1>
                 <ItemAccessories item={context} />
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
@@ -45,7 +45,7 @@ const Item = (props) => {
     return (
         <div className={itemClass}>
             <header>
-                <h2>{title}</h2>
+                <h1>{title}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>

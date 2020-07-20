@@ -286,7 +286,7 @@ class FileComponent extends React.Component {
         return (
             <div className={itemClass}>
                 <header>
-                    <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
+                    <h1>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h1>
                     <ReplacementAccessions context={context} />
                     <MatchingMD5Sum file={context} />
                     {context.restricted ?

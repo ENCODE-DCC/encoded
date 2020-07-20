@@ -3293,7 +3293,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
         );
     } else {
         header = (
-            <div className="details-view-info">Unknown file</div>
+            <div className="graph-modal-header__content"><h2>Unknown file</h2></div>
         );
         body = <p className="browser-error">No information available</p>;
     }
@@ -3361,7 +3361,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
         );
     } else {
         header = (
-            <div className="details-view-info">
+            <div className="graph-modal-header__content">
                 <h2>Unknown files</h2>
             </div>
         );

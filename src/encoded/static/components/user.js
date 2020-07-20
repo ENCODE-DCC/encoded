@@ -343,7 +343,7 @@ class ImpersonateUserFormComponent extends React.Component {
     render() {
         return (
             <div>
-                <h2>Impersonate User</h2>
+                <h1>Impersonate User</h1>
                 <Form
                     schema={ImpersonateUserSchema}
                     submitLabel="Submit"

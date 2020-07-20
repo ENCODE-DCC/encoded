@@ -248,7 +248,7 @@ const PublicationComponent = (props, reactContext) => {
     return (
         <div className={itemClass}>
             <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-            <h2>{context.title}</h2>
+            <h1>{context.title}</h1>
             <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'publication-audit' }} />
             {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             {context.authors ? <div className="authors">{context.authors}.</div> : null}
