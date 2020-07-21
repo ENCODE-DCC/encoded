@@ -233,7 +233,8 @@ class Publication(Item):
     item_type = 'publication'
     schema = load_schema('encoded:schemas/publication.json')
     rev = {
-        'publication_data': ('PublicationData', 'references')
+        'publication_data': ('PublicationData', 'references'),
+        'datasets': ('Dataset', 'references')
     }
 
     def unique_keys(self, properties):
@@ -264,6 +265,29 @@ class Publication(Item):
     })
     def publication_data(self, request, publication_data):
         return paths_filtered_by_status(request, publication_data)
+
+    @calculated_property(condition='datasets', schema={
+        "title": "Datasets",
+        "description": "The datasets referred to by the publication.",
+        "comment": "Do not submit, this is calculated using the references property on dataset objects.",
+        "type": "array",
+        "uniqueItems": True,
+        "notSubmittable": True,
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom":
+                "Dataset.references"
+        },
+    })
+    def datasets(self, request, datasets):
+        allowed_dataset_types = ["/experiments/",
+                                 "/functional-characterization-experiments/",
+                                 "/annotations/", "/references/"]
+        filtered = set()
+        for d in datasets:
+            if d.startswith(tuple(allowed_dataset_types)):
+                filtered.add(d)
+        return paths_filtered_by_status(request, filtered)
 
 
 @collection(

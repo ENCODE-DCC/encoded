@@ -344,6 +344,7 @@
         "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "target": "EBF1-human",
         "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
     },
@@ -376,6 +377,7 @@
         "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919",
         "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing."
     },
@@ -391,6 +393,7 @@
         "lab": "robert-waterston",
         "status": "released",
         "date_submitted": "2015-10-20",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
@@ -423,6 +426,7 @@
         "status": "released",
         "date_submitted": "2015-12-20",
         "date_released": "2016-01-01",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
     },
@@ -438,6 +442,7 @@
         "lab": "robert-waterston",
         "status": "in progress",
         "submitted_by": "dignissim.euismod@amet.habitant",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "uuid": "4c1be4ea-22ae-4880-9002-03617e3dde92"
     },
     {
@@ -454,6 +459,7 @@
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "uuid": "aca3295c-755b-4495-91cf-8a4c00a0db00"
     },
     {
@@ -898,6 +904,7 @@
         "assay_term_name": "ChIP-seq",
         "award": "UM1HG009442",
         "biosample_ontology": "tissue_UBERON_0001891",
+        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
         "description": "ChIP-seq on midbrain tissue",
         "lab": "john-stamatoyannopoulos/",
         "possible_controls": [

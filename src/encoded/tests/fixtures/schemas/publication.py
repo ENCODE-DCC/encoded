@@ -56,7 +56,6 @@ def publication(testapp, lab, award):
         'lab': lab['@id'],
         'identifiers': ["doi:10.1214/11-AOAS466"],
     }
-    print('submit publication')
     return testapp.post_json('/publication', item).json['@graph'][0]
 
 
@@ -67,5 +66,22 @@ def publication_7(testapp, lab, award):
         'award': award['@id'],
         'lab': lab['@id'],
         'date_published': '3/30/20'
-    }
+        }
+    return item
+
+
+@pytest.fixture
+def publication_8(root, testapp, lab, award, publication_6,
+                  functional_characterization_experiment,
+                  experiment_1, base_reference, annotation_dataset
+                  ):
+    item = publication_6.copy()
+    item.update({
+        'datasets': [
+            experiment_1['@id'],
+            functional_characterization_experiment['@id'],
+            base_reference['@id'],
+            annotation_dataset['@id'],
+            ]
+        })
     return item
