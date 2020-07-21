@@ -282,11 +282,11 @@ def _get_annotation_metadata(request, search_path, param_list):
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
     param_list['limit'] = ['all']
-    fields = [''.join(['&field=', str(value[0])]) for _, value in _tsv_mapping_annotation.items()]
-    path = '{}?{}{}'.format(
+    fields = ['field={}'.format(str(value[0])) for _, value in _tsv_mapping_annotation.items()] + ['field=audit']
+    path = '{}?{}&{}'.format(
         search_path,
         quote(urlencode(param_list, True)),
-        ''.join(fields)
+        '&'.join(fields)
     )
     results = request.embed(path, as_user=True)
     for result_graph in results['@graph']:
