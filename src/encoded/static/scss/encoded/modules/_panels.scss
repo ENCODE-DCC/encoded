@@ -480,14 +480,14 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
         margin-right: 5px;
 
         select {
-            height: $file-gallery-controls-height + 2;
+            height: $file-gallery-controls-height;
         }
     }
 
     @at-root #{&}__visualization-selector {
         select {
             display: inline-block;
-            height: $file-gallery-controls-height + 2;
+            height: $file-gallery-controls-height;
             width: auto;
             margin-right: 5px;
         }
