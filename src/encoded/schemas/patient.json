@@ -189,6 +189,9 @@
         "metastasis_status": {
             "title": "Metastasis Status"
         },
+        "metastasis.histology_proven": {
+            "title": "Metastasis Histology Proven"
+        },
         "metastasis.site": {
             "title": "Metastatic Site"
         },
@@ -298,4 +301,5 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
 

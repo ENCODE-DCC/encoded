@@ -270,8 +270,13 @@ class Patient(Item):
     })
     def metastasis_status(self, request, radiation=None, surgery=None):
         status = "No"
-        if len(radiation) == 0:
-            status = "Yes"
+        if len(radiation) > 0:
+            
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object') 
+                #site mapping
+                if radiation_object['site_general'] != "Kidne, right" and radiation_object['site_general'] != "Kidney, thrombus" and radiation_object['site_general'] != "Kidney, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, right":
+                    status = "Yes"
         else:
             if len(surgery) > 0:               
                 for surgery_record in surgery:
@@ -532,7 +537,11 @@ class Patient(Item):
                 "date": {
                     "title": "Date of Metastasis Record",
                     "description": "Date of Metastasis Record",
-                    "type": "string",
+                    "type": "string"
+                },
+                "histology_proven": {
+                    "title": "Histology Proven",
+                    "type": "string"
                 },
                 "source": {
                     "title": "Source",
@@ -550,7 +559,6 @@ class Patient(Item):
                         "Adrenal",
                         "Bone",
                         "Brain",
-                        "Kidney"
                         "Liver",
                         "Lung",
                         "Lymph node",
@@ -574,7 +582,8 @@ class Patient(Item):
                             record = {
                                 'date': path_report_obj['date'],
                                 'source': 'Pathology report',
-                                'site': path_report_obj['metasis_details']['site']
+                                'site': path_report_obj['metasis_details']['site'],
+                                'histology_proven': 'Yes'
                             }
                             if record not in records:
                                 records.append(record)               
@@ -588,18 +597,18 @@ class Patient(Item):
                     radiation_site = "Bone"
                 elif radiation_object['site_general'] == "Brain" or radiation_object['site_general'] == "Liver":
                     radiation_site = radiation_object['site_general']
-                elif radiation_object['site_general'] == "Kidney, right" or radiation_object['site_general'] == "Kidney, thrombus" or radiation_object['site_general'] == "Kidney, left":
-                    radiation_site = "Kidney"
+                elif radiation_object['site_general'] == "Connective, subcutaneous and other soft tissues, NOS" or radiation_object['site_general'] == "Retroperitoneum & peritoneum" or radiation_object['site_general'] == "Connective, subcutaneous and other soft tissue, abdomen" or radiation_object['site_general'] == "Gastrointestine/ digestive system & spleen" or radiation_object['site_general'] == "Salivary gland":
+                    radiation_site = "Other"
                 elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
                     radiation_site = "Lung"
                 elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
                     radiation_site = "Lymph Node"
-                else:
-                    radiation_site = "Other"
+
                 record = {
                     'date': radiation_object['start_date'],
                     'source': 'Radiation treatment',
-                    'site': radiation_site
+                    'site': radiation_site,
+                    'histology_proven': 'No'
                 }
                 if record not in records:
                     records.append(record)
@@ -919,6 +928,7 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
 
 
