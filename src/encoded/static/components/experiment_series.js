@@ -584,7 +584,7 @@ class ExperimentSeriesComponent extends React.Component {
             <div className={itemClass}>
                 <header>
                     <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>Summary for experiment series {context.accession}</h2>
+                    <h1>Summary for experiment series {context.accession}</h1>
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
                 </header>
                 {auditDetail(context.audit, 'series-audit', { session: this.context.session, sessionProperties: this.context.session_properties })}

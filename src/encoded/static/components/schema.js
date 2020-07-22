@@ -603,7 +603,7 @@ const SchemaPage = (props) => {
         <div className={itemClass}>
             <header>
                 <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <h2>{title}</h2>
+                <h1>{title}</h1>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <SchemaPanel schema={context} schemaName={schemaName} />

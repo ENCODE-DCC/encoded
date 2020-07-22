@@ -38,7 +38,7 @@ const Target = ({ context }) => {
         <div className={globals.itemClass(context, 'view-item')}>
             <header>
                 <Breadcrumbs root="/search/?type=Target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <h2>{context.label} (<em>{source}</em>)</h2>
+                <h1>{context.label} (<em>{source}</em>)</h1>
                 <ItemAccessories item={context} />
             </header>
 

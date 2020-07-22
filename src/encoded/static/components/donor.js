@@ -568,7 +568,7 @@ class DonorComponent extends React.Component {
             <div className={itemClass}>
                 <header>
                     <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.accession}</h2>
+                    <h1>{context.accession}</h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>

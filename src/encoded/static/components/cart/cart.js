@@ -1533,7 +1533,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
     return (
         <div className={itemClass(context, 'view-item')}>
             <header>
-                <h2>{cartName}</h2>
+                <h1>{cartName}</h1>
                 {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
             </header>
             <Panel addClasses="cart__result-table">
