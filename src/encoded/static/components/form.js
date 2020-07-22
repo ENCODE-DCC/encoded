@@ -19,8 +19,12 @@ const validator = new jsonschema.Validator();
 validator.attributes.pattern = function validatePattern(instance, schema) {
     let error;
     if (typeof instance === 'string') {
-        if (typeof schema.pattern !== 'string') throw new jsonschema.SchemaError('"pattern" expects a string', schema);
-        if (!instance.match(schema.pattern)) {
+        var pattern = schema.pattern;
+        if (Array.isArray(pattern)) {
+            pattern = pattern.join('');
+        }
+        if (typeof pattern !== 'string') throw new jsonschema.SchemaError('"pattern" expects a string or array of strings', schema);
+        if (!instance.match(pattern)) {
             error = `does not match pattern ${JSON.stringify(schema.pattern)}`;
         }
     }
