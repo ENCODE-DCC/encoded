@@ -1,11 +1,9 @@
-# Use workbook fixture from BDD tests (including elasticsearch)
+# Use fixtures from features, indexing workbook
 import json
 import pytest
 import mock
 from collections import OrderedDict
-from encoded.tests.features.conftest import app
-from encoded.tests.features.conftest import app_settings
-from encoded.tests.features.conftest import workbook
+from encoded.tests.features.conftest import app, app_settings, index_workbook
 from encoded.batch_download import lookup_column_value
 from encoded.batch_download import restricted_files_present
 from encoded.batch_download import files_prop_param_list
@@ -341,8 +339,8 @@ def test_convert_camel_to_snake_with_one_words():
     target = _convert_camel_to_snake('Camel')
     assert expected == target
 
-
-def test_batch_download_report_download(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=Experiment&sort=accession')
     assert res.headers['content-type'] == 'text/tsv; charset=UTF-8'
     disposition = res.headers['content-disposition']
@@ -360,8 +358,8 @@ def test_batch_download_report_download(testapp, workbook):
     ]
     assert len(lines) == 68
 
-
-def test_batch_download_matched_set_report_download(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_matched_set_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=MatchedSet&sort=accession')
     disposition = res.headers['content-disposition']
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
@@ -369,8 +367,8 @@ def test_batch_download_matched_set_report_download(testapp, workbook):
     disposition = res.headers['content-disposition']
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
 
-
-def test_batch_download_restricted_files_present(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_restricted_files_present(testapp, index_workbook):
     results = testapp.get('/search/?limit=all&field=files.href&field=files.file_type&field=files&type=Experiment')
     results = results.body.decode("utf-8")
     results = json.loads(results)
@@ -388,8 +386,8 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
     for path in lookup_column_value_validate.keys():
         assert lookup_column_value_validate[path] == lookup_column_value(lookup_column_value_item, path)
 
-
-def test_batch_download_view(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_view(testapp, index_workbook):
     r = testapp.get('/batch_download/?type=Experiment&status=released')
     lines = r.text.split('\n')
     assert lines[0] == (
@@ -398,8 +396,8 @@ def test_batch_download_view(testapp, workbook):
     assert len(lines) >= 79
     assert 'http://localhost/files/ENCFF002MXF/@@download/ENCFF002MXF.fastq.gz' in lines
 
-
-def test_batch_download_header_and_rows(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_header_and_rows(testapp, index_workbook):
     results = testapp.get('/batch_download/?type=Experiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'
     assert results.headers['Content-Disposition'] == 'attachment; filename="files.txt"'
@@ -409,8 +407,8 @@ def test_batch_download_header_and_rows(testapp, workbook):
     for line in lines[1:]:
         assert '@@download' in line
 
-
-def test_batch_download_view_file_plus(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_view_file_plus(testapp, index_workbook):
     r = testapp.get(
         '/batch_download/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json'
     )
@@ -420,8 +418,8 @@ def test_batch_download_view_file_plus(testapp, workbook):
     )
     assert 'http://localhost/files/ENCFF880XNW/@@download/ENCFF880XNW.bigBed' in lines
 
-
-def test_metadata_view(testapp, workbook):
+@pytest.mark.indexing
+def test_metadata_view(testapp, index_workbook):
     r = testapp.get('/metadata/?type=Experiment')
     lines = r.text.split('\n')
     assert len(lines) >= 81
@@ -446,8 +444,8 @@ def test_files_prop_param_list(test_input, expected):
 def test_restricted_files_present(test_input, expected):
     assert test_input == expected
 
-
-def test_metadata_tsv_fields(testapp, workbook):
+@pytest.mark.indexing
+def test_metadata_tsv_fields(testapp, index_workbook):
     from encoded.batch_download import (
         _tsv_mapping,
         _excluded_columns,
@@ -459,8 +457,8 @@ def test_metadata_tsv_fields(testapp, workbook):
     expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
     assert len(expected_headers - set(headers)) == 0
 
-
-def test_metadata_contains_audit_values(testapp, workbook):
+@pytest.mark.indexing
+def test_metadata_contains_audit_values(testapp, index_workbook):
      r = testapp.get('/metadata/?type=Experiment&audit=*')
      audit_values = [
          'biological replicates with identical biosample',
