@@ -48,7 +48,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RCV",
         "file_size": 20,
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "assembly": "hg19",
         "genome_annotation": "V19",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
@@ -69,7 +69,7 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001XCV",
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
         "genome_annotation": "V19",
@@ -86,7 +86,7 @@
     {
         "_project": "encode3",
         "accession": "ENCFF002XCV",
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
         "genome_annotation": "V10",
@@ -104,7 +104,7 @@
     {
         "_project": "encode3",
         "accession": "ENCFF003XCV",
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "assembly": "GRCh38",
@@ -122,7 +122,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RCW",
         "file_size": 20,
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "assembly": "hg19",
         "genome_annotation": "V19",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
@@ -200,7 +200,7 @@
     {
         "accession": "ENCFF000VWO",
         "assembly": "hg19",
-        "dataset": "ENCSR000EYX",
+        "dataset": "ENCSR123ABC",
         "file_format": "bam",
         "file_size": 462139262,
         "lab": "michael-snyder",

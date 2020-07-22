@@ -206,7 +206,7 @@
     },
     {
         "accession": "ENCFF001RDB",
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "fastq",
@@ -233,7 +233,7 @@
     {
         "_project": "encode3",
         "accession": "ENCFF001RDC",
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
         "file_size": 20,
@@ -261,7 +261,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RCT",
         "file_size": 20,
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
         "flowcell_details": [
@@ -289,7 +289,7 @@
         "_project": "encode3",
         "accession": "ENCFF001IND",
         "file_size": 20,
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-07-19T16:46:18.670068+00:00",
         "file_format": "fastq",
         "lab": "j-michael-cherry",
@@ -310,7 +310,7 @@
         "_project": "encode3",
         "accession": "ENCFF001RCU",
         "file_size": 20,
-        "dataset": "ENCSR000AEN",
+        "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
         "flowcell_details": [
