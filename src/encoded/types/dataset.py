@@ -199,36 +199,6 @@ class Dataset(Item):
         return list(syns)
 
 
-    @calculated_property(condition='hub', category='page', schema={
-        "title": "Visualize Data",
-        "type": "string",
-    })
-    def visualize(self, request, hub, accession, assembly, status, files):
-        hub_url = urljoin(request.resource_url(request.root), hub)
-        viz = {}
-        vis_assembly = set()
-        viewable_file_formats = ['bigWig', 'bigBed', 'hic']
-        viewable_file_status = ['released', 'in progress']
-        vis_assembly = {
-            properties['assembly']
-            for properties in files
-            if properties.get('file_format') in viewable_file_formats
-            if properties.get('status') in viewable_file_status
-            if 'assembly' in properties
-        }
-        for assembly_name in vis_assembly:
-            if assembly_name in viz:
-                continue
-            browsers = browsers_available(status, [assembly_name],
-                                          self.base_types, self.item_type,
-                                          files, accession, request)
-            if len(browsers) > 0:
-                viz[assembly_name] = browsers
-        if viz:
-            return viz
-        else:
-            return None
-
     @calculated_property(schema={
         "title": "Original files",
         "type": "array",
