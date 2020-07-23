@@ -17,7 +17,7 @@ if [ "$1" == "bdd" ]; then
 fi
 
 if [ "$1" == "not-bdd-indexing" ]; then
-    bin/test -s -vv -m "indexing" -k test_indexing
+    bin/test -s -vv -m "indexing"
     exit
 fi
 

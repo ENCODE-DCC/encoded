@@ -2,6 +2,7 @@ import pytest
 
 from encoded.tests.features.conftest import app_settings, app, index_workbook
 
+pytestmark = [pytest.mark.indexing]
 
 def test_search_views_search_view_with_filters(index_workbook, testapp):
     r = testapp.get(
