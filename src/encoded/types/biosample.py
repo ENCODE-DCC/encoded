@@ -231,22 +231,6 @@ class Biosample(Item):
                 return ['unknown']
 
     @calculated_property(schema={
-        "title": "Applied modifications",
-        "description": "All genetic modifications made in either the model organism and/or biosample.",
-        "type": "array",
-        "items": {
-            "title": "Applied modification",
-            "description": "Genetic modification made in either the model organism and/or biosample.",
-            "comment": "See genetic_modification.json for available identifiers.",
-            "type": "string",
-            "linkTo": "GeneticModification",
-        }
-    }, define=True)
-    def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
-        return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
-
-
-    @calculated_property(schema={
         "title": "Summary",
         "type": "string",
     })
@@ -266,16 +250,13 @@ class Biosample(Item):
                 treatments=None,
                 transfection_method=None,
                 transfection_type=None,
-                preservation_method=None,
-                genetic_modifications=None,
-                model_organism_donor_modifications=None):
+                preservation_method=None):
 
         sentence_parts = [
             'organism_name',
             'genotype_strain',
             'sex_stage_age',
             'term_phrase',
-            'modifications_list',
             'treatments_phrase',
             'preservation_method',
             'depleted_in'
@@ -293,32 +274,6 @@ class Biosample(Item):
             treatment_objects_list = []
             for t in treatments:
                 treatment_objects_list.append(request.embed(t, '@@object'))
-
-        modifications_list = None
-
-        applied_modifications = get_applied_modifications(
-            genetic_modifications, model_organism_donor_modifications)
-
-        if applied_modifications:
-            modifications_list = []
-            for gm in applied_modifications:
-                gm_object = request.embed(gm, '@@object')
-                modification_dict = {'category': gm_object.get('category')}
-                if gm_object.get('modified_site_by_target_id'):
-                    modification_dict['target'] = request.embed(
-                        gm_object.get('modified_site_by_target_id'),
-                                      '@@object').get('label')
-                if gm_object.get('introduced_tags'):
-                    modification_dict['tags'] = []
-                    for tag in gm_object.get('introduced_tags'):
-                        tag_dict = {'location': tag['location'], 'name': tag['name']}
-                        if tag.get('promoter_used'):
-                            tag_dict['promoter'] = request.embed(
-                                tag.get('promoter_used'),
-                                        '@@object').get('label')
-                        modification_dict['tags'].append(tag_dict)
-
-                modifications_list.append((gm_object['method'], modification_dict))
 
         if biosample_ontology:
             biosample_type_object = request.embed(biosample_ontology, '@@object')
@@ -343,30 +298,23 @@ class Biosample(Item):
             post_treatment_time,
             post_treatment_time_units,
             treatment_objects_list,
-            preservation_method,
-            modifications_list)
+            preservation_method)
 
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
 
     @calculated_property(schema={
         "title": "Perturbed",
-        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
+        "description": "A flag to indicate whether the biosample has been perturbed with a treatment.",
         "type": "boolean",
         "notSubmittable": True,
     })
     def perturbed(
         self,
         request,
-        applied_modifications,
         treatments=None,
     ):
-        return bool(treatments) or any(
-            (
-                request.embed(m, '@@object').get('perturbation', False)
-                for m in applied_modifications
-            )
-        )
+        return bool(treatments)
 
 
 def generate_summary_dictionary(
@@ -385,7 +333,6 @@ def generate_summary_dictionary(
         post_treatment_time_units=None,
         treatment_objects_list=None,
         preservation_method=None,
-        modifications_list=None,
         experiment_flag=False):
     dict_of_phrases = {
         'organism_name': '',
@@ -394,7 +341,6 @@ def generate_summary_dictionary(
         'sex_stage_age': '',
         'treatments_phrase': '',
         'depleted_in': '',
-        'modifications_list': '',
         'strain_background': '',
         'preservation_method': '',
         'experiment_term_phrase': ''
@@ -545,53 +491,7 @@ def generate_summary_dictionary(
                     'treatments_phrase'] += 'treated with ' + \
                                             ', '.join(map(str, dict_of_phrases['treatments']))
 
-    if modifications_list is not None and len(modifications_list) > 0:
-        gm_methods = set()
-        gm_summaries = set()
-        for (gm_method, gm_object) in modifications_list:
-            gm_methods.add(gm_method)
-            gm_summaries.add(generate_modification_summary(gm_method, gm_object))
-        if experiment_flag is True:
-            dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
-                ', '.join(map(str, list(gm_methods)))
-        else:
-            dict_of_phrases['modifications_list'] = ', '.join(sorted(list(gm_summaries)))
-
     return dict_of_phrases
-
-
-def generate_modification_summary(method, modification):
-
-    modification_summary = ''
-    if method in ['stable transfection', 'transient transfection'] and modification.get('target'):
-        modification_summary = 'stably'
-        if method == 'transient transfection':
-            modification_summary = 'transiently'
-        modification_summary += ' expressing'
-
-        if modification.get('tags'):
-            tags_list = []
-
-            for tag in modification.get('tags'):
-                addition = ''
-                if tag.get('location') in ['N-terminal', 'C-terminal', 'internal']:
-                    addition += ' ' + tag.get('location') + ' ' + tag.get('name') + '-tagged'
-                addition += ' ' + modification.get('target')
-                if tag.get('promoter'):
-                    addition += ' under ' + tag.get('promoter') + ' promoter'
-                tags_list.append(addition)
-            modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)))).strip()
-        else:
-            modification_summary += ' ' + modification.get('target')
-    else:
-        modification_summary = \
-            'genetically modified (' + modification.get('category') + ') using ' + method
-        if method == 'RNAi':
-            modification_summary = 'expressing RNAi'
-
-        if modification.get('target'):
-            modification_summary += ' targeting ' + modification.get('target')
-    return modification_summary.strip()
 
 
 def generate_sentence(phrases_dict, values_list):
@@ -624,22 +524,10 @@ def pluralize(value, value_units):
         return str(value) + ' ' + value_units + 's'
 
 
-def get_applied_modifications(genetic_modifications=None, model_organism_donor_modifications=None):
-    if genetic_modifications is not None and model_organism_donor_modifications is not None:
-        return list(set(genetic_modifications + model_organism_donor_modifications))
-    elif genetic_modifications is not None and model_organism_donor_modifications is None:
-        return genetic_modifications
-    elif genetic_modifications is None and model_organism_donor_modifications is not None:
-        return model_organism_donor_modifications
-    else:
-        return []
-
-
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
         'treatments_phrase': 'not treated',
-        'depleted_in': 'not depleted',
-        'genetic_modifications': 'not modified'
+        'depleted_in': 'not depleted'
     }
     if len(phrases_dictionarys) > 1:
         index = 0

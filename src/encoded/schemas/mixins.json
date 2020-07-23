@@ -1,4 +1,4 @@
-{
+ {
     "title": "Mixin properties",
     "schema_version": {
         "schema_version": {
@@ -262,23 +262,6 @@
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items",
             "formInput": "textarea"
-        }
-    },
-    "genetic_modifications": {
-        "genetic_modifications": {
-            "title": "Genetic modifications",
-            "description": "Genetic modification(s). Any genetic alteration of a biosample or donor.",
-            "comment": "Constructs, TALENs, and RNAi objects have been migrated to the GeneticModification object.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Genetic modification",
-                "description": "Genetic modification(s).",
-                "comment": "See genetic_modification.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "GeneticModification"
-            }
         }
     },
     "url": {
