@@ -47,13 +47,14 @@ def acl_from_settings(settings):
 class EncodedRoot(Root):
     properties = {
         'title': 'Home',
-        'portal_title': 'ENCODE',
+        'portal_title': 'LatticeDB',
     }
 
     @reify
     def __acl__(self):
         acl = acl_from_settings(self.registry.settings) + [
-            (Allow, Everyone, ['list', 'search', 'search_audit', 'audit', 'signup']),
+            (Allow, Everyone, ['list', 'search',
+                               'search_audit', 'audit', 'signup']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
@@ -79,7 +80,8 @@ class EncodedRoot(Root):
             resource = self.connection.get_by_unique_key('alias', name)
             if resource is not None:
                 return resource
-        resource = self.connection.get_by_unique_key('external_accession', name)
+        resource = self.connection.get_by_unique_key(
+            'external_accession', name)
         if resource is not None:
             return resource
         return default

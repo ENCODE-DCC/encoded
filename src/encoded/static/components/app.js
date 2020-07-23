@@ -34,7 +34,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 
 
 const portal = {
-    portal_title: 'ENCODE',
+    portal_title: 'LatticeDB',
     global_sections: [
         {
             id: 'data',
