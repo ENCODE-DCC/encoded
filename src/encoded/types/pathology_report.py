@@ -33,17 +33,17 @@ class PathologyReport(Item):
     audit_inherit = []
     set_status_up = []
     set_status_down = []
-  
+
     @calculated_property(  schema={
         "title": "Pathology Report Tumor Range",
         "description": "Customized tumor range for pathology report",
         "type": "string",
 
     })
-    
+
     def pathology_report_tumor_range(self):
         return self.__pathology_report_tumor_range__
-    
+
     @property
     def __pathology_report_tumor_range__(self):
         properties = self.upgrade_properties()
@@ -52,16 +52,18 @@ class PathologyReport(Item):
     def _pathology_report_tumor_range(self, properties):
         tumor_size_range = []
         tumor_size=properties['tumor_size']
-            
-        if 0 <= tumor_size < 3:
-            tumor_size_range.append("0-3 cm")
-        elif 3 <= tumor_size < 7:
-            tumor_size_range.append("3-7 cm")
-        elif 7 <= tumor_size < 10:
-            tumor_size_range.append("7-10 cm")
-        else:
-            tumor_size_range.append("10+ cm")
-        return tumor_size_range 
+        if path_source_procedure is 'path_nephrectomy':
+            if tumor_size is None:
+                tumor_size_range.append("unknown")
+            elif 0 <= tumor_size < 3:
+                tumor_size_range.append("0-3 cm")
+            elif 3 <= tumor_size < 7:
+                tumor_size_range.append("3-7 cm")
+            elif 7 <= tumor_size < 10:
+                tumor_size_range.append("7-10 cm")
+            else:
+                tumor_size_range.append("10+ cm")
+        return tumor_size_range
 
     @calculated_property(
         schema={
@@ -72,7 +74,3 @@ class PathologyReport(Item):
     )
     def ihc(self, request, ihc):
         return paths_filtered_by_status(request, ihc)
-    
-
-    
-   

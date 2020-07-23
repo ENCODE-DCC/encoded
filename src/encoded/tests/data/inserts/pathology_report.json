@@ -6,8 +6,6 @@
     "tumor_sequence_number": 1,
     "date": "1855-01-05",
     "laterality": "Bilateral, Horseshoe",
-    "tumor_size": 5,
-    "tumor_size_units": "cm",
     "focality": "Not applicable",
     "histology": "SDH deficient RCC",
     "sarcomatoid": "Present",
@@ -122,7 +120,7 @@
     "path_source_procedure": "path_nephrectomy",
     "uuid": "9575a49b-feb0-4831-a74e-02546f0c27be"
   },
-  { 
+  {
     "accession": "KCEPR480NBU",
     "surgery": "KCESX480NBU",
     "patient":"KCEPT480NBU",
