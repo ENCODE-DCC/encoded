@@ -71,7 +71,6 @@ jobs:
       - browser-tools/install-chromedriver
       - run:
           name: Run bdd tests
-          # collected 2189 items / 2119 deselected / 70 selected
           command: |
             bin/test -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait 10 \
@@ -87,8 +86,7 @@ jobs:
       - run:
           name: non bdd indexing tests
           command: |
-            # collected 2189 items / 2184 deselected / 5 selected
-            bin/test -s -vv -m "not bdd" -k test_indexing
+            bin/test -s -vv -m "indexing"
   not-bdd-non-indexing:
     executor: encoded-executor
     resource_class: large
@@ -97,8 +95,7 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            # collected 2189 items / 75 deselected / 2114 selected
-            bin/test -s -vv -m "not bdd" -k 'not test_indexing'
+=            bin/test -s -vv -m "not bdd and not indexing"
   npm:
     executor: encoded-executor
     resource_class: large
