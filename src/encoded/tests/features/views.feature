@@ -1,4 +1,4 @@
-@views @usefixtures(workbook)
+@views @usefixtures(index_workbook)
 Feature: Views
     Background:
         When I visit "/search/?type=Experiment&status=released&assay_slims=DNA+methylation"

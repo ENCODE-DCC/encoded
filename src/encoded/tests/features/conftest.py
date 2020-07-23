@@ -97,7 +97,7 @@ def splinter_window_size():
 
 # Depend on workbook fixture here to avoid remote browser timeouts.
 @pytest.fixture(scope='session')
-def browser(workbook, session_browser):
+def browser(index_workbook, session_browser):
     return session_browser
 
 
