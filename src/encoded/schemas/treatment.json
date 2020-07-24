@@ -42,10 +42,12 @@
         },
         "amount": {
             "title": "Amount",
+            "description": "The amount of the treatment identified in the Treatment term name.",
             "type": "number"
         },
         "amount_units": {
             "title": "Amount units",
+            "description": "The units of the amount of the treatment identified in the Treatment term name.",
             "type": "string",
             "enum": [
                 "M",
@@ -68,10 +70,12 @@
         },
         "duration": {
             "title": "Duration",
+            "description": "The duration of application of the treatment identified in the Treatment term name.",
             "type": "number"
         },
         "duration_units": {
             "title": "Duration units",
+            "description": "The units of the duration of application of the treatment identified in the Treatment term name.",
             "type": "string",
             "enum": [
                 "second",
@@ -82,6 +86,7 @@
         },
         "purpose": {
             "title": "Purpose",
+            "description":  "The reason for application of the treatment.",
             "type": "string",
             "enum": [
                 "activation",
@@ -90,10 +95,12 @@
         },
         "temperature": {
             "title": "Temperature",
+            "description":  "The temperature applied as a part of the treatment.",
             "type": "number"
         },
         "temperature_units": {
             "title": "Temperature units",
+            "description":  "The units of temperature applied as a part of the treatment.",
             "type": "string",
             "enum": [
                 "Celsius",

@@ -101,6 +101,7 @@
             "title": "Status",
             "type": "string",
             "default": "in progress",
+            "description": "The status of the metadata object.",
             "permission": "import_items",
             "enum" : [
                 "deleted",
@@ -114,6 +115,7 @@
             "title": "Status",
             "type": "string",
             "default": "current",
+            "description": "The status of the metadata object.",
             "enum" : [
                 "current",
                 "deleted",
@@ -138,6 +140,7 @@
         "submitted_by": {
             "rdfs:subPropertyOf": "dc:creator",
             "title": "Submitted by",
+            "description": "The user that originally generated this metadata object.",
             "comment": "Do not submit. The user that created the object is assigned by the server.",
             "type": "string",
             "linkTo": "User",
@@ -256,7 +259,7 @@
     "notes": {
         "notes": {
             "title": "Notes",
-            "description": "DCC internal notes.",
+            "description": "Lattice internal notes.",
             "comment": "Do not submit. A place for the DCC to keep information that does not have a place in the schema.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",

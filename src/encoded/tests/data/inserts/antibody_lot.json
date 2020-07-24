@@ -27,7 +27,7 @@
         "host_organism": "rabbit",
         "lot_id": "R0903B0054",
         "product_id": "07-473",
-        "purifications": [
+        "purification_methods": [
             "affinity"
         ],
         "source": "millipore",
@@ -112,7 +112,7 @@
             "550799"
         ],
         "product_id": "ab4441",
-        "purifications": [
+        "purification_methods": [
             "affinity"
         ],
         "source": "abcam",
@@ -179,7 +179,6 @@
         "source": "santa-cruz-biotech",
         "submitted_by": "fames.at@per.varius",
         "uuid": "9a69a3d2-655f-49ca-a3b3-48d70ad4a9e1",
-        "control_type": "isotype control",
         "status": "in progress"
     },
     {
@@ -312,7 +311,7 @@
             "kevin-white:GFP NewGoat UofC",
             "kevin-white:GoatV-anti-GFP"
         ],
-        "purifications": [
+        "purification_methods": [
             "affinity"
         ],
         "host_organism": "goat",
@@ -355,7 +354,7 @@
         ],
         "product_id": "F3165",
         "clonality": "monoclonal",
-        "purifications": [
+        "purification_methods": [
             "Protein A/G"
         ],
         "status": "released",
@@ -379,7 +378,7 @@
         "accession": "ENCAB697XQW",
         "host_organism": "/organisms/mouse/",
         "isotype": "IgG1",
-        "purifications": [
+        "purification_methods": [
             "affinity"
         ],
         "antigen_description": "Recognizes the FLAG peptide sequence: DYKDDDDK",
