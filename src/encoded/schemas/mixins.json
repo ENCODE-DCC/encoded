@@ -252,9 +252,7 @@
         "source": {
             "title": "Source",
     	    "description": "The originating lab or vendor.",
-    	    "comment": "See source.json for available identifiers.",
-    	    "type": "string",
-	        "linkTo": "Source"
+    	    "type": "string"
         }
     },
     "notes": {

@@ -382,7 +382,7 @@
             "affinity"
         ],
         "antigen_description": "Recognizes the FLAG peptide sequence: DYKDDDDK",
-        "source": "/sources/sigma/",
+        "source": "sigma",
         "product_id": "F1804",
         "targets": [
             "/targets/FLAG-synthetic_tag/"

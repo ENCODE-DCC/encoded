@@ -79,19 +79,6 @@ class Organism(Item):
 
 
 @collection(
-    name='sources',
-    unique_key='source:name',
-    properties={
-        'title': 'Sources',
-        'description': 'Listing of sources and vendors for ENCODE material',
-    })
-class Source(Item):
-    item_type = 'source'
-    schema = load_schema('encoded:schemas/source.json')
-    name_key = 'name'
-
-
-@collection(
     name='treatments',
     properties={
         'title': 'Treatments',
