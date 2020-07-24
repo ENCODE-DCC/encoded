@@ -202,7 +202,7 @@ const EulaModal = ({ closeModal, signup }) => (
         <ModalHeader title="Creating a new account" closeModal={closeModal} />
         <ModalBody>
             <p>
-                You are about to create an ENCODE account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
+                You are about to create an LatticeDB account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -223,7 +223,7 @@ const AccountCreationFailedModal = ({ closeModal, date }) => (
         <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
         <ModalBody>
             <p>
-                Creating a new account failed. Please contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
+                Creating a new account failed. Please contact <a href={`mailto:lattice-info@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -389,7 +389,7 @@ class App extends React.Component {
             },
             socialButtonStyle: 'big',
             languageDictionary: {
-                title: 'Log in to ENCODE',
+                title: 'Log in to LatticeDB',
             },
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
@@ -1199,12 +1199,12 @@ class App extends React.Component {
             appClass = 'communicating';
         }
 
-        let title = context.title || context.name || context.accession || context['@id'];
-        if (title && title !== 'Home') {
-            title = `${title} – ${portal.portal_title}`;
-        } else {
-            title = portal.portal_title;
-        }
+	let title = portal.portal_title;
+
+        let prefix_title = context.title || context.name || context.accession || context['@id'];
+	if (prefix_title && !isHomePage) {
+	    title = `${prefix_title} – ${portal.portal_title}`;
+	}
 
         let canonical = this.state.href;
         if (context.canonical_uri) {
