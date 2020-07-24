@@ -1,5 +1,64 @@
 Changes
-=======
+======= 
+104.0 (released) snovault 1.0.47
+--------------------------------------------------------------------
+	1.	Update snovault 1.0.47 (#3447)
+	2.	ENCD-5427-fix-title-underlines (#3442)
+	3.	ENCD-5415-audits-in-annotation-metadata (#3439)
+	4.	ENCD-5426-classic-img-update (#3441)
+	5.	ENCD-5386-reverse-link-publications-in-dataset.references (#3423)
+	6.	ENCD-5409-lower-chunksize-option-demo (#3437)
+	7.	ENCD-5420-fix-bottom-shading (#3440)
+	8.	ENCD-5421-annotation-test (#3436)
+	9.	ENCD-5403-annotation-meta-columns (#3433)
+	10.	SNO-159 Allow remote indexing (#3412)
+	11.	ENCD-5288-create-facet-for-cCREs (#3427)
+	12.	ENCD-5393-publication-dataset-download (#3435)
+	13.	ENCD-5404-add-mint-to-chip-audits (#3430)
+	14.	ENCD-5395-check-biosample-characterizations-from-pooled-from-biosample (#3421)
+	15.	ENCD-5398-add-cut-and-run-assay (#3425)
+	16.	ENCD-5400-analysis-update (#3426)
+	17.	ENCD-5371-biosample-disease-ontology (#3420)
+	18.	ENCD-5401-Restrict-batch-download-to-certain-types (#3432)
+	19.	ENCD-5394-cart-experiments-only (#3429)
+	20.	ENCD-5390 update fonts sitewide (#3418)
+	21.	ENCD-5413-hide-download-btn-for-large-search (#3431)
+	22.	ENCD-5382-update-robots-txt (#3424)
+	23.	ENCD-5405-cart-dl-metadata-url (#3422)
+	24.	ENCD-5385 facets updates (#3416)
+	25.	ENCD-5389-correct-audit-details-for-missing-input-control-audit (#3409)
+	26.	ENCD-5381-fix-publication-object-publication-year (#3414)
+	27.	ENCD-5367 clean up body map styles (#3407)
+	28.	ENCD-5290-homepage-update (#3413)
+	29.	ENCD-5378-fix-metadata-tsv-assay-col (#3411)
+	30.	ENCD-5252-add-index-reads-audit (#3391)
+	31.	ENCD-5359 add-hover-definitions-to-menu (#3401)
+	32.	ENCD-5391-fix-internal-status-facet-not-opening (#3410)
+	33.	ENCD-5304-major-ontology-update-scRNA-seq-assay-change (#3394)
+
+103.0 (unreleased) snovault 1.0.46
+--------------------------------------------------------------------
+	1.	Update snovault 1.0.46 (#3406)
+	2.	SNO-160-use-boolean-values-in-facets (#3402)
+	3.	SNO-116-fix-summary-naming-conflict (#3404)
+	4.	ENCD-5241-search-scroll (#3367)
+	5.	ENCD-5370-add-pagination-to-publication-dataset (#3403)
+	6.	ENCD-5369-change-annotation-v5 (#3398)
+	7.	ENCD-5365-add-document-to-publication-obj (#3405)
+	8.	ENCD-5373 fix mouse development matrix (#3397)
+	9.	ENCD-5245-adjust-ChIP-control-audit (#3400)
+	10.	ENCD-5363-Fix-tags-on-cluster-deployments (#3381)
+	11.	ENCD-4519-in-series-change-relative-age-to-age (#3373)
+	12.	SNO-157-make-page-facets-collapsable (#3385)
+	13.	ENCD-5368-lib-dependency-depleted-nucleic-acid-term (#3395)
+	14.	ENCD-5193 additions to set_status_up for datasets (#3392)
+	15.	ENCD-4350-make-antibody-label-clearer (#3374)
+	16.	ENCD-5360-atac-output-types (#3389)
+	17.	ENCD-5358 fix body map thumbnail (#3390)
+	18.	ENCD-5286-subreads-bam-should-require-replicate (#3393)
+	19.	ENCD-5280-lower-audit-severity-missing-characterization (#3386)
+
+
 102.0 (released) snovault 1.0.45
 --------------------------------------------------------------------
 	1.	ENCD-5361-bug-fix-biosample-summary (#3378)
