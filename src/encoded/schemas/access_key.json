@@ -16,6 +16,7 @@
         },
         "status": {
             "title": "Status",
+            "description": "The status of the access key",
             "type": "string",
             "default": "current",
             "enum" : [
