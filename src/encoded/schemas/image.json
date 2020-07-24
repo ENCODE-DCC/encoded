@@ -24,6 +24,7 @@
         },
         "caption": {
             "title": "Caption",
+            "description": "The caption of the Image.",
             "type": "string"
         }
     },

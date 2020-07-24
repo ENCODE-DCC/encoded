@@ -29,12 +29,16 @@
             "type": "string",
             "uniqueKey": "lab:name"
         },
-        "principal_investigator": {
-            "title": "Principal Investigator",
-            "description": "Principal Investigator of the lab.",
+        "principal_investigators": {
+            "title": "Principal Investigators",
+            "description": "Principal Investigators of the lab.",
             "comment": "See user.json for available identifiers.",
-            "type": "string",
-            "linkTo": "User"
+            "type": "array",
+            "items": {
+                "description": "A Principal Investigators of the lab",
+                "type": "string",
+                "linkTo": "User"
+            }
         },
         "institute_label": {
             "title": "Institute label",
@@ -52,57 +56,49 @@
         },
         "address1": {
             "title": "Address line 1",
+            "description": "The first line of the address of the lab.",
             "type": "string",
             "default": "",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "address2": {
             "title": "Address line 2",
+            "description": "The second line of the address of the lab.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "city": {
             "title": "City",
+            "description": "The city of the address of the lab.",
             "type": "string",
             "default": "",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "state": {
             "title": "State/Province/Region",
+            "description": "The state of the address of the lab.",
             "type": "string",
             "default": "",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "country": {
             "title": "Country",
+            "description": "The country of the address of the lab.",
             "type": "string",
             "default": "",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "postal_code": {
             "title": "ZIP/Postal code",
+            "description": "The zip code of the address of the lab.",
             "type": "string",
             "default": "",
             "format": "postal-code",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
-        "fax": {
-            "title": "Fax",
-            "description":"A fax number for the lab (with country code).",
-            "type": "string",
-            "default": "",
-            "format": "phone"
-        },
-        "phone1": {
+        "phone": {
             "title": "Primary phone number",
             "description": "The lab's primary phone number (with country code).",
-            "type": "string",
-            "default": "",
-            "format": "phone"
-        },
-        "phone2": {
-            "title": "Alternate phone number",
-            "description": "The lab's alternative phone number (with country code).",
             "type": "string",
             "default": "",
             "format": "phone"

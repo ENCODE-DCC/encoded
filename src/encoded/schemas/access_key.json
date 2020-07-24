@@ -25,6 +25,7 @@
         },
         "user": {
             "title": "User",
+            "description": "The user that owns the access key.",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "linkTo": "User",
@@ -32,6 +33,7 @@
         },
         "access_key_id": {
             "title": "Access key ID",
+            "description": "The ID of the access key.",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items",
@@ -39,6 +41,7 @@
         },
         "secret_access_key_hash": {
             "title": "Secret access key hash",
+            "description": "The secret of the access key.",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"

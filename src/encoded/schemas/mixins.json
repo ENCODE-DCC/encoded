@@ -183,6 +183,7 @@
     "attachment": {
         "attachment": {
             "title": "Attachment",
+            "description": "The file attachment object for the Image of the object.",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -317,6 +318,60 @@
                 "title": "",
                 "comment": "",
                 "type": "string"
+            }
+        }
+    },
+    "viewing_groups": {
+        "viewing_groups": {
+            "title": "Vieiwing access groups",
+            "description": "The groups that determines which set of data the user has permission to view.",
+            "type": "array",
+            "items": {
+                "title": "View access group",
+                "description": "The group that determines which set of data the user has permission to view.",
+                "type": "string",
+                "enum": [
+                    "community",
+                    "pilot",
+                    "CZI001KID",
+                    "CZI002FRS",
+                    "CZI003CNS",
+                    "CZI004LIV",
+                    "CZI005BMW",
+                    "CZI006CVS",
+                    "CZI007IMM",
+                    "CZI008IMM",
+                    "CZI009KID",
+                    "CZI010MTH",
+                    "CZI011EYE",
+                    "CZI012EYE",
+                    "CZI013MOG",
+                    "CZI014MTH",
+                    "CZI015KID",
+                    "CZI016MOG",
+                    "CZI017IMM",
+                    "CZI018BRE",
+                    "CZI019CNS",
+                    "CZI020FRS",
+                    "CZI021IMM",
+                    "CZI022LNG",
+                    "CZI023CVS",
+                    "CZI024CNS",
+                    "CZI025LYN",
+                    "CZI026THY",
+                    "CZI027ADI",
+                    "CZI028ADI",
+                    "CZI029TES",
+                    "CZI030IMM",
+                    "CZI031CNS",
+                    "CZI032MTH",
+                    "CZI033BRE",
+                    "CZI034MTH",
+                    "CZI035CVS",
+                    "CZI036MOG",
+                    "CZI037MTH",
+                    "CZI038TEN"
+                ]
             }
         }
     }

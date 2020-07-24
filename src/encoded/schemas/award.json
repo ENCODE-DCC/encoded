@@ -10,7 +10,8 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/description" },
-        { "$ref": "mixins.json#/shared_status" }
+        { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/viewing_groups" }
     ],
     "type": "object",
     "properties": {
@@ -20,13 +21,13 @@
         "title": {
             "rdfs:subPropertyOf": "dc:title",
             "title": "Title",
-            "description": "The grant name from the NIH database, if applicable.",
+            "description": "The grant title from the CZI Seed Network website.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
             "title": "Name",
-            "description": "The official grant number from the NIH database, if applicable",
+            "description": "The grant ID assigned by Lattice.",
             "type": "string",
             "pattern": "^[A-Za-z0-9\\-]+$",
             "uniqueKey": true
@@ -36,6 +37,7 @@
         },
         "start_date": {
             "title": "Start date",
+            "description": "The start date of the award.",
             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
             "anyOf": [
@@ -45,7 +47,8 @@
         },
         "end_date": {
             "title": "End date",
-             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "description": "The end date of the award.",
+            "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
@@ -82,47 +85,23 @@
         },
         "project": {
             "title": "Project",
-            "description": "The collection of biological data related to a single initiative, originating from a consortium.",
+            "description": "The larger initiative that the award is a part of.",
             "type": "string",
             "enum": [
-                "community",
-                "ENCODE",
-                "GGR",
-                "modENCODE",
-                "modERN",
-                "Roadmap",
-                "ENCORE",
-                "CZI Seed Networks"
+                "HCA Seed Networks",
+                "HCA Pilot Projects"
             ]
         },
-        "viewing_group": {
-            "title": "View access group",
-            "description": "The group that determines which set of data the user has permission to view.",
-            "type": "string",
-            "enum": [
-                "community",
-                "ENCODE3",
-                "ENCODE4",
-                "GGR",
-                "REMC",
-                "ENCORE",
-                "CZISN"
-            ]
-        },
-        "component": {
-            "title": "ENCODE component",
-            "description": "The ENCODE component the award is associated with.",
-            "type": "string",
-            "permission": "import_items",
-            "enum": [
-                "functional characterization",
-                "computational analysis",
-                "mapping",
-                "data coordination",
-                "data analysis",
-                "affiliate"
-            ]
-        }
+        "focus": {
+            "title": "Focus",
+            "description": "The general scientific area of focus for the research funded by this award.",
+            "type": "string"
+       },
+        "CZI_project_identifier": {
+            "title": "CZI project identifier",
+            "description": "The CZI identifier for this award.",
+            "type": "string"
+       }
     },
     "facets": {
         "project": {

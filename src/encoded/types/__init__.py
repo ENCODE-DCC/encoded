@@ -170,13 +170,6 @@ class Publication(Item):
             keys.setdefault('alias', []).extend(properties['identifiers'])
         return keys
 
-    @calculated_property(condition='date_published', schema={
-        "title": "Publication year",
-        "type": "string",
-    })
-    def publication_year(self, date_published):
-        return date_published.partition(' ')[0]
-
 
 @collection(
     name='software',

@@ -1,87 +1,61 @@
 [
     {
-        "_test": "spikes",
         "accession": "ENCSR156CIL",
-        "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
     },
     {
-        "_test": "spikes2",
         "accession": "ENCSR013YHQ",
-        "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset 2",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed"
     },
     {
-        "_test": "RAMPAGE spike-ins",
         "accession": "ENCSR704RSS",
-        "reference_type": "spike-in",
         "description": "Spike-ins used in RAMPAGE experiments from CSHL",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108"
     },
     {
-        "_test": "mappability",
         "accession": "ENCSR165FBU",
-        "reference_type": "mappability",
         "description": "Human Mappability Uniqueness 35mer",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "cb15de83-0e56-4428-8742-b2fbb61543d9"
     },
     {
-        "_test": "index",
         "accession": "ENCSR497EUF",
-        "reference_type": "index",
         "description": "Bismarck indexed reference files for use with methylation input",
-        "organism": "human",
-        "software_used": [
-            "/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"
-        ],
         "status": "released"
     },
     {
-        "_test": "reference file dataset ",
         "accession": "ENCSR001REF",
-        "reference_type": "index",
         "description": "Dataset for Reference Files (including Genomes)",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b",
-        "software_used": [
-            "/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"
-        ]
+        "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b"
     },
     {
-        "_test": "elements reference",
         "accession": "ENCSR500ELM",
-        "reference_type": "functional elements",
         "description": "Elements DNA sequences",
         "status": "archived",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "84c2c840-4146-4c93-90cf-67a11a4fc108"
     },
     {
-        "_test": "microRNA-seq adapters",
         "date_created": "2019-07-01T22:14:15.601240+00:00",
-        "reference_type": "sequence adapters",
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "in progress",
         "accession": "ENCSR819DEL"
     },
     {
-        "_test": "reference genome dataset",
         "accession": "ENCSR001GEN",
-        "reference_type": "genome",
         "description": "Dataset for Reference Genome (linked to Donor)",
         "status": "released",
-        "uuid": "9bd36e84-f20e-48d3-8c03-c99df8be7c3c",
-        "donor": "ENCDO845WKR"
+        "uuid": "9bd36e84-f20e-48d3-8c03-c99df8be7c3c"
     }
 ]

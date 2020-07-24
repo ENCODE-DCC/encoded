@@ -11,8 +11,7 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/standard_status"},
-        {"$ref": "mixins.json#/aliases"},
-        {"$ref": "mixins.json#/url"}
+        {"$ref": "mixins.json#/aliases"}
     ],
     "properties": {
         "schema_version": {
@@ -32,19 +31,13 @@
         },
         "authors": {
             "title": "Authors",
+            "description": "The list of authors of the publication, comma-separated.",
             "type": "string"
         },
-        "date_published": {
-            "title": "Publication date",
+        "publication_year": {
+            "title": "Publication year",
+            "description": "The year of publication.",
             "type": "string"
-        },
-        "date_revised": {
-            "title": "Date revised",
-            "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
         },
         "issue": {
             "title": "Issue",
@@ -79,118 +72,11 @@
                 "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
             }
         },
-        "datasets": {
-            "title": "Dataset",
-            "description": "The datasets referred to by the publication.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Datasets",
-                "description": "A datasets referred to by the publication.",
-                "comment": "See dataset.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "Dataset"
-            }
-        },
-        "supplementary_data": {
-            "title": "Supplementary_data",
-            "description": "Description of data found in the publication.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Supplementary data details",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "url": {
-                        "title": "URL",
-                        "description": "External resources with additional information or supplemental files associated with the publication.",
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "file_format": {
-                        "title": "File format",
-                        "description": "Description of the file format of files downloaded from the URL.",
-                        "type": "string",
-                        "enum" : [
-                            "BED",
-                            "GTF",
-                            "other format",
-                            "text",
-                            "TSV",
-                            "VCF"
-                        ]
-                    },
-                    "supplementary_data_type": {
-                        "title": "Supplementary data type",
-                        "description": "The type of supplementary data reader should expect.",
-                        "type": "string",
-                        "enum" : [
-                            "connectivity",
-                            "enhancer annotations",
-                            "genomic annotations",
-                            "HMM regions",
-                            "HOT regions",
-                            "motifs",
-                            "peak calls",
-                            "promoter regions",
-                            "RNA annotations",
-                            "website"
-                        ]
-                    },
-                    "data_summary": {
-                        "title": "Method summary",
-                        "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "categories": {
-            "title": "Categories",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Category",
-                "type": "string",
-                "enum" : [
-                    "basic biology",
-                    "data standard",
-                    "database",
-                    "genomic annotations",
-                    "human disease",
-                    "integrative analysis",
-                    "key publication",
-                    "model organism biology",
-                    "pilot phase publication",
-                    "production",
-                    "software tool",
-                    "technology development",
-                    "tutorial"
-                ]
-            }      
-        },
-        "published_by": {
-            "title": "Published by",
-            "type": "array",
-            "uniqueItems": true,
-            "default": ["ENCODE"],
-            "items": {
-                "title": "Published by",
+        "award": {
+            "title": "Award",
+            "description": "The HCA Seed Network or HCA Pilot Project award used to fund the published research.",
             "type": "string",
-            "enum": [
-                "community",
-                "ENCODE",
-                "historical reference",
-                "modENCODE",
-                "mouseENCODE",
-                "Roadmap"
-                ]
-            }
-        },
-        "data_used": {
-            "title": "Data used",
-            "type": "string"
+            "linkTo": "Award"
         }
     },
     "facets": {

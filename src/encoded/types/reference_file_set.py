@@ -43,8 +43,6 @@ class ReferenceFileSet(Item):
     item_type = 'reference_file_set'
     schema = load_schema('encoded:schemas/reference_file_set.json')
     embedded = [
-        'software_used',
-        'software_used.software',
         'files',
         'revoked_files',
         'submitted_by'

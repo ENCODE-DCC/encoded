@@ -62,71 +62,14 @@
                     "no"
                 ]
             }
-        },
-        "reference_type": {
-            "title": "Reference type",
-            "description": "The category that best describes the reference set.",
-            "type": "string",
-            "enum": [
-                "index",
-                "genome",
-                "mappability",
-                "spike-in",
-                "functional elements",
-                "sequence adapters"
-            ]
-        },
-        "organism": {
-            "title": "Organism",
-            "comment": "See organism.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Organism"
-        },
-        "donor": {
-            "title": "Donor",
-            "description": "The donor or strain the biosample was originated from.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Donor"
-        },
-        "software_used": {
-            "title": "Software used",
-            "description": "A list of software used to derive the reference file set.",
-            "type": "array",
-            "items": {
-                "title": "Software used",
-                "description": "Version of software used to derived the reference file set.",
-                "type": "string",
-                "comment": "See software_version.json for available identifiers.",
-                "linkTo": "SoftwareVersion"
-            }
-        },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "List of data files to be associated with the dataset.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
-                "type": "string",
-                "linkTo": "DataFile"
-            }
         }
     },
     "facets": {
-        "reference_type": {
-            "title": "Reference type"
-        },
         "status": {
             "title": "Status"
         },
         "assembly": {
             "title": "Genome assembly"
-        },
-        "organism.scientific_name": {
-            "title": "Organism"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -139,9 +82,6 @@
         },
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
-        },
-        "software_used.software.name": {
-            "title": "Software used"
         },
         "lab.title": {
             "title": "Lab"
@@ -163,10 +103,6 @@
         "status": {
             "title": "Status",
             "type": "string"
-        },
-        "software_used.software.name": {
-            "title": "Software used",
-            "type": "array"
         }
     },
     "boost_values": {},
