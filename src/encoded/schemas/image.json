@@ -25,6 +25,22 @@
         "caption": {
             "title": "Caption",
             "type": "string"
+        },
+        "thumbnail": {
+            "title": "Thumbnail",
+            "type": "string"
+        },
+        "downloadUrl": {
+            "title": "Download Url",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "thumbnail": {
+            "title": "Thumbnail"
+        },
+        "caption": {
+            "title": "Caption"
         }
     },
     "boost_values": {

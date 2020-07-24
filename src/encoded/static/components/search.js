@@ -601,11 +601,9 @@ const Image = (props) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.caption}</a>
+                    <a href={result['@id']} className="result-item__link">{result['@id']}</a>
                     <Attachment context={result} attachment={result.attachment} />
-                </div>
-                <div className="result-item__meta">
-                    <p className="type meta-title">Image</p>
+                    {result.caption}
                 </div>
                 <PickerActions context={result} />
             </div>

@@ -1,5 +1,6 @@
 from snovault import (
     collection,
+    calculated_property,
     load_schema,
 )
 from .base import (
@@ -30,3 +31,19 @@ class Image(ItemWithAttachment, Item):
         value = properties['attachment']['download']
         keys.setdefault('image:filename', []).append(value)
         return keys
+    
+    @calculated_property(schema={
+        "title": "Thumbnail",
+        "description": "Image url",
+        "type": "string",
+    })
+    def thumbnail(self, request, attachment):
+        return self.jsonld_id(request) + attachment['href']
+
+    @calculated_property(schema={
+        "title": "Download Url",
+        "description": "Download Url",
+        "type": "string",
+    })
+    def downloadUrl(self, request, attachment):
+        return self.jsonld_id(request) + attachment['href']
