@@ -51,18 +51,19 @@ class PathologyReport(Item):
 
     def _pathology_report_tumor_range(self, properties):
         tumor_size_range = []
-        tumor_size=properties['tumor_size']
-        if properties['path_source_procedure'] == 'path_nephrectomy':
-            if tumor_size is None:
-                tumor_size_range.append("unknown")
-            elif 0 <= tumor_size < 3:
-                tumor_size_range.append("0-3 cm")
-            elif 3 <= tumor_size < 7:
-                tumor_size_range.append("3-7 cm")
-            elif 7 <= tumor_size < 10:
-                tumor_size_range.append("7-10 cm")
-            else:
-                tumor_size_range.append("10+ cm")
+        path_source_procedure=properties['path_source_procedure']
+        if  path_source_procedure == 'path_nephrectomy':
+            tumor_size_range.append("unknown")
+            if 'tumor_size' in properties:
+                tumor_size=properties['tumor_size']
+                if 0 <= tumor_size < 3:
+                    tumor_size_range.append("0-3 cm")
+                elif 3 <= tumor_size < 7:
+                    tumor_size_range.append("3-7 cm")
+                elif 7 <= tumor_size < 10:
+                    tumor_size_range.append("7-10 cm")
+                else:
+                    tumor_size_range.append("10+ cm")
         return tumor_size_range
 
     @calculated_property(

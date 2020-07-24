@@ -392,6 +392,7 @@
             "description": "TNM Stage",
             "type": "string",
             "enum": [
+                "1",
                 "1A",
                 "1B",
                 "2",
