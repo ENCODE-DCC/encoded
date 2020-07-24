@@ -95,7 +95,29 @@
         "focus": {
             "title": "Focus",
             "description": "The general scientific area of focus for the research funded by this award.",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "cardiovascular system",
+                "central nervous system",
+                "female reproductive system",
+                "immune system",
+                "adipose",
+                "bone marrow",
+                "breast",
+                "eye",
+                "gastrointestinal",
+                "kidney",
+                "liver",
+                "lung",
+                "lymph nodes",
+                "skin",
+                "tendon",
+                "testis",
+                "thymus",
+                "multi-organ",
+                "methods",
+                "data coordination"
+            ]
        },
         "CZI_project_identifier": {
             "title": "CZI project identifier",
@@ -106,6 +128,9 @@
     "facets": {
         "project": {
             "title": "Project"
+        },
+        "focus": {
+            "title": "Focus"
         }
     },
     "columns": {
