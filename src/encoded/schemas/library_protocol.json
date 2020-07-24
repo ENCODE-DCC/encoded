@@ -22,10 +22,16 @@
         },
         "name": {
             "title": "Name",
-            "description": "",
+            "description": "The unique idenfier that describes the protocol used to create the library, convention is lower cased and hyphen delimited.",
             "comment": "",
             "type": "string",
             "uniqueKey": "library_protocol:name"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The unique name that describes the protocol used to create the library, convention is the name with common use of uppercase and spaces.",
+            "comment": "",
+            "type": "string"
         },
         "construction_platform": {
             "title": "Platform",
@@ -41,13 +47,12 @@
         },
         "construction_platform_version": {
             "title": "Platform version",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "description": "The version of the device used to construct the library.",
+            "type": "number"
         },
         "library_type": {
-            "title": "",
-            "description": "",
+            "title": "Library type",
+            "description": "The category of assay used in library construction, correlating with the biological material being profiled.",
             "type": "string",
             "enum": [
                 "RNA-seq",
@@ -80,7 +85,8 @@
             "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
             "enum": [
                 "enzymatic",
-                "transposition"
+                "physical",
+                "chemical"
            ]
         },
         "library_size_selection_method": {
@@ -102,7 +108,7 @@
         },
         "size_range": {
             "title": "Size range",
-            "description": "The measured size range of the purified nucleic acid, in bp.",
+            "description": "The targeted size range of the purified nucleic acid (eg: 400-1000 or >500).",
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
@@ -118,7 +124,7 @@
         },
         "depleted_in_term_name": {
             "type": "array",
-            "title": "Depleted in term",
+            "title": "Depleted in term name",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
             "uniqueItems": true,
             "items": {
@@ -131,13 +137,14 @@
             }
         },
         "depleted_in_term_id": {
-            "title": "",
-            "description": "",
-            "type": "string"
+            "title": "Depleted in term ID",
+            "description": "The SO (Sequence Ontology) term ID best matching the nucleic acid that was diminished from the library.",
+            "type": "string",
+            "pattern": "^(SO:[0-9]{2,8})$"
         },
         "end_bias": {
             "title": "End bias",
-            "description": "",
+            "description": "The end of the RNA molecule that was primed and sequenced for library creation, or else 'full length' if the entire molecule was fragmented and sequenced.",
             "type": "string",
             "enum": [
                 "3'",
@@ -146,8 +153,8 @@
             ]
         },
         "library_preparation_environment": {
-            "title": "",
-            "description": "",
+            "title": "Library preparation environment",
+            "description": "The mechanical design and infrastructure of the assay used in library creation.",
             "type": "string",
             "enum": [
                 "plate",
@@ -157,57 +164,57 @@
             ]
         },
         "polyA_selection": {
-            "title": "",
-            "description": "",
+            "title": "PolyA selection",
+            "description": "A flag to indicate whether or not there was step in the experimental protocol to select for polyA in the mRNA.",
             "type": "boolean"
         },
         "polyA_selection_method": {
-            "title": "",
-            "description": "",
+            "title": "polyA selection method",
+            "description": "The method in the experimental protocol used to select for the polyA in mRNA.",
             "type": "string",
             "enum": [
                 "poly(dT)"
             ]
         },
         "cell_barcode_length": {
-            "title": "",
-            "description": "",
+            "title": "Cell barcode length",
+            "description": "The length of the sequence barcode used to distinguish a cell in the library.",
             "type": "integer",
             "minimum": 0
         },
         "cell_barcode_offset": {
-            "title": "",
-            "description": "",
+            "title": "Cell barcode offset",
+            "description": "The number of bases in the sequence read preceding the first base of the cell barcode, 0 if there is no offset.",
             "type": "integer"
         },
         "cell_barcode_whitelist": {
-            "title": "",
-            "description": "",
+            "title": "Cell barcode whitelist",
+            "description": "The file containing the list of legitimate cell barcode sequences.",
             "type": "string",
             "linkTo": "DataFile"
         },
         "feature_barcode_length": {
-            "title": "",
-            "description": "",
+            "title": "Feature barcode length",
+            "description": "The length of the sequence barcode used to distinguish a feature in the library.",
             "type": "integer",
             "minimum": 0
         },
         "feature_barcode_offset": {
-            "title": "",
-            "description": "",
+            "title": "Feature barcode offset",
+            "description": "The number of bases in the sequence read preceding the first base of the feature barcode, 0 if there is no offset.",
             "type": "integer"
         },
-        "cdna_library_amplification_method": {
-            "title": "",
-            "description": "",
+        "library_amplification_method": {
+            "title": "Library amplification method",
+            "description": "The method used to amplify the library prior to sequencing, this would be the cDNA for RNA-seq and DNA for others.",
             "type": "string",
             "enum": [
                 "PCR"
             ]
         },
         "library_preamplification_method": {
-            "title": "",
-            "description": "",
+            "title": "Library preamplification method",
+            "description": "The method used to generate the library prior to amplification.",
             "type": "string",
             "enum": [
                 "PCR",
@@ -215,8 +222,8 @@
             ]
         },
         "first_strand_primer": {
-            "title": "",
-            "description": "",
+            "title": "First strand primer",
+            "description": "The primer used to create the first-strand in library synthesis.",
             "type": "string",
             "enum": [
                 "poly-dT",
@@ -226,8 +233,8 @@
             ]
         },
         "second_strand_primer": {
-            "title": "",
-            "description": "",
+            "title": "Second strand primer",
+            "description": "The primer used to create the second-strand in library synthesis.",
             "type": "string",
             "enum": [
                 "TSO",
@@ -235,43 +242,40 @@
             ]
         },
         "umi_length": {
-            "title": "",
-            "description": "",
+            "title": "UMI length",
+            "description": "The length of the sequence barcode used to distinguish a unique molecule in the library.",
             "type": "integer"
         },
         "umi_offset": {
-            "title": "",
-            "description": "",
+            "title": "UMI offset",
+            "description": "The number of bases in the sequence read preceding the first base of the UMI barcode, 0 if there is no offset.",
             "type": "integer"
-        },
-        "umi_read": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "enum": [
-                "read1",
-                "read2",
-                "i5 index",
-                "i7 index"
-            ]
         }
     },
     "facets": {
         "status": {
             "title": "Status"
+        },
+        "library_type": {
+            "title": "Library type"
+        },
+        "construction_platform": {
+            "title": "Construction platform"
         }
     },
     "columns": {
-        "accession": {
-            "title": "Accession"
+        "title": {
+            "title": "Title"
         },
-        "lab": {
-            "title": "Lab"
+        "construction_platform": {
+            "title": "Platform"
         },
-        "derived_from.biosample_ontology.term_name": {
-            "title": "Biosample term name"
+        "construction_platform_version": {
+            "title": "Platform version"
+        },
+        "library_type": {
+            "title": "Library type"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/library_protocol.md"
 }
