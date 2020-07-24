@@ -23,11 +23,13 @@
         },
         "fourier_transform_eleven": {
             "title": "Fourier transform eleven",
+            "description": "Fourier transform of the insert size at 11 bases",
             "type": "number",
             "minimum": 0
         },
         "insert_size_histogram": {
             "title": "Insert size histogram",
+            "description": "Insert size histogram for all reads",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -72,6 +74,7 @@
         },
         "insert_size_metric": {
             "title": "Insert size metric",
+            "description": "Insert size metric file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -101,26 +104,18 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
-                },
-                "width": {
-                    "title": "Image width",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "height": {
-                    "title": "Image height",
-                    "type": "integer",
-                    "minimum": 0
                 }
             }
         },
         "large_small_ratio": {
             "title": "Large small radio",
+            "description": "Ratio of long to short reads",
             "type": "number",
             "minimum": 0
         },
         "nuclear_preseq": {
             "title": "Nuclear Preseq",
+            "description": "Total read metrics file",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -150,21 +145,13 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
-                },
-                "width": {
-                    "title": "Image width",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "height": {
-                    "title": "Image height",
-                    "type": "integer",
-                    "minimum": 0
                 }
             }
         },
         "nuclear_preseq_targets": {
             "title": "Nuclear Preseq Targets",
+            "description": "Sequencing depth file",
+            "comment": "Preseq-est-for-X is the depth sequenced to achieve X unique(non-duplicate) reads. Preseq-est-max is the estimate of total library size if sequenced to infinity",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -194,16 +181,6 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
-                },
-                "width": {
-                    "title": "Image width",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "height": {
-                    "title": "Image height",
-                    "type": "integer",
-                    "minimum": 0
                 }
             }
         }
