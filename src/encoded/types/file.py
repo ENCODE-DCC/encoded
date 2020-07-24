@@ -122,6 +122,7 @@ class File(Item):
         'target'
     ]
     audit_inherit = [
+        'dataset',
         'replicate',
         'replicate.experiment',
         'replicate.experiment.target',
