@@ -277,7 +277,7 @@ class Patient(Item):
 
 
 
-    
+
 
 
     @calculated_property(schema={
@@ -618,9 +618,10 @@ class Patient(Item):
                 if sp_obj_array is not None:
                     for spo in sp_obj_array:
                         sp_obj = request.embed(spo, "@@object")
-                        sp_tumor_size=sp_obj.get("tumor_size")
-
-                        array.append(sp_tumor_size)
+                        path_source_procedure=sp_obj.get('path_source_procedure')
+                        if  path_source_procedure == 'path_nephrectomy':
+                            sp_tumor_size = properties.get('accession') or 'unknown'
+                            array.append(sp_tumor_size)
 
         tumor_size_range = []
         for tumor_size in array:
@@ -731,10 +732,10 @@ class Radiation(Item):
     @calculated_property(condition='fractions', schema={
         "title": "Fractions range",
         "type": "string",
-        
+
     })
     def fractions_range(self, request, fractions):
-        
+
         if fractions < 5:
             return "1 - 5"
         elif fractions < 10:
@@ -743,7 +744,7 @@ class Radiation(Item):
             return "10 - 15"
         else:
             return "15 and up"
-        
+
 
 
 
@@ -812,4 +813,3 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
-

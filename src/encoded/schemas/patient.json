@@ -233,12 +233,10 @@
         },
         "sur_path_tumor_size":{
             "title": "Tumor Size"
-
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },

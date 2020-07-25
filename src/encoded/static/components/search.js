@@ -599,7 +599,7 @@ class PathologyComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-        <div><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>
+                        <div><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>
                         <div><strong>Laterality: </strong>{result.laterality}</div>
                         <div><strong>Histology: </strong>{result.histology}</div>
                         <div><strong>Pathological T stage: </strong>{result.ajcc_p_stage}</div>
@@ -749,9 +749,9 @@ class BiospecimenComponent extends React.Component {
                     </div>
                     <div className="data-row">
                         <div><strong>Sample type: </strong>{result.sample_type}</div>
-                        <div><strong>Tissue Derivatives: </strong>{result.tissue_derivatives}</div>
+                        <div><strong>Tissue derivatives: </strong>{result.tissue_derivatives}</div>
                         <div><strong>Tissue type: </strong>{result.tissue_type}</div>
-                        <div><strong>Anotomic type: </strong>{result.anatomic_site}</div>
+                        <div><strong>Anatomic site: </strong>{result.anatomic_site}</div>
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
