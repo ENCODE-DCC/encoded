@@ -13,7 +13,6 @@
         "surgery",
         "date",
         "report_source",
-        "tumor_sequence_number",
         "path_source_procedure"
     ],
     "additionalProperties": false,
@@ -141,6 +140,7 @@
                 "Mucinous tubular and spindle cell carcinoma",
                 "multilocular cystic renal neoplasm of low malignant potential",
                 "PRCC",
+                "Poorly differentiated malignancy",
                 "Renal medullary carcinoma",
                 "Renal Cell Carcinoma, NOS",
                 "RO",
@@ -148,10 +148,12 @@
                 "RON, favor ChRCC",
                 "RON, favor RO",
                 "Sarcomatoid, NOS",
+                "Sarcomatoid RCC",
                 "Sarcoma",
                 "MiT family translocation RCC",
                 "Tubulocystic RCC",
                 "Unclassified",
+                "Unclassified RCC",
                 "Nephroblastoma (Wilms tumor)",
                 "Soft tissue neoplasm, NOS",
                 "SDH deficient RCC"
