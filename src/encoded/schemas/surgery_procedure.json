@@ -85,7 +85,7 @@
         {
             "properties": {
                 "procedure_type": {
-                    "enum": ["Ablation","Metastectomy","Biopsy","Excision","Fine needle aspiration"]
+                    "enum": ["Ablation","Metastectomy","Biopsy","Excision","Fine needle aspiration", "Not available", "Reamings"]
                 }
             },
             "required": ["surgery","procedure_type"],
