@@ -109,6 +109,13 @@ _audit_mapping = OrderedDict([
                      'audit.ERROR.detail'])
 ])
 
+_audits = [
+    'WARNING',
+    'INTERNAL_ACTION',
+    'NOT_COMPLIANT',
+    'ERROR',
+]
+
 _tsv_mapping_annotation = OrderedDict([
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
@@ -249,6 +256,17 @@ def make_cell(header_column, row, exp_data_row):
     exp_data_row.append(', '.join(list(set(temp))))
 
 
+def funclog(func):
+    def wrapper(*args, **kwargs):
+        for i, arg in enumerate(args):
+            print(i, arg)
+        r = func(*args, **kwargs)
+        print('return value:', r)
+        return r
+    return wrapper
+
+
+@funclog
 def make_audit_cell(header_column, experiment_json, file_json):
     categories = []
     paths = []
@@ -266,6 +284,19 @@ def make_audit_cell(header_column, experiment_json, file_json):
         else:
             data.append(categories[i])
     return ', '.join(list(set(data)))
+
+
+from collections import defaultdict
+
+
+def group_audits_by_file_and_type(audits):
+    grouped_audits = defaultdict(lambda: defaultdict(list))
+    for audit_type in _audits:
+        for audit in audits.get(audit_type, []):
+            path = audit.get('path')
+            if '/files/' in path:
+                grouped_audits[path][audit_type].append(audit.get('category'))
+    return grouped_audits   
 
 
 def _get_annotation_metadata(request, search_path, param_list):
@@ -604,6 +635,7 @@ def metadata_tsv(context, request):
             param_list['@id'] = elements
     default_params = [
         ('field', 'audit'),
+        ('field', 'files.@id'),
         ('limit', 'all'),
     ]
     field_params = [
@@ -628,6 +660,11 @@ def metadata_tsv(context, request):
     results = request.embed(quote(path), as_user=True)
     rows = []
     for experiment_json in results['@graph']:
+        print(experiment_json.get('audit'))
+        grouped_audits = group_audits_by_file_and_type(
+            experiment_json.get('audit', {})
+        )
+        print(grouped_audits)
         if experiment_json.get('files', []):
             exp_data_row = []
             for column in header:
@@ -638,6 +675,7 @@ def metadata_tsv(context, request):
                             'files.file_format_type', 'files.output_type', 'files.assembly']
 
             for f in experiment_json['files']:
+                print(f.get('@id'))
                 if not files_prop_param_list(f, param_list):
                     continue
                 if visualizable_only and not is_file_visualizable(f):
@@ -672,7 +710,14 @@ def metadata_tsv(context, request):
                     data = list(set(temp))
                     data.sort()
                     data_row.append(', '.join(data))
-                audit_info = [make_audit_cell(audit_type, experiment_json, f) for audit_type in _audit_mapping]
+                file_id = f.get('@id')
+                print('f:', file_id)
+                grouped_audits_for_file = grouped_audits.get(file_id, {})
+                audit_info = [
+                    ', '.join(set(grouped_audits_for_file.get(audit_type, [])))
+                    for audit_type in _audits
+                ]
+                print(audit_info)
                 data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
