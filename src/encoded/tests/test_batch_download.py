@@ -479,8 +479,8 @@ def test_metadata_contains_all_values(testapp, workbook):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=Experiment')
     actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
-    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_metadata_new.tsv')
-    with open(expected_path, 'w') as f:
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_metadata.tsv')
+    with open(expected_path, 'r') as f:
         expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
     for i, row in enumerate(actual):
         for j, column in enumerate(row):

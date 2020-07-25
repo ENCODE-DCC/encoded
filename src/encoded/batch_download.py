@@ -289,14 +289,17 @@ def make_audit_cell(header_column, experiment_json, file_json):
 from collections import defaultdict
 
 
-def group_audits_by_file_and_type(audits):
-    grouped_audits = defaultdict(lambda: defaultdict(list))
+def group_audits_by_files_and_type(audits):
+    grouped_file_audits = defaultdict(lambda: defaultdict(list))
+    grouped_other_audits = defaultdict(list)
     for audit_type in _audits:
         for audit in audits.get(audit_type, []):
             path = audit.get('path')
             if '/files/' in path:
-                grouped_audits[path][audit_type].append(audit.get('category'))
-    return grouped_audits   
+                grouped_file_audits[path][audit_type].append(audit.get('category'))
+            else:
+                grouped_other_audits[audit_type].append(audit.get('category'))
+    return grouped_file_audits, grouped_other_audits
 
 
 def _get_annotation_metadata(request, search_path, param_list):
@@ -661,10 +664,10 @@ def metadata_tsv(context, request):
     rows = []
     for experiment_json in results['@graph']:
         print(experiment_json.get('audit'))
-        grouped_audits = group_audits_by_file_and_type(
+        grouped_file_audits, grouped_other_audits = group_audits_by_file_and_type(
             experiment_json.get('audit', {})
         )
-        print(grouped_audits)
+        print(grouped_file_audits, grouped_other_audits)
         if experiment_json.get('files', []):
             exp_data_row = []
             for column in header:
@@ -712,9 +715,14 @@ def metadata_tsv(context, request):
                     data_row.append(', '.join(data))
                 file_id = f.get('@id')
                 print('f:', file_id)
-                grouped_audits_for_file = grouped_audits.get(file_id, {})
+                grouped_audits_for_file = grouped_file_audits.get(file_id, {})
                 audit_info = [
-                    ', '.join(set(grouped_audits_for_file.get(audit_type, [])))
+                    ', '.join(
+                        set(
+                            grouped_audits_for_file.get(audit_type, [])
+                            + grouped_other_audits.get(audit_type, [])
+                        )
+                    )
                     for audit_type in _audits
                 ]
                 print(audit_info)
