@@ -663,11 +663,9 @@ def metadata_tsv(context, request):
     results = request.embed(quote(path), as_user=True)
     rows = []
     for experiment_json in results['@graph']:
-        print(experiment_json.get('audit'))
         grouped_file_audits, grouped_other_audits = group_audits_by_file_and_type(
             experiment_json.get('audit', {})
         )
-        print(grouped_file_audits, grouped_other_audits)
         if experiment_json.get('files', []):
             exp_data_row = []
             for column in header:
@@ -678,7 +676,6 @@ def metadata_tsv(context, request):
                             'files.file_format_type', 'files.output_type', 'files.assembly']
 
             for f in experiment_json['files']:
-                print(f.get('@id'))
                 if not files_prop_param_list(f, param_list):
                     continue
                 if visualizable_only and not is_file_visualizable(f):
@@ -714,7 +711,6 @@ def metadata_tsv(context, request):
                     data.sort()
                     data_row.append(', '.join(data))
                 file_id = f.get('@id')
-                print('f:', file_id)
                 grouped_audits_for_file = grouped_file_audits.get(file_id, {})
                 audit_info = [
                     ', '.join(
@@ -725,7 +721,6 @@ def metadata_tsv(context, request):
                     )
                     for audit_type in _audits
                 ]
-                print(audit_info)
                 data_row.extend(audit_info)
                 rows.append(data_row)
     fout = io.StringIO()
