@@ -663,7 +663,7 @@ def metadata_tsv(context, request):
     results = request.embed(quote(path), as_user=True)
     rows = []
     for experiment_json in results['@graph']:
-        grouped_file_audits, grouped_other_audits = group_audits_by_file_and_type(
+        grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
             experiment_json.get('audit', {})
         )
         if experiment_json.get('files', []):
