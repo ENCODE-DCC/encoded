@@ -445,12 +445,12 @@ class Patient(Item):
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
-                surgery_procedure = surgery_object['surgery_procedure']
-                for procedure_record in surgery_procedure:
-                    procedure_obj = request.embed(procedure_record, '@@object')
-                    if procedure_obj['procedure_type'] == "Nephrectomy":
+                surgery_path_report = surgery_object['pathology_report']
+                for path_report in surgery_path_report:
+                    path_report_obj = request.embed(path_report, '@@object')
+                    if path_report_obj['path_source_procedure'] == "path_nephrectomy":
                         nephrectomy_dates.append(surgery_object['date'])
-                    elif  procedure_obj['procedure_type'] == "Biopsy" or procedure_obj['procedure_type'] == "Metastectomy":
+                    elif  path_report_obj['path_source_procedure'] == "path_biopsy" or path_report_obj['path_source_procedure'] == "path_metasis":
                         non_nephrectomy_dates.append(surgery_object['date'])
         if len(nephrectomy_dates) > 0 :
             nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
@@ -479,9 +479,7 @@ class Patient(Item):
             ageString = str(age)
             if age >= 90:
                 ageString = "90 or above"
-
-
-            if age >= 80:
+            elif age >= 80:
                 age_range = "80+"
             elif age >= 60:
                 age_range = "60 - 79"
