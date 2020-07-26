@@ -625,7 +625,9 @@ class Patient(Item):
 
         tumor_size_range = []
         for tumor_size in array:
-            if 0 <= tumor_size < 3:
+            if tumor_size == 'unknown':
+                tumor_size_range.append("unknown")
+            elif 0 <= tumor_size < 3:
                 tumor_size_range.append("0-3 cm")
             elif 3 <= tumor_size < 7:
                 tumor_size_range.append("3-7 cm")
