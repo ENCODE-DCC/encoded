@@ -108,7 +108,7 @@ class Surgery(Item):
             tumor_size_range = []
             if  path_source_procedure == 'path_nephrectomy':
                 tumor_size = 'unknown'
-                if 'tumor_size' in properties:
+                if 'tumor_size' in tumor_object:
                     tumor_size = tumor_object["tumor_size"]
                     if 0 <= tumor_size < 3:
                         tumor_size_range.append("0-3 cm")

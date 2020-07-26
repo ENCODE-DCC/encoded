@@ -620,7 +620,7 @@ class Patient(Item):
                         sp_obj = request.embed(spo, "@@object")
                         path_source_procedure=sp_obj.get('path_source_procedure')
                         if  path_source_procedure == 'path_nephrectomy':
-                            sp_tumor_size = properties.get('accession') or 'unknown'
+                            sp_tumor_size = sp_obj.get('tumor_size') or 'unknown'
                             array.append(sp_tumor_size)
 
         tumor_size_range = []
