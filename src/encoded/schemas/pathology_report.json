@@ -156,7 +156,9 @@
                 "Unclassified RCC",
                 "Nephroblastoma (Wilms tumor)",
                 "Soft tissue neoplasm, NOS",
-                "SDH deficient RCC"
+                "SDH deficient RCC",
+                "Atypical cell",
+                "Metastatic Carcinoma"
             ]
         },
         "sarcomatoid": {
