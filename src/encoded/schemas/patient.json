@@ -123,18 +123,15 @@
         "surgery.surgery_procedure.nephrectomy_details.approach": {
             "title": "Nephrectomy Approach"
         },
-
-        "sur_nephr_robotic_assist":{
+        "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "sur_path_tumor_size":{
+        "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
-
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
@@ -228,10 +225,10 @@
         "status": {
             "title": "Status"
         },
-        "sur_nephr_robotic_assist":{
+        "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "sur_path_tumor_size":{
+        "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
         },
         "surgery.pathology_report.laterality": {

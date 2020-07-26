@@ -512,7 +512,7 @@ class Patient(Item):
                 'medications.name',
                 'surgery.surgery_procedure.surgery_type',
                 'surgery.hospital_location',
-                'sur_path_tumor_size',
+                'surgery.pathology_report.tumor_size_range',
                 'surgery.pathology_report.ajcc_p_stage',
                 'surgery.pathology_report.n_stage',
                 'surgery.pathology_report.m_stage',
@@ -520,7 +520,6 @@ class Patient(Item):
                 'germline_summary',
                 'ihc.antibody',
                 'ihc.result',
-
             ],
             'group_by': ['race', 'sex'],
             'label': 'race',
@@ -570,7 +569,6 @@ class Patient(Item):
 
     def sur_nephr_robotic_assist(self, request, surgery):
 
-
         sp_obj_array = []
         array=[]
         if surgery is not None:
@@ -596,47 +594,6 @@ class Patient(Item):
             else:
                 robotic_assist.append("False")
         return robotic_assist
-
-    @calculated_property(condition='surgery', schema={
-        "title": "surgery pathology tumor size calculation",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-
-    def sur_path_tumor_size(self, request, surgery):
-
-
-        sp_obj_array = []
-        array=[]
-        if surgery is not None:
-            for so in surgery:
-                so_object = request.embed(so, "@@object")
-                sp_obj_array = so_object.get("pathology_report")
-
-                if sp_obj_array is not None:
-                    for spo in sp_obj_array:
-                        sp_obj = request.embed(spo, "@@object")
-                        path_source_procedure=sp_obj.get('path_source_procedure')
-                        if  path_source_procedure == 'path_nephrectomy':
-                            sp_tumor_size = sp_obj.get('tumor_size') or 'unknown'
-                            array.append(sp_tumor_size)
-
-        tumor_size_range = []
-        for tumor_size in array:
-            if tumor_size == 'unknown':
-                tumor_size_range.append("unknown")
-            elif 0 <= tumor_size < 3:
-                tumor_size_range.append("0-3 cm")
-            elif 3 <= tumor_size < 7:
-                tumor_size_range.append("3-7 cm")
-            elif 7 <= tumor_size < 10:
-                tumor_size_range.append("7-10 cm")
-            else:
-                tumor_size_range.append("10+ cm")
-        return tumor_size_range
-
 
 
 @collection(
