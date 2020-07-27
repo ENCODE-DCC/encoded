@@ -2,7 +2,7 @@
     {
         "attachment": "PathologyImage_CMU-1.svs",
         "description": "Example of high resolution pathology image in SVS format",
-        "document_type": "high resolution pathology slide image",
+        "document_type": "other",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2d306180-915d-43b8-a87e-a94c4fa86d7e"
     },
@@ -12,7 +12,7 @@
         ],
         "attachment": "8121902.2P.pdf",
         "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
-        "document_type": "certificate of analysis",
+        "document_type": "other",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
     },
@@ -22,7 +22,7 @@
         ],
         "attachment": "BACTransfectionProtocolK562Cells.pdf",
         "description": "UChicago IGSB ENCODE K562 Transfection Protocol March 5, 2013",
-        "document_type": "transfection protocol",
+        "document_type": "other",
         "submitted_by": "eni.lectus@nullam.sed",
         "uuid": "048d1185-2502-4f0e-a043-bbc75b9dd915"
     },
@@ -31,7 +31,7 @@
             "encode:bedMethyl.as"
         ],
         "attachment": "bedMethyl.txt",
-        "document_type": "file format specification",
+        "document_type": "other",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8"
     },
@@ -59,7 +59,7 @@
         ],
         "attachment": "CH17_pBACGK1.1n.png",
         "description": "Vector pBACGK1.1 information and map retrieved from http://bacpac.chori.org/pbacgk11.htm on May 23, 2013.",
-        "document_type": "construct image",
+        "document_type": "other",
         "submitted_by": "eni.lectus@nullam.sed",
         "urls": [
             "http://bacpac.chori.org/library.php?id=231",
@@ -289,7 +289,7 @@
             "gregory-crawford:pLKO1"
         ],
         "attachment": "pLKO1_vector.png",
-        "document_type": "construct image",
+        "document_type": "other",
         "submitted_by": "metus.donec@nisl.montes",
         "uuid": "33d51ad0-62ba-11e3-949a-0800200c9a66"
     },
@@ -298,7 +298,7 @@
             "encode:Antibody_characterization_standards_February_2014"
         ],
         "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
-        "document_type": "standards document",
+        "document_type": "other",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "bcb5f3c8-d5e9-40d2-805f-4274f940c36d"
     },
@@ -307,7 +307,7 @@
             "encode:sample_strain_generation_protocol"
         ],
         "attachment": "sample_strain_generation_protocol.pdf",
-        "document_type": "strain generation protocol",
+        "document_type": "other",
         "submitted_by": "uskuf.shyec@doton.danona",
         "uuid": "30705939-d234-4aca-8379-cd355686fd48"
     },

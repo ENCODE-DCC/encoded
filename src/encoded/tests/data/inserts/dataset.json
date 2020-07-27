@@ -4,7 +4,6 @@
         "award": "CZI004LIV",
         "description": "Some liver scRNA & scATAC data",
         "status": "released",
-        "date_submitted": "2020-01-20",
         "date_released": "2020-04-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8fdf11b4-4f00-453d-94cd-ab6a2bedd804"
@@ -21,7 +20,6 @@
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "status": "released",
-        "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
@@ -32,7 +30,6 @@
         "award": "U54HG007004",
         "description": "Some mouse prenatal data",
         "status": "released",
-        "date_submitted": "2015-11-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
@@ -43,12 +40,7 @@
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
         "status": "released",
-        "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
-        "internal_tags": [
-            "DREAM",
-            "ENCORE"
-        ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
     },
@@ -57,7 +49,6 @@
         "accession": "ENCSR000AES",
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "date_submitted": "2015-03-20",
         "status": "archived",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -77,7 +68,6 @@
             "encode:Snyder_Histone_Mouse_protocol"
         ],
         "status": "released",
-        "date_submitted": "2015-06-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "2629336f-0f99-4f30-9457-b2a4834e9e69"
@@ -96,7 +86,6 @@
             "encode:Myers_Methyl450_protocol"
         ],
         "status": "released",
-        "date_submitted": "2015-08-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
@@ -107,7 +96,6 @@
         "award": "U54HG006998",
         "description": "Irvine Hi-C GM12878",
         "status": "released",
-        "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "netus.lorem@risus.lobortis",
         "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
@@ -118,7 +106,6 @@
         "award": "U54HG007004",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "status": "released",
-        "date_submitted": "2015-11-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
@@ -129,7 +116,6 @@
         "award": "ENCODE2",
         "description": "UW  SAEC",
         "status": "released",
-        "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
@@ -141,7 +127,6 @@
         "uuid": "e998735d-9a72-453f-b947-5fb604027d01",
         "award": "U54HG006998",
         "status": "released",
-        "date_submitted": "2015-05-20",
         "date_released": "2016-01-01",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "submitted_by": "facilisi.tristique@potenti.vivamus"
@@ -156,7 +141,6 @@
         ],
         "description": "EBF1 ChIP-seq on human GM12878 produced by the Snyder lab",
         "status": "released",
-        "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
@@ -167,7 +151,6 @@
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "status": "released",
-        "date_submitted": "2015-12-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
@@ -187,7 +170,6 @@
         "award": "U54HG007004",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 60 nM dexamethasone for 8 hours.",
         "status": "released",
-        "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "aca3295c-755b-4495-91cf-8a4c00a0db00"
@@ -198,7 +180,6 @@
         "award": "ENCODE2",
         "description": "Repli-seq on SK-N-SH cell line at G2 phase.",
         "status": "released",
-        "date_submitted": "2015-04-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "87958f5b-27f8-4e54-b398-d5bd5ba3e2a0"
@@ -209,7 +190,6 @@
         "award": "ENCODE2",
         "description": "Repli-seq on SK-N-SH cell line at S1 phase.",
         "status": "released",
-        "date_submitted": "2015-05-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "fe9d124e-9ca1-488f-a1f2-2f9d389562f1"
@@ -220,7 +200,6 @@
         "award": "ENCODE2",
         "description": "Repli-seq on SK-N-SH cell line at S2 phase.",
         "status": "released",
-        "date_submitted": "2015-06-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8dc4b825-a5d9-4663-9f1a-cf769c1a0f8c"
@@ -231,7 +210,6 @@
         "award": "ENCODE2",
         "description": "RNA-seq of K562",
         "status": "released",
-        "date_submitted": "2015-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "dc7baa06-bd53-4b5c-809a-85e0c6bd23d6"
@@ -242,7 +220,6 @@
         "award": "ENCODE2",
         "description": "WGBS of K562",
         "status": "released",
-        "date_submitted": "2015-08-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4e0a5e53-fc05-4c9b-8d86-8572c8d227a2"
@@ -253,7 +230,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "59584793-f9ad-4cb3-a6e9-e2bd6112116b"
@@ -264,7 +240,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-10-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "b7a37424-cc23-4c28-ac0d-5dd311f993f4"
@@ -275,7 +250,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-11-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "36bb66bc-c6d6-4fde-a0b6-b984926ca081"
@@ -286,7 +260,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-12-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "c70c0fb9-08c5-404f-9905-11aac1069b4e"
@@ -297,7 +270,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "0fd18fa0-eeab-48d1-b249-84eca0ea0d6f"
@@ -308,7 +280,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-02-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d63e3ea5-86b2-4780-9c07-becbc6c4a63f"
@@ -319,7 +290,6 @@
         "award": "ENCODE2",
         "description": "ChIP-seq of K562",
         "status": "released",
-        "date_submitted": "2015-03-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ce9bb310-d52d-464c-9e2d-c250ab287c7a"
@@ -328,7 +298,6 @@
         "_test": "long read RNA-seq test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
-        "date_submitted": "2015-04-20",
         "award": "U54HG007010",
         "date_released": "2015-08-31",
         "accession": "ENCSR751ISO",
@@ -338,7 +307,6 @@
         "_test": "microRNA test",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "status": "released",
-        "date_submitted": "2015-04-20",
         "award": "U54HG007010",
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
@@ -348,7 +316,6 @@
         "_test": "ATAC-seq test",
         "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
         "status": "released",
-        "date_submitted": "2019-05-03",
         "award": "UM1HG009442",
         "date_released": "2019-05-09",
         "accession": "ENCSR808QCJ",
@@ -359,11 +326,6 @@
         "accession": "ENCSR458AOS",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
-        "internal_tags": [
-            "ENTEx"
-        ],
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "8b39716c-b810-4a7a-81ea-6e5f41b3c103"
@@ -373,11 +335,6 @@
         "accession": "ENCSR459AOS",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
-        "internal_tags": [
-            "ENTEx"
-        ],
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "d7ed67c8-85ea-403a-b295-32d1278411cd"
@@ -387,11 +344,6 @@
         "accession": "ENCSR460AOS",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
-        "internal_tags": [
-            "ENTEx"
-        ],
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "db57b7e6-7366-41b6-b50d-b8c944342c34"
@@ -401,11 +353,6 @@
         "accession": "ENCSR856XLJ",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
-        "internal_tags": [
-            "ENTEx"
-        ],
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1425296d-10bc-4d50-b071-2c019a711bfb"
@@ -415,7 +362,6 @@
         "accession": "ENCSR123AAA",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cb3-46f4-8e92-2db70533a222"
@@ -425,8 +371,6 @@
         "accession": "ENCSR123AAB",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cb3-46f4-8e92-2db70533a223"
@@ -436,8 +380,6 @@
         "accession": "ENCSR123AAC",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "e89c07df-0961-4f21-a235-0b7945ef2aa4"
@@ -447,7 +389,6 @@
         "accession": "ENCSR123AAD",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cbc-46f4-8e92-2db70533a222"
@@ -457,8 +398,6 @@
         "accession": "ENCSR123AAE",
         "award": "UM1HG009390",
         "date_released": "2019-11-08",
-        "date_submitted": "2019-07-31",
-        "internal_status": "pipeline completed",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3ef6a2c1-4cc3-46f4-8e92-2db70533a223"

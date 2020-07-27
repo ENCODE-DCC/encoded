@@ -19,7 +19,7 @@
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/dbxrefs"},
-        {"$ref": "mixins.json#/url"}
+        {"$ref": "mixins.json#/urls"}
     ],
     "dependencies": {
         "status": {
@@ -33,53 +33,12 @@
                     }
                 },
                 {
-                    "required": ["date_submitted"],
-                    "properties": {
-                        "status": {
-                            "enum": ["submitted"]
-                        }
-                    }
-                },
-                {
                     "not": {
                         "properties": {
                             "status": {
                                 "enum": ["released", "revoked", "submitted"]
                             }
                         }
-                    }
-                }
-            ]
-        },
-        "internal_status": {
-            "oneOf": [
-                {
-                    "required": ["pipeline_error_detail"],
-                    "properties": {
-                        "internal_status": {
-                            "enum": ["pipeline error"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "oneOf": [
-                            {
-                                "required": ["pipeline_error_detail"],
-                                "properties": {
-                                    "internal_status": {
-                                        "enum": ["unreviewed", "no available pipeline", "unrunnable", "pipeline ready", "processing", "pipeline completed", "requires lab review", "release ready"]
-                                    }
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "internal_status": {
-                                        "enum": ["pipeline error"]
-                                    }
-                                }
-                            }
-                        ]
                     }
                 }
             ]
@@ -104,6 +63,7 @@
         },
         "status": {
             "title": "Status",
+            "description": "Status of the dataset.",
             "type": "string",
             "permission": "import_items",
             "default": "in progress",
@@ -117,33 +77,9 @@
                 "revoked"
             ]
         },
-        "internal_tags": {
-            "title": "Internal tags",
-            "description": "Some datasets are part of particular data collections",
-            "type": "array",
-            "permission": "import_items",
-            "uniqueItems": true,
-            "default": [],
-            "items": {
-                "type": "string",
-                "enum": [
-                    "ccre_inputv1",
-                    "ccre_inputv2",
-                    "dbGaP",
-                    "DREAM",
-                    "ENCYCLOPEDIAv3",
-                    "ENCYCLOPEDIAv4",
-                    "ENCYCLOPEDIAv5",
-                    "ENCORE",
-                    "ENTEx",
-                    "MouseDevSeries",
-                    "SESCC",
-                    "RegulomeDB"
-                ]
-            }
-        },
         "date_released": {
             "title": "Date released",
+            "description": "Date when dataset was released",
             "comment": "Do not submit, value is assigned whe the object is releaesd.",
             "type": "string",
             "anyOf": [
@@ -165,14 +101,6 @@
                 ]
             }
         },
-        "date_submitted": {
-            "title": "Date submitted" ,
-            "description": "The date that the experiment received all required replicates and files",
-            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
-            "type": "string",
-            "format": "date",
-            "permission": "import_items"
-        },
         "dbxrefs": {
             "items": {
                 "title": "External identifier",
@@ -186,7 +114,7 @@
         },
         "supersedes": {
             "title": "Supersedes" ,
-            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "description": "The datasets(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -198,14 +126,21 @@
         },
         "award": {
             "title": "Award",
-            "description": "Grant associated with the submission.",
+            "description": "The HCA Seed Network or HCA Pilot Project award used to fund the dataset.",
             "comment": "Required. See award.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Award"
         },
-        "contact": {
-            "title": "Contact",
-            "description": "",
+        "corresponding_contributor": {
+            "title": "Corresponding contributor",
+            "description": "The user who is the primary external contact for the dataset.",
+            "comment": "",
+            "type": "string",
+            "linkTo": "User"
+        },
+        "internal_contact": {
+            "title": "Internal contact",
+            "description": "The Lattice contact for questions about the details of the experiment and/or analysis.",
             "comment": "",
             "type": "string",
             "linkTo": "User"
@@ -222,25 +157,6 @@
                 "type": "string",
                 "linkTo": "DataFile"
             }
-        },
-        "internal_status": {
-            "type": "string",
-            "description": "The status of an experiment in the DCC process.",
-            "comment":"unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
-            "default": "unreviewed",
-            "permission": "import_items",
-            "title": "Internal status",
-            "enum": [
-                "unreviewed",
-                "pipeline ready",
-                "processing",
-                "pipeline completed",
-                "release ready",
-                "requires lab review",
-                "no available pipeline",
-                "pipeline error",
-                "unrunnable"
-            ]
         },
         "analyses": {
             "title": "Analyses",

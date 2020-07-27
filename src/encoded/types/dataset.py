@@ -96,24 +96,6 @@ class Dataset(Item):
         return analyses
 
 
-    @calculated_property(condition='assay_term_id', schema={
-        "title": "Assay synonyms",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assay_synonyms(self, registry, assay_term_id):
-        assay_term_id = ensurelist(assay_term_id)
-        syns = set()
-        for term_id in assay_term_id:
-            if term_id in registry['ontology']:
-                syns.update(registry['ontology'][term_id]['synonyms'] + [
-                    registry['ontology'][term_id]['name'],
-                ])
-        return list(syns)
-
-
     @calculated_property(schema={
         "title": "Original files",
         "type": "array",

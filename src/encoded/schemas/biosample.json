@@ -69,7 +69,7 @@
         },
         "biosample_ontology": {
             "title": "Biosample ontology",
-            "description": "An embeded property for linking to biosample type which describes the ontology of the biosample.",
+            "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
             "comment": "See biosample_type.json for available identifiers.",
             "type": "string",
             "linkTo": "BiosampleType"
@@ -105,7 +105,7 @@
         },
         "date_obtained": {
             "title": "Date obtained",
-            "description": "For tissue samples, the date the biosample was taken.",
+            "description": "The date the biosample was taken, created, or bought.",
             "comment": "Date should be submitted in as YYYY-MM-DD.",
             "type": "string",
             "format": "date"
@@ -154,18 +154,17 @@
         },
         "derived_from": {
             "title": "Derived from",
-            "description": "",
+            "description": "The object from which this object was derived.",
             "type": "array",
             "uniqueItems": true
         },
         "derivation_process": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Derivation process",
+            "description": "The method(s) by which this object was derived.",
             "type": "array",
             "items": {
-                "title": "",
-                "description": "",
+                "title": "Derivation process",
+                "description": "A method by which this object was derived.",
                 "type":  "string"
             }
         },
@@ -176,7 +175,8 @@
             "type": "string",
             "enum": [
                 "cryopreservation",
-                "flash-freezing"
+                "flash-freezing",
+                "n/a (fresh)"
             ]
         },
         "preservation_time": {
@@ -187,7 +187,14 @@
         "preservation_time_units": {
             "title": "Preservation time units",
             "description": "The units of time that the sample was preserved",
-            "type": "integer"
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month"
+            ]
         }
     },
     "changelog": "/profiles/changelogs/biosample.md"

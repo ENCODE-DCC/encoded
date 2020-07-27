@@ -40,32 +40,22 @@
             "minimum": 0
         },
         "is_immortalized": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Immortalization state",
+            "description": "Whether or the biosample is an immortalized cell line.",
             "type": "boolean"
         },
-        "drug_treatment": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
-        },
         "mycoplasma_testing_method": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Mycoplasma testing method",
+            "description": "Method by which the culture was tested for mycoplasma.",
             "type": "string"
         },
         "mycoplasma_testing_results": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Mycoplasma testing results",
+            "description": "Test results for mycoplasm testing.",
             "type": "string"
         },
         "derived_from": {
             "items": {
-                "comment": "",
                 "type": "string",
                 "linkTo": [
                     "Suspension",

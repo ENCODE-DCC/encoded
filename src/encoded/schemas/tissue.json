@@ -61,36 +61,63 @@
             ]
         },
         "ischemic_temperature": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "title": "Ischemic temperature",
+            "description": "Temperature during ischemia",
+            "type": "string"
+        },
+        "ischemic_temperature_units": {
+            "title": "Ischemic temperature units",
+            "description": "The units used to measure temperature during ischemia.",
+            "type": "string",
+            "enum": [
+                "C",
+                "F"
+            ]
         },
         "ischemic_time": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Ischemic time",
+            "description": "Duration of ischemia?",
             "type": "integer"
         },
         "ischemic_time_units": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
+            "title": "Ischemic time units",
+            "description": "The units of time during ischemia?",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour",
+                "day",
+                "week"
+            ]
         },
         "spatial_information": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Spatial information",
+            "description": "Information describing the specific anatomical site that the sample was collected from.",
             "type": "string"
         },
         "derived_from": {
             "items": {
-                "comment": "",
                 "type": "string",
                 "linkTo": [
                     "Donor",
                     "Tissue"
+                ]
+            }
+        },
+        "derivation_process": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "dissection",
+                    "surgical resection",
+                    "blood draw",
+                    "percutaneous kidney biopsy",
+                    "biopsy",
+                    "bone marrow aspiration",
+                    "organ extraction",
+                    "Ficoll-Hypaque method",
+                    "collecting specimen from organ postmortem"
                 ]
             }
         }

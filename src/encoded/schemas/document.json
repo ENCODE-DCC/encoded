@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/description" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/urls" }
     ],
     "facets": {
         "lab.title": {
@@ -38,32 +39,25 @@
             "description": "The category that best describes the document.",
             "type": "string",
             "enum": [
+                "cell dissociation protocol",
                 "cell isolation protocol",
-                "certificate of analysis",
-                "construct image",
-                "data QA",
-                "data sheet",
                 "dedifferentiation protocol",
+                "depletion protocol",
                 "differentiation protocol",
+                "enrichment protocol",
                 "excision protocol",
                 "extraction protocol",
-                "file format specification",
                 "general protocol",
                 "growth protocol",
-                "high resolution pathology slide image",
-                "iPS reprogramming protocol",
-                "other",
-                "pipeline protocol",
-                "spike-in concentrations",
-                "standards document",
-                "strain generation protocol",
-                "transfection protocol",
-                "treatment protocol",
-                "enrichment protocol",
                 "library preparation protocol",
+                "nuclei dissociation protocol",
+                "nuclei isolation protocol",
+                "pipeline protocol",
                 "sequencing protocol",
-                "depletion protocol",
-                "tissue collection protocol"
+                "spike-in concentrations",
+                "tissue collection protocol",
+                "treatment protocol",
+                "other"
            ]
         },
         "description": {
@@ -77,20 +71,6 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
-        },
-        "urls": {
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "URL",
-            "description": "External resources with additional information to the document.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "URL",
-                "description": "An external resource with additional information to the document.",
-                "type": "string",
-                "format": "uri"
             }
         }
     },

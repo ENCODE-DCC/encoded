@@ -276,6 +276,22 @@
             "format": "uri"
         }
     },
+    "urls": {
+        "urls": {
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "URLs",
+            "description": "External resources with additional information.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "URL",
+                "type": "string",
+                "description": "An external resource with additional information.",
+                "format": "uri"
+            }
+        }
+    },
     "documents": {
         "documents": {
             "title": "Documents",

@@ -53,7 +53,7 @@
         },
         "protocol": {
             "title": "Protocol",
-            "description": "",
+            "description": "The protocol used to make the library.",
             "comment": "See library_protocol.json for available identifiers.",
             "type": "string",
             "linkTo": "LibraryProtocol"
@@ -120,8 +120,7 @@
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
-            "type": "string",
-            "pattern": "[0-9]+"
+            "type": "number"
         },
         "nucleic_acid_starting_quantity_units": {
             "title": "Nucleic acid starting quantity units",
@@ -144,13 +143,13 @@
             "maximum": 10
         },
         "channel_id": {
-            "title": "",
-            "description": "",
+            "title": "Channel ID",
+            "description": "The channel number within the chip in which the library was constructed.",
             "type": "string"
         },
         "chip_id": {
-            "title": "",
-            "description": "",
+            "title": "Chip ID",
+            "description": "The lab-assigned ID for the chip in which the library was contstructed.",
             "type": "string"
         },
         "spike_in_dilution": {
@@ -158,7 +157,7 @@
             "description": "",
             "type": "string"
         },
-        "spikeins_used": {
+        "spike_ins_used": {
             "title": "Spike-ins datasets used",
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
             "type": "array",

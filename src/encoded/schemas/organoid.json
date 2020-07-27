@@ -33,9 +33,8 @@
             "default": "1"
         },
         "embedded_in_matrigel": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Embedded in matrigel",
+            "description": "Whether or not the organoids were grown in embedded in matrigel.",
             "type": "boolean"
         },
         "derived_from": {
