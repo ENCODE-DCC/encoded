@@ -34,7 +34,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 
 
 const portal = {
-    portal_title: 'ENCODE',
+    portal_title: 'LatticeDB',
     global_sections: [
         {
             id: 'data',
@@ -202,7 +202,7 @@ const EulaModal = ({ closeModal, signup }) => (
         <ModalHeader title="Creating a new account" closeModal={closeModal} />
         <ModalBody>
             <p>
-                You are about to create an ENCODE account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
+                You are about to create an LatticeDB account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -223,7 +223,7 @@ const AccountCreationFailedModal = ({ closeModal, date }) => (
         <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
         <ModalBody>
             <p>
-                Creating a new account failed. Please contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
+                Creating a new account failed. Please contact <a href={`mailto:lattice-info@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -389,7 +389,7 @@ class App extends React.Component {
             },
             socialButtonStyle: 'big',
             languageDictionary: {
-                title: 'Log in to ENCODE',
+                title: 'Log in to LatticeDB',
             },
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
@@ -1199,12 +1199,12 @@ class App extends React.Component {
             appClass = 'communicating';
         }
 
-        let title = context.title || context.name || context.accession || context['@id'];
-        if (title && title !== 'Home') {
-            title = `${title} – ${portal.portal_title}`;
-        } else {
-            title = portal.portal_title;
-        }
+	let title = portal.portal_title;
+
+        let prefix_title = context.title || context.name || context.accession || context['@id'];
+	if (prefix_title && !isHomePage) {
+	    title = `${prefix_title} – ${portal.portal_title}`;
+	}
 
         let canonical = this.state.href;
         if (context.canonical_uri) {
@@ -1239,7 +1239,6 @@ class App extends React.Component {
                     <link rel="canonical" href={canonical} />
                     <link href="https://fonts.googleapis.com/css?family=Mada:200,400,500,600,700" rel="stylesheet" />
                     <script async src="//www.google-analytics.com/analytics.js" />
-                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}

@@ -36,6 +36,8 @@ For issues see [Snovault OSX App Installation][] first.
     $ bin/dev-servers development.ini --app-name app --clear --init --load
     # In a separate terminal, make sure you are in the encoded-venv
     $ bin/pserve development.ini
+    # If working on static files
+    $ npm run dev
     ```
 
 1. Browse to the interface at http://localhost:6543
