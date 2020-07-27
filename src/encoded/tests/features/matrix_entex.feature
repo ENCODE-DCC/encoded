@@ -1,4 +1,4 @@
-@matrix @usefixtures(workbook)
+@matrix @usefixtures(index_workbook)
 Feature: Matrix
     Scenario: Matrix ENTEx
         When I visit "/"

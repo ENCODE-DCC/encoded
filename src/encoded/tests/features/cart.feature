@@ -1,4 +1,4 @@
-@cart @usefixtures(workbook)
+@cart @usefixtures(index_workbook)
 Feature: Cart
     Scenario: Search result cart toggles:
         When I visit "/search/?type=Experiment"
