@@ -275,7 +275,7 @@ class Patient(Item):
             for radiation_record in radiation:
                 radiation_object = request.embed(radiation_record, '@@object') 
                 #site mapping
-                if radiation_object['site_general'] != "Kidne, right" and radiation_object['site_general'] != "Kidney, thrombus" and radiation_object['site_general'] != "Kidney, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, right":
+                if radiation_object['site_general'] != "Kidney, right" and radiation_object['site_general'] != "Kidney, thrombus" and radiation_object['site_general'] != "Kidney, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, right":
                     status = "Yes"
         else:
             if len(surgery) > 0:               
@@ -560,7 +560,7 @@ class Patient(Item):
                         "Bone",
                         "Brain",
                         "Liver",
-                        "Lung",
+                        "Lung and pleura",
                         "Lymph node",
                         "Other"
                     ]
@@ -600,7 +600,7 @@ class Patient(Item):
                 elif radiation_object['site_general'] == "Connective, subcutaneous and other soft tissues, NOS" or radiation_object['site_general'] == "Retroperitoneum & peritoneum" or radiation_object['site_general'] == "Connective, subcutaneous and other soft tissue, abdomen" or radiation_object['site_general'] == "Gastrointestine/ digestive system & spleen" or radiation_object['site_general'] == "Salivary gland":
                     radiation_site = "Other"
                 elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
-                    radiation_site = "Lung"
+                    radiation_site = "Lung and pleura"
                 elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
                     radiation_site = "Lymph Node"
 
