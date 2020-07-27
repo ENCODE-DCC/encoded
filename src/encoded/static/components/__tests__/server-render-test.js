@@ -15,7 +15,7 @@ describe('Server rendering', () => {
     const home = {
         '@id': '/',
         '@type': ['Portal'],
-        portal_title: 'ENCODE',
+        portal_title: 'Home – LatticeDB',
         title: 'Home',
     };
 
