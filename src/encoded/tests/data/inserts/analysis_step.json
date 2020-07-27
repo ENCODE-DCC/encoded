@@ -48,11 +48,6 @@
             "signal generation",
             "peak calling"
         ],
-        "qa_stats_generated": [
-            "NSC",
-            "RSC",
-            "SPOT"
-        ],
         "status": "released",
         "uuid": "d8b871df-a73b-4338-a19f-c3e3c6f7cd88"
     },
@@ -60,11 +55,6 @@
         "step_label": "idr-test-step",
         "analysis_step_types": [
             "IDR"
-        ],
-        "qa_stats_generated": [
-            "self-consistency ratio",
-            "rescue ratio",
-            "IDR plot"
         ],
         "status": "released",
         "uuid": "90b51b6b-416c-437e-ae60-6e2122d9255d"
@@ -104,13 +94,6 @@
         "step_label": "extract-bismark-step",
         "analysis_step_types": [
             "signal generation"
-        ],
-        "qa_stats_generated": [
-            "Sequences analysed in total",
-            "Mapping efficiency",
-            "C methylated in CpG context",
-            "C methylated in CHG context",
-            "C methylated in CHH context"
         ],
         "uuid": "d3b18d6a-0a3f-4a72-ab3a-95a902248685"
     },
@@ -172,11 +155,6 @@
     },
     {
         "step_label": "fastqc-step",
-        "qa_stats_generated": [
-            "number of reads",
-            "read length",
-            "number of low-quality reads"
-        ],
         "analysis_step_types": [
             "QA calculation"
         ],
@@ -184,12 +162,6 @@
     },
     {
         "step_label": "mad-cc-lrna-step",
-        "qa_stats_generated": [
-            "MAD of log ratios",
-            "Pearson correlation",
-            "Spearman correlation",
-            "SD of log ratios"
-        ],
         "analysis_step_types": [
             "QA calculation"
         ],
@@ -204,13 +176,6 @@
         "documents": [
             "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
             "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
-        ],
-        "qa_stats_generated": [
-            "lambda Sequences analysed in total",
-            "lambda Mapping efficiency",
-            "lambda C methylated in CpG context",
-            "lambda C methylated in CHG context",
-            "lambda C methylated in CHH context"
         ],
         "analysis_step_types": [
             "signal generation",

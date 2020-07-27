@@ -125,13 +125,25 @@
         "dataset": {
             "linkTo": "ReferenceFileSet"
         },
+        "supersedes": {
+            "items": {
+                "comment": "The files in this list should be archived or revoked.",
+                "type": "string",
+                "linkTo": "ReferenceFile"
+            }
+        },
         "file_format": {
             "enum": [
+                "bed",
+                "csv",
                 "fasta",
-                "gtf",
+                "gff",
                 "gff3",
-                "tar",
-                "idx"
+                "gtf",
+                "idx",
+                "json",
+                "pfm",
+                "tar"
             ]
         },
         "output_type": {
@@ -142,25 +154,64 @@
                 "transcriptome index"
             ]
         },
+        "derived_from": {
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "ReferenceFile"
+            }
+        },
         "reference_version": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Reference version",
+            "description": "The version of the genome reference assembly that is associated with this reference file.",
             "type": "string",
             "enum": [
                 "hg19",
                 "GRCh38",
-                "mm9",
                 "mm10",
-                "GENCODE 34",
-                "GENCODE 33",
                 "GENCODE 32",
-                "GENCODE 31",
-                "GENCODE 30",
-                "GENCODE 29",
                 "GENCODE 28",
-                "GENCODE 19"
+                "GENCODE 24",
+                "GENCODE 19",
+                "GENCODE M23",
+                "GENCODE M18",
+                "GENCODE M9"
             ]
+        },
+        "organism": {
+            "title": "Organism",
+            "description": "Common name of organism for which this reference represents.",
+            "type": "string",
+            "linkTo": "Organism"
+        },
+        "gene_biotypes_included": {
+            "title": "Gene biotypes included",
+            "description": "The list of allowable gene biotypes that are found in the filtered gtf file.",
+            "type": "array",
+            "items": {
+                "title": "Gene biotype included",
+                "description": "A gene biotypes found in the filtered gtf file.",
+                "type": "string",
+                "enum": [
+                    "protein_coding",
+                    "lincRNA",
+                    "antisense",
+                    "IG_LV_gene",
+                    "IG_V_gene",
+                    "IG_V_pseudogene",
+                    "IG_D_gene",
+                    "IG_J_gene",
+                    "IG_J_pseudogene",
+                    "IG_C_gene",
+                    "IG_C_pseudogene",
+                    "TR_V_gene",
+                    "TR_V_pseudogene",
+                    "TR__D_gene",
+                    "TR_J_gene",
+                    "TR_J_pseudogene",
+                    "TR_C_gene"
+                ]
+            }
         }
     },
     "facets": {

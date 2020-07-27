@@ -168,15 +168,15 @@
                 "unfiltered alignments"
             ]
         },
-        "alignment_type": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string",
-            "enum": [
-                "genome",
-                "transcitome"
-            ]
+        "sample_barcodes": {
+            "title": "Sample barcodes",
+            "description": "The list of sample index barcodes associated with the sequences in the alignment file.",
+            "type": "array",
+            "items": {
+                "title": "Sample barcode",
+                "description": "A sample index barcode associated with the sequences in the alignment file.",
+                "type": "string"
+            }
         }
     },
     "facets": {},

@@ -335,6 +335,16 @@
             }
         }
     },
+    "quality_metric_of": {
+        "quality_metric_of": {
+            "title": "Quality Metric of",
+            "description": "The expression matrix file from which the gene expression metrics was generated.",
+            "type": "string",
+            "uniqueItems": true,
+            "comment": "See file.json for a list of available identifiers.",
+            "linkTo": "MatrixFile"
+        }
+    },
     "viewing_groups": {
         "viewing_groups": {
             "title": "Vieiwing access groups",

@@ -6,12 +6,6 @@
         "software_type": [
             "aligner"
         ],
-        "purpose": [
-            "RNA-seq"
-        ],
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "https://github.com/alexdobin/STAR/releases",
         "references": [
@@ -27,9 +21,6 @@
             "database",
             "variant annotation"
         ],
-        "purpose": [
-            "community resource"
-        ],
         "source_url": "http://www.broadinstitute.org/mammals/haploreg/haploreg.php",
         "references": [
             "d40de6c3-7b60-4567-8282-b29f0cafc0e1"
@@ -41,9 +32,6 @@
         "name": "bedtools",
         "title": "BEDtools",
         "description": "Collectively, the bedtools utilities are a swiss-army knife of tools for a wide-range of genomics analysis tasks. The most widely-used tools enable genome arithmetics: that is, set theory on the genome. For example, bedtools allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, and VCF.",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "http://code.google.com/p/bedtools/",
         "references": [
@@ -55,9 +43,6 @@
         "name": "tophat",
         "title": "TopHat",
         "description": "Fast splice junction mapper for RNA-Seq reads. It aligns RNA-Seq reads to mammalian-sized genomes using the ultra high-throughput short read aligner Bowtie, and then analyzes the mapping results to identify splice junctions between exons.",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "http://ccb.jhu.edu/software/tophat/downloads/",
         "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
@@ -66,9 +51,6 @@
         "name": "bedgraphtobigwig",
         "title": "bedGraphToBigWig",
         "description": "Convert bedGraph to bigWig file",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
         "uuid": "e6bf4810-50ac-11e4-916c-0800200c9a66"
@@ -77,9 +59,6 @@
         "name": "rsem",
         "title": "RSEM",
         "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data.",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "http://deweylab.biostat.wisc.edu/rsem/",
         "uuid": "151bcaa2-8ffc-4429-b013-ab96a7d359e9"
@@ -88,9 +67,6 @@
         "name": "bismark",
         "title": "Bismark",
         "description": "A tool to map bisulfite converted sequence reads and determine cytosine methylation states",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/",
         "uuid": "196f6fb8-33d1-4cf3-b2f0-834f3f7e07d8"
@@ -101,9 +77,6 @@
         "description": "The exonic structure of two spliceforms.",
         "software_type": [
             "transcript identification"
-        ],
-        "used_by": [
-            "ENCODE"
         ],
         "status": "released",
         "source_url": "http://sammeth.net/confluence/display/FLUX/Home",
@@ -116,9 +89,6 @@
         "software_type": [
             "quality metric"
         ],
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "https://github.com/pervouchine/npIDR",
         "uuid": "dd9e0890-5af0-11e4-8ed6-0800200c9a66"
@@ -126,9 +96,6 @@
     {
         "name": "bowtie",
         "title": "Bowtie",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "https://github.com/BenLangmead/bowtie",
         "uuid": "d254a874-e832-41ef-ac15-2124aaa15d05",
@@ -205,9 +172,6 @@
         "name": "samtools",
         "title": "Samtools",
         "description": "Samtools is a suite of programs for interacting with high-throughput sequencing data.",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "software_type": [
             "other"
@@ -220,9 +184,6 @@
         "name": "mott-trim.py",
         "title": "Mott Trimmer",
         "description": "Mott-Trimmer for WGBS reads",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
         "uuid": "9c537e83-cf5e-4e80-8027-746f31785c99"
@@ -231,9 +192,6 @@
         "name": "cxrepo-bed.py",
         "title": "WGBS output processor",
         "description": "Convert a Bismark CX_report file to bed-like files",
-        "used_by": [
-            "ENCODE"
-        ],
         "status": "released",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
         "uuid": "32f72d98-bf4d-4408-b448-a0b4168ed320"

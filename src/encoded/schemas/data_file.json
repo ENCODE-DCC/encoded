@@ -39,8 +39,8 @@
         },
         "file_format": {
             "title": "File format",
-            "type": "string",
-            "comment": "This field is required."
+            "description": "The format structure of the file.",
+            "type": "string"
         },
         "no_file_available": {
             "title": "No file available",
@@ -104,6 +104,19 @@
             "description": "The experiment or dataset the file belongs to.",
             "comment": "Required. See dataset.json for available identifiers.",
             "type": "string"
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The files participating as inputs into software to produce this output file.",
+            "type": "array",
+            "uniqueItems": true
+        },
+        "analysis_step": {
+            "title": "Analysis step run",
+            "description": "The run instance of the step used to generate the file.",
+            "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
+            "type": "string",
+            "linkTo": "AnalysisStep"
         },
         "status": {
             "title": "Status",

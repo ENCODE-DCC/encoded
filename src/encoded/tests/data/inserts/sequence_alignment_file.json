@@ -1,7 +1,7 @@
 [
     {
         "accession": "ENCFF001MWZ",
-        "assembly": "mm9",
+        "assembly": "mm10",
         "dataset": "ENCSR000AHF",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
@@ -16,7 +16,7 @@
     },
     {
         "accession": "ENCFF002MWZ",
-        "assembly": "mm9",
+        "assembly": "mm10",
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "bam",
@@ -50,7 +50,7 @@
         "file_size": 20,
         "dataset": "ENCSR123ABC",
         "assembly": "hg19",
-        "genome_annotation": "V19",
+        "genome_annotation": "GENCODE 19",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "derived_from": [
             "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
@@ -72,7 +72,7 @@
         "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
-        "genome_annotation": "V19",
+        "genome_annotation": "GENCODE 19",
         "file_size": 20,
         "file_format": "bam",
         "lab": "j-michael-cherry",
@@ -89,7 +89,7 @@
         "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "assembly": "GRCh38",
-        "genome_annotation": "V10",
+        "genome_annotation": "GENCODE 19",
         "file_format": "bam",
         "mapped_read_length": 36,
         "file_size": 20,
@@ -108,7 +108,7 @@
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "assembly": "GRCh38",
-        "genome_annotation": "V10",
+        "genome_annotation": "GENCODE 19",
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "cff6c42afc135f1f95971e315b8d5fdd",
@@ -124,7 +124,7 @@
         "file_size": 20,
         "dataset": "ENCSR123ABC",
         "assembly": "hg19",
-        "genome_annotation": "V19",
+        "genome_annotation": "GENCODE 19",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "derived_from": [
             "34b653f7-6777-49d9-8e06-d76a96a4d10b",
@@ -428,7 +428,7 @@
             "1234830f-154f-449f-814b-fd3435417edf"
         ],
         "file_format": "bam",
-        "genome_annotation": "V24",
+        "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515390000f4ebfa66d78d",
         "output_type": "alignments",
@@ -448,7 +448,7 @@
             "5678830f-154f-449f-814b-fd3435417edf"
         ],
         "file_format": "bam",
-        "genome_annotation": "V24",
+        "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515391212f4ebfa66d78d",
         "output_type": "alignments",
@@ -468,7 +468,7 @@
         ],
         "file_format": "bam",
         "file_size": 398856,
-        "genome_annotation": "V24",
+        "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "22be74b6e11555393507f4ebfa65d78c",
         "output_type": "alignments",
@@ -488,7 +488,7 @@
             "ENCFF002ISO/"
         ],
         "file_format": "bam",
-        "genome_annotation": "V24",
+        "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515393434f4ebfa66d78d",
         "output_type": "alignments",

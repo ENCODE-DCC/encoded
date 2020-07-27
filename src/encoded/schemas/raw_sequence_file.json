@@ -28,57 +28,6 @@
         {"$ref": "data_file.json#/properties"}
     ],
     "dependencies": {
-        "paired_with": {
-            "comment": "Only paired-ended files should have paired_with value.",
-            "required": ["sequencing_run_type"],
-            "allOf": [
-                {
-                    "not": {
-                        "properties": {
-                            "platform": {
-                                "linkTo": "Platform",
-                                "linkEnum": [
-                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
-                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                                ]
-                            }
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "sequencing_run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                }
-            ]
-        },
-        "sequencing_run_type": {
-            "comment": "sequencing_run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
-            "required": ["platform"], 
-            "allOf": [
-                {
-                    "not": {
-                        "properties": {
-                            "platform": {
-                                "linkTo": "Platform",
-                                "linkEnum": [
-                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
-                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                                ]
-                            }
-                        }
-                    }
-                }
-            ]           
-        },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
@@ -90,25 +39,6 @@
             "properties": {
                 "status": {
                     "enum": ["revoked"]
-                }
-            }
-        },
-        "index_of": {
-            "comment": "Only fastq files can have index_of specified.",
-            "properties": {
-                "file_format": {
-                    "enum": ["fastq"]
-                },
-                "output_type": {
-                    "enum": ["index reads"]
-                }
-            }
-        },
-        "read_structure": {
-            "comment": "Only fastq files can have read_structure specified.",
-            "properties": {
-                "file_format": {
-                    "enum": ["fastq"]
                 }
             }
         },
@@ -153,181 +83,6 @@
                 }
             ]
         },
-        "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform. Files of output_type restriction enzyme site locations require specification of restriction_enzymes. Files of output_type index reads require specification of index_of.",
-            "oneOf":[
-                {
-                    "properties": {
-                        "output_type": {
-                            "enum": ["reads"]
-                        }
-                    },
-                    "oneOf": [
-                        {
-                            "not": {
-                                "required": ["read_length"]
-                            },
-                            "properties": {
-                                "platform": {
-                                    "linkTo": "Platform",
-                                    "linkEnum": [
-                                        "c7564b38-ab4f-4c42-a401-3de48689a998"
-                                    ]
-                                }
-                                
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": ["read_length"]
-                            },
-                            "properties": {
-                                "platform": {
-                                    "linkTo": "Platform",
-                                    "linkEnum": [
-                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
-                                    ]
-                                }
-                                
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": ["read_length"]
-                            },
-                            "properties": {
-                                "platform": {
-                                    "linkTo": "Platform",
-                                    "linkEnum": [
-                                        "e2be5728-5744-4da4-8881-cb9526d0389e"
-                                    ]
-                                }
-                                
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": ["read_length"]
-                            },
-                            "properties": {
-                                "platform": {
-                                    "linkTo": "Platform",
-                                    "linkEnum": [
-                                        "6c275b37-018d-4bf8-85f6-6e3b830524a9"
-                                    ]
-                                }
-                                
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": ["read_length"]
-                            },
-                            "properties": {
-                                "platform": {
-                                    "linkTo": "Platform",
-                                    "linkEnum": [
-                                        "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                                    ]
-                                }
-                                
-                            }
-                        },
-                        {
-                            "required": ["read_length"],
-                            "properties": {
-                                "not": {
-                                    "platform": {
-                                        "linkTo": "Platform",
-                                        "linkEnum": [
-                                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                            "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                            "e2be5728-5744-4da4-8881-cb9526d0389e",
-                                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "properties": {
-                        "output_type": {
-                            "enum": ["subreads"]
-                        },
-                        "platform": {
-                            "linkTo": "Platform",
-                            "linkEnum": [
-                                "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                "e2be5728-5744-4da4-8881-cb9526d0389e"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "required": ["index_of"],
-                    "properties": {
-                        "output_type": {
-                            "enum": ["index reads"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["reads", "index reads", "subreads"]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        "platform": {
-            "not": {
-                "required": ["sequencing_run_type", "read_type", "read_length"],
-                "properties": {
-                    "platform": {
-                        "linkTo": "Platform",
-                        "linkEnum": [
-                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                            "c7564b38-ab4f-4c42-a401-3de48689a998",
-                            "e2be5728-5744-4da4-8881-cb9526d0389e",
-                            "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                            "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                        ]
-                    }
-                }
-            }
-        },
-        "read_length": {
-            "oneOf": [
-                {
-                    "not": {
-                        "required":["platform"]
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "platform": {
-                                "linkTo": "Platform",
-                                "linkEnum": [
-                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
-                                    "c7564b38-ab4f-4c42-a401-3de48689a998",
-                                    "e2be5728-5744-4da4-8881-cb9526d0389e",
-                                    "6c275b37-018d-4bf8-85f6-6e3b830524a9",
-                                    "8f1a9a8c-3392-4032-92a8-5d196c9d7810"
-                                ]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
         "content_error_detail":{
             "comment": "Specification of status of content error is required if content_error_detail is specified",
             "required": ["status"],
@@ -336,80 +91,6 @@
                     "enum": ["content error"]
                 }
             }
-        },
-        "status": {
-            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
-            "allOf": [
-                {
-                    "oneOf": [
-                        {
-                            "anyOf": [
-                                    {
-                                        "required": ["no_file_available"],
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["in progress",  "revoked", "archived", "released"]
-                                            },
-                                             "no_file_available": {
-                                                "enum": [true]
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "required": ["file_size"],
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["in progress",  "revoked", "archived", "released"]
-                                            }
-                                        }
-                                    }
-                            ]
-                        },
-
-                        {
-                            "properties": {
-                                "status": {
-                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "oneOf": [
-                        {
-                            "required": ["content_error_detail"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["content error"]
-                                }
-                            }
-                        },
-                        {
-                            "not": {
-                                "oneOf": [
-                                    {
-                                        "required": ["content_error_detail"],
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["content error"]
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-
-                }
-            ]
         }
     },
     "properties": {
@@ -418,6 +99,13 @@
         },
         "dataset": {
             "linkTo": "Dataset"
+        },
+        "supersedes": {
+            "items": {
+                "comment": "The files in this list should be archived or revoked.",
+                "type": "string",
+                "linkTo": "RawSequenceFile"
+            }
         },
         "read_count": {
             "title": "Read count",
@@ -431,9 +119,15 @@
             "enum": [
                 "fasta",
                 "fastq",
-                "sra",
-                "bam"
+                "sra"
             ]
+        },
+        "derived_from": {
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "RawSequenceFile"
+            }
         },
         "fastq_signature": {
             "title": "Fastq file flowcell based signature",
@@ -453,7 +147,7 @@
         },
         "platform": {
             "title": "Platform",
-            "description": "The measurement device used to collect data.",
+            "description": "The device used to sequence data.",
             "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
             "type": "string",
             "linkTo": "Platform"
@@ -561,10 +255,8 @@
         },
         "output_type": {
             "enum": [
-                "index reads",
-                "reads",
-                "rejected reads",
-                "subreads"
+                "undetermined reads",
+                "assigned reads"
             ]
         },
         "derived_from": {
@@ -574,73 +266,56 @@
             "type": "string",
             "linkTo": "Library"
         },
-        "read_structure": {
-            "title": "Read structure",
-            "description": "A list of elements in the read describing the structure of a read.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Sequence element",
-                "description": "One element in the read with start and end coordinates.",
-                "required": ["sequence_element", "start", "end"],
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "sequence_element": {
-                        "title": "Element name",
-                        "type": "string",
-                        "enum": [
-                            "adapter",
-                            "barcode",
-                            "UMI"
-                        ]
-                    },
-                    "start": {
-                        "title": "Start coordinate",
-                        "description": "The 1-based start coordinate within the read. A negative number stands for a position counting from the end of the read.",
-                        "type": "integer"
-                    },
-                    "end": {
-                        "title": "End coordinate",
-                        "description": "The 1-based end coordinate within the read. A negative number stands for a position counting from the end of the read.",
-                        "type": "integer"
-                    }
-                }
-            }
-        },
         "read_type": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Read type",
+            "description": "Read reference during experimental protocol.",
             "type": "string",
             "enum": [
                 "Read 1",
-                "Read 2",
-                "Reads 1,2",
-                "index",
                 "Read 1N",
-                "Read 2N"
+                "Read 2",
+                "Read 2N",
+                "i5 index",
+                "i7 index"
             ]
         },
         "sequence_type": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string",
-            "enum": [
-                "3' of molecule",
-                "5' of molecule",
-                "feature barocde",
-                "cell barcode",
-                "sample index,UMI"
-            ]
+            "title": "Sequence type",
+            "description": "The biological content of the sequence reads.",
+            "type": "array",
+            "items": {
+                "title": "Sequence type",
+                "description": "The biological content of the sequence reads.",
+                "type": "string",
+                "enum": [
+                    "3' of molecule",
+                    "5' of molecule",
+                    "molecule",
+                    "feature barocde",
+                    "cell barcode",
+                    "sample index",
+                    "UMI",
+                    "fragment"
+                ]
+            }
         },
         "software_version": {
             "title": "Software version",
-            "description": "The software version used to generate the raw data file from the BCL",
-            "comment": "",
+            "description": "The software version used to generate the raw data file from the BCL.",
             "type": "string",
             "linkTo": "SoftwareVersion"
+        },
+        "demultiplexed_type": {
+            "title": "Demultiplexed type",
+            "description": "The read assignment after sample demultiplexing for fastq files.",
+            "type": "string",
+            "enum": [
+                "R1",
+                "R2",
+                "R3",
+                "I1",
+                "I2"
+            ]
         }
     },
     "facets": {

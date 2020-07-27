@@ -149,9 +149,8 @@
             ]
         },
         "value_scale": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Value scale",
+            "description": "The factor by which the expression values have been scaled; linear if not scaled.",
             "type": "string",
             "enum": [
                 "linear",
@@ -161,9 +160,8 @@
             ]
         },
         "value_units": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Value units",
+            "description": "The units for the expression values.",
             "type": "string",
             "enum": [
                 "UQ",
@@ -179,19 +177,22 @@
         },
         "normalized": {
             "title": "Normalized",
-            "description": "",
-            "comment": "",
+            "description": "A flag to indicate whether the expression values have been normalized.",
             "type": "boolean"
         },
         "normalization_method": {
             "title": "Normalization method",
-            "description": "",
-            "comment": "",
-            "type": "string"
+            "description": "The transformation method used to make expression values comparable across libraries.",
+            "type": "string",
+            "enum": [
+                "LogNormalize",
+                "scTransform",
+                "cellranger aggr read depth normalization"
+            ]
         },
         "filtering_cutoffs": {
             "title": "Filtering cutoffs",
-            "description": "",
+            "description": "The list of cutoffs that were used for filtering in generating the matrix.",
             "type": "array",
             "default": [],
             "items": {
@@ -202,7 +203,7 @@
                     "cutoff_value": {
                         "title": "Cutoff value",
                         "description": "",
-                        "type": "integer"
+                        "type": "number"
                     },
                     "cutoff_units": {
                         "title": "Cutoff units",

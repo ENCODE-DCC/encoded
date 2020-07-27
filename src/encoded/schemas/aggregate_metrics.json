@@ -14,67 +14,62 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/uuid"},
-        {"$ref": "mixins.json#/standard_status"}
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/quality_metric_of"}
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "quality_metric_of": {
-            "title": "Quality Metric of",
-            "description": "",
-            "type": "string",
-            "uniqueItems": true,
-            "comment": "See file.json for a list of available identifiers.",
-            "linkTo": "MatrixFile"
-        },
         "filtered_bcs_transcriptome_union": {
-            "title": "",
-            "description": "",
+            "title": "Filtered bcs transcriptome union",
+            "description": "Estimated number of barcodes associated with cell-containing partitions, summed across all input libraries.",
             "type": "integer"
         },
         "total_reads": {
-            "title": "",
-            "description": "",
+            "title": "Total reads",
+            "description": "Total number of sequenced reads, summed across all input libraries.",
             "type": "integer"
         },
         "multi_transcriptome_total_raw_reads_per_filtered_bc": {
-            "title": "",
-            "description": "",
-            "type": "integer"
+            "title": "Multi transcriptome total raw reads per filtered bc",
+            "description": "Reads per cell-containing barcodes, calculated by total_reads divided by filtered_bcs_transcriptome_union.",
+            "type": "number"
         },
         "lowest_frac_reads_kept": {
-            "title": "",
-            "description": "",
-            "type": "integer"
+            "title": "Lowest frac reads kept",
+            "description": "Lowest fraction of reads retained, corresponding to the library which lost the most reads during normalization.",
+            "type": "number"
         },
         "library_metrics": {
-            "title": "",
-            "description": "",
+            "title": "Library metrics",
+            "description": "Metrics of reads per library prior to and after depth normalization.",
             "type": "array",
             "items": {
-                "title": "",
+                "title": "Library metric",
+                "description": "Metric of reads per library prior to and after depth normalization.",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
                     "library": {
-                        "title": "",
+                        "title": "Library",
+                        "description": "The Library object representation that these metrics describe.",
                         "type": "string",
                         "linkTo": "Library"
                     },
                     "pre_normalization_raw_reads_per_filtered_bc": {
-                        "title": "",
-                        "type": "",
+                        "title": "Prenormalization raw reads per filtered bc",
+                        "description": "The mean total reads per cell prior to depth normalization.",
                         "type": "integer"
                     },
                     "pre_normalization_cmb_reads_per_filtered_bc": {
-                        "title": "",
-                        "type": "",
-                       "type": "integer"
+                        "title": "Prenormalization cmb reads per filtered bc",
+                        "description": "The mean confidently mapped and barcoded (CMB) reads per cell prior to depth normalization.",
+                        "type": "integer"
                     },
                     "frac_reads_kept": {
-                        "title": "",
-                        "type": "",
+                        "title": "Fraction of reads kept",
+                        "description": "The fraction of reads that were retained after depth normalization.",
                         "type": "integer"
                     }
                 }

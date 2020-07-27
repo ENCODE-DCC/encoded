@@ -14,12 +14,6 @@
         "schema_version": {
             "default": "1"
         },
-        "derived_from": {
-            "title": "Derived from",
-            "description": "The files participating as inputs into software to produce this output file.",
-            "type": "array",
-            "uniqueItems": true
-        },
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",
@@ -28,8 +22,7 @@
             "enum": [
                 "GRCh38",
                 "hg19",
-                "mm10",
-                "mm9"
+                "mm10"
             ]
         },
         "genome_annotation": {
@@ -38,33 +31,17 @@
             "comment": "Applies to files created using annotations.",
             "type": "string",
             "enum": [
-                "ENSEMBL V65",
-                "M2",
-                "M3",
-                "M4",
-                "M7",
-                "M14",
-                "M21",
-                "miRBase V21",
-                "None",
-                "V10",
-                "V19",
-                "V22",
-                "V24",
-                "V29",
-                "V30",
-                "V3c",
-                "V7",
-                "WS235",
-                "WS245"
+                "hg19",
+                "GRCh38",
+                "mm10",
+                "GENCODE 32",
+                "GENCODE 28",
+                "GENCODE 24",
+                "GENCODE 19",
+                "GENCODE M23",
+                "GENCODE M18",
+                "GENCODE M9"
             ]
-        },
-        "analysis_step": {
-            "title": "Analysis step run",
-            "description": "The run instance of the step used to generate the file.",
-            "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
-            "type": "string",
-            "linkTo": "AnalysisStep"
         }
     },
     "facets": {},
