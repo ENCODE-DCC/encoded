@@ -329,8 +329,7 @@
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "",
-                "comment": "",
+                "title": "Disease",
                 "type": "string"
             }
         }

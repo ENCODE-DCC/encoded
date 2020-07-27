@@ -94,6 +94,8 @@
             "type": "array",
             "uniqueItems": true,
             "items": {
+                "title": "Supersedes",
+                "description" : "A file that this file supersedes",
                 "comment": "The files in this list should be archived or revoked.",
                 "type": "string",
                 "linkTo": "DataFile"

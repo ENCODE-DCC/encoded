@@ -39,7 +39,8 @@
         },
         "derived_from": {
             "items": {
-                "comment": "",
+                "title": "Derived from",
+                "description": "A donor or sample from which this object was directly derived.",
                 "type": "string",
                 "linkTo": [
                     "CellCulture",

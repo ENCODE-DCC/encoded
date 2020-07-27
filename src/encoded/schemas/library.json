@@ -89,13 +89,12 @@
         },
         "derived_from": {
             "title": "Derived from",
-            "description": "The biosample that nucleic acid was isolated from to generate the library.",
+            "description": "The biosamples that nucleic acid was isolated from to generate the library.",
             "comment": "See biosample.json for available identifiers.",
             "type": "array",
             "items": {
-                "title": "",
-                "description": "",
-                "comment": "",
+                "title": "Derived from",
+                "description": "A biosample that nucleic acid was isolated from to generate the library.",
                 "type": "string",
                 "linkTo": "Biosample"
             }

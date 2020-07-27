@@ -37,6 +37,7 @@
         },
         "status": {
             "title": "Status",
+            "description": "Status of the file set.",
             "type": "string",
             "permission": "import_items",
             "default": "in progress",

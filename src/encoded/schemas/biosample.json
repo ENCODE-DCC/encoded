@@ -154,7 +154,7 @@
         },
         "derived_from": {
             "title": "Derived from",
-            "description": "The object from which this object was derived.",
+            "description": "The donor(s) or sample(s) from which this object was directly derived.",
             "type": "array",
             "uniqueItems": true
         },
