@@ -169,20 +169,6 @@ def audit_experiment_mixed_libraries(value, system, excluded_types):
     return
 
 
-def check_file_platform(file_to_check, excluded_platforms):
-    if 'platform' not in file_to_check:
-        return
-    elif file_to_check['platform'] in excluded_platforms:
-        detail = ('Reads file {} has not compliant '
-            'platform (SOLiD) {}.'.format(
-                audit_link(path_to_text(file_to_check['@id']), file_to_check['@id']),
-                file_to_check['platform']
-            )
-        )
-        yield AuditFailure('not compliant platform', detail, level='WARNING')
-    return
-
-
 def check_file_read_length_chip(file_to_check,
                                 upper_threshold_length,
                                 medium_threshold_length,
@@ -1082,64 +1068,6 @@ def is_matching_biosample_control(dataset, biosample_term_id):
     return True
 
 
-def audit_experiment_platforms_mismatches(value, system, files_structure):
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    # do not apply the audit to DNase-seq and genetic modification followed by DNase-seq
-    if value.get("assay_term_id") in ["OBI:0001853", "NTR:0004774"]:
-        return
-
-    if not files_structure.get('original_files'):
-        return
-
-    platforms = get_platforms_used_in_experiment(files_structure)
-    if len(platforms) > 1:
-        platforms_string = str(list(platforms)).replace('\'', '')
-        detail = ('This experiment '
-            'contains data produced on incompatible '
-            'platforms {}.'.format(platforms_string))
-        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
-    elif len(platforms) == 1:
-        platform_term_name = list(platforms)[0]
-        if 'possible_controls' in value and \
-           value['possible_controls'] != []:
-            for control in value['possible_controls']:
-                if control.get('original_files'):
-                    control_platforms = get_platforms_used_in_experiment(
-                        create_files_mapping(control.get('original_files'), files_structure.get('excluded_types')))
-                    if len(control_platforms) > 1:
-                        control_platforms_string = str(
-                            list(control_platforms)).replace('\'', '')
-                        detail = ('possible_controls is a list of experiment(s) that can serve '
-                            'as analytical controls for a given experiment. '
-                            'Experiment {} found in possible_controls list of this experiment '
-                            'contains data produced on platform(s) {} '
-                            'which are not compatible with platform {} '
-                            'used in this experiment.'.format(
-                                audit_link(path_to_text(control['@id']), control['@id']),
-                                control_platforms_string,
-                                platform_term_name
-                            )
-                        )
-                        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
-                    elif len(control_platforms) == 1 and \
-                            list(control_platforms)[0] != platform_term_name:
-                        detail = ('possible_controls is a list of experiment(s) that can serve '
-                            'as analytical controls for a given experiment. '
-                            'Experiment {} found in possible_controls list of this experiment '
-                            'contains data produced on platform {} '
-                            'which is not compatible with platform {} '
-                            'used in this experiment.'.format(
-                                audit_link(path_to_text(control['@id']), control['@id']),
-                                list(control_platforms)[0],
-                                platform_term_name
-                            )
-                        )
-                        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
-    return
-
-
 def audit_experiment_ChIP_control(value, system, files_structure):
     if not check_award_condition(value, [
             'ENCODE3', 'ENCODE4', 'Roadmap']):
@@ -1872,23 +1800,6 @@ def has_no_unfiltered(filtered_bam, unfiltered_bams):
                         return False
         return True
     return False
-
-
-def get_platforms_used_in_experiment(files_structure_to_check):
-    platforms = set()
-    for file_object in files_structure_to_check.get('original_files').values():
-        if file_object['output_category'] == 'raw data' and \
-                'platform' in file_object:
-            # collapsing interchangable platforms HiSeq2000/2500 and all Ilumina Genome Analyzers II/IIe/IIx
-            if file_object['platform']['term_id'] in ['OBI:0002002', 'OBI:0002001']:
-                platforms.add('Illumina HiSeq 2000/2500')
-            elif file_object['platform']['term_id'] in ['OBI:0002000',
-                                                        'OBI:0000703',
-                                                        'OBI:0002027']:
-                platforms.add('Illumina Genome Analyzer II/e/x')
-            else:
-                platforms.add(file_object['platform']['term_name'])
-    return platforms
 
 
 def get_biosamples(experiment):

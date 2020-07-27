@@ -150,7 +150,11 @@
             "description": "The device used to sequence data.",
             "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
             "type": "string",
-            "linkTo": "Platform"
+            "enum": [
+                "Illumina NovaSeq 6000",
+                "Illumina HiSeq 4000",
+                "Illumina HiSeq 2500"
+            ]
         },
         "read_length": {
             "title": "Read length",
@@ -337,7 +341,7 @@
         "file_type": {
             "title": "File type"
         },
-        "platform.term_name": {
+        "platform": {
             "title": "Platform"
         },
         "lab.title": {

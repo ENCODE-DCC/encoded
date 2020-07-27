@@ -120,26 +120,6 @@ class Document(ItemWithAttachment, Item):
 
 
 @collection(
-    name='platforms',
-    unique_key='platform:term_id',
-    properties={
-        'title': 'Platforms',
-        'description': 'Listing of Platforms',
-    })
-class Platform(Item):
-    item_type = 'platform'
-    schema = load_schema('encoded:schemas/platform.json')
-    name_key = 'term_id'
-
-    @calculated_property(schema={
-        "title": "Title",
-        "type": "string",
-    })
-    def title(self, term_name):
-        return term_name
-
-
-@collection(
     name='publications',
     unique_key='publication:identifier',
     properties={
