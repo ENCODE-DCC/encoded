@@ -139,7 +139,9 @@
                 "Metanephric adenoma",
                 "Mucinous tubular and spindle cell carcinoma",
                 "multilocular cystic renal neoplasm of low malignant potential",
-                "PRCC",
+                "PRCC, no type given",
+                "PRCC, type 1",
+                "PRCC, type 2",
                 "Poorly differentiated malignancy",
                 "Renal medullary carcinoma",
                 "Renal Cell Carcinoma, NOS",
@@ -148,7 +150,6 @@
                 "RON, favor ChRCC",
                 "RON, favor RO",
                 "Sarcomatoid, NOS",
-                "Sarcomatoid RCC",
                 "Sarcoma",
                 "MiT family translocation RCC",
                 "Tubulocystic RCC",
@@ -156,9 +157,7 @@
                 "Unclassified RCC",
                 "Nephroblastoma (Wilms tumor)",
                 "Soft tissue neoplasm, NOS",
-                "SDH deficient RCC",
-                "Atypical cell",
-                "Metastatic Carcinoma"
+                "SDH deficient RCC"
             ]
         },
         "sarcomatoid": {
