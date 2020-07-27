@@ -20,6 +20,7 @@ import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 import SurgeryChart from './surgeryChart';
 import BiospecimenTable from "./biospecimenTable";
 import PatientPathTable from './patientPathTable';
+import Metastasis from "./metastasis";
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
@@ -101,6 +102,7 @@ class Patient extends React.Component {
     let hasMedication = false;
     let hasRadiation = false;
     let hasBiospecimen = false;
+    let hasMetastasis = false;
     if (Object.keys(this.props.context.labs).length > 0) {
       hasLabs = true;
     }
@@ -125,6 +127,9 @@ class Patient extends React.Component {
     if (Object.keys(this.props.context.biospecimen).length > 0) {
       hasBiospecimen = true;
     }
+    if (Object.keys(this.props.context.metastasis).length > 0) {
+      hasMetastasis = true;
+    }
     const labsPanelBody = (
       <PatientChart chartId="labsChart" data={context.labs} ></PatientChart>
 
@@ -141,6 +146,9 @@ class Patient extends React.Component {
     );
     const radiationPanelBody = (
       <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Radiation>
+    );
+    const metastasisPanelBody = (
+      <Metastasis chartId="metastasis" data={context.metastasis} chartTitle="Metastasis History" last_follow_up_date={context.last_follow_up_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Metastasis>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -214,6 +222,7 @@ class Patient extends React.Component {
         {hasPath && <PatientPathTable data={context.surgery} tableTitle="Patient Diagnosis"></PatientPathTable>}
         {hasSurgery && <CollapsiblePanel panelId="myPanelId3" title="Surgical Results Over Time" content={surgeryPanelBody} />}
         {hasRadiation && <CollapsiblePanel panelId="myPanelId5" title="Radiation History" content={radiationPanelBody} />}
+        {hasMetastasis && <CollapsiblePanel panelId="myPanelId6" title="Metastasis History" content={metastasisPanelBody} />}
         {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
         {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>} 
         {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}       
@@ -234,3 +243,4 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
+
