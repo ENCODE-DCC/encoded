@@ -786,17 +786,18 @@ $deleted-bg: #ffe0e0;
 
 .cart-tab {
     display: flex;
+    align-items: center;
+    line-height: 1.1;
 
     @at-root #{&}__count {
         display: none;
-        padding: 1px 7px;
+        padding: 0 5px;
         margin-left: 6px;
-        font-size: 0.9rem;
-        font-weight: 700;
+        font-size: 0.8rem;
         color: #fff;
         background-color: green;
         border-radius: 20px;
-        line-height: 150%;
+        line-height: 1.4;
 
         @media screen and (min-width: $screen-sm-min) {
             display: block;
@@ -1117,7 +1118,9 @@ $file-type-colors: (
 
     .dropdown-button__content {
         button {
+            font-family: $site-font;
             color: #000;
+            line-height: 1.2;
 
             &:hover {
                 color: #fff;

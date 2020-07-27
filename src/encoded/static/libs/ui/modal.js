@@ -111,7 +111,7 @@ export class ModalHeader extends React.Component {
 
         // Handle the string and React component cases for the title
         if (title) {
-            titleRender = typeof title === 'string' ? <h4>{title}</h4> : <div>{title}</div>;
+            titleRender = typeof title === 'string' ? <h2>{title}</h2> : <div>{title}</div>;
         }
 
         // Chain in the given closeBtn function if given
