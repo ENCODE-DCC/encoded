@@ -25,19 +25,14 @@
         "caption": {
             "title": "Caption",
             "type": "string"
-        },
-        "thumbnail": {
-            "title": "Thumbnail",
-            "type": "string"
-        },
-        "downloadUrl": {
-            "title": "Download Url",
-            "type": "string"
         }
     },
     "columns": {
-        "thumbnail": {
-            "title": "Thumbnail"
+        "thumb_nail": {
+            "title": "Thumb Nail"
+        },
+        "status": {
+            "title": "Status"
         },
         "caption": {
             "title": "Caption"

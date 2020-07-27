@@ -129,18 +129,6 @@ export const Attachment = ({ context, attachment, className, showLink }) => {
         );
     }
 
-    if (context.thumbnail) {
-        return (
-            <div>
-                <div className="attachment">
-                    <div className="file-thumbnail">
-                        <img src={context.thumbnail} alt="thumbnail" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     // No attachment given; display a broken file icon.
     return (
         <div className="attachment">

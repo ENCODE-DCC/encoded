@@ -159,7 +159,7 @@ function RowView(rowInfo) {
     const id = row.item['@id'];
     const tds = row.cells.map((cell, index) => {
         const cellValue = cell.value;
-        if (cell.type === 'thumbnail') {
+        if (cell.type === 'thumb_nail') {
             return (
                 <td key={index}>
                     <div className="tcell-thumbnail">
@@ -169,7 +169,7 @@ function RowView(rowInfo) {
                     </div>
                 </td>
             );
-        } else if (cell.type === 'downloadUrl') {
+        } else if (cell.type === 'download_url') {
             return (
                 <td key={index}>
                     <a href={cellValue}>{`${window.location.origin}${cellValue}`}</a>

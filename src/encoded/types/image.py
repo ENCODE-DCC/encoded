@@ -33,11 +33,11 @@ class Image(ItemWithAttachment, Item):
         return keys
     
     @calculated_property(schema={
-        "title": "Thumbnail",
+        "title": "Thumb Nail",
         "description": "Image url",
         "type": "string",
     })
-    def thumbnail(self, request, attachment):
+    def thumb_nail(self, request, attachment):
         return self.jsonld_id(request) + attachment['href']
 
     @calculated_property(schema={
@@ -45,5 +45,5 @@ class Image(ItemWithAttachment, Item):
         "description": "Download Url",
         "type": "string",
     })
-    def downloadUrl(self, request, attachment):
+    def download_url(self, request, attachment):
         return self.jsonld_id(request) + attachment['href']
