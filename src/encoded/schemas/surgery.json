@@ -75,7 +75,7 @@
         "nephr_robotic_assist":{
             "title":"Nephrectomy Robotic Assist"
         },
-        "tumor_size_range": {
+        "pathology_report.tumor_size_range": {
             "title": "Tumor Size"
         },
         "pathology_report.ajcc_p_stage": {
@@ -229,7 +229,6 @@
         "accession": 1.0,
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
-        "pathology_report.tumor_size_range": 1.0,
         "pathology_report.ajcc_p_stage": 1.0,
         "pathology_report.n_stage": 1.0,
         "pathology_report.m_stage": 1.0,
