@@ -2380,6 +2380,24 @@
         "uuid": "7e1ff030-0d63-48d5-8447-ff69234f1b0c"
     },
     {
+        "accession": "ENCFF727BIF",
+        "aliases": [
+            "erez-lieberman:HIC036-big-interact"
+        ],
+        "assembly": "hg19",
+        "award": "U54HG006998",
+        "dataset": "ENCSR000AJK",
+        "file_format": "bigInteract",
+        "file_size": 490284123,
+        "lab": "ali-mortazavi",
+        "md5sum": "0794afd6c9bee2c00b4491094d2ef81b",
+        "output_type": "long range chromatin interactions",
+        "replicate": "380dc621-8574-498e-a133-9fc162464007",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "5333a3e1-2e33-47f3-b01e-c5925e9b95b0"
+    },
+    {
         "accession": "ENCFF812THZ",
         "aliases": [
             "erez-lieberman:HIC034-hic30"

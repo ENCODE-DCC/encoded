@@ -4,8 +4,8 @@
 * The file *output_type* enum *spike-in sequence* has been adjusted to *spike-ins* to accomodate other spike-in file types. *gtf* files that are *spike-ins* will not be required to specify an *assembly.*
 
 ### Minor changes since schema version 22
-
 * Added *bias model* to the enum list for *output_type*.
+* *file_format* was updated to include *bigInteract*.
 
 ### Schema version 22
 * bam files with *output_type: subreads* must have a replicate object specified.
