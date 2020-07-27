@@ -21,6 +21,7 @@
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
+        {"$ref": "mixins.json#/source"},
         {"$ref": "donor.json#/properties"},
         {"$ref": "mouse_donor.json#/properties"},
         {"$ref": "prenatal_donor.json#/properties"}

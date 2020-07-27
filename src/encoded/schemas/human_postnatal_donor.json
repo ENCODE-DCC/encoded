@@ -79,16 +79,24 @@
         "schema_version": {
             "default": "1"
         },
+        "life_stage": {
+            "enum": [
+                "newborn",
+                "infant",
+                "child",
+                "adolescent",
+                "adult",
+                "unknown"
+            ]
+        },
         "times_pregnant": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Times pregnant",
+            "description": "Number of pregnancies of the donor.",
             "type": "integer"
         },
         "family_history_breast_cancer": {
             "title": "Family history breast cancer",
-            "description": "",
-            "comment":"",
+            "description": "Familial relations with history of breast cancer.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
@@ -118,40 +126,40 @@
             }
         },
         "smoking_history": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Smoking history",
+            "description": "Assessment of smoking history in the form # unit per time frame over length of time in years smoked and since cessation. E.g. 1 pack a day for 10 years. 2 years since cessation.",
             "type": "string"
         },
         "alochol_history": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Alcohol history",
+            "description": "Assessment of alcohol use in the form # unit per time frame. E.g. 2 drinks a day.",
             "type": "string"
         },
         "cause_of_death": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Cause of death",
+            "description": "Description of medical/accidental cause of death of the donor. Leave blank if the donor is living.",
             "type": "string"
         },
         "body_mass_index": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "title": "Body mass index",
+            "description": "Body mass index as defined by weight in kilograms divided by the square of height in meters.",
+            "type": "number"
         },
         "height": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "title": "Height",
+            "description": "Measurement of height of donor at the time of biosample collection.",
+            "type": "number"
         },
         "height_unit": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
+            "title": "Height unit",
+            "description": "Units of measurement of height of donor at the time of biosample collection.",
+            "type": "string",
+            "enum": [
+                "ft",
+                "in",
+                "m",
+                "cm"
+            ]
         }
     },
     "facets": {

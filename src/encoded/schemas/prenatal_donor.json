@@ -27,6 +27,7 @@
         },
         "gestational_age_units": {
             "title": "Gestational age units",
+            "description": "Units of gestational age of the donor when biological material was sampled.",
             "type": "string",
             "enum": [
                 "day",
@@ -36,61 +37,71 @@
         },
         "crown_rump_length": {
             "title": "Crown-rump length",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "description": "The length of the embryo or fetus from the top of its head to bottom of torso.",
+            "type": "number"
         },
         "crown_rump_length_units": {
             "title": "Crown-rump length units",
-            "type": "string"
+            "description": "The units used to measure the crown-rump length.",
+            "type": "string",
+            "enum": [
+                "mm"
+            ]
         },
         "life_stage": {
-            "default": "embryonic",
-            "enum": ["embryonic"]
+            "enum": [
+                "embryonic",
+                "fetal"
+            ]
         },
         "carnegie_stage": {
             "title": "Carnegie stage",
-            "description": "",
-            "comment": "",
+            "description": "Embryo stage number as defined by Carnegie stages.",
             "type": "integer",
             "minimum": 1,
             "maximum": 23
         },
         "carnegie_stage_basis": {
             "title": "Carnegie stage basis",
-            "description": "",
-            "comment": "",
+            "description": "Measurement or phenotype used to assign Cargnegie stage for a human embryonic donor.",
             "type": "string"
         },
         "foot_length": {
             "title": "Foot length",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "description": "The length of the foot of the embryo or fetus.",
+            "type": "number"
         },
         "foot_length_units": {
             "title": "Foot length units",
-            "description": "",
-            "comment": "",
-            "type": "string"
+            "description": "The units used to measure foot length.",
+            "type": "string",
+            "enum": [
+                "mm"
+            ]
         },
         "knee_heel_length": {
             "title": "Knee-heel length",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "description": "The distance from the knee of the embryo or fetus to its hell.",
+            "type": "number"
         },
         "knee_heel_length_units": {
             "title": "Knee-heel length units",
-            "description": "",
-            "comment": "",
-            "type": "string"
+            "description": "The units used to measure knee-heel length.",
+            "type": "string",
+            "enum": [
+                "mm"
+            ]
         },
         "somite_count": {
             "title": "Somite count",
-            "description": "",
-            "comment": "",
+            "description": "The number of somites counted in the embryo or fetus.",
             "type": "integer"
+        },
+        "weight_unit": {
+            "enum": [
+                "oz",
+                "g"
+            ]
         }
     }
 }

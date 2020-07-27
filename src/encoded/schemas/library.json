@@ -153,8 +153,8 @@
             "type": "string"
         },
         "spike_in_dilution": {
-            "title": "",
-            "description": "",
+            "title": "Spike-in dilution",
+            "description": "The dilution factor of the spike-in datasets. E.g. 100 or 1:100.",
             "type": "string"
         },
         "spike_ins_used": {

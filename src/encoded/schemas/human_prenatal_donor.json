@@ -78,18 +78,6 @@
     "properties": {
         "schema_version": {
             "default": "1"
-        },
-        "crown_rump_length": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "integer"
-        },
-        "crown_rump_length_units": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "string"
         }
     },
     "facets": {

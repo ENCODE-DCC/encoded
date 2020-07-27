@@ -31,7 +31,7 @@
         },
         "organism": {
             "title": "Organism",
-            "description": "Organism of the donor.",
+            "description": "Common name of donor organism.",
             "comment": "Do not submit, value is assigned by the object.",
             "permission": "import_items",
             "type": "string",
@@ -42,14 +42,16 @@
             "comment": "Can include drug treatments, medication, and/or conditions like fasting"
         },
         "diseases": {
-            "description": "Known diseases"
+            "description": "Known diseases carried by the donor."
         },
         "life_stage": {
             "title": "Life stage",
+            "description": "Life stage of donor at collection of tissue biosample.",
             "type": "string"
         },
         "sex": {
             "title": "Sex",
+            "description": "Biological sex of the donor.",
             "type": "string",
             "default": "unknown",
             "enum": [
@@ -61,20 +63,17 @@
         },
         "genotype": {
             "title": "Genotype",
-            "description": "",
-            "comment": "",
+            "description": "For human, known genetic variants. For mouse, the genetic alleles for the genetic modifications.",
             "type": "string"
         },
         "weight": {
-            "title": "",
-            "description": "",
-            "comment": "",
-            "type": "integer"
+            "title": "Weight",
+            "description": "Measurement of weight of donor.",
+            "type": "number"
         },
         "weight_unit": {
-            "title": "",
-            "description": "",
-            "comment": "",
+            "title": "Weight unit",
+            "description": "Unit of weight measurement of donor.",
             "type": "string"
         }
     }

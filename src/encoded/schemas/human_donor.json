@@ -23,7 +23,7 @@
         },
         "ethnicity": {
             "title": "Ethnicity",
-            "comment": "We use http://bioportal.bioontology.org/ontologies/SNOMED-Ethnic-Group as a template for the enum list of ethnicities.",
+            "description": "Ethnic group to which the donor belongs.",
             "type": "string",
             "enum": [
                 "African American",
@@ -84,6 +84,7 @@
         },
         "twin_type": {
             "title": "Twin type",
+            "description": "Type of twin genetic relatedness.",
             "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
             "type": "string",
             "enum": [

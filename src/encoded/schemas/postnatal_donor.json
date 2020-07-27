@@ -22,6 +22,7 @@
         },
         "age_units": {
             "title": "Age units",
+            "description": "The unit used to measure the age of the donor when biological material was sampled.",
             "type": "string",
             "enum": [
                 "day",
@@ -36,6 +37,12 @@
                 "child",
                 "adult",
                 "unknown"
+            ]
+        },
+        "weight_unit": {
+            "enum": [
+                "lb",
+                "kg"
             ]
         }
     }

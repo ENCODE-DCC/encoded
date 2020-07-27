@@ -21,6 +21,7 @@
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
+        {"$ref": "mixins.json#/source"},
         {"$ref": "donor.json#/properties"},
         {"$ref": "mouse_donor.json#/properties"},
         {"$ref": "postnatal_donor.json#/properties"}
@@ -74,6 +75,14 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "life_stage": {
+            "enum": [
+                "adult",
+                "early postnatal",
+                "adolescent",
+                "unknown"
+            ]
         },
         "mating_status": {
             "title": "mating status",
