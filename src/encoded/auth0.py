@@ -46,6 +46,7 @@ def includeme(config):
 class LoginDenied(HTTPForbidden):
     title = 'Login failure'
 
+
 class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
     """
     Checks assertion during authentication so login can construct user session.
@@ -72,9 +73,9 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
                     request)
             request._auth0_authenticated = None
             return None
-        
+
         try:
-            domain = 'encode.auth0.com'
+            domain = 'latticedb.us.auth0.com'
             user_url = "https://{domain}/userinfo?access_token={access_token}" \
                 .format(domain=domain, access_token=access_token)
             user_info = requests.get(user_url).json()
@@ -93,7 +94,6 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
         else:
             return None
 
-
     def remember(self, request, principal, **kw):
         return []
 
@@ -108,11 +108,12 @@ def signup(context, request):
 
     :param request: Pyramid request object
     """
-    domain = 'encode.auth0.com'
+    domain = 'latticedb.us.auth0.com'
     access_token = request.json.get('accessToken')
     if not access_token:
         raise HTTPBadRequest(explanation='Access token required')
-    url = 'https://{domain}/userinfo?access_token={access_token}'.format(domain=domain, access_token=access_token)
+    url = 'https://{domain}/userinfo?access_token={access_token}'.format(
+        domain=domain, access_token=access_token)
     user_data_request = requests.get(url)
     if user_data_request.status_code != 200:
         raise HTTPBadRequest(explanation='Could not get user data')
@@ -125,7 +126,8 @@ def signup(context, request):
         raise ValidationError(', '.join(request.errors))
     result = collection_add(context, request, user_info)
     if not result or result['status'] != 'success':
-        raise HTTPInternalServerError(explanation='attempt to create account was not successful')
+        raise HTTPInternalServerError(
+            explanation='attempt to create account was not successful')
     return result
 
 
@@ -152,7 +154,8 @@ def _get_user_info(user_data):
     """
     if not user_data:
         raise ValidationError('No user data provided')
-    first_name, last_name = _get_first_and_last_names_from_name(user_data.get('name'))
+    first_name, last_name = _get_first_and_last_names_from_name(
+        user_data.get('name'))
     return {
         'email': user_data['email'],
         'first_name': user_data.get('given_name') or user_data.get('first_name') or first_name,

@@ -302,8 +302,8 @@ class App extends React.Component {
             logout: 'triggerLogout',
         };
 
-        this.domain = 'encode.auth0.com';
-        this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
+        this.domain = 'latticedb.us.auth0.com';
+        this.clientId = 'gaMRpAWtFy09YYufYzX33HvhxxuzCgd5';
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
