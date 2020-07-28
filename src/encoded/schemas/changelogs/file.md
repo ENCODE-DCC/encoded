@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 22
+
+* Added *bias model* to the enum list for *output_type*.
+
 ### Schema version 22
 * bam files with *output_type: subreads* must have a replicate object specified.
 
