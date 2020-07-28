@@ -27,7 +27,7 @@
         div {
             background-color: white !important;
             color: #333333;
-            font-family: 'Mada, sans-serif';
+            font-family: Mada, sans-serif;
         }
     }
 }
@@ -143,6 +143,7 @@
         input {
             width: 100%;
             border-radius: 5px;
+            font-family: Mada, sans-serif;
             padding: 4px;
         }
         .done {
