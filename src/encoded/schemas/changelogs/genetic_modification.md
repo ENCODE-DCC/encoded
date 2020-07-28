@@ -6,6 +6,8 @@
 * Added *homologous recombination* as enum in *method*, to be used with the *category* of *knockout* and the *purpose* of *repression*.
 * Added *gRNAs and CRISPR machinery* to *introduced_elements* enum, to indicate the first step in a CRISPR screen.
 * Added *binding* and *transgene insertion* to *category* enum, *mouse pronuclear microinjection* to *method* enum, and *in vivo enhancer characterization* to *purpose* enum.
+* Modified the *identifier* regular expression for Thermo Fisher within *reagents* to accept identifiers with 7 digits.
+  * Thermo Fisher: '^thermo-fisher:[a-zA-Z]{1,3}\\d{5,7}$', ex. thermo-fisher:L3000008
 
 ### Schema version 9
 

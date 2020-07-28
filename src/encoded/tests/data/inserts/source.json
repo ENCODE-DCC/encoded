@@ -182,5 +182,13 @@
         "title": "Sigma",
         "url": "http://www.sigmaaldrich.com",
         "uuid": "f13c90dd-1b51-439a-8d78-ca033c6aef23"
+    },
+    {
+        "description": "Thermo Fisher Scientific Inc.",
+        "name": "thermo-fisher",
+        "status": "released",
+        "title": "Thermo Fisher",
+        "url": "http://www.thermofisher.com/us/en/home.html",
+        "uuid": "8b1acad1-dc3a-48b4-bbb6-834ea1106931"
     }
 ]
