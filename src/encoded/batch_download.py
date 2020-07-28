@@ -1,3 +1,4 @@
+from collections import defaultdict
 from collections import OrderedDict
 from pyramid.compat import bytes_
 from pyramid.httpexceptions import HTTPBadRequest
@@ -256,17 +257,6 @@ def make_cell(header_column, row, exp_data_row):
     exp_data_row.append(', '.join(list(set(temp))))
 
 
-def funclog(func):
-    def wrapper(*args, **kwargs):
-        for i, arg in enumerate(args):
-            print(i, arg)
-        r = func(*args, **kwargs)
-        print('return value:', r)
-        return r
-    return wrapper
-
-
-@funclog
 def make_audit_cell(header_column, experiment_json, file_json):
     categories = []
     paths = []
@@ -284,9 +274,6 @@ def make_audit_cell(header_column, experiment_json, file_json):
         else:
             data.append(categories[i])
     return ', '.join(list(set(data)))
-
-
-from collections import defaultdict
 
 
 def group_audits_by_files_and_type(audits):
@@ -580,6 +567,11 @@ def peak_metadata(context, request):
     )
 
 
+class CSVGenerator():
+    def write(self, row):
+        self.row = row.encode('utf-8')
+
+
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
     qs = QueryString(request)
@@ -659,78 +651,83 @@ def metadata_tsv(context, request):
     qs.extend(
         default_params + field_params + at_id_params
     )
-    path = '{}?{}'.format(search_path, str(qs))
-    results = request.embed(quote(path), as_user=True)
-    rows = []
-    for experiment_json in results['@graph']:
-        grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
+    search_request = qs.get_request_with_new_query_string()
+    search_request.path_info = search_path
+    search_request.registry = request.registry
+
+    def _generate_metadata_report(search_request):
+        csv_generator = CSVGenerator()
+        writer = csv.writer(csv_generator, delimiter='\t', lineterminator='\n')
+        header.extend([prop for prop in _audit_mapping])
+        writer.writerow(header)
+        yield csv_generator.row
+        audit_mapping_length = len(_audit_mapping)
+        for experiment_json in search_generator(search_request)['@graph']:
+            grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
             experiment_json.get('audit', {})
-        )
-        if experiment_json.get('files', []):
-            exp_data_row = []
-            for column in header:
-                if not _tsv_mapping[column][0].startswith('files'):
-                    make_cell(column, experiment_json, exp_data_row)
+            )
+            if experiment_json.get('files', []):
+                exp_data_row = []
+                for column in header[:-audit_mapping_length]:
+                    if not _tsv_mapping[column][0].startswith('files'):
+                        make_cell(column, experiment_json, exp_data_row)
 
-            f_attributes = ['files.title', 'files.file_type', 'files.file_format',
-                            'files.file_format_type', 'files.output_type', 'files.assembly']
+                f_attributes = ['files.title', 'files.file_type', 'files.file_format',
+                                'files.file_format_type', 'files.output_type', 'files.assembly']
 
-            for f in experiment_json['files']:
-                if not files_prop_param_list(f, param_list):
-                    continue
-                if visualizable_only and not is_file_visualizable(f):
-                    continue
-                if raw_only and f.get('assembly'):
-                    # "raw" option only allows files w/o assembly.
-                    continue
-                if restricted_files_present(f):
-                    continue
-                if is_no_file_available(f):
-                    continue
-                f['href'] = request.host_url + f['href']
-                f_row = []
-                for attr in f_attributes:
-                    f_row.append(f.get(attr[6:], ''))
-                data_row = f_row + exp_data_row
-                for prop in file_attributes:
-                    if prop in f_attributes:
+                for f in experiment_json['files']:
+                    if not files_prop_param_list(f, param_list):
                         continue
-                    path = prop[6:]
-                    temp = []
-                    for value in simple_path_ids(f, path):
-                        temp.append(str(value))
-                    if prop == 'files.replicate.rbns_protein_concentration':
-                        if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
-                            temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
-                    if prop in ['files.paired_with', 'files.derived_from']:
-                        # chopping of path to just accession
-                        if len(temp):
-                            new_values = [t[7:-1] for t in temp]
-                            temp = new_values
-                    data = list(set(temp))
-                    data.sort()
-                    data_row.append(', '.join(data))
-                file_id = f.get('@id')
-                grouped_audits_for_file = grouped_file_audits.get(file_id, {})
-                audit_info = [
-                    ', '.join(
-                        set(
-                            grouped_audits_for_file.get(audit_type, [])
-                            + grouped_other_audits.get(audit_type, [])
+                    if visualizable_only and not is_file_visualizable(f):
+                        continue
+                    if raw_only and f.get('assembly'):
+                        # "raw" option only allows files w/o assembly.
+                        continue
+                    if restricted_files_present(f):
+                        continue
+                    if is_no_file_available(f):
+                        continue
+                    f['href'] = request.host_url + f['href']
+                    f_row = []
+                    for attr in f_attributes:
+                        f_row.append(f.get(attr[6:], ''))
+                    data_row = f_row + exp_data_row
+                    for prop in file_attributes:
+                        if prop in f_attributes:
+                            continue
+                        path = prop[6:]
+                        temp = []
+                        for value in simple_path_ids(f, path):
+                            temp.append(str(value))
+                        if prop == 'files.replicate.rbns_protein_concentration':
+                            if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
+                                temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
+                        if prop in ['files.paired_with', 'files.derived_from']:
+                            # chopping of path to just accession
+                            if len(temp):
+                                new_values = [t[7:-1] for t in temp]
+                                temp = new_values
+                        data = list(set(temp))
+                        data.sort()
+                        data_row.append(', '.join(data))
+                    file_id = f.get('@id')
+                    grouped_audits_for_file = grouped_file_audits.get(file_id, {})
+                    audit_info = [
+                       ', '.join(
+                           set(
+                                grouped_audits_for_file.get(audit_type, [])
+                                + grouped_other_audits.get(audit_type, [])
+                            )
                         )
-                    )
-                    for audit_type in _audits
-                ]
-                data_row.extend(audit_info)
-                rows.append(data_row)
-    fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t', lineterminator='\n')
-    header.extend([prop for prop in _audit_mapping])
-    writer.writerow(header)
-    writer.writerows(rows)
+                        for audit_type in _audits
+                    ]
+                    data_row.extend(audit_info)
+                    writer.writerow(data_row)
+                    yield csv_generator.row
+
     return Response(
         content_type='text/tsv',
-        body=fout.getvalue(),
+        app_iter=_generate_metadata_report(search_request),
         content_disposition='attachment;filename="%s"' % 'metadata.tsv'
     )
 
