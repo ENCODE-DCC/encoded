@@ -502,9 +502,7 @@ class Patient(Item):
             end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
             age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
             ageString = str(age)
-            if age >= 90:
-                ageString = "90 or above"
-            elif age >= 80:
+            if age >= 80:
                 age_range = "80+"
             elif age >= 60:
                 age_range = "60 - 79"
