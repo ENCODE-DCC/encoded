@@ -466,7 +466,17 @@ class Patient(Item):
     def diagnosis(self, request, surgery, radiation, medication):
         nephrectomy_dates = []
         non_nephrectomy_dates = []
+        surgery_dates = []
         diagnosis_date = "Not available"
+
+        # Add radiation data first to get potential metasis
+        if len(radiation) > 0:
+            # add radiation dates
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object')
+                non_nephrectomy_dates.append(radiation_object['start_date'])
+
+        # Calculate 
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
@@ -477,24 +487,23 @@ class Patient(Item):
                         nephrectomy_dates.append(surgery_object['date'])
                     elif  path_report_obj['path_source_procedure'] == "path_biopsy" or path_report_obj['path_source_procedure'] == "path_metasis":
                         non_nephrectomy_dates.append(surgery_object['date'])
-        if len(nephrectomy_dates) > 0 :
-            nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            diagnosis_date = nephrectomy_dates[0]
+            if len(nephrectomy_dates) > 0 :
+                    nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                    diagnosis_date = nephrectomy_dates[0]
+                    surgery_dates.append(nephrectomy_dates[0])
+            if len(non_nephrectomy_dates) > 0:
+                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                surgery_dates.append(non_nephrectomy_dates[0])
+                surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                diagnosis_date = surgery_dates[0]
         else:
-            if len(radiation) > 0:
-                # add radiation dates
-                for radiation_record in radiation:
-                    radiation_object = request.embed(radiation_record, '@@object')
-                    non_nephrectomy_dates.append(radiation_object['start_date'])
             if len(medication) > 0:
                 # add medication dates
                 for medication_record in medication:
                     medication_object = request.embed(medication_record, '@@object')
                     non_nephrectomy_dates.append(medication_object['start_date'])
 
-            if len(non_nephrectomy_dates) > 0:
-                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                diagnosis_date = non_nephrectomy_dates[0]
+
         age_range = "Unknown"
         ageString = "Unknown"
         if diagnosis_date != "Not available":
