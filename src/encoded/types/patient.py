@@ -476,7 +476,7 @@ class Patient(Item):
                 radiation_object = request.embed(radiation_record, '@@object')
                 non_nephrectomy_dates.append(radiation_object['start_date'])
 
-        # Calculate 
+        # Calculate
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
@@ -511,6 +511,10 @@ class Patient(Item):
             end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
             age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
             ageString = str(age)
+            
+            if age >= 90:
+                ageString = "90 or above"
+
             if age >= 80:
                 age_range = "80+"
             elif age >= 60:
