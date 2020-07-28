@@ -87,6 +87,22 @@
                 ]
             }
         },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The donor(s) or sample(s) from which this object was directly derived.",
+            "type": "array",
+            "uniqueItems": true
+        },
+        "derivation_process": {
+            "title": "Derivation process",
+            "description": "The method(s) by which this object was derived.",
+            "type": "array",
+            "items": {
+                "title": "Derivation process",
+                "description": "A method by which this object was derived.",
+                "type":  "string"
+            }
+        },
         "treatments": {
             "description": "A list of treatments applied to the biosample.",
             "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified."
@@ -151,22 +167,6 @@
                 "month",
                 "stage"
             ]
-        },
-        "derived_from": {
-            "title": "Derived from",
-            "description": "The donor(s) or sample(s) from which this object was directly derived.",
-            "type": "array",
-            "uniqueItems": true
-        },
-        "derivation_process": {
-            "title": "Derivation process",
-            "description": "The method(s) by which this object was derived.",
-            "type": "array",
-            "items": {
-                "title": "Derivation process",
-                "description": "A method by which this object was derived.",
-                "type":  "string"
-            }
         },
         "preservation_method": {
             "title": "Preservation method",

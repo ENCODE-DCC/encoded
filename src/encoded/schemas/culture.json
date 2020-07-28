@@ -63,16 +63,6 @@
                 "month",
                 "stage"
             ]
-        },
-        "differentiation_factors": {
-            "title": "Differentiation factors",
-            "description": "Factors added to the culture medium in order to alter the differentiation state of the cullture.",
-            "type": "string"
-        },
-        "differentiation_method": {
-            "title": "Differentiation method",
-            "description": "The description of the differentiation method.",
-            "type": "string"
         }
     },
     "changelog": "/profiles/changelogs/culture.md"

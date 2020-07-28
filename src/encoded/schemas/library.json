@@ -8,12 +8,13 @@
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/url"},
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accessioned_status"},
@@ -58,6 +59,18 @@
             "type": "string",
             "linkTo": "LibraryProtocol"
         },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The biosamples that nucleic acid was isolated from to generate the library.",
+            "comment": "See biosample.json for available identifiers.",
+            "type": "array",
+            "items": {
+                "title": "Derived from",
+                "description": "A biosample that nucleic acid was isolated from to generate the library.",
+                "type": "string",
+                "linkTo": "Biosample"
+            }
+        },
         "plate_id": {
             "title": "Identifier of the plate the single cell sample originated from",
             "description": "The plate the single cell sample comes from.",
@@ -85,18 +98,6 @@
                          "pattern": "^([ABCDEFGH]([1-9]|1[0-2]))$"
                     }
                 }
-            }
-        },
-        "derived_from": {
-            "title": "Derived from",
-            "description": "The biosamples that nucleic acid was isolated from to generate the library.",
-            "comment": "See biosample.json for available identifiers.",
-            "type": "array",
-            "items": {
-                "title": "Derived from",
-                "description": "A biosample that nucleic acid was isolated from to generate the library.",
-                "type": "string",
-                "linkTo": "Biosample"
             }
         },
         "product_id": {

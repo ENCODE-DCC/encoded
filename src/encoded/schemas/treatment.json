@@ -90,7 +90,8 @@
             "type": "string",
             "enum": [
                 "activation",
-                "deactivation"
+                "deactivation",
+                "differentiation"
             ]
         },
         "temperature": {
