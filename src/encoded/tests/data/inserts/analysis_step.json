@@ -1,64 +1,46 @@
 [
     {
         "step_label": "alignment-test-step",
-        "major_version": 1,
-        "title": "Alignment test step",
-        "analysis_step_types": ["alignment"],
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
+        "analysis_step_types": [
+            "alignment"
+        ],
         "status": "released",
         "uuid": "febed1ff-b655-4e73-952f-9f6702880a5d"
     },
     {
         "step_label": "signal-test-step",
-        "major_version": 1,
-        "title": "Signal calling test step",
-        "analysis_step_types": ["signal generation"],
-        "input_file_types": ["alignments"],
-        "output_file_types": [
-            "minus strand signal of unique reads",
-            "plus strand signal of unique reads"
+        "analysis_step_types": [
+            "signal generation"
         ],
         "status": "released",
-        "parents": ["alignment-test-step-v-1"],
         "uuid": "097b9849-feea-41a7-96cc-040e35ec2eb3"
     },
     {
         "step_label": "alignment-test-step",
-        "major_version": 2,
-        "title": "Alignment test step",
-        "analysis_step_types": ["alignment"],
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
+        "analysis_step_types": [
+            "alignment"
+        ],
         "status": "released",
         "uuid": "e5fffd61-c333-4950-a121-b232959262fa"
     },
     {
         "step_label": "quantification-test-step",
-        "major_version": 1,
-        "title": "Quantification test step",
-        "analysis_step_types": ["quantification"],
-        "input_file_types": ["alignments", "genome reference"],
-        "output_file_types": ["gene quantifications"],
+        "analysis_step_types": [
+            "quantification"
+        ],
         "status": "released",
-        "parents": ["alignment-test-step-v-2"],
         "uuid": "12e49fe6-9908-476a-8075-c02530c3e572"
     },
     {
         "step_label": "idr-test-step",
-        "major_version": 1,
-        "title": "IDR test step",
-        "analysis_step_types": ["IDR"],
-        "input_file_types": ["gene quantifications"],
-        "output_file_types": ["gene quantifications"],
+        "analysis_step_types": [
+            "IDR"
+        ],
         "status": "released",
-        "parents": ["quantification-test-step-v-1"],
         "uuid": "f7db3271-cd58-4ad4-a9fe-5ae7016e3ef1"
     },
     {
         "step_label": "encode-2-step",
-        "major_version": 1,
-        "title": "ENCODE 2 step",
         "analysis_step_types": [
             "filtering",
             "file format conversion",
@@ -66,224 +48,143 @@
             "signal generation",
             "peak calling"
         ],
-        "input_file_types": ["alignments", "reads", "blacklisted regions"],
-        "output_file_types": ["optimal IDR thresholded peaks"],
-        "qa_stats_generated": ["NSC", "RSC", "SPOT"],
         "status": "released",
         "uuid": "d8b871df-a73b-4338-a19f-c3e3c6f7cd88"
     },
     {
         "step_label": "idr-test-step",
-        "major_version": 2,
-        "title": "IDR test step",
-        "analysis_step_types": [ "IDR"],
-        "input_file_types": ["peaks"],
-        "qa_stats_generated": ["self-consistency ratio", "rescue ratio", "IDR plot"],
+        "analysis_step_types": [
+            "IDR"
+        ],
         "status": "released",
-        "parents": ["encode-2-step-v-1"],
         "uuid": "90b51b6b-416c-437e-ae60-6e2122d9255d"
     },
     {
         "step_label": "alignment-test-step",
-        "major_version": 3,
-        "title": "Alignment test step",
-        "analysis_step_types": ["alignment"],
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
+        "analysis_step_types": [
+            "alignment"
+        ],
         "status": "released",
         "uuid": "6d4eb13a-144d-43b0-ad80-e627aa07d09c"
     },
     {
         "step_label": "peak-calling-test-step",
-        "major_version": 1,
-        "title": "Peak calling test step",
-        "analysis_step_types": ["peak calling"],
-        "input_file_types": ["alignments"],
-        "output_file_types": ["peaks"],
+        "analysis_step_types": [
+            "peak calling"
+        ],
         "status": "released",
-        "parents": ["alignment-test-step-v-3"],
         "uuid": "f8703650-e3fe-4d57-aee5-17342f4418cb"
     },
     {
         "step_label": "prep-bismark-step",
-        "major_version": 1,
-        "title": "prep-bismark-step",
-        "input_file_types": ["genome reference"],
-        "parents": [],
-        "analysis_step_types": ["genome indexing"],
+        "analysis_step_types": [
+            "genome indexing"
+        ],
         "uuid": "44e9ba96-b051-4397-a7e6-0ae17a78f6d1"
     },
     {
         "step_label": "mott-trim-align-bismark-step",
-        "major_version": 1,
-        "title": "mott-trim-align-bismark-step",
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
-        "analysis_step_types": ["filtering", "alignment"],
+        "analysis_step_types": [
+            "filtering",
+            "alignment"
+        ],
         "uuid": "9641117d-b5b8-469a-a335-a1769606a63d"
     },
     {
         "step_label": "extract-bismark-step",
-        "major_version": 1,
-        "title": "extract-bismark-step",
-        "input_file_types": ["alignments"],
-        "output_file_types": ["methylation state at CpG"],
-        "parents": ["mott-trim-align-bismark-step-v-1"],
-        "analysis_step_types": ["signal generation"],
-        "qa_stats_generated":  [
-            "Sequences analysed in total",
-            "Mapping efficiency",
-            "C methylated in CpG context",
-            "C methylated in CHG context",
-            "C methylated in CHH context"
+        "analysis_step_types": [
+            "signal generation"
         ],
         "uuid": "d3b18d6a-0a3f-4a72-ab3a-95a902248685"
     },
     {
         "step_label": "prep-star-step",
-        "major_version": 1,
-        "title": "prep-star-step",
-        "input_file_types": ["genome reference"],
-        "parents": [],
-        "analysis_step_types": ["genome indexing"],
+        "analysis_step_types": [
+            "genome indexing"
+        ],
         "uuid": "393f2a93-7326-4eff-8b40-013fb74f7572"
     },
     {
         "step_label": "prep-tophat-step",
-        "major_version": 1,
-        "title": "prep-tophat-step",
-        "input_file_types": ["genome reference"],
-        "analysis_step_types": ["genome indexing"],
+        "analysis_step_types": [
+            "genome indexing"
+        ],
         "uuid": "90979a4b-86fe-4d64-bf2c-88b818fb3431"
     },
     {
         "step_label": "prep-rsem-step",
-        "major_version": 1,
-        "title": "prep-rsem-step",
-        "input_file_types": ["genome reference"],
-        "analysis_step_types": ["genome indexing"],
+        "analysis_step_types": [
+            "genome indexing"
+        ],
         "uuid": "42f8c766-cb38-4827-a4b1-a24001419517"
     },
     {
         "step_label": "align-star-step",
-        "major_version": 1,
-        "title": "align-star-step",
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
-        "parents": [
-            "prep-star-step-v-1"
+        "analysis_step_types": [
+            "alignment"
         ],
-        "analysis_step_types": ["alignment"],
         "uuid": "4f7d9e81-2b51-42a8-bc6d-c8c1831bf478"
     },
     {
         "step_label": "quant-rsem-step",
-        "major_version": 1,
-        "title": "quant-rsem-step",
-        "input_file_types": ["alignments"],
-        "parents": [
-            "prep-rsem-step-v-1",
-            "align-star-step-v-1"
+        "analysis_step_types": [
+            "signal generation"
         ],
-        "analysis_step_types": ["signal generation"],
         "uuid": "0af2edd7-1aef-4746-b7cc-eeb35675016e"
     },
     {
         "step_label": "align-tophat-step",
-        "major_version": 1,
-        "title": "align-tophat-step",
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
-        "parents": ["prep-tophat-step-v-1"],
-        "analysis_step_types": ["alignment"],
+        "analysis_step_types": [
+            "alignment"
+        ],
         "uuid": "05d65999-d7a4-46e6-9f4d-ba2351bfd883"
     },
     {
         "step_label": "bam-to-bigwig-tophat-step",
-        "major_version": 1,
-        "title": "bam-to-bigwig-tophat-step",
-        "input_file_types": ["alignments"],
-        "output_file_types": [
-            "minus strand signal of all reads",
-            "plus strand signal of all reads",
-            "minus strand signal of unique reads",
-            "plus strand signal of unique reads"
+        "analysis_step_types": [
+            "file format conversion"
         ],
-        "parents": ["align-tophat-step-v-1"],
-        "analysis_step_types": ["file format conversion"],
         "uuid": "84c76f44-a565-4578-9bd0-516fe42f17ce"
     },
     {
         "step_label": "bam-to-bigwig-star-step",
-        "major_version": 1,
-        "title": "bam-to-bigwig-star-step",
-        "input_file_types": ["alignments"],
-        "output_file_types": [
-            "minus strand signal of all reads",
-            "plus strand signal of all reads",
-            "minus strand signal of unique reads",
-            "plus strand signal of unique reads"
+        "analysis_step_types": [
+            "file format conversion"
         ],
-        "parents": ["align-star-step-v-1"],
-        "analysis_step_types": ["file format conversion"],
         "uuid": "7ef5bbf2-b724-4383-83cb-cc7021a96de1"
     },
     {
         "step_label": "fastqc-step",
-        "major_version": 1,
-        "title": "fastqc step",
-        "input_file_types": ["reads"],
-        "qa_stats_generated":  ["number of reads", "read length", "number of low-quality reads"],
-        "analysis_step_types": ["QA calculation"],
+        "analysis_step_types": [
+            "QA calculation"
+        ],
         "uuid": "fcc70ac1-3cde-4c50-9d09-67c94eb92f47"
     },
     {
         "step_label": "mad-cc-lrna-step",
-        "major_version": 1,
-        "title": "MAD and correlations for long-RNA-Seq step",
-        "input_file_types": ["gene quantifications"],
-        "qa_stats_generated":  [
-            "MAD of log ratios",
-            "Pearson correlation",
-            "Spearman correlation",
-            "SD of log ratios"
+        "analysis_step_types": [
+            "QA calculation"
         ],
-        "analysis_step_types": ["QA calculation"],
         "uuid": "43a242b6-1924-41a9-a0e9-ad42a162aae0"
     },
     {
         "step_label": "wgbs-lambda-qc-step",
-        "major_version": 1,
-        "title": "Bismark Lambda QC Step",
-        "aliases": ["encode:ONE", "encode:TWO"],
-        "input_file_types": ["alignments"],
-        "output_file_types": ["methylation state at CpG"],
-        "parents": ["mott-trim-align-bismark-step-v-1"],
+        "aliases": [
+            "encode:ONE",
+            "encode:TWO"
+        ],
         "documents": [
             "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
             "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
         ],
-        "qa_stats_generated":  [
-            "lambda Sequences analysed in total",
-            "lambda Mapping efficiency",
-            "lambda C methylated in CpG context",
-            "lambda C methylated in CHG context",
-            "lambda C methylated in CHH context"
+        "analysis_step_types": [
+            "signal generation",
+            "QA calculation"
         ],
-        "analysis_step_types": ["signal generation", "QA calculation"],
         "uuid": "5bb1f4b4-c739-449d-8cb9-f851ad79f5fe"
     },
     {
         "step_label": "variant-calling-step",
-        "major_version": 1,
-        "title": "Variant calling step",
-        "input_file_types": [
-            "alignments", 
-            "reference variants"
-        ],
-        "output_file_types": [
-            "variant calls"
-        ],
         "analysis_step_types": [
             "variant annotation"
         ],
@@ -294,16 +195,8 @@
             "file format conversion"
         ],
         "date_created": "2017-10-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "raw data"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "reads"
-        ],
         "status": "released",
         "step_label": "dbgap-sra-to-fastq-step",
-        "title": "dbGaP SRA to fastq step",
         "uuid": "a66d510a-acef-4bb2-b51f-3369f5a537ca"
     },
     {
@@ -311,17 +204,8 @@
             "long-read sequencing error correction"
         ],
         "date_created": "2018-10-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "transcriptome reference",
-            "genome reference"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "splice junctions"
-        ],
         "status": "released",
         "step_label": "long-read-rna-seq-error-correction-step",
-        "title": "Long read RNA-seq error correction step",
         "uuid": "1911f233-b415-4ae3-8ea2-763959257ff8"
     },
     {
@@ -329,17 +213,8 @@
             "splice junction extraction"
         ],
         "date_created": "2018-10-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "transcriptome reference",
-            "genome reference"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "splice junctions"
-        ],
         "status": "released",
         "step_label": "splice-junction-extraction-step",
-        "title": "Long read RNA-seq splice junction extraction step",
         "uuid": "1911f244-b415-4ae3-8ea2-763959257ff8"
     },
     {
@@ -347,17 +222,8 @@
             "transcriptome annotation"
         ],
         "date_created": "2019-01-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "transcriptome reference",
-            "alignments"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "transcriptome annotations"
-        ],
         "status": "released",
         "step_label": "talon-transcriptome-annotation-step",
-        "title": "Long read RNA-seq TALON transcriptome annotation step",
         "uuid": "d5b03aa5-c910-4ec7-b3be-86e11f66fdeb"
     },
     {
@@ -365,16 +231,8 @@
             "barcodes mapping generation"
         ],
         "date_created": "2019-02-11T15:56:52.458705+00:00",
-        "input_file_types": [
-            "reads"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "sequence barcodes"
-        ],
         "status": "released",
         "step_label": "starr-barcodes-mapping-generation-step",
-        "title": "STARR-seq barcodes mapping creation step",
         "uuid": "c6a3fe50-ad2b-43c2-9bbe-591f27917cfa"
     },
     {
@@ -382,190 +240,8 @@
             "alignment"
         ],
         "date_created": "2019-01-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "miRNA annotations",
-            "reads",
-            "genome index"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "miRNA annotations"
-        ],
         "status": "released",
         "step_label": "star-alignment-step",
-        "title": "microRNA miRNA annotation step",
         "uuid": "c9c96dd8-681a-43fd-b5ad-07ca5f4d5f86"
-    },
-    {
-        "analysis_step_types": [
-            "representative peak selection",
-            "candidate cis-regulatory element identification"
-        ],
-        "date_created": "2020-01-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "reads",
-            "consensus DNase hypersensitivity sites (cDHSs)"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "consensus DNase hypersensitivity sites (cDHSs)"
-        ],
-        "status": "released",
-        "step_label": "cdhss-step",
-        "title": "cDHSs step",
-        "uuid": "c9c96dd8-681a-43fd-b5ad-3369f5a537ca"
-    },
-    {
-        "analysis_step_types": [
-            "pseudoalignment based quantification"
-        ],
-        "date_created": "2020-01-16T15:56:52.458705+00:00",
-        "input_file_types": [
-            "reads",
-            "transcriptome index"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "transcript quantifications"
-        ],
-        "status": "released",
-        "step_label": "pseudoalignment-test-step",
-        "title": "pseudoalignment quantification step",
-        "uuid": "6b41a0a5-dede-447b-abb6-064620b45bb1"
-    },
-    {
-        "analysis_step_types": [
-            "peak calling",
-            "depth normalization",
-            "signal generation"
-        ],
-        "date_created": "2020-03-01T15:56:52.458705+00:00",
-        "input_file_types": [
-            "alignments",
-            "genome reference",
-            "blacklisted regions",
-            "hotspots1 reference",
-            "hotspots2 reference"
-        ],
-        "major_version": 1,
-        "output_file_types": [
-            "hotspots",
-            "peaks",
-            "read-depth normalized signal",
-            "FDR cut rate",
-            "footprints"
-        ],
-        "status": "released",
-        "step_label": "dnase-hotspot-calling-step",
-        "title": "DNase hotspot calling step",
-        "uuid": "4014594f-cef4-4f78-baaa-ef9e7fdecac8"
-    },
-    {
-        "step_label": "indexing-and-mappability-processing-step",
-        "major_version": 1,
-        "title": "Indexing and mappability processing step",
-        "input_file_types": [
-            "genome reference",
-            "blacklisted regions",
-            "mitochondrial genome reference",
-            "chromosomes reference"
-        ],
-        "output_file_types": [
-            "genome index",
-            "mitochondrial genome index"
-        ],
-        "analysis_step_types": ["genome indexing"],
-        "uuid": "ea03a364-a877-4858-99bd-e5cd250ae386"
-    },
-    {
-        "step_label": "demultiplexing-and-alignment-processing-step",
-        "major_version": 1,
-        "title": "Demultiplexing and alignment processing step",
-        "input_file_types": [
-            "reads",
-            "genome reference",
-            "sequence barcodes"
-        ],
-        "output_file_types": [
-            "alignments"
-        ],
-        "analysis_step_types": ["fastq demultiplexing", "fastq concatenation", "alignment", "filtering"],
-        "uuid": "664aee68-83ca-40ee-a074-f3f239044fab"
-    },
-    {
-        "step_label": "grna-generation-step",
-        "major_version": 1,
-        "title": "gRNA Generation Step",
-        "input_file_types": [
-            "elements reference",
-            "chromosome sizes"
-        ],
-        "output_file_types": [
-            "ranked gRNAs"
-        ],
-        "analysis_step_types": ["gRNA generation"],
-        "uuid": "41baa364-a877-4858-99bd-e5cd250ae386"
-    },
-    {
-        "step_label": "wgbs-quantification-step",
-        "major_version": 1,
-        "title": "WGBS Quantification Step",
-        "input_file_types": [
-            "alignments"
-        ],
-        "output_file_types": [
-            "smoothed methylation stage at CpG"
-        ],
-        "analysis_step_types": ["quantification"],
-        "uuid": "51bea210-a877-4858-99bd-e5cd250ae386"
-    },
-    {
-        "step_label": "atac-seq-alignment-step",
-        "major_version": 1,
-        "title": "ATAC seq alignment step",
-        "analysis_step_types": ["alignment", "read trimming",
-            "filtering", "file format conversion"],
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments", "unfiltered alignments"],
-        "status": "released",
-        "uuid": "5014594f-cef4-4f78-baaa-ef9e7fdecac8"
-    },
-    {
-        "step_label": "atac-seq-alignment-references-step",
-        "major_version": 1,
-        "title": "ATAC seq alignment references step",
-        "analysis_step_types": ["alignment", "read trimming",
-            "filtering", "file format conversion"],
-        "input_file_types": [
-                "enhancers reference",
-                "promoters reference",
-                "DHS regions reference"
-        ],
-        "output_file_types": [
-                "enhancers reference",
-                "promoters reference",
-                "DHS regions reference"
-        ],
-        "status": "released",
-        "uuid": "92a17bc4-26f1-4b3c-8553-902817da4095"
-    },
-    {
-        "step_label": "bru-seq-quantification-step",
-        "major_version": 1,
-        "title": "Bru seq quantification step",
-        "analysis_step_types": ["quantification"],
-        "input_file_types": [
-                "alignments",
-                "merged transcription segment quantifications",
-                "transcribed region quantifications",
-                "transcription segment quantifications"
-        ],
-        "output_file_types": [
-                "merged transcription segment quantifications",
-                "transcribed region quantifications",
-                "transcription segment quantifications"
-        ],
-        "status": "released",
-        "uuid": "71a92bc4-26f1-4b3c-8553-902817da4095"
     }
 ]

@@ -2,156 +2,42 @@
     "title": "Grant",
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [ "name", "project", "rfa", "title"],
+    "required": [ "name", "project", "title"],
     "identifyingProperties": ["uuid", "name", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/url" },
-        { "$ref": "mixins.json#/shared_status" }
+        { "$ref": "mixins.json#/description" },
+        { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/viewing_groups" }
     ],
     "type": "object",
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "1"
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
             "title": "Title",
-            "description": "The grant name from the NIH database, if applicable.",
+            "description": "The grant title from the CZI Seed Network website.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
             "title": "Name",
-            "description": "The official grant number from the NIH database, if applicable",
+            "description": "The grant ID assigned by Lattice.",
             "type": "string",
             "pattern": "^[A-Za-z0-9\\-]+$",
             "uniqueKey": true
        },
         "description": {
-            "rdfs:subPropertyOf": "dc:description",
-            "title": "Description",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "formInput": "textarea"
-        },
-        "milestones": {
-            "title": "Milestones",
-            "description": "A set of grant milestone deliverables agreed upon by the awardee and NIH.",
-            "type": "array",
-            "uniqueItems": true,
-            "permission": "import_items",
-            "items": {
-                "title": "Milestone",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "assay_term_name": {
-                        "title": "Assay name",
-                        "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
-                        "type": "string",
-                        "enum": [
-                            "3' RACE",
-                            "4C",
-                            "5' RACE",
-                            "5' RLM RACE",
-                            "5C",
-                            "ATAC-seq",
-                            "Bru-seq",
-                            "BruChase-seq",
-                            "BruUV-seq",
-                            "CAGE",
-                            "ChIA-PET",
-                            "ChIP-seq",
-                            "Circulome-seq",
-                            "Clone-seq",
-                            "comparative genomic hybridization by array",
-                            "CRISPR genome editing followed by RNA-seq",
-                            "CRISPR screen",
-                            "CRISPRi followed by RNA-seq",
-                            "direct RNA-seq",
-                            "DNA methylation profiling by array assay",
-                            "DNA-PET",
-                            "DNase-seq",
-                            "eCLIP",
-                            "FAIRE-seq",
-                            "genetic modification followed by DNase-seq",
-                            "genotype phasing by HiC",
-                            "genotyping by high throughput sequencing assay",
-                            "HiC",
-                            "iCLIP",
-                            "icLASER",
-                            "icSHAPE",
-                            "long read RNA-seq",
-                            "MeDIP-seq",
-                            "microRNA counts",
-                            "microRNA-seq",
-                            "Mint-ChIP-seq",
-                            "MNase-seq",
-                            "MPRA",
-                            "MRE-seq",
-                            "PAS-seq",
-                            "PLAC-seq",
-                            "pooled clone sequencing",
-                            "PRO-cap",
-                            "PRO-seq",
-                            "protein sequencing by tandem mass spectrometry assay",
-                            "RAMPAGE",
-                            "Repli-chip",
-                            "Repli-seq",
-                            "RIP-chip",
-                            "RIP-seq",
-                            "RNA Bind-n-Seq",
-                            "RNA-PET",
-                            "RNA-seq",
-                            "RRBS",
-                            "shRNA knockdown followed by RNA-seq",
-                            "single-cell ATAC-seq",
-                            "single-cell RNA sequencing assay",
-                            "single-nucleus ATAC-seq",
-                            "siRNA knockdown followed by RNA-seq",
-                            "small RNA-seq",
-                            "SPRITE",
-                            "STARR-seq",
-                            "Switchgear",
-                            "TAB-seq",
-                            "transcription profiling by array assay",
-                            "whole genome sequencing assay",
-                            "whole-genome shotgun bisulfite sequencing"
-                        ]
-                    },
-                    "proposed_count": {
-                        "title": "Proposed count",
-                        "description": "Count (in number of units) of the deliverable proposed.",
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "deliverable_unit": {
-                        "title": "Deliverable unit",
-                        "description": "Unit of the proposed milestone deliverable.",
-                        "type": "string",
-                        "enum": [
-                            "control experiments",
-                            "libraries",
-                            "replicated experiments",
-                            "replicates",
-                            "single cell experiments",
-                            "unreplicated experiments"
-                        ]
-                    },
-                    "contract_date": {
-                        "title": "Contract date",
-                        "description": "Date on which the milestone was agreed upon.",
-                        "type": "string",
-                        "format": "date"
-                    }
-                }
-            }
+            "rdfs:subPropertyOf": "dc:description"
         },
         "start_date": {
             "title": "Start date",
+            "description": "The start date of the award.",
             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
             "anyOf": [
@@ -161,89 +47,90 @@
         },
         "end_date": {
             "title": "End date",
-             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "description": "The end date of the award.",
+            "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
                 {"format": "date"}
             ]
         },
-        "pi": {
-            "title": "P.I.",
-            "description": "Principle Investigator of the grant.",
+        "principal_investigators": {
+            "title": "Principal Investigators",
+            "description": "Principal Investigators of the grant.",
             "comment": "See user.json for available identifiers.",
-            "type": "string",
-            "linkTo": "User"
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "User",
+                "comment": "See user.json for available identifiers.",
+                "type": "string",
+                "linkTo": "User"
+            }
         },
-        "rfa": {
-            "title": "RFA",
-            "description": "The name of the bioproject phase.",
-            "type": "string",
-            "enum": [
-                "community",
-                "ENCODE",
-                "ENCODE2-Mouse",
-                "ENCODE2",
-                "ENCODE3",
-                "ENCODE4",
-                "GGR",
-                "modENCODE",
-                "modERN",
-                "Roadmap",
-                "ENCORE"
-            ]
+        "collaborators": {
+            "title": "Collaborators",
+            "description": "Collaborators of the grant.",
+            "comment": "See user.json for available identifiers.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "User",
+                "comment": "See user.json for available identifiers.",
+                "type": "string",
+                "linkTo": "User"
+            }
         },
         "project": {
             "title": "Project",
-            "description": "The collection of biological data related to a single initiative, originating from a consortium.",
+            "description": "The larger initiative that the award is a part of.",
             "type": "string",
             "enum": [
-                "community",
-                "ENCODE",
-                "GGR",
-                "modENCODE",
-                "modERN",
-                "Roadmap",
-                "ENCORE"
+                "HCA Seed Networks",
+                "HCA Pilot Projects"
             ]
         },
-        "viewing_group": {
-            "title": "View access group",
-            "description": "The group that determines which set of data the user has permission to view.",
+        "focus": {
+            "title": "Focus",
+            "description": "The general scientific area of focus for the research funded by this award.",
             "type": "string",
             "enum": [
-                "community",
-                "ENCODE3",
-                "ENCODE4",
-                "GGR",
-                "REMC",
-                "ENCORE"
+                "cardiovascular system",
+                "central nervous system",
+                "female reproductive system",
+                "immune system",
+                "adipose",
+                "bone marrow",
+                "breast",
+                "eye",
+                "gastrointestinal",
+                "kidney",
+                "liver",
+                "lung",
+                "lymph nodes",
+                "skin",
+                "tendon",
+                "testis",
+                "thymus",
+                "multi-organ",
+                "methods",
+                "data coordination"
             ]
-        },
-        "component": {
-            "title": "ENCODE component",
-            "description": "The ENCODE component the award is associated with.",
-            "type": "string",
-            "permission": "import_items",
-            "enum": [
-                "functional characterization",
-                "computational analysis",
-                "mapping",
-                "data coordination",
-                "data analysis",
-                "affiliate"
-            ]
-        }
+       },
+        "CZI_project_identifier": {
+            "title": "CZI project identifier",
+            "description": "The CZI identifier for this award.",
+            "type": "string"
+       }
     },
     "facets": {
-        "pi.lab.title": {
-            "title": "Lab"
-        },
-        "rfa": {
-            "title": "RFA"
-        },
         "project": {
             "title": "Project"
+        },
+        "focus": {
+            "title": "Focus"
         }
     },
     "columns": {
@@ -256,18 +143,10 @@
         "project": {
             "title": "Project"
         },
-        "rfa": {
-            "title": "RFA"
-        },
         "status": {
             "title": "Status"
         }
     },
-    "boost_values": {
-        "name": 1.0,
-        "title": 1.0,
-        "project": 1.0,
-        "pi.title": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/award.md"
 }

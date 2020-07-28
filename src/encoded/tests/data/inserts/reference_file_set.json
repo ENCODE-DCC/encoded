@@ -1,0 +1,61 @@
+[
+    {
+        "accession": "ENCSR156CIL",
+        "description": "RNA Working Group Spike-ins Dataset",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
+    },
+    {
+        "accession": "ENCSR013YHQ",
+        "description": "RNA Working Group Spike-ins Dataset 2",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed"
+    },
+    {
+        "accession": "ENCSR704RSS",
+        "description": "Spike-ins used in RAMPAGE experiments from CSHL",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108"
+    },
+    {
+        "accession": "ENCSR165FBU",
+        "description": "Human Mappability Uniqueness 35mer",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "cb15de83-0e56-4428-8742-b2fbb61543d9"
+    },
+    {
+        "accession": "ENCSR497EUF",
+        "description": "Bismarck indexed reference files for use with methylation input",
+        "status": "released"
+    },
+    {
+        "accession": "ENCSR001REF",
+        "description": "Dataset for Reference Files (including Genomes)",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b"
+    },
+    {
+        "accession": "ENCSR500ELM",
+        "description": "Elements DNA sequences",
+        "status": "archived",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "84c2c840-4146-4c93-90cf-67a11a4fc108"
+    },
+    {
+        "date_created": "2019-07-01T22:14:15.601240+00:00",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "in progress",
+        "accession": "ENCSR819DEL"
+    },
+    {
+        "accession": "ENCSR001GEN",
+        "description": "Dataset for Reference Genome (linked to Donor)",
+        "status": "released",
+        "uuid": "9bd36e84-f20e-48d3-8c03-c99df8be7c3c"
+    }
+]

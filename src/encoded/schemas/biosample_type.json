@@ -5,7 +5,7 @@
     "id": "/profiles/biosample_type.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["classification", "term_id", "term_name"],
+    "required": ["term_id", "term_name"],
     "identifyingProperties": ["aliases", "uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -14,137 +14,15 @@
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/standard_status"},
-        {"$ref": "mixins.json#/uuid"}
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/dbxrefs"}
     ],
-    "dependencies": {
-        "term_id":{
-            "oneOf": [
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
-                                "single cell"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(CL|CLO|EFO|UBERON|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
-                                "tissue",
-                                "whole organisms",
-                                "organoid"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
-                                "primary cell"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
-                                "cell line"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(CLO|EFO|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
-                                "in vitro differentiated cells"
-                            ]
-                        },
-                        "term_id":{
-                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
-                        }
-                    }
-                },
-                { 
-                    "properties": {
-                        "classification": {
-                            "enum" : [
-                                "cell-free sample"
-                            ]
-                        },
-                        "term_name": {
-                            "pattern": "^cell-free sample$"
-                        },
-                        "term_id": {
-                            "pattern": "^NTR:0000471$"
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "classification": {
-                            "enum": [
-                                "cloning host"
-                            ]
-                        },
-                        "term_name": {
-                            "pattern": "^DNA cloning sample$"
-                        },
-                        "term_id": {
-                            "pattern": "^NTR:0000545$"
-                        }
-                    }
-                }
-            ]
-        }
-    },
+    "dependencies": {},
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "classification": {
-            "title": "Classification",
-            "description": "The general category of this type of biosample.",
-            "comment": "Required property. The specified category should match the ontology used to describe this type of biosample.",
-            "permission": "import_items",
-            "type": "string",
-            "enum" : [
-                "single cell",
-                "cell line",
-                "in vitro differentiated cells",
-                "primary cell",
-                "cell-free sample",
-                "cloning host",
-                "tissue",
-                "whole organisms",
-                "organoid"
-            ]
-        },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
-            "permission": "import_items",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
@@ -159,7 +37,7 @@
             "permission": "import_items",
             "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
             "type": "string",
-            "pattern": "^(UBERON|EFO|CL|CLO|NTR):[0-9]{2,8}$"
+            "pattern": "^(UBERON|EFO|CL|NTR):[0-9]{2,8}$"
         },
         "term_name": {
             "title": "Biosample name",
@@ -174,9 +52,6 @@
         "status": {
             "title": "Status"
         },
-        "classification": {
-            "title": "Classification"
-        },
         "organ_slims": {
             "title": "Organ"
         },
@@ -185,9 +60,6 @@
         }
     },
     "columns": {
-        "classification": {
-            "title": "Classification"
-        },
         "term_id": {
             "title": "Biosample ontology ID"
         },
@@ -198,18 +70,6 @@
             "title": "Status"
         }
     },
-    "boost_values": {
-        "aliases": 1.0,
-        "classification": 1.0,
-        "dbxrefs": 1.0,
-        "developmental_slims": 1.0,
-        "organ_slims": 1.0,
-        "cell_slims": 1.0,
-        "references.title": 1.0,
-        "synonyms": 1.0,
-        "system_slims": 1.0,
-        "term_id": 1.0,
-        "term_name": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/biosample_type.md"
 }

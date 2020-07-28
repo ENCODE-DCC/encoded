@@ -1,0 +1,101 @@
+{
+    "title": "Antibody capture metrics",
+    "description": "Schema for submitting metadata for metrics of an antibody capture library.",
+    "id": "/profiles/antibody_capture_metrics.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/quality_metric_of"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "number_of_reads": {
+            "title": "Number of reads",
+            "description": "Total number of reads.",
+            "type": "integer"
+        },
+        "mean_reads_per_cell": {
+            "title": "Mean reads per cell",
+            "description": "Total number of reads divided by the number of barcodes associated with cell-containing partitions.",
+            "type": "integer"
+        },
+        "valid_barcodes": {
+            "title": "Valid barcodes",
+            "description": "Percentage of reads with a cell-barcode found in or corrected to one that is found in the whitelist.",
+            "type": "number"
+        },
+        "fraction_reads_in_barcodes_with_high_umi_counts": {
+            "title": "Fraction reads in barcodes with high umi counts",
+            "description": "Percentage of reads lost after removeing barcodes with unusually high UMI counts, which may have been formed by antibody aggregates.",
+            "type": "number"
+        },
+        "sequencing_saturation": {
+            "title": "Sequencing saturation",
+            "description": "Percentage of antibody library reads originating from an already-observed UMI.",
+            "type": "number"
+        },
+        "q30_bases_in_barcode": {
+            "title": "Q30 bases in barcode",
+            "description": "Percentage of cell barcode bases with Q-score >= 30, excluding very low quality/no-call (Q <= 2) bases from denominator.",
+            "type": "number"
+        },
+        "q30_bases_in_antibody_read": {
+            "title": "Q30 bases in antibody read",
+            "description": "Percentage of bases from read containing the antibody barcode with Q-score >= 30, excluding very low quality/no-call (Q <= 2) bases from denominator.",
+            "type": "number"
+        },
+        "q30_bases_in_sample_index": {
+            "title": "Q30 bases in sample index",
+            "description": "Percentage of sample index bases with Q-score >= 30, excluding very low quality/no-call (Q <= 2) bases from denominator.",
+            "type": "number"
+        },
+        "q30_bases_in_umi": {
+            "title": "Q30 bases in umi",
+            "description": "Graction of UMI bases withQ-score >= 30, excluding very low quality/no-call (Q <= 2) bases from denominator.",
+            "type": "number"
+        },
+        "fraction_antibody_reads": {
+            "title": "Fraction antibody reads",
+            "description": "Percentage of reads that contain a recognized antibody barcode.",
+            "type": "number"
+        },
+        "fraction_antibody_reads_usable": {
+            "title": "Fraction antibody reads usable",
+            "description": "Percentage of reads that contain a recognized antibody barcode, a valid UMI, and a cell-associated barcode.",
+            "type": "number"
+        },
+        "antibody_reads_usable_per_cell": {
+            "title": "Antigody reads",
+            "description": "Number of antibody reads usable divided by the number of cell-associated barcodes.",
+            "type": "integer"
+        },
+        "fraction_unrecognized_antibody": {
+            "title": "Fraction unrecognized antibody",
+            "description": "Among all reads, the percentage with an unrecognizable antibody barcode.",
+            "type": "number"
+        },
+        "antibody_reads_in_cells": {
+            "title": "Antibody reads in cells",
+            "description": "Among reads with a recognized antibody barcode, a valid UMI, and a valid barcode, the percentage associated with cell-containing partitions.",
+            "type": "number"
+        },
+        "median_umis_per_cell": {
+            "title": "Median umis per cell",
+            "description": "Median UMIs per cell (summed over all recognized antibody barcodes).",
+            "type": "integer"
+        }
+    },
+    "changelog": "/profiles/changelogs/antibody_capture_metrics.md"
+}

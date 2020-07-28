@@ -9,14 +9,17 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/shared_status" }
+        { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/viewing_groups" }
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "1"
         },
         "email": {
             "title": "Email",
+            "description": "The email address of the user, used to authenticate the user at log-in.",
             "type": "string",
             "format": "email",
             "uniqueKey": true
@@ -33,7 +36,7 @@
         },
         "lab": {
             "title": "Lab",
-            "description": "Lab user is primarily associated with.",
+            "description": "The lab that the user is primarily associated with.",
             "comment": "See lab.json for available identifiers.",
             "permission": "import-items",
             "type": "string",
@@ -41,7 +44,7 @@
         },
         "submits_for": {
             "title": "Submits for",
-            "description": "Labs user is authorized to submit data for.",
+            "description": "The labs that the user is authorized to submit data for.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -69,26 +72,9 @@
                 ]
             }
         },
-        "viewing_groups": {
-            "title": "View access group",
-            "description": "The group that determines which set of data the user has permission to view.",
-            "type": "array",
-            "uniqueItems": true,
-            "permission": "import-items",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "community",
-                    "ENCODE3",
-                    "ENCODE4",
-                    "GGR",
-                    "REMC",
-                    "ENCORE"
-                ]
-            }
-        },
         "job_title": {
             "title": "Job title",
+            "description": "The job title of the user.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
@@ -98,8 +84,6 @@
             "title": "Lab"
         }
     },
-    "boost_values": {
-        "title": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/user.md"
 }

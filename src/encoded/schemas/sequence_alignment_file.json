@@ -1,0 +1,301 @@
+{
+    "title": "Sequence Alignment file",
+    "description": "Schema for submitting metadata for an alignment file.",
+    "id": "/profiles/sequence_alignment_file.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["dataset", "file_format", "output_type", "md5sum"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/lab"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "data_file.json#/properties"},
+        {"$ref": "analysis_file.json#/properties"}
+    ],
+    "dependencies": {
+        "external_accession": {
+            "comment": "A file with an external accession should not get an ENCODE accession.",
+            "not": {
+                "required": ["accession"]
+            }
+        },
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "status": {
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "anyOf": [
+                                {
+                                    "required": ["no_file_available"],
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["in progress",  "revoked", "archived", "released"]
+                                        },
+                                         "no_file_available": {
+                                            "enum": [true]
+                                        }
+                                    }
+                                },
+                                {
+                                    "required": ["file_size"],
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["in progress",  "revoked", "archived", "released"]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "dataset": {
+            "linkTo": "Dataset"
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A file participating as input into software to produce this output file.",
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": [
+                    "RawSequenceFile",
+                    "ReferenceFile"
+                ]
+            }
+        },
+        "file_format": {
+            "enum": [
+                "bam",
+                "tagAlign"
+            ]
+        },
+        "mapped_read_length": {
+            "title": "Mapped read length (nt)",
+            "permission": "import_items",
+            "description": "The length of the reads actually mapped, if the original read length was clipped.",
+            "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mapped_run_type": {
+            "title": "Mapped run type for bam files",
+            "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
+            "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
+            "permission": "import_items",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "output_type": {
+            "enum": [
+                "alignments",
+                "gene alignments",
+                "transcriptome alignments",
+                "unfiltered alignments"
+            ]
+        },
+        "sample_barcodes": {
+            "title": "Sample barcodes",
+            "description": "The list of sample index barcodes associated with the sequences in the alignment file.",
+            "type": "array",
+            "items": {
+                "title": "Sample barcode",
+                "description": "A sample index barcode associated with the sequences in the alignment file.",
+                "type": "string"
+            }
+        }
+    },
+    "facets": {},
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "dataset": {
+            "title": "Dataset"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "technical_replicates": {
+            "title": "Technical replicates"
+        },
+        "biological_replicates": {
+            "title": "Biological replicates"
+        },
+        "file_format": {
+            "title": "File Format"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "target.label": {
+            "title": "Target label"
+        },    
+        "href": {
+            "title": "Download URL"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "genome_annotation": {
+            "title": "Genome annotation"
+        },
+        "replicate.library.accession": {
+            "title": "Library"
+        },
+        "paired_end": {
+            "title": "Paired end identifier"
+        },
+        "paired_with": {
+            "title": "Paired with"
+        },
+        "run_type": {
+            "title": "Run type"
+        },
+        "read_length": {
+            "title": "Read length"
+        },
+        "mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
+        "read_length_units": {
+            "title": "Read length units"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "quality_metrics": {
+            "title": "QC Metric"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "step_run": {
+            "title": "Analysis step run"
+        },
+        "date_created": {
+            "title": "Date created"
+        },
+        "analysis_step_version": {
+            "title": "Analysis step version"
+        },
+        "submitter_comment": {
+            "title": "Submitter comment"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "output_type_output_category": {
+        "alignments": "alignment",
+        "unfiltered alignments": "alignment",
+        "gene alignments": "alignment",
+        "redacted alignments": "alignment",
+        "redacted unfiltered alignments": "alignment",
+        "transcriptome alignments": "alignment",
+        "spike-in alignments": "alignment",
+        "maternal haplotype mapping": "alignment",
+        "paternal haplotype mapping": "alignment",
+        "phased mapping": "alignment"
+    },
+    "file_format_file_extension": {
+        "bam": ".bam",
+        "tagAlign": ".tagAlign.gz"
+    },
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/sequence_alignment_file.md"
+}

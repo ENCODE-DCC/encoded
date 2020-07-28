@@ -53,8 +53,12 @@ system_slims = {
     'UBERON:0002405': 'immune system',
     'UBERON:0002416': 'integumental system',
     'UBERON:0001032': 'sensory system',
+    'UBERON:0001016': 'nervous system',
     'UBERON:0001017': 'central nervous system',
-    'UBERON:0000010': 'peripheral nervous system'
+    'UBERON:0000010': 'peripheral nervous system',
+    'UBERON:0002390': 'hematopoietic system',
+    'UBERON:0004535': 'cardiovascular system',
+    'UBERON:0000363': 'reticuloendothelial system'
 }
 
 organ_slims = {
@@ -137,39 +141,41 @@ organ_slims = {
     'UBERON:0001821': 'sebaceous gland',
     'UBERON:0000998': 'seminal vesicle',
     'UBERON:0001820': 'sweat gland',
-    'UBERON:0001471': 'skin of prepuce of penis'
+    'UBERON:0001555': 'digestive tract',
+    'UBERON:0000043': 'tendon'
 }
 
 cell_slims = {
     'CL:0000236': 'B cell',
-    'EFO:0001640': 'B cell',# B cell derived cell line
-    'EFO:0001639': 'cancer cell', # cancer cell line
+    'EFO:0001640': 'B cell',  # B cell derived cell line
+    'EFO:0001639': 'cancer cell',  # cancer cell line
     'CL:0002494': 'cardiocyte',
     'CL:0002320': 'connective tissue cell',
     'CL:0002321': 'embryonic cell',
     'CL:0000115': 'endothelial cell',
-    'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
+    'EFO:0005730': 'endothelial cell',  # endothelial cell derived cell line
     'CL:0000066': 'epithelial cell',
-    'EFO:0001641': 'epithelial cell', # epithelial cell derived cell line
+    'EFO:0001641': 'epithelial cell',  # epithelial cell derived cell line
     'CL:0000057': 'fibroblast',
-    'EFO:0002009': 'fibroblast',# fibroblast derived cell line
+    'EFO:0002009': 'fibroblast',  # fibroblast derived cell line
     'CL:0000988': 'hematopoietic cell',
     'EFO:0004905': 'induced pluripotent stem cell',
-    'EFO:0005740': 'induced pluripotent stem cell', # induced pluripotent stem cell derived cell line
+    # induced pluripotent stem cell derived cell line
+    'EFO:0005740': 'induced pluripotent stem cell',
     'CL:0000312': 'keratinocyte',
     'CL:0000738': 'leukocyte',
-    'EFO:0005292': 'lymphoblast', # lymphoblastoid cell line
+    'EFO:0005292': 'lymphoblast',  # lymphoblastoid cell line
     'CL:0000148': 'melanocyte',
     'CL:0000576': 'monocyte',
     'CL:0000763': 'myeloid cell',
     'CL:0000056': 'myoblast',
     'CL:0002319': 'neural cell',
-    'EFO:0005214': 'neuroblastoma cell', # neuroblastoma cell line
+    'EFO:0005214': 'neuroblastoma cell',  # neuroblastoma cell line
     'CL:0000669': 'pericyte',
     'CL:0000192': 'smooth muscle cell',
-    'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
+    'EFO:0005735': 'smooth muscle cell',  # smooth muscle cell derived cell line
     'CL:0000034': 'stem cell',
-    'EFO:0002886': 'stem cell', # stem cell derived cell line
+    'EFO:0002886': 'stem cell',  # stem cell derived cell line
     'CL:0000084': 'T cell',
     'NTR:0000550': 'progenitor cell'
 }
@@ -180,8 +186,10 @@ assay_slims = {
     'OBI:0000424': 'Transcription',  # 'transcription profiling'
     'OBI:0001398': 'DNA binding',  # "protein and DNA interaction"
     'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
-    'OBI:0001917': '3D chromatin structure',  # 'chromosome conformation identification objective'
-    'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    # 'chromosome conformation identification objective'
+    'OBI:0001917': '3D chromatin structure',
+    # 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    'OBI:0000870': 'DNA accessibility',
     'OBI:0001916': 'Replication timing',
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
@@ -261,13 +269,16 @@ class Inspector(object):
             try:
                 self.rdfGraph.parse(uri, format="n3")
             except:
-                raise exceptions.Error("Could not parse the file! Is it a valid RDF/OWL ontology?")
+                raise exceptions.Error(
+                    "Could not parse the file! Is it a valid RDF/OWL ontology?")
         finally:
             self.baseURI = self.get_OntologyURI() or uri
-            self.allclasses = self.__getAllClasses(includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)
+            self.allclasses = self.__getAllClasses(
+                includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)
 
     def get_OntologyURI(self, return_as_string=True):
-        test = [x for x, y, z in self.rdfGraph.triples((None, RDF.type, Ontology))]
+        test = [x for x, y, z in self.rdfGraph.triples(
+            (None, RDF.type, Ontology))]
         if test:
             if return_as_string:
                 return str(test[0])
@@ -620,28 +631,33 @@ def main():
                             if HUMAN_TAXON in col_list:
                                 if PART_OF in col_list:
                                     for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(collection[0])[0].replace('_', ':')
+                                        term_id = splitNameFromNamespace(collection[0])[
+                                            0].replace('_', ':')
                                         if term_id not in terms:
                                             terms[term_id] = getTermStructure()
-                                        terms[term_id]['part_of'].append(splitNameFromNamespace(subC)[0].replace('_', ':'))
+                                        terms[term_id]['part_of'].append(
+                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
                                 elif DEVELOPS_FROM in col_list:
                                     for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(collection[0])[0].replace('_', ':')
+                                        term_id = splitNameFromNamespace(collection[0])[
+                                            0].replace('_', ':')
                                         if term_id not in terms:
                                             terms[term_id] = getTermStructure()
-                                        terms[term_id]['develops_from'].append(splitNameFromNamespace(subC)[0].replace('_', ':'))
+                                        terms[term_id]['develops_from'].append(
+                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
             else:
                 term_id = splitNameFromNamespace(c)[0].replace('_', ':')
                 if term_id not in terms:
                     terms[term_id] = getTermStructure()
                 terms[term_id]['id'] = term_id
-                
+
                 try:
                     terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
                 except:
                     terms[term_id]['name'] = ''
 
-                terms[term_id]['preferred_name'] = preferred_name.get(term_id, '')
+                terms[term_id]['preferred_name'] = preferred_name.get(
+                    term_id, '')
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
                     if isBlankNode(parent):
@@ -649,42 +665,51 @@ def main():
                             if o.__str__() == PART_OF:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['part_of'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['part_of'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == DEVELOPS_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['develops_from'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == HAS_PART:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['has_part'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['has_part'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == DERIVES_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['derives_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['derives_from'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                                     else:
                                         for o2 in data.rdfGraph.objects(o1, IntersectionOf):
                                             for o3 in data.rdfGraph.objects(o2, RDF.first):
                                                 if not isBlankNode(o3):
-                                                    terms[term_id]['derives_from'].append(splitNameFromNamespace(o3)[0].replace('_', ':'))
+                                                    terms[term_id]['derives_from'].append(
+                                                        splitNameFromNamespace(o3)[0].replace('_', ':'))
                                             for o3 in data.rdfGraph.objects(o2, RDF.rest):
                                                 for o4 in data.rdfGraph.objects(o3, RDF.first):
                                                     for o5 in data.rdfGraph.objects(o4, SomeValuesFrom):
                                                         for o6 in data.rdfGraph.objects(o5, IntersectionOf):
                                                             for o7 in data.rdfGraph.objects(o6, RDF.first):
                                                                 if not isBlankNode(o7):
-                                                                    terms[term_id]['derives_from'].append(splitNameFromNamespace(o7)[0].replace('_', ':'))
+                                                                    terms[term_id]['derives_from'].append(
+                                                                        splitNameFromNamespace(o7)[0].replace('_', ':'))
                                                                     for o8 in data.rdfGraph.objects(o6, RDF.rest):
                                                                         for o9 in data.rdfGraph.objects(o8, RDF.first):
                                                                             if not isBlankNode(o9):
-                                                                                terms[term_id]['derives_from'].append(splitNameFromNamespace(o9)[0].replace('_', ':'))
+                                                                                terms[term_id]['derives_from'].append(
+                                                                                    splitNameFromNamespace(o9)[0].replace('_', ':'))
                             elif o.__str__() == ACHIEVES_PLANNED_OBJECTIVE:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['achieves_planned_objective'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['achieves_planned_objective'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                     else:
-                        terms[term_id]['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
-                
+                        terms[term_id]['parents'].append(
+                            splitNameFromNamespace(parent)[0].replace('_', ':'))
+
                 for syn in data.entitySynonyms(c):
                     try:
                         terms[term_id]['synonyms'].append(syn.__str__())
@@ -706,18 +731,21 @@ def main():
                     pass
 
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
-        terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
+            terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
+        terms[term]['data_with_develops_from'] = list(
+            set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
         words = iterativeChildren(terms[term]['data'], terms, 'data')
         for word in words:
             terms[term]['closure'].append(word)
 
-        d = iterativeChildren(terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
+        d = iterativeChildren(
+            terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
         for dd in d:
             terms[term]['closure_with_develops_from'].append(dd)
-       
+
         terms[term]['closure'].append(term)
         terms[term]['closure_with_develops_from'].append(term)
 
@@ -731,12 +759,12 @@ def main():
         terms[term]['types'] = getSlims(term, terms, 'type')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
-    
+
     for term in terms:
         del terms[term]['parents'], terms[term]['develops_from']
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
-    
+
     terms.update(ntr_assays)
     terms.update(ntr_biosamples)
     with open('ontology.json', 'w') as outfile:

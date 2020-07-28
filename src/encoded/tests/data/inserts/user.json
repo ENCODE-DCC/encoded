@@ -14,7 +14,7 @@
             "Greg Cooper, HAIB"
         ],
         "viewing_groups": [
-            "ENCODE3"
+            "community"
         ],
         "uuid": "9f161054-aa2c-40b7-8239-04eb7f08b15d"
     },
@@ -937,6 +937,7 @@
     },
     {
         "email": "jahilton@stanford.edu",
+        "aliases": ["encode:jah-user"],
         "first_name": "Jason",
         "groups": [
             "admin",
@@ -951,37 +952,10 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "ENCODE3",
-            "REMC",
-            "GGR",
-            "ENCODE4",
+            "CZI003CNS",
             "community"
         ],
         "uuid": "332d0e03-a907-4f53-8358-bb00118277c8"
-    },
-    {
-        "email": "jychien@stanford.edu",
-        "first_name": "Jennifer",
-        "groups": [
-            "admin",
-            "verified"
-        ],
-        "job_title": "Data Wrangler",
-        "lab": "/labs/j-michael-cherry/",
-        "last_name": "Chien",
-        "schema_version": "8",
-        "status": "current",
-        "submits_for": [
-            "/labs/j-michael-cherry/"
-        ],
-        "viewing_groups": [
-            "ENCODE3",
-            "REMC",
-            "GGR",
-            "ENCODE4",
-            "community"
-        ],
-        "uuid": "71c7b6d6-f6dd-4ed4-826c-6b3003a8ad9b"
     },
     {
         "email": "clitton@stanford.edu",
@@ -998,10 +972,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "ENCODE3",
-            "REMC",
-            "GGR",
-            "ENCODE4",
+            "CZI003CNS",
             "community"
         ],
         "uuid": "75659c39-eaea-47b7-ba26-92e9ff183e6c"
@@ -1022,12 +993,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "CZI011EYE"
         ],
         "uuid": "473a72c0-6f20-4f81-9093-198e92fee470"
     },
@@ -1047,10 +1013,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "ENCODE3",
-            "REMC",
-            "GGR",
-            "ENCODE4",
+            "CZI011EYE",
             "community"
         ],
         "uuid": "af989110-67d2-4c8b-87f0-38d9d6d31868"
@@ -1071,12 +1034,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "community"
         ],
         "uuid": "43f2f757-5cbf-490a-9787-a1ee85a4cdcd"
     },
@@ -1096,12 +1054,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "pilot"
         ],
         "uuid": "454435fe-702d-4657-a955-641e5631982c"
     },
@@ -1121,12 +1074,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "community"
         ],
         "uuid": "6bae687f-b77a-46b9-af0e-a02c135cf42e"
     },
@@ -1146,12 +1094,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "community"
         ],
         "uuid": "38dc09c2-4c05-49d2-b73d-4b75261fcbf1"
     },
@@ -1171,12 +1114,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "community"
         ],
         "uuid": "64974e05-12df-4733-ae90-b402298b142e"
     },
@@ -1196,12 +1134,7 @@
             "/labs/j-michael-cherry/"
         ],
         "viewing_groups": [
-            "community",
-            "ENCODE3",
-            "ENCODE4",
-            "GGR",
-            "REMC",
-            "ENCORE"
+            "community"
         ],
         "uuid": "85c75ed3-269b-4273-b4ba-e269ee350dd6"
     }

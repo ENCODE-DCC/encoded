@@ -1,0 +1,153 @@
+[
+    {
+        "accession": "ENCDO017AAA",
+        "age": "21",
+        "age_units": "year",
+        "aliases": [
+            "encode:8121902"
+        ],
+        "alternate_accessions": [
+            "ENCDO117AAA"
+        ],
+        "ethnicity": "Caucasian",
+        "diseases": ["Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV"],
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "uuid": "807d50f9-3554-426c-a851-b952099e91f0"
+    },
+    {
+        "accession": "ENCDO058AAA",
+        "age": "34",
+        "age_units": "year",
+        "aliases": [
+            "michael-snyder:STL003"
+        ],
+        "ethnicity": "Caucasian",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "uuid": "13e91df8-6ba4-460f-baf3-c313d884bf4b"
+    },
+    {
+        "accession": "ENCDO000HUM",
+        "documents": [
+            "encode:PanIsletD_Crawford_protocol"
+        ],
+        "life_stage": "unknown",
+        "organism": "human",
+        "parents": [
+            "ENCDO058AAA",
+            "ENCDO000AAK"
+        ],
+        "sex": "unknown",
+        "uuid": "d90607d9-a5fa-4988-8cbf-c7fe8fcd0998"
+    },
+    {
+        "accession": "ENCDO106AAA",
+        "life_stage": "unknown",
+        "organism": "human",
+        "sex": "unknown",
+        "uuid": "7c4cb5ff-4b21-4f9c-a31f-4a9d00cafb5a"
+    },
+    {
+        "accession": "ENCDO275AAA",
+        "ethnicity": "Black",
+        "life_stage": "unknown",
+        "organism": "human",
+        "sex": "unknown",
+        "uuid": "2b9fa2c8-5db9-49c9-9c06-000a16e39d11"
+    },
+    {
+        "accession": "ENCDO276AAA",
+        "ethnicity": "Asian",
+        "life_stage": "unknown",
+        "organism": "human",
+        "sex": "unknown",
+        "uuid": "61ef59a0-222e-4008-9f84-c9200358ebe3"
+    },
+    {
+        "accession": "ENCDO000AAK",
+        "age": "53",
+        "age_units": "year",
+        "aliases": [
+            "encode:donor_of_GM12878",
+            "encode:donor of GM12878"
+        ],
+        "ethnicity": "Caucasian",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "uuid": "44d24e3f-bc5b-469a-8500-7ebd728f8ed5"
+    },
+    {
+        "accession": "ENCDO003HUM",
+        "organism": "human",
+        "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
+    },
+    {
+        "accession": "ENCDO271OUW",
+        "age": "51",
+        "age_units": "year",
+        "aliases": [
+            "gtex:ENC-DEJ",
+            "gtex:PT-1LVAN",
+            "gtex:ENC-004",
+            "bradley-bernstein:Donor GTEX-1LVAN"
+        ],
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "uuid": "ed01347d-b5cc-4a63-bf4c-40aebdab5cd1"
+    },
+    {
+        "accession": "ENCDO793LXB",
+        "age": "53",
+        "age_units": "year",
+        "aliases": [
+            "gtex:ENC-MAC",
+            "gtex:ENC-003",
+            "gtex:PT-1LGRB",
+            "bradley-bernstein:Donor GTEX-1LGRB"
+        ],
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "uuid": "28e5135a-6529-4f7a-8dad-41e0a216f46e"
+    },
+    {
+        "accession": "ENCDO451RUA",
+        "age": "54",
+        "age_units": "year",
+        "aliases": [
+            "gtex:PT-1K2DA",
+            "gtex:ENC-LQT",
+            "gtex:ENC-002",
+            "bradley-bernstein:Donor GTEX-1K2DA"
+        ],
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "uuid": "d370683e-81e7-473f-8475-7716d027849b"
+    },
+    {
+        "accession": "ENCDO845WKR",
+        "age": "37",
+        "age_units": "year",
+        "aliases": [
+            "gtex:ENC-QWZ",
+            "gtex:ENC-001",
+            "gtex:PT-1JKYN",
+            "bradley-bernstein:Donor GTEX-1JKYN"
+        ],
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "uuid": "845eda3c-7503-43e8-a65b-0d08e8d4674d"
+    }
+]

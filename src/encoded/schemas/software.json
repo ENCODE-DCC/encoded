@@ -4,7 +4,7 @@
     "id": "/profiles/software.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "description", "title", "award", "lab"],
+    "required": ["name", "description", "title"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "alias", "title", "name"],
     "mixinProperties": [
@@ -16,11 +16,11 @@
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/attribution" }
+        { "$ref": "mixins.json#/description" }
     ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "1"
         },
         "software_type": {
             "title": "Software type",
@@ -33,16 +33,17 @@
                 "enum": [
                     "aligner",
                     "database",
+                    "demultiplexing",
                     "file format conversion",
                     "filtering",
                     "genome segmentation",
-                    "other",
                     "peak caller",
                     "quality metric",
                     "quantification",
                     "transcript identification",
                     "transcriptome assembly",
-                    "variant annotation"
+                    "variant annotation",
+                    "other"
                 ]
             }
         },
@@ -70,120 +71,11 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
-        },
-        "purpose": {
-            "title": "Purpose",
-            "description": "The purpose that the software was used for in the project.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Purpose",
-                "type": "string",
-                "enum": [
-                    "3' RACE",
-                    "4C",
-                    "5' RACE",
-                    "5' RLM RACE",
-                    "5C",
-                    "ATAC-seq",
-                    "Bru-seq",
-                    "BruChase-seq",
-                    "BruUV-seq",
-                    "CAGE",
-                    "ChIA-PET",
-                    "ChIP-seq",
-                    "Circulome-seq",
-                    "Clone-seq",
-                    "community resource",
-                    "comparative genomic hybridization by array",
-                    "CRISPR genome editing followed by RNA-seq",
-                    "CRISPR screen",
-                    "CRISPRi followed by RNA-seq",
-                    "data QC",
-                    "direct RNA-seq",
-                    "DNA methylation profiling by array assay",
-                    "DNA-PET",
-                    "DNase-seq",
-                    "eCLIP",
-                    "FAIRE-seq",
-                    "genetic modification followed by DNase-seq",
-                    "genotype phasing by HiC",
-                    "genotyping by high throughput sequencing assay",
-                    "HiC",
-                    "iCLIP",
-                    "icLASER",
-                    "icSHAPE",
-                    "integrative analysis",
-                    "long read RNA-seq",
-                    "MeDIP-seq",
-                    "microRNA counts",
-                    "microRNA-seq",
-                    "Mint-ChIP-seq",
-                    "MNase-seq",
-                    "MPRA",
-                    "MRE-seq",
-                    "PAS-seq",
-                    "PLAC-seq",
-                    "pooled clone sequencing",
-                    "PRO-cap",
-                    "PRO-seq",
-                    "protein sequencing by tandem mass spectrometry assay",
-                    "RAMPAGE",
-                    "Repli-chip",
-                    "Repli-seq",
-                    "RIP-chip",
-                    "RIP-seq",
-                    "RNA Bind-n-Seq",
-                    "RNA-PET",
-                    "RNA-seq",
-                    "RRBS",
-                    "shRNA knockdown followed by RNA-seq",
-                    "single-cell ATAC-seq",
-                    "single-cell RNA sequencing assay",
-                    "single-nucleus ATAC-seq",
-                    "siRNA knockdown followed by RNA-seq",
-                    "small RNA-seq",
-                    "SPRITE",
-                    "STARR-seq",
-                    "Switchgear",
-                    "TAB-seq",
-                    "transcription profiling by array assay",
-                    "variant analysis",
-                    "whole genome sequencing assay",
-                    "whole-genome shotgun bisulfite sequencing"
-                ]
-            }
-        },
-        "used_by": {
-            "title": "Used by",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Used by",
-                "type": "string",
-                "enum": [
-                    "community",
-                    "ENCODE",
-                    "modENCODE",
-                    "modERN",
-                    "mouseENCODE"
-                ]
-            }
-        },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the software.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "formInput": "textarea"
         }
     },
     "facets": {
         "software_type": {
             "title": "Software type"
-        },
-        "purpose": {
-            "title": "Purpose"
         }
     },
    "columns": {
@@ -208,26 +100,11 @@
         "references": {
             "title": "References"
         },
-        "used_by": {
-            "title": "Used by"
-        },
         "software_type": {
             "title": "Software type"
-        },
-        "purpose": {
-            "title": "Purpose"
         }
     },
-    "boost_values": {
-        "title": 1.0,
-        "name": 1.0,
-        "purpose": 1.0,
-        "used_by": 1.0,
-        "software_type": 1.0,
-        "references.title": 1.0,
-        "references.identifiers": 1.0,
-        "description": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/software.md"
 
 }

@@ -1,31 +1,16 @@
 ## Changelog for analysis_step.json
 
-### Minor changes since schema version 9
-* Added *representative peak selection* and *candidate cis-regulatory element identification* to the enum list for *analysis_step_types*
-* Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum list for *input_file_types* and *output_file_types*
-* Added *pseudoalignment based quantification* to the enum list for *analysis_step_types*
-* Added *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference* to the enum list for *input_file_types* and *output_file_types*
-* Added *fastq demultiplexing* and *gRNA generation* to the enum list for *analysis_step_types*
-* Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *input_file_types* and *output_file_types*
-
-### Schema version 9
-* Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enums for *output_file_types* and *input_file_types*.
-
 ### Minor changes since schema version 8
 * *input_file_types* and *output_file_types* were updated to have the following enum term(s) to match File schema: *miRNA annotations*, *personalized genome assembly*.
 * *personalized genome assembly* was also added to the enum list for *analysis_step_types*.
 * The following enums were added to the list for *input_file_types* and *output_file_types*:
         [
-            "regulatory elements",
             "negative control regions",
             "non-targeting gRNAs",
             "positive control regions",
             "safe-targeting gRNAs",
             "subreads"
         ]
-* *gRNAs* was added to the enum list of *input_file_types* and *output_file_types*.
-* *element quantifications* was added to the enum list of *input_file_types* and *output_file_types*.
-* *elements reference* was added to the enum list of *input_file_types* and *output_file_types*.
 
 ### Schema version 8
 

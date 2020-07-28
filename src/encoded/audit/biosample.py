@@ -61,28 +61,6 @@ def audit_biosample_modifications(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-3538
 
 
-def audit_biosample_CRISPR_modifications(value, system):
-# flag biosamples with multiple CRISPR/characterization GM; may be legitimate but we want be notified
-# https://encodedcc.atlassian.net/browse/ENCD-5203
-    if 'applied_modifications' in value:
-        if len(value['applied_modifications']) > 1:
-            CRISPRchar = 0
-            GM_ids = set()
-            for GM in value['applied_modifications']:
-                if GM['method'] == 'CRISPR' and GM['purpose'] == 'characterization':
-                    CRISPRchar += 1
-                    GM_ids.add(GM['@id'])
-            GM_ids_links = [audit_link(path_to_text(m), m) for m in GM_ids]
-            if CRISPRchar >1:
-                detail = ('Biosample {} has multiple CRISPR characterization '
-                          ' genetic modifications {}'.format(
-                           audit_link(path_to_text(value['@id']), value['@id']),
-                           ', '.join(GM_ids_links)
-                          )
-                )
-                yield AuditFailure('multiple CRISPR characterization genetic modifications', detail,
-                                   level='INTERNAL_ACTION')
-
 def audit_biosample_culture_date(value, system):
     '''
     Culture date is allowed only in cultured biosamples.
@@ -324,7 +302,6 @@ def audit_biosample_post_differentiation_time(value, system):
 
 function_dispatcher = {
     'audit_modification': audit_biosample_modifications,
-    'audit_CRISPR_modification': audit_biosample_CRISPR_modifications,
     'audit_culture_date': audit_biosample_culture_date,
     'audit_donor': audit_biosample_donor,
     'audit_part_of': audit_biosample_part_of_consistency,
@@ -340,8 +317,7 @@ function_dispatcher = {
                       'biosample_ontology',
                       'donor',
                       'part_of',
-                      'part_of.biosample_ontology',
-                      'applied_modifications'])
+                      'part_of.biosample_ontology'])
 def audit_biosample(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):

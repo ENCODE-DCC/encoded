@@ -3,8 +3,8 @@
     "id": "/profiles/organism.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "taxon_id", "scientific_name"],
-    "identifyingProperties": ["uuid", "name", "taxon_id", "scientific_name"],
+    "required": ["name", "ncbi_taxon_id", "scientific_name"],
+    "identifyingProperties": ["uuid", "name", "ncbi_taxon_id", "scientific_name"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "1"
         },
         "name": {
             "title": "Name",
@@ -28,8 +28,8 @@
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
-        "taxon_id": {
-            "title": "Taxon ID",
+        "ncbi_taxon_id": {
+            "title": "NCBI Taxon ID",
             "description": "The NCBI taxon ID for the organism (e.g. 10090).",
             "type": "string",
             "format": "^[0-9]+$"
@@ -40,9 +40,6 @@
             "title": "Status"
         }
     },
-    "boost_values": {
-        "name": 5.0,
-        "scientific_name": 5.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/organism.md"
 }

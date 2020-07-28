@@ -1,7 +1,4 @@
-from snovault import (
-    CONNECTION,
-    upgrade_step,
-)
+from snovault import upgrade_step
 
 
 @upgrade_step('publication', '', '2')
@@ -66,33 +63,3 @@ def publication_5_6(value, system):
         value['status'] = 'in progress'
     else:
         pass
-
-
-@upgrade_step('publication', '6', '7')
-def publication_6_7(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-5215
-    conn = system['registry'][CONNECTION]
-    datasets = value.get('datasets', [])
-    new_datasets = []
-    for dataset_uuid in datasets:
-        dataset_obj = conn.get_by_uuid(dataset_uuid)
-        if dataset_obj.item_type in [
-            'experiment',
-            'annotation',
-            'functional_characterization_experiment',
-            'reference',
-        ]:
-            new_datasets.append(dataset_uuid)
-        if dataset_obj.item_type == 'publication_data':
-            new_data = dataset_obj.upgrade_properties().copy()
-            if 'schema_version' in new_data:
-                del new_data['schema_version']
-            # references is required for PublicationData
-            uuid = str(system['context'].uuid)
-            if uuid not in new_data['references']:
-                new_data['references'].append(uuid)
-                dataset_obj.update(new_data)
-    if len(new_datasets) == 0:
-        value.pop('datasets', None)
-    else:
-        value['datasets'] = new_datasets

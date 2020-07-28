@@ -8,10 +8,11 @@
     "identifyingProperties": ["uuid", "geneid"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/standard_status" }
+        {"$ref": "mixins.json#/schema_version" },
+        {"$ref": "mixins.json#/uuid" },
+        {"$ref": "mixins.json#/notes" },
+        {"$ref": "mixins.json#/standard_status" },
+        {"$ref": "mixins.json#/dbxrefs"}
     ],
     "dependencies": {
         "locations": {
@@ -97,11 +98,11 @@
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "1"
         },
         "geneid": {
-            "title": "NCBI Entrez GeneID",
-            "description": "NCBI Entrez GeneID of official nomenclature approved gene.",
+            "title": "NCBI Entrez Gene ID",
+            "description": "NCBI Entrez GeneID of this gene.",
             "comment": "An ENCODE gene (object) needs to have an Entrez GeneID and needs to be approved by (i.e. have an ID and gene symbol from) offical nomenclature such as HGNC, MGI, FlyBase, WormBase.",
             "type": "string",
             "pattern": "^[1-9][0-9]*$",
@@ -110,6 +111,7 @@
         },
         "ncbi_entrez_status": {
           "title": "NCBI Entrez Gene Status",
+            "description": "The status of the NCBI Entrez record for this gene.",
           "type": "string",
           "default": "live",
           "enum" : [
@@ -148,18 +150,12 @@
             "permission": "import_items"
         },
         "dbxrefs": {
-            "title": "External resources",
-            "description": "Unique identifiers from external resources.",
-            "comment": "This list should have at least an ID from the official nomenclature. The list of other dbxrefs is maintained using information from NCBI Entrez. Identifiers not included in NCBI gene_info can be added but are not actively maintained.",
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource (e.g. HGNC, MGI, FlyBase, WormBase, ENSEMBL, MIM, UniProtKB, Vega, miRBase).",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(FlyBase:FB(gn|tr)\\d+)|(WormBase:[0-9A-Za-z.]+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_[\\d.]+)|(GeneCards:[0-9a-zA-Z-]+))$"
+                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(FlyBase:FBgn\\d+)|(WormBase:WBGene\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_[\\d.]+))$"
             },
             "permission": "import_items"
         },
@@ -229,7 +225,7 @@
     },
     "columns": {
         "geneid": {
-            "title": "NCBI Entrez GeneID"
+            "title": "NCBI Entrez Gene ID"
         },
         "symbol": {
             "title": "Gene symbol"
@@ -244,15 +240,7 @@
             "title": "Organism"
         }
     },
-    "boost_values": {
-        "geneid": 1.0,
-        "symbol": 20.0,
-        "synonyms": 1.0,
-        "dbxrefs": 1.0,
-        "organism.name": 1.0,
-        "organism.scientific_name": 1.0,
-        "organism.taxon_id": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/gene.md"
 
 }

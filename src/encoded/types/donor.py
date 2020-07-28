@@ -22,25 +22,10 @@ class Donor(Item):
     base_types = ['Donor'] + Item.base_types
     embedded = [
         'organism',
-        'characterizations',
-        'characterizations.award',
-        'characterizations.lab',
-        'characterizations.submitted_by',
         'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
-        'lab'
+        'documents.submitted_by'
     ]
-    set_status_up = [
-        'characterizations',
-        'documents',
-    ]
-    set_status_down = []
     name_key = 'accession'
-    rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes')
-    }
 
     def unique_keys(self, properties):
         keys = super(Donor, self).unique_keys(properties)
@@ -49,100 +34,36 @@ class Donor(Item):
                 keys.setdefault('alias', []).extend(properties['external_ids'])
         return keys
 
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "DonorCharacterization.characterizes"
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
+
+    @calculated_property(define=True,
+                        schema={
+                        "title": "Age display",
+                        "type": "string"})
+    def age_display(self, request, age=None, age_units=None):
+        if age != None and age_units !=None:
+            if age == 'unknown':
+                return 'unknown'
+            else:
+                return u'{}'.format(pluralize(age, age_units))
+        else:
+            return None
 
 
-@collection(
+@abstract_collection(
     name='mouse-donors',
     unique_key='accession',
-    acl=[],
     properties={
         'title': 'Mouse donors',
         'description': 'Listing Biosample Donors'
     })
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
+    base_types = ['MouseDonor'] + Donor.base_types
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references',
-                                 'genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments']
-    set_status_up = [
-        'characterizations',
-        'source',
-        'genetic_modifications',
-        'parent_strains',
-        'documents',
-    ]
-    set_status_down = []
-
-    def __ac_local_roles__(self):
-        # Disallow lab submitter edits
-        return {Authenticated: 'role.viewing_group_member'}
+    embedded = Donor.embedded + []
 
 
-@collection(
-    name='fly-donors',
-    unique_key='accession',
-    properties={
-        'title': 'Fly donors',
-        'description': 'Listing Biosample Donors'
-    })
-class FlyDonor(Donor):
-    item_type = 'fly_donor'
-    schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = Donor.embedded + ['organism', 
-                                 'genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments', 
-                                 'characterizations']
-    set_status_up = [
-        'characterizations',
-        'source',
-        'genetic_modifications',
-        'parent_strains',
-        'documents',
-    ]
-    set_status_down = []
-
-
-@collection(
-    name='worm-donors',
-    unique_key='accession',
-    properties={
-        'title': 'Worm donors',
-        'description': 'Listing Biosample Donors',
-    })
-class WormDonor(Donor):
-    item_type = 'worm_donor'
-    schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = Donor.embedded + ['organism',
-                                 'genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments']
-    set_status_up = [
-        'characterizations',
-        'source',
-        'genetic_modifications',
-        'parent_strains',
-        'documents',
-    ]
-    set_status_down = []
-
-
-@collection(
+@abstract_collection(
     name='human-donors',
     unique_key='accession',
     properties={
@@ -151,11 +72,63 @@ class WormDonor(Donor):
     })
 class HumanDonor(Donor):
     item_type = 'human_donor'
+    base_types = ['HumanDonor'] + Donor.base_types
     schema = load_schema('encoded:schemas/human_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='mouse-prenatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Mouse prenatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class MousePrenatalDonor(MouseDonor):
+    item_type = 'mouse_prenatal_donor'
+    schema = load_schema('encoded:schemas/mouse_prenatal_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='mouse-postnatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Mouse postnatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class MousePostnatalDonor(MouseDonor):
+    item_type = 'mouse_postnatal_donor'
+    schema = load_schema('encoded:schemas/mouse_postnatal_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='human-prenatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Human prenatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class HumanPrenatalDonor(HumanDonor):
+    item_type = 'human_prenatal_donor'
+    schema = load_schema('encoded:schemas/human_prenatal_donor.json')
+    embedded = Donor.embedded + []
+
+
+@collection(
+    name='human-postnatal-donors',
+    unique_key='accession',
+    properties={
+        'title': 'Human postnatal donors',
+        'description': 'Listing Biosample Donors'
+    })
+class HumanPostnatalDonor(HumanDonor):
+    item_type = 'human_postnatal_donor'
+    schema = load_schema('encoded:schemas/human_postnatal_donor.json')
+    embedded = Donor.embedded + []
     rev = {
-        'children': ('HumanDonor', 'parents'),
-        'characterizations': ('DonorCharacterization', 'characterizes')
+        'children': ('HumanDonor', 'parents')
     }
 
     @calculated_property(schema={
@@ -171,3 +144,13 @@ class HumanDonor(Donor):
     })
     def children(self, request, children):
         return paths_filtered_by_status(request, children)
+
+
+def pluralize(value, value_units):
+    try:
+        if float(value) == 1:
+            return str(value) + ' ' + value_units
+        else:
+            return str(value) + ' ' + value_units + 's'
+    except:
+        return str(value) + ' ' + value_units + 's'

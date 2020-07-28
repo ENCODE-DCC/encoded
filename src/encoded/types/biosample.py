@@ -1,6 +1,8 @@
 from snovault import (
+    abstract_collection,
     calculated_property,
     collection,
+    CONNECTION,
     load_schema,
 )
 from .base import (
@@ -10,113 +12,89 @@ from .base import (
 import re
 
 
-@collection(
+def property_closure(request, propname, root_uuid):
+    conn = request.registry[CONNECTION]
+    seen = set()
+    remaining = {str(root_uuid)}
+    while remaining:
+        seen.update(remaining)
+        next_remaining = set()
+        for uuid in remaining:
+            obj = conn.get_by_uuid(uuid)
+            next_remaining.update(obj.__json__(request).get(propname, ()))
+        remaining = next_remaining - seen
+    return seen
+
+
+def caclulate_donor_prop(self, request, donors, propname):
+    collected_values = []
+
+    if donors is not None:  # try to get the sex from the donor
+        for donor_id in donors:
+            donorObject = request.embed(donor_id, '@@object')
+            if propname in donorObject and donorObject[propname] not in collected_values:
+                collected_values.append(donorObject[propname])
+
+    if not collected_values:
+        return ['unknown']
+    else:
+        return collected_values
+
+
+@abstract_collection(
     name='biosamples',
     unique_key='accession',
     properties={
         'title': 'Biosamples',
-        'description': 'Biosamples used in the ENCODE project',
+        'description': 'Listing of all types of biosample.',
     })
 class Biosample(Item):
-    item_type = 'biosample'
-    schema = load_schema('encoded:schemas/biosample.json')
+    base_types = ['Biosample'] + Item.base_types
     name_key = 'accession'
-    rev = {
-        'characterizations': ('BiosampleCharacterization', 'characterizes'),
-        'parent_of': ('Biosample', 'part_of'),
-    }
+    rev = {}
     embedded = [
-        'biosample_ontology',
-        'donor',
-        'donor.organism',
-        'donor.characterizations',
-        'donor.characterizations.award',
-        'donor.characterizations.documents',
-        'donor.characterizations.lab',
-        'donor.characterizations.submitted_by',
-        'donor.documents',
-        'donor.documents.award',
-        'donor.documents.lab',
-        'donor.documents.submitted_by',
-        'donor.references',
-        'submitted_by',
-        'lab',
-        'award',
-        'award.pi.lab',
-        'source',
-        'treatments',
-        'treatments.documents.submitted_by',
-        'treatments.documents.lab',
-        'treatments.documents.award',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
-        'originated_from',
-        'originated_from.biosample_ontology',
-        'part_of',
-        'part_of.documents',
-        'part_of.documents.award',
-        'part_of.documents.lab',
-        'part_of.documents.submitted_by',
-        'part_of.characterizations.documents',
-        'part_of.characterizations.documents.award',
-        'part_of.characterizations.documents.lab',
-        'part_of.characterizations.documents.submitted_by',
-        'part_of.treatments.documents',
-        'parent_of',
-        'pooled_from',
-        'pooled_from.biosample_ontology',
-        'characterizations.submitted_by',
-        'characterizations.award',
-        'characterizations.lab',
-        'characterizations.documents',
-        'organism',
-        'references',
-        'applied_modifications',
-        'applied_modifications.modified_site_by_target_id',
-        'applied_modifications.modified_site_by_target_id.genes',
-        'applied_modifications.treatments'
+        'biosample_ontology'
     ]
-    audit_inherit = [
-        'biosample_ontology',
-        'donor',
-        'donor.biosample_ontology',
-        'donor.organism',
-        'donor.characterizations',
-        'donor.donor_documents',
-        'donor.references',
-        'submitted_by',
-        'lab',
-        'award',
-        'source',
-        'treatments',
-        'originated_from',
-        'originated_from.biosample_ontology',
-        'pooled_from',
-        'pooled_from.biosample_ontology',
-        'organism',
-        'references',
-        'applied_modifications',
-        'applied_modifications.modified_site_by_target_id'
-    ]
-    set_status_up = [
-        'donor',
-        'part_of',
-        'pooled_from',
-        'originated_from',
-        'genetic_modifications',
-        'characterizations',
-        'treatments',
-        'documents',
-        'host',
-        'source',
-    ]
-    set_status_down = []
+
+    @calculated_property(define=True,
+                         schema={"title": "Donors",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string",
+                                    "linkTo": "Donor"
+                                    }
+                                })
+    def donors(self, request, registry):
+        connection = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid) - {str(self.uuid)}
+        obj_props = (request.embed(uuid, '@@object') for uuid in derived_from_closure)
+        all_donors = {
+            props['accession']
+            for props in obj_props
+            if 'Donor' in props['@type']
+        }
+        return sorted(all_donors)
+
+    @calculated_property(define=True,
+                         schema={"title": "Organism",
+                                 "type": "string",
+                                 "linkTo": "Organism"
+                                })
+    def organism(self, request, registry, donors=None):
+        if donors is not None:
+            for donor_id in donors:
+                donorObject = request.embed(donor_id, '@@object')
+                if 'organism' in donorObject:
+                    return donorObject['organism']
 
     @calculated_property(define=True,
                          schema={"title": "Sex",
-                                 "type": "string"})
-    def sex(self, request, donor=None, model_organism_sex=None, organism=None):
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def sex(self, request, donors=None, model_organism_sex=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -124,34 +102,25 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag is True:
-            if donor is not None:  # try to get the sex from the donor
-                donorObject = request.embed(donor, '@@object')
-                if 'sex' in donorObject:
-                    return donorObject['sex']
-                else:
-                    return 'unknown'
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'sex')
             else:
-                return 'unknown'
+                return ['unknown']
+
         else:
             if model_organism_sex is not None:
-                return model_organism_sex
+                return [model_organism_sex]
             else:
-                return 'unknown'
+                return ['unknown']
 
     @calculated_property(define=True,
                          schema={"title": "Age",
-                                 "type": "string"})
-    def age(
-        self,
-        request,
-        donor=None,
-        model_organism_age=None,
-        organism=None,
-        sample_collection_age=None,
-    ):
-        # https://encodedcc.atlassian.net/browse/ENCD-5272
-        if sample_collection_age is not None:
-            return sample_collection_age
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def age(self, request, donors=None, model_organism_age=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -159,34 +128,25 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag is True:
-            if donor is not None:  # try to get the age from the donor
-                donorObject = request.embed(donor, '@@object')
-                if 'age' in donorObject:
-                    return donorObject['age']
-                else:
-                    return 'unknown'
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'age')
             else:
-                return 'unknown'
+                return ['unknown']
+
         else:
             if model_organism_age is not None:
-                return model_organism_age
+                return [model_organism_age]
             else:
-                return 'unknown'
+                return ['unknown']
 
     @calculated_property(define=True,
                          schema={"title": "Age units",
-                                 "type": "string"})
-    def age_units(
-        self,
-        request,
-        donor=None,
-        model_organism_age_units=None,
-        organism=None,
-        sample_collection_age_units=None,
-    ):
-        # https://encodedcc.atlassian.net/browse/ENCD-5272
-        if sample_collection_age_units is not None:
-            return sample_collection_age_units
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def age_units(self, request, donors=None, model_organism_age_units=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -194,287 +154,120 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag is True:
-            if donor is not None:  # try to get the age_units from the donor
-                donorObject = request.embed(donor, '@@object')
-                if 'age_units' in donorObject:
-                    return donorObject['age_units']
-                else:
-                    return None
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'age_units')
             else:
-                return None
+                return ['unknown']
+
         else:
-            return model_organism_age_units
+            if model_organism_age_units is not None:
+                return [model_organism_age_units]
+            else:
+                return ['unknown']
+
+
+    @calculated_property(define=True,
+                        schema={
+                        "title": "Age display",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def age_display(self, request, donors=None):
+        if donors is not None:
+            return caclulate_donor_prop(self, request, donors, 'age_display')
+        else:
+            return ['unknown']
+
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
-                                 "type": "string"})
-    def health_status(self, request, donor=None, model_organism_health_status=None, organism=None):
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def donor_diseases(self, request, donors=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
             if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag is True and donor is not None:
-            donorObject = request.embed(donor, '@@object')
-            if 'health_status' in donorObject:
-                return donorObject['health_status']
+        if humanFlag is True:
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'diseases')
             else:
-                return None
+                return ['unknown']
+
         else:
-            if humanFlag is False:
-                return model_organism_health_status
-            return None
+            return ['unknown']
 
     @calculated_property(define=True,
                          schema={"title": "Life stage",
-                                 "type": "string"})
-    def life_stage(self, request, donor=None, mouse_life_stage=None, fly_life_stage=None,
-                   worm_life_stage=None, organism=None):
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def life_stage(self, request, donors=None, mouse_life_stage=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
             if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag is True and donor is not None:
-            donorObject = request.embed(donor, '@@object')
-            if 'life_stage' in donorObject:
-                return donorObject['life_stage']
+        if humanFlag is True:
+            if donors is not None:
+                return caclulate_donor_prop(self, request, donors, 'life_stage')
             else:
-                return 'unknown'
+                return ['unknown']
+
         else:
-            if humanFlag is False:
-                if mouse_life_stage is not None:
-                    return mouse_life_stage
-                if fly_life_stage is not None:
-                    return fly_life_stage
-                if worm_life_stage is not None:
-                    return worm_life_stage
-            return 'unknown'
-
-    @calculated_property(define=True,
-                         schema={"title": "Synchronization",
-                                 "type": "string"})
-    def synchronization(self, request, donor=None, mouse_synchronization_stage=None,
-                        fly_synchronization_stage=None, worm_synchronization_stage=None):
-        # XXX mouse_synchronization_stage does not exist
-        if mouse_synchronization_stage is not None:
-            return mouse_synchronization_stage
-        if fly_synchronization_stage is not None:
-            return fly_synchronization_stage
-        if worm_synchronization_stage is not None:
-            return worm_synchronization_stage
-        if donor is not None:
-            return request.embed(donor, '@@object').get('synchronization')
-
-    @calculated_property(schema={
-        "title": "Model organism genetic modifications",
-        "description":
-            "Genetic modifications made in the model organism of the biosample.",
-        "type": "array",
-        "items": {
-            "title": "Model organism genetic modification",
-            "description": "Genetic modification made in the model organism of the biosample.",
-            "comment": "See genetic_modification.json for available identifiers.",
-            "type": "string",
-            "linkTo": "GeneticModification",
-        },
-    }, define=True)
-    def model_organism_donor_modifications(self, request, donor=None):
-        if donor is not None:
-            return request.embed(donor, '@@object').get('genetic_modifications')
-
-
-    @calculated_property(schema={
-        "title": "Applied modifications",
-        "description": "All genetic modifications made in either the model organism and/or biosample.",
-        "type": "array",
-        "items": {
-            "title": "Applied modification",
-            "description": "Genetic modification made in either the model organism and/or biosample.",
-            "comment": "See genetic_modification.json for available identifiers.",
-            "type": "string",
-            "linkTo": "GeneticModification",
-        }
-    }, define=True)
-    def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
-        return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
-
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "BiosampleCharacterization.characterizes",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
-
-    @calculated_property(schema={
-        "description": "The biosample(s) that have this biosample in their part_of property.",
-        "comment": "Do not submit. Values in the list are reverse links of a biosamples that are part_of this biosample.",
-        "title": "Child biosamples",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Biosample.part_of",
-        },
-        'notSubmittable': True,
-    })
-    def parent_of(self, request, parent_of):
-        return paths_filtered_by_status(request, parent_of)
-
-    @calculated_property(schema={
-        "title": "Age display",
-        "type": "string",
-    })
-    def age_display(
-        self,
-        request,
-        donor=None,
-        model_organism_age=None,
-        model_organism_age_units=None,
-        post_synchronization_time=None,
-        post_synchronization_time_units=None,
-        sample_collection_age=None,
-        sample_collection_age_units=None,
-    ):
-        # https://encodedcc.atlassian.net/browse/ENCD-5272
-        if sample_collection_age is not None:
-            if sample_collection_age == 'unknown':
-                return ''
-            if sample_collection_age_units is not None:
-                return u'{}'.format(
-                    pluralize(
-                        sample_collection_age, sample_collection_age_units
-                    )
-                )
-        if post_synchronization_time is not None and post_synchronization_time_units is not None:
-            return u'{}'.format(
-                pluralize(post_synchronization_time, post_synchronization_time_units)
-                )
-        if donor is not None:
-            donor = request.embed(donor, '@@object')
-            if 'age' in donor and 'age_units' in donor:
-                if donor['age'] == 'unknown':
-                    return ''
-                return u'{}'.format(pluralize(donor['age'], donor['age_units']))
-        if model_organism_age is not None and model_organism_age_units is not None:
-            return u'{}'.format(
-                pluralize(model_organism_age, model_organism_age_units)
-            )
-        return None
-
-    @calculated_property(condition='depleted_in_term_name', schema={
-        "title": "Depleted in term ID",
-        "type": "string",
-    })
-    def depleted_in_term_id(self, request, depleted_in_term_name):
-
-        term_lookup = {
-            'head': 'UBERON:0000033',
-            'limb': 'UBERON:0002101',
-            'salivary gland': 'UBERON:0001044',
-            'male accessory sex gland': 'UBERON:0010147',
-            'testis': 'UBERON:0000473',
-            'female gonad': 'UBERON:0000992',
-            'digestive system': 'UBERON:0001007',
-            'arthropod fat body': 'UBERON:0003917',
-            'antenna': 'UBERON:0000972',
-            'adult maxillary segment': 'FBbt:00003016',
-            'female reproductive system': 'UBERON:0000474',
-            'male reproductive system': 'UBERON:0000079'
-        }
-
-        term_id = list()
-        for term_name in depleted_in_term_name:
-            if term_name in term_lookup:
-                term_id.append(term_lookup.get(term_name))
+            if mouse_life_stage is not None:
+                return [mouse_life_stage]
             else:
-                term_id.append('Term ID unknown')
-
-        return term_id
-
-    @calculated_property(condition='subcellular_fraction_term_name', schema={
-        "title": "Subcellular fraction term ID",
-        "type": "string",
-    })
-    def subcellular_fraction_term_id(self, request, subcellular_fraction_term_name):
-        term_lookup = {
-            'nucleus': 'GO:0005634',
-            'cytosol': 'GO:0005829',
-            'chromatin': 'GO:0000785',
-            'membrane': 'GO:0016020',
-            'mitochondria': 'GO:0005739',
-            'nuclear matrix': 'GO:0016363',
-            'nucleolus': 'GO:0005730',
-            'nucleoplasm': 'GO:0005654',
-            'polysome': 'GO:0005844',
-            'insoluble cytoplasmic fraction': 'NTR:0002594'
-        }
-
-        if subcellular_fraction_term_name in term_lookup:
-            return term_lookup.get(subcellular_fraction_term_name)
-        else:
-            return 'Term ID unknown'
+                return ['unknown']
 
     @calculated_property(schema={
         "title": "Summary",
         "type": "string",
     })
     def summary(self, request,
+                item_type=None,
                 organism=None,
-                donor=None,
-                age=None,
-                age_units=None,
+                donors=None,
+                age_display=None,
                 life_stage=None,
                 sex=None,
                 biosample_ontology=None,
                 starting_amount=None,
                 starting_amount_units=None,
                 depleted_in_term_name=None,
-                phase=None,
-                synchronization=None,
-                subcellular_fraction_term_name=None,
-                post_synchronization_time=None,
-                post_synchronization_time_units=None,
                 post_treatment_time=None,
                 post_treatment_time_units=None,
-                post_nucleic_acid_delivery_time=None,
-                post_nucleic_acid_delivery_time_units=None,
                 treatments=None,
-                part_of=None,
-                originated_from=None,
                 transfection_method=None,
                 transfection_type=None,
-                preservation_method=None,
-                genetic_modifications=None,
-                model_organism_donor_modifications=None):
+                preservation_method=None):
 
         sentence_parts = [
             'organism_name',
             'genotype_strain',
             'sex_stage_age',
-            'synchronization',
             'term_phrase',
-            'modifications_list',
-            'originated_from',
             'treatments_phrase',
-            'post_nucleic_acid_delivery_time',
             'preservation_method',
-            'depleted_in',
-            'phase',
-            'fractionated'
+            'depleted_in'
         ]
         organismObject = None
-        donorObject = None
+        donorObject = []
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-        if donor is not None:
-            donorObject = request.embed(donor, '@@object')
+        if donors is not None:
+            for donor_id in donors:
+                donorObject.append(request.embed(donor_id, '@@object'))
 
         treatment_objects_list = None
         if treatments is not None and len(treatments) > 0:
@@ -482,54 +275,19 @@ class Biosample(Item):
             for t in treatments:
                 treatment_objects_list.append(request.embed(t, '@@object'))
 
-        part_of_object = None
-        if part_of is not None:
-            part_of_object = request.embed(part_of, '@@object')
-
-        originated_from_object = None
-        if originated_from is not None:
-            originated_from_object = request.embed(originated_from, '@@object')
-
-        modifications_list = None
-
-        applied_modifications = get_applied_modifications(
-            genetic_modifications, model_organism_donor_modifications)
-
-        if applied_modifications:
-            modifications_list = []
-            for gm in applied_modifications:
-                gm_object = request.embed(gm, '@@object')
-                modification_dict = {'category': gm_object.get('category')}
-                if gm_object.get('modified_site_by_target_id'):
-                    modification_dict['target'] = request.embed(
-                        gm_object.get('modified_site_by_target_id'),
-                                      '@@object').get('label')
-                if gm_object.get('introduced_tags'):
-                    modification_dict['tags'] = []
-                    for tag in gm_object.get('introduced_tags'):
-                        tag_dict = {'location': tag['location'], 'name': tag['name']}
-                        if tag.get('promoter_used'):
-                            tag_dict['promoter'] = request.embed(
-                                tag.get('promoter_used'),
-                                        '@@object').get('label')
-                        modification_dict['tags'].append(tag_dict)
-
-                modifications_list.append((gm_object['method'], modification_dict))
-
         if biosample_ontology:
             biosample_type_object = request.embed(biosample_ontology, '@@object')
             biosample_term_name = biosample_type_object['term_name']
-            biosample_type = biosample_type_object['classification']
         else:
             biosample_term_name = None
-            biosample_type = None
+
+        biosample_type = item_type
 
         biosample_dictionary = generate_summary_dictionary(
             request,
             organismObject,
             donorObject,
-            age,
-            age_units,
+            age_display,
             life_stage,
             sex,
             biosample_term_name,
@@ -537,50 +295,33 @@ class Biosample(Item):
             starting_amount,
             starting_amount_units,
             depleted_in_term_name,
-            phase,
-            subcellular_fraction_term_name,
-            synchronization,
-            post_synchronization_time,
-            post_synchronization_time_units,
             post_treatment_time,
             post_treatment_time_units,
-            post_nucleic_acid_delivery_time,
-            post_nucleic_acid_delivery_time_units,
             treatment_objects_list,
-            preservation_method,
-            part_of_object,
-            originated_from_object,
-            modifications_list)
+            preservation_method)
 
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
 
     @calculated_property(schema={
         "title": "Perturbed",
-        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
+        "description": "A flag to indicate whether the biosample has been perturbed with a treatment.",
         "type": "boolean",
         "notSubmittable": True,
     })
     def perturbed(
         self,
         request,
-        applied_modifications,
         treatments=None,
     ):
-        return bool(treatments) or any(
-            (
-                request.embed(m, '@@object').get('perturbation', False)
-                for m in applied_modifications
-            )
-        )
+        return bool(treatments)
 
 
 def generate_summary_dictionary(
         request,
         organismObject=None,
         donorObject=None,
-        age=None,
-        age_units=None,
+        age_display=None,
         life_stage=None,
         sex=None,
         biosample_term_name=None,
@@ -588,34 +329,18 @@ def generate_summary_dictionary(
         starting_amount=None,
         starting_amount_units=None,
         depleted_in_term_name=None,
-        phase=None,
-        subcellular_fraction_term_name=None,
-        synchronization=None,
-        post_synchronization_time=None,
-        post_synchronization_time_units=None,
         post_treatment_time=None,
         post_treatment_time_units=None,
-        post_nucleic_acid_delivery_time=None,
-        post_nucleic_acid_delivery_time_units=None,
         treatment_objects_list=None,
         preservation_method=None,
-        part_of_object=None,
-        originated_from_object=None,
-        modifications_list=None,
         experiment_flag=False):
     dict_of_phrases = {
         'organism_name': '',
         'genotype_strain': '',
         'term_phrase': '',
-        'phase': '',
-        'fractionated': '',
         'sex_stage_age': '',
-        'synchronization': '',
-        'originated_from': '',
         'treatments_phrase': '',
-        'post_nucleic_acid_delivery_time': '',
         'depleted_in': '',
-        'modifications_list': '',
         'strain_background': '',
         'preservation_method': '',
         'experiment_term_phrase': ''
@@ -643,36 +368,38 @@ def generate_summary_dictionary(
                         dict_of_phrases['strain_background'] = donorObject['strain_background']
                     else:
                         dict_of_phrases['strain_background'] = dict_of_phrases['genotype_strain']
-    if age is not None and age_units is not None:
-        dict_of_phrases['age_display'] = pluralize(age, age_units)
-
-    if life_stage is not None and life_stage != 'unknown':
-        dict_of_phrases['life_stage'] = life_stage
-
-    if sex is not None and sex != 'unknown':
-        if experiment_flag is True:
-            if sex != 'mixed':
-                dict_of_phrases['sex'] = sex
-
+    if age_display is not None and age_display != ['unknown']:
+        if len(age_display) == 1:
+            dict_of_phrases['age_display'] = age_display[0]
         else:
-            dict_of_phrases['sex'] = sex   
-    if preservation_method is not None:
-        dict_of_phrases['preservation_method'] = 'preserved by ' + \
-                                                            preservation_method
-    if biosample_term_name is not None:
-        dict_of_phrases['sample_term_name'] = biosample_term_name
+            dict_of_phrases['age_display'] = 'mixed age'
 
-    if biosample_type is not None and \
-        biosample_type not in ['whole organisms', 'whole organism']:
+    if life_stage is not None and life_stage != ['unknown']:
+        if len(life_stage) == 1:
+            dict_of_phrases['life_stage'] = life_stage[0]
+        else:
+            dict_of_phrases['life_stage'] = 'mixed life stage'
+
+    if sex is not None and sex != ['unknown']:
+        if sex != 'mixed' and len(sex) == 1:
+            dict_of_phrases['sex'] = sex[0]
+        else:
+            dict_of_phrases['sex'] = 'mixed sex'
+
+    if preservation_method is not None:
+        if len(preservation_method) == 1:
+            dict_of_phrases['preservation_method'] = 'preserved by ' + \
+                                                            str(preservation_method)
+    if biosample_term_name is not None:
+        dict_of_phrases['sample_term_name'] = str(biosample_term_name)
+
+    if biosample_type is not None:
         dict_of_phrases['sample_type'] = biosample_type
 
     term_name = ''
 
     if 'sample_term_name' in dict_of_phrases:
-        if dict_of_phrases['sample_term_name'] == 'multi-cellular organism':
-            term_name += 'whole organisms'
-        else:
-            term_name += dict_of_phrases['sample_term_name']
+        term_name += dict_of_phrases['sample_term_name']
 
     dict_of_phrases['experiment_term_phrase'] = term_name
 
@@ -700,7 +427,7 @@ def generate_summary_dictionary(
         dict_of_phrases['term_phrase'] = term_phrase[1:]
 
     if starting_amount is not None and starting_amount_units is not None:
-        if starting_amount_units[-1] != 's':
+        if str(starting_amount_units)[-1] != 's':
             dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
                 str(starting_amount_units) + 's'
         else:
@@ -711,77 +438,25 @@ def generate_summary_dictionary(
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
                                             str(depleted_in_term_name).replace('\'', '')[1:-1]
 
-    if phase is not None:
-        dict_of_phrases['phase'] = phase + ' phase'
-
-    if subcellular_fraction_term_name is not None:
-        if subcellular_fraction_term_name == 'nucleus':
-            dict_of_phrases['fractionated'] = 'nuclear fraction'
-        if subcellular_fraction_term_name == 'cytosol':
-            dict_of_phrases['fractionated'] = 'cytosolic fraction'
-        if subcellular_fraction_term_name == 'chromatin':
-            dict_of_phrases['fractionated'] = 'chromatin fraction'
-        if subcellular_fraction_term_name == 'membrane':
-            dict_of_phrases['fractionated'] = 'membrane fraction'
-        if subcellular_fraction_term_name == 'mitochondria':
-            dict_of_phrases['fractionated'] = 'mitochondrial fraction'
-        if subcellular_fraction_term_name == 'nuclear matrix':
-            dict_of_phrases['fractionated'] = 'nuclear matrix fraction'
-        if subcellular_fraction_term_name == 'nucleolus':
-            dict_of_phrases['fractionated'] = 'nucleolus fraction'
-        if subcellular_fraction_term_name == 'nucleoplasm':
-            dict_of_phrases['fractionated'] = 'nucleoplasmic fraction'
-        if subcellular_fraction_term_name == 'polysome':
-            dict_of_phrases['fractionated'] = 'polysomic fraction'
-        if subcellular_fraction_term_name == 'insoluble cytoplasmic fraction':
-            dict_of_phrases['fractionated'] = 'insoluble cytoplasmic fraction'
-
-    if post_synchronization_time is not None and \
-        post_synchronization_time_units is not None:
-        dict_of_phrases['synchronization'] = '{} post synchronization'.format(
-            pluralize(post_synchronization_time, post_synchronization_time_units)
-            )
-    if synchronization is not None:
-        if synchronization.startswith('puff'):
-            dict_of_phrases['synchronization'] += ' at ' + synchronization
-        elif synchronization == 'egg bleaching':
-            dict_of_phrases['synchronization'] += ' using ' + synchronization
-        else:
-            dict_of_phrases['synchronization'] += ' at ' + synchronization + ' stage'
-
     if post_treatment_time is not None and \
         post_treatment_time_units is not None:
         dict_of_phrases['post_treatment'] = '{} after the sample was '.format(
             pluralize(post_treatment_time, post_treatment_time_units)
             )
 
-    if post_nucleic_acid_delivery_time is not None and \
-        post_nucleic_acid_delivery_time_units is not None:
-        dict_of_phrases['post_nucleic_acid_delivery_time'] = '{} post-nucleic acid delivery time'.format(
-            pluralize(post_nucleic_acid_delivery_time, post_nucleic_acid_delivery_time_units)
-            )
+    phrase = ''
 
+    stage_phrase = ''
+    if 'life_stage' in dict_of_phrases:
+        phrase += ' ' + dict_of_phrases['life_stage']
 
-    if ('sample_type' in dict_of_phrases and
-        dict_of_phrases['sample_type'] != 'cell line') or \
-        ('sample_type' not in dict_of_phrases):
-        phrase = ''
-
-        if 'sex' in dict_of_phrases:
-            if dict_of_phrases['sex'] == 'mixed':
-                phrase += dict_of_phrases['sex'] + ' sex'
-            else:
-                phrase += dict_of_phrases['sex']
-
-        stage_phrase = ''
-        if 'life_stage' in dict_of_phrases:
-            stage_phrase += ' ' + dict_of_phrases['life_stage']
-
-        phrase += stage_phrase.replace("embryonic", "embryo")
-
-        if 'age_display' in dict_of_phrases:
-            phrase += ' (' + dict_of_phrases['age_display'] + ')'
-        dict_of_phrases['sex_stage_age'] = phrase
+    if 'sex' in dict_of_phrases and 'age_display' in dict_of_phrases:
+        phrase +=' (' + dict_of_phrases['sex'] + ', ' + dict_of_phrases['age_display'] + ')'
+    elif 'sex' in dict_of_phrases:
+        phrase += ' (' + dict_of_phrases['sex'] + ')'
+    elif 'age_display' in dict_of_phrases:
+        phrase += ' (' + dict_of_phrases['age_display'] + ')'
+    dict_of_phrases['sex_stage_age'] = phrase
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []
@@ -816,66 +491,7 @@ def generate_summary_dictionary(
                     'treatments_phrase'] += 'treated with ' + \
                                             ', '.join(map(str, dict_of_phrases['treatments']))
 
-    if part_of_object is not None:
-        dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
-
-    if originated_from_object is not None:
-        if 'biosample_ontology' in originated_from_object:
-            biosample_object = request.embed(
-                originated_from_object['biosample_ontology'],
-                '@@object'
-            )
-            dict_of_phrases['originated_from'] = 'originated from {}'.format(
-                biosample_object['term_name']
-            )
-
-    if modifications_list is not None and len(modifications_list) > 0:
-        gm_methods = set()
-        gm_summaries = set()
-        for (gm_method, gm_object) in modifications_list:
-            gm_methods.add(gm_method)
-            gm_summaries.add(generate_modification_summary(gm_method, gm_object))
-        if experiment_flag is True:
-            dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
-                ', '.join(map(str, list(gm_methods)))
-        else:
-            dict_of_phrases['modifications_list'] = ', '.join(sorted(list(gm_summaries)))
-
     return dict_of_phrases
-
-
-def generate_modification_summary(method, modification):
-
-    modification_summary = ''
-    if method in ['stable transfection', 'transient transfection'] and modification.get('target'):
-        modification_summary = 'stably'
-        if method == 'transient transfection':
-            modification_summary = 'transiently'
-        modification_summary += ' expressing'
-
-        if modification.get('tags'):
-            tags_list = []
-
-            for tag in modification.get('tags'):
-                addition = ''
-                if tag.get('location') in ['N-terminal', 'C-terminal', 'internal']:
-                    addition += ' ' + tag.get('location') + ' ' + tag.get('name') + '-tagged'
-                addition += ' ' + modification.get('target')
-                if tag.get('promoter'):
-                    addition += ' under ' + tag.get('promoter') + ' promoter'
-                tags_list.append(addition)
-            modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)))).strip()
-        else:
-            modification_summary += ' ' + modification.get('target')
-    else:
-        modification_summary = \
-            'genetically modified (' + modification.get('category') + ') using ' + method
-        if method == 'RNAi':
-            modification_summary = 'expressing RNAi'
-
-        if modification.get('target'):
-            modification_summary += ' targeting ' + modification.get('target')
-    return modification_summary.strip()
 
 
 def generate_sentence(phrases_dict, values_list):
@@ -883,9 +499,6 @@ def generate_sentence(phrases_dict, values_list):
     for key in values_list:
         if phrases_dict[key] != '':
             if 'preservation_method' in key:
-                sentence = sentence.strip() + ', ' + \
-                                    phrases_dict[key].strip() + ' '
-            elif 'post_nucleic_acid_delivery_time' in key:
                 sentence = sentence.strip() + ', ' + \
                                     phrases_dict[key].strip() + ' '
             else:
@@ -911,25 +524,10 @@ def pluralize(value, value_units):
         return str(value) + ' ' + value_units + 's'
 
 
-def get_applied_modifications(genetic_modifications=None, model_organism_donor_modifications=None):
-    if genetic_modifications is not None and model_organism_donor_modifications is not None:
-        return list(set(genetic_modifications + model_organism_donor_modifications))
-    elif genetic_modifications is not None and model_organism_donor_modifications is None:
-        return genetic_modifications
-    elif genetic_modifications is None and model_organism_donor_modifications is not None:
-        return model_organism_donor_modifications
-    else:
-        return []
-
-
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
-        'phase': 'unspecified phase',
-        'fractionated': 'unspecified fraction',
-        'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',
-        'depleted_in': 'not depleted',
-        'genetic_modifications': 'not modified'
+        'depleted_in': 'not depleted'
     }
     if len(phrases_dictionarys) > 1:
         index = 0
@@ -992,3 +590,69 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     rep = dict((re.escape(k), v) for k, v in rep.items())
     pattern = re.compile("|".join(rep.keys()))
     return pattern.sub(lambda m: rep[re.escape(m.group(0))], sentence_to_return)
+
+
+@abstract_collection(
+    name='cultures',
+    unique_key='accession',
+    properties={
+        'title': 'Cultures',
+        'description': 'Listing of all types of culture.',
+    })
+class Culture(Biosample):
+    item_type = 'analysis_file'
+    base_types = ['Culture'] + Biosample.base_types
+    schema = load_schema('encoded:schemas/culture.json')
+    embedded = Biosample.embedded + []
+
+
+@collection(
+    name='cell-cultures',
+    unique_key='accession',
+    properties={
+        'title': 'Cell cultures',
+        'description': 'Listing of Cell cultures',
+    })
+class CellCulture(Culture):
+    item_type = 'cell_culture'
+    schema = load_schema('encoded:schemas/cell_culture.json')
+    embedded = Culture.embedded + []
+
+
+@collection(
+    name='suspensions',
+    unique_key='accession',
+    properties={
+        'title': 'Suspensions',
+        'description': 'Listing of Suspensions',
+    })
+class Suspension(Biosample):
+    item_type = 'suspension'
+    schema = load_schema('encoded:schemas/suspension.json')
+    embedded = Biosample.embedded + []
+
+
+@collection(
+    name='organoids',
+    unique_key='accession',
+    properties={
+        'title': 'Organoids',
+        'description': 'Listing of Organoids',
+    })
+class Organoid(Culture):
+    item_type = 'organoid'
+    schema = load_schema('encoded:schemas/organoid.json')
+    embedded = Culture.embedded + []
+
+
+@collection(
+    name='tissues',
+    unique_key='accession',
+    properties={
+        'title': 'Tissues',
+        'description': 'Listing of Tissues',
+    })
+class Tissue(Biosample):
+    item_type = 'tissue'
+    schema = load_schema('encoded:schemas/tissue.json')
+    embedded = Biosample.embedded + []

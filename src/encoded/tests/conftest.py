@@ -26,7 +26,6 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.atac_alignment_enrichment_quality_metric',
     'encoded.tests.fixtures.schemas.atac_alignment_quality_metric',
     'encoded.tests.fixtures.schemas.atac_library_complexity_quality_metric',
-    'encoded.tests.fixtures.schemas.atac_peak_enrichment_quality_metric',
     'encoded.tests.fixtures.schemas.atac_replication_quality_metric',
     'encoded.tests.fixtures.schemas.genetic_modification',
     'encoded.tests.fixtures.schemas.analysis_step_run',
@@ -90,6 +89,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.worm_donor',
 
 ]
+
 
 @pytest.fixture(autouse=True)
 def autouse_external_tx(external_tx):

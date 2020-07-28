@@ -93,21 +93,6 @@ _tsv_mapping = OrderedDict([
     ('s3_uri', ['files.s3_uri']),
 ])
 
-_audit_mapping = OrderedDict([
-    ('Audit WARNING', ['audit.WARNING.path',
-                       'audit.WARNING.category',
-                       'audit.WARNING.detail']),
-    ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
-                               'audit.INTERNAL_ACTION.category',
-                               'audit.INTERNAL_ACTION.detail']),
-    ('Audit NOT_COMPLIANT', ['audit.NOT_COMPLIANT.path',
-                             'audit.NOT_COMPLIANT.category',
-                             'audit.NOT_COMPLIANT.detail']),
-    ('Audit ERROR', ['audit.ERROR.path',
-                     'audit.ERROR.category',
-                     'audit.ERROR.detail'])
-])
-
 _tsv_mapping_annotation = OrderedDict([
     ('File accession', ['files.title']),
     ('File format', ['files.file_type']),

@@ -1,0 +1,334 @@
+{
+    "title": "Reference file",
+    "description": "Schema for submitting metadata for a reference file.",
+    "id": "/profiles/reference_file.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["dataset", "file_format", "output_type", "md5sum"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "data_file.json#/properties"}
+    ],
+    "dependencies": {
+        "external_accession": {
+            "comment": "A file with an external accession should not get an ENCODE accession.",
+            "not": {
+                "required": ["accession"]
+            }
+        },
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
+        "status": {
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "allOf": [
+                {
+                    "oneOf": [
+                        {
+                            "anyOf": [
+                                    {
+                                        "required": ["no_file_available"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            },
+                                             "no_file_available": {
+                                                "enum": [true]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["file_size"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    }
+                            ]
+                        },
+
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "dataset": {
+            "linkTo": "ReferenceFileSet"
+        },
+        "supersedes": {
+            "items": {
+                "comment": "The files in this list should be archived or revoked.",
+                "type": "string",
+                "linkTo": "ReferenceFile"
+            }
+        },
+        "file_format": {
+            "enum": [
+                "bed",
+                "csv",
+                "fasta",
+                "gff",
+                "gff3",
+                "gtf",
+                "idx",
+                "json",
+                "pfm",
+                "tar"
+            ]
+        },
+        "output_type": {
+            "enum": [
+                "genome reference",
+                "transcriptome reference",
+                "genome index",
+                "transcriptome index"
+            ]
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A file participating as input into software to produce this output file.",
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "ReferenceFile"
+            }
+        },
+        "reference_version": {
+            "title": "Reference version",
+            "description": "The version of the genome reference assembly that is associated with this reference file.",
+            "type": "string",
+            "enum": [
+                "hg19",
+                "GRCh38",
+                "mm10",
+                "GENCODE 32",
+                "GENCODE 28",
+                "GENCODE 24",
+                "GENCODE 19",
+                "GENCODE M23",
+                "GENCODE M18",
+                "GENCODE M9"
+            ]
+        },
+        "organism": {
+            "title": "Organism",
+            "description": "Common name of organism for which this reference represents.",
+            "type": "string",
+            "linkTo": "Organism"
+        },
+        "gene_biotypes_included": {
+            "title": "Gene biotypes included",
+            "description": "The list of allowable gene biotypes that are found in the filtered gtf file.",
+            "type": "array",
+            "items": {
+                "title": "Gene biotype included",
+                "description": "A gene biotypes found in the filtered gtf file.",
+                "type": "string",
+                "enum": [
+                    "protein_coding",
+                    "lincRNA",
+                    "antisense",
+                    "IG_LV_gene",
+                    "IG_V_gene",
+                    "IG_V_pseudogene",
+                    "IG_D_gene",
+                    "IG_J_gene",
+                    "IG_J_pseudogene",
+                    "IG_C_gene",
+                    "IG_C_pseudogene",
+                    "TR_V_gene",
+                    "TR_V_pseudogene",
+                    "TR__D_gene",
+                    "TR_J_gene",
+                    "TR_J_pseudogene",
+                    "TR_C_gene"
+                ]
+            }
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "assay_term_name": {
+            "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "dataset": {
+            "title": "Dataset"
+        },
+        "file_format": {
+            "title": "File Format"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "library.accession": {
+            "title": "Library"
+        },
+        "paired_end": {
+            "title": "Paired end identifier"
+        },
+        "paired_with": {
+            "title": "Paired with"
+        },
+        "run_type": {
+            "title": "Run type"
+        },
+        "read_length": {
+            "title": "Read length"
+        },
+        "read_length_units": {
+            "title": "Read length units"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "date_created": {
+            "title": "Date created"
+        },
+        "submitter_comment": {
+            "title": "Submitter comment"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "output_type_output_category": {
+        "reads": "raw data",
+        "index reads": "raw data",
+        "rejected reads": "raw data",
+        "subreads": "raw data"
+    },
+    "file_format_file_extension": {
+        "fasta": ".fasta.gz",
+        "gtf": ".gtf",
+        "gff3": ".gff3",
+        "tar": ".tgz",
+        "idx": ".idx"
+    },
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/reference_file.md"
+}
