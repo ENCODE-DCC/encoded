@@ -2,6 +2,8 @@ import csv
 
 from collections import defaultdict
 from collections import OrderedDict
+from functools import wrap
+from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.search_views import search_generator
@@ -9,6 +11,7 @@ from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
+from snovault.elasticsearch.searches.parsers import ParamsParser
 from snovault.elasticsearch.searches.parsers import QueryString
 from snovault.util import simple_path_ids
 
@@ -16,6 +19,25 @@ from snovault.util import simple_path_ids
 def includeme(config):
     config.add_route('metadata', '/metadata{slash:/?}')
     config.scan(__name__)
+
+
+def allowed_types(types):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(request, context):
+            params_parser = ParamsParser(request)
+            type_filters = params_parser.get_type_filters()
+            if len(type_filters) != 1:
+                raise HTTPBadRequest(
+                    explanation='URL requires one "type" parameter.'
+                )
+            if not type_filters[0] not in types:
+                raise HTTPBadRequest(
+                    explanation=f'"{type_filters[0]}" not a valid type for metadata'
+                )
+            return func(request, context)
+        return wrapper
+    return decorator
 
 
 def make_experiment_cell(paths, experiment):
@@ -312,6 +334,7 @@ class CSVGenerator:
 
 
 @view_config(route_name='metadata', request_method='GET')
+@allowed_types(METADATA_ALLOWED_TYPES)
 def metadata_tsv(context, request):
     metadata_report = MetadataReport(request)
     return metadata_report.generate()

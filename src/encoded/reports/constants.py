@@ -1,6 +1,14 @@
 from collections import OrderedDict
 
 
+METADATA_ALLOWED_TYPES = [
+    'Experiment',
+    'Annotation',
+    'FunctionalCharacterizationExperiment',
+    'PublicationData',
+]
+
+
 METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
     [
         ('File accession', ['files.title']),

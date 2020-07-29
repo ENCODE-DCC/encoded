@@ -32,68 +32,6 @@ def includeme(config):
     config.scan(__name__)
 
 
-# includes concatenated properties
-_tsv_mapping = OrderedDict([
-    ('File accession', ['files.title']),
-    ('File format', ['files.file_type']),
-    ('File type', ['files.file_format']),
-    ('File format type', ['files.file_format_type']),
-    ('Output type', ['files.output_type']),
-    ('File assembly', ['files.assembly']),
-    ('Experiment accession', ['accession']),
-    ('Assay', ['assay_title']),
-    ('Biosample term id', ['biosample_ontology.term_id']),
-    ('Biosample term name', ['biosample_ontology.term_name']),
-    ('Biosample type', ['biosample_ontology.classification']),
-    ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
-    ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
-    ('Biosample treatments amount', ['replicates.library.biosample.treatments.amount',
-                                     'replicates.library.biosample.treatments.amount_units']),
-    ('Biosample treatments duration', ['replicates.library.biosample.treatments.duration',
-                                       'replicates.library.biosample.treatments.duration_units']),
-    ('Biosample genetic modifications methods', ['replicates.library.biosample.applied_modifications.method']),
-    ('Biosample genetic modifications categories', ['replicates.library.biosample.applied_modifications.category']),                                   
-    ('Biosample genetic modifications targets', ['replicates.library.biosample.applied_modifications.modified_site_by_target_id']),                                   
-    ('Biosample genetic modifications gene targets', ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id']),                                   
-    ('Biosample genetic modifications site coordinates', ['replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
-                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
-                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
-                                                          'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end']),                                   
-    ('Biosample genetic modifications zygosity', ['replicates.library.biosample.applied_modifications.zygosity']), 
-    ('Experiment target', ['target.name']),
-    ('Library made from', ['replicates.library.nucleic_acid_term_name']),
-    ('Library depleted in', ['replicates.library.depleted_in_term_name']),
-    ('Library extraction method', ['replicates.library.extraction_method']),
-    ('Library lysis method', ['replicates.library.lysis_method']),
-    ('Library crosslinking method', ['replicates.library.crosslinking_method']),
-    ('Library strand specific', ['replicates.library.strand_specificity']),
-    ('Experiment date released', ['date_released']),
-    ('Project', ['award.project']),
-    ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
-    ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
-    ('Library size range', ['files.replicate.library.size_range']),
-    ('Biological replicate(s)', ['files.biological_replicates']),
-    ('Technical replicate(s)', ['files.technical_replicates']),
-    ('Read length', ['files.read_length']),
-    ('Mapped read length', ['files.mapped_read_length']),
-    ('Run type', ['files.run_type']),
-    ('Paired end', ['files.paired_end']),
-    ('Paired with', ['files.paired_with']),
-    ('Derived from', ['files.derived_from']),
-    ('Size', ['files.file_size']),
-    ('Lab', ['files.lab.title']),
-    ('md5sum', ['files.md5sum']),
-    ('dbxrefs', ['files.dbxrefs']),
-    ('File download URL', ['files.href']),
-    ('Genome annotation', ['files.genome_annotation']),
-    ('Platform', ['files.platform.title']),
-    ('Controlled by', ['files.controlled_by']),
-    ('File Status', ['files.status']),
-    ('No File Available', ['files.no_file_available']),
-    ('Restricted', ['files.restricted']),
-    ('s3_uri', ['files.s3_uri']),
-])
-
 _audit_mapping = OrderedDict([
     ('Audit WARNING', ['audit.WARNING.path',
                        'audit.WARNING.category',
@@ -108,13 +46,6 @@ _audit_mapping = OrderedDict([
                      'audit.ERROR.category',
                      'audit.ERROR.detail'])
 ])
-
-_audits = [
-    'WARNING',
-    'INTERNAL_ACTION',
-    'NOT_COMPLIANT',
-    'ERROR',
-]
 
 _tsv_mapping_annotation = OrderedDict([
     ('File accession', ['files.title']),
@@ -178,16 +109,6 @@ _tsv_mapping_publicationdata = OrderedDict([
 
 _excluded_columns = ('Restricted', 'No File Available')
 
-# Attributes of files to extract for metadata.tsv.
-default_file_attributes = [
-    'files.title',
-    'files.file_type',
-    'files.file_format',
-    'files.file_format_type',
-    'files.output_type',
-    'files.assembly'
-]
-
 # For extracting accession from @id paths
 accession_re = re.compile(r'^/[a-z-]+/([A-Z0-9]+)/$')
 # For extracting object type from @id paths
@@ -201,7 +122,6 @@ _allowed_types = [
     'functionalcharacterizationexperiment',
     'publicationdata',
 ]
-
 
 def get_file_uuids(result_dict):
     file_uuids = []
@@ -563,180 +483,6 @@ def peak_metadata(context, request):
         content_type='text/tsv',
         body=fout.getvalue(),
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
-    )
-
-
-class CSVGenerator:
-
-    def __init__(self, delimiter='\t', lineterminator='\n'):
-        self.writer = csv.writer(
-            self,
-            delimiter=delimiter,
-            lineterminator=lineterminator
-        )
-
-    def writerow(self, row):
-        self.writer.writerow(row)
-        return self.row
-
-    def write(self, row):
-        self.row = row.encode('utf-8')
-
-
-#@view_config(route_name='metadata', request_method='GET')
-def metadata_tsv(context, request):
-    qs = QueryString(request)
-    param_list = qs.group_values_by_key()
-    if 'referrer' in param_list:
-        search_path = '/{}/'.format(param_list.pop('referrer')[0])
-    else:
-        search_path = '/search/'
-    type_param = param_list.get('type', [''])[0]
-    cart_uuids = param_list.get('cart', [])
-
-    # Only allow specific type= query-string values, or cart=.
-    if not type_param and not cart_uuids:
-        raise HTTPBadRequest(explanation='URL must include a "type" or "cart" parameter.')
-    if not type_param.lower() in _allowed_types:
-        raise HTTPBadRequest(explanation='"{}" not a valid type for metadata'.format(type_param))
-
-    # Handle special-case metadata.tsv generation.
-    if type_param:
-        if type_param.lower() == 'annotation':
-            return _get_annotation_metadata(request, search_path, param_list)
-        if type_param.lower() == 'publicationdata':
-            return _get_publicationdata_metadata(request)
-
-    param_list['field'] = []
-    header = []
-    file_attributes = []
-    for prop in _tsv_mapping:
-        if prop not in _excluded_columns:
-            header.append(prop)
-            if _tsv_mapping[prop][0].startswith('files'):
-                file_attributes = file_attributes + [_tsv_mapping[prop][0]]
-        param_list['field'] = param_list['field'] + _tsv_mapping[prop]
-
-    # Handle metadata.tsv lines from cart-generated files.txt.
-    if cart_uuids:
-        # metadata.tsv line includes cart UUID, so load the specified cart and
-        # get its "elements" property for a list of items to retrieve.
-        cart_uuid = cart_uuids.pop()
-        del param_list['cart']
-        try:
-            cart = request.embed(cart_uuid, '@@object')
-        except KeyError:
-            raise HTTPBadRequest(explanation='Specified cart does not exist.')
-        else:
-            if cart.get('elements'):
-                param_list['@id'] = cart['elements']
-    else:
-        # If the metadata.tsv line includes a JSON payload, get its "elements"
-        # property for a list of items to retrieve.
-        try:
-            elements = request.json.get('elements')
-        except ValueError:
-            pass
-        else:
-            param_list['@id'] = elements
-    default_params = [
-        ('field', 'audit'),
-        ('field', 'files.@id'),
-        ('limit', 'all'),
-    ]
-    field_params = [
-        ('field', p)
-        for p in param_list.get('field', [])
-    ]
-    at_id_params = [
-        ('@id', p)
-        for p in param_list.get('@id', [])
-    ]
-    qs.drop('limit')
-
-    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
-    visualizable_only = qs.is_param('option', 'visualizable')
-    raw_only = qs.is_param('option', 'raw')
-    qs.drop('option')
-
-    qs.extend(
-        default_params + field_params + at_id_params
-    )
-    search_request = qs.get_request_with_new_query_string()
-    search_request.path_info = search_path
-    search_request.registry = request.registry
-
-    def _generate_metadata_report(search_request):
-        csv_generator = CSVGenerator()
-        header.extend([prop for prop in _audit_mapping])
-        yield csv_generator.writerow(header)
-        audit_mapping_length = len(_audit_mapping)
-        for experiment_json in search_generator(search_request)['@graph']:
-            grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
-            experiment_json.get('audit', {})
-            )
-            if experiment_json.get('files', []):
-                exp_data_row = []
-                for column in header[:-audit_mapping_length]:
-                    if not _tsv_mapping[column][0].startswith('files'):
-                        make_cell(column, experiment_json, exp_data_row)
-
-                f_attributes = ['files.title', 'files.file_type', 'files.file_format',
-                                'files.file_format_type', 'files.output_type', 'files.assembly']
-
-                for f in experiment_json['files']:
-                    if not files_prop_param_list(f, param_list):
-                        continue
-                    if visualizable_only and not is_file_visualizable(f):
-                        continue
-                    if raw_only and f.get('assembly'):
-                        # "raw" option only allows files w/o assembly.
-                        continue
-                    if restricted_files_present(f):
-                        continue
-                    if is_no_file_available(f):
-                        continue
-                    f['href'] = request.host_url + f['href']
-                    f_row = []
-                    for attr in f_attributes:
-                        f_row.append(f.get(attr[6:], ''))
-                    data_row = f_row + exp_data_row
-                    for prop in file_attributes:
-                        if prop in f_attributes:
-                            continue
-                        path = prop[6:]
-                        temp = []
-                        for value in simple_path_ids(f, path):
-                            temp.append(str(value))
-                        if prop == 'files.replicate.rbns_protein_concentration':
-                            if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
-                                temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
-                        if prop in ['files.paired_with', 'files.derived_from']:
-                            # chopping of path to just accession
-                            if len(temp):
-                                new_values = [t[7:-1] for t in temp]
-                                temp = new_values
-                        data = list(set(temp))
-                        data.sort()
-                        data_row.append(', '.join(data))
-                    file_id = f.get('@id')
-                    grouped_audits_for_file = grouped_file_audits.get(file_id, {})
-                    audit_info = [
-                       ', '.join(
-                           set(
-                                grouped_audits_for_file.get(audit_type, [])
-                                + grouped_other_audits.get(audit_type, [])
-                            )
-                        )
-                        for audit_type in _audits
-                    ]
-                    data_row.extend(audit_info)
-                    yield csv_generator.writerow(data_row)
-
-    return Response(
-        content_type='text/tsv',
-        app_iter=_generate_metadata_report(search_request),
-        content_disposition='attachment;filename="%s"' % 'metadata.tsv'
     )
 
 
