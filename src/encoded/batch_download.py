@@ -1,4 +1,3 @@
-from collections import defaultdict
 from collections import OrderedDict
 from pyramid.compat import bytes_
 from pyramid.httpexceptions import HTTPBadRequest
@@ -176,19 +175,6 @@ def make_audit_cell(header_column, experiment_json, file_json):
         else:
             data.append(categories[i])
     return ', '.join(list(set(data)))
-
-
-def group_audits_by_files_and_type(audits):
-    grouped_file_audits = defaultdict(lambda: defaultdict(list))
-    grouped_other_audits = defaultdict(list)
-    for audit_type in _audits:
-        for audit in audits.get(audit_type, []):
-            path = audit.get('path')
-            if '/files/' in path:
-                grouped_file_audits[path][audit_type].append(audit.get('category'))
-            else:
-                grouped_other_audits[audit_type].append(audit.get('category'))
-    return grouped_file_audits, grouped_other_audits
 
 
 def _get_annotation_metadata(context, request):
