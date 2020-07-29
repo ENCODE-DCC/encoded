@@ -344,12 +344,12 @@ def metadata_report_factory(context, request):
     specified_type = qs.get_one_value(
             params=qs.get_type_filters()
     )
-    if specified_type == 'Experiment':
-        return _get_metadata(context, request)
-    elif specified_type == 'Annotation':
+    if specified_type == 'Annotation':
         return _get_annotation_metadata(context, request)
     elif specified_type == 'PublicationData':
         return _get_publicationdata_metadata(context, request)
+    else:
+        return _get_metadata(context, request)
 
 
 @view_config(route_name='metadata', request_method='GET')
