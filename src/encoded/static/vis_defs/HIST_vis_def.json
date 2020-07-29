@@ -63,7 +63,7 @@
                     "pValueFilter": "0",
                     "qValueFilter": "0",
                     "spectrum":"on",
-                    "output_type": [ "stable peaks" ]
+                    "output_type": [ "pseudo-replicated peaks" ]
                 },
                 "Peaks": {
                     "tag": "ePKS",

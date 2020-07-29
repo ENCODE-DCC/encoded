@@ -221,3 +221,15 @@ def analysis_step_8_9(value, system):
         input_file_types.remove('representative dnase hypersensitivity sites')
         input_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
     return
+
+
+@upgrade_step('analysis_step', '9', '10')
+def analysis_step_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5410
+
+    if 'stable peaks' in value.get('input_file_types', []):
+        value['input_file_types'].remove('stable peaks')
+        value['input_file_types'].append('pseudo-replicated peaks')
+    if 'stable peaks' in value.get('output_file_types', []):
+        value['output_file_types'].remove('stable peaks')
+        value['output_file_types'].append('pseudo-replicated peaks')

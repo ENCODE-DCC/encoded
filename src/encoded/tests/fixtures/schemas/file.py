@@ -1544,6 +1544,13 @@ def file_21_22(file_subreads):
 
 
 @pytest.fixture
+def file_22(file_base):
+    item = file_base.copy()
+    item['output_type'] = 'stable peaks'
+    return item
+
+
+@pytest.fixture
 def fastq_index(testapp, lab, award, experiment, base_replicate_two, platform1, single_fastq_indexed):
     item = {
         'dataset': experiment['@id'],

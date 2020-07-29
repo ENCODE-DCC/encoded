@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 23
+* *output_type: stable peaks* was updated to *output_type: pseudo-replicated peaks*
+
 ### Schema version 22
 * bam files with *output_type: subreads* must have a replicate object specified.
 

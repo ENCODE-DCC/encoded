@@ -160,3 +160,11 @@ def test_file_upgrade_21_to_22(root, testapp, upgrader, registry, file_21_22):
     assert value['schema_version'] == '22'
     assert value['replicate'] == '70d6e704-bba5-4475-97b8-03bf717eecf3'
     assert value['notes'] == 'Prior entry. This file lacks its correct replicate specified.'
+
+
+def test_file_upgrade_22_to_23(root, testapp, upgrader, registry, file_22):
+    value = upgrader.upgrade(
+        'file', file_22, current_version='22', target_version='23'
+    )
+    assert value['schema_version'] == '23'
+    assert value['output_type'] == 'pseudo-replicated peaks'

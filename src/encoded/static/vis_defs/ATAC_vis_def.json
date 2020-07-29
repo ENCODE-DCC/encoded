@@ -105,7 +105,7 @@
                     "signalFilter": "0",
                     "pValueFilter": "0",
                     "qValueFilter": "0",
-                    "output_type": [ "stable peaks" ]
+                    "output_type": [ "pseudo-replicated peaks" ]
                 },
                 "Fold change over control": {
                     "tag": "iFCOC",

@@ -122,6 +122,20 @@ def analysis_step_8(testapp):
     }
     return item
 
+
+@pytest.fixture
+def analysis_step_9(testapp):
+    item = {
+        'schema_version': '9',
+        'step_label': 'rdhs-step',
+        'title': 'rdhs step',
+        'major_version': 1,
+        'analysis_step_types': ['QA calculation'],
+        'input_file_types': ['stable peaks'],
+        'output_file_types': ['stable peaks']
+    }
+    return item
+
 @pytest.fixture
 def analysis_step_chip_encode4(testapp):
     item = {

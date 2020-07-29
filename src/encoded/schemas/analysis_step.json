@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "step_label": {
             "title": "Step label",
@@ -219,7 +219,7 @@
                     "snRNA reference",
                     "spike-in sequence",
                     "splice junctions",
-                    "stable peaks",
+                    "pseudo-replicated peaks",
                     "subreads",
                     "topologically associated domains",
                     "transcriptome annotations",
@@ -363,7 +363,7 @@
                     "snRNA reference",
                     "spike-in sequence",
                     "splice junctions",
-                    "stable peaks",
+                    "pseudo-replicated peaks",
                     "subreads",
                     "topologically associated domains",
                     "transcriptome annotations",
