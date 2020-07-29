@@ -118,36 +118,6 @@ def test__tsv_mapping_publicationdata_value():
     ])
     assert expected == target
 
-@mock.patch('encoded.batch_download._tsv_mapping')
-@mock.patch('encoded.batch_download.simple_path_ids')
-def test_make_cell_for_vanilla_assignment(simple_path_ids, tsv_mapping):
-    expected = ['a1', 'a2']
-    simple_path_ids.return_value = ['a1', 'a2']
-    tsv_mapping_data = {'file1': ['f1']}
-    tsv_mapping.__getitem__.side_effect = tsv_mapping_data.__getitem__
-    tsv_mapping.__iter__.side_effect = tsv_mapping_data.__iter__
-    target = []
-    make_cell('file1', [], target)
-    target = sorted([t.strip() for t in target[0].split(',')])
-    assert expected == target
-
-
-@mock.patch('encoded.batch_download._tsv_mapping')
-@mock.patch('encoded.batch_download.simple_path_ids')
-def test_make_cell_for_post_sychronization(simple_path_ids, tsv_mapping):
-    expected = ['a1 + a1', 'a2']
-    simple_path_ids.return_value = ['a1', 'a2']
-    tsv_mapping_data = {'file1': [
-        'f1',
-        'replicates.library.biosample.post_synchronization_time',
-    ]}
-    tsv_mapping.__getitem__.side_effect = tsv_mapping_data.__getitem__
-    tsv_mapping.__iter__.side_effect = tsv_mapping_data.__iter__
-    target = []
-    make_cell('file1', [], target)
-    target = sorted([t.strip() for t in target[0].split(',')])
-    assert expected == target
-
 
 @mock.patch('encoded.batch_download._audit_mapping')
 @mock.patch('encoded.batch_download.simple_path_ids')

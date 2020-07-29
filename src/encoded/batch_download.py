@@ -158,23 +158,6 @@ def get_peak_metadata_links(request):
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
 
-def make_cell(header_column, row, exp_data_row):
-    temp = []
-    for column in _tsv_mapping[header_column]:
-        c_value = []
-        for value in simple_path_ids(row, column):
-            if str(value) not in c_value:
-                c_value.append(str(value))
-        if column == 'replicates.library.biosample.post_synchronization_time' and len(temp):
-            if len(c_value):
-                temp[0] = temp[0] + ' + ' + c_value[0]
-        elif len(temp):
-            if len(c_value):
-                temp = [x + ' ' + c_value[0] for x in temp]
-        else:
-            temp = c_value
-    exp_data_row.append(', '.join(list(set(temp))))
-
 
 def make_audit_cell(header_column, experiment_json, file_json):
     categories = []
