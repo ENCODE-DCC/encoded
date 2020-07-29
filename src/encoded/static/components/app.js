@@ -36,7 +36,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 const portal = {
     portal_title: 'LatticeDB',
     authenticated_sections: [
-	{
+       {
             id: 'data',
             title: 'Data',
             children: [
@@ -1128,8 +1128,8 @@ class App extends React.Component {
             return this.state.session_properties.user_actions || [];
         }
         if (category === 'global_sections') {
-	    if (this.state.session_properties['auth.userid']) {
-		return portal.authenticated_sections.concat(portal.global_sections);
+            if (this.state.session_properties['auth.userid']) {
+                return portal.authenticated_sections.concat(portal.global_sections);
             }
             return portal.global_sections;
         }
@@ -1178,12 +1178,12 @@ class App extends React.Component {
             appClass = 'communicating';
         }
 
-	let title = portal.portal_title;
+        let title = portal.portal_title;
 
         let prefix_title = context.title || context.name || context.accession || context['@id'];
-	if (prefix_title && !isHomePage) {
-	    title = `${prefix_title} – ${portal.portal_title}`;
-	}
+        if (prefix_title && !isHomePage) {
+            title = `${prefix_title} – ${portal.portal_title}`;
+        }
 
         let canonical = this.state.href;
         if (context.canonical_uri) {
