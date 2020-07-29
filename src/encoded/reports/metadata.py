@@ -2,7 +2,7 @@ import csv
 
 from collections import defaultdict
 from collections import OrderedDict
-from functools import wrap
+from functools import wraps
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
@@ -24,16 +24,16 @@ def includeme(config):
 def allowed_types(types):
     def decorator(func):
         @wraps(func)
-        def wrapper(request, context):
+        def wrapper(context, request):
             params_parser = ParamsParser(request)
             type_filters = params_parser.get_type_filters()
             if len(type_filters) != 1:
                 raise HTTPBadRequest(
-                    explanation='URL requires one "type" parameter.'
+                    explanation='URL requires one type parameter.'
                 )
-            if not type_filters[0] not in types:
+            if type_filters[0][1] not in types:
                 raise HTTPBadRequest(
-                    explanation=f'"{type_filters[0]}" not a valid type for metadata'
+                    explanation=f'{type_filters[0][1]} not a valid type for metadata'
                 )
             return func(request, context)
         return wrapper
