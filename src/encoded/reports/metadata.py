@@ -101,7 +101,6 @@ COLUMN_TO_FIELDS_MAPPING = OrderedDict(
 
 AUDIT_TO_AUDIT_COLUMN_MAPPING = [
     ('WARNING', 'Audit WARNING'),
-    ('INTERNAL_ACTION', 'Audit INTERNAL_ACTION'),
     ('NOT_COMPLIANT', 'Audit NOT_COMPLIANT'),
     ('ERROR', 'Audit ERROR'),
 ]
@@ -191,7 +190,6 @@ class MetadataReport:
         self.raw_only = self.query_string.is_param('option', 'raw')
         self.search_request = None
         self.csv = CSVGenerator()
-        self.number_of_audits = len(AUDIT_TO_AUDIT_COLUMN_MAPPING)
 
     def _build_header(self):
         for column in COLUMN_TO_FIELDS_MAPPING:
