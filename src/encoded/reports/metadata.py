@@ -164,7 +164,7 @@ class MetadataReport:
         cart_uuids = self.param_list.get('cart', [])
         if cart_uuids:
             try:
-                cart = self.request.embed(cart_uuid[0], '@@object')
+                cart = self.request.embed(cart_uuids[0], '@@object')
                 del self.param_list['cart']
             except KeyError:
                 raise HTTPBadRequest(explanation='Specified cart does not exist.')
