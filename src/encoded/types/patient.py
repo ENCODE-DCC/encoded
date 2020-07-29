@@ -275,11 +275,6 @@ class Patient(Item):
             vital_status = "Deceased"
         return vital_status
 
-
-
-    
-
-
     @calculated_property(schema={
         "title": "Medical Imaging",
         "type": "array",
@@ -500,6 +495,43 @@ class Patient(Item):
 
         return diagnosis
 
+    @calculated_property(condition="diagnosis" and "last_follow_up_date", schema={
+        "title": "Duration of follow-up",
+        "description": "Customized range for duration of follow-up",
+        "type": "array",
+        "items": {
+            "type": "string",
+        }
+    })
+    
+    def duration_of_followup_range(self,request,diagnosis=None,last_follow_up_date=None):
+        if diagnosis is not None:
+        #     for do in diagnosis:
+            # diagnosis_object=request.embed(diagnosis,"@@object")
+            diagnosis_date = diagnosis['diagnosis_date']
+        follow_up_duration_range=[]
+        
+        if diagnosis_date is not "Not available":
+            start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
+        if last_follow_up_date is not None and last_follow_up_date is not "Not available":
+            end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
+
+            follow_up_duration=(end_date-start_date).days/365
+
+            if follow_up_duration >= 5:
+                follow_up_duration_range.append(">5 year")
+            elif follow_up_duration >= 3:
+                follow_up_duration_range.append("3-5 year")
+            elif follow_up_duration >= 1.5:
+                follow_up_duration_range.append("1.5-3 year")
+            else:
+                follow_up_duration_range.append("0-1.5 year")
+        
+        else:
+            follow_up_duration_range.append("Not available")
+
+        return follow_up_duration_range        
+
     matrix = {
         'y': {
             'facets': [
@@ -634,7 +666,7 @@ class Patient(Item):
                 tumor_size_range.append("10+ cm")
         return tumor_size_range
 
-
+   
 
 @collection(
     name='lab-results',
@@ -806,7 +838,7 @@ def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'medical_imaging',
-                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','duration_of_followup_range','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:

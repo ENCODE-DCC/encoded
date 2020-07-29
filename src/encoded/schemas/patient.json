@@ -91,6 +91,9 @@
         "diagnosis.age_range": {
             "title": "Age at Diagnosis"
         },
+        "duration_of_follow_up_range": {
+            "title": "Duration of follow-up"
+        },
         "sex": {
             "title": "Sex"
         },
