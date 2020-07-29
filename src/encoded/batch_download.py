@@ -208,14 +208,18 @@ def group_audits_by_files_and_type(audits):
     return grouped_file_audits, grouped_other_audits
 
 
-def _get_annotation_metadata(request, search_path, param_list):
+def _get_annotation_metadata(context, request):
     """
     Get anotation data.
 
         :param request: Pyramid request
-        :param search_path: Search url
-        :param param_list: Initial param_list
     """
+    qs = QueryString(request)
+    param_list = qs.group_values_by_key()
+    if 'referrer' in param_list:
+        search_path = '/{}/'.format(param_list.pop('referrer')[0])
+    else:
+        search_path = '/search/'
     header = [header for header in _tsv_mapping_annotation if header not in _excluded_columns]
     header.extend([prop for prop in _audit_mapping])
     fout = io.StringIO()
@@ -283,7 +287,7 @@ def _get_annotation_metadata(request, search_path, param_list):
         content_disposition='attachment;filename="%s"' % 'metadata.tsv'
     )
 
-def _get_publicationdata_metadata(request):
+def _get_publicationdata_metadata(context, request):
     """
     Generate PublicationData metadata.tsv.
 

@@ -3,6 +3,8 @@ import csv
 from collections import defaultdict
 from collections import OrderedDict
 from functools import wraps
+from encoded.batch_download import _get_annotation_metadata
+from encoded.batch_download import _get_publicationdata_metadata
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
@@ -332,8 +334,25 @@ class CSVGenerator:
         self.row = row.encode('utf-8')
 
 
+def _get_metadata(context, request):
+    metadata_report = MetadataReport(request)
+    return metadata_report.generate()
+
+
+def metadata_report_factory(context, request):
+    qs = QueryString(request)
+    specified_type = qs.get_one_value(
+            params=qs.get_type_filters()
+    )
+    if specified_type == 'Experiment':
+        return _get_metadata(context, request)
+    elif specified_type == 'Annotation':
+        return _get_annotation_metadata(context, request)
+    elif specified_type == 'PublicationData':
+        return _get_publicationdata_metadata(context_request)
+
+
 @view_config(route_name='metadata', request_method='GET')
 @allowed_types(METADATA_ALLOWED_TYPES)
 def metadata_tsv(context, request):
-    metadata_report = MetadataReport(request)
-    return metadata_report.generate()
+    return metadata_report_factory(context_request)
