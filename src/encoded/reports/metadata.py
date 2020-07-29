@@ -2,6 +2,8 @@ import csv
 
 from collections import defaultdict
 from collections import OrderedDict
+from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.search_views import search_generator
 from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
@@ -14,97 +16,6 @@ from snovault.util import simple_path_ids
 def includeme(config):
     config.add_route('metadata', '/metadata{slash:/?}')
     config.scan(__name__)
-
-
-COLUMN_TO_FIELDS_MAPPING = OrderedDict(
-    [
-        ('File accession', ['files.title']),
-        ('File format', ['files.file_type']),
-        ('File type', ['files.file_format']),
-        ('File format type', ['files.file_format_type']),
-        ('Output type', ['files.output_type']),
-        ('File assembly', ['files.assembly']),
-        ('Experiment accession', ['accession']),
-        ('Assay', ['assay_title']),
-        ('Biosample term id', ['biosample_ontology.term_id']),
-        ('Biosample term name', ['biosample_ontology.term_name']),
-        ('Biosample type', ['biosample_ontology.classification']),
-        ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
-        ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
-        (
-            'Biosample treatments amount',
-            [
-                'replicates.library.biosample.treatments.amount',
-                'replicates.library.biosample.treatments.amount_units'
-            ]
-        ),
-        (
-            'Biosample treatments duration',
-            [
-                'replicates.library.biosample.treatments.duration',
-                'replicates.library.biosample.treatments.duration_units'
-            ]
-        ),
-        ('Biosample genetic modifications methods', ['replicates.library.biosample.applied_modifications.method']),
-        ('Biosample genetic modifications categories', ['replicates.library.biosample.applied_modifications.category']),                                   
-        ('Biosample genetic modifications targets', ['replicates.library.biosample.applied_modifications.modified_site_by_target_id']),                                   
-        ('Biosample genetic modifications gene targets', ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id']),
-        (
-            'Biosample genetic modifications site coordinates', [
-                'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
-                'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
-                'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
-                'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end'
-            ]
-        ),
-        ('Biosample genetic modifications zygosity', ['replicates.library.biosample.applied_modifications.zygosity']), 
-        ('Experiment target', ['target.name']),
-        ('Library made from', ['replicates.library.nucleic_acid_term_name']),
-        ('Library depleted in', ['replicates.library.depleted_in_term_name']),
-        ('Library extraction method', ['replicates.library.extraction_method']),
-        ('Library lysis method', ['replicates.library.lysis_method']),
-        ('Library crosslinking method', ['replicates.library.crosslinking_method']),
-        ('Library strand specific', ['replicates.library.strand_specificity']),
-        ('Experiment date released', ['date_released']),
-        ('Project', ['award.project']),
-        (
-            'RBNS protein concentration', [
-                'files.replicate.rbns_protein_concentration',
-                'files.replicate.rbns_protein_concentration_units'
-            ]
-        ),
-        ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
-        ('Library size range', ['files.replicate.library.size_range']),
-        ('Biological replicate(s)', ['files.biological_replicates']),
-        ('Technical replicate(s)', ['files.technical_replicates']),
-        ('Read length', ['files.read_length']),
-        ('Mapped read length', ['files.mapped_read_length']),
-        ('Run type', ['files.run_type']),
-        ('Paired end', ['files.paired_end']),
-        ('Paired with', ['files.paired_with']),
-        ('Index of', ['files.index_of']),
-        ('Derived from', ['files.derived_from']),
-        ('Size', ['files.file_size']),
-        ('Lab', ['files.lab.title']),
-        ('md5sum', ['files.md5sum']),
-        ('dbxrefs', ['files.dbxrefs']),
-        ('File download URL', ['files.href']),
-        ('Genome annotation', ['files.genome_annotation']),
-        ('Platform', ['files.platform.title']),
-        ('Controlled by', ['files.controlled_by']),
-        ('File Status', ['files.status']),
-        ('No File Available', ['files.no_file_available']),
-        ('Restricted', ['files.restricted']),
-        ('s3_uri', ['files.s3_uri']),
-    ]
-)
-
-
-AUDIT_TO_AUDIT_COLUMN_MAPPING = [
-    ('WARNING', 'Audit WARNING'),
-    ('NOT_COMPLIANT', 'Audit NOT_COMPLIANT'),
-    ('ERROR', 'Audit ERROR'),
-]
 
 
 def make_experiment_cell(paths, experiment):
@@ -127,7 +38,6 @@ def make_experiment_cell(paths, experiment):
 def make_file_cell(paths, file_):
     # Quick return if one level deep.
     if len(paths) == 1 and '.' not in paths[0]:
-        print('in quick path', paths[0])
         value = file_.get(paths[0], '')
         if isinstance(value, list):
             return ', '.join([str(v) for v in value])
@@ -159,7 +69,7 @@ def file_matches_file_params(file_, file_param_list):
 def group_audits_by_files_and_type(audits):
     grouped_file_audits = defaultdict(lambda: defaultdict(list))
     grouped_other_audits = defaultdict(list)
-    for audit_type, audit_column in AUDIT_TO_AUDIT_COLUMN_MAPPING:
+    for audit_type, audit_column in METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING:
         for audit in audits.get(audit_type, []):
             path = audit.get('path')
             if '/files/' in path:
@@ -196,14 +106,14 @@ class MetadataReport:
         self.csv = CSVGenerator()
 
     def _build_header(self):
-        for column in COLUMN_TO_FIELDS_MAPPING:
+        for column in METADATA_COLUMN_TO_FIELDS_MAPPING:
             if column not in self.EXCLUDED_COLUMNS:
                 self.header.append(column)
-        for audit, column in AUDIT_TO_AUDIT_COLUMN_MAPPING:
+        for audit, column in METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING:
             self.header.append(column)
         
     def _split_column_and_fields_by_experiment_and_file(self):
-        for column, fields in COLUMN_TO_FIELDS_MAPPING.items():
+        for column, fields in METADATA_COLUMN_TO_FIELDS_MAPPING.items():
             if fields[0].startswith('files'):
                 self.file_column_to_fields_mapping[column] = [
                     field.replace('files.', '')
@@ -221,7 +131,7 @@ class MetadataReport:
 
     def _add_fields_to_param_list(self):
         self.param_list['field'] = []
-        for column, fields in COLUMN_TO_FIELDS_MAPPING.items():
+        for column, fields in METADATA_COLUMN_TO_FIELDS_MAPPING.items():
             self.param_list['field'].extend(fields)
 
     def _initialize_at_id_param(self):
@@ -337,7 +247,7 @@ class MetadataReport:
                     grouped_audits_for_file.get(audit_type, [])
                     + grouped_other_audits.get(audit_type, [])
                 )
-            ) for audit_type, audit_column in AUDIT_TO_AUDIT_COLUMN_MAPPING
+            ) for audit_type, audit_column in METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
         }
 
     def _output_sorted_row(self, experiment_data, file_data):
