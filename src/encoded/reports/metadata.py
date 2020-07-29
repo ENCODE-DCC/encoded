@@ -349,10 +349,10 @@ def metadata_report_factory(context, request):
     elif specified_type == 'Annotation':
         return _get_annotation_metadata(context, request)
     elif specified_type == 'PublicationData':
-        return _get_publicationdata_metadata(context_request)
+        return _get_publicationdata_metadata(context, request)
 
 
 @view_config(route_name='metadata', request_method='GET')
 @allowed_types(METADATA_ALLOWED_TYPES)
 def metadata_tsv(context, request):
-    return metadata_report_factory(context_request)
+    return metadata_report_factory(context, request)
