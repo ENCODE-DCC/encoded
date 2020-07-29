@@ -11,7 +11,6 @@ from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.response import Response
 from pyramid.view import view_config
-from snovault.elasticsearch.searches.parsers import ParamsParser
 from snovault.elasticsearch.searches.parsers import QueryString
 from snovault.util import simple_path_ids
 
@@ -25,8 +24,8 @@ def allowed_types(types):
     def decorator(func):
         @wraps(func)
         def wrapper(context, request):
-            params_parser = ParamsParser(request)
-            type_filters = params_parser.get_type_filters()
+            qs = QueryString(request)
+            type_filters = qs.get_type_filters()
             if len(type_filters) != 1:
                 raise HTTPBadRequest(
                     explanation='URL requires one type parameter.'
@@ -35,7 +34,7 @@ def allowed_types(types):
                 raise HTTPBadRequest(
                     explanation=f'{type_filters[0][1]} not a valid type for metadata'
                 )
-            return func(request, context)
+            return func(context, request)
         return wrapper
     return decorator
 
