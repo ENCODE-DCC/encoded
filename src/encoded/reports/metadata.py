@@ -82,6 +82,7 @@ COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Run type', ['files.run_type']),
         ('Paired end', ['files.paired_end']),
         ('Paired with', ['files.paired_with']),
+        ('Index of', ['files.index_of']),
         ('Derived from', ['files.derived_from']),
         ('Size', ['files.file_size']),
         ('Lab', ['files.lab.title']),
@@ -124,17 +125,20 @@ def make_experiment_cell(paths, experiment):
 
 
 def make_file_cell(paths, file_):
+    # Quick return if one level deep.
+    if len(paths) == 1 and '.' not in paths[0]:
+        print('in quick path', paths[0])
+        value = file_.get(paths[0], '')
+        if isinstance(value, list):
+            return ', '.join([str(v) for v in value])
+        return value
+    # Else crawl nested objects.
     last = []
     for path in paths:
         cell_value = []
         for value in simple_path_ids(file_, path):
             cell_value.append(str(value))
-        if path in ['paired_with', 'derived_from']:
-            last = [
-                at_id[7:-1]
-                for at_id in cell_value
-            ]
-        elif last and cell_value:
+        if last and cell_value:
             last = [
                 v + ' ' + cell_value[0]
                 for v in last
