@@ -27,7 +27,6 @@ currenttime = datetime.datetime.now()
 
 def includeme(config):
     config.add_route('batch_download', '/batch_download{slash:/?}')
-    config.add_route('metadata', '/metadata{slash:/?}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
@@ -567,12 +566,24 @@ def peak_metadata(context, request):
     )
 
 
-class CSVGenerator():
+class CSVGenerator:
+
+    def __init__(self, delimiter='\t', lineterminator='\n'):
+        self.writer = csv.writer(
+            self,
+            delimiter=delimiter,
+            lineterminator=lineterminator
+        )
+
+    def writerow(self, row):
+        self.writer.writerow(row)
+        return self.row
+
     def write(self, row):
         self.row = row.encode('utf-8')
 
 
-@view_config(route_name='metadata', request_method='GET')
+#@view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
     qs = QueryString(request)
     param_list = qs.group_values_by_key()
@@ -657,10 +668,8 @@ def metadata_tsv(context, request):
 
     def _generate_metadata_report(search_request):
         csv_generator = CSVGenerator()
-        writer = csv.writer(csv_generator, delimiter='\t', lineterminator='\n')
         header.extend([prop for prop in _audit_mapping])
-        writer.writerow(header)
-        yield csv_generator.row
+        yield csv_generator.writerow(header)
         audit_mapping_length = len(_audit_mapping)
         for experiment_json in search_generator(search_request)['@graph']:
             grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
@@ -722,8 +731,7 @@ def metadata_tsv(context, request):
                         for audit_type in _audits
                     ]
                     data_row.extend(audit_info)
-                    writer.writerow(data_row)
-                    yield csv_generator.row
+                    yield csv_generator.writerow(data_row)
 
     return Response(
         content_type='text/tsv',
