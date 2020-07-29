@@ -1525,7 +1525,10 @@ def test_audit_experiment_chip_seq_standards_idr_encode4_wcontrol(testapp,
                                                    replicate_2_chip,
                                                    file_bam_1_chip,
                                                    file_bed_narrowPeak_chip_peaks,
+                                                   file_bed_narrowPeak_chip_peaks2,
                                                    file_bed_narrowPeak_chip_background,
+                                                   file_bed_narrowPeak_chip_background2,
+                                                   enc3_chip_idr_quality_metric_insufficient_replicate_concordance,
                                                    chip_replication_quality_metric_borderline_replicate_concordance,
                                                    analysis_step_run_chip_encode4,
                                                    analysis_step_version_chip_encode4,
@@ -1542,6 +1545,13 @@ def test_audit_experiment_chip_seq_standards_idr_encode4_wcontrol(testapp,
     assert any(error['category'] ==
                'borderline replicate concordance' for error in collect_audit_errors(res))
 
+    testapp.patch_json(file_bed_narrowPeak_chip_background2['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bed_narrowPeak_chip_peaks2['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(enc3_chip_idr_quality_metric_insufficient_replicate_concordance['@id'], {'quality_metric_of': [file_bed_narrowPeak_chip_peaks2['@id']]})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'insufficient replicate concordance' for error in collect_audit_errors(res))
+    
     testapp.patch_json(file_bam_1_chip['@id'], {'dataset': experiment_mint_chip['@id']})
     testapp.patch_json(file_bed_narrowPeak_chip_background['@id'], {'dataset': experiment_mint_chip['@id']})
     testapp.patch_json(file_bed_narrowPeak_chip_peaks['@id'], {'dataset': experiment_mint_chip['@id']})

@@ -1154,10 +1154,11 @@ def check_experiment_chip_seq_standards(
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
 
-    idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric') 
-    if not idr_metrics:
-        idr_metrics = get_metrics(idr_peaks_files, 'ChipReplicationQualityMetric') 
-    yield from check_idr(idr_metrics, 2, 2)
+    ListofMetrics = []
+    ListofMetrics.extend([get_metrics(idr_peaks_files, 'IDRQualityMetric'), get_metrics(idr_peaks_files, 'ChipReplicationQualityMetric')]) 
+    if ListofMetrics:
+        for idr_metrics in ListofMetrics:
+            yield from check_idr(idr_metrics, 2, 2)
     return
 
 
