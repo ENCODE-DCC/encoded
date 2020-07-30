@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import ga from 'google-analytics';
+import url from 'url';
 import Registry from '../libs/registry';
 import DataColors from './datacolors';
 
@@ -154,7 +155,16 @@ export function zeroFill(n, digits) {
 export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
 
 
-export const productionHost = { 'www.encodeproject.org': 1, 'encodeproject.org': 1, 'www.encodedcc.org': 1 };
+/**
+ * Returns true if code runs on the production host, as opposed to test, demos, or local. This
+ * applies to both server and browser rendering.
+ * @param {string} currentUrl Normally from React context.location_href
+ *
+ * @return True if code runs on production host
+ */
+export const isProductionHost = currentUrl => (
+    ['www.encodeproject.org', 'encodeproject.org', 'www.encodedcc.org'].includes(url.parse(currentUrl).hostname)
+);
 
 export const encodeVersionMap = {
     ENCODE2: '2',

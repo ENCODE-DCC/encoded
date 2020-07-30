@@ -5,7 +5,7 @@ import url from 'url';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartStatus } from './cart';
-import { productionHost } from './globals';
+import { isProductionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
 import { BrowserFeat } from './browserfeat';
 
@@ -46,7 +46,7 @@ export default class Navigation extends React.Component {
             /** ID of the currently dropped-down main navigation menu; '' if none */
             openDropdown: '',
             /** True if test warning banner visible; default depends on domain */
-            testWarning: !productionHost[url.parse(context.location_href).hostname],
+            testWarning: !isProductionHost(context.location_href),
         };
 
         // Bind this to non-React methods.
