@@ -974,7 +974,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "23"
+            "default": "22"
         },
         "accession": {
             "accessionType": "FF"
@@ -1478,6 +1478,7 @@
                         "smoothed methylation stage at CpG",
                         "splice junctions",
                         "pseudo-replicated peaks",
+                        "stable peaks",
                         "subreads",
                         "topologically associated domains",
                         "transcribed region quantifications",
@@ -1989,6 +1990,7 @@
         "conservative IDR thresholded peaks": "annotation",
         "pseudoreplicated IDR thresholded peaks": "annotation",
         "pseudo-replicated peaks": "annotation",
+        "stable peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",

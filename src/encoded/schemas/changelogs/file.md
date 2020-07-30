@@ -1,14 +1,12 @@
 ## Changelog for file.json
 
-### Schema version 23
-* *output_type: stable peaks* was updated to *output_type: pseudo-replicated peaks*
-
 ### Schema version 22
 * bam files with *output_type: subreads* must have a replicate object specified.
 
 ### Minor changes since schema version 21
 * The *file_format_type* enum was updated to include *idr_ranked_peak*.
 * Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *output_type*.
+* Added *pseudo-replicated peaks* to the enum list for *output_type*.
 
 ### Schema version 21
 * *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.

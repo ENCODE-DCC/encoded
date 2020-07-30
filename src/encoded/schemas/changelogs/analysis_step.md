@@ -1,9 +1,5 @@
 ## Changelog for analysis_step.json
 
-### Schema version 10
-* *input_file_types: stable peaks* was updated to *input_file_types: pseudo-replicated peaks*
-* *output_file_types: stable peaks* was updated to *output_file_types: pseudo-replicated peaks*
-
 ### Minor changes since schema version 9
 * Added *representative peak selection* and *candidate cis-regulatory element identification* to the enum list for *analysis_step_types*
 * Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum list for *input_file_types* and *output_file_types*
@@ -11,6 +7,7 @@
 * Added *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference* to the enum list for *input_file_types* and *output_file_types*
 * Added *fastq demultiplexing* and *gRNA generation* to the enum list for *analysis_step_types*
 * Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *input_file_types* and *output_file_types*
+* Added *pseudo-replicated peaks* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 9
 * Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enums for *output_file_types* and *input_file_types*.
