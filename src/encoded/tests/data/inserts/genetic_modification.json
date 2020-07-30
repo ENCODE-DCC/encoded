@@ -94,7 +94,7 @@
         "lab": "/labs/robert-waterston/",
         "category": "insertion",
         "purpose": "tagging",
-        "method": "stable transfection",
+        "nucleic_acid_delivery_method": "stable transfection",
         "reagents": [
             {
                 "source": "kevin-white",
@@ -210,7 +210,7 @@
         "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
         "introduced_elements": "sheared genomic DNA",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
-        "method": "transient transfection"
+        "nucleic_acid_delivery_method": "transient transfection"
     },
     {
         "accession": "ENCGM359MPR",
@@ -227,7 +227,7 @@
         "introduced_elements": "synthesized DNA",
         "modified_site_nonspecific": "random",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
-        "method": "transduction"
+        "nucleic_acid_delivery_method": "transduction"
     },
     {
         "accession": "ENCGM200XPR",
@@ -245,7 +245,7 @@
             }
         ],
         "lab": "/labs/kevin-white/",
-        "method": "transient transfection",
+        "nucleic_acid_delivery_method": "transient transfection",
         "purpose": "characterization",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
@@ -310,7 +310,7 @@
         "category": "insertion",
         "introduced_elements": "gRNAs and CRISPR machinery",
         "lab": "/labs/bing-ren/",
-        "method": "transduction",
+        "nucleic_acid_delivery_method": "transduction",
         "purpose": "expression",
         "status": "released",
         "submitted_by": "/users/dignissim.euismod@amet.habitant/"
@@ -330,7 +330,29 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "category": "transgene insertion",
         "purpose": "in vivo enhancer characterization",
-        "method": "mouse pronuclear microinjection",
+        "nucleic_acid_delivery_method": "mouse pronuclear microinjection",
         "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
+    },
+    {
+        "accession": "ENCGM555CRP",
+        "aliases": [
+            "bing-ren:CRISPR_step_one"
+        ],
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "introduced_elements": "gRNAs and CRISPR machinery",
+        "lab": "/labs/bing-ren/",
+        "nucleic_acid_delivery_method": "transduction",
+        "method": "TALEN",
+        "RVD_sequence_pairs": [
+            {
+                "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",
+                "right_RVD_sequence": "NI,NN,ND,NG,NG,ND"
+            }
+        ],
+        "zygosity": "heterozygous",
+        "purpose": "expression",
+        "status": "released",
+        "submitted_by": "/users/dignissim.euismod@amet.habitant/"
     }
 ]

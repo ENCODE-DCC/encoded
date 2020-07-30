@@ -4,7 +4,26 @@
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "category", "purpose", "method"],
+    "anyOf": [
+        {
+            "required": [
+                "lab",
+                "award",
+                "category",
+                "purpose",
+                "method"
+            ]
+        },
+        {
+            "required": [
+                "lab",
+                "award",
+                "category",
+                "purpose",
+                "nucleic_acid_delivery_method"
+            ]
+        }
+    ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -117,7 +136,7 @@
                         "category": {
                             "enum": ["insertion"]
                         },
-                        "method": {
+                        "nucleic_acid_delivery_method": {
                             "enum": ["transduction", "transient transfection"]
                         },
                         "introduced_elements": {
@@ -151,7 +170,7 @@
                         "purpose": {
                             "enum": ["in vivo enhancer characterization"]
                         },
-                        "method": {
+                        "nucleic_acid_delivery_method": {
                             "enum": ["mouse pronuclear microinjection"]
                         },
                         "category": {
@@ -242,7 +261,7 @@
                                 "purpose": {
                                     "enum": ["expression"]
                                 },
-                                "method": {
+                                "nucleic_acid_delivery_method": {
                                     "enum": ["transduction", "transient transfection"]
                                 },
                                 "introduced_elements": {
@@ -387,7 +406,7 @@
                         "category": {
                             "enum": ["transgene insertion"]
                         },
-                        "method": {
+                        "nucleic_acid_delivery_method": {
                             "enum": ["mouse pronuclear microinjection"]
                         },
                         "purpose": {
@@ -466,7 +485,7 @@
                                 "purpose": {
                                     "enum": ["expression"]
                                 },
-                                "method": {
+                                "nucleic_acid_delivery_method": {
                                     "enum": ["transduction", "transient transfection"]
                                 },
                                 "introduced_elements": {
@@ -491,18 +510,35 @@
                             }
                         },
                         {
-                            "required": ["donor"],
+                            "oneOf": [
+                                {
+                                    "required": ["introduced_elements_donor"]
+                                },
+                                {
+                                    "required": ["introduced_elements_organism"]
+                                }
+                            ],
                             "properties": {
                                 "introduced_elements": {
                                     "enum": ["sheared genomic DNA", "genomic DNA regions"]
                                 }
                             }
-                        }
+                        },
                     ]
                 }
             ]
         },
-        "donor": {
+        "introduced_elements_donor": {
+            "properties": {
+                "introduced_elements": {
+                    "enum": ["sheared genomic DNA", "genomic DNA regions"]
+                },
+                "purpose": {
+                    "enum": ["characterization"]
+                }
+            }
+        },
+        "introduced_elements_organism": {
             "properties": {
                 "introduced_elements": {
                     "enum": ["sheared genomic DNA", "genomic DNA regions"]
@@ -567,7 +603,7 @@
                         "category": {
                             "enum": ["transgene insertion"]
                         },
-                        "method": {
+                        "nucleic_acid_delivery_method": {
                             "enum": ["mouse pronuclear microinjection"]
                         },
                         "purpose": {
@@ -605,12 +641,20 @@
                             "enum": [
                                 "CRISPR",
                                 "RNAi",
+                                "homologous recombination"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "nucleic_acid_delivery_method": {
+                            "enum": [
                                 "stable transfection",
                                 "transient transfection",
                                 "transduction",
                                 "microinjection",
                                 "bombardment",
-                                "homologous recombination",
                                 "mouse pronuclear microinjection"
                             ]
                         }
@@ -653,7 +697,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "accession": {
             "accessionType": "GM"
@@ -682,11 +726,17 @@
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "formInput": "textarea"
         },
-        "donor": {
-            "title": "Donor",
+        "introduced_elements_donor": {
+            "title": "Introduced elements donor",
             "description": "The donor or strain the sheared genomic DNA or genomic DNA regions originated from.",
             "type": "string",
-            "linkTo": "Donor"            
+            "linkTo": "Donor"
+        },
+        "introduced_elements_organism": {
+            "title": "Introduced elements organism",
+            "description": "The organism the sheared genomic DNA or genomic DNA regions originated from.",
+            "type": "string",
+            "linkTo": "Organism"
         },
         "category": {
             "title": "Category",
@@ -887,32 +937,32 @@
             "description": "The method used to produce the described genetic modification.",
             "type": "string",
             "enum":[
-                "bombardment",
                 "CRISPR",
-                "microinjection",
                 "mutagen treatment",
                 "RNAi",
                 "site-specific recombination",
-                "stable transfection",
                 "TALEN",
-                "transduction",
-                "transient transfection",
-                "homologous recombination",
-                "mouse pronuclear microinjection"
+                "homologous recombination"
             ]
         },
         "nucleic_acid_delivery_method": {
             "title": "Nucleic acid delivery method",
-            "description": "The method used to deliver nucleic acid that produces the genetic modification.",
-            "type": "string",
-            "enum":[
-                "bombardment",
-                "microinjection",
-                "stable transfection",
-                "transduction",
-                "transient transfection",
-                "mouse pronuclear microinjection"
-            ]
+            "description": "The method(s) used to deliver nucleic acid that produces the genetic modification.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Nucleic acid delivery method",
+                "description": "The method used to deliver nucleic acid that produces the genetic modification.",
+                "type": "string",
+                "enum":[
+                    "bombardment",
+                    "microinjection",
+                    "stable transfection",
+                    "transduction",
+                    "transient transfection",
+                    "mouse pronuclear microinjection"
+                ]
+            }
         },
         "treatments": {
             "title": "Treatments",

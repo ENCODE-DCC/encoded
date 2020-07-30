@@ -274,3 +274,19 @@ def genetic_modification_8_9(value, system):
         value['purpose'] = 'characterization'
     elif value['purpose'] in remap2:
         value['purpose'] = 'expression'
+
+
+@upgrade_step('genetic_modification', '9', '10')
+def genetic_modification_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5372
+    removed_methods = [
+        'bombardment',
+        'microinjection',
+        'stable transfection',
+        'transduction',
+        'transient transfection',
+        'mouse pronuclear microinjection'
+    ]
+    if value['method'] in removed_methods:
+        value['nucleic_acid_delivery_method'] = value['method']
+        value.pop('method')
