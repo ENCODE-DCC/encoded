@@ -35,8 +35,8 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 
 const portal = {
     portal_title: 'LatticeDB',
-    global_sections: [
-        {
+    authenticated_sections: [
+       {
             id: 'data',
             title: 'Data',
             children: [
@@ -58,7 +58,9 @@ const portal = {
                 { id: 'sep-mm-2' },
                 { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
             ],
-        },
+        }
+    ],
+    global_sections: [
         {
             id: 'materialsmethods',
             title: 'Materials & Methods',
@@ -348,7 +350,7 @@ class App extends React.Component {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
             protocol: hrefInfo.protocol,
-            pathname: '/static/img/encode-logo-small-2x.png',
+            pathname: '/static/img/lattice-small.png',
         };
         const logoUrl = url.format(logoHrefInfo);
 
@@ -1126,6 +1128,9 @@ class App extends React.Component {
             return this.state.session_properties.user_actions || [];
         }
         if (category === 'global_sections') {
+            if (this.state.session_properties['auth.userid']) {
+                return portal.authenticated_sections.concat(portal.global_sections);
+            }
             return portal.global_sections;
         }
         return null;
@@ -1173,12 +1178,12 @@ class App extends React.Component {
             appClass = 'communicating';
         }
 
-	let title = portal.portal_title;
+        let title = portal.portal_title;
 
         let prefix_title = context.title || context.name || context.accession || context['@id'];
-	if (prefix_title && !isHomePage) {
-	    title = `${prefix_title} – ${portal.portal_title}`;
-	}
+        if (prefix_title && !isHomePage) {
+            title = `${prefix_title} – ${portal.portal_title}`;
+        }
 
         let canonical = this.state.href;
         if (context.canonical_uri) {

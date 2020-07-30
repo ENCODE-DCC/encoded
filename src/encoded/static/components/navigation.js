@@ -4,7 +4,6 @@ import _ from 'underscore';
 import url from 'url';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
-import { CartStatus } from './cart';
 import { productionHost } from './globals';
 import Tooltip from '../libs/ui/tooltip';
 import { BrowserFeat } from './browserfeat';
@@ -251,7 +250,7 @@ const GlobalSections = (props, context) => {
                 </DropdownMenu>
             : null}
         </NavItem>
-    ).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
+    )
     return <Nav>{actions}</Nav>;
 };
 
