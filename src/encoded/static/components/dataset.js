@@ -18,7 +18,6 @@ import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
 import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable } from './typeutils';
-import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -48,13 +47,6 @@ export function annotationBiosampleSummary(annotation) {
 function breakSetName(name) {
     return name.replace(/(\S)([A-Z])/g, '$1 $2');
 }
-
-
-ViewControlRegistry.register('Annotation', [
-    ViewControlTypes.SEARCH,
-    ViewControlTypes.MATRIX,
-    ViewControlTypes.REPORT,
-]);
 
 
 // Display Annotation page, a subtype of Dataset.

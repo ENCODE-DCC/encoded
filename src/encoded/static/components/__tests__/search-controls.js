@@ -4,17 +4,7 @@ import _ from 'underscore';
 
 // Import test component and data.
 import { SearchControls } from '../search';
-import ViewControlRegistry, { ViewControlTypes } from '../view_controls';
 import context from '../testdata/experiment-search';
-
-
-// Register experiment views just as real Experiment module does.
-ViewControlRegistry.register('Experiment', [
-    ViewControlTypes.SEARCH,
-    ViewControlTypes.MATRIX,
-    ViewControlTypes.REPORT,
-    ViewControlTypes.SUMMARY,
-]);
 
 
 describe('View controls for search with Experiments', () => {
@@ -32,10 +22,9 @@ describe('View controls for search with Experiments', () => {
         test('has proper view control buttons', () => {
             const viewControls = searchControls.find('.btn-attached');
             const links = viewControls.find('a');
-            expect(links).toHaveLength(3);
+            expect(links).toHaveLength(2);
             expect(links.at(0).prop('href')).toEqual('/report/?type=Experiment&status=released&assay_slims=DNA+accessibility');
             expect(links.at(1).prop('href')).toEqual('/matrix/?type=Experiment&status=released&assay_slims=DNA+accessibility');
-            expect(links.at(2).prop('href')).toEqual('/summary/?type=Experiment&status=released&assay_slims=DNA+accessibility');
         });
 
         test('has Download, Visualize, and JSON buttons', () => {

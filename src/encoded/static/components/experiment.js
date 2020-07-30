@@ -17,37 +17,6 @@ import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
-import ViewControlRegistry, { ViewControlTypes } from './view_controls';
-
-
-/**
- * 'Experiment' search results view-control filter. For most experiment searches, this just returns
- * the default views for experiments. But if this displays the reference-epigenome matrix or Stem Cell
- * Matrix, it returns the subset of views relevant to those.
- * @param {array} types Views defined by default for the Experiment @type.
- * @param {object} results Current page's search-results object
- *
- * @return {array} Views that apply to the current search results.
- */
-const viewControlFilter = (types, results) => {
-    let views;
-    const parsedUrl = url.parse(results['@id']);
-    const pathname = parsedUrl.pathname;
-    if (['/reference-epigenome-matrix/', '/sescc-stem-cell-matrix/'].includes(pathname)) {
-        views = ['Search', 'Report'];
-    } else {
-        views = types.filter(type => type !== results['@type'][0]);
-    }
-    return views;
-};
-
-
-ViewControlRegistry.register('Experiment', [
-    ViewControlTypes.SEARCH,
-    ViewControlTypes.MATRIX,
-    ViewControlTypes.REPORT,
-    ViewControlTypes.SUMMARY,
-], viewControlFilter);
 
 
 const anisogenicValues = [

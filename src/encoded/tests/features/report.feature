@@ -22,6 +22,5 @@ Feature: Report
     Scenario: Report Buttons and Links
         Then I should see exactly one element with the css selector "[data-test='search']"
         Then I should see exactly one element with the css selector "[data-test='matrix']"
-        Then I should see exactly one element with the css selector "[data-test='summary']"
         Then I should see exactly one element with the css selector "[title='Choose columns']"
         Then I should see exactly one element with the css selector "[data-test='download-tsv']"

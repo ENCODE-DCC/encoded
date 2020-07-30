@@ -893,10 +893,45 @@ class MatrixPresentation extends React.Component {
             embryoSecondRowWidth = (countEmbryoSecondRow * (embryoDefault + 2)) - 2;
         }
 
+        // Calculate additional filters for the to view control button links
+        const additionalFilters = [];
+        this.state.developmentStageClick.forEach((f) => {
+            if (['adult', 'postnatal', 'embryo'].includes(f)) {
+                const stageTerm = f === 'embryo' ? 'embryonic' : f;
+                const stageFilterExists = additionalFilters.filter(f2 => f2.term === stageTerm).length > 0;
+                if (!stageFilterExists) {
+                    additionalFilters.push({
+                        term: f === 'embryo' ? 'embryonic' : f,
+                        remove: '',
+                        field: 'replicates.library.biosample.life_stage',
+                    });
+                }
+            } else {
+                const stageTerm = f.split(' ')[0] === 'embryo' ? 'embryonic' : f.split(' ')[0];
+                const ageTerm = f.split(' ').slice(1).join(' ');
+                const stageFilterExists = additionalFilters.filter(f2 => f2.term === stageTerm).length > 0;
+                const ageFilterExists = additionalFilters.filter(f2 => f2.term === ageTerm).length > 0;
+                if (!stageFilterExists) {
+                    additionalFilters.push({
+                        term: stageTerm,
+                        remove: '',
+                        field: 'replicates.library.biosample.life_stage',
+                    });
+                }
+                if (!ageFilterExists) {
+                    additionalFilters.push({
+                        term: ageTerm,
+                        remove: '',
+                        field: 'replicates.library.biosample.age_display',
+                    });
+                }
+            }
+        });
+
         return (
             <React.Fragment>
                 <div className="matrix-header">
-                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} activeFilters={this.state.developmentStageClick} />
+                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
                     <div className="matrix-header__controls">
                         <div className="matrix-header__filter-controls">
                             <div className="mouse-dev-legend">
