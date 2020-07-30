@@ -24,8 +24,10 @@
 - g++
 - gcc
 - make
+# snovault
+## schema_graph -> https://linux.die.net/man/1/dot -> graphviz
+- graphviz
 # Other - Unknown
-# - graphviz
 # - libevent-dev
 # - libmagic-dev
 # - libxml2-dev
