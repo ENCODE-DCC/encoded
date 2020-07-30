@@ -3,7 +3,6 @@ from pyramid.view import view_config
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
 from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
-from snovault.elasticsearch.searches.interfaces import SUMMARY_MATRIX
 from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
@@ -45,7 +44,6 @@ DEFAULT_ITEM_TYPES = [
     'Biosample',
     'BiosampleType',
     'Dataset',
-    'Document',
     'Donor',
     'Page',
     'Publication',
@@ -182,8 +180,7 @@ def summary(context, request):
             SearchBaseResponseField(),
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=SUMMARY_MATRIX
+                default_item_types=DEFAULT_ITEM_TYPES
             ),
             NotificationResponseField(),
             FiltersResponseField(),
