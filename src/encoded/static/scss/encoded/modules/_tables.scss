@@ -93,6 +93,16 @@ form.table-filter {
     }
 }
 
+.tcell-thumbnail {
+    display: flex;
+    justify-content: center;
+
+    img {
+        height: 100px;
+        width: 120px;
+    }
+}
+
 /* initial state is hidden (see template; class=hide) */
 #total-records {
     font-weight: normal;

@@ -139,8 +139,9 @@ function lookupColumn(result, column) {
 
 
 class Cell {
-    constructor(value) {
+    constructor(value, type) {
         this.value = value;
+        this.type = type;
     }
 }
 
@@ -157,13 +158,31 @@ function RowView(rowInfo) {
     const row = rowInfo.row;
     const id = row.item['@id'];
     const tds = row.cells.map((cell, index) => {
-        if (index === 0) {
+        const cellValue = cell.value;
+        if (cell.type === 'thumb_nail') {
             return (
-                <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
+                <td key={index}>
+                    <div className="tcell-thumbnail">
+                        <a href={cellValue} target="_blank" rel="noopener noreferrer">
+                            <img src={cellValue} alt={cellValue} />
+                        </a>
+                    </div>
+                </td>
+            );
+        } else if (cell.type === 'download_url') {
+            return (
+                <td key={index}>
+                    <a href={cellValue}>{`${window.location.origin}${cellValue}`}</a>
+                </td>
+            );
+        } else if (index === 0) {
+            return (
+                <td key={index}><a href={row.item['@id']}>{cellValue}</a></td>
             );
         }
+
         return (
-            <td key={index}>{cell.value}</td>
+            <td key={index}>{cellValue}</td>
         );
     });
     return (
@@ -214,7 +233,7 @@ class Table extends React.Component {
                     factory = globals.listingTitles.lookup(value);
                     value = factory({ context: value });
                 }
-                return new Cell(value);
+                return new Cell(value, column.path);
             });
             return new Row(item, cells);
         });

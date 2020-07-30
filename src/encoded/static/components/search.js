@@ -8,7 +8,6 @@ import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
 import FacetRegistry from './facets';
 import * as globals from './globals';
-import { Attachment } from './image';
 import {
     DisplayAsJson,
     DocTypeTitle,
@@ -601,11 +600,17 @@ const Image = (props) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.caption}</a>
-                    <Attachment context={result} attachment={result.attachment} />
+                    <a href={result['@id']} className="result-item__link">{result['@id']}</a>
+                    <div className="attachment">
+                        <div className="file-thumbnail">
+                            <img src={result.thumb_nail} alt="thumbnail" />
+                        </div>
+                    </div>
+                    {result.caption}
                 </div>
                 <div className="result-item__meta">
                     <p className="type meta-title">Image</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                 </div>
                 <PickerActions context={result} />
             </div>
