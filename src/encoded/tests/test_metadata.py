@@ -1,5 +1,31 @@
 import pytest
+
 from encoded.tests.features.conftest import app, app_settings, index_workbook
+from pyramid.exceptions import HTTPBadRequest
+
+
+def test_metadata_allowed_types_decorator_raises_error():
+    from encoded.reports.metadata import allowed_types
+
+    @allowed_types(['MyType'])
+    def endpoint(context, request):
+        return True
+
+    class Request:
+        def __init__(self, params):
+            self.params = params
+
+    context = {}
+    request = Request({})
+    with pytest.raises(HTTPBadRequest) as error:
+        endpoint(context, request)
+    assert str(error.value) == 'URL requires one type parameter.'
+    request = Request({'type': 'WrongType'})
+    with pytest.raises(HTTPBadRequest) as error:
+        endpoint(context, request)
+    assert str(error.value) == 'WrongType not a valid type for endpoint.'
+    request = Request({'type': 'MyType'})
+    assert endpoint(context, request)
 
 
 @pytest.mark.indexing

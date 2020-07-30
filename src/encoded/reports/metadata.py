@@ -34,7 +34,7 @@ def allowed_types(types):
                 )
             if type_filters[0][1] not in types:
                 raise HTTPBadRequest(
-                    explanation=f'{type_filters[0][1]} not a valid type for metadata'
+                    explanation=f'{type_filters[0][1]} not a valid type for endpoint.'
                 )
             return func(context, request)
         return wrapper
