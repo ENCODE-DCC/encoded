@@ -501,6 +501,7 @@
         ],
         "uuid": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024",
         "status": "released",
-        "analysis_step_version": "5c4042c6-27b0-42c5-b608-9061005e32ab"
+        "analysis_step_version": "5c4042c6-27b0-42c5-b608-9061005e32ab",
+        "pipeline_run_id": "50441e50-f091-4ba7-9850-2bdcd813d5e9"
     }
 ]
