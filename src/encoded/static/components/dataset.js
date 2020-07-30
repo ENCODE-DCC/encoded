@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import DropdownButton from '../libs/ui/button';
-import { DropdownMenu } from '../libs/ui/dropdown-menu';
 import { CartToggle, CartAddAllElements } from './cart';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
@@ -18,7 +17,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged } from './typeutils';
+import { AwardRef, ReplacementAccessions, ControllingExperiments, FileTablePaged, ExperimentTable } from './typeutils';
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
@@ -64,6 +63,7 @@ const AnnotationComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -242,6 +242,8 @@ const AnnotationComponent = (props, reactContext) => {
             <FileGallery context={context} encodevers={encodevers} showReplicateNumber={false} />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>
@@ -438,7 +440,7 @@ const ComputationalModelComponent = (props, reactContext) => {
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-    const fileCountDisplay = <div className="file-table-paged__count">{`${context.files.length} file${context.files.length === 1 ? '' : 's'}`}</div>;
+    const fileCountDisplay = <div className="table-paged__count">{`${context.files.length} file${context.files.length === 1 ? '' : 's'}`}</div>;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -588,12 +590,13 @@ const ComputationalModel = auditDecor(ComputationalModelComponent);
 globals.contentViews.register(ComputationalModel, 'ComputationalModel');
 
 
-// Display Annotation page, a subtype of Dataset.
+// Display Reference page, a subtype of Dataset.
 const ReferenceComponent = (props, reactContext) => {
     const { context, auditIndicators, auditDetail } = props;
     const itemClass = globals.itemClass(context, 'view-item');
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+    const fccexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_references=${context['@id']}`;
 
     // Build up array of documents attached to this dataset
     const datasetDocuments = (context.documents && context.documents.length > 0) ? context.documents : [];
@@ -647,6 +650,13 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.donor ?
+                                <div data-test="donor">
+                                    <dt>Donor</dt>
+                                    <dd><a href={context.donor['@id']} title="Donor">{context.donor.accession}</a></dd>
+                                </div>
+                            : null}
+
                             {context.reference_type ?
                                 <div data-test="type">
                                     <dt>Reference type</dt>
@@ -658,6 +668,23 @@ const ReferenceComponent = (props, reactContext) => {
                                 <div data-test="organism">
                                     <dt>Organism</dt>
                                     <dd>{context.organism.name}</dd>
+                                </div>
+                            : null}
+
+                            {context.examined_loci && context.examined_loci.length > 0 ?
+                                <div data-test="examinedloci">
+                                    <dt>Examined loci</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.examined_loci.map(examinedLocus => (
+                                                <li key={examinedLocus['@id']} className="multi-comma">
+                                                    <a href={examinedLocus['@id']}>
+                                                        {examinedLocus.symbol}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
 
@@ -723,6 +750,8 @@ const ReferenceComponent = (props, reactContext) => {
             <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
             <FetchedItems {...props} url={experimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems {...props} url={fccexperimentsUrl} Component={ExperimentTable} title={`Functional characterization experiments with ${context.accession} as an elements reference`} />
 
             <DocumentsPanelReq documents={datasetDocuments} />
         </div>
@@ -1100,17 +1129,15 @@ export const FilePanelHeader = (props) => {
         <div>
             {context.visualize && context.status === 'released' ?
                 <span className="pull-right">
-                    <DropdownButton title="Visualize Data" label="filepaneheader">
-                        <DropdownMenu>
-                            {Object.keys(context.visualize).sort().map(assembly =>
-                                Object.keys(context.visualize[assembly]).sort().map(browser =>
-                                    <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
-                                        {assembly} {browser}
-                                    </a>
-                                )
-                            )}
-                        </DropdownMenu>
-                    </DropdownButton>
+                    <DropdownButton.Immediate label="Visualize Data">
+                        {Object.keys(context.visualize).sort().map(assembly =>
+                            Object.keys(context.visualize[assembly]).sort().map(browser =>
+                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
+                                    {assembly} {browser}
+                                </a>
+                            )
+                        )}
+                    </DropdownButton.Immediate>
                 </span>
             : null}
             <h4>File summary</h4>
@@ -1320,8 +1347,8 @@ const organismDevelopmentSeriesTableColumns = {
         title: 'Assay',
     },
 
-    relative_age: {
-        title: 'Relative age',
+    age: {
+        title: 'Age',
         display: (experiment) => {
             let biosamples;
             let synchronizationBiosample;
@@ -1468,10 +1495,11 @@ export const SeriesComponent = (props, reactContext) => {
     // them to the current cart.
     let addAllToCartControl;
     if (experimentList.length > 0) {
+        const experimentIds = experimentList.map(experiment => experiment['@id']);
         addAllToCartControl = (
             <div className="experiment-table__header">
                 <h4 className="experiment-table__title">{`Experiments in ${seriesTitle} ${context.accession}`}</h4>
-                <CartAddAllElements elements={experimentList} />
+                <CartAddAllElements elements={experimentIds} />
             </div>
         );
     }

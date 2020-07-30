@@ -453,7 +453,7 @@ def format_facets(
                 'field': field,
                 'title': options.get('title', field),
                 'terms': terms,
-                'appended': 'false',
+                'appended': False,
                 'total': all_buckets_total
             }
         )
@@ -466,7 +466,7 @@ def format_facets(
                     title = schema['properties'][field].get('title', field)
                     break
             item = [r for r in result if r['field'] == field_without_bang]
-            terms = [{'key': v, 'isEqual': 'true' if field[-1] != '!' else 'false'} for v in values]
+            terms = [{'key': v, 'isEqual': True if field[-1] != '!' else False} for v in values]
             if item:
                 item[0]['terms'].extend(terms)
             else:
@@ -474,7 +474,7 @@ def format_facets(
                     'field': field_without_bang,
                     'title': title,
                     'terms': terms,
-                    'appended': 'true',
+                    'appended': True,
                     'total': total,
                 })
     return result

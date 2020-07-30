@@ -19,8 +19,12 @@ const validator = new jsonschema.Validator();
 validator.attributes.pattern = function validatePattern(instance, schema) {
     let error;
     if (typeof instance === 'string') {
-        if (typeof schema.pattern !== 'string') throw new jsonschema.SchemaError('"pattern" expects a string', schema);
-        if (!instance.match(schema.pattern)) {
+        var pattern = schema.pattern;
+        if (Array.isArray(pattern)) {
+            pattern = pattern.join('');
+        }
+        if (typeof pattern !== 'string') throw new jsonschema.SchemaError('"pattern" expects a string or array of strings', schema);
+        if (!instance.match(pattern)) {
             error = `does not match pattern ${JSON.stringify(schema.pattern)}`;
         }
     }
@@ -294,19 +298,17 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         if (!this.context.readonly) {
             if (subtypes.length > 1) {
                 button = (
-                    <DropdownButton title="Add" buttonClasses="rf-RepeatingFieldset__add">
-                        <DropdownMenu>
-                            {subtypes.map(subtype =>
-                                <a
-                                    href="#"
-                                    key={subtype}
-                                    data-subtype={subtype}
-                                    onClick={this.handleAdd}
-                                >
-                                    {schemas[subtype].title}
-                                </a>)}
-                        </DropdownMenu>
-                    </DropdownButton>
+                    <DropdownButton.Immediate label="Add" css="rf-RepeatingFieldset__add">
+                        {subtypes.map(subtype =>
+                            <a
+                                href="#"
+                                key={subtype}
+                                data-subtype={subtype}
+                                onClick={this.handleAdd}
+                            >
+                                {schemas[subtype].title}
+                            </a>)}
+                    </DropdownButton.Immediate>
                 );
             } else {
                 button = (
@@ -688,7 +690,7 @@ export class Field extends UpdateChildMixin(React.Component) {
                 searchBase={`?mode=picker&type=${schema.linkTo}`}
             />);
         } else if (schema.type === 'boolean') {
-            input = <input type="checkbox" {...inputProps} />;
+            input = <input type="checkbox" {...inputProps} checked={!!value} />;
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {

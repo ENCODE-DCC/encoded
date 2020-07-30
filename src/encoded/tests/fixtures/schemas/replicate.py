@@ -23,6 +23,40 @@ def base_replicate(testapp, base_experiment):
 
 
 @pytest.fixture
+def replicate_control_chip(testapp, experiment_chip_control, library_1_chip):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': experiment_chip_control['@id'],
+        'library': library_1_chip['@id']
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_1_chip(testapp, experiment_chip_H3K27me3, library_1_chip):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': experiment_chip_H3K27me3['@id'],
+        'library': library_1_chip['@id']
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_2_chip(testapp, experiment_chip_H3K27me3, library_2_chip):
+    item = {
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1,
+        'experiment': experiment_chip_H3K27me3['@id'],
+        'library': library_2_chip['@id']
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+
+@pytest.fixture
 def replicate_rna(testapp, experiment_rna, library_2):
     item = {
         'experiment': experiment_rna['@id'],
@@ -267,3 +301,45 @@ def replicate_8(root, replicate_url):
         'status': 'proposed'
     })
     return properties
+
+
+@pytest.fixture
+def replicate_1_fce(testapp, functional_characterization_experiment_disruption_screen):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'experiment': functional_characterization_experiment_disruption_screen['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_2_fce(testapp, functional_characterization_experiment_disruption_screen):
+    item = {
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1,
+        'experiment': functional_characterization_experiment_disruption_screen['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_ATAC_seq(testapp, ATAC_experiment, library_1):
+    item = {
+        'experiment': ATAC_experiment['@id'],
+        'library': library_1['@id'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_ATAC_seq_2(testapp, ATAC_experiment, library_2):
+    item = {
+        'experiment': ATAC_experiment['@id'],
+        'library': library_2['@id'],
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]

@@ -185,7 +185,7 @@ const getQueryFromFilters = (filters) => {
 /**
  * Displays view control buttons appropriate for the given search results.
  */
-export const ViewControls = ({ results, filterTerm, activeFilters }) => {
+export const ViewControls = ({ results, filterTerm, activeFilters, alternativeNames }) => {
     // Add the hard-coded type filter if given.
     let filters = [];
     if (filterTerm) {
@@ -250,8 +250,16 @@ export const ViewControls = ({ results, filterTerm, activeFilters }) => {
         const queryString = getQueryFromFilters(results.filters);
         return (
             <div className="btn-attached">
-                {views.map((view) => {
+                {views.map((view, viewIdx) => {
                     const buttonData = viewPathMap[view];
+                    if (alternativeNames) {
+                        return (
+                            <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
+                                {svgIcon(buttonData.icon)}
+                                {alternativeNames[viewIdx]}
+                            </a>
+                        );
+                    }
                     return (
                         <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
                             {svgIcon(buttonData.icon)}
@@ -270,11 +278,13 @@ ViewControls.propTypes = {
     /** Filter `type` to use in addition to `filters` property for missing "type" filter cases */
     filterTerm: PropTypes.string,
     activeFilters: PropTypes.array,
+    alternativeNames: PropTypes.array,
 };
 
 ViewControls.defaultProps = {
     filterTerm: null,
     activeFilters: [],
+    alternativeNames: null,
 };
 
 
@@ -296,11 +306,12 @@ const BATCH_DOWNLOAD_PROHIBITED_PATHS = [
 
 
 /**
- * Display the modal for batch download, and pass back clicks in the Download button
+ * Displays the modal to initiate downloading files. This modal gets displayed unconditionally in
+ * this component, so parent components must keep state on whether this modal is visible or not.
  */
-export const BatchDownloadModal = ({ handleDownloadClick, title, additionalContent, disabled }) => (
-    <Modal actuator={<button className="btn btn-info btn-sm" disabled={disabled} data-test="batch-download">{title}</button>} focusId="batch-download-submit">
-        <ModalHeader title="Using batch download" closeModal />
+export const BatchDownloadModal = ({ additionalContent, disabled, downloadClickHandler, closeModalHandler }) => (
+    <Modal focusId="batch-download-submit" closeModal={closeModalHandler} >
+        <ModalHeader title="Using batch download" closeModal={closeModalHandler} />
         <ModalBody>
             <p>
                 Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
@@ -313,18 +324,53 @@ export const BatchDownloadModal = ({ handleDownloadClick, title, additionalConte
                 The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
                 The following command using cURL can be used to download all the files in the list:
             </p>
-            <code>xargs -L 1 curl -O -L &lt; files.txt</code><br />
+            <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
             <div>{additionalContent}</div>
         </ModalBody>
         <ModalFooter
-            closeModal={<button className="btn btn-default">Close</button>}
-            submitBtn={<button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={handleDownloadClick}>Download</button>}
-            dontClose
+            closeModal={<button className="btn btn-default" onClick={closeModalHandler} >Close</button>}
+            submitBtn={<button id="batch-download-submit" className="btn btn-info" disabled={disabled} onClick={downloadClickHandler}>Download</button>}
         />
     </Modal>
 );
 
 BatchDownloadModal.propTypes = {
+    /** Additional content in modal as component */
+    additionalContent: PropTypes.element,
+    /** True to disable Download button */
+    disabled: PropTypes.bool,
+    /** Called when the user clicks the Download button in the modal */
+    downloadClickHandler: PropTypes.func.isRequired,
+    /** Called when the user does something to close the modal */
+    closeModalHandler: PropTypes.func.isRequired,
+};
+
+BatchDownloadModal.defaultProps = {
+    additionalContent: null,
+    disabled: false,
+};
+
+
+/**
+ * Display the modal for batch download, and pass back clicks in the Download button
+ */
+export const BatchDownloadButton = ({ handleDownloadClick, title, additionalContent, disabled }) => {
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const openModal = () => { setIsModalOpen(true); };
+    const closeModal = () => { setIsModalOpen(false); };
+
+    return (
+        <React.Fragment>
+            <button className="btn btn-info btn-sm" onClick={openModal} disabled={disabled} data-test="batch-download">{title}</button>
+            {isModalOpen ?
+                <BatchDownloadModal additionalContent={additionalContent} disabled={disabled} downloadClickHandler={handleDownloadClick} closeModalHandler={closeModal} />
+            : null}
+        </React.Fragment>
+    );
+};
+
+BatchDownloadButton.propTypes = {
     /** Function to call when Download button gets clicked */
     handleDownloadClick: PropTypes.func.isRequired,
     /** Title to override usual actuator "Download" button title */
@@ -335,7 +381,7 @@ BatchDownloadModal.propTypes = {
     additionalContent: PropTypes.object,
 };
 
-BatchDownloadModal.defaultProps = {
+BatchDownloadButton.defaultProps = {
     title: 'Download',
     disabled: false,
     additionalContent: null,
@@ -377,7 +423,7 @@ export class BatchDownloadControls extends React.Component {
             return null;
         }
 
-        return <BatchDownloadModal handleDownloadClick={this.handleDownloadClick} />;
+        return <BatchDownloadButton handleDownloadClick={this.handleDownloadClick} />;
     }
 }
 

@@ -436,6 +436,32 @@ def test_search_views_matrix_response_no_results(workbook, testapp):
     assert r.json['notification'] == 'No results found'
 
 
+def test_sescc_stem_cell_matrix(workbook, testapp):
+    res = testapp.get('/sescc-stem-cell-matrix/?type=Experiment').json
+    assert res['@type'] == ['SESCCStemCellMatrix']
+    assert res['@id'] == '/sescc-stem-cell-matrix/?type=Experiment'
+    assert res['@context'] == '/terms/'
+    assert res['notification'] == 'Success'
+    assert res['title'] == 'Stem Cell Development Matrix (SESCC)'
+    assert res['total'] > 0
+    assert 'filters' in res
+    assert 'matrix' in res
+    assert res['matrix']['x']['group_by'] == [
+        'assay_title', 
+        'target.label',
+    ]
+    assert res['matrix']['x']['label'] == 'Assay'
+    assert res['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name',
+    ]
+    assert res['matrix']['y']['label'] == 'Biosample'
+    assert len(res['matrix']['y']['biosample_ontology.classification']['buckets']) > 0
+    assert len(
+        res['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
+)       > 0
+
+
 def test_chip_seq_matrix_view(workbook, testapp):
     res = testapp.get('/chip-seq-matrix/?type=Experiment').json
     assert res['@type'] == ['ChipSeqMatrix']
@@ -622,7 +648,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     assert 'aggregations' not in r.json
     assert 'facets' in r.json
     assert 'total' in r.json
-    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['@type'] == ['EntexMatrix']
     assert r.json['@id'] == (
         '/entex-matrix/'
@@ -630,7 +656,7 @@ def test_search_views_entex_matrix_response(workbook, testapp):
     )
     assert r.json['@context'] == '/terms/'
     assert r.json['notification'] == 'Success'
-    assert r.json['title'] == 'ENTEx Matrix'
+    assert r.json['title'] == 'Epigenomes from four individuals (ENTEx)'
     assert r.json['total'] >= 4
     assert 'filters' in r.json
     assert 'matrix' in r.json

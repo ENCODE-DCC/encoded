@@ -5,76 +5,18 @@
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "source", "organism", "biosample_ontology"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "required": [],
+    "identifyingProperties": ["accession"],
     "additionalProperties": false,
     "mixinProperties": [
-        {"$ref": "mixins.json#/genetic_modifications"},
-        {"$ref": "mixins.json#/biosample_ontology"},
-        {"$ref": "mixins.json#/product_id"},
-        {"$ref": "mixins.json#/lot_id"},
-        {"$ref": "mixins.json#/source"},
-        {"$ref": "mixins.json#/references"},
-        {"$ref": "mixins.json#/documents"},
-        {"$ref": "mixins.json#/submitter_comment"},
-        {"$ref": "mixins.json#/notes"},
-        {"$ref": "mixins.json#/submitted"},
-        {"$ref": "mixins.json#/attribution"},
-        {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/aliases"},
-        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/uuid"}
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/diseases"}
     ],
     "dependencies": {
-        "biosample_ontology": {
-            "not": {
-                "properties": {
-                    "biosample_ontology": {
-                        "linkTo": "BiosampleType",
-                        "linkEnum": [
-                            "25d5ad53-15fd-4a44-878a-ece2f7e86509",
-                            "2b3b4181-45b6-4da1-82f8-104e28601d1e"
-                        ]
-                    },
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        },
-        "post_synchronization_time_units": {
-            "comment": "Biosample with a specified post_synchronization_units requires post_synchronization_time specification and specification of the model organism synchronization stage.",
-             "allOf":[
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkTo": "Organism",
-                                "linkEnum": [
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c",
-                                    "3413218c-3d86-498b-a0a2-9a406638e786"
-                                ]
-                            }
-                        }
-                    }
-                },
-                {
-                    "oneOf": [
-                        {
-                            "required": ["fly_synchronization_stage", "post_synchronization_time"]
-                        },
-                        {
-                            "required": ["worm_synchronization_stage", "post_synchronization_time"]
-                        }
-                    ]
-                }
-            ]
-        },
         "post_treatment_time": {
             "required":["post_treatment_time_units", "treatments"],
             "comment": "Biosample with a specified post_treatment_time requires non-empty treatments list and post_treatment_time_units specification.",
@@ -93,30 +35,6 @@
                 }
             }
         },
-        "post_differentiation_time": {
-            "required":["post_differentiation_time_units"],
-            "comment": "Biosample with a specified post_differentiation_time requires post_differentiation_time_units specification."
-        },
-        "post_differentiation_time_units": {
-            "required":["post_differentiation_time"],
-            "comment": "Biosample with a specified post_differentiation_time_units requires post_differentiation_time specification."
-        },
-        "post_nucleic_acid_delivery_time": {
-            "required":["post_nucleic_acid_delivery_time_units"],
-            "comment": "Biosample with a specified post_nucleic_acid_delivery_time requires post_nucleic_acid_delivery_time_units specification."
-        },
-        "post_nucleic_acid_delivery_time_units": {
-            "required":["post_nucleic_acid_delivery_time"],
-            "comment": "Biosample with a specified post_nucleic_acid_delivery_time_units requires post_nucleic_acid_delivery_time specification."
-        },
-        "pooled_from": {
-            "comment": "Biosample with a specified pooled_from list requires at least two entries in the list.",
-            "properties":{
-                "pooled_from": {
-                    "minItems": 2
-                }
-            }
-        },
         "starting_amount":{
             "required": ["starting_amount_units"],
             "comment": "Biosamples with a specified starting_amount require starting_amount_units to also be specified."
@@ -125,185 +43,21 @@
             "required":["starting_amount"],
             "comment": "Biosamples with a specified starting_amount_units require starting_amount to also be specified."
         },
-        "PMI":{
-            "required": ["PMI_units"],
-            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified."
+        "preservation_time":{
+            "required": ["preservation_time_units"]
         },
-        "PMI_units": {
-            "required":["PMI"],
-            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified."
-        },
-        "model_organism_age_units": {
-            "required":["model_organism_age"],
-            "comment": "Biosample with a specified model_organism_age_units requires model_organism_age specification."
-        },
-        "model_organism_age": {
-            "comment": "Biosample with a specified model_organism_age requires model_organism_age_units specification.",
-            "required": ["model_organism_age_units"]
-        },
-        "model_organism_mating_status": {
-            "comment": "Biosample with a specified model_organism_mating_status requires model_organism_sex specification.",
-            "required": ["model_organism_sex"]
-        },
-        "organism":{
-            "comment": "Human biosamples are not allowed to have model organism properties, and biosample_ontology classification should be different from whole organisms.",
-            "oneOf": [
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkTo": "Organism",
-                                "linkEnum": [
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                ]
-                            }
-                        }
-                    }
-                },
-                {
-                    "allOf": [
-                        {
-                            "properties": {
-                                "organism": {
-                                    "linkTo": "Organism",
-                                    "linkEnum": [
-                                        "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "not": { "required": ["model_organism_mating_status"] }
-                        },
-                        {
-                            "not": { "required": ["model_organism_sex"] }
-                        },
-                        {
-                            "not": { "required": ["model_organism_health_status"] }
-                        },
-                        {
-                            "not": { "required": ["model_organism_age"] }
-                        }
-                    ]
-                }
-            ]
-         },
-        "post_synchronization_time": {
-            "comment": "Human and mouse biosamples are not allowed to have post_synchronization_time property. Biosample with a specified post_synchronization_time requires post_synchronization_time_units specification and model organism synchronization stage.",
-            "allOf":[
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkTo": "Organism",
-                                "linkEnum": [
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c",
-                                    "3413218c-3d86-498b-a0a2-9a406638e786"
-                                ]
-                            }
-                        }
-                    }
-                },
-                {
-                    "oneOf": [
-                        {
-                            "required": ["fly_synchronization_stage", "post_synchronization_time_units"]
-                        },
-                        {
-                            "required": ["worm_synchronization_stage", "post_synchronization_time_units"]
-                        }
-                    ]
-                }
-            ]
-        },
-        "fly_life_stage": {
-            "comment": "Only fly biosamples are allowed to have fly_life_stage property.",
-            "properties": {
-                "organism": {
-                    "linkTo": "Organism",
-                    "linkEnum": [
-                        "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                        "5be68469-94ba-4d60-b361-dde8958399ca",
-                        "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                        "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                        "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                        "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                        "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
-                    ]
-                }
-            }
-        },
-        "fly_synchronization_stage": {
-            "comment": "Only fly biosamples are allowed to have fly_synchronization_stage property.",
-            "properties": {
-                "organism": {
-                    "linkTo": "Organism",
-                    "linkEnum": [
-                        "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                        "5be68469-94ba-4d60-b361-dde8958399ca",
-                        "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                        "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                        "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                        "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                        "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
-                    ]
-                }
-            }
-        },
-        "worm_synchronization_stage": {
-            "comment": "Only roundworm biosamples are allowed to have worm_synchronization_stage property.",
-            "properties": {
-                "organism": {
-                    "linkTo": "Organism",
-                    "linkEnum": [
-                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
-                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242",
-                        "69efae2b-4df5-4957-81da-346f1b93cb98",
-                        "a7e711b9-534c-44a3-a782-2a15af620739",
-                        "451f9e49-685d-40d5-ad89-760b2512262a"
-                    ]
-                }
-            }
-        },
-        "worm_life_stage": {
-            "comment": "Only roundworm biosamples are allowed to have worm_life_stage property.",
-            "properties": {
-                "organism": {
-                    "linkTo": "Organism",
-                    "linkEnum": [
-                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
-                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242",
-                        "69efae2b-4df5-4957-81da-346f1b93cb98",
-                        "a7e711b9-534c-44a3-a782-2a15af620739",
-                        "451f9e49-685d-40d5-ad89-760b2512262a"
-                    ]
-                }
-            }
-        },
-        "mouse_life_stage": {
-            "comment": "Only mouse biosamples are allowed to have mouse_life_stage property.",
-            "properties": {
-                "organism": {
-                    "linkTo": "Organism",
-                    "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
-                }
-            }
+        "preservation_time_units": {
+            "required":["preservation_time"]
         }
     },
     "properties": {
         "schema_version": {
-            "default": "24"
+            "default": "1"
         },
         "accession": {
             "accessionType": "BS"
         },
         "alternate_accessions": {
-            "title": "Alternate accessions",
-            "description": "Accessions previously assigned to objects that have been merged with this object.",
-            "comment": "Do not submit. Only admins are allowed to set or update this value.",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
             "items": {
                 "title": "Alternate Accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",
@@ -313,11 +67,14 @@
                 "pattern": "^(ENCBS\\d{3}[A-Z]{3})$|^(TSTBS\\d{6})$"
             }
         },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the biosample. Do not include experiment details, genetic modifications or treatments.",
-            "comment": "Free text description of the biosample, do not mix with biosample summary that is calculated and controlled.",
+        "biosample_ontology": {
+            "title": "Biosample ontology",
+            "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
+            "comment": "See biosample_type.json for available identifiers.",
             "type": "string",
+            "linkTo": "BiosampleType"
+        },
+        "description": {
             "elasticsearch_mapping_index_type": {
                 "title": "Field mapping index type",
                 "description": "Defines one of three types of indexing available",
@@ -328,34 +85,33 @@
                     "no",
                     "not_analyzed"
                 ]
-            },
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$",
-            "formInput": "textarea"
-        },
-        "treatments": {
-            "title": "Treatments",
-            "description": "A list of treatments applied to the biosample.",
-            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Treatment",
-                "comment": "See treatment.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Treatment"
             }
         },
-        "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
-            "comment": "Do not submit. DCC personnel is responsible for submission of biosample external resource identifiers.",
-            "permission": "import_items",
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The donor(s) or sample(s) from which this object was directly derived.",
             "type": "array",
-            "default": [],
-            "uniqueItems": true,
+            "uniqueItems": true
+        },
+        "derivation_process": {
+            "title": "Derivation process",
+            "description": "The method(s) by which this object was derived.",
+            "type": "array",
+            "items": {
+                "title": "Derivation process",
+                "description": "A method by which this object was derived.",
+                "type":  "string"
+            }
+        },
+        "treatments": {
+            "description": "A list of treatments applied to the biosample.",
+            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified."
+        },
+        "diseases": {
+            "description": "Known diseases of the specific sample",
+            "comment": ""
+        },
+        "dbxrefs": {
             "items": {
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
@@ -363,169 +119,9 @@
                 "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+)|(Cellosaurus:CVCL_\\w{4}))$"
             }
         },
-        "documents": {
-            "description": "Documents that describe the biosample preparation."
-        },
-        "donor": {
-            "title": "Donor",
-            "description": "The donor or strain the biosample was originated from.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Donor"
-        },
-        "organism": {
-            "title": "Organism",
-            "description": "The organism the biosample was originated from.",
-            "comment": "See organism.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Organism"
-        },
-        "passage_number": {
-            "title": "Passage number",
-            "description": "Number of passages including the passages from the source.",
-            "comment": "In calculating passage number, include passages from the source.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "depleted_in_term_name": {
-            "title": "Depleted in term",
-            "type": "array",
-            "uniqueItems": true,
-            "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "adult maxillary segment",
-                    "antenna",
-                    "arthropod fat body",
-                    "digestive system",
-                    "female gonad",
-                    "female reproductive system",
-                    "head",
-                    "limb",
-                    "male accessory sex gland",
-                    "male reproductive system",
-                    "salivary gland",
-                    "testis"
-                ]
-            }
-        },
-        "model_organism_mating_status": {
-            "title": "Model organism mating status",
-            "description": "The mating status of the animal.",
-            "comment": "The value is not available for human biosamples.",
-            "type": "string",
-            "enum": [
-                "mated",
-                "mixed",
-                "sterile",
-                "virgin"
-            ]
-        },
-        "internal_tags": {
-            "title": "Internal tags",
-            "description": "Some biosamples are part of particular data collections.",
-            "comment" : "Do not submit. Internal tags are for DCC use only.",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "enum": [
-                    "DREAM",
-                    "ENCORE",
-                    "ENTEx",
-                    "SESCC"
-                ]
-            }
-        },
-        "originated_from": {
-            "title": "Originated from",
-            "description": "A biosample that the sample was orginated from.",
-            "comment": "See biosample.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Biosample"
-        },
-        "pooled_from": {
-            "title": "Pooled from",
-            "description": "The biosamples from which aliquots were pooled to form the biosample.",
-            "comment": "A list of biosamples used to create the biosample, if specified, it requires minimum of two entries.",
-            "type":  "array",
-            "uniqueItems": true,
-            "items": {
-                "description": "A biosample from which an aliquot was taken to form the biosample.",
-                "comment": "See biosample.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Biosample"
-            }
-        },
-        "part_of": {
-            "title": "Separated from",
-            "description": "A biosample from which a discrete component was taken. That component is this biosample.",
-            "comment": "See biosamples.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Biosample"
-        },
-        "host": {
-            "title": "Host biosample",
-            "description": "A biosample that was hosting this biosample.",
-            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation. See biosamples.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Biosample"
-        },
-        "subcellular_fraction_term_name": {
-            "title": "Subcellular fraction",
-            "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
-            "type": "string",
-            "enum": [
-                "chromatin",
-                "cytosol",
-                "insoluble cytoplasmic fraction",
-                "membrane",
-                "mitochondria",
-                "nuclear matrix",
-                "nucleolus",
-                "nucleoplasm",
-                "nucleus",
-                "polysome"
-            ]
-        },
-        "phase": {
-            "title": "Cell cycle phase",
-            "description": "Specification of cell cycle phase of the biosample.",
-            "comment": "The phase property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
-            "type": "string",
-            "enum": [
-                "G1",
-                "G1b",
-                "G2",
-                "S",
-                "early S",
-                "late S",
-                "S1",
-                "S2",
-                "S3",
-                "S4"
-            ]
-        },
-        "culture_harvest_date": {
-            "title": "Culture harvest date",
-            "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
-            "type": "string",
-            "format": "date"
-        },
-        "culture_start_date": {
-            "title": "Culture start date",
-            "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property should be limited to biosamples with biosample_ontology classification that belongs to [primary cell, cell line, in vitro differentiated cells].",
-            "type": "string",
-            "format": "date"
-        },
         "date_obtained": {
             "title": "Date obtained",
-            "description": "For tissue samples, the date the biosample was taken.",
+            "description": "The date the biosample was taken, created, or bought.",
             "comment": "Date should be submitted in as YYYY-MM-DD.",
             "type": "string",
             "format": "date"
@@ -551,129 +147,6 @@
                 "μg"
             ]
         },
-        "PMI": {
-            "title": "Post-mortem interval",
-            "description": "The amount of time elapsed since death.",
-            "comment": "Post-mortem interval for tissues should be reported, if known. Using for biosamples other than tissue is currently not allowed.",
-            "type": "integer",
-            "minimum": 1
-        },
-        "PMI_units": {
-            "title": "Post-mortem interval units",
-            "description": "The unit in which the PMI time was reported.",
-            "comment": "Post-mortem interval units for tissues should be reported with PMI value, if known. Using for biosamples other than tissue is currently not allowed.",
-            "type": "string",
-            "enum": [
-                "second",
-                "minute",
-                "hour",
-                "day",
-                "week"
-            ]
-        },
-        "preservation_method": {
-            "title": "Preservation method",
-            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
-            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
-            "type": "string",
-            "enum": [
-                "cryopreservation",
-                "flash-freezing"
-            ]
-        },
-        "cell_isolation_method": {
-            "title": "Cell isolation method",
-            "description": "The method by which the cell(s) in the sampe were isolated.",
-            "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.",
-            "type": "string",
-            "enum": [
-                "micropipetting",
-                "microfluidic cell sorting",
-                "dilution",
-                "laser capture microdissection",
-                "fluorescence activated cell sorting"
-            ]
-        },
-        "model_organism_sex": {
-            "title": "Model organism sex",
-            "type": "string",
-            "description": "The sex of the model organism the biosample comes from.",
-            "comment": "model_organism_sex is not valid for a human biosample.",
-            "enum": [
-                "female",
-                "male",
-                "mixed",
-                "hermaphrodite",
-                "unknown"
-            ]
-        },
-        "mouse_life_stage": {
-            "title": "Mouse life stage",
-            "type": "string",
-            "description": "The life stage of the mouse biosample.",
-            "comment": "mouse_life_stage is not valid for a human biosample.",
-            "enum": [
-                "embryonic",
-                "postnatal",
-                "adult",
-                "unknown"
-            ]
-        },
-        "fly_life_stage": {
-            "title": "Fly life stage",
-            "type": "string",
-            "description": "Fly development stage of the animals used to prepare the biosample.",
-            "comment": "fly_life_stage is valid only for fly biosamples.",
-            "enum": [
-                "embryonic",
-                "larva",
-                "first instar larva",
-                "second instar larva",
-                "third instar larva",
-                "wandering third instar larva",
-                "prepupa",
-                "pupa",
-                "adult"
-            ]
-        },
-        "fly_synchronization_stage": {
-            "title": "Fly synchronization stage",
-            "description": "Fly development stage at which flies were synchronized.",
-            "comment": "Stage at which flies were synchronized. If available use in conjunction with time and time units post-synchronization.",
-            "type": "string",
-            "enum": [
-                "egg laying",
-                "fertilization",
-                "first larval molt",
-                "second larval molt",
-                "puff stage: PS (1-2), dark blue gut",
-                "puff stage: PS (3-6), light blue gut",
-                "puff stage: PS (7-9), clear gut",
-                "white prepupa",
-                "eclosion"
-            ]
-        },
-        "post_synchronization_time": {
-            "title": "Post-synchronization time",
-            "description": "The time that elapsed past the point when animals were synchronized.",
-            "comment": "Use in conjunction with fly_synchronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization. It requires specification of post_synchronization_time_units as well.",
-            "type": "string",
-            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
-        },
-        "post_synchronization_time_units": {
-            "title": "Post-synchronization time units",
-            "description": "The units of time that elapsed past the point when animals were synchronized.",
-            "comment": "Use in conjunction with fly_synchronization_stage or worm_synchronization_stage and post_synchronization_time to specify time elapsed post-synchronization.",
-            "type": "string",
-            "enum": [
-                "minute",
-                "hour",
-                "day",
-                "week",
-                "month",
-                "stage"
-            ]
-        },
         "post_treatment_time": {
             "title": "Post-treatment time",
             "description": "The time that elapsed past the point when biosamples were treated.",
@@ -695,108 +168,25 @@
                 "stage"
             ]
         },
-        "post_differentiation_time": {
-            "title": "Post-differentiation time",
-            "description": "The time that elapsed past the point when biosamples were differentiated.",
-            "comment": "Use in conjunction with post_differentiation_time_units to specify time elapsed post-differentiation. Use of this property requires post_differentiation_time_units specification.",
+        "preservation_method": {
+            "title": "Preservation method",
+            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
+            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
+            "type": "string",
+            "enum": [
+                "cryopreservation",
+                "flash-freezing",
+                "n/a (fresh)"
+            ]
+        },
+        "preservation_time": {
+            "title": "Preservation time",
+            "description": "The length of time that the sample was preserved",
             "type": "integer"
         },
-        "post_differentiation_time_units": {
-            "title": "Post-differentiation time units",
-            "description": "The units of time that elapsed past the point when biosamples were differentiated.",
-            "comment": "Use in conjunction with post_differentiation_time to specify time elapsed post-differentiation. Use of this property requires post_differentiation_time specification.",
-            "type": "string",
-            "enum": [
-                "minute",
-                "hour",
-                "day",
-                "week",
-                "month",
-                "stage"
-            ]
-        },
-        "worm_life_stage":{
-            "title": "Worm life stage",
-            "type": "string",
-            "description": "Worm development stage of the animals used to prepare the biosample.",
-            "comment": "worm_life_stage is valid only for worm biosamples.",
-            "enum": [
-                "early embryonic",
-                "midembryonic",
-                "late embryonic",
-                "mixed stage (embryonic)",
-                "mixed stage (late embryonic and L1 larva)",
-                "L1 larva",
-                "L2 larva",
-                "L2d larva",
-                "L3 larva",
-                "L4 larva",
-                "L4/young adult",
-                "young adult",
-                "dauer",
-                "adult",
-                "mixed stage"
-            ]
-        },
-        "worm_synchronization_stage": {
-            "title": "Worm synchronization stage",
-            "description": "Worm development stage at which the animals were synchronized.",
-            "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.  worm_life_stage is valid only for worm biosamples.",
-            "type": "string",
-            "enum": [
-                "egg laying",
-                "egg bleaching",
-                "fertilization",
-                "4 cell",
-                "L1 larva starved after bleaching",
-                "dauer exit"
-            ]
-        },
-        "model_organism_age": {
-            "title": "Age",
-            "description": " The age or age range of the model donor organism when biological material was sampled.",
-            "type": "string",
-            "comment": "model_organism_age is not valid for a human biosample.",
-            "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
-        },
-        "model_organism_age_units": {
-            "title": "Age units",
-            "type": "string",
-            "description": "Age units of the model organism.",
-            "comment": "model_organism_age_units are not valid for a human biosample.",
-            "enum": [
-                "minute",
-                "hour",
-                "day",
-                "week",
-                "month",
-                "year",
-                "stage"
-            ]
-        },
-        "model_organism_health_status": {
-            "title": "Model organism health status",
-            "type": "string",
-            "description": "Health status of the model organism.",
-            "comment": "model_organism_health_status is not valid for a human biosample."
-        },
-        "nih_institutional_certification": {
-            "type": "string",
-            "title": "NIH institutional certification",
-            "description": "Institutional certification given by the NIH for human biosamples.",
-            "comment": "Required for ENCODE4 human biosamples.",
-            "pattern": "^NIC[A-Z0-9]+$"
-        },
-        "post_nucleic_acid_delivery_time": {
-            "title": "Post-nucleic acid delivery time",
-            "description": "The time that elapsed past the point when nucleic acid was introduced into the biosample.",
-            "comment": "Use in conjunction with post_nucleic_acid_delivery_time_units to specify time elapsed post-nucleic acid delivery. Use of this property requires post_nucleic_acid_delivery_time_units specification.",
-            "type": "integer"
-        },
-        "post_nucleic_acid_delivery_time_units": {
-            "title": "Post-nucleic acid delivery time units",
-            "description": "The units of time that elapsed past the point when nucleic acid was introduced into the biosample.",
-            "comment": "Use in conjunction with post_nucleic_acid_delivery_time to specify time elapsed post-nucleic acid delivery. Use of this property requires post_nucleic_acid_delivery_time specification.",
+        "preservation_time_units": {
+            "title": "Preservation time units",
+            "description": "The units of time that the sample was preserved",
             "type": "string",
             "enum": [
                 "minute",
@@ -807,191 +197,5 @@
             ]
         }
     },
-    "facets": {
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell"
-        },
-        "sex": {
-            "title": "Sex"
-        },
-        "life_stage": {
-            "title": "Life stage"
-        },
-        "subcellular_fraction_term_name": {
-            "title": "Subcellular fraction"
-        },
-        "phase": {
-            "title": "Cell cycle phase"
-        },
-        "treatments.treatment_term_name": {
-            "title": "Biosample treatment"
-        },
-        "source.title": {
-            "title": "Source"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "nih_institutional_certification": {
-            "type": "exists",
-            "title": "Has NIH institutional certification"
-        }
-    },
-    "columns": {
-        "accession": {
-            "title": "Accession"
-        },
-        "description": {
-            "title": "Description"
-        },
-        "age": {
-            "title": "Age"
-        },
-        "age_units": {
-            "title": "Age units"
-        },
-        "age_display": {
-            "title": "Biosample age"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name"
-        },
-        "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "synchronization": {
-            "title": "Synchronization"
-        },
-        "post_synchronization_time": {
-            "title": "Post-synchronization time"
-        },
-        "post_synchronization_time_units": {
-            "title": "Post-synchronization time units"
-        },
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
-        "applied_modifications.modified_site_by_target_id.name": {
-            "title": "Modification site"
-        },
-        "applied_modifications.purpose": {
-            "title": "Modification purpose"
-        },
-        "applied_modifications.method": {
-            "title": "Modification method"
-        },
-        "applied_modifications.category": {
-            "title": "Modification category"
-        },
-        "source.title": {
-            "title": "Source"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "life_stage": {
-            "title": "Life stage"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "treatments.treatment_term_name": {
-            "title": "Biosample treatment"
-        },
-        "culture_harvest_date": {
-            "title": "Culture harvest date"
-        },
-        "date_obtained": {
-            "title": "Date obtained"
-        },
-        "summary": {
-            "title": "Summary"
-        }
-    },
-    "boost_values": {
-        "accession": 20.0,
-        "@type": 1.0,
-        "aliases": 1.0,
-        "alternate_accessions": 1.0,
-        "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.term_name": 5.0,
-        "biosample_ontology.organ_slims": 1.0,
-        "biosample_ontology.cell_slims": 1.0,
-        "biosample_ontology.developmental_slims": 1.0,
-        "biosample_ontology.synonyms": 5.0,
-        "biosample_ontology.classification": 5.0,
-        "dbxrefs": 1.0,
-        "subcellular_fraction_term_name": 1.0,
-        "phase": 2.0,
-        "life_stage": 1.0,
-        "synchronization": 1.0,
-        "health_status": 1.0,
-        "donor.accession": 1.0,
-        "donor.alternate_accessions": 1.0,
-        "donor.organism.name": 1.0,
-        "donor.organism.scientific_name": 1.0,
-        "donor.organism.taxon_id": 1.0,
-        "award.title": 1.0,
-        "award.project": 1.0,
-        "award.name": 1.0,
-        "submitted_by.email": 1.0,
-        "submitted_by.first_name": 1.0,
-        "submitted_by.last_name": 1.0,
-        "lab.institute_name": 1.0,
-        "lab.institute_label": 1.0,
-        "lab.title": 1.0,
-        "source.title": 1.0,
-        "treatments.treatment_type": 1.0,
-        "treatments.treatment_term_id": 1.0,
-        "treatments.treatment_term_name": 1.0,
-        "treatments.dbxrefs": 1.0,
-        "treatments.aliases": 1.0,
-        "applied_modifications.modified_site_by_target_id.label": 1.0,
-        "applied_modifications.modified_site_by_target_id.dbxref": 1.0,
-        "applied_modifications.modified_site_by_target_id.genes.symbol": 1.0,
-        "applied_modifications.modified_site_by_target_id.aliases": 1.0,
-        "originated_from.accession": 1.0,
-        "originated_from.alternate_accessions": 1.0,
-        "originated_from.biosample_ontology.term_id": 1.0,
-        "originated_from.biosample_ontology.term_name": 1.0,
-        "pooled_from.accession": 1.0,
-        "pooled_from.alternate_accessions": 1.0,
-        "pooled_from.biosample_ontology.term_id": 1.0,
-        "pooled_from.biosample_ontology.term_name": 1.0,
-        "characterizations.characterization_method": 1.0,
-        "organism.name": 10.0,
-        "organism.scientific_name": 1.0,
-        "organism.taxon_id": 1.0,
-        "references.title": 1.0,
-        "award.pi.title": 1.0,
-        "notes": 1.0,
-        "internal_tags": 2.0,
-        "nih_institutional_certification": 1.0,
-        "summary": 5.0,
-        "description": 3.0,
-        "age": 5.0,
-        "age_display": 5.0,
-        "age_units": 2.0,
-        "sex": 2.0
-    },
     "changelog": "/profiles/changelogs/biosample.md"
-
 }

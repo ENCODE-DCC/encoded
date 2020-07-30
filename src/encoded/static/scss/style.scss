@@ -238,6 +238,7 @@ $link-hover-color:                          darken($link-color, 15%);
         "encoded/modules/tables",
         "encoded/modules/search",
         "encoded/modules/summary",
+        "encoded/modules/body_map",
         "encoded/modules/genome_browser",
         "encoded/modules/characterizations",
         "encoded/modules/audits",
@@ -260,4 +261,4 @@ $link-hover-color:                          darken($link-color, 15%);
         "encoded/modules/faq",
         "encoded/modules/user";
 @import "encoded/state";
-@import "encoded/theme"; 
+@import "encoded/theme";

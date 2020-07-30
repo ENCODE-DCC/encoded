@@ -1,0 +1,46 @@
+{
+    "title": "Cluster metrics",
+    "description": "Schema for submitting metadata for metrics of a clustering process.",
+    "id": "/profiles/cluster_metrics.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/quality_metric_of"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "clustering_accuracy": {
+            "title": "Clustering accuracy",
+            "description": "The probability of cells being clusterd with cells of the same type.",
+            "type": "number"
+        },
+        "average_silhouette_width": {
+            "title": "Average silhouette width",
+            "description": "The difference between the average distance to other members in the same cluster from the average distance to all members of neighboring clusters, and then divided by the larger of the two values.",
+            "type": "number"
+        },
+        "kNearest_neighbor_batch_effect_test": {
+            "title": "kNearest neighbor batch effect test",
+            "description": "Tests the local batch label distrubution against the global distribution.",
+            "type": "number"
+        },
+        "local_inverse_Simpsons_Index": {
+            "title": "local inverse Simpsons index",
+            "description": "The effective number of types present in a selected neighborhood.",
+            "type": "number"
+        }
+    },
+    "changelog": "/profiles/changelogs/cluster_metrics.md"
+}

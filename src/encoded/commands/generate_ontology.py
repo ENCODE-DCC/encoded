@@ -1,6 +1,11 @@
 from rdflib import ConjunctiveGraph, exceptions, Namespace
 from rdflib import RDFS, RDF, BNode
 from rdflib.collection import Collection
+from .ntr_terms import (
+    ntr_assays,
+    ntr_biosamples
+)
+from .manual_slims import slim_shims
 import json
 
 EPILOG = __doc__
@@ -36,8 +41,9 @@ developental_slims = {
 }
 
 system_slims = {
-    'UBERON:0000383': 'musculature of body',
+    'UBERON:0001015': 'musculature',
     'UBERON:0000949': 'endocrine system',
+    'UBERON:0002330': 'exocrine system',
     'UBERON:0000990': 'reproductive system',
     'UBERON:0001004': 'respiratory system',
     'UBERON:0001007': 'digestive system',
@@ -47,8 +53,12 @@ system_slims = {
     'UBERON:0002405': 'immune system',
     'UBERON:0002416': 'integumental system',
     'UBERON:0001032': 'sensory system',
+    'UBERON:0001016': 'nervous system',
     'UBERON:0001017': 'central nervous system',
-    'UBERON:0000010': 'peripheral nervous system'
+    'UBERON:0000010': 'peripheral nervous system',
+    'UBERON:0002390': 'hematopoietic system',
+    'UBERON:0004535': 'cardiovascular system',
+    'UBERON:0000363': 'reticuloendothelial system'
 }
 
 organ_slims = {
@@ -130,39 +140,44 @@ organ_slims = {
     'UBERON:0000414': 'mucous gland',
     'UBERON:0001821': 'sebaceous gland',
     'UBERON:0000998': 'seminal vesicle',
-    'UBERON:0001820': 'sweat gland'
-
+    'UBERON:0001820': 'sweat gland',
+    'UBERON:0001555': 'digestive tract',
+    'UBERON:0000043': 'tendon'
 }
 
 cell_slims = {
     'CL:0000236': 'B cell',
-    'EFO:0001640': 'B cell',# B cell derived cell line
-    'EFO:0001639': 'cancer cell', # cancer cell line
+    'EFO:0001640': 'B cell',  # B cell derived cell line
+    'EFO:0001639': 'cancer cell',  # cancer cell line
     'CL:0002494': 'cardiocyte',
+    'CL:0002320': 'connective tissue cell',
+    'CL:0002321': 'embryonic cell',
     'CL:0000115': 'endothelial cell',
-    'EFO:0005730': 'endothelial cell', # endothelial cell derived cell line
+    'EFO:0005730': 'endothelial cell',  # endothelial cell derived cell line
     'CL:0000066': 'epithelial cell',
-    'EFO:0001641': 'epithelial cell', # epithelial cell derived cell line
+    'EFO:0001641': 'epithelial cell',  # epithelial cell derived cell line
     'CL:0000057': 'fibroblast',
-    'EFO:0002009': 'fibroblast',# fibroblast derived cell line
+    'EFO:0002009': 'fibroblast',  # fibroblast derived cell line
     'CL:0000988': 'hematopoietic cell',
     'EFO:0004905': 'induced pluripotent stem cell',
-    'EFO:0005740': 'induced pluripotent stem cell', # induced pluripotent stem cell derived cell line
+    # induced pluripotent stem cell derived cell line
+    'EFO:0005740': 'induced pluripotent stem cell',
     'CL:0000312': 'keratinocyte',
     'CL:0000738': 'leukocyte',
-    'EFO:0005292': 'lymphoblast', # lymphoblastoid cell line
+    'EFO:0005292': 'lymphoblast',  # lymphoblastoid cell line
     'CL:0000148': 'melanocyte',
     'CL:0000576': 'monocyte',
     'CL:0000763': 'myeloid cell',
     'CL:0000056': 'myoblast',
     'CL:0002319': 'neural cell',
-    'EFO:0005214': 'neuroblastoma cell', # neuroblastoma cell line
+    'EFO:0005214': 'neuroblastoma cell',  # neuroblastoma cell line
     'CL:0000669': 'pericyte',
     'CL:0000192': 'smooth muscle cell',
-    'EFO:0005735': 'smooth muscle cell', # smooth muscle cell derived cell line
+    'EFO:0005735': 'smooth muscle cell',  # smooth muscle cell derived cell line
     'CL:0000034': 'stem cell',
-    'EFO:0002886': 'stem cell', # stem cell derived cell line
-    'CL:0000084': 'T cell'
+    'EFO:0002886': 'stem cell',  # stem cell derived cell line
+    'CL:0000084': 'T cell',
+    'NTR:0000550': 'progenitor cell'
 }
 
 assay_slims = {
@@ -171,97 +186,16 @@ assay_slims = {
     'OBI:0000424': 'Transcription',  # 'transcription profiling'
     'OBI:0001398': 'DNA binding',  # "protein and DNA interaction"
     'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
-    'OBI:0001917': '3D chromatin structure',  # 'chromosome conformation identification objective'
-    'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    # 'chromosome conformation identification objective'
+    'OBI:0001917': '3D chromatin structure',
+    # 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    'OBI:0000870': 'DNA accessibility',
     'OBI:0001916': 'Replication timing',
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
     'OBI:0000845': 'RNA structure',
-    'NTR:0000516': 'Functional characterization',
-    'OBI:0002144': 'DNA sequencing'
-}
-
-slim_shims = {
-    # this allows us to manually assign term X to slim Y while waiting for ontology updates
-    'assay': {
-        # DNA accessibility
-        'OBI:0001924': ['DNA accessibility'],  # 'OBI:0000870' / MNase-seq
-        'OBI:0002039': ['DNA accessibility'],  # 'OBI:0000870', / ATAC-seq
-        'OBI:0001853': ['DNA accessibility'],  # 'OBI:0000870', / DNase-seq
-        'OBI:0001859': ['DNA accessibility'],  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
-        'OBI:0002042': ['3D chromatin structure'],  # 'OBI:0000870' (Hi-C)
-        'OBI:0001848': ['3D chromatin structure'],  # ChIA-PET / OBI:000870
-        'OBI:0001923': ['Proteomics'],  # OBI:0000615': 'MS-MS'
-        'OBI:0001849': ['Genotyping'],  # OBI:0000435 (DNA-PET)
-        'OBI:0002044': ['RNA binding'],  # OBI:0001854 (RNA-Bind-N-Seq)
-        'OBI:0002091': ['Transcription'],  # 5' RACE
-        'OBI:0002092': ['Transcription'],  # 3' RACE
-        'OBI:0002093': ['Transcription'],  # 5' RLM RACE
-        'OBI:0001863': ['DNA methylation'],  # WGBS
-        'OBI:0001862': ['DNA methylation'],  # RRBS
-        'OBI:0001861': ['DNA methylation'],  # MRE-seq
-        'OBI:0002086': ['DNA methylation'],  # TAB-seq
-        'OBI:0000716': ['DNA binding'], # ChIP-seq
-        'OBI:0001919': ['3D chromatin structure'], # 5C
-        'OBI:0002160': ['DNA binding']  # Mint-ChIP-seq
-    },
-    'organ': {
-        'CL:0002399': ['blood', 'bodily fluid'],
-        'CL:0000236': ['blood', 'bodily fluid'],
-        'CL:0000084': ['blood', 'bodily fluid'],
-        'CL:0000625': ['blood', 'bodily fluid'],
-        'CL:0000624': ['blood', 'bodily fluid'],
-        'CL:0000897': ['blood', 'bodily fluid'],
-        'CL:0000895': ['blood', 'bodily fluid'],
-        'CL:0000792': ['blood', 'bodily fluid'],
-        'CL:0000909': ['blood', 'bodily fluid'],
-        'CL:0000899': ['blood', 'bodily fluid'],
-        'CL:0000815': ['blood', 'bodily fluid'],
-        'CL:0000545': ['blood', 'bodily fluid'],
-        'CL:0000546': ['blood', 'bodily fluid'],
-        'CL:0000576': ['blood', 'bodily fluid'],
-        'CL:0001054': ['blood', 'bodily fluid'],
-        'CL:0000515': ['musculature of body'],
-        'CL:0000187': ['musculature of body'],
-        'CL:0000905': ['blood', 'bodily fluid'],
-        'CL:0000037': ['blood', 'bodily fluid'],
-        'CL:0000192': ['musculature of body'],
-        'CL:0000746': ['musculature of body', 'heart'],
-        'CL:0000837': ['blood', 'bodily fluid'],
-        'CL:0002328': ['lung', 'bronchus', 'epithelium'], # 'bronchus' & 'epithelium' are ontology-based
-        'CL:0002598': ['lung', 'bronchus'], # 'bronchus' is ontology-based
-        'CL:2000017': ['connective tissue', 'mouth'], # 'connective tissue' is ontology-based
-        'EFO:0005650': ['limb'],
-        'EFO:0005916': ['embryo'],
-        'EFO:0005023': ['adipose tissue', 'connective tissue'],
-        'EFO:0002787': ['lymphoid tissue'],
-        'EFO:0007598': ['blood', 'bodily fluid'],
-        'EFO:0000586': ['connective tissue'],
-        'EFO:0005904': ['embryo'],
-        'EFO:0002939': ['brain'],
-        'EFO:0005694': ['bone element'],
-        'EFO:0005903': ['blood', 'bodily fluid'],
-        'EFO:0000681': ['kidney'],
-        'EFO:0002324': ['lymphoid tissue'],
-        'EFO:0002798': ['blood', 'bodily fluid'],
-        'EFO:0005914': ['embryo'],
-        'EFO:0005915': ['embryo'],
-        'EFO:0002779': ['penis', 'skin of body', 'connective tissue'], # 'connective tissue' & 'penis' are ontology-based
-        'EFO:0005233': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0005480': ['blood', 'bodily fluid', 'spleen'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0005482': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0005719': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
-        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
-        'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
-        'EFO:0006283': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
-        'EFO:0006711': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
-        'EFO:0007095': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007096': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007097': ['skin of body', 'penis'], # 'penis' is ontology-based
-        'EFO:0007098': ['skin of body', 'penis'] # 'penis' is ontology-based
-    }
-
+    'NTR:0000516': 'Functional characterization'
 }
 
 preferred_name = {
@@ -283,7 +217,11 @@ preferred_name = {
     "OBI:0002458": "4C",
     "OBI:0002629": "direct RNA-seq",
     "OBI:0002144": "Circulome-seq",
-    "OBI:0002459": "genotyping HiC"
+    "OBI:0002459": "genotyping HiC",
+    "OBI:0002675": "MPRA",
+    "OBI:0002571": "polyA plus RNA-seq",
+    "OBI:0002572": "polyA minus RNA-seq",
+    "OBI:0002631": "scRNA-seq"
 }
 
 category_slims = {
@@ -317,270 +255,6 @@ type_slims = {
     'OBI:0000435': 'genotyping assay'
 }
 
-# Note this also shows the final datastructure for ontology.json
-ntr_assays = {
-    "NTR:0000612": {
-        "assay": ['RNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Switchgear",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000762": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "shRNA knockdown followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "shRNA RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000763": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "siRNA knockdown followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "siRNA RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0001132": {
-        "assay": ['RNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "RNA Bind-N-Seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "RNA Bind-N-Seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0003082": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "single cell isolation followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "scRNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0004774": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "genetic modification followed by DNase-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "GM DNase-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0003814": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPR genome editing followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CRISPR RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0004619": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPRi followed by RNA-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CRISPRi RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000438": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "single-nucleus ATAC-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "snATAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000433": {
-        "assay": ['RNA structure'],
-        "category": [],
-        "developmental": [],
-        "name": "in vivo click selective 2-hydroxyl acylation and profiling experiment",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "icSHAPE",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000444": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "single-cell ATAC-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "scATAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000445": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "long read RNA sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "long read RNA-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000458": {
-        "assay": ['DNA sequencing'],
-        "category": [],
-        "developmental": [],
-        "name": "Clone-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "Clone-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000513": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "proximity ligation-assisted ChIP-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PLAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000515": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "massively parallel reporter assay",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "MPRA",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000519": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "pooled clone sequencing",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "pooled clone sequencing",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000520": {
-        "assay": ['Functional characterization'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPR screen",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CRISPR screen",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000536": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "PRO-cap",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PRO-cap",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000538": {
-        "assay": ['RNA structure'],
-        "category": [],
-        "developmental": [],
-        "name": "in vivo click light activated structural examination of RNA",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "icLASER",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-        "NTR:0000544": {
-        "assay": ['3D chromatin structure'],
-        "category": [],
-        "developmental": [],
-        "name": "split-pool recognition of interactions by tag extension",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "SPRITE",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-}
-
 
 class Inspector(object):
 
@@ -595,13 +269,16 @@ class Inspector(object):
             try:
                 self.rdfGraph.parse(uri, format="n3")
             except:
-                raise exceptions.Error("Could not parse the file! Is it a valid RDF/OWL ontology?")
+                raise exceptions.Error(
+                    "Could not parse the file! Is it a valid RDF/OWL ontology?")
         finally:
             self.baseURI = self.get_OntologyURI() or uri
-            self.allclasses = self.__getAllClasses(includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)
+            self.allclasses = self.__getAllClasses(
+                includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)
 
     def get_OntologyURI(self, return_as_string=True):
-        test = [x for x, y, z in self.rdfGraph.triples((None, RDF.type, Ontology))]
+        test = [x for x, y, z in self.rdfGraph.triples(
+            (None, RDF.type, Ontology))]
         if test:
             if return_as_string:
                 return str(test[0])
@@ -917,25 +594,28 @@ def getTermStructure():
 
 
 def main():
-    ''' Downloads UBERON, EFO and OBI ontologies and create a JSON file '''
+    ''' Downloads UBERON, EFO, OBI and CLO ontologies and create a JSON file '''
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="Get Uberon, EFO and OBI ontologies and generate the JSON file", epilog=EPILOG,
+        description="Get Uberon, EFO, OBI, and CLO ontologies and generate the JSON file", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--obi-url', help="OBI version URL")
+    parser.add_argument('--clo-url', help="CLO version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     obi_url = args.obi_url
-    urls = [obi_url, uberon_url, efo_url]
+    clo_url = args.clo_url
+    whitelist = [uberon_url, efo_url, obi_url]
 
     terms = {}
-    for url in urls:
+    # Run on ontologies defined in whitelist
+    for url in whitelist:
         data = Inspector(url)
         for c in data.allclasses:
             if isBlankNode(c):
@@ -951,28 +631,33 @@ def main():
                             if HUMAN_TAXON in col_list:
                                 if PART_OF in col_list:
                                     for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(collection[0])[0].replace('_', ':')
+                                        term_id = splitNameFromNamespace(collection[0])[
+                                            0].replace('_', ':')
                                         if term_id not in terms:
                                             terms[term_id] = getTermStructure()
-                                        terms[term_id]['part_of'].append(splitNameFromNamespace(subC)[0].replace('_', ':'))
+                                        terms[term_id]['part_of'].append(
+                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
                                 elif DEVELOPS_FROM in col_list:
                                     for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(collection[0])[0].replace('_', ':')
+                                        term_id = splitNameFromNamespace(collection[0])[
+                                            0].replace('_', ':')
                                         if term_id not in terms:
                                             terms[term_id] = getTermStructure()
-                                        terms[term_id]['develops_from'].append(splitNameFromNamespace(subC)[0].replace('_', ':'))
+                                        terms[term_id]['develops_from'].append(
+                                            splitNameFromNamespace(subC)[0].replace('_', ':'))
             else:
                 term_id = splitNameFromNamespace(c)[0].replace('_', ':')
                 if term_id not in terms:
                     terms[term_id] = getTermStructure()
                 terms[term_id]['id'] = term_id
-                
+
                 try:
                     terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
                 except:
                     terms[term_id]['name'] = ''
 
-                terms[term_id]['preferred_name'] = preferred_name.get(term_id, '')
+                terms[term_id]['preferred_name'] = preferred_name.get(
+                    term_id, '')
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
                     if isBlankNode(parent):
@@ -980,60 +665,87 @@ def main():
                             if o.__str__() == PART_OF:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['part_of'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['part_of'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == DEVELOPS_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['develops_from'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == HAS_PART:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['has_part'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['has_part'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == DERIVES_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['derives_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['derives_from'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                                     else:
                                         for o2 in data.rdfGraph.objects(o1, IntersectionOf):
                                             for o3 in data.rdfGraph.objects(o2, RDF.first):
                                                 if not isBlankNode(o3):
-                                                    terms[term_id]['derives_from'].append(splitNameFromNamespace(o3)[0].replace('_', ':'))
+                                                    terms[term_id]['derives_from'].append(
+                                                        splitNameFromNamespace(o3)[0].replace('_', ':'))
                                             for o3 in data.rdfGraph.objects(o2, RDF.rest):
                                                 for o4 in data.rdfGraph.objects(o3, RDF.first):
                                                     for o5 in data.rdfGraph.objects(o4, SomeValuesFrom):
                                                         for o6 in data.rdfGraph.objects(o5, IntersectionOf):
                                                             for o7 in data.rdfGraph.objects(o6, RDF.first):
                                                                 if not isBlankNode(o7):
-                                                                    terms[term_id]['derives_from'].append(splitNameFromNamespace(o7)[0].replace('_', ':'))
+                                                                    terms[term_id]['derives_from'].append(
+                                                                        splitNameFromNamespace(o7)[0].replace('_', ':'))
                                                                     for o8 in data.rdfGraph.objects(o6, RDF.rest):
                                                                         for o9 in data.rdfGraph.objects(o8, RDF.first):
                                                                             if not isBlankNode(o9):
-                                                                                terms[term_id]['derives_from'].append(splitNameFromNamespace(o9)[0].replace('_', ':'))
+                                                                                terms[term_id]['derives_from'].append(
+                                                                                    splitNameFromNamespace(o9)[0].replace('_', ':'))
                             elif o.__str__() == ACHIEVES_PLANNED_OBJECTIVE:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['achieves_planned_objective'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['achieves_planned_objective'].append(
+                                            splitNameFromNamespace(o1)[0].replace('_', ':'))
                     else:
-                        terms[term_id]['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
-                
+                        terms[term_id]['parents'].append(
+                            splitNameFromNamespace(parent)[0].replace('_', ':'))
+
                 for syn in data.entitySynonyms(c):
                     try:
                         terms[term_id]['synonyms'].append(syn.__str__())
                     except:
                         pass
+
+    # Get only CLO terms from the CLO owl file
+    data = Inspector(clo_url)
+    for c in data.allclasses:
+        if c.startswith('http://purl.obolibrary.org/obo/CLO'):
+            term_id = splitNameFromNamespace(c)[0].replace('_', ':')
+            if term_id not in terms:
+                terms[term_id] = getTermStructure()
+                terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
+            for syn in data.entitySynonyms(c):
+                try:
+                    terms[term_id]['synonyms'].append(syn.__str__())
+                except:
+                    pass
+
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
-        terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
+            terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
+        terms[term]['data_with_develops_from'] = list(
+            set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
         words = iterativeChildren(terms[term]['data'], terms, 'data')
         for word in words:
             terms[term]['closure'].append(word)
 
-        d = iterativeChildren(terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
+        d = iterativeChildren(
+            terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
         for dd in d:
             terms[term]['closure_with_develops_from'].append(dd)
-       
+
         terms[term]['closure'].append(term)
         terms[term]['closure_with_develops_from'].append(term)
 
@@ -1047,13 +759,14 @@ def main():
         terms[term]['types'] = getSlims(term, terms, 'type')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
-    
+
     for term in terms:
         del terms[term]['parents'], terms[term]['develops_from']
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
-    
+
     terms.update(ntr_assays)
+    terms.update(ntr_biosamples)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
 

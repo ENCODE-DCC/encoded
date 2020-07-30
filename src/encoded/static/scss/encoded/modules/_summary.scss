@@ -1,4 +1,9 @@
-// Contains the summary title and horizontal facets
+$inset-size: 65px;
+$small-inset-size: 55px;
+$smallest-inset-size: 45px;
+
+$results-background: #E9E9E9;
+
 .summary-header {
     @at-root #{&}__facets-horizontal {
         @media print {
@@ -14,13 +19,106 @@
         }
     }
 
+    .clear-filters-control {
+        position: absolute;
+        width: 100px;
+        bottom: -10px;
+        > div {
+            font-size: 1rem;
+        }
+        @media screen and (max-width: $screen-sm-min) {
+            position: relative;
+            bottom: 10px;
+            > div {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
     .clear-filters-control--summary {
         margin: 5px 0 0;
     }
 
     .summary-header__title_control {
         position: relative;
-        margin-bottom: 40px;
+        margin: auto;
+        margin-bottom: 10px;
+        max-width: 1600px;
+    }
+
+    .body-facet-container {
+        li {
+            list-style: none;
+            display: inline;
+        }
+    }
+}
+
+.view-controls-container {
+    img {
+        margin-bottom: -14px;
+        width: 32px;
+        margin-right: 5px;
+    }
+    .btn-attached {
+        display: inline-block;
+        a {
+            padding-top: 5px;
+            font-size: 1rem;
+            font-family: Mada;
+            font-weight: 500;
+            margin: 0 2px;
+            @media screen and (max-width: $screen-sm-min) {
+                font-size: 0.8rem;
+                margin: 2px;
+            }
+            .svg-icon {
+                vertical-align: text-bottom;
+                margin-right: 10px;
+            }
+        }
+    }
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1600px;
+    margin: auto;
+    .summary-content__data {
+        background: $results-background;
+        flex: 0 1 calc(20% - 20px);
+        width: calc(20% - 20px);
+        @media screen and (max-width: 1400px) {
+            flex: 0 1 100%;
+            width: 100%;
+        }
+        .summary-content__snapshot {
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+        }
+        .award-charts__chart {
+            flex: 0 0 100%;
+            width: 100%;
+            @media screen and (max-width: 1400px) {
+                flex: 0 1 33%;
+                width: 33%;
+            }
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 1 100%;
+                width: 100%;
+            }
+        }
+    }
+    .body-facet-container {
+        flex: 0 1 80%;
+        width: 80%;
+        @media screen and (max-width: 1400px) {
+            flex: 0 1 100%;
+            width: 100%;
+        }
     }
 }
 
@@ -28,6 +126,14 @@
 // Contains the vertical facets and the charts.
 .summary-content {
     display: block;
+
+    .summary-content__data {
+        background: $results-background;
+        padding: 30px;
+        @media screen and (max-width: $screen-xs-min) {
+            padding: 10px 0;
+        }
+    }
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
@@ -38,20 +144,33 @@
         padding: 20px;
     }
 
-    @at-root #{&}__facets-vertical {
-        @media screen and (min-width: $screen-md-min) {
-            flex: 0 0 20%;
-        }
-
-        @media print {
-            display: none;
-        }
-    }
-
     // Contains all the charts.
     @at-root #{&}__data {
+        max-width: 1600px;
+        margin: auto;
+        padding: 10px;
+
+        .award-charts__chart {
+            position: relative;
+        }
+
+        #category-chart-assay-legend, #lab-chart-experiments-legend {
+            display: none;
+        }
+
+        .award-charts__legend {
+            position: absolute;
+            width: auto;
+            text-align: left;
+            padding: 5px;
+            background: white;
+            border: 1px solid #d2d2d2;
+            top: 20px;
+            right: 10px;
+        }
+
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 80%;
+            flex: 0 1 100%;
             min-width: 0; // https://github.com/chartjs/Chart.js/issues/4156#issuecomment-345773111
         }
 
@@ -89,7 +208,11 @@
 
     // Contains a full-width chart.
     @at-root #{&}__statistics {
-        display: block;     
+        display: block;
+
+        .panel {
+            background: $results-background;
+        }
 
         @media print {
             width: 100%;
@@ -121,4 +244,484 @@
     @media print {
         display: none;
     }
+}
+
+.results-count {
+    font-style: italic;
+    margin: 10px auto;
+    font-size: 1.3rem;
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 0.9rem;
+    }
+    .bold-total {
+        font-size: 1.4rem;
+        padding: 3px;
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 1rem;
+        }
+    }
+}
+
+.view-controls-container {
+    margin: auto;
+    a {
+        display: inline-block;
+    }
+}
+
+.results-controls {
+    display: inline-block;
+}
+
+.results-controls {
+    margin: 10px 0 30px;
+    max-width: 1600px;
+    width: 100%;
+    @media screen and (max-width: $screen-sm-min) {
+        margin: 0 0 30px;
+    }
+    &:not(.Homo-sapiens) {
+        margin-bottom: 0;
+    }
+}
+
+.summary-controls {
+    font-family: Mada;
+    text-align: center;
+
+    .organism-button-instructions {
+        margin-bottom: 5px;
+        font-size: 1.5rem;
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 1rem;
+        }
+    }
+
+    .search-results__facets {
+        .summary-horizontal-facets {
+            border: 0;
+            padding: 30px 0;
+            max-width: 1600px;
+            margin: auto;
+            &.human {
+                border-top: 2px solid #d2d2d2;
+                @media screen and (max-width: 1400px) {
+                    border: none;
+                }
+            }
+            .horizontal {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px;
+            }
+        }
+    }
+}
+
+.box.facets.summary-horizontal-facets.facet-num-4 {
+    .horizontal {
+        .facet {
+            flex: 0 0 25%;
+            max-width: 250px;
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 0 100%;
+                max-width: none;
+            }
+        }
+    }
+}
+
+.box.facets.summary-horizontal-facets.facet-num-3 {
+    .horizontal {
+        .facet {
+            flex: 0 0 33%;
+            max-width: 250px;
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 0 100%;
+                max-width: none;
+            }
+        }
+    }
+}
+
+.box.facets.summary-horizontal-facets.facet-num-2 {
+    .horizontal {
+        .facet {
+            flex: 0 0 50%;
+            max-width: 250px;
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 0 100%;
+                max-width: none;
+            }
+        }
+    }
+}
+
+.cls-nervebackground {
+    &:hover {
+        cursor: pointer;
+    }
+    &.highlight {
+        cursor: pointer;
+    }
+}
+
+.body-image-container {
+    path, polyline, circle, ellipse, rect, polygon {
+        &:hover:not(.cls-5):not(.cls-nervebackground):not(.active) {
+            fill: lighten($Homo-sapiens, 45%);
+            stroke: $Homo-sapiens;
+            cursor: pointer;
+        }
+        &.highlight:not(.cls-5):not(.cls-nervebackground):not(.active) {
+            fill: lighten($Homo-sapiens, 45%);
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
+}
+
+// for "skin of body" (cls-5), entire body map should not turn light purple on hover, just the outline
+.cls-5 {
+    &:hover {
+        stroke: lighten($Homo-sapiens, 20%);
+        cursor: pointer;
+    }
+    &.highlight {
+        stroke: lighten($Homo-sapiens, 20%);
+        cursor: pointer;
+    }
+}
+
+.clear-organs {
+    font-family: Mada;
+    border: 0;
+    padding: 3px 10px;
+    font-size: 1rem;
+    color: $Homo-sapiens;
+    border-radius: 3px;
+    background: #e0e0e0;
+    position: absolute;
+    bottom: -50px;
+    right: 10px;
+    .icon {
+        margin-right: 3px;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: lighten($Homo-sapiens, 45%);
+    }
+    @media screen and (max-width: $screen-md-min) {
+        left: 10px;
+        bottom: -60px;
+    }
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 0.8rem;
+        bottom: -80px;
+        left: 10px;
+        width: 100px;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        bottom: -90px;
+    }
+}
+
+.type-Summary {
+    .body-list {
+        .body-list-element {
+            display: inline-block;
+            line-height: 1;
+        }
+    }
+}
+
+.body-list {
+    @media screen and (max-width: $screen-sm-min) {
+        padding: 0;
+        font-size: 0.8rem;
+    }
+    .body-list-inner {
+        padding: 10px;
+        text-align: left;
+        position: relative;
+        line-height: 1.8;
+    }
+    .body-list-element {
+        display: inline;
+        padding: 2px 5px;
+        width: calc(50% - 4px);
+        text-align: left;
+        background: none;
+        border-radius: 3px;
+        font-family: Mada;
+        border: none;
+        font-size: 1rem;
+        margin-bottom: 4px;
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 0.8rem;
+        }
+        &:hover {
+            cursor: pointer;
+        }
+        &.active {
+            background-color: $Homo-sapiens;
+            color: white;
+        }
+        &:hover:not(.active) {
+            background-color: lighten($Homo-sapiens, 45%);
+        }
+        &.highlight:not(.active) {
+            background-color: lighten($Homo-sapiens, 45%);
+        }
+    }
+}
+
+.body-list-top {
+    max-width: 1000px;
+    margin: auto;
+    border-bottom: 2px solid #d2d2d2;
+    border-top: 2px solid #d2d2d2;
+    .body-list-element {
+        width: calc(20% - 4px);
+        @media screen and (max-width: $screen-xs-min) {
+            width: calc(50% - 4px);
+        }
+    }
+}
+
+.body-facet :nth-child(1) {
+    order: 1;
+    -webkit-order: 1;
+}
+.body-facet :nth-child(2) {
+    order: 2;
+    -webkit-order: 2;
+}
+.body-facet :nth-child(3) {
+    order: 3;
+    -webkit-order: 3;
+    @media screen and (max-width: $screen-sm-min) {
+        order: 4;
+        -webkit-order: 4;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        order: 3;
+        -webkit-order: 3;
+    }
+}
+.body-facet :nth-child(4) {
+    order: 4;
+    -webkit-order: 4;
+    @media screen and (max-width: $screen-sm-min) {
+        order: 3;
+        -webkit-order: 3;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        order: 4;
+        -webkit-order: 4;
+    }
+}
+
+.body-facet {
+    display: flex;
+    padding: 20px 0 0 20px;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    @media screen and (max-width: $screen-sm-min) {
+        padding: 0;
+    }
+    .body-image-container {
+        flex: 0 1 33%;
+        max-width: 600px;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 50%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+        svg {
+            margin-right: -25px;
+        }
+    }
+    .body-inset-container {
+        flex: 0 1 150px;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 60%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+        .tissue-container {
+            width: 65px;
+        }
+        .body-inset {
+            position: relative;
+            background: none;
+            padding: 0;
+            margin: 0;
+            margin-right: 9px;
+            border: 0;
+            img {
+                width: $inset-size;
+                @media screen and (max-width: $screen-md-min) {
+                    width: $smallest-inset-size;
+                }
+                @media screen and (max-width: $screen-md-min) {
+                    width: $small-inset-size;
+                }
+            }
+            margin-bottom: 10px;
+            &:hover:not(.active):after {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+            &.highlight:not(.active):after {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+        }
+        .body-inset:after {
+            content: '\A';
+            position: absolute;
+            width: $inset-size;
+            height: $inset-size;
+            @media screen and (max-width: $screen-md-min) {
+                width: $smallest-inset-size;
+                height: $smallest-inset-size;
+            }
+            @media screen and (max-width: $screen-md-min) {
+                width: $small-inset-size;
+                height: $small-inset-size;
+            }
+            top:0;
+            left:0;
+            background: #63326E;
+            opacity: 0;
+            transition: all 200ms;
+            -webkit-transition: all 200ms;
+            border-radius: 50%;
+        }
+    }
+    .body-list {
+        flex: 0 1 calc(33% - 65px);
+        text-align: left;
+        margin-left: -30px;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 50%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+            margin-left: 0;
+        }
+    }
+    .body-list-narrow {
+        flex: 0 1 calc(18% - 65px);
+        margin-left: 0;
+        .body-list-element {
+            width: calc(100% - 4px);
+            @media screen and (max-width: $screen-sm-min) {
+                width: calc(50% - 4px);
+            }
+        }
+        @media screen and (max-width: $screen-sm-min) {
+            flex: 0 1 40%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+    }
+}
+
+.container {
+    &.Summary {
+        width: 100%;
+        max-width: 100%;
+        @media screen and (max-width: $screen-sm-min) {
+            width: calc(100% - 20px);
+            max-width: calc(100% - 20px);
+        }
+    }
+}
+
+.organism-button {
+    font-size: 1.1rem;
+    padding: 5px 10px 3px;
+    margin-right: 5px;
+    border-radius: 3px;
+    font-weight: 400;
+    font-family: Mada;
+    background: none;
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 0.8rem;
+        margin: 5px;
+        padding: 5px 5px 3px;
+    }
+    .button-inner {
+        display: flex;
+        align-items: center;
+    }
+    img {
+        vertical-align: middle;
+        width: 30px;
+        margin-right: 5px;
+        @media screen and (max-width: $screen-md-min) {
+            display: none;
+        }
+    }
+    .button-term {
+        padding-left: 5px;
+    }
+    &.Homo-sapiens {
+        border: 2px solid $Homo-sapiens;
+        color: $Homo-sapiens;
+        &.active {
+            background-color: $Homo-sapiens;
+            color: white;
+        }
+        &:hover:not(.active) {
+            background-color: lighten($Homo-sapiens, 40%);
+        }
+    }
+    &.Mus-musculus {
+        border: 2px solid $Mus-musculus;
+        color: $Mus-musculus;
+        &.active {
+            background-color: $Mus-musculus;
+            color: white;
+        }
+        &:hover:not(.active) {
+            background-color: lighten($Mus-musculus, 40%);
+        }
+    }
+    &.Caenorhabditis-elegans {
+        border: 2px solid $Caenorhabditis-elegans;
+        color: darken($Caenorhabditis-elegans, 7%);
+        &.active {
+            background-color: $Caenorhabditis-elegans;
+            color: white;
+        }
+        &:hover:not(.active) {
+            background-color: lighten($Caenorhabditis-elegans, 40%);
+        }
+    }
+    &.Drosophila-melanogaster {
+        border: 2px solid $Drosophila-melanogaster;
+        color: $Drosophila-melanogaster;
+        &.active {
+            background-color: $Drosophila-melanogaster;
+            color: white;
+        }
+        &:hover:not(.active) {
+            background-color: lighten($Drosophila-melanogaster, 40%);
+        }
+    }
+}
+
+.line-break {
+    border-bottom: 1px solid #B9B9B9;
+    padding: 5px 0;
+    margin-bottom: 10px;
 }

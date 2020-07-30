@@ -1,0 +1,441 @@
+{
+    "title": "Raw Sequence file",
+    "description": "Schema for submitting metadata for a data file.",
+    "id": "/profiles/raw_sequence_file.json", 
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "anyOf": [
+        {
+            "required": ["dataset", "file_format", "output_type", "derived_from", "md5sum"]
+        },
+        {
+            "required": ["dataset", "file_format", "output_type", "derived_from", "no_file_available"]
+        }
+    ],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/lab"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "data_file.json#/properties"}
+    ],
+    "dependencies": {
+        "external_accession": {
+            "comment": "A file with an external accession should not get an ENCODE accession.",
+            "not": {
+                "required": ["accession"]
+            }
+        },
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
+        "read_type": {
+            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require sequencing_run_type to be specified as paired-ended",
+            "oneOf": [
+                {
+                   "required": ["paired_with", "sequencing_run_type"],
+                    "properties": {
+                        "read_type": {
+                            "enum": ["Read 2"]
+                        },
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["sequencing_run_type"],
+                    "properties": {
+                        "read_type": {
+                            "enum": ["Read 1"]
+                        },
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "required": ["sequencing_run_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "read_type": {
+                            "enum": ["Reads 1,2"]
+                        },
+                        "sequencing_run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                }
+            ]
+        },
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "dataset": {
+            "linkTo": "Dataset"
+        },
+        "supersedes": {
+            "items": {
+                "comment": "The files in this list should be archived or revoked.",
+                "type": "string",
+                "linkTo": "RawSequenceFile"
+            }
+        },
+        "read_count": {
+            "title": "Read count",
+            "description": "Number of reads in fastq file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "permission": "import_items",
+            "type": "integer",
+            "minimum": 0
+        },
+        "file_format": {
+            "enum": [
+                "fasta",
+                "fastq",
+                "sra"
+            ]
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A file participating as input into software to produce this output file.",
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "RawSequenceFile"
+            }
+        },
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Flowcell based fastq signature part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
+                "type":  "string",
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
+            }
+        },
+        "platform": {
+            "title": "Platform",
+            "description": "The device used to sequence data.",
+            "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
+            "type": "string",
+            "enum": [
+                "Illumina NovaSeq 6000",
+                "Illumina HiSeq 4000",
+                "Illumina HiSeq 2500"
+            ]
+        },
+        "read_length": {
+            "title": "Read length",
+            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
+            "type": "integer",
+            "minimum": 0
+        },
+        "sequencing_run_type": {
+            "title": "Run type",
+            "description": "Indicates if file is part of a single or paired end sequencing run",
+            "comment": "This field is required for sra and fastq files.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended"
+            ]
+        },
+        "paired_with": {
+            "title": "Paired with",
+            "description": "The paired end fastq that corresponds with this file.",
+            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "read_name_details": {
+            "title": "Fastq read name details",
+            "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
+            "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
+            "type": "object",
+            "permission": "import_items",
+            "additionalProperties": false,
+            "properties": {
+                "flowcell_id_location": {
+                    "title": "Flowcell identifier location",
+                    "description": "Location of the flowcell identifier in the read name",
+                    "comment": "Zero-based location of the flowcell identifier in the read name, if you split read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "lane_id_location": {
+                    "title": "Lane identifier location",
+                    "description": "Location of the lane identifier in the read name",
+                    "comment": "Zero-based location of the lane identifier in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "read_number_location": {
+                    "title": "Read number (1 or 2) identifier location",
+                    "description": "Location of the read number in the read name",
+                    "comment": "Zero-based location of the read number in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "barcode_location": {
+                    "title": "Barcode location",
+                    "description": "Location of the barcode in the read name",
+                    "comment": "Zero-based location of the barcode in the read name, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "flowcell_details": {
+            "title": "Flowcell details",
+            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "index_of": {
+            "title": "Index of",
+            "description": "The files this index file is relevant for.",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "RawSequenceFile"
+            }
+        },
+        "output_type": {
+            "enum": [
+                "undetermined reads",
+                "assigned reads"
+            ]
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The experimental library designation for the file.",
+            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        },
+        "read_type": {
+            "title": "Read type",
+            "description": "Read reference during experimental protocol.",
+            "type": "string",
+            "enum": [
+                "Read 1",
+                "Read 1N",
+                "Read 2",
+                "Read 2N",
+                "i5 index",
+                "i7 index"
+            ]
+        },
+        "sequence_type": {
+            "title": "Sequence type",
+            "description": "The biological content of the sequence reads.",
+            "type": "array",
+            "items": {
+                "title": "Sequence type",
+                "description": "The biological content of the sequence reads.",
+                "type": "string",
+                "enum": [
+                    "3' of molecule",
+                    "5' of molecule",
+                    "molecule",
+                    "feature barocde",
+                    "cell barcode",
+                    "sample index",
+                    "UMI",
+                    "fragment"
+                ]
+            }
+        },
+        "software_version": {
+            "title": "Software version",
+            "description": "The software version used to generate the raw data file from the BCL.",
+            "type": "string",
+            "linkTo": "SoftwareVersion"
+        },
+        "demultiplexed_type": {
+            "title": "Demultiplexed type",
+            "description": "The read assignment after sample demultiplexing for fastq files.",
+            "type": "string",
+            "enum": [
+                "R1",
+                "R2",
+                "R3",
+                "I1",
+                "I2"
+            ]
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "platform": {
+            "title": "Platform"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "assay_term_name": {
+            "title": "Assay term name",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "accession": {
+            "title": "Accession"
+        },
+        "dataset": {
+            "title": "Dataset"
+        },
+        "file_format": {
+            "title": "File Format"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "file_format_type": {
+            "title": "File format type"
+        },
+        "file_size": {
+            "title": "File size"
+        },
+        "assay_term_name": {
+            "title": "Assay term name"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample name"
+        },
+        "href": {
+            "title": "Download URL"
+        },
+        "derived_from.accession": {
+            "title": "Library"
+        },
+        "paired_with": {
+            "title": "Paired with"
+        },
+        "sequencing_run_type": {
+            "title": "Run type"
+        },
+        "read_length": {
+            "title": "Read length"
+        },
+        "read_length_units": {
+            "title": "Read length units"
+        },
+        "output_category": {
+            "title": "Output category"
+        },
+        "output_type": {
+            "title": "Output type"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "date_created": {
+            "title": "Date created"
+        },
+        "submitter_comment": {
+            "title": "Submitter comment"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "output_type_output_category": {
+        "reads": "raw data",
+        "index reads": "raw data",
+        "rejected reads": "raw data",
+        "subreads": "raw data"
+    },
+    "file_format_file_extension": {
+        "fasta": ".fasta.gz",
+        "fastq": ".fastq.gz",
+        "sra": ".sra",
+        "bam": ".bam"
+    },
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/raw_sequence_file.md"
+}

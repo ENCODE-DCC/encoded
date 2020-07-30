@@ -1,8 +1,0 @@
-runcmd:
-- sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
-- sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
-- sudo -u ubuntu %(CC_DIR)s/post-boot-install.sh %(S3_AUTH_KEYS)s
-- sudo -u ubuntu %(CC_DIR)s/java11-oracle-install.sh
-- %(CC_DIR)s/es-install.sh %(CLUSTER_NAME)s %(JVM_GIGS)s %(ES_OPT_FILENAME)s NONE NONE
-- %(CC_DIR)s/cloudwatchmon-install.sh
-- %(CC_DIR)s/post-install-install.sh

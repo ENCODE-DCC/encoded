@@ -1,6 +1,5 @@
 from snovault import CONNECTION
 from snovault import upgrade_step
-from .shared import ENCODE2_AWARDS
 from pyramid.traversal import find_root
 
 
@@ -24,11 +23,6 @@ def antibody_lot_2_3(value, system):
     if 'status' in value:
         if value['status'] == 'DELETED':
             value['status'] = 'deleted'
-        elif value['status'] == 'CURRENT':
-            if value['award'] in ENCODE2_AWARDS:
-                value['status'] = 'released'
-            elif value['award'] not in ENCODE2_AWARDS:
-                value['status'] = 'in progress'
 
 
 @upgrade_step('antibody_lot', '3', '4')

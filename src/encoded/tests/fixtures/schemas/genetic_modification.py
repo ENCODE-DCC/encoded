@@ -276,6 +276,7 @@ def rnai_1(testapp, lab, award, source, target):
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
+
 @pytest.fixture
 def genetic_modification_1(lab, award):
     return {
@@ -341,6 +342,7 @@ def genetic_modification_5(lab, award, crispr_gm):
             'end': 5309451
             }]
     }
+
 
 @pytest.fixture
 def genetic_modification_6(lab, award, crispr_gm, source):
@@ -575,4 +577,51 @@ def characterization_insertion_CRISPR(lab, award):
         'method': 'CRISPR',
         'modified_site_nonspecific': 'random',
         'introduced_elements': 'synthesized DNA'
+    }
+
+
+@pytest.fixture
+def disruption_genetic_modification(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'disruption',
+        'purpose': 'characterization',
+        'method': 'CRISPR'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def activation_genetic_modification(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'activation',
+        'purpose': 'characterization',
+        'method': 'CRISPR'
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def HR_knockout(lab, award, target):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'knockout',
+        'purpose': 'repression',
+        'method': 'homologous recombination',
+        'modified_site_by_target_id': target['@id']
+    }
+
+
+@pytest.fixture
+def CRISPR_introduction(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'method': 'transient transfection'
     }

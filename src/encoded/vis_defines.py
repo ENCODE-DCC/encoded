@@ -538,7 +538,7 @@ class VisDefines(object):
                      "shRNA knockdown followed by RNA-seq", \
                      "CRISPR genome editing followed by RNA-seq", \
                      "CRISPRi followed by RNA-seq", \
-                     "single cell isolation followed by RNA-seq", \
+                     "single-cell RNA sequencing assay", \
                      "siRNA knockdown followed by RNA-seq"]:
             reps = self.dataset.get("replicates", [])  # NOTE: overly cautious
             if len(reps) < 1:
@@ -1130,12 +1130,12 @@ class IhecDefines(object):
         assay = dataset['assay_term_name']
         if assay == 'microRNA-seq':
             return 'smRNA-Seq'
+        if assay == 'polyA plus RNA-seq':
+            return 'mRNA-Seq'
         if assay == 'RNA-seq':
             assay_title = dataset.get('assay_title')
             if assay_title == 'total RNA-seq':
                 return 'total-RNA-Seq'
-            if assay_title == 'polyA plus RNA-seq':
-                return 'mRNA-Seq'
             return 'RNA-Seq'
 
         #if vis_type == "ChIA":

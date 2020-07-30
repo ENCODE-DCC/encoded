@@ -2,18 +2,15 @@
     {
         "address1": "School of Biological Sciences",
         "address2": "2218 Biological Sciences III",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Irvine",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UCI",
         "institute_name": "University of California at Irvine",
         "name": "ali-mortazavi",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "netus.lorem@risus.lobortis",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "netus.lorem@risus.lobortis"
+        ],
         "postal_code": "92697-2300",
         "state": "CA",
         "title": "Ali Mortazavi, UCI",
@@ -22,18 +19,15 @@
     {
         "address1": "Department of Biochemistry and Molecular Biophysics",
         "address2": "1200 California Blvd; MC156-29",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Pasadena",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Caltech",
         "institute_name": "California Institute of Technology",
         "name": "barbara-wold",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "vitae.quis@mauris.aptent",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "vitae.quis@mauris.aptent"
+        ],
         "postal_code": "91125",
         "state": "CA",
         "title": "Barbara Wold, Caltech",
@@ -42,20 +36,15 @@
     {
         "address1": "Department of Cellular and Molecular Medicine",
         "address2": "9500 Gilman Drive, Room 231",
-        "awards": [
-            "ENCODE2-Mouse",
-            "ENCODE2",
-            "U54HG006997"
-        ],
         "city": "La Jolla",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UCSD",
         "institute_name": "University of California at San Diego",
         "name": "bing-ren",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "tristique.sem@faucibus.semper",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "tristique.sem@faucibus.semper"
+        ],
         "state": "CA",
         "title": "Bing Ren, UCSD",
         "uuid": "2f706386-9534-4e36-918d-a0f6b46d9071"
@@ -63,20 +52,15 @@
     {
         "address1": "Massachusetts General Hospital Simches Research Building, CPZN 8234",
         "address2": "185 Cambridge St.",
-        "awards": [
-            "U01ES017155",
-            "ENCODE2",
-            "U54HG006991"
-        ],
         "city": "Boston",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Broad",
         "institute_name": "Broad Institute",
         "name": "bradley-bernstein",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "hymenaeos.blandit@sit.dictum",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "hymenaeos.blandit@sit.dictum"
+        ],
         "postal_code": "2114",
         "state": "MA",
         "title": "Bradley Bernstein, Broad",
@@ -85,18 +69,15 @@
     {
         "address1": "Department of Genetics and Developmental Biology",
         "address2": "400 Farmington Ave.",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "Farmington",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UConn",
         "institute_name": "University of Connecticut",
         "name": "brenton-graveley",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "mus.mi@porttitor.molestie",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "mus.mi@porttitor.molestie"
+        ],
         "postal_code": "06030-6403",
         "state": "CT",
         "title": "Brenton Graveley, UConn",
@@ -105,52 +86,42 @@
     {
         "address1": "Department of Biology",
         "address2": "31 Ames Street, 68-271A",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "Cambridge",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "MIT",
         "institute_name": "Massachusetts Institute of Technology",
         "name": "chris-burge",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "orci.mus@odio.per",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "orci.mus@odio.per"
+        ],
         "postal_code": "02139-4307",
         "state": "MA",
         "title": "Chris Burge, MIT",
         "uuid": "bc8e3211-c653-4ae1-92e8-112336199ec7"
     },
     {
-        "awards": [
-            "ENCODE2",
-            "ENCODE2-Mouse"
-        ],
-        "fax": "000-000-0000",
         "institute_label": "UCSC",
         "name": "encode2-project",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "vestibulum.tortor@vitae.nec",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "vestibulum.tortor@vitae.nec"
+        ],
         "title": "ENCODE2 Project, UCSC",
         "uuid": "582d980f-664f-48f5-9e75-5fe60032d4a3"
     },
     {
         "address1": "Sanford Consortium for Regenerative Medicine",
         "address2": "2880 Torrey Pines Scenic Dr.",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "La Jolla",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UCSD",
         "institute_name": "University of California at San Diego",
         "name": "gene-yeo",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "accumsan.egestas@imperdiet.rutrum",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "accumsan.egestas@imperdiet.rutrum"
+        ],
         "postal_code": "92037",
         "state": "CA",
         "title": "Gene Yeo, UCSD",
@@ -158,18 +129,15 @@
     },
     {
         "address1": "601 Genome Way Northwest",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Huntsville",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "HAIB",
         "institute_name": "HudsonAlpha Institute for Biotechnology",
         "name": "greg-cooper",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "ad.cursus@proin.quam",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "ad.cursus@proin.quam"
+        ],
         "postal_code": "35806",
         "state": "AL",
         "title": "Greg Cooper, HAIB",
@@ -178,18 +146,15 @@
     {
         "address1": "CIEMAS, 2363B",
         "address2": "101 Science Dr., Box 3382",
-        "awards": [
-            "ENCODE2"
-        ],
         "city": "Durham",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Duke",
         "institute_name": "Duke University",
         "name": "gregory-crawford",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "metus.donec@nisl.montes",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "metus.donec@nisl.montes"
+        ],
         "postal_code": "27708",
         "state": "NC",
         "title": "Gregory Crawford, Duke",
@@ -198,18 +163,15 @@
     {
         "address1": "Department of Genetics",
         "address2": "300 Pasteur Drive; MC5120",
-        "awards": [
-            "U41HG006992"
-        ],
         "city": "Stanford",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Stanford",
         "institute_name": "Stanford University",
         "name": "j-michael-cherry",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "massa.porta@varius.mauris",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "massa.porta@varius.mauris"
+        ],
         "postal_code": "94304-5577",
         "state": "CA",
         "title": "J. Michael Cherry, Stanford",
@@ -220,13 +182,13 @@
         "address2": "408 Fordham Hall, CB# 3280",
         "city": "Chapel Hill",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UNC",
         "institute_name": "University of North Carolina at Chapel Hill",
         "name": "jason-lieb",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "quisque.consequat@venenatis.magna",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "quisque.consequat@venenatis.magna"
+        ],
         "postal_code": "27599-3280",
         "state": "NC",
         "title": "Jason Lieb, UNC",
@@ -235,19 +197,15 @@
     {
         "address1": "Department of Biochemistry & Molecular Pharmacology",
         "address2": "364 Plantation Street, LRB-509",
-        "awards": [
-            "ENCODE2",
-            "U54HG007010"
-        ],
         "city": "Worcester",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UMass",
         "institute_name": "University of Massachusets Medical School",
         "name": "job-dekker",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "augue.eros@nisi.turpis",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "augue.eros@nisi.turpis"
+        ],
         "postal_code": "1605",
         "state": "MA",
         "title": "Job Dekker, UMass",
@@ -255,18 +213,15 @@
     },
     {
         "address1": "10010 North Torrey Pines Road",
-        "awards": [
-            "U54HG006997"
-        ],
         "city": "San Diego",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Salk",
         "institute_name": "Salk Institute for Biological Studies",
         "name": "joe-ecker",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "sagittis.proin@ultricies.parturient",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "sagittis.proin@ultricies.parturient"
+        ],
         "postal_code": "92037",
         "state": "CA",
         "title": "Joe Ecker, Salk",
@@ -275,18 +230,15 @@
     {
         "address1": "7 Divinity Ave / Rm 205",
         "address2": "7 Cambridge Center/6047-F",
-        "awards": [
-            "U54HG006991"
-        ],
         "city": "Camrbidge",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Broad",
         "institute_name": "Broad Institute",
         "name": "john-rinn",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "sapien.mi@adipiscing.justo",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "sapien.mi@adipiscing.justo"
+        ],
         "postal_code": "02138",
         "state": "MA",
         "title": "John Rinn, Broad",
@@ -295,20 +247,15 @@
     {
         "address1": "Department of Genome Sciences and Medicine",
         "address2": "3720 15th Ave. NE, Foege Bldg. Rm. S310",
-        "awards": [
-            "ENCODE2-Mouse",
-            "U54HG007010",
-            "ENCODE2"
-        ],
         "city": "Seattle",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UW",
         "institute_name": "University of Washington",
         "name": "john-stamatoyannopoulos",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "blandit.orci@conubia.magna",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "blandit.orci@conubia.magna"
+        ],
         "postal_code": "98195",
         "state": "WA",
         "title": "John Stamatoyannopoulos, UW",
@@ -317,18 +264,15 @@
     {
         "address1": "Department of Human Genetics",
         "address2": "900 East 57th Street",
-        "awards": [
-            "U54HG006996"
-        ],
         "city": "Chicago",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UChicago",
         "institute_name": "University of Chicago",
         "name": "kevin-white",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "rutrum.fermentum@platea.turpis",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "rutrum.fermentum@platea.turpis"
+        ],
         "postal_code": "60637",
         "state": "IL",
         "title": "Kevin White, UChicago",
@@ -337,18 +281,15 @@
     {
         "address1": "2800 Mitchell Drive",
         "address2": "Lawrence Berkley National Labratory",
-        "awards": [
-            "U54HG006997"
-        ],
         "city": "Walnut Creek",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "JGI",
         "institute_name": "DOE Joint Genome Institute",
         "name": "len-pennacchio",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "venenatis.tempus@tincidunt.nostra",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "venenatis.tempus@tincidunt.nostra"
+        ],
         "postal_code": "94598",
         "state": "CA",
         "title": "Len Pennacchio, JGI",
@@ -357,20 +298,15 @@
     {
         "address1": "Department of Genetics",
         "address2": "300 Pasteur Drive; MC5120",
-        "awards": [
-            "ENCODE2-Mouse",
-            "ENCODE2",
-            "U54HG006996"
-        ],
         "city": "Stanford",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Stanford",
         "institute_name": "Stanford University",
         "name": "michael-snyder",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "fames.at@per.varius",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "fames.at@per.varius"
+        ],
         "postal_code": "94305-5120",
         "state": "CA",
         "title": "Michael Snyder, Stanford",
@@ -379,18 +315,15 @@
     {
         "address1": "Department of Biochemistry & Molecular Biology",
         "address2": "1333 San Pablo St.",
-        "awards": [
-            "U54HG006996"
-        ],
         "city": "Los Angeles",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "USC",
         "institute_name": "University of Southern California",
         "name": "peggy-farnham",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "taciti.vehicula@vitae.vivamus",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "taciti.vehicula@vitae.vivamus"
+        ],
         "postal_code": "90033",
         "state": "CA",
         "title": "Peggy Farnham, USC",
@@ -398,51 +331,41 @@
     },
     {
         "address1": "601 Genome Way",
-        "awards": [
-            "ENCODE2",
-            "U54HG006998"
-        ],
         "city": "Huntsville",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "HAIB",
         "institute_name": "HudsonAlpha Institute for Biotechnology",
         "name": "richard-myers",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "maecenas.curabitur@nibh.phasellus",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "maecenas.curabitur@nibh.phasellus"
+        ],
         "postal_code": "35806",
         "state": "AL",
         "title": "Richard Myers, HAIB",
         "uuid": "c0a3540e-8ef0-4d4d-a449-ae47c2475838"
     },
     {
-        "awards": [
-            "ROADMAP"
-        ],
-        "fax": "000-000-0000",
         "institute_label": "Baylor",
         "name": "roadmap-epigenomics",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "felis.senectus@hymenaeos.nibh",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "felis.senectus@hymenaeos.nibh"
+        ],
         "title": "Roadmap Epigenomics, Baylor",
         "uuid": "0f386478-c902-4509-8daa-1f88f11238bc"
     },
     {
         "address1": "Dr. Aiguader, 88",
-        "awards": [
-            "U54HG007004"
-        ],
         "city": "Barcelona",
         "country": "Spain",
-        "fax": "000-000-0000",
         "institute_label": "CRG",
         "institute_name": "Centre for Genomic Regulation",
         "name": "roderic-guigo",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "ultrices.id@tristique.natoque",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "ultrices.id@tristique.natoque"
+        ],
         "postal_code": "8003",
         "state": "Catalonia",
         "title": "Roderic Guigo, CRG",
@@ -450,19 +373,15 @@
     },
     {
         "address1": "304 Wartik Laboratory",
-        "awards": [
-            "ENCODE2-Mouse",
-            "U54HG006998"
-        ],
         "city": "University Park",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "PennState",
         "institute_name": "Pennsylvania State University",
         "name": "ross-hardison",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "tempor.convallis@libero.nibh",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "tempor.convallis@libero.nibh"
+        ],
         "postal_code": "16802",
         "state": "PA",
         "title": "Ross Hardison, PennState",
@@ -471,18 +390,15 @@
     {
         "address1": "Department of Genetics",
         "address2": "PO Box 208005, 333 Cedar St.",
-        "awards": [
-            "U54HG006996"
-        ],
         "city": "New Haven",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Yale",
         "institute_name": "Yale University",
         "name": "sherman-weissman",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "semper.habitant@ut.venenatis",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "semper.habitant@ut.venenatis"
+        ],
         "postal_code": "06520-8005",
         "state": "CT",
         "title": "Sherman Weissman, Yale",
@@ -490,19 +406,15 @@
     },
     {
         "address1": "500 Sunnyside Blvd",
-        "awards": [
-            "ENCODE2",
-            "U54HG007004"
-        ],
         "city": "Woodbury",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "CSHL",
         "institute_name": "Cold Spring Harbor Laboratory",
         "name": "thomas-gingeras",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "viverra.dis@integer.platea",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "viverra.dis@integer.platea"
+        ],
         "postal_code": "11797",
         "state": "NY",
         "title": "Thomas Gingeras, CSHL",
@@ -511,18 +423,15 @@
     {
         "address1": "CIEMAS, Room 2347",
         "address2": "101 Science Drive, IGSP Box 3382",
-        "awards": [
-            "U54HG006998"
-        ],
         "city": "Durham",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "Duke",
         "institute_name": "Duke University",
         "name": "tim-reddy",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "conubia.phasellus@et.montes",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "conubia.phasellus@et.montes"
+        ],
         "postal_code": "27708",
         "state": "NC",
         "title": "Tim Reddy, Duke",
@@ -533,13 +442,13 @@
         "address2": "1 University Station A4800",
         "city": "Austin",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UTA",
         "institute_name": "University of Texas at Austin",
         "name": "vishwanath-iyer",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "tempor.nec@torquent.ve",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "tempor.nec@torquent.ve"
+        ],
         "postal_code": "78712-0159",
         "state": "TX",
         "title": "Vishwanath Iyer, UTA",
@@ -548,19 +457,15 @@
     {
         "address1": "Baskin School of Engineering",
         "address2": "1156 High St.; Mail Stop CBSE/ITI",
-        "awards": [
-            "ENCODE2",
-            "U41HG006992"
-        ],
         "city": "Santa Cruz",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UCSC",
         "institute_name": "University of California at Santa Cruz",
         "name": "w-james-kent",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "vestibulum.tortor@vitae.nec",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "vestibulum.tortor@vitae.nec"
+        ],
         "postal_code": "95064",
         "state": "CA",
         "title": "W. James Kent, UCSC",
@@ -569,18 +474,15 @@
     {
         "address1": "Department of Cellular and Molecular Medicine",
         "address2": "9500 Gilman Drive, Room 231",
-        "awards": [
-            "U54HG007005"
-        ],
         "city": "La Jolla",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UCSD",
         "institute_name": "University of California at San Diego",
         "name": "xiang-dong-fu",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "laoreet.arcu@orci.leo",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "laoreet.arcu@orci.leo"
+        ],
         "postal_code": "92093-0651",
         "state": "CA",
         "title": "Xiang-Dong Fu, UCSD",
@@ -589,18 +491,15 @@
     {
         "address1": "Department of Genome Sciences",
         "address2": "3720 15th Ave NE, Foege S-350D, Box 355065",
-        "awards": [
-            "U41HG007355"
-        ],
         "city": "Seattle",
         "country": "USA",
-        "fax": "000-000-0000",
         "institute_label": "UW",
         "institute_name": "University of Washington",
         "name": "robert-waterston",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "uskuf.shyec@doton.danona",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "uskuf.shyec@doton.danona"
+        ],
         "postal_code": "98195-5065",
         "state": "WA",
         "title": "Robert Waterston, UW",
@@ -608,25 +507,21 @@
     },
     {
         "address1": "DNA Nexus",
-        "awards": [
-            "/awards/U41HG006992/"
-        ],
         "country": "USA",
         "name": "encode-processing-pipeline",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "pi": "uskuf.shyec@doton.danona",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "uskuf.shyec@doton.danona"
+        ],
         "status": "current",
         "title": "ENCODE Processing Pipeline",
         "uuid": "a558111b-4c50-4b2e-9de8-73fd8fd3a67d"
     },
     {
         "address1": "",
-        "awards": ["U41HG006992"],
         "country": "",
         "name": "encode-consortium",
-        "phone1": "",
-        "phone2": "",
+        "phone": "",
         "status": "current",
         "title": "ENCODE Consortium",
         "uuid": "cb0ef1f6-3bd3-4000-8636-1c5b9f7000dc"

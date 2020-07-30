@@ -1,195 +1,189 @@
-[{
-    "classification": "cell line",
-    "uuid": "530d3486-b2b6-4026-9ef2-4149b5d1ca60",
-    "term_name": "A549",
-    "term_id": "EFO:0001086",
-    "status": "released"
-}, {
-    "classification": "in vitro differentiated cells",
-    "uuid": "4847449a-3e1e-4d56-8c7d-dbc1638d057b",
-    "term_name": "AVA",
-    "term_id": "NTR:0005842",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "16e3ae2b-ebc1-4dd4-a655-814eb76b9bf5",
-    "term_name": "C2C12",
-    "term_id": "EFO:0001098",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "d1d53fcd-9497-4b0f-b94f-57cc5a570d97",
-    "term_name": "CH12.LX cell",
-    "term_id": "EFO:0005233",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "c4445d05-a05a-46bc-8330-2e0c1644fdae",
-    "term_name": "GM06990",
-    "term_id": "EFO:0002783",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "58f3d100-c166-4638-afdb-e941d7c77747",
-    "term_name": "GM12878",
-    "term_id": "EFO:0002784",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "eedcfc42-d5a1-4a7e-a420-659f0054ce24",
-    "term_name": "H9-hESC",
-    "term_id": "NTR:0000838",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "df2054b1-3484-4d06-b64c-d3fdb450df9f",
-    "term_name": "K562",
-    "term_id": "EFO:0002067",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "dbxrefs": ["Cellosaurus:CVCL_0395"],
-    "uuid": "401ed6f4-918f-4407-be71-71a4c3693d7d",
-    "term_name": "LNCAP",
-    "term_id": "EFO:0002071",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "24db2124-07e3-4ad8-b74a-e142a2e08748",
-    "term_name": "MCF-7",
-    "term_id": "EFO:0001203",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "8cf9e560-36e9-444e-8855-20e535c0cc5f",
-    "term_name": "SK-N-SH",
-    "term_id": "EFO:0003072",
-    "status": "released"
-}, {
-    "classification": "primary cell",
-    "uuid": "055c77f2-2a91-4cf1-82dc-4ac6328d123e",
-    "term_name": "aortic smooth muscle cell",
-    "term_id": "CL:0002539",
-    "status": "released"
-}, {
-    "classification": "primary cell",
-    "uuid": "2b56c868-0e0e-4bb7-a6f8-48a575645307",
-    "term_name": "basal cell of epithelium of terminal bronchiole",
-    "term_id": "CL:1000350",
-    "status": "released"
-}, {
-    "classification": "primary cell",
-    "uuid": "c4803eea-e154-4c99-b572-719308a1a0bd",
-    "term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
-    "term_id": "NTR:0000031",
-    "status": "released"
-}, {
-    "classification": "tissue",
-    "uuid": "eea050cd-9e8c-4420-967f-3581b20536ab",
-    "term_name": "embryonic facial prominence",
-    "term_id": "UBERON:0012314",
-    "status": "released"
-}, {
-    "classification": "primary cell",
-    "uuid": "3fc75da8-8f87-4749-939e-cee38f5c7ab0",
-    "term_name": "embryonic stem cell",
-    "term_id": "CL:0002322",
-    "status": "released"
-}, {
-    "classification": "single cell",
-    "uuid": "70a81e48-20c3-4de9-a5aa-ef92ff9b6e27",
-    "term_name": "embryonic stem cell",
-    "term_id": "CL:0002322",
-    "status": "released"
-}, {
-    "classification": "tissue",
-    "uuid": "6d82d15f-9a89-4120-904d-c14530ed83db",
-    "term_name": "heart",
-    "term_id": "UBERON:0000948",
-    "status": "released"
-}, {
-    "classification": "tissue",
-    "uuid": "328f8d39-e658-480b-b3ac-2bf92a094606",
-    "term_name": "islet of Langerhans",
-    "term_id": "UBERON:0000006",
-    "status": "released"
-}, {
-    "classification": "tissue",
-    "uuid": "98c9e16f-1440-48e1-9bae-a5dcc33d0aa5",
-    "term_name": "midbrain",
-    "term_id": "UBERON:0001891",
-    "status": "released"
-}, {
-    "classification": "whole organisms",
-    "uuid": "2c89df50-29f4-4876-974c-40c9733f9f86",
-    "term_name": "multi-cellular organism",
-    "term_id": "UBERON:0000468",
-    "status": "released"
-}, {
-    "classification": "in vitro differentiated cells",
-    "uuid": "822bf683-7e94-4aa4-afbd-8e5f3293621a",
-    "term_name": "myocyte",
-    "term_id": "NTR:0000022",
-    "status": "released"
-}, {
-    "_test": "BiosampleType audit inconsistent ontology term",
-    "classification": "single cell",
-    "uuid": "9996c871-33ca-44ef-ba3b-38359170f1ca",
-    "term_name": "heart",
-    "term_id": "EFO:0002067",
-    "status": "released"
-}, {
-    "classification": "cell-free sample",
-    "uuid": "23f48440-6770-4011-8eb0-9a7eb16f2ef0",
-    "term_name": "cell-free sample",
-    "term_id": "NTR:0000471",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "302585be-4afc-4712-b158-0e613a8e0aa7",
-    "term_name": "IMR-90",
-    "term_id": "EFO:0001196",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "2ca8e02c-2c6e-4bcd-b361-668819050b93",
-    "term_name": "HeLa-S3",
-    "term_id": "EFO:0002791",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "6d281bc4-8581-49e6-a9d4-066be68df5cd",
-    "term_name": "MEL cell line",
-    "term_id": "EFO:0003971",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "c38a56fd-40bf-4db1-bf8f-cd2e6af0bde3",
-    "term_name": "HepG2",
-    "term_id": "EFO:0001187",
-    "status": "released"
-}, {
-    "classification": "in vitro differentiated cells",
-    "uuid": "e5ee35e6-a904-43d1-af5d-4893312cc544",
-    "term_name": "neural cell",
-    "term_id": "CL:0002319",
-    "status": "released"
-}, {
-    "classification": "organoid",
-    "uuid": "d5ee35e6-a904-43d1-af5d-4893312cc545",
-    "term_name": "brain organoid",
-    "term_id": "NTR:0002319",
-    "status": "released"
-}, {
-    "classification": "cell line",
-    "uuid": "80adb97c-70f4-11e9-a923-1681be663d3e",
-    "term_name": "WTC-11",
-    "term_id": "EFO:0009747",
-    "status": "released"
-}, {
-    "classification": "cloning host",
-    "uuid": "8e4fab48-e5a6-450b-8c5c-07512c845df8",
-    "term_name": "DNA cloning sample",
-    "term_id": "NTR:0000545",
-    "status": "released"
-}]
+[
+    {
+        "uuid": "979e8378-e5c3-41f3-8376-c6c7ad8a7812",
+        "term_name": "liver",
+        "term_id": "UBERON:0002107",
+        "status": "released"
+    },
+    {
+        "uuid": "530d3486-b2b6-4026-9ef2-4149b5d1ca60",
+        "term_name": "A549",
+        "term_id": "EFO:0001086",
+        "status": "released"
+    },
+    {
+        "uuid": "4847449a-3e1e-4d56-8c7d-dbc1638d057b",
+        "term_name": "AVA",
+        "term_id": "NTR:0005842",
+        "status": "released"
+    },
+    {
+        "uuid": "16e3ae2b-ebc1-4dd4-a655-814eb76b9bf5",
+        "term_name": "C2C12",
+        "term_id": "EFO:0001098",
+        "status": "released"
+    },
+    {
+        "uuid": "d1d53fcd-9497-4b0f-b94f-57cc5a570d97",
+        "term_name": "CH12.LX cell",
+        "term_id": "EFO:0005233",
+        "status": "released"
+    },
+    {
+        "uuid": "c4445d05-a05a-46bc-8330-2e0c1644fdae",
+        "term_name": "GM06990",
+        "term_id": "EFO:0002783",
+        "status": "released"
+    },
+    {
+        "uuid": "58f3d100-c166-4638-afdb-e941d7c77747",
+        "term_name": "GM12878",
+        "term_id": "EFO:0002784",
+        "status": "released"
+    },
+    {
+        "uuid": "eedcfc42-d5a1-4a7e-a420-659f0054ce24",
+        "term_name": "H9-hESC",
+        "term_id": "NTR:0000838",
+        "status": "released"
+    },
+    {
+        "uuid": "df2054b1-3484-4d06-b64c-d3fdb450df9f",
+        "term_name": "K562",
+        "term_id": "EFO:0002067",
+        "status": "released"
+    },
+    {
+        "dbxrefs": ["Cellosaurus:CVCL_0395"],
+        "uuid": "401ed6f4-918f-4407-be71-71a4c3693d7d",
+        "term_name": "LNCAP",
+        "term_id": "EFO:0002071",
+        "status": "released"
+    },
+    {
+        "uuid": "24db2124-07e3-4ad8-b74a-e142a2e08748",
+        "term_name": "MCF-7",
+        "term_id": "EFO:0001203",
+        "status": "released"
+    },
+    {
+        "uuid": "8cf9e560-36e9-444e-8855-20e535c0cc5f",
+        "term_name": "SK-N-SH",
+        "term_id": "EFO:0003072",
+        "status": "released"
+    },
+    {
+        "uuid": "055c77f2-2a91-4cf1-82dc-4ac6328d123e",
+        "term_name": "aortic smooth muscle cell",
+        "term_id": "CL:0002539",
+        "status": "released"
+    },
+    {
+        "uuid": "2b56c868-0e0e-4bb7-a6f8-48a575645307",
+        "term_name": "basal cell of epithelium of terminal bronchiole",
+        "term_id": "CL:1000350",
+        "status": "released"
+    },
+    {
+        "uuid": "c4803eea-e154-4c99-b572-719308a1a0bd",
+        "term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
+        "term_id": "NTR:0000031",
+        "status": "released"
+    },
+    {
+        "uuid": "eea050cd-9e8c-4420-967f-3581b20536ab",
+        "term_name": "embryonic facial prominence",
+        "term_id": "UBERON:0012314",
+        "status": "released"
+    },
+    {
+        "uuid": "3fc75da8-8f87-4749-939e-cee38f5c7ab0",
+        "term_name": "embryonic stem cell",
+        "term_id": "CL:0002322",
+        "status": "released"
+    },
+    {
+        "uuid": "6d82d15f-9a89-4120-904d-c14530ed83db",
+        "term_name": "heart",
+        "term_id": "UBERON:0000948",
+        "status": "released"
+    },
+    {
+        "uuid": "328f8d39-e658-480b-b3ac-2bf92a094606",
+        "term_name": "islet of Langerhans",
+        "term_id": "UBERON:0000006",
+        "status": "released"
+    },
+    {
+        "uuid": "98c9e16f-1440-48e1-9bae-a5dcc33d0aa5",
+        "term_name": "midbrain",
+        "term_id": "UBERON:0001891",
+        "status": "released"
+    },
+    {
+        "uuid": "2c89df50-29f4-4876-974c-40c9733f9f86",
+        "term_name": "multi-cellular organism",
+        "term_id": "UBERON:0000468",
+        "status": "released"
+    },
+    {
+        "uuid": "822bf683-7e94-4aa4-afbd-8e5f3293621a",
+        "term_name": "myocyte",
+        "term_id": "NTR:0000022",
+        "status": "released"
+    },
+    {
+        "uuid": "23f48440-6770-4011-8eb0-9a7eb16f2ef0",
+        "term_name": "cell-free sample",
+        "term_id": "NTR:0000471",
+        "status": "released"
+    },
+    {
+        "uuid": "302585be-4afc-4712-b158-0e613a8e0aa7",
+        "term_name": "IMR-90",
+        "term_id": "EFO:0001196",
+        "status": "released"
+    },
+    {
+        "uuid": "2ca8e02c-2c6e-4bcd-b361-668819050b93",
+        "term_name": "HeLa-S3",
+        "term_id": "EFO:0002791",
+        "status": "released"
+    },
+    {
+        "uuid": "6d281bc4-8581-49e6-a9d4-066be68df5cd",
+        "term_name": "MEL cell line",
+        "term_id": "EFO:0003971",
+        "status": "released"
+    },
+    {
+        "uuid": "c38a56fd-40bf-4db1-bf8f-cd2e6af0bde3",
+        "term_name": "HepG2",
+        "term_id": "EFO:0001187",
+        "status": "released"
+    },
+    {
+        "uuid": "e5ee35e6-a904-43d1-af5d-4893312cc544",
+        "term_name": "neural cell",
+        "term_id": "CL:0002319",
+        "status": "released"
+    },
+    {
+        "uuid": "d5ee35e6-a904-43d1-af5d-4893312cc545",
+        "term_name": "brain organoid",
+        "term_id": "NTR:0002319",
+        "status": "released"
+    },
+    {
+        "uuid": "80adb97c-70f4-11e9-a923-1681be663d3e",
+        "term_name": "WTC-11",
+        "term_id": "EFO:0009747",
+        "status": "released"
+    },
+    {
+        "uuid": "8e4fab48-e5a6-450b-8c5c-07512c845df8",
+        "term_name": "DNA cloning sample",
+        "term_id": "NTR:0000545",
+        "status": "released"
+    }
+]

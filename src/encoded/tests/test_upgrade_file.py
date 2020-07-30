@@ -130,3 +130,33 @@ def test_file_upgrade_17_to_18(upgrader, file_17):
     value = upgrader.upgrade('file', file_17, current_version='17', target_version='18')
     assert value['schema_version'] == '18'
     assert 'assembly' not in value
+
+
+def test_file_upgrade_18_to_19(upgrader, file_18):
+    value = upgrader.upgrade('file', file_18, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert value['output_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_file_upgrade_19_to_20(upgrader, file_19):
+    value = upgrader.upgrade('file', file_19, current_version='19', target_version='20')
+    assert value['schema_version'] == '20'
+    assert value['run_type'] == 'single-ended'
+    assert value['notes'] == 'The run_type of this file was automatically upgraded by ENCD-5258.'
+
+
+def test_file_upgrade_20_to_21(root, testapp, upgrader, registry, file_dnase_enrichment, file_chip_enrichment):
+    value = upgrader.upgrade('file', file_dnase_enrichment, registry=registry, current_version='20', target_version='21')
+    assert value['schema_version'] == '21'
+    assert value['output_type'] == 'FDR cut rate'
+    value = upgrader.upgrade('file', file_chip_enrichment, registry=registry, current_version='20', target_version='21')
+    assert value['schema_version'] == '21'
+    assert value['output_type'] == 'enrichment'
+
+
+def test_file_upgrade_21_to_22(root, testapp, upgrader, registry, file_21_22):
+    # https://encodedcc.atlassian.net/browse/ENCD-5286
+    value = upgrader.upgrade('file', file_21_22, current_version='21', target_version='22')
+    assert value['schema_version'] == '22'
+    assert value['replicate'] == '70d6e704-bba5-4475-97b8-03bf717eecf3'
+    assert value['notes'] == 'Prior entry. This file lacks its correct replicate specified.'

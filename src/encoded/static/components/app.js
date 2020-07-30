@@ -27,64 +27,47 @@ import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
+import jsonldFormatter from '../libs/jsonld';
 import { requestSearch } from './objectutils';
 import newsHead from './page';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 
 
 const portal = {
-    portal_title: 'ENCODE',
-    global_sections: [
-        {
+    portal_title: 'LatticeDB',
+    authenticated_sections: [
+       {
             id: 'data',
             title: 'Data',
             children: [
-                { id: 'functional-genomics', title: 'Functional Genomics data' },
-                { id: 'assaymatrix', title: 'Experiment matrix', url: '/matrix/?type=Experiment&status=released', tag: 'collection' },
-                { id: 'chip', title: 'ChIP-seq matrix', url: '/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=Homo%20sapiens&assay_title=Histone%20ChIP-seq&status=released', tag: 'collection' },
-                { id: 'assaysearch', title: 'Experiment search', url: '/search/?type=Experiment&status=released', tag: 'collection' },
+                { id: 'assay-data', title: 'Assay data' },
+                { id: 'exp-report', title: 'Datasets', url: '/report/?type=Dataset', tag: 'collection' },
+                { id: 'lib-report', title: 'Libraries', url: '/report/?type=Library', tag: 'collection' },
                 { id: 'sep-mm-0' },
-                { id: 'functional-characterization', title: 'Functional Characterization data' },
-                { id: 'functional-char-assays', title: 'Experiment search', url: '/search/?type=FunctionalCharacterizationExperiment', tag: 'collection' },
+                { id: 'donors', title: 'Donor data' },
+                { id: 'human-postnatal-donor-report', title: 'Human Postnatal', url: '/report/?type=HumanPostnatalDonor', tag: 'collection' },
+                { id: 'human-pretnatal-donor-report', title: 'Human Prenatal', url: '/report/?type=HumanPrenatalDonor', tag: 'collection' },
+                { id: 'mouse-postnatal-donor-report', title: 'Mouse Postnatal', url: '/report/?type=MousePostnatalDonor', tag: 'collection' },
+                { id: 'mouse-pretnatal-donor-report', title: 'Mouse Prenatal', url: '/report/?type=MousePrenatalDonor', tag: 'collection' },
                 { id: 'sep-mm-1' },
-                { id: 'cloud', title: 'Cloud Resources' },
-                { id: 'aws-link', title: 'AWS Open Data', url: 'https://registry.opendata.aws/encode-project/', tag: 'cloud' },
+                { id: 'samples', title: 'Sample data' },
+                { id: 'tissue-report', title: 'Tissues', url: '/report/?type=Tissue', tag: 'collection' },
+                { id: 'organoid-report', title: 'Organoids', url: '/report/?type=Organoid', tag: 'collection' },
+                { id: 'cellculture-report', title: 'Cell cultures', url: '/report/?type=CellCulture', tag: 'collection' },
+                { id: 'suspension-report', title: 'Suspensions', url: '/report/?type=Suspension', tag: 'collection' },
                 { id: 'sep-mm-2' },
-                { id: 'collections', title: 'Collections' },
-                { id: 'encore', title: 'ENCORE', url: '/matrix/?type=Experiment&status=released&internal_tags=ENCORE', tag: 'collection' },
-                { id: 'entex', title: 'ENTEx', url: '/entex-matrix/?type=Experiment&status=released&internal_tags=ENTEx', tag: 'collection' },
-                { id: 'sescc', title: 'SE Stem Cell Consortium', url: '/matrix/?type=Experiment&status=released&internal_tags=SESCC', tag: 'collection' },
-                { id: 'reference-epigenomes-human', title: 'Human reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens', tag: 'collection' },
-                { id: 'reference-epigenomes-mouse', title: 'Mouse reference epigenomes', url: '/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus', tag: 'collection' },
-                { id: 'mouse-development-matrix', title: 'Mouse development matrix', url: '/mouse-development-matrix/?type=Experiment&status=released&related_series.@type=OrganismDevelopmentSeries&replicates.library.biosample.organism.scientific_name=Mus+musculus', tag: 'collection' },
-                { id: 'sep-mm-3' },
-                { id: 'region-search', title: 'Search by region', url: '/region-search/' },
-                { id: 'publications', title: 'Publications', url: '/publications/' },
+                { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
             ],
-        },
-        {
-            id: 'encyclopedia',
-            title: 'Encyclopedia',
-            children: [
-                { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
-                { id: 'sep-mm-1' },
-                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'https://screen.wenglab.org/' },
-                { id: 'annotationmatrix', title: 'Annotation matrix', url: '/matrix/?type=Annotation&encyclopedia_version=ENCODE+v4' },
-                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=ENCODE+v4' },
-                { id: 'annotationmethods', title: 'Methods', url: 'https://screen.wenglab.org/index/about' },
-            ],
-        },
+        }
+    ],
+    global_sections: [
         {
             id: 'materialsmethods',
             title: 'Materials & Methods',
             children: [
-                { id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot&status=released' },
                 { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
                 { id: 'sep-mm-1' },
-                { id: 'datastandards', title: 'Assays and standards', url: '/data-standards/' },
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
-                { id: 'softwaretools', title: 'Software tools', url: '/software/' },
-                { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
                 { id: 'sep-mm-2' },
                 { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
                 { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
@@ -95,16 +78,11 @@ const portal = {
             id: 'help',
             title: 'Help',
             children: [
-                { id: 'gettingstarted', title: 'Using the portal', url: '/help/getting-started/' },
-                { id: 'cart', title: 'Cart', url: '/help/cart/' },
                 { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
-                { id: 'citingencode', title: 'Citing ENCODE', url: '/help/citing-encode' },
-                { id: 'faq', title: 'FAQ', url: '/help/faq/' },
                 { id: 'sep-mm-1' },
                 { id: 'projectoverview', title: 'Project Overview', url: '/help/project-overview/' },
                 { id: 'collaborations', title: 'Collaborations', url: '/help/collaborations/' },
                 { id: 'sep-mm-2' },
-                { id: 'events', title: 'ENCODE workshops', url: '/help/events/' },
                 { id: 'contact', title: 'About the DCC', url: '/help/contacts/' },
             ],
         },
@@ -200,7 +178,7 @@ const EulaModal = ({ closeModal, signup }) => (
         <ModalHeader title="Creating a new account" closeModal={closeModal} />
         <ModalBody>
             <p>
-                You are about to create an ENCODE account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
+                You are about to create an LatticeDB account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -221,7 +199,7 @@ const AccountCreationFailedModal = ({ closeModal, date }) => (
         <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
         <ModalBody>
             <p>
-                Creating a new account failed. Please contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
+                Creating a new account failed. Please contact <a href={`mailto:lattice-info@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
             </p>
         </ModalBody>
         <ModalFooter
@@ -300,8 +278,8 @@ class App extends React.Component {
             logout: 'triggerLogout',
         };
 
-        this.domain = 'encode.auth0.com';
-        this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
+        this.domain = 'latticedb.us.auth0.com';
+        this.clientId = 'gaMRpAWtFy09YYufYzX33HvhxxuzCgd5';
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
@@ -372,7 +350,7 @@ class App extends React.Component {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
             protocol: hrefInfo.protocol,
-            pathname: '/static/img/encode-logo-small-2x.png',
+            pathname: '/static/img/lattice-small.png',
         };
         const logoUrl = url.format(logoHrefInfo);
 
@@ -387,7 +365,7 @@ class App extends React.Component {
             },
             socialButtonStyle: 'big',
             languageDictionary: {
-                title: 'Log in to ENCODE',
+                title: 'Log in to LatticeDB',
             },
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
@@ -810,6 +788,8 @@ class App extends React.Component {
 
     /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
     handleClick(event) {
+        const options = {};
+
         // https://github.com/facebook/react/issues/1691
         if (event.isDefaultPrevented()) {
             return;
@@ -837,6 +817,11 @@ class App extends React.Component {
             event.preventDefault();
             this.trigger(dataTrigger);
             return;
+        }
+
+        // data-noscroll attribute prevents scrolling to the top when clicking a link.
+        if (target.getAttribute('data-noscroll') !== null) {
+            options.noscroll = true;
         }
 
         // Ensure this is a plain click
@@ -881,7 +866,7 @@ class App extends React.Component {
         // through the navigate method.
         if (this.constructor.historyEnabled) {
             event.preventDefault();
-            this.navigate(href);
+            this.navigate(href, options);
         }
     }
 
@@ -983,6 +968,7 @@ class App extends React.Component {
 
         // options.skipRequest only used by collection search form
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
+        // options.noscroll to prevent scrolling to the top of the page after navigating.
         let mutatableHref = url.resolve(this.state.href, href);
 
         // Strip url fragment.
@@ -1068,7 +1054,8 @@ class App extends React.Component {
             return response.json();
         }).catch(globals.parseAndLogError.bind(undefined, 'contextRequest')).then(this.receiveContextResponse);
 
-        if (!mutatableOptions.replace) {
+        // Scroll to the top of the page unless replacing the URL or option to not scroll given.
+        if (!mutatableOptions.replace && !mutatableOptions.noscroll) {
             promise.then(this.constructor.scrollTo);
         }
 
@@ -1141,6 +1128,9 @@ class App extends React.Component {
             return this.state.session_properties.user_actions || [];
         }
         if (category === 'global_sections') {
+            if (this.state.session_properties['auth.userid']) {
+                return portal.authenticated_sections.concat(portal.global_sections);
+            }
             return portal.global_sections;
         }
         return null;
@@ -1188,11 +1178,11 @@ class App extends React.Component {
             appClass = 'communicating';
         }
 
-        let title = context.title || context.name || context.accession || context['@id'];
-        if (title && title !== 'Home') {
-            title = `${title} – ${portal.portal_title}`;
-        } else {
-            title = portal.portal_title;
+        let title = portal.portal_title;
+
+        let prefix_title = context.title || context.name || context.accession || context['@id'];
+        if (prefix_title && !isHomePage) {
+            title = `${prefix_title} – ${portal.portal_title}`;
         }
 
         let canonical = this.state.href;
@@ -1228,17 +1218,26 @@ class App extends React.Component {
                     <link rel="canonical" href={canonical} />
                     <link href="https://fonts.googleapis.com/css?family=Mada:200,400,500,600,700" rel="stylesheet" />
                     <script async src="//www.google-analytics.com/analytics.js" />
-                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
+                    {this.state.context && this.state.context['@type'] && this.state.context['@type'].some(type => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
+                        <script
+                            data-prop-name="context"
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hrefUrl.host)))}\n\n`,
+                            }}
+                        />
+                    : null
+                    }
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script
                         data-prop-name="context"
-                        type="application/ld+json"
+                        type="application/json"
                         dangerouslySetInnerHTML={{
-                            __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
+                            __html: `\n\n${jsonScriptEscape(JSON.stringify((this.state.context)))}\n\n`,
                         }}
                     />
                     <div id="slot-application" className={appClass}>
@@ -1247,7 +1246,7 @@ class App extends React.Component {
                             <Provider store={cartStore}>
                                 <div id="layout">
                                     <Navigation isHomePage={isHomePage} />
-                                    <div id="content" className="container" key={key}>
+                                    <div id="content" className={context['@type'] ? `container ${context['@type'].join(' ')}` : 'container'} key={key}>
                                         {content}
                                     </div>
                                     {errors}

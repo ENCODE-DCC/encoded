@@ -10,9 +10,11 @@ import { Panel, PanelBody, TabPanel } from '../libs/ui/panel';
 import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
-import { MATRIX_VISUALIZE_LIMIT, RowCategoryExpander, SearchFilter } from './matrix';
+import { RowCategoryExpander, SearchFilter } from './matrix';
+import BodyMap, { initializeBodyMap, CellsList, organField, systemsField, clearBodyMapSelectionsFromUrl } from './body_map';
+import BodyDiagram from '../img/bodyMap/Deselected_Body';
+import { BatchDownloadControls, ViewControls } from './view_controls';
 import { MatrixInternalTags } from './objectutils';
-import { SearchControls } from './search';
 
 
 /**
@@ -21,6 +23,9 @@ import { SearchControls } from './search';
  */
 const SUB_CATEGORY_SHORT_SIZE = 10;
 
+// Organisms for which we display tabs
+// Names for the tabs are hard-coded because we want to display disabled tabs for tabs for which there are no results
+const organismTerms = ['Homo sapiens', 'Mus musculus'];
 
 // Reference epigenome category properties we use.
 const ROW_CATEGORY = 'biosample_ontology.classification';
@@ -350,22 +355,30 @@ const convertReferenceEpigenomeToDataTable = (context, expandedRowCategories, ex
  * Render the area above the matrix itself, including the page title.
  */
 const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
-    const visualizeDisabledTitle = context.total > MATRIX_VISUALIZE_LIMIT ? `Filter to ${MATRIX_VISUALIZE_LIMIT} to visualize` : '';
-
     const projectSelect = (e, baseUrl) => {
         const selectedProject = e.target.value;
         const awardRfa = selectedProject === 'All' ? '' : `&award.rfa${selectedProject === 'Roadmap' ? '=' : '!='}Roadmap`;
-        const query = new QueryString(baseUrl);
+        const parseUrl = url.parse(baseUrl);
+        const query = new QueryString(parseUrl.query);
 
         // search query string parameters and others need to be preserved across different projects but the
         // project parameter (award.rfa) may differ. So satisfy both conditions, project is removed from the url
         // and re-added or not added, as needed.
-        query.deleteKeyValue('award.rfa').deleteKeyValue('award.rfa!');
-        const link = `${query.format()}${awardRfa}`;
+        query.deleteKeyValue('award.rfa');
+        const link = `?${query.format()}${awardRfa}`;
         reactContext.navigate(link);
     };
 
-    const rowCount = matrix => matrix.y['biosample_ontology.classification'].buckets.reduce((currentTotalCount, termName) => currentTotalCount + termName['biosample_ontology.term_name'].buckets.length, 0);
+    const query = new QueryString(context.search_base);
+    let organism = '';
+    if (query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name').includes('Mus musculus')) {
+        organism = 'mouse';
+    } else if (query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name').includes('Homo sapiens')) {
+        organism = 'human';
+    }
+    const matrixDescription = organism ?
+        <span>Project data from {organism} tissue, cell line, primary cell, and in vitro differentiated cell biosamples organized as reference epigenomes following guidelines set out by IHEC.</span>
+    : null;
 
     return (
         <div className="matrix-header">
@@ -373,6 +386,9 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
                 <h1>{context.title}</h1>
                 <div className="matrix-tags">
                     <MatrixInternalTags context={context} />
+                    {matrixDescription ?
+                        <div className="matrix-description">{matrixDescription}</div>
+                    : null}
                 </div>
             </div>
             {showProjects ?
@@ -385,15 +401,6 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
                     <label htmlFor="nonroadmap">Non-Roadmap</label>
                 </div>
             : null}
-            <div className="matrix-header__controls">
-                <div className="matrix-header__filter-controls">
-                    <SearchFilter context={context} />
-                </div>
-                <div className="matrix-header__search-controls">
-                    <h4>Showing {rowCount(context.matrix)} results</h4>
-                    <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} hideBrowserSelector />
-                </div>
-            </div>
         </div>
     );
 };
@@ -414,6 +421,94 @@ MatrixHeader.contextTypes = {
     navigate: PropTypes.func,
 };
 
+const ClickableThumbnail = (props) => {
+    // "isThumbnailExpanded" checks if the pop-up should be displayed
+    const isThumbnailExpanded = props.isThumbnailExpanded;
+    // "toggleThumbnail" toggles whether or not the pop-up is displayed
+    const toggleThumbnail = props.toggleThumbnail;
+    return (
+        <button
+            className={`body-image-thumbnail ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}
+            onClick={() => toggleThumbnail()}
+        >
+            <div className="body-map-expander">Filter results by body diagram</div>
+            {svgIcon('expandArrows')}
+            <BodyDiagram />
+            <div className="body-list body-list-narrow">
+                <ul className="body-list-inner">
+                    {Object.keys(CellsList).map(image =>
+                        <div
+                            className={`body-inset ${image}`}
+                            id={image}
+                            key={image}
+                        >
+                            <img className="active-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}.svg`} alt={image} />
+                            <img className="inactive-image" src={`/static/img/bodyMap/insetSVGs/${image.replace(' ', '_')}_deselected.svg`} alt={image} />
+                            <div className="overlay" />
+                        </div>
+                    )}
+                </ul>
+            </div>
+        </button>
+    );
+};
+
+ClickableThumbnail.propTypes = {
+    isThumbnailExpanded: PropTypes.bool.isRequired,
+    toggleThumbnail: PropTypes.func.isRequired,
+};
+
+const SelectedFilters = (props) => {
+    const selectedFilters = props.filters;
+    const organTerms = selectedFilters.filter(f => f.field === organField);
+    const systemsTerms = selectedFilters.filter(f => f.field === systemsField);
+    const freeSearchTerms = selectedFilters.filter(f => f.field === 'searchTerm');
+    const selectedTerms = [...organTerms, ...systemsTerms, ...freeSearchTerms];
+    return (
+        <React.Fragment>
+            {(selectedTerms.length > 0) ?
+                <div className="filter-container">
+                    <div className="filter-hed">Selected filters:</div>
+                    {selectedTerms.map(filter =>
+                        <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}>
+                            <div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div>
+                        </a>
+                    )}
+                </div>
+            : null}
+        </React.Fragment>
+    );
+};
+
+SelectedFilters.propTypes = {
+    filters: PropTypes.array.isRequired,
+};
+
+const BodyMapModal = (props) => {
+    const isThumbnailExpanded = props.isThumbnailExpanded;
+    const toggleThumbnail = props.toggleThumbnail;
+    const context = props.context;
+    return (
+        <div className="modal" style={{ display: 'block' }}>
+            <div className={`epigenome-body-map-container ${isThumbnailExpanded ? 'expanded' : 'collapsed'}`}>
+                <button className="collapse-body-map" onClick={() => toggleThumbnail()}>
+                    {svgIcon('collapseArrows')}
+                    <div className="body-map-collapser">Hide body diagram</div>
+                </button>
+                <div className="clickable-diagram-container">
+                    <BodyMap context={context} />
+                </div>
+            </div>
+            <div className="modal-backdrop in" />
+        </div>
+    );
+};
+
+BodyMapModal.propTypes = {
+    isThumbnailExpanded: PropTypes.bool.isRequired,
+    toggleThumbnail: PropTypes.func.isRequired,
+    context: PropTypes.object.isRequired,
+};
 
 /**
  * Display the matrix and associated controls above them.
@@ -434,6 +529,8 @@ class MatrixPresentation extends React.Component {
         this.handleOnScroll = this.handleOnScroll.bind(this);
         this.handleScrollIndicator = this.handleScrollIndicator.bind(this);
         this.handleTabClick = this.handleTabClick.bind(this);
+        this.toggleThumbnail = this.toggleThumbnail.bind(this);
+        this.clearOrgans = this.clearOrgans.bind(this);
 
         // Determine whether biosample classifications have been specified in the query string to
         // determine which matrix row sections to initially expand.
@@ -452,6 +549,7 @@ class MatrixPresentation extends React.Component {
             scrolledRight: false,
             /** True to view the organism chooser modal; only set to true when mounted */
             organismChooserVisible: false,
+            isThumbnailExpanded: false,
         };
 
         this.initialSelectedTab = this.getInitialSelectedTab();
@@ -461,9 +559,24 @@ class MatrixPresentation extends React.Component {
     componentDidMount() {
         this.handleScrollIndicator(this.scrollElement);
 
-        // Display the organism-chooser modal if the query string doesn't specify an organism to
-        // display.
-        this.setState({ organismChooserVisible: this.initialSelectedTab === null });
+        // Highlight body map selections based on url
+        const searchQuery = url.parse(this.props.context['@id']).search;
+        initializeBodyMap(searchQuery);
+        const query = new QueryString(searchQuery);
+        const terms = query.getKeyValues(organField);
+        terms.forEach((term) => {
+            if (CellsList[term] && document.getElementById(term)) {
+                document.getElementById(term).classList.add('active');
+            }
+        });
+
+        this.setState({
+            // Display the organism-chooser modal if the query string doesn't specify an organism to
+            // display.
+            organismChooserVisible: this.initialSelectedTab === null,
+            // Check if modal should be open
+            isThumbnailExpanded: this.context.location_href.includes('#openModal'),
+        });
     }
 
     componentDidUpdate() {
@@ -502,15 +615,13 @@ class MatrixPresentation extends React.Component {
      * @return {object} React components for each tab; null if no organisms
      */
     getOrganismTabs() {
+        // We use "organisms" to determine if a tab should be disabled or not
         const organisms = this.getAvailableOrganisms();
         const organismTabs = {};
-        if (organisms.length > 0) {
-            organisms.forEach((organismName) => {
-                organismTabs[organismName] = <i>{organismName}</i>;
-            });
-            return organismTabs;
-        }
-        return null;
+        organismTerms.forEach((organismName) => {
+            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.png`} alt={organismName} /><span>{organismName}</span></div>;
+        });
+        return organismTabs;
     }
 
     /**
@@ -627,6 +738,17 @@ class MatrixPresentation extends React.Component {
         this.context.navigate(`${baseMatrixUrl}?${query.format()}`);
     }
 
+    toggleThumbnail() {
+        this.setState(prevState => ({
+            isThumbnailExpanded: !prevState.isThumbnailExpanded,
+        }));
+    }
+
+    clearOrgans() {
+        const href = clearBodyMapSelectionsFromUrl(this.props.context['@id']);
+        this.context.navigate(href);
+    }
+
     render() {
         const { context } = this.props;
         const { scrolledRight } = this.state;
@@ -646,43 +768,75 @@ class MatrixPresentation extends React.Component {
             };
         }
 
+        const rowCount = matrix => matrix.y['biosample_ontology.classification'].buckets.reduce((currentTotalCount, termName) => currentTotalCount + termName['biosample_ontology.term_name'].buckets.length, 0);
+
         return (
-            <div className="matrix__presentation">
-                <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
-                    <span>{context.matrix.x.label}</span>
-                    {svgIcon('largeArrow')}
+            <React.Fragment>
+                <div className="view-controls-container">
+                    <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
+                    <BatchDownloadControls results={context} />
                 </div>
-                <div className="matrix__presentation-content">
-                    <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
-                    <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
-                        {!this.state.organismChooserVisible ?
-                            <div className="matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                {matrixConfig ?
-                                    <DataTable tableData={matrixConfig} />
-                                : null}
+                <div className="results-count">Showing <b className="bold-total">{rowCount(context.matrix)}</b> result{rowCount(context.matrix) > 1 ? 's' : ''}.</div>
+                <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
+                    {(this.initialSelectedTab === 'Homo sapiens') ?
+                        <React.Fragment>
+                            <div className="header-clear-links">
+                                <button className="clear-organs" onClick={this.clearOrgans}>
+                                    <i className="icon icon-times-circle" />
+                                    Clear all body map selections
+                                </button>
                             </div>
-                        :
+                            <SelectedFilters filters={context.filters} />
+                        </React.Fragment>
+                    :
+                        <SelectedFilters filters={context.filters} />
+                    }
+                    <div className="matrix-facet-container">
+                        {(this.initialSelectedTab === 'Homo sapiens') ?
                             <React.Fragment>
-                                <div className="matrix__data--empty" />
-                                <Modal>
-                                    <ModalHeader closeModal={false} addCss="matrix__modal-header">
-                                        <h2>Reference epigenome &mdash; choose organism</h2>
-                                    </ModalHeader>
-                                    <ModalBody addCss="matrix-reference-epigenome__organism-selector">
-                                        <div>Organism to view in matrix:</div>
-                                        <div className="selectors">
-                                            {Object.keys(organismTabs).map(organism => (
-                                                // Encode the organism name into the <a> class for BDD testing.
-                                                <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
-                                            ))}
-                                        </div>
-                                    </ModalBody>
-                                </Modal>
+                                <ClickableThumbnail isThumbnailExpanded={this.state.isThumbnailExpanded} toggleThumbnail={this.toggleThumbnail} />
+                                {this.state.isThumbnailExpanded ?
+                                    <BodyMapModal isThumbnailExpanded={this.state.isThumbnailExpanded} toggleThumbnail={this.toggleThumbnail} context={context} />
+                                : null}
                             </React.Fragment>
-                        }
-                    </TabPanel>
-                </div>
-            </div>
+                        : null}
+                        <div className="matrix__presentation">
+                            <div className={`matrix__label matrix__label--horz${!scrolledRight ? ' horz-scroll' : ''}`}>
+                                <span>{context.matrix.x.label}</span>
+                                {svgIcon('largeArrow')}
+                            </div>
+                            <div className="matrix__presentation-content">
+                                <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
+                                {!this.state.organismChooserVisible ?
+                                    <div className="matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
+                                        {matrixConfig ?
+                                            <DataTable tableData={matrixConfig} />
+                                        : null}
+                                    </div>
+                                :
+                                    <React.Fragment>
+                                        <div className="matrix__data--empty" />
+                                        <Modal>
+                                            <ModalHeader closeModal={false} addCss="matrix__modal-header">
+                                                <h2>Reference epigenome &mdash; choose organism</h2>
+                                            </ModalHeader>
+                                            <ModalBody addCss="matrix-reference-epigenome__organism-selector">
+                                                <div>Organism to view in matrix:</div>
+                                                <div className="selectors">
+                                                    {Object.keys(organismTabs).map(organism => (
+                                                        // Encode the organism name into the <a> class for BDD testing.
+                                                        <a key={organism} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`${context['@id']}&replicates.library.biosample.donor.organism.scientific_name=${encoding.encodedURIComponent(organism)}`}>{organism}</a>
+                                                    ))}
+                                                </div>
+                                            </ModalBody>
+                                        </Modal>
+                                    </React.Fragment>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </TabPanel>
+            </React.Fragment>
         );
     }
 }
@@ -694,6 +848,7 @@ MatrixPresentation.propTypes = {
 
 MatrixPresentation.contextTypes = {
     navigate: PropTypes.func,
+    location_href: PropTypes.string,
 };
 
 
@@ -710,7 +865,6 @@ MatrixContent.propTypes = {
     /** Matrix search result object */
     context: PropTypes.object.isRequired,
 };
-
 
 /**
  * View component for the experiment matrix page.

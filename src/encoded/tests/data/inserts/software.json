@@ -3,50 +3,47 @@
         "name": "star",
         "title": "STAR",
         "description": "STAR (Spliced Transcript Alignment to a Reference) aligns short and long RNA-seq reads to a reference genome using uncompressed suffix arrays.",
-        "software_type": ["aligner"],
-        "purpose": ["RNA-seq"],
-        "used_by": ["ENCODE"],
+        "software_type": [
+            "aligner"
+        ],
         "status": "released",
         "source_url": "https://github.com/alexdobin/STAR/releases",
-        "references": ["9d43c048-c70c-42ab-895d-77a69fceb42b"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "references": [
+            "9d43c048-c70c-42ab-895d-77a69fceb42b"
+        ],
         "uuid": "0afb6080-1c08-11e4-8c21-0800200c9a66"
     },
     {
         "name": "haploreg",
         "title": "HaloReg",
         "description": "Explores annotations of the noncoding genome at variants on haplotype blocks, such as candidate regulatory SNPs at disease-associated loci. Under Set Options tab, set Browse ENCODE button to \"on\" and select an LD threshold and reference population. Under Build Query Tab, enter a SNP (rsXXXXX), a set of SNPs, a genomic region, or select a GWAS from the drop down menu. HaploReg returns SNPs in LD with query SNPs, their frequency in 4 populations from 1000 Genomes Phase1, and also tells you what evidence ENCODE has found for regulatory protein binding (mouse over to see the protein names), chromatin structure (mouse over to see the cell types with DNase hypersensitivity), the chromatin state of the region (the chromatin state can predict an enhancer or promoter), and putative transcription factor binding motifs that are altered by the variant. Clicking on the SNP name hyperlink reveals further details, including cell type metadata and the mechanism of disruption/creation of TF binding regulatory motifs (showing the PWM matched and its alignment to the local sequence context). SNPs are also intersected with cross-species conserved elements, chromatin states from the Roadmap Epigenomics Consortium, and lead eQTLs from the GTEx Project browser.",
-        "software_type": ["database", "variant annotation"],
-        "purpose": ["community resource"],
+        "software_type": [
+            "database",
+            "variant annotation"
+        ],
         "source_url": "http://www.broadinstitute.org/mammals/haploreg/haploreg.php",
-        "references": ["d40de6c3-7b60-4567-8282-b29f0cafc0e1"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "references": [
+            "d40de6c3-7b60-4567-8282-b29f0cafc0e1"
+        ],
         "status": "released",
         "uuid": "30ca86a0-1c09-11e4-8c21-0800200c9a66"
-
     },
     {
         "name": "bedtools",
         "title": "BEDtools",
         "description": "Collectively, the bedtools utilities are a swiss-army knife of tools for a wide-range of genomics analysis tasks. The most widely-used tools enable genome arithmetics: that is, set theory on the genome. For example, bedtools allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, and VCF.",
-        "used_by": ["ENCODE"],
         "status": "released",
         "source_url": "http://code.google.com/p/bedtools/",
-        "references": ["bdd1b360-c377-450d-969a-efc1a7e8611f"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "references": [
+            "bdd1b360-c377-450d-969a-efc1a7e8611f"
+        ],
         "uuid": "2adffad0-1c0a-11e4-8c21-0800200c9a66"
     },
     {
         "name": "tophat",
         "title": "TopHat",
         "description": "Fast splice junction mapper for RNA-Seq reads. It aligns RNA-Seq reads to mammalian-sized genomes using the ultra high-throughput short read aligner Bowtie, and then analyzes the mapping results to identify splice junctions between exons.",
-        "used_by": ["ENCODE"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "source_url": "http://ccb.jhu.edu/software/tophat/downloads/",
         "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
     },
@@ -54,10 +51,7 @@
         "name": "bedgraphtobigwig",
         "title": "bedGraphToBigWig",
         "description": "Convert bedGraph to bigWig file",
-        "used_by": ["ENCODE"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
         "uuid": "e6bf4810-50ac-11e4-916c-0800200c9a66"
     },
@@ -65,10 +59,7 @@
         "name": "rsem",
         "title": "RSEM",
         "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data.",
-        "used_by": ["ENCODE"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "source_url": "http://deweylab.biostat.wisc.edu/rsem/",
         "uuid": "151bcaa2-8ffc-4429-b013-ab96a7d359e9"
     },
@@ -76,10 +67,7 @@
         "name": "bismark",
         "title": "Bismark",
         "description": "A tool to map bisulfite converted sequence reads and determine cytosine methylation states",
-        "used_by": ["ENCODE"],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "source_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/",
         "uuid": "196f6fb8-33d1-4cf3-b2f0-834f3f7e07d8"
     },
@@ -87,11 +75,10 @@
         "name": "flux",
         "title": "Flux Capacitor",
         "description": "The exonic structure of two spliceforms.",
-        "software_type": ["transcript identification"],
-        "used_by": ["ENCODE"],
+        "software_type": [
+            "transcript identification"
+        ],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "source_url": "http://sammeth.net/confluence/display/FLUX/Home",
         "uuid": "9d85a5b0-5af0-11e4-8ed6-0800200c9a66"
     },
@@ -99,47 +86,43 @@
         "name": "npidr",
         "title": "npIDR",
         "description": "It essentially takes a pooled sample of all replicas and computes (a) the frequency of seeing count=x; (b) the frequency of seeing count=x given that in *ALL* other replicas the count is equal to zero",
-        "software_type": ["quality metric"],
-        "used_by": ["ENCODE"],
+        "software_type": [
+            "quality metric"
+        ],
         "status": "released",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "source_url": "https://github.com/pervouchine/npIDR",
         "uuid": "dd9e0890-5af0-11e4-8ed6-0800200c9a66"
     },
     {
         "name": "bowtie",
         "title": "Bowtie",
-        "used_by": ["ENCODE"],
         "status": "released",
-        "source_url": "",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "uuid": "15889957-1025-493a-819d-e985bf326445",
-        "description": "Bowtie is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).",
-        "software_type": ["aligner"],
         "source_url": "https://github.com/BenLangmead/bowtie",
-        "url": "http://bowtie-bio.sourceforge.net/index.shtml",
-        "uuid": "d254a874-e832-41ef-ac15-2124aaa15d05"
+        "uuid": "d254a874-e832-41ef-ac15-2124aaa15d05",
+        "description": "Bowtie is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).",
+        "software_type": [
+            "aligner"
+        ],
+        "url": "http://bowtie-bio.sourceforge.net/index.shtml"
     },
     {
         "name": "bwa",
         "title": "BWA",
         "description": "BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.",
-        "software_type": ["aligner"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "aligner"
+        ],
         "source_url": "http://sourceforge.net/projects/bio-bwa/files/",
         "url": "http://bio-bwa.sourceforge.net/",
         "uuid": "37a517fc-1f47-4fd4-864b-a5f37f6347d8"
     },
     {
         "name": "bwa_wrapper",
-        "title":  "BWA wrapper",
+        "title": "BWA wrapper",
         "description": "Wrapper to run bwa.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "other"
+        ],
         "source_url": "https://github.com/",
         "url": "https://www.encodedcc.org",
         "uuid": "be774ca3-92f5-4492-87b7-81984adde0fb"
@@ -148,29 +131,28 @@
         "name": "idr",
         "title": "IDR",
         "description": "Measures consistency between replicates in high-throughput experiments.",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "quality metric"
+        ],
         "url": "https://sites.google.com/site/anshulkundaje/projects/idr",
         "uuid": "08dbba16-769e-45e2-97cc-30237f0d19fa"
     },
     {
-        "name": "makepseudoreplicates",
+        "name": "make_pseudoreplicates",
         "title": "Makepseudoreplicates",
         "description": "Generate psuedoreplicates for self-consistency tests.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "name": "make_pseudoreplicates",
+        "software_type": [
+            "other"
+        ],
         "uuid": "f819726b-364e-4194-b71b-8c95f46e8c3c"
     },
     {
         "name": "phantompeakqualtools",
         "title": "Phantompeakqualtools",
         "description": "This package computes quick but highly informative enrichment and quality measures for ChIP-seq/DNase-seq/FAIRE-seq/MNase-seq data. It can also be used to obtain robust estimates of the predominant fragment length or characteristic tag shift values in these assays.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "other"
+        ],
         "source_url": "https://code.google.com/p/phantompeakqualtools/source/checkout",
         "url": "https://code.google.com/p/phantompeakqualtools/",
         "uuid": "7729040c-1754-4ae2-b4e6-245007e2755c"
@@ -179,9 +161,9 @@
         "name": "picard",
         "title": "Picard",
         "description": "A set of tools (in Java) for working with next generation sequencing data in the BAM format.",
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "other"
+        ],
         "source_url": "https://github.com/broadinstitute/picard",
         "url": "http://broadinstitute.github.io/picard/",
         "uuid": "baf75b1a-6b0b-4c84-b2a1-d52b11119ddd"
@@ -189,13 +171,11 @@
     {
         "name": "samtools",
         "title": "Samtools",
-        "description": "",
-        "used_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "status": "released",
         "description": "Samtools is a suite of programs for interacting with high-throughput sequencing data.",
-        "software_type": ["other"],
+        "status": "released",
+        "software_type": [
+            "other"
+        ],
         "source_url": "http://sourceforge.net/projects/samtools/files/samtools/",
         "url": "http://www.htslib.org/",
         "uuid": "ce18defa-8989-4067-9ac7-2f13734223da"
@@ -204,9 +184,6 @@
         "name": "mott-trim.py",
         "title": "Mott Trimmer",
         "description": "Mott-Trimmer for WGBS reads",
-        "used_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "status": "released",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
         "uuid": "9c537e83-cf5e-4e80-8027-746f31785c99"
@@ -215,9 +192,6 @@
         "name": "cxrepo-bed.py",
         "title": "WGBS output processor",
         "description": "Convert a Bismark CX_report file to bed-like files",
-        "used_by": ["ENCODE"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
         "status": "released",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
         "uuid": "32f72d98-bf4d-4408-b448-a0b4168ed320"
@@ -226,19 +200,19 @@
         "name": "spp",
         "title": "SPP",
         "description": "A ChIP-seq peak calling algorithm, implemented as an R package, that accounts for the offset in forward-strand and reverse-strand reads to improve resolution, compares enrichment in signal to background or control experiments, and can also estimate whether the available number of reads is sufficient to achieve saturation, meaning that additional reads would not allow identification of additional peaks.",
-        "software_type": ["peak caller"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "peak caller"
+        ],
         "url": "http://compbio.med.harvard.edu/Supplements/ChIP-seq/",
         "uuid": "5f18b63e-629a-4963-9897-a67f95e62082"
     },
     {
         "name": "wiggler",
         "title": "Wiggler",
-        "description": "Creates a consolidated genome-wide signal file using various tag-shift and smoothing parameters as well as various normalization schemes." ,
-        "software_type": ["other"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "description": "Creates a consolidated genome-wide signal file using various tag-shift and smoothing parameters as well as various normalization schemes.",
+        "software_type": [
+            "other"
+        ],
         "url": "https://code.google.com/p/align2rawsignal/",
         "source_url": "https://code.google.com/p/align2rawsignal/source/checkout",
         "uuid": "d758a3c4-16f1-4d6f-b905-2703a90633df"
@@ -247,19 +221,20 @@
         "name": "hotspot",
         "title": "Hotspot",
         "description": "A program for identifying regions of local enrichment of short-read sequence tags mapped to the genome using a binomial distribution model.",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "quality metric"
+        ],
         "url": "http://www.uwencode.org/proj/hotspot/",
-        "uuid":  "4219a456-d064-49ac-9383-93c0021e73e0"
+        "uuid": "4219a456-d064-49ac-9383-93c0021e73e0"
     },
     {
         "name": "clipper",
         "title": "CLIPper",
         "description": "A tool to detect CLIP-seq peaks.",
-        "software_type": ["peak caller", "quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "peak caller",
+            "quality metric"
+        ],
         "url": "https://github.com/YeoLab/clipper/wiki/CLIPper-Home",
         "source_url": "https://github.com/YeoLab/clipper",
         "uuid": "56c6dc47-0692-493b-8983-ef80ea28d2fd"
@@ -268,26 +243,24 @@
         "name": "fastqc",
         "title": "FastQC",
         "description": "A quality control tool for high throughput sequence data.",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "quality metric"
+        ],
         "url": "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/",
-        "uuid":  "40d96460-a590-11e4-bcd8-0800200c9a66"
+        "uuid": "40d96460-a590-11e4-bcd8-0800200c9a66"
     },
     {
         "name": "mad_cc_lrna",
         "title": "MAD and CC",
         "description": "MAD and correlation calculation for RNA-seq quantifiications",
-        "software_type": ["quality metric"],
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
+        "software_type": [
+            "quality metric"
+        ],
         "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline.git",
-        "uuid":  "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
+        "uuid": "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
     },
     {
-        "award": "U41HG006992",
         "description": "Converts dbGaP-protected raw data in sra format to fastq format.",
-        "lab": "j-michael-cherry",
         "name": "dbgap_sra_to_fastq",
         "status": "released",
         "title": "dbGaP SRA to fastq",

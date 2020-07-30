@@ -325,3 +325,54 @@ def biosample_21(biosample_0, biosample):
         'biosample_term_name': 'BG01'
     })
     return item
+
+
+@pytest.fixture
+def biosample_human_1(testapp, lab, award, source, organism, human_donor_1, heart):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': heart['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_human_2(testapp, lab, award, source, organism, human_donor_1, heart):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': heart['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_22(testapp, lab, award, source, organism, epiblast):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': epiblast['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_23(testapp, lab, award, source, organism, epiblast):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': epiblast['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+

@@ -164,6 +164,11 @@ $small-font-size: 0.8rem;
 
     &:first-child {
         border-top: none;
+        margin-top: -10px;
+    }
+
+    &:last-child {
+        margin-bottom: -10px;
     }
 
     @at-root #{&}__group {

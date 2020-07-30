@@ -38,8 +38,9 @@ _tsv_mapping = OrderedDict([
     ('File type', ['files.file_format']),
     ('File format type', ['files.file_format_type']),
     ('Output type', ['files.output_type']),
+    ('File assembly', ['files.assembly']),
     ('Experiment accession', ['accession']),
-    ('Assay', ['assay_term_name']),
+    ('Assay', ['assay_term_name', 'files.assay_term_name']),
     ('Biosample term id', ['biosample_ontology.term_id']),
     ('Biosample term name', ['biosample_ontology.term_name']),
     ('Biosample type', ['biosample_ontology.classification']),
@@ -71,7 +72,7 @@ _tsv_mapping = OrderedDict([
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
     ('Biological replicate(s)', ['files.biological_replicates']),
-    ('Technical replicate', ['files.replicate.technical_replicate_number']),
+    ('Technical replicate(s)', ['files.technical_replicates']),
     ('Read length', ['files.read_length']),
     ('Mapped read length', ['files.mapped_read_length']),
     ('Run type', ['files.run_type']),
@@ -83,7 +84,6 @@ _tsv_mapping = OrderedDict([
     ('md5sum', ['files.md5sum']),
     ('dbxrefs', ['files.dbxrefs']),
     ('File download URL', ['files.href']),
-    ('Assembly', ['files.assembly']),
     ('Genome annotation', ['files.genome_annotation']),
     ('Platform', ['files.platform.title']),
     ('Controlled by', ['files.controlled_by']),
@@ -91,21 +91,6 @@ _tsv_mapping = OrderedDict([
     ('No File Available', ['files.no_file_available']),
     ('Restricted', ['files.restricted']),
     ('s3_uri', ['files.s3_uri']),
-])
-
-_audit_mapping = OrderedDict([
-    ('Audit WARNING', ['audit.WARNING.path',
-                       'audit.WARNING.category',
-                       'audit.WARNING.detail']),
-    ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
-                               'audit.INTERNAL_ACTION.category',
-                               'audit.INTERNAL_ACTION.detail']),
-    ('Audit NOT_COMPLIANT', ['audit.NOT_COMPLIANT.path',
-                             'audit.NOT_COMPLIANT.category',
-                             'audit.NOT_COMPLIANT.detail']),
-    ('Audit ERROR', ['audit.ERROR.path',
-                     'audit.ERROR.category',
-                     'audit.ERROR.detail'])
 ])
 
 _tsv_mapping_annotation = OrderedDict([
@@ -389,7 +374,8 @@ def metadata_tsv(context, request):
         else:
             param_list['@id'] = elements
     default_params = [
-        ('limit', 'all')
+        ('field', 'audit'),
+        ('limit', 'all'),
     ]
     field_params = [
         ('field', p)
@@ -401,9 +387,10 @@ def metadata_tsv(context, request):
     ]
     qs.drop('limit')
 
-    # Determine if "visualizable=true" in query string to select only visualizable files.
-    visualizable_only = qs.is_param('visualizable', 'true')
-    qs.drop('visualizable')
+    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
+    visualizable_only = qs.is_param('option', 'visualizable')
+    raw_only = qs.is_param('option', 'raw')
+    qs.drop('option')
 
     qs.extend(
         default_params + field_params + at_id_params
@@ -419,12 +406,15 @@ def metadata_tsv(context, request):
                     make_cell(column, experiment_json, exp_data_row)
 
             f_attributes = ['files.title', 'files.file_type', 'files.file_format',
-                            'files.file_format_type', 'files.output_type']
+                            'files.file_format_type', 'files.output_type', 'files.assembly']
 
             for f in experiment_json['files']:
                 if not files_prop_param_list(f, param_list):
                     continue
                 if visualizable_only and not is_file_visualizable(f):
+                    continue
+                if raw_only and f.get('assembly'):
+                    # "raw" option only allows files w/o assembly.
                     continue
                 if restricted_files_present(f):
                     continue
@@ -477,6 +467,7 @@ def batch_download(context, request):
         ('field', 'files.file_format'),
         ('field', 'files.file_format_type'),
         ('field', 'files.status'),
+        ('field', 'files.assembly'),
     ]
     qs = QueryString(request)
     param_list = qs.group_values_by_key()
@@ -491,9 +482,10 @@ def batch_download(context, request):
     ]
     qs.drop('limit')
 
-    # Determine if "visualizable=true" in query string to select only visualizable files.
-    visualizable_only = qs.is_param('visualizable', 'true')
-    qs.drop('visualizable')
+    # Check for the "visualizable" and/or "raw" options in the query string for file filtering.
+    visualizable_only = qs.is_param('option', 'visualizable')
+    raw_only = qs.is_param('option', 'raw')
+    qs.drop('option')
 
     qs.extend(
         default_params + file_fields
@@ -560,6 +552,9 @@ def batch_download(context, request):
             continue
         elif visualizable_only and not is_file_visualizable(exp_file):
             continue
+        elif raw_only and exp_file.get('assembly'):
+            # "raw" option only allows files w/o assembly.
+            continue
         elif restricted_files_present(exp_file):
             continue
         files.append(
@@ -586,7 +581,9 @@ def files_prop_param_list(exp_file, param_list):
     for k, v in param_list.items():
         if k.startswith('files.'):
             file_prop = k[len('files.'):]
-            if file_prop in exp_file and exp_file[file_prop] not in v:
+            if file_prop not in exp_file:
+                return False
+            if exp_file[file_prop] not in v:
                 return False
     return True
 

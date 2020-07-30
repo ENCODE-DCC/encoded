@@ -6,25 +6,12 @@ Feature: Matrix
         Then the title should contain the text "ENCODE"
 
         When I press "Data"
-        And I click the link with text that contains "Human reference epigenomes"
+        And I click the link with text that contains "Mouse reference epigenomes"
         And I wait for the content to load
         Then the title should contain the text "Reference Epigenome Matrix – ENCODE"
-        And I should see at least 5 elements with the css selector "tbody > tr"
-        And I should see at least 16 elements with the css selector "tr > th"
-
-        When I click the link with text that contains "Mus musculus"
-        Then I should see at least 4 elements with the css selector "tbody > tr"
+        And I should see at least 4 elements with the css selector "tbody > tr"
         And I should see at least 4 elements with the css selector "tr > th"
-
-    Scenario: Organism chooser modal
-        When I visit "/reference-epigenome-matrix/?type=Experiment&related_series.@type=ReferenceEpigenome&replicates.library.biosample.donor.organism.scientific_name=Mus+Musculus&award"
-        And I wait for the content to load
-        Then I should see exactly one element with the css selector ".modal"
-        And I should see at least 2 elements with the css selector ".matrix-reference-epigenome__organism-selector > .selectors > .btn"
-
-        When I click the element with the css selector ".btn__selector--Homo-sapiens"
-        And I wait for the content to load
-        Then I should not see an element with the css selector ".modal"
-        And I should see at least 5 elements with the css selector "tbody > tr"
-        And I should see at least 16 elements with the css selector "tr > th"
-        And I should not see an element with the css selector ".test-project-selector"
+        And I should see 0 elements with the css selector ".test-project-selector [for='all']"
+        And I should see 0 elements with the css selector ".test-project-selector [for='roadmap']"
+        And I should see 0 elements with the css selector ".test-project-selector [for='nonroadmap']"
+        And I should see 0 elements with the css selector ".test-project-selector input[value='All'][checked]"

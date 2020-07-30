@@ -151,7 +151,13 @@ export class FileTable extends React.Component {
             // Extract four kinds of file arrays
             const files = _(datasetFiles).groupBy((file) => {
                 if (file.output_category === 'raw data') {
-                    return file.output_type === 'reads' ? 'raw' : 'rawArray';
+                    if (file.output_type === 'reads') {
+                        return 'raw';
+                    }
+                    if (file.output_type === 'index reads') {
+                        return 'index';
+                    }
+                    return 'rawArray';
                 }
                 if (file.output_category === 'reference') {
                     return 'ref';
@@ -172,6 +178,7 @@ export class FileTable extends React.Component {
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
+                            indexFiles={files.index}
                             showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
@@ -482,7 +489,21 @@ class RawSequencingTable extends React.Component {
         };
 
         // Bind `this` to non-React methods.
+        this.findIndexFile = this.findIndexFile.bind(this);
         this.handleCollapse = this.handleCollapse.bind(this);
+    }
+
+    /**
+     * Find the index reads file associated with the one or two given files. For paired reads, both
+     * files have to match to return a matching index reads file. For singled-ended reads, only
+     * `file0` needs to match.
+     * @param {object} file0 - First reads file of pair or only file of single
+     * @param {object} file1 - Second reads file of pair
+     *
+     * @return {object} Index reads file with index_of matching given files; undefined if none
+     */
+    findIndexFile(file0, file1) {
+        return this.props.indexFiles.find(indexFile => indexFile.index_of[0] === file0['@id'] && (indexFile.index_of.length === 2 ? indexFile.index_of[1] === file1['@id'] : true));
     }
 
     handleCollapse() {
@@ -491,7 +512,7 @@ class RawSequencingTable extends React.Component {
     }
 
     render() {
-        const { files, meta, showReplicateNumber } = this.props;
+        const { files, indexFiles, meta, showReplicateNumber } = this.props;
         const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
@@ -505,8 +526,8 @@ class RawSequencingTable extends React.Component {
             // Make lists of files that are and aren't paired. Paired files with missing partners
             // count as not paired. Files with more than one biological replicate don't count as
             // paired.
-            const nonpairedFiles = [];
-            const pairedFiles = _(files).filter((file) => {
+            let nonpairedFiles = [];
+            let pairedFiles = _(files).filter((file) => {
                 if (file.pairSortKey) {
                     // If we already know this file is part of a good pair from before, just let it
                     // pass the filter
@@ -528,23 +549,63 @@ class RawSequencingTable extends React.Component {
                                 file.biological_replicates[0] === partner.biological_replicates[0]) ||
                                 ((!file.biological_replicates || file.biological_replicates.length === 0) &&
                                 (!partner.biological_replicates || partner.biological_replicates.length === 0))) {
-                            // Both the file and its partner qualify as good pairs of each other. Let
-                            // them pass the filter, and record set their sort keys to the lower of
+                            // Both the file and its partner qualify as good pairs of each other.
+                            // Let them pass the filter, and set their sort keys to the lower of
                             // the two accessions -- that's how pairs will sort within a biological
-                            // replicate.
-                            partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
-                            file.pairSortKey = partner.pairSortKey;
-                            file.pairSortKey += file.paired_end;
-                            partner.pairSortKey += partner.paired_end;
+                            // replicate. The sort keys also get their paired_end value
+                            // concatenated so they sort as pairs correctly. Also track the
+                            // `pairSortId` which is the same as portSortKey` but without the
+                            // paired_end property concatenated.
+                            partner.pairSortId = file.title < partner.title ? file.title : partner.title;
+                            partner.pairSortKey = `${partner.pairSortId}-${partner.paired_end}`;
+                            file.pairSortId = partner.pairSortId;
+                            file.pairSortKey = `${partner.pairSortId}-${file.paired_end}`;
                             return true;
                         }
                     }
                 }
 
-                // File not part of a pair; add to non-paired list and filter it out
-                nonpairedFiles.push(file);
+                // File not part of a pair; add it to the non-paired list as a copy so we can
+                // mutate them later.
+                nonpairedFiles.push(Object.assign({}, file));
                 return false;
             });
+
+            // Sort the non-paired files by biological replicate, but corresponding index reads
+            // files still need weaving into this array.
+            nonpairedFiles = nonpairedFiles.sort(sortBioReps);
+
+            // Weave index files after each corresponding single-ended raw sequencing file.
+            const nonPairedFilesWithIndex = [];
+            if (indexFiles) {
+                nonpairedFiles.forEach((nonpairedFile) => {
+                    nonPairedFilesWithIndex.push(nonpairedFile);
+                    const matchingIndexFile = indexFiles.find(indexFile => indexFile.index_of.includes(nonpairedFile['@id']));
+                    if (matchingIndexFile) {
+                        nonPairedFilesWithIndex.push(matchingIndexFile);
+                    }
+                });
+                nonpairedFiles = nonPairedFilesWithIndex;
+            }
+
+            // Copy indexFiles to have `pairSortId` and  `pairSortKey` properties similar to the
+            // corresponding reads files’ pairSortKeys. For ease-of-implementation and performance,
+            // we only look for the one file of the pair in `pairedFiles` to get its pairSortKey
+            // root (without appended `paired_end` string) -- not both files. Append "-I" to
+            // `poirSortKey` to index reads files sort after the pairs they associate with.
+            const pairedFileIndexReads = [];
+            if (indexFiles) {
+                indexFiles.forEach((indexFile) => {
+                    const indexFileCopy = Object.assign({}, indexFile);
+                    const matchingPairFile = pairedFiles.find(pairedFile => indexFile.index_of.includes(pairedFile['@id']));
+                    if (matchingPairFile) {
+                        indexFileCopy.pairSortId = matchingPairFile.pairSortId;
+                        indexFileCopy.pairSortKey = `${matchingPairFile.pairSortId}-I`;
+                        pairedFileIndexReads.push(indexFileCopy);
+                    }
+                });
+                pairedFiles = pairedFiles.concat(pairedFileIndexReads);
+            }
 
             // Group paired files by biological replicate and library -- four-digit biological
             // replicate concatenated with library accession becomes the group key, and all files
@@ -554,12 +615,12 @@ class RawSequencingTable extends React.Component {
             let pairedRepGroups = {};
             let pairedRepKeys = [];
             if (pairedFiles.length > 0) {
-                pairedRepGroups = _(pairedFiles).groupBy(file => (
-                    (file.biological_replicates && file.biological_replicates.length === 1) ?
-                        globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '')
-                    :
-                        'Z'
-                ));
+                pairedRepGroups = _(pairedFiles).groupBy((file) => {
+                    if (file.biological_replicates && file.biological_replicates.length === 1) {
+                        return globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '');
+                    }
+                    return 'Z';
+                });
 
                 // Make a sorted list of keys
                 pairedRepKeys = Object.keys(pairedRepGroups).sort();
@@ -569,7 +630,7 @@ class RawSequencingTable extends React.Component {
                 <table className="table table__sortable table-raw">
                     <thead>
                         <tr className="table-section">
-                            <th colSpan="11">
+                            <th colSpan="12">
                                 <CollapsingTitle title="Raw sequencing data" collapsed={this.state.collapsed} handleCollapse={this.handleCollapse} />
                             </th>
                         </tr>
@@ -582,6 +643,7 @@ class RawSequencingTable extends React.Component {
                                 <th>File type</th>
                                 <th>Run type</th>
                                 <th>Read</th>
+                                <th>Output type</th>
                                 <th>Lab</th>
                                 <th>Date added</th>
                                 <th>File size</th>
@@ -595,25 +657,32 @@ class RawSequencingTable extends React.Component {
                         <tbody>
                             {pairedRepKeys.map((pairedRepKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                const groupFiles = pairedRepGroups[pairedRepKey];
-                                const bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
+                                const groupFiles = pairedRepGroups[pairedRepKey].sort((a, b) => (a.pairSortKey < b.pairSortKey ? -1 : 1));
+
+                                // Draw bottom border if this isn't the last paired replicate, or
+                                // it is but non-paired files follow.
+                                const bottomClass = j < (pairedRepKeys.length - 1) || nonpairedFiles.length > 0 ? 'merge-bottom' : '';
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
-                                return groupFiles.sort((a, b) => (a.pairSortKey < b.pairSortKey ? -1 : 1)).map((file, i) => {
+                                return groupFiles.map((file, i) => {
                                     let pairClass;
-                                    if (file.paired_end === '2') {
-                                        pairClass = `align-pair2${(i === groupFiles.length - 1) && (j === pairedRepKeys.length - 1) ? '' : ' pair-bottom'}`;
+                                    if (file.run_type === 'paired-ended') {
+                                        pairClass = file.paired_end === '1' ? 'align-pair1' : 'align-pair2';
                                     } else {
-                                        pairClass = 'align-pair1';
+                                        // Must be an index reads file if it's not paired-ended.
+                                        pairClass = 'index-reads';
                                     }
 
-                                    // Prepare for run_type display
-                                    let runType;
-                                    if (file.run_type === 'single-ended') {
-                                        runType = 'SE';
-                                    } else if (file.run_type === 'paired-ended') {
-                                        runType = 'PE';
+                                    // Draw bottom border if second file of pair and no index reads
+                                    // follow, or file *is* index reads, but not if last row of
+                                    // table.
+                                    const isNextInGroupIndexReads = groupFiles[i + 1] && groupFiles[i + 1].output_type === 'index reads';
+                                    if (
+                                        (file.output_type === 'index reads' || (file.paired_end === '2' && !isNextInGroupIndexReads))
+                                        && !(i === groupFiles.length - 1 && j === pairedRepKeys.length - 1 && nonpairedFiles.length === 0)
+                                    ) {
+                                        pairClass = `${pairClass} pair-bottom`;
                                     }
 
                                     return (
@@ -628,8 +697,9 @@ class RawSequencingTable extends React.Component {
                                                 <DownloadableAccession file={file} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
-                                            <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
+                                            <td className={pairClass}>{file.run_type === 'paired-ended' ? 'PE' : ''}{file.read_length ? <span>{file.read_length + file.read_length_units}</span> : null}</td>
                                             <td className={pairClass}>{file.paired_end}</td>
+                                            <td className={pairClass}>{file.output_type}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
@@ -639,38 +709,46 @@ class RawSequencingTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
-                                // Prepare for run_type display
-                                let runType;
-                                if (file.run_type === 'single-ended') {
-                                    runType = 'SE';
-                                } else if (file.run_type === 'paired-ended') {
-                                    runType = 'PE';
-                                }
+                            {nonpairedFiles.map((file, i) => {
+                                // Draw a row over the first single-ended file if a paired file
+                                // preceded it.
                                 const rowClasses = [
                                     pairedRepKeys.length > 0 && i === 0 ? 'table-raw-separator' : null,
                                 ];
+
+                                // Work out CSS classes and row spans for raw sequencing files with
+                                // a corresponding index reads file.
+                                let singleClass = null;
+                                const rawHasIndex = file.output_type !== 'index reads' && nonpairedFiles[i + 1] && nonpairedFiles[i + 1].output_type === 'index reads';
+                                const rawIsIndex = file.output_type === 'index reads';
+                                const nextRawIsIndex = nonpairedFiles[i + 1] && nonpairedFiles[i + 1].output_type === 'index reads';
+                                if (rawIsIndex) {
+                                    singleClass = 'index-reads pair-bottom';
+                                }
 
                                 // Determine if accession should be a button or not.
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        {showReplicateNumber ?
-                                            <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
-                                        null}
-                                        <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
-                                        <td>
+                                        {showReplicateNumber && !rawIsIndex ?
+                                            <td rowSpan={rawHasIndex ? 2 : null} className={`table-raw-biorep${nextRawIsIndex ? ' pair-bottom merge-right + table-raw-merged' : ''}`}>{file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
+                                        : null}
+                                        {showReplicateNumber && !rawIsIndex ?
+                                            <td rowSpan={rawHasIndex ? 2 : null} className={nextRawIsIndex ? 'pair-bottom merge-right + table-raw-merged' : null}>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
+                                        : null}
+                                        <td className={singleClass}>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                         </td>
-                                        <td>{file.file_type}</td>
-                                        <td>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
-                                        <td>{file.paired_end}</td>
-                                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                        <td>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{globals.humanFileSize(file.file_size)}</td>
-                                        <td><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
-                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                        <td className={singleClass}>{file.file_type}</td>
+                                        <td className={singleClass}>{rawIsIndex ? null : 'SE'}{file.read_length ? <span>{file.read_length + file.read_length_units}</span> : null}</td>
+                                        <td className={singleClass}>{file.paired_end}</td>
+                                        <td className={singleClass}>{file.output_type}</td>
+                                        <td className={singleClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                        <td className={singleClass}>{dayjs.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                        <td className={singleClass}>{globals.humanFileSize(file.file_size)}</td>
+                                        <td className={singleClass}><ObjectAuditIcon object={file} isAuthorized={isAuthorized} /></td>
+                                        <td className={singleClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -679,7 +757,7 @@ class RawSequencingTable extends React.Component {
 
                     <tfoot>
                         <tr>
-                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="11" />
+                            <td className={`file-table-footer${this.state.collapsed ? ' hiding' : ''}`} colSpan="12" />
                         </tr>
                     </tfoot>
                 </table>
@@ -693,12 +771,14 @@ class RawSequencingTable extends React.Component {
 
 RawSequencingTable.propTypes = {
     files: PropTypes.array, // Raw files to display
+    indexFiles: PropTypes.array, // Index reads files that refer to actual files in `files`
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
     showReplicateNumber: PropTypes.bool,
 };
 
 RawSequencingTable.defaultProps = {
     files: null,
+    indexFiles: null,
     showReplicateNumber: true,
 };
 
@@ -1144,6 +1224,8 @@ function qcAbbr(qc) {
         MicroRnaQuantificationQualityMetric: 'MQ',
         LongReadRnaMappingQualityMetric: 'LM',
         LongReadRnaQuantificationQualityMetric: 'LQ',
+        GembsAlignmentQualityMetric: 'AL',
+        DnaseFootprintingQualityMetric: 'DF',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];
@@ -1321,6 +1403,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
     const fileQcMetrics = {}; // List of all file QC metrics indexed by file @id
     const allPipelines = {}; // List of all pipelines indexed by step @id
+    const allowNoAssembly = dataset.assay_term_name === 'RNA Bind-n-Seq';
     files.forEach((file) => {
         // allFiles gets all files from search regardless of filtering.
         allFiles[file['@id']] = file;
@@ -1328,7 +1411,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         // matchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
-        if ((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation))) {
+        if (allowNoAssembly || ((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation)))) {
             // Note whether any files have an analysis step
             const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
             if (!fileAnalysisStep || (file.derived_from && file.derived_from.length > 0)) {
@@ -1986,8 +2069,133 @@ function createFacetObject(propertyKey, fileList, filters) {
     return facetObject;
 }
 
+
+/**
+ * Compile the usable experiment analyses objects into a form for rendering a dropdown of pipeline
+ * labs. Export for Jest test.
+ * @param {object} experiment Contains the analyses to convert into an pipeline labs dropdown
+ * @param {array} files Array of all files from search that gets included in file gallery
+ *
+ * @return {array} Compiled analyses information, each element with the form:
+ * {
+ *      title: Analyses dropdown title -- `pipelineLab`+`assembly`
+ *      pipelineLab: Pipeline processing lab title, e.g. "ENCODE4 uniform"
+ *      assembly: Assembly and annotation string matching assembly facet terms
+ *      assemblyAnnotationValue: Value used to sort the compiled analyses
+ *      files: Array of files selected with the pipline lab and assembly
+ * }
+ */
+const UNIFORM_PIPELINE_LAB = '/labs/encode-processing-pipeline/';
+export const compileAnalyses = (experiment, files) => {
+    let compiledAnalyses = [];
+    if (experiment.analyses && experiment.analyses.length > 0) {
+        // Get all the analyses objects that qualify for inclusion in the Pipeline facet.
+        const qualifyingAnalyses = experiment.analyses.filter((analyses) => {
+            const rfas = _.uniq(analyses.pipeline_award_rfas);
+
+            // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
+            // `UNIFORM_PIPELINE_LAB` is only valid if alone.
+            return (
+                analyses.assemblies.length === 1
+                && analyses.genome_annotations.length <= 1
+                && analyses.pipeline_award_rfas.length === 1
+                && analyses.pipeline_labs.length > 0
+                && !(analyses.pipeline_labs.length === 1 && analyses.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
+            );
+        });
+
+        if (qualifyingAnalyses.length > 0) {
+            // Group all the qualifying analyses' files by pipeline lab. Each pipeline lab title is
+            // an object key with the value of an array containing all analyses objects included in
+            // that lab. Also form the lab title here, prepending with the rfa (e.g. ENCODE3) for
+            // `UNIFORM_PIPELINE_LAB`.
+            const analysesByLab = _(qualifyingAnalyses).groupBy((analyses) => {
+                if (analyses.pipeline_labs.length > 1) {
+                    return 'Mixed';
+                }
+
+                // At this stage, we know analyses.pipeline_labs has one and only one element.
+                if (analyses.pipeline_labs[0] !== UNIFORM_PIPELINE_LAB) {
+                    return 'Lab custom';
+                }
+                return `${analyses.pipeline_award_rfas[0]} uniform`;
+            });
+
+            // Fill in the compiled object with the labs that group the files.
+            compiledAnalyses = [];
+            const fileIds = files.map(file => file['@id']);
+            Object.keys(analysesByLab).forEach((pipelineLab) => {
+                // For one lab, group all analyses by their assembly/annotation, then combine all
+                // file arrays for those with matching pipeline lab, assembly/annotation, and RFA.
+                const analysesByAssembly = _(analysesByLab[pipelineLab]).groupBy(analyses => `${analyses.assemblies[0]}${analyses.genome_annotations.length === 1 ? ` ${analyses.genome_annotations[0]}` : ''}`);
+                Object.keys(analysesByAssembly).forEach((assembly) => {
+                    // Combine all analyses files that share the same pipeline lab, assembly, and
+                    // annotation and add each to the compiled list. Filter out any not included in
+                    // the experiment's files.
+                    const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analyses) => accFiles.concat(analyses.files), []).filter(file => fileIds.includes(file)));
+                    if (assemblyFiles.length > 0) {
+                        compiledAnalyses.push({
+                            title: `${pipelineLab} ${assembly}`,
+                            pipelineLab,
+                            assembly,
+                            assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assemblies[0], analysesByAssembly[assembly][0].genome_annotations[0]),
+                            files: _.uniq(assemblyFiles),
+                        });
+                    }
+                });
+            });
+        }
+    }
+    return _(compiledAnalyses).sortBy(compiledAnalysis => -compiledAnalysis.assemblyAnnotationValue);
+};
+
+
+/**
+ * Display the analyses selector, a dropdown menu to choose which pipeline lab's files to view in
+ * the file association graph.
+ */
+const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelection }) => {
+    React.useEffect(() => {
+        if (selectedAnalysesIndex === -1 && analyses.length > 0) {
+            // No selected pipeline lab analyses, but if we have at least one qualifying one,
+            // automatically select the first one.
+            handleAnalysesSelection(0);
+        }
+    });
+
+    // Called when the user changes the dropdown selection. Tells the file gallery so it can update
+    // its state that tracks this.
+    const handleSelection = (e) => {
+        handleAnalysesSelection(e.target.value);
+    };
+
+    // Only present the pipeline lab analyses matching the currently selected assembly/annotation.
+    return (
+        analyses.length > 0 ?
+            <div className="analyses-selector analyses-selector--file-gallery-facets">
+                <h4>Choose analysis</h4>
+                <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
+                    {analyses.map((analysis, index) => (
+                        <option key={analysis.title} value={index}>{analysis.title}</option>
+                    ))}
+                </select>
+            </div>
+        : null
+    );
+};
+
+AnalysesSelector.propTypes = {
+    /** Compiled analyses for the currently viewed dataset */
+    analyses: PropTypes.array.isRequired,
+    /** Currently selected analysis index */
+    selectedAnalysesIndex: PropTypes.number.isRequired,
+    /** Called when the user chooses a pipeline lab from the menu */
+    handleAnalysesSelection: PropTypes.func.isRequired,
+};
+
+
 const TabPanelFacets = (props) => {
-    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType } = props;
+    const { open, currentTab, filters, allFiles, filterFiles, toggleFacets, clearFileFilters, experimentType, analyses, selectedAnalysesIndex, handleAnalysesSelection } = props;
 
     // Filter file list to make sure it includes only files that should be displayed
     let fileList = allFiles;
@@ -2018,8 +2226,14 @@ const TabPanelFacets = (props) => {
 
     return (
         <div className={`file-gallery-facets ${open ? 'expanded' : 'collapsed'}`}>
-            <h4>Choose an assembly </h4>
-            <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+            {(currentTab === 'graph' || currentTab === 'browser') && analyses.length > 0 && fileList.length > 0 ?
+                <AnalysesSelector analyses={analyses} selectedAnalysesIndex={selectedAnalysesIndex} handleAnalysesSelection={handleAnalysesSelection} />
+            :
+                <React.Fragment>
+                    <h4>Choose an assembly </h4>
+                    <FileFacet facetTitle={'Assembly'} facetObject={assembly} filterFiles={filterFiles} facetKey={'assembly'} selectedFilters={filters} currentTab={currentTab} />
+                </React.Fragment>
+            }
             <h4>Filter files </h4>
             <button className="show-hide-facets" onClick={toggleFacets}>
                 <i className={`${open ? 'icon icon-chevron-left' : 'icon icon-chevron-right'}`} />
@@ -2048,7 +2262,18 @@ TabPanelFacets.propTypes = {
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
     experimentType: PropTypes.string.isRequired,
+    /** Compiled analyses objects from the currently viewed dataset */
+    analyses: PropTypes.array,
+    /** Index of selected analysis */
+    selectedAnalysesIndex: PropTypes.number.isRequired,
+    /** Function to call when the user changes the currently selected pipeline lab analyses */
+    handleAnalysesSelection: PropTypes.func.isRequired,
 };
+
+TabPanelFacets.defaultProps = {
+    analyses: [],
+};
+
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
@@ -2089,6 +2314,16 @@ class FileGalleryRendererComponent extends React.Component {
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
+            /** Sorted compiled dataset analyses objects filtered by available assemblies */
+            compiledAnalyses: compileAnalyses(props.context, datasetFiles),
+            /** Index of currently/last selected `compiledAnalyses`. */
+            selectedAnalysesIndex: 0,
+        };
+
+        /** Store characteristics of currently selected analyses menu item */
+        this.selectedAnalysisProps = {
+            assembly: '', // Assembly/annotation of currently selected analysis
+            pipelineLab: '', // Pipeline lab of currently selected analysis
         };
 
         /** Used to see if related_files has been updated */
@@ -2115,7 +2350,10 @@ class FileGalleryRendererComponent extends React.Component {
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
         this.getSelectedAssemblyAnnotation = this.getSelectedAssemblyAnnotation.bind(this);
         this.getAvailableBrowsers = this.getAvailableBrowsers.bind(this);
+        this.saveSelectedAnalysesProps = this.saveSelectedAnalysesProps.bind(this);
+        this.findCompiledAnalysesIndex = this.findCompiledAnalysesIndex.bind(this);
         this.resetCurrentBrowser = this.resetCurrentBrowser.bind(this);
+        this.handleAnalysesSelection = this.handleAnalysesSelection.bind(this);
     }
 
     componentDidMount() {
@@ -2155,7 +2393,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn;
+        const updateAssembly = prevState.currentTab !== this.state.currentTab || prevState.inclusionOn !== this.state.inclusionOn || prevProps.data !== this.props.data;
         this.updateFiles(!!(prevProps.session && prevProps.session['auth.userid']), updateAssembly);
     }
 
@@ -2216,6 +2454,52 @@ class FileGalleryRendererComponent extends React.Component {
             return visSortBrowsers(this.props.context.visualize[selectedBrowserAssembly]);
         }
         return [];
+    }
+
+    /**
+     * Sets the `selectedAnalysisProps` property to track the corresponding selected assembly/annotation
+     * and pipeline lab. Only pass in `compiledAnalyses` if it has been newly determined and might
+     * not yet have propagated to `this.state.compiledAnalyses`.
+     * @param {number} selectedAnalysesIndex New index of selected `compiledAnalyses`
+     * @param {array} compiledAnalyses Compiled analyses for the experiment if newly determined
+     */
+    saveSelectedAnalysesProps(selectedAnalysesIndex, compiledAnalyses) {
+        const localCompiledAnalyses = compiledAnalyses || this.state.compiledAnalyses;
+        const selectedAnalyses = localCompiledAnalyses[selectedAnalysesIndex];
+        this.selectedAnalysisProps = { assembly: selectedAnalyses.assembly, pipelineLab: selectedAnalyses.pipelineLab };
+    }
+
+    /**
+     * Find the compiled analyses object best matching the given assembly/annotation and the last
+     * selected pipeline lab and return its index into the compiled analyses array. Only pass in
+     * `compiledAnalyses` if it has been newly determined and might not yet have propagated to
+     * `this.state.compiledAnalyses`. If no appropriate compiled analyses can be found, return 0
+     * which selects the first compiled analyses object.
+     * @param {string} assembly Suggested assembly for matching an analysis
+     * @param {array} compiledAnalyses Compiled analyses for the experiment if newly determined
+     *
+     * @return {object} Array index of most appropriate compiled analyses object
+     */
+    findCompiledAnalysesIndex(assembly, compiledAnalyses) {
+        let compiledAnalysisIndex = 0;
+        const localCompiledAnalyses = compiledAnalyses || this.state.compiledAnalyses;
+
+        // Find all analyses matching the given assembly, then of those find one that also matches
+        // the pipeline lab.
+        const analysesWithMatchingAssembly = localCompiledAnalyses.filter(analysis => analysis.assembly === assembly);
+        if (analysesWithMatchingAssembly.length > 0) {
+            const matchingAnalysis = analysesWithMatchingAssembly.find(analysis => analysis.pipelineLab === this.selectedAnalysisProps.pipelineLab);
+            if (matchingAnalysis) {
+                // An analysis matched both assembly and pipeline lab. Get the index of its object
+                // in the array of compiled analyses.
+                compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === matchingAnalysis);
+            } else {
+                // An analysis matched just the assembly. Get the index of the first compiled
+                // analyses object with the matching assembly regardless of its pipeline lab.
+                compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === analysesWithMatchingAssembly[0]);
+            }
+        }
+        return compiledAnalysisIndex;
     }
 
     /**
@@ -2303,21 +2587,45 @@ class FileGalleryRendererComponent extends React.Component {
             this.resetCurrentBrowser(null, allFiles);
 
             // If new tab has been selected, we may need to update which assembly is chosen
-            if (updateAssembly) {
+            if (updateAssembly || loggedIn !== prevLoggedIn) {
                 if (this.state.currentTab === 'tables') {
                     // Always set the table assembly to be 'All assemblies'
                     this.filterFiles('All assemblies', 'assembly');
                 } else if (this.state.currentTab === 'browser' || this.state.currentTab === 'graph') {
+                    let availableCompiledAnalyses = this.state.compiledAnalyses;
                     // Determine available assemblies
                     const assemblyList = this.setAssemblyList(allFiles);
-                    // Reset assembly filter if it is 'All assemblies' or is not in assemblyList
-                    // Assembly is required for browser / graph and available assemblies may be different for graph and browser
-                    // Do not reset if a particular assembly has already been chosen and it is an available option
-                    const currentAssembly = this.state.fileFilters.assembly[0];
-                    if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
-                        // We want to get the assembly with the highest assembly number (but not 'All assemblies')
-                        const newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
-                        this.filterFiles(newAssembly, 'assembly');
+                    // Update compiled analyses filtered by available assemblies
+                    if (context.analyses && context.analyses.length > 0) {
+                        const availableAssemblies = Object.keys(assemblyList);
+                        availableCompiledAnalyses = compileAnalyses(context, allFiles).filter(analysis => availableAssemblies.includes(analysis.assembly));
+                    }
+                    if (availableCompiledAnalyses.length > 0) {
+                        // Update the list of relevant compiled analyses and use it to select an
+                        // appropriate selected pipeline menu based on the current assembly and the
+                        // last-selected pipeline lab.
+                        const currentAssembly = this.state.fileFilters.assembly[0];
+                        const compiledAnalysesIndex = this.findCompiledAnalysesIndex(currentAssembly, availableCompiledAnalyses);
+                        this.saveSelectedAnalysesProps(compiledAnalysesIndex, availableCompiledAnalyses);
+                        this.setState({ compiledAnalyses: availableCompiledAnalyses, selectedAnalysesIndex: compiledAnalysesIndex });
+                        // Find the matching assembly in compiledAnalyses, or the first otherwise.
+                        const newAnalyses = availableCompiledAnalyses[compiledAnalysesIndex];
+                        const newAssembly = newAnalyses.assembly;
+                        if (newAssembly !== currentAssembly) {
+                            this.filterFiles(newAssembly, 'assembly');
+                        }
+                    } else {
+                        // Reset assembly filter if it is 'All assemblies' or is not in assemblyList
+                        // Assembly is required for browser / graph and available assemblies may be different for graph and browser
+                        // Do not reset if a particular assembly has already been chosen and it is an available option
+                        this.setState({ compiledAnalyses: [] });
+                        const currentAssembly = this.state.fileFilters.assembly[0];
+                        let newAssembly;
+                        if (currentAssembly === 'All assemblies' || !(assemblyList[currentAssembly])) {
+                            // We want to get the assembly with the highest assembly number (but not 'All assemblies')
+                            newAssembly = Object.keys(assemblyList).reduce((a, b) => (((assemblyList[a] > assemblyList[b]) && (a !== 'All assemblies')) ? a : b));
+                            this.filterFiles(newAssembly, 'assembly');
+                        }
                     }
                 }
             }
@@ -2447,6 +2755,7 @@ class FileGalleryRendererComponent extends React.Component {
                 // Create a new filter with the new value
                 currentFilters[facet] = [value];
             }
+
             this.setState({ fileFilters: currentFilters });
         // If there are no filters yet, set this to be the first filter
         } else {
@@ -2461,6 +2770,14 @@ class FileGalleryRendererComponent extends React.Component {
         }
     }
 
+    // Called when the user selects a pipeline lab analyses.
+    // @param {string} selectedAnalysesIndex Index in state.compiledAnalyses of newly selected pipeline
+    handleAnalysesSelection(selectedAnalysesIndex) {
+        this.saveSelectedAnalysesProps(selectedAnalysesIndex);
+        this.setState({ selectedAnalysesIndex: +selectedAnalysesIndex });
+        this.filterFiles(this.state.compiledAnalyses[selectedAnalysesIndex].assembly, 'assembly');
+    }
+
     render() {
         const { context, schemas, hideGraph, showReplicateNumber } = this.props;
         let allGraphedFiles;
@@ -2470,9 +2787,49 @@ class FileGalleryRendererComponent extends React.Component {
         if (Object.keys(this.state.fileFilters).length > 1) {
             highlightedFiles = this.filterForInclusion(this.state.files);
         }
-        const graphIncludedFiles = this.filterForInclusion(this.state.graphFiles);
+        let graphIncludedFiles = this.filterForInclusion(this.state.graphFiles);
         const includedFiles = this.filterForInclusion(this.state.files);
         const facetFiles = this.filterForInclusion(this.state.allFiles);
+
+        // Compile pipeline lab information for pipeline lab dropdown.
+        if (this.state.compiledAnalyses.length > 0 && this.state.selectedAssembly) {
+            // Filter renderable and visualizable files to include only those in the matching
+            // analyses plus raw-data files. If no matching analyses, all files get included.
+            const selectedAnalysis = this.state.compiledAnalyses[this.state.selectedAnalysesIndex];
+            const graphAnalysesFiles = graphIncludedFiles.filter(file => selectedAnalysis.files.includes(file['@id']));
+            if (graphAnalysesFiles.length > 0) {
+                // Collect files that these files derive from, and add any missing ones to the
+                // list of files to include in the graph.
+                const assemblyAnnotation = this.state.selectedAssembly.split(' ');
+                const additionalFiles = [];
+                graphAnalysesFiles.forEach((analysesFile) => {
+                    // Get the chain of files that analysesFile derives from, then check
+                    // whether it needs to be added to the graph.
+                    const derivedFiles = collectDerivedFroms(analysesFile, context, assemblyAnnotation[0], assemblyAnnotation[1], this.state.allFiles);
+                    Object.keys(derivedFiles).forEach((derivedFileId) => {
+                        if (derivedFiles[derivedFileId]) {
+                            // See if the file is already included in the analyses' files.
+                            const includedFile = graphAnalysesFiles.find(file => file['@id'] === derivedFileId);
+                            if (!includedFile) {
+                                // The derived-from file isn't already included, so add it
+                                // if it can be found in allFiles (won't necessarily be).
+                                const derivedFile = this.state.allFiles.find(file => file['@id'] === derivedFileId);
+                                if (derivedFile) {
+                                    additionalFiles.push(derivedFile);
+                                }
+                            }
+                        }
+                    });
+                });
+
+                // The graphed files now also include the derived-from files and raw files.
+                graphIncludedFiles = graphAnalysesFiles.concat(_.uniq(additionalFiles), graphIncludedFiles.filter(file => file.output_category === 'raw data'));
+            } else {
+                // We know at this point there's nothing to graph nor browse for the selected
+                // analyses.
+                graphIncludedFiles = [];
+            }
+        }
 
         const fileTable = (
             <FileTable
@@ -2531,6 +2888,9 @@ class FileGalleryRendererComponent extends React.Component {
                             toggleFacets={this.toggleFacets}
                             clearFileFilters={this.clearFileFilters}
                             experimentType={this.experimentType}
+                            analyses={this.state.compiledAnalyses}
+                            selectedAnalysesIndex={this.state.selectedAnalysesIndex}
+                            handleAnalysesSelection={this.handleAnalysesSelection}
                         />
                         <TabPanel
                             tabPanelCss={`file-gallery-tab-bar ${this.state.facetsOpen ? '' : 'expanded'}`}
@@ -2543,6 +2903,7 @@ class FileGalleryRendererComponent extends React.Component {
                             <TabPanelPane key="browser">
                                 <GenomeBrowser
                                     files={includedFiles}
+                                    label={'file gallery'}
                                     expanded={this.state.facetsOpen}
                                     assembly={this.state.selectedAssembly}
                                 />
@@ -2812,6 +3173,20 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         <div data-test="mappedreadlength">
                             <dt>Mapped read length</dt>
                             <dd>{selectedFile.mapped_read_length}</dd>
+                        </div>
+                    : null}
+
+                    {selectedFile.cropped_read_length !== undefined ?
+                        <div data-test="croppedreadlength">
+                            <dt>Cropped read length</dt>
+                            <dd>{selectedFile.cropped_read_length}</dd>
+                        </div>
+                    : null}
+
+                    {selectedFile.cropped_read_length_tolerance !== undefined ?
+                        <div data-test="croppedreadlengthtolerance">
+                            <dt>Cropped read length tolerance</dt>
+                            <dd>{selectedFile.cropped_read_length_tolerance}</dd>
                         </div>
                     : null}
 

@@ -5,11 +5,12 @@ $form-bg: #f3f3f3;
 .search-results {
     @at-root #{&}__facets {
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 25%;
+            flex: 0 0 25%;
         }
     }
 
     display: block;
+    margin-top: 5px;
 
     h4 {
         margin: 0 0 10px;
@@ -30,7 +31,7 @@ $form-bg: #f3f3f3;
 
         @media screen and (min-width: $screen-md-min) {
             margin-top: 0;
-            flex: 0 1 75%;
+            flex: 0 0 75%;
             display: flex;
             flex-direction: column;
         }
@@ -99,6 +100,7 @@ $form-bg: #f3f3f3;
     @at-root #{&}__data-row {
         margin-left: 25px;
         line-height: 1.4;
+        word-break: break-all;
 
         ul {
             text-decoration: none;

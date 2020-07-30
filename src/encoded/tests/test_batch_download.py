@@ -46,8 +46,9 @@ def test__tsv_mapping_value():
         ('File type', ['files.file_format']),
         ('File format type', ['files.file_format_type']),
         ('Output type', ['files.output_type']),
+        ('File assembly', ['files.assembly']),
         ('Experiment accession', ['accession']),
-        ('Assay', ['assay_term_name']),
+        ('Assay', ['assay_term_name', 'files.assay_term_name']),
         ('Biosample term id', ['biosample_ontology.term_id']),
         ('Biosample term name', ['biosample_ontology.term_name']),
         ('Biosample type', ['biosample_ontology.classification']),
@@ -79,7 +80,7 @@ def test__tsv_mapping_value():
         ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
         ('Library size range', ['files.replicate.library.size_range']),
         ('Biological replicate(s)', ['files.biological_replicates']),
-        ('Technical replicate', ['files.replicate.technical_replicate_number']),
+        ('Technical replicate(s)', ['files.technical_replicates']),
         ('Read length', ['files.read_length']),
         ('Mapped read length', ['files.mapped_read_length']),
         ('Run type', ['files.run_type']),
@@ -91,7 +92,6 @@ def test__tsv_mapping_value():
         ('md5sum', ['files.md5sum']),
         ('dbxrefs', ['files.dbxrefs']),
         ('File download URL', ['files.href']),
-        ('Assembly', ['files.assembly']),
         ('Genome annotation', ['files.genome_annotation']),
         ('Platform', ['files.platform.title']),
         ('Controlled by', ['files.controlled_by']),
@@ -327,7 +327,7 @@ def test_batch_download_report_download(testapp, workbook):
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',
     ]
-    assert len(lines) == 64
+    assert len(lines) == 67
 
 
 def test_batch_download_matched_set_report_download(testapp, workbook):
@@ -397,7 +397,7 @@ def test_metadata_view(testapp, workbook):
     
 
 @pytest.mark.parametrize("test_input,expected", [
-    (files_prop_param_list(exp_file_1, param_list_2), True),
+    (files_prop_param_list(exp_file_1, param_list_2), False),
     (files_prop_param_list(exp_file_1, param_list_1), True),
     (files_prop_param_list(exp_file_2, param_list_1), False),
     (files_prop_param_list(exp_file_3, param_list_3), True),
@@ -427,3 +427,20 @@ def test_metadata_tsv_fields(testapp, workbook):
     assert len(headers) == len(set(headers))
     expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
     assert len(expected_headers - set(headers)) == 0
+
+
+def test_metadata_contains_audit_values(testapp, workbook):
+     r = testapp.get('/metadata/?type=Experiment&audit=*')
+     audit_values = [
+         'biological replicates with identical biosample',
+         'experiment not submitted to GEO',
+         'inconsistent assay_term_name',
+         'inconsistent library biosample',
+         'lacking processed data',
+         'inconsistent platforms',
+         'mismatched status',
+         'missing documents',
+         'unreplicated experiment'
+     ]
+     for value in audit_values:
+         assert value in r.text

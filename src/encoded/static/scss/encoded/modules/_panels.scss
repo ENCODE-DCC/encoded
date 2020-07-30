@@ -756,7 +756,7 @@ $nav-tab-border-radius: 4px;
     font-size: 0.8rem;
 }
 
-.file-table-paged {
+.table-paged {
     @at-root #{&}__count {
         @extend .file-gallery-counts;
         border-top: 1px solid #a0a0a0;

@@ -76,7 +76,7 @@ class Gene extends React.Component {
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
-                    <Breadcrumbs root="/search/?type=gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <Breadcrumbs root="/search/?type=Gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
                     <ItemAccessories item={context} />
                 </header>
@@ -140,8 +140,14 @@ class Gene extends React.Component {
                 </div>
 
                 <RelatedItems
-                    title={`Experiments targeting gene ${context.symbol}`}
+                    title={`Functional genomics experiments targeting gene ${context.symbol}`}
                     url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title={`Functional characterization experiments targeting gene ${context.symbol}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&target.genes.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
             </div>

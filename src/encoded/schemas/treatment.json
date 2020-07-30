@@ -7,16 +7,15 @@
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/treatment_classification"},
-        { "$ref": "mixins.json#/documents"},
-        { "$ref": "mixins.json#/product_id"},
-        { "$ref": "mixins.json#/source"}
+        {"$ref": "mixins.json#/schema_version" },
+        {"$ref": "mixins.json#/uuid" },
+        {"$ref": "mixins.json#/aliases" },
+        {"$ref": "mixins.json#/standard_status" },
+        {"$ref": "mixins.json#/submitted" },
+        {"$ref": "mixins.json#/notes" },
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/source"},
+        {"$ref": "mixins.json#/dbxrefs"}
     ],
     "dependencies": {
         "temperature": ["temperature_units"],
@@ -28,19 +27,12 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "1"
         },
         "documents": {
             "description": "Documents that describe the treatment protocol."
         },
         "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External resources",
-            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-            "type": "array",
-            "uniqueItems": true,
-            "default": [],
             "items": {
                 "title": "External identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
@@ -50,10 +42,12 @@
         },
         "amount": {
             "title": "Amount",
+            "description": "The amount of the treatment identified in the Treatment term name.",
             "type": "number"
         },
         "amount_units": {
             "title": "Amount units",
+            "description": "The units of the amount of the treatment identified in the Treatment term name.",
             "type": "string",
             "enum": [
                 "M",
@@ -76,10 +70,12 @@
         },
         "duration": {
             "title": "Duration",
+            "description": "The duration of application of the treatment identified in the Treatment term name.",
             "type": "number"
         },
         "duration_units": {
             "title": "Duration units",
+            "description": "The units of the duration of application of the treatment identified in the Treatment term name.",
             "type": "string",
             "enum": [
                 "second",
@@ -90,18 +86,22 @@
         },
         "purpose": {
             "title": "Purpose",
+            "description":  "The reason for application of the treatment.",
             "type": "string",
             "enum": [
                 "activation",
-                "deactivation"
+                "deactivation",
+                "differentiation"
             ]
         },
         "temperature": {
             "title": "Temperature",
+            "description":  "The temperature applied as a part of the treatment.",
             "type": "number"
         },
         "temperature_units": {
             "title": "Temperature units",
+            "description":  "The units of temperature applied as a part of the treatment.",
             "type": "string",
             "enum": [
                 "Celsius",
@@ -136,6 +136,35 @@
                  "type":  "string",
                  "linkTo": "AntibodyLot"
              }
+        },
+        "treatment_type": {
+            "title": "Treatment type",
+            "description": "The classification of the treatment.",
+            "type": "string",
+            "default": "chemical",
+            "enum": [
+                "antibody",
+                "chemical",
+                "exposure",
+                "infection",
+                "injection",
+                "irradiation",
+                "protein",
+                "stimulation",
+                "transplantation"
+            ]
+        },
+        "treatment_term_id": {
+            "@type": "@id",
+            "title": "Biosample treatment term ID",
+            "description": "Ontology identifier describing a component in the treatment.",
+            "type": "string",
+            "pattern": "^((CHEBI:[0-9]{1,7})|(UniProtKB:[A-Z0-9]{6})|(Taxon:[0-9]{2,7})|(NTR:[0-9]{2,8})|(CL:[0-9]{2,8})|(XCO:[0-9]{7}))$"
+        },
+        "treatment_term_name": {
+            "title": "Biosample treatment",
+            "description": "Ontology term describing a component in the treatment.",
+            "type":  "string"
         }
     },
     "facets": {

@@ -27,6 +27,9 @@ from time import sleep
 from datetime import datetime
 
 
+DEFAULT_REGION_NAME = 'us-west-1'  # N. California
+
+
 def _create_ami(ec2_client, ami_name, instance_id):
     response = ec2_client.create_image(
         Description="{} testing".format(ami_name),
@@ -70,9 +73,10 @@ def _find_similar_amis(ec2_client, ami_name):
                 'description': res_img['Description'],
                 'state': res_img['State'],
             }
-            for tag in res_img['Tags']:
-                ami_obj[tag['Key']] = tag['Value']
-            ami_objs.append(ami_obj)
+            if 'Tags' in res_img:
+                for tag in res_img['Tags']:
+                    ami_obj[tag['Key']] = tag['Value']
+                ami_objs.append(ami_obj)
     return ami_objs
 
 
@@ -88,7 +92,7 @@ def main():
     """Entry point"""
     main_args = _parse_args()
     
-    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
+    session = boto3.Session(region_name=DEFAULT_REGION_NAME, profile_name=main_args.profile_name)
     ec2_resource = session.resource('ec2')
     ec2_client = session.client('ec2')
 
@@ -152,7 +156,7 @@ def main():
             key_name += '-prod'
         print('\nAdd below to ami map in deploy script')
         print("# {} build on {}: {}".format(fuzzy_ami_name, date_now, ami_name))
-        print("'{}': '{}',".format(main_args.deployment_type, ami_id))
+        print("'{}': '{}',".format(key_name, ami_id))
 
 def _parse_args():
     # pylint: disable=too-many-branches, too-many-statements

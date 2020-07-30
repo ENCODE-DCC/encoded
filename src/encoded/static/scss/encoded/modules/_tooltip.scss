@@ -57,7 +57,7 @@ $tooltip-color: #000;
 
         .tooltip-inner {
             text-align: left;
-            max-width: none; 
+            max-width: none;
         }
     }
 
@@ -69,14 +69,15 @@ $tooltip-color: #000;
 
         .tooltip-inner {
             text-align: center;
-            min-width: 250px; 
+            min-width: 250px;
         }
     }
 }
 
 .tooltip-inner {
     max-width: 200px;
-    padding: 3px 8px;
+    padding: 10px;
+    margin-top: 5px;
     color: #fff;
     text-align: center;
     text-decoration: none;
@@ -87,6 +88,56 @@ $tooltip-color: #000;
 .tooltip-open {
     visibility: visible;
     opacity: 1;
+}
+
+.menu-tooltip {
+    position: absolute;
+    width: 350px;
+    z-index: 9999;
+    background: white;
+    padding: 10px;
+    color: black;
+    top: 3px;
+    left: 30px;
+    white-space: break-spaces;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.2;
+    border: 1px solid #d2d2d2;
+    -webkit-box-shadow: 7px 5px 7px -5px #ccc;
+    -moz-box-shadow:    7px 5px 7px -5px #ccc;
+    box-shadow:         7px 5px 7px -5px #ccc;
+    .tooltip-inner {
+        max-width: inherit;
+        padding: 0;
+        color: inherit;
+        text-align: inherit;
+        background-color: inherit;
+        border-radius: inherit;
+    }
+    @media screen and (max-width: $screen-md-min) {
+        position: relative;
+        width: auto;
+        padding: 5px 60px 15px;
+        top: unset;
+        left: unset;
+        color: black;
+        background: #b3b3b3;
+        border: 0;
+        line-height: 1.4;
+        font-size: 0.8rem;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        margin-top: 5px;
+        margin-left: -25px;
+        margin-right: -30px;
+        &.sub-menu {
+            margin-left: -40px;
+            padding-left: 60px;
+        }
+    }
 }
 
 .dl-tooltip-trigger {

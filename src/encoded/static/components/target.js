@@ -37,7 +37,7 @@ const Target = ({ context }) => {
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header>
-                <Breadcrumbs root="/search/?type=target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <Breadcrumbs root="/search/?type=Target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h2>{context.label} (<em>{source}</em>)</h2>
                 <ItemAccessories item={context} />
             </header>
@@ -62,8 +62,8 @@ const Target = ({ context }) => {
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxref.length > 0 ?
-                                    <DbxrefList context={context} dbxrefs={context.dbxref} />
+                                {context.dbxrefs && context.dbxrefs.length > 0 ?
+                                    <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
                         </div>
@@ -72,8 +72,14 @@ const Target = ({ context }) => {
             </Panel>
 
             <RelatedItems
-                title={`Experiments using target ${context.label}`}
+                title={`Functional genomics experiments using target ${context.label}`}
                 url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
+                Component={ExperimentTable}
+            />
+
+            <RelatedItems
+                title={`Functional characterization experiments using target ${context.label}`}
+                url={`/search/?type=FunctionalCharacterizationExperiment&target.uuid=${context.uuid}`}
                 Component={ExperimentTable}
             />
         </div>

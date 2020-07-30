@@ -199,11 +199,11 @@ class TabPanel extends React.Component {
 
         return (
             <div className={tabPanelCss}>
-                <div className="tab-nav">
+                <div className={`tab-nav tab-nav-${this.getCurrentTab() ? this.getCurrentTab().replace(/\s/g, '') : ''}`}>
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {Object.keys(tabs).map((tab, i) => {
                             return (
-                                <li key={tab} role="presentation" aria-controls={tab} className={this.getCurrentTab() === tab ? 'active' : ''}>
+                                <li key={tab} role="presentation" aria-controls={tab} className={`${tab.replace(/\s/g, '')}-tab ${this.getCurrentTab() === tab ? 'active' : ''}`}>
                                     <TabItem tab={tab} handleClick={this.handleClick}>
                                         {tabDisplay[tab] || tabs[tab]}
                                     </TabItem>
@@ -264,6 +264,10 @@ TabPanel.defaultProps = {
 };
 
 
+// Check to see if child of tab has "disabled" class
+const checkIfDisabled = (input) => input.children && input.children.props && input.children.props.className && input.children.props.className.includes('disabled');
+
+
 class TabItem extends React.Component {
     constructor(props) {
         super(props);
@@ -272,14 +276,16 @@ class TabItem extends React.Component {
     }
 
     clickHandler() {
-        this.props.handleClick(this.props.tab);
+        if (!checkIfDisabled(this.props)) {
+            this.props.handleClick(this.props.tab);
+        }
     }
 
     render() {
         const tab = this.props.tab;
-
+        const isDisabled = checkIfDisabled(this.props);
         return (
-            <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab">
+            <a href={`#${tab}`} ref={tab} onClick={this.clickHandler} data-trigger="tab" aria-controls={tab} role="tab" data-toggle="tab" disabled={isDisabled}>
                 {this.props.children}
             </a>
         );

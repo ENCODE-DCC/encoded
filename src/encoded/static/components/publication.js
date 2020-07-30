@@ -1,29 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Cache from '../libs/cache';
+import Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
+import { CartAddAllElements, CartToggle } from './cart';
 import { auditDecor } from './audit';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { PickerActions, resultItemClass } from './search';
 import Status from './status';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, requestObjects } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
-import { FetchedData, Param } from './fetched';
 
 
 const datasetsColumns = {
     accession: {
         display: dataset => <a href={dataset['@id']}>{dataset.accession}</a>,
         title: 'Accession',
+        sorter: false,
     },
     type: {
-        getValue: datasets => (datasets['@type'] || [''])[0], // only the first matters
+        getValue: dataset => (dataset['@type'] || [''])[0], // only the first matters
         title: 'Type',
+        sorter: false,
     },
     target: {
         getValue: dataset => (dataset.target ? dataset.target.label : ''),
         title: 'Target',
+        sorter: false,
     },
     assay_term_name: {
         getValue: (dataset) => {
@@ -34,6 +39,7 @@ const datasetsColumns = {
             return (dataset.assay_term_name || []).join(', ');
         },
         title: 'Assay',
+        sorter: false,
     },
     description: {
         title: 'Description',
@@ -42,17 +48,179 @@ const datasetsColumns = {
     lab: {
         getValue: dataset => (dataset.lab ? dataset.lab.title : ''),
         title: 'Lab',
+        sorter: false,
     },
     biosample_summary: {
         title: 'Biosample Summary',
+        sorter: false,
     },
     status: {
-        display: datasets => <Status item={datasets.status} badgeSize="small" css="result-table__status" />,
+        display: dataset => <Status item={dataset.status} badgeSize="small" inline />,
         title: 'Status',
+        sorter: false,
+    },
+    cart: {
+        title: 'Cart',
+        display: dataset => <CartToggle element={dataset} />,
+        sorter: false,
     },
 };
 
-const fields = ['accession', 'target', '@type', 'target', 'biosample_summary', 'lab', 'assay_term_name', 'assay', 'description', 'status'].reduce((field1, field2) => `${field1}&field=${field2}`, '');
+
+const publicationDataColumns = {
+    accession: {
+        display: publicationData => <a href={publicationData['@id']}>{publicationData.accession}</a>,
+        title: 'Accession',
+        sorter: false,
+    },
+    fileCount: {
+        getValue: publicationData => (publicationData.files ? publicationData.files.length : 0),
+        title: 'Number of files',
+        sorter: false,
+    },
+    description: {
+        display: publicationData => publicationData.description || <i>No description</i>,
+        title: 'Description',
+        sorter: false,
+    },
+    status: {
+        display: publicationData => <Status item={publicationData} badgeSize="small" inline />,
+        title: 'Status',
+        sorter: false,
+    },
+};
+
+
+/**
+ * Displays the header that shows the pager for the datasets.
+ */
+const DatasetTableHeader = ({ title, elements, currentPage, totalPageCount, updateCurrentPage }) => (
+    <div className="header-paged-sorttable">
+        <h4>{title}</h4>
+        <div className="header-paged-sorttable__controls">
+            <CartAddAllElements elements={elements} />
+            {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
+        </div>
+    </div>
+);
+
+DatasetTableHeader.propTypes = {
+    /** Title of table */
+    title: PropTypes.string.isRequired,
+    /** All element @ids to display in table, not just the current visible page's items */
+    elements: PropTypes.array.isRequired,
+    /** Current displayed page number, 0 based */
+    currentPage: PropTypes.number.isRequired,
+    /** Total number of pages */
+    totalPageCount: PropTypes.number.isRequired,
+    /** Called with the new page number the user selected */
+    updateCurrentPage: PropTypes.func.isRequired,
+};
+
+
+/**
+ * Renders a table of datasets included in this publication. The method to lazy initialize the cache
+ * comes from Dan Abramov https://github.com/facebook/react/issues/14490#issuecomment-454973512
+ */
+const PAGE_DATASET_COUNT = 25;
+const DatasetTable = ({ datasets }) => {
+    // Page number of currently displayed page of datasets.
+    const [currentPage, setCurrentPage] = React.useState(0);
+    // Dataset objects displayed on the currently displayed page.
+    const [visibleDatasets, setVisibleDatasets] = React.useState([]);
+    // Caches past-viewed pages of datasets.
+    const pageCache = React.useRef(null);
+
+    // Retrieve or create the dataset page cache.
+    // @return {object} dataset page cache
+    const getPageCache = () => {
+        if (pageCache.current) {
+            return pageCache.current;
+        }
+        pageCache.current = new Cache();
+        return pageCache.current;
+    };
+
+    // Called when the user clicks the pager to go to a new page, so we know the currently
+    // requested page.
+    // @param {number} New current page number of datasets to display
+    const updateCurrentPage = React.useCallback((newPage) => {
+        setCurrentPage(newPage);
+    }, []);
+
+    // Calculate the total number of pages based on the total number of datasets and the number of
+    // datasets per page.
+    const totalPageCount = React.useMemo(() => Math.floor(datasets.length / PAGE_DATASET_COUNT) + (datasets.length % PAGE_DATASET_COUNT !== 0 ? 1 : 0), [datasets]);
+
+    React.useEffect(() => {
+        const cachedDatasets = getPageCache().read(currentPage);
+        if (cachedDatasets) {
+            // Page found in the cache; just switch in the cached datasets instead of doing a
+            // request.
+            setVisibleDatasets(cachedDatasets);
+        } else {
+            // Page not found in the cache. Request the datasets for the currently displayed page.
+            const pageStartIndex = currentPage * PAGE_DATASET_COUNT;
+            const visibleDatasetIds = datasets.slice(pageStartIndex, pageStartIndex + PAGE_DATASET_COUNT);
+            requestObjects(visibleDatasetIds, '/search/?type=Dataset&limit=all&status!=deleted&status!=revoked&status!=replaced').then((requestedDatasets) => {
+                setVisibleDatasets(requestedDatasets);
+                getPageCache().write(currentPage, requestedDatasets);
+            });
+        }
+    }, [datasets, currentPage]);
+
+    return (
+        <React.Fragment>
+            {visibleDatasets.length > 0 ?
+                <SortTablePanel
+                    header={<DatasetTableHeader title="Datasets" elements={datasets} currentPage={currentPage} totalPageCount={totalPageCount} updateCurrentPage={updateCurrentPage} />}
+                    subheader={<div className="table-paged__count">{`${datasets.length} dataset${datasets.length === 1 ? '' : 's'}`}</div>}
+                    css="table-paged"
+                >
+                    <SortTable list={visibleDatasets} columns={datasetsColumns} />
+                </SortTablePanel>
+            : null}
+        </React.Fragment>
+    );
+};
+
+DatasetTable.propTypes = {
+    /** Array of dataset @ids to display */
+    datasets: PropTypes.array.isRequired,
+};
+
+
+/**
+ * Renders a table of PublicationData file sets included in this publication.
+ */
+const PublicationDataTable = ({ publicationDataIds }) => {
+    const [publicationData, setPublicationData] = React.useState([]);
+
+    React.useEffect(() => {
+        requestObjects(publicationDataIds, '/search/?type=PublicationData&limit=all&status!=deleted&status!=revoked&status!=replaced&field=accession&field=files&field=description&field=status').then((requestedPublicationData) => {
+            setPublicationData(requestedPublicationData);
+        });
+    }, [publicationDataIds]);
+
+    return (
+        <React.Fragment>
+            {publicationData.length > 0 ?
+                <SortTablePanel
+                    title="File sets"
+                    subheader={<div className="table-paged__count">{`${publicationDataIds.length} file set${publicationDataIds.length === 1 ? '' : 's'}`}</div>}
+                >
+                    <SortTable list={publicationData} columns={publicationDataColumns} />
+                </SortTablePanel>
+            : null}
+        </React.Fragment>
+    );
+};
+
+PublicationDataTable.propTypes = {
+    /** Array of publication_data @ids to display */
+    publicationDataIds: PropTypes.array.isRequired,
+};
+
 
 // Display a publication object.
 const PublicationComponent = (props, reactContext) => {
@@ -71,10 +239,6 @@ const PublicationComponent = (props, reactContext) => {
     ];
 
     const crumbsReleased = (context.status === 'released');
-    const accessions = context.datasets ? context.datasets.reduce((dataset1, dataset2) => `${dataset1}&accession=${dataset2.accession}`, '') : '';
-    const datasetsUrl = context.datasets && context.datasets.length > 0 ?
-        `/search/?${accessions}${fields}&limit=all` :
-        null;
     return (
         <div className={itemClass}>
             <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
@@ -94,13 +258,12 @@ const PublicationComponent = (props, reactContext) => {
                 </Panel>
             : null}
 
+            {context.publication_data.length > 0 ?
+                <PublicationDataTable publicationDataIds={context.publication_data} />
+            : null}
+
             {context.datasets && context.datasets.length > 0 ?
-                <SortTablePanel title="Datasets">
-                    <FetchedData>
-                        <Param name="datasets" url={datasetsUrl} allowMultipleRequest />
-                        <DatasetsComponent columns={datasetsColumns} />
-                    </FetchedData>
-                </SortTablePanel>
+                <DatasetTable datasets={context.datasets} />
             : null }
 
             {context.supplementary_data && context.supplementary_data.length > 0 ?
@@ -182,23 +345,6 @@ Abstract.propTypes = {
     context: PropTypes.object.isRequired, // Abstract being displayed
 };
 
-const DatasetsComponent = (props) => {
-    const { datasets, columns } = props;
-
-    return (
-        <SortTable list={datasets['@graph']} columns={columns} />
-    );
-};
-
-DatasetsComponent.propTypes = {
-    datasets: PropTypes.object,
-    columns: PropTypes.object,
-};
-
-DatasetsComponent.defaultProps = {
-    datasets: {},
-    columns: {},
-};
 
 const SupplementaryData = (props) => {
     const data = props.data;

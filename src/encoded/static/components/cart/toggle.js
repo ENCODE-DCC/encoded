@@ -33,13 +33,14 @@ class CartToggleComponent extends React.Component {
         const inCartToolTip = `${inCart ? 'Remove item from cart' : 'Add item to cart'}${cartName ? `: ${cartName}` : ''}`;
         const inProgressToolTip = inProgress ? 'Cart operation in progress' : '';
         const cartAtLimitToolTip = cartAtLimit ? `Cart can contain a maximum of ${CART_MAXIMUM_ELEMENTS_LOGGEDOUT} items` : '';
+        const locked = savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.locked : false;
 
         // "name" attribute needed for BDD test targeting.
         return (
             <button
                 className={`cart__toggle${inCart ? ' cart__toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}
                 onClick={this.handleClick}
-                disabled={inProgress || (!loggedIn && !inCart && cartAtLimit)}
+                disabled={inProgress || locked || (!loggedIn && !inCart && cartAtLimit)}
                 title={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
                 aria-pressed={inCart}
                 aria-label={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}

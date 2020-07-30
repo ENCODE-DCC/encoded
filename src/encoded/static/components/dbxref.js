@@ -109,6 +109,19 @@ export const dbxrefPrefixMap = {
     },
     FactorBook: {
         pattern: 'https://factorbook.org/experiment/{0}',
+        preprocessor: (context, dbxref) => {
+            // For dbxrefs in targets use an alternate URL for human targets.
+            const value = dbxref.split(':');
+            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Homo sapiens') {
+                return { altUrlPattern: 'https://factorbook.org/tf/human/{0}/function' };
+            }
+            // For dbxrefs in targets use an alternate URL and alternate value for mouse targets.
+            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') {
+                return { altValue: value[1].charAt(0) + value[1].slice(1).toLowerCase(),
+                    altUrlPattern: 'https://factorbook.org/tf/mouse/{0}/function' };
+            }
+            return {};
+        },
     },
     FlyBase: {
         pattern: 'http://flybase.org/search/symbol/{0}',
@@ -227,7 +240,26 @@ export const dbxrefPrefixMap = {
     },
     DepMap: {
         pattern: 'https://depmap.org/portal/cell_line/{0}',
-    }
+    },
+    GeneCards: {
+        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
+    },
+    VISTA: {
+        pattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=1',
+        preprocessor: (context, dbxref) => {
+            const value = dbxref.split(':');
+            // Check to see if the first two characters of the VISTA value is "hs"
+            if (value[1] && value[1].substr(0, 2) === 'hs') {
+                return { altValue: value[1].substr(2) };
+            }
+            // If the first two characters of the VISTA value is "mm" then we need to use a
+            // different URL pattern.
+            if (value[1] && value[1].substr(0, 2) === 'mm') {
+                return { altUrlPattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=2', altValue: value[1].substr(2) };
+            }
+            return {};
+        },
+    },
 };
 
 

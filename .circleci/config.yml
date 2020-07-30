@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-    browser-tools: circleci/browser-tools@0.1.0
+    browser-tools: circleci/browser-tools@0.1.4
 
 executors:
   encoded-executor:
@@ -44,6 +44,13 @@ commands:
             sudo apt-get install -y python3.7-dev python3-pip
             sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 0
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic1_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
+            sudo apt-get install -f
       - run:
           name: Run buildout
           command: |
@@ -57,6 +64,9 @@ jobs:
     resource_class: large
     steps:
       - buildout
+      # orb dependencies
+      - run: sudo apt-get update -y && sudo apt-get install -y libgbm1
+      # Use install tasks from the orb
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:

@@ -57,4 +57,5 @@ FacetRegistry.Title = new FacetRegistryCore();
 FacetRegistry.Term = new FacetRegistryCore();
 FacetRegistry.TermName = new FacetRegistryCore();
 FacetRegistry.Facet = new FacetRegistryCore();
+FacetRegistry.SelectedTermName = new FacetRegistryCore();
 export default FacetRegistry;

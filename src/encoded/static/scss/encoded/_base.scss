@@ -16,6 +16,12 @@ $std-href-color:               #428bca;
 $site-font:                    'Helvetica Neue', sans-serif;
 $brand-font:                   'Helvetica Neue', sans-serif;
 
+$Homo-sapiens:                  #63326E;
+$Mus-musculus:                  #3D518C;
+$Caenorhabditis-elegans:        #77878B;
+$Drosophila-melanogaster:       #335C67;
+
+
 // Pass value with CSS units and get just the value back
 @function strip-units($value) {
     @return $value / ($value * 0 + 1);
@@ -210,9 +216,7 @@ $disabled-color-factor: 20%;
     }
 
     &.btn-inline {
-        display: inline-block;
-        margin-right: 2px;
-        margin-left: 2px;
+        margin-right: 5px;
     }
 }
 
@@ -345,4 +349,77 @@ pre code {
     white-space: pre-wrap;
     background-color: #0000;
     border-radius: 0;
+}
+
+.dropdown-button {
+    position: relative;
+
+    & > &__composite {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    & > &__composite > &__composite-execute {
+        margin: 0;
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    & > &__composite > &__composite-trigger {
+        margin: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+
+        > svg {
+            width: 8px;
+            fill: white;
+        }
+    }
+
+    @at-root #{&}__content {
+        position: absolute;
+        top: 100%;
+        margin: 4px 0;
+        padding: 0;
+        width: 300px;
+        list-style: none;
+        border: 1px solid #c0c0c0;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.175);
+        z-index: 1000;
+
+        button {
+            height: auto;
+            white-space: normal;
+        }
+
+        // Default link/button styling
+        > li {
+            display: block;
+
+            > button, > a {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding: 5px 20px;
+                font-size: 0.9rem;
+                font-weight: bold;
+                border: none;
+                border-radius: 0;
+                color: #444;
+                background-color: #fff;
+                border-top: 1px solid transparent;
+                border-right: none;
+                border-bottom: 1px solid transparent;
+                border-left: none;
+
+                &:hover {
+                    color: #fff;
+                    background-color: #4E7294;
+                    border-top: 1px solid #2b3f51;
+                    border-bottom: 1px solid #2b3f51;
+                }
+            }
+        }
+    }
 }

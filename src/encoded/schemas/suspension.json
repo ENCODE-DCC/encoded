@@ -1,0 +1,267 @@
+{
+    "title": "Suspension",
+    "description": "Schema for submitting a cell or nucleus suspension.",
+    "comment": "",
+    "id": "/profiles/suspension.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["biosample_ontology"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "derived_from", "derivation_process"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accession"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/url"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
+        {"$ref": "mixins.json#/source"},
+        {"$ref": "mixins.json#/dbxrefs"},
+        {"$ref": "mixins.json#/treatments"},
+        {"$ref": "mixins.json#/diseases"},
+        {"$ref": "mixins.json#/references"},
+        {"$ref": "biosample.json#/properties"}
+    ],
+    "dependencies": {},
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "suspension_type": {
+            "title": "Suspension type",
+            "description": "The type of suspension: cell or nucleus.",
+            "type": "string",
+            "enum": [
+                "cell",
+                "nucleus"
+            ]
+        },
+        "cell_concentration": {
+            "title": "Cell concentration",
+            "description": "The quantified cell/nucleus concentration.",
+            "type": "integer"
+        },
+        "cell_concentration_units": {
+            "title": "Cell concentration units",
+            "description": "The units of the quantified cell/nucleus concentration.",
+            "type": "string",
+            "enum": [
+                "cells/μl",
+                "nuclei/μl"
+            ]
+        },
+        "cell_viability_method": {
+            "title": "Cell viability method",
+            "description": "The method by which cell viability or nuclei integrity was assessed.",
+            "type": "string",
+            "enum": [
+                "Thermo Fisher Live/Dead¬Æ Viability/Cytotoxicity Kit",
+                "Visual inspection",
+                "trypan blue stain",
+                "Countess II trypan blue assay",
+                "Trypan blue / manual haemacytometer (C-chip)",
+                "Countess II automated cell counter",
+                "Flow cytometry staining"
+            ]
+        },
+        "percent_cell_viability": {
+            "title": "Percent cell viability",
+            "description": "The number in percent of viable cells or intact nuclei.",
+            "type": "number"
+        },
+        "enriched_cell_types": {
+            "title": "Enriched cell types",
+            "description": "Embedded property for linking to biosample types which describes the ontology of the enriched cell types.",
+            "type": "array",
+            "items": {
+                "title": "Enriched cell type",
+                "description": "Embedded property to linking to biosample type which describes the ontology of an enriched cell type.",
+                "type":  "string",
+                "linkTo": "BiosampleType"
+            }
+        },
+        "enrichment_factors": {
+            "title": "Enrichment factors",
+            "description": "The protein targets of antibodies or gene targets of genetic labeling or other enrichment factor.",
+            "type": "string"
+        },
+        "depleted_cell_types": {
+            "title": "Depleted cell types",
+            "description": "Embedded property for linking to biosample type which describes the ontology of the depleted cell types.",
+            "type": "array",
+            "items": {
+                "title": "Depleted cell type",
+                "description": "Embedded property for linking to biosample type which describes the ontology of a depleted cell type.",
+                "type":  "string",
+                "linkTo": "BiosampleType"
+            }
+        },
+        "cell_depletion_factors": {
+            "title": "Cell depletion factors",
+            "description": "The protein targets of antibodies or gene targets of genetic labeling or other depletion factor. ",
+            "type": "string"
+        },
+        "cell_size": {
+            "title": "Cell size",
+            "description": "The measurement of the diameter of the cells.",
+            "type": "integer"
+        },
+        "cell_size_unit": {
+            "title": "Cell size unit",
+            "description": "The units of measurement for cell size.",
+            "type": "string",
+            "enum": [
+                "µm"
+            ] 
+        },
+        "single_cell_isolation_method": {
+            "title": "Cell isolation method",
+            "description": "The method by which the cells or nuclei in the sample were isolated.",
+            "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.",
+            "type": "string",
+            "enum": [
+                "10x",
+                "FACS sorted",
+                "cell hashtag",
+                "Fluidigm C1",
+                "Drop-seq",
+                "sci-seq"
+            ]
+        },
+        "single_cell_isolation_method_version": {
+            "title": "Cell isolation method version",
+            "description": "The version number of the single cell isolation method.",
+            "type": "integer"
+        },
+        "medium": {
+            "title": "Medium",
+            "description": "The medium in which the cells or nuclei are suspended.",
+            "type": "string"
+        },
+        "collection_to_dissociation_interval": {
+            "title": "Collection-to-dissociation interval",
+            "description": "The amount of time elapsed between tissue collection and cell dissociation.",
+            "type": "integer"
+        },
+        "collection_to_dissociation_interval_units": {
+            "title": "Collection-to-dissociation interval units",
+            "description": "The unit in which the collection-to-dissociation time was reported.",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour"
+            ]
+        },
+        "dissociation_reagent": {
+            "title": "Dissociation reagent",
+            "description": "The specific enzyme, mechanical method, and/or product used to dissociate tissue into cells or nuclei.",
+            "type": "string"
+        },
+        "dissociation_time": {
+            "title": "Dissociation time",
+            "description": "The length of time the tissue was incubated with the dissociation reagent.",
+            "type": "integer"
+        },
+        "dissociation_time_units": {
+            "title": "Dissociation time units",
+            "description": "The units of time the tissue was incubated with the dissociation reagent",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour"
+            ]
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A donor or sample from which this object was directly derived.",
+                "type": "string",
+                "linkTo": [
+                    "Biosample",
+                    "Donor"
+                ]
+            }
+        },
+        "derivation_process": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "solubilization",
+                    "enzymatic dissociation",
+                    "fluorescence-activated cell sorting",
+                    "sample dissociation",
+                    "mechanical dissociation",
+                    "10X v2 sequencing",
+                    "cell size selection",
+                    "Ficoll-Hypaque method",
+                    "magnetic affinity cell sorting",
+                    "density gradient centrifugation",
+                    "magnetic negative selection"
+                ]
+            }
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "suspension_type": {
+            "title": "Suspension type"
+        },
+        "biosample_ontology.system_slims": {
+            "title": "System",
+            "type": "typeahead"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ",
+            "type": "typeahead"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell",
+            "type": "typeahead"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name"
+        },
+        "summary": {
+            "title": "Summary"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "biosample_ontology.system_slims": {
+            "title": "System"
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell"
+        },
+        "derived_from": {
+            "title": "Derived from"
+        },
+        "derivation_process": {
+            "title": "Derivation process"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/suspension.md"
+}

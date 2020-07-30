@@ -92,12 +92,14 @@ export class SearchFilter extends React.Component {
         const type = pluralize(queryStringType.toLocaleLowerCase());
         return (
             <div className="matrix-general-search">
-                <p>Enter search terms to filter the {type} included in the matrix.</p>
                 <div className="general-search-entry">
-                    <i className="icon icon-search" />
-                    <div className="searchform">
-                        <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
-                    </div>
+                    <p>
+                        <i className="icon icon-search" />
+                        Filter the {type} included in the matrix:
+                    </p>
+                </div>
+                <div className="searchform">
+                    <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                 </div>
             </div>
         );

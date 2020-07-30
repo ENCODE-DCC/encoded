@@ -53,3 +53,23 @@ def test_award_upgrade_milestones(upgrader, award_2):
             key=lambda x: x['assay_term_name']
         )
     )
+
+
+def test_award_upgrade_milestones2(upgrader, award_2):
+    award_2['schema_version'] = '7'
+    award_2['milestones'] = [
+        {'assay_term_name': 'single cell isolation followed by RNA-seq'},
+        {'assay_term_name': 'RNA-seq'},
+    ]
+    value = upgrader.upgrade('award', award_2, target_version='8')
+    assert value['schema_version'] == '8'
+    TestCase().assertListEqual(
+        sorted(value['milestones'], key=lambda x: x['assay_term_name']),
+        sorted(
+            [
+                {'assay_term_name': 'single-cell RNA sequencing assay'},
+                {'assay_term_name': 'RNA-seq'}
+            ],
+            key=lambda x: x['assay_term_name']
+        )
+    )

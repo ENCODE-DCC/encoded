@@ -1,0 +1,12 @@
+- default
+- name: build
+  gecos: Build user
+  inactive: true
+  system: true
+  shell: /bin/bash
+- name: encoded
+  gecos: ENCODE Metadata Database daemon user
+  inactive: true
+  system: true
+  homedir: /srv/encoded
+  shell: /bin/bash

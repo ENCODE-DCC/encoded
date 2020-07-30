@@ -128,14 +128,71 @@ def test_ChIP_possible_control_roadmap(testapp, base_experiment, ctrl_experiment
                for error in collect_audit_errors(res))
 
 
-def test_audit_input_control(testapp, base_experiment,
-                             ctrl_experiment, IgG_ctrl_rep):
-    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'control'})
-    testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
-                                                'assay_term_name': 'ChIP-seq'})
+def test_audit_input_control(
+    testapp,
+    base_experiment,
+    ctrl_experiment,
+    construct_genetic_modification,
+    base_biosample,
+    base_library,
+    base_replicate,
+):
+    # Non-tagged ChIP
+    testapp.patch_json(
+        base_experiment['@id'],
+        {
+            'possible_controls': [ctrl_experiment['@id']],
+            'assay_term_name': 'ChIP-seq'
+        }
+    )
+    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'wild type'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'missing input control'
-               for error in collect_audit_errors(res))
+    assert any(
+        error['category'] == 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        ctrl_experiment['@id'], {'control_type': 'input library'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+
+    # Tagged ChIP
+    testapp.patch_json(
+        construct_genetic_modification['@id'],
+        {'introduced_tags': [{'name': 'FLAG', 'location': 'internal'}]}
+    )
+    testapp.patch_json(
+        base_biosample['@id'],
+        {'genetic_modifications': [construct_genetic_modification['@id']]}
+    )
+    testapp.patch_json(
+        base_replicate['@id'], {'library': base_library['@id']}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        ctrl_experiment['@id'], {'control_type': 'control'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing input control'
+        for error in collect_audit_errors(res)
+    )
+    testapp.patch_json(
+        ctrl_experiment['@id'], {'control_type': 'wild type'}
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing input control'
+        for error in collect_audit_errors(res)
+    )
 
 
 def test_audit_experiment_target(testapp, base_experiment):
@@ -218,7 +275,7 @@ def test_audit_experiment_single_cell_replicated(
         testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'status': 'submitted', 'date_submitted': '2015-03-03'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
-                                                'single cell isolation followed by RNA-seq'})
+                                                'single-cell RNA sequencing assay'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'unreplicated experiment'
                for error in collect_audit_errors(res))
@@ -580,6 +637,17 @@ def test_audit_experiment_with_RNA_library_missing_read_length_RNA_seq(
     pipeline_bam,
 ):
     testapp.patch_json(pipeline_bam['@id'], {'title': 'RNA-seq of long RNAs (paired-end, stranded)'})
+    res = testapp.get(experiment_no_read_length.json['object']['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing read_length'
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_with_RNA_library_missing_read_length_bulk_RNA_seq(
+    testapp,
+    experiment_no_read_length,
+    pipeline_bam,
+):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'Bulk RNA-seq'})
     res = testapp.get(experiment_no_read_length.json['object']['@id'] + '@@index-data')
     assert any(error['category'] == 'missing read_length'
                for error in collect_audit_errors(res))
@@ -1313,6 +1381,218 @@ def test_audit_experiment_long_read_rna_standards(
         assert any(
             error['category'] == audit for error in errors
         )
+
+ 
+def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   file_fastq_1_chip,
+                                                   file_bam_1_chip,
+                                                   file_bam_2_chip,
+                                                   chip_alignment_quality_metric_extremely_low_read_depth,
+                                                   chip_alignment_quality_metric_insufficient_read_depth,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+    testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bam_2_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'extremely low read depth' for error in collect_audit_errors(res))
+    assert any(error['category'] ==
+               'insufficient read depth' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol_wmapped_run_type(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   file_fastq_1_chip,
+                                                   file_bam_1_chip,
+                                                   file_bam_2_chip,
+                                                   chip_alignment_quality_metric_extremely_low_read_depth_no_read1_read2,
+                                                   chip_alignment_quality_metric_insufficient_read_depth_no_read1_read2,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+    testapp.patch_json(file_bam_1_chip['@id'], {'mapped_run_type': 'paired-ended',
+                                                'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bam_2_chip['@id'], {'mapped_run_type': 'single-ended',
+                                                'step_run': analysis_step_run_chip_encode4['@id']})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'extremely low read depth' for error in collect_audit_errors(res))
+    assert any(error['category'] ==
+               'insufficient read depth' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_missing_read_depth_encode4_wcontrol(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   file_fastq_control_chip,
+                                                   file_fastq_1_chip,
+                                                   file_bam_1_chip,
+                                                   file_bam_2_chip,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+    testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bam_2_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'missing read depth' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_library_complexity_encode4_wcontrol(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   file_bam_1_chip,
+                                                   chip_library_quality_metric_severe_bottlenecking_poor_complexity,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+
+    testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'severe bottlenecking' for error in collect_audit_errors(res))
+    assert any(error['category'] ==
+               'poor library complexity' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_idr_encode4_wcontrol(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   replicate_1_chip,
+                                                   replicate_2_chip,
+                                                   file_bam_1_chip,
+                                                   file_bed_narrowPeak_chip_peaks,
+                                                   file_bed_narrowPeak_chip_background,
+                                                   chip_replication_quality_metric_borderline_replicate_concordance,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+    testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bed_narrowPeak_chip_background['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(file_bed_narrowPeak_chip_peaks['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    testapp.patch_json(chip_replication_quality_metric_borderline_replicate_concordance['@id'], {'quality_metric_of': [file_bed_narrowPeak_chip_peaks['@id']]})
+    testapp.patch_json(experiment_chip_H3K27me3['@id'], {'replicates': [replicate_1_chip['@id'], replicate_2_chip['@id']]})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'borderline replicate concordance' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_control_read_depth_encode4(testapp,
+                                                   experiment_chip_control,
+                                                   experiment_chip_H3K27me3,
+                                                   file_bam_1_chip,
+                                                   file_bam_2_chip,
+                                                   file_tsv_1_2,
+                                                   file_bam_control_chip,
+                                                   chip_alignment_quality_metric_insufficient_read_depth,
+                                                   chip_alignment_quality_metric_extremely_low_read_depth,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+  testapp.patch_json(chip_alignment_quality_metric_extremely_low_read_depth['@id'], {'quality_metric_of': [file_bam_control_chip['@id']]})
+  testapp.patch_json(file_bam_control_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+  testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_control_chip['@id'], file_bam_1_chip['@id']],
+                                             'dataset': experiment_chip_H3K27me3['@id'],
+                                             'file_format_type': 'narrowPeak',
+                                             'file_format': 'bed',
+                                             'step_run': analysis_step_run_chip_encode4['uuid'],
+                                             'output_type': 'peaks and background as input for IDR'})
+  testapp.patch_json(experiment_chip_H3K27me3['@id'], {'status': 'submitted',
+                                                'date_submitted': '2015-01-01',
+                                                'possible_controls': [experiment_chip_control['@id']]})
+  res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+  assert any(error['category'] ==
+    'control extremely low read depth' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_control_missing_read_depth_encode4(testapp,
+                                                   experiment_chip_control,
+                                                   file_bam_control_chip,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+  testapp.patch_json(file_bam_control_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+  res = testapp.get(experiment_chip_control['@id'] + '@@index-data')
+  assert any(error['category'] ==
+    'missing read depth' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_standards_peak_but_no_qc_encode4(testapp,
+                                                   experiment_chip_control,
+                                                   experiment_chip_H3K27me3,
+                                                   file_fastq_control_chip,
+                                                   file_fastq_1_chip,
+                                                   file_bam_1_chip,
+                                                   file_tsv_1_2,
+                                                   chip_alignment_quality_metric_extremely_low_read_depth,
+                                                   file_bam_control_chip,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+  testapp.patch_json(chip_alignment_quality_metric_extremely_low_read_depth['@id'], {'quality_metric_of': [file_bam_1_chip['@id']]})
+  testapp.patch_json(file_fastq_control_chip['@id'], {'dataset': experiment_chip_control['@id']})
+  testapp.patch_json(file_fastq_1_chip['@id'], {'controlled_by': [file_fastq_control_chip['@id']],
+                                                  'dataset': experiment_chip_H3K27me3['@id']})
+  testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id'],
+                                                'dataset': experiment_chip_H3K27me3['@id'],
+                                                'derived_from': [file_fastq_1_chip['@id']]})
+  testapp.patch_json(file_bam_control_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id'],
+                                                'dataset': experiment_chip_control['@id'],
+                                                'derived_from': [file_fastq_control_chip['@id']]})
+  testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_control_chip['@id'], file_bam_1_chip['@id']],
+                                             'dataset': experiment_chip_H3K27me3['@id'],
+                                             'file_format_type': 'narrowPeak',
+                                             'file_format': 'bed',
+                                             'step_run': analysis_step_run_chip_encode4['uuid'],
+                                             'output_type': 'peaks and background as input for IDR'})
+  testapp.patch_json(experiment_chip_H3K27me3['@id'], {'possible_controls': [experiment_chip_control['@id']]})
+  res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+  assert any(error['category'] ==
+    'missing control quality metric' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_missing_control_alignment_chip_encode4(testapp,
+                                                   experiment_chip_control,
+                                                   experiment_chip_H3K27me3,
+                                                   file_fastq_control_chip,
+                                                   file_fastq_1_chip,
+                                                   file_bam_1_chip,
+                                                   file_tsv_1_2,
+                                                   chip_alignment_quality_metric_extremely_low_read_depth,
+                                                   file_bam_control_chip,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4):
+  testapp.patch_json(chip_alignment_quality_metric_extremely_low_read_depth['@id'], {'quality_metric_of': [file_bam_1_chip['@id']]})
+  testapp.patch_json(file_fastq_control_chip['@id'], {'dataset': experiment_chip_control['@id']})
+  testapp.patch_json(file_fastq_1_chip['@id'], {'controlled_by': [file_fastq_control_chip['@id']],
+                                                  'dataset': experiment_chip_H3K27me3['@id']})
+  testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id'],
+                                                'dataset': experiment_chip_H3K27me3['@id'],
+                                                'derived_from': [file_fastq_1_chip['@id']]})
+  testapp.patch_json(file_bam_control_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id'],
+                                                'dataset': experiment_chip_control['@id'],
+                                                'derived_from': [file_fastq_control_chip['@id']]})
+  testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_control_chip['@id'], file_bam_1_chip['@id']],
+                                             'dataset': experiment_chip_H3K27me3['@id'],
+                                             'file_format_type': 'narrowPeak',
+                                             'file_format': 'bed',
+                                             'step_run': analysis_step_run_chip_encode4['uuid'],
+                                             'output_type': 'peaks and background as input for IDR'})
+  testapp.patch_json(experiment_chip_H3K27me3['@id'], {'possible_controls': [experiment_chip_control['@id']],
+                                                        'status': 'released',
+                                                        'date_released': '2019-10-08'})
+  res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+  assert any(error['category'] ==
+    'missing control alignments' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_long_rna_standards_encode2(testapp,
@@ -2911,27 +3191,6 @@ def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment):
     assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_ontology']['term_id']) == True
 
 
-def test_is_control_dataset(testapp, ctrl_experiment, publication_data, treatment_time_series):
-    from encoded.audit.experiment import is_control_dataset
-    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
-    exp_embedded = exp.json['embedded']
-    assert is_control_dataset(exp_embedded) == False
-    testapp.patch_json(ctrl_experiment['@id'], {'control_type': 'control'})
-    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
-    exp_embedded = exp.json['embedded']
-    assert is_control_dataset(exp_embedded) == True
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_control_dataset(series_embedded) == False
-    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id']]})
-    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
-    series_embedded = series.json['embedded']
-    assert is_control_dataset(series_embedded) == True
-    file_set = testapp.get(publication_data['@id'] + '@@index-data')
-    file_set_embedded = file_set.json['embedded']
-    assert is_control_dataset(file_set_embedded) == False
-
-
 def test_audit_experiment_histone_characterized_no_primary(testapp,
                                                            base_experiment,
                                                            wrangler,
@@ -3219,3 +3478,58 @@ def test_audit_experiment_inconsistent_analyses_files(testapp, experiment_with_a
         })
     res = testapp.get(experiment_with_analyses_2['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_inconsistent_genetic_modifications(
+        testapp,
+        construct_genetic_modification,
+        interference_genetic_modification,
+        base_experiment,
+        replicate_1_1,
+        replicate_2_1,
+        library_1,
+        library_2,
+        biosample_1,
+        biosample_2):
+    # one biosample with genetic modifications and one biosample without genetic modifications
+    testapp.patch_json(biosample_1['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+    # biosamples with the same genetic modifications
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [construct_genetic_modification['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert not any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+    # biosamples with different genetic modifications
+    testapp.patch_json(biosample_2['@id'],
+                       {'genetic_modifications': [interference_genetic_modification['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent genetic modifications' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_ATAC_ENCODE4_QC_standards(
+        testapp, ATAC_bam, ATAC_experiment, ATAC_pipeline,
+        analysis_step_atac_encode4_alignment,
+        atac_alignment_quality_metric_low,
+        atac_library_complexity_quality_metric_poor,
+        atac_align_enrich_quality_metric_med):
+    # https://encodedcc.atlassian.net/browse/ENCD-5255
+    testapp.patch_json(ATAC_pipeline['@id'],
+                        {'analysis_steps': [analysis_step_atac_encode4_alignment['@id']]})
+    testapp.patch_json(atac_alignment_quality_metric_low['@id'],
+                        {'quality_metric_of': [ATAC_bam['@id']]})
+    testapp.patch_json(atac_library_complexity_quality_metric_poor['@id'],
+                        {'quality_metric_of': [ATAC_bam['@id']]})
+    testapp.patch_json(atac_align_enrich_quality_metric_med['@id'],
+                        {'quality_metric_of': [ATAC_bam['@id']]})
+    res = testapp.get(ATAC_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'low alignment rate' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'poor library complexity' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'mild to moderate bottlenecking' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'severe bottlenecking' for error in collect_audit_errors(res))
+    assert any(error['category'] == 'moderate TSS enrichment' for error in collect_audit_errors(res))

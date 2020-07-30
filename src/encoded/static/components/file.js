@@ -430,7 +430,18 @@ class FileComponent extends React.Component {
                                         <dd>{context.award.project}</dd>
                                     </div>
                                 : null}
-
+                                {context.assembly ?
+                                    <div data-test="assembly">
+                                        <dt>Assembly</dt>
+                                        <dd>{context.assembly}</dd>
+                                    </div>
+                                : null}
+                                {context.genome_annotation ?
+                                    <div data-test="genomeannotation">
+                                        <dt>Genome annotation</dt>
+                                        <dd>{context.genome_annotation}</dd>
+                                    </div>
+                                : null}
                                 {context.date_created ?
                                     <div data-test="datecreated">
                                         <dt>Date added</dt>
@@ -575,6 +586,19 @@ class SequenceFileInfo extends React.Component {
                                 <dd>
                                     {file.paired_end}
                                     {file.paired_with ? <span> paired with <a href={file.paired_with} title={`View page for file ${pairedWithAccession}`}>{pairedWithAccession}</a></span> : null}
+                                </dd>
+                            </div>
+                        : null}
+
+                        {file.index_of ?
+                            <div data-test="outputtype">
+                                <dt>Index of</dt>
+                                <dd>
+                                    {file.index_of.reduce((fUrls, href) => {
+                                        const fileId = href.replace(/\/files\/|\//g, '');
+                                        const fUrl = <a key={fileId} href={href} title={fileId}>{fileId}</a>;
+                                        return !fUrls ? [fUrl] : [fUrl, ', ', fUrls];
+                                    }, '')}
                                 </dd>
                             </div>
                         : null}

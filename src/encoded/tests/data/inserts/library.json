@@ -1,27 +1,82 @@
 [
     {
+        "accession": "ENCLB999MNO",
+        "aliases": [],
+        "documents": [],
+        "lab": "j-michael-cherry",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "292131f2-4ca9-47de-b7de-9fb51d0f214c",
+        "dataset": "ENCSR123ABC",
+        "derived_from": [
+            "ENCBS005ABC"
+        ],
+        "protocol": "10X-v3-3'"
+    },
+    {
+        "accession": "ENCLB888MNO",
+        "aliases": [],
+        "documents": [],
+        "lab": "j-michael-cherry",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9ae29882-7982-434e-b855-4c192fcc8763",
+        "dataset": "ENCSR123ABC",
+        "derived_from": [
+            "ENCBS004ABC"
+        ],
+        "protocol": "10X-v3-3'"
+    },
+    {
+        "accession": "ENCLB777MNO",
+        "documents": [],
+        "lab": "j-michael-cherry",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "a7e1e3fb-d9b1-44e3-adb0-39359f01dd22",
+        "dataset": "ENCSR123ABC",
+        "derived_from": [
+            "ENCBS005ABC"
+        ],
+        "protocol": "10X-ATAC"
+    },
+    {
+        "accession": "ENCLB666MNO",
+        "documents": [],
+        "lab": "j-michael-cherry",
+        "nucleic_acid_starting_quantity": "",
+        "nucleic_acid_starting_quantity_units": "",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "aa83fd8e-f4c4-4438-b25e-5a22333d27e9",
+        "dataset": "ENCSR123ABC",
+        "derived_from": [
+            "ENCBS003ABC"
+        ],
+        "protocol": "10X-ATAC"
+    },
+    {
         "accession": "ENCLB309ZZZ",
         "aliases": [
             "richard-myers:SL14572"
         ],
-        "award": "ENCODE2",
-        "biosample": "ENCBS057AAA",
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
-        "library_size_selection_method": "SPRI beads AMPURE",
-        "nucleic_acid_term_name": "DNA",
-        "nucleic_acid_starting_quantity": "1",
+        "nucleic_acid_starting_quantity": 1,
         "nucleic_acid_starting_quantity_units": "cell-equivalent",
-        "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
         "rna_integrity_number": 1.11,
-        "mint_mixture_identifier": "MoChrPreps 252",
         "dbxrefs": [
             "GEO:GSM433174"
+        ],
+        "dataset": "ENCSR000AJK",
+        "derived_from": [
+            "ENCBS000AAA"
         ]
     },
     {
@@ -29,294 +84,243 @@
         "aliases": [
             "richard-myers:SL16339"
         ],
-        "award": "ENCODE2",
-        "biosample": "ENCBS001AAA",
         "documents": [
             "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "fragmentation_methods": ["sonication (Bioruptor Twin)"],
         "lab": "richard-myers",
-        "library_size_selection_method": "SPRI beads AMPURE",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "rna_integrity_number": 2.0,
-        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
+        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS001AAA"
+        ]
     },
     {
         "accession": "ENCLB055ZZZ",
         "aliases": [
             "thomas-gingeras:SID38806"
         ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "polyadenylated mRNA",
-        "size_range": ">200",
-        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "rna_integrity_number": 7.3,
-        "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"
+        "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS039ENC"
+        ]
     },
     {
         "accession": "ENCLB056ZZZ",
         "aliases": [
             "thomas-gingeras:SID38807"
         ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
         "lab": "thomas-gingeras",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "polyadenylated mRNA",
-        "size_range": ">200",
-        "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
-        "strand_specificity": "strand-specific",
+        "spike_ins_used": [
+            "ENCSR704RSS",
+            "ENCSR013YHQ"
+        ],
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
+        "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407",
+        "dataset": "ENCSR003SER",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS044ENC"
+        ]
     },
     {
         "accession": "ENCLB065ZZZ",
         "aliases": [
             "thomas-gingeras:SID38815"
         ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
-        "construction_platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": "strand-specific",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
+        "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5",
+        "dataset": "ENCSR000AER",
+        "derived_from": [
+            "ENCBS222SCS"
+        ]
     },
     {
         "accession": "ENCLB066ZZZ",
         "aliases": [
             "thomas-gingeras:SID38816"
         ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
-        "construction_platform": "bab144b6-97b5-4dfb-b307-ff2997b73550",
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": "reverse",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "e4824882-0ad8-4009-a169-44d5955800af"
+        "uuid": "e4824882-0ad8-4009-a169-44d5955800af",
+        "dataset": "ENCSR000AER",
+        "derived_from": [
+            "ENCBS026ENC"
+        ]
     },
     {
         "accession": "ENCLB067ZZZ",
         "aliases": [
             "thomas-gingeras:SID38822"
         ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS087RNA",
-        "depleted_in_term_name": [
-            "polyadenylated mRNA"
-        ],
         "documents": [
             "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": "<200",
-        "strand_specificity": "forward",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "treatments": [
-            "8661b120-5c82-11e3-949a-0800200c9a66"
-        ],
-        "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017"
+        "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
+        "dataset": "ENCSR000AES",
+        "derived_from": [
+            "ENCBS128ENC"
+        ]
     },
     {
         "accession": "ENCLB068ZZZ",
         "aliases": [
             "thomas-gingeras:SID38823"
         ],
-        "award": "U54HG007004",
-        "biosample": "ENCBS088RNA",
-        "depleted_in_term_name": [
-            "polyadenylated mRNA"
-        ],
         "documents": [
             "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
         ],
-        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
         "lab": "thomas-gingeras",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": "<200",
-        "strand_specificity": "reverse",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "treatments": [
-            "8661b120-5c82-11e3-949a-0800200c9a66"
-        ],
-        "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565"
+        "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565",
+        "dataset": "ENCSR000AES",
+        "derived_from": [
+            "ENCBS175ENC"
+        ]
     },
     {
         "accession": "ENCLB057ZZZ",
-        "award": "U54HG007005",
-        "biosample": "ENCBS087RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
-        "extraction_method": "Trizol",
-        "fragmentation_methods": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
-        "library_size_selection_method": "SPRI beads",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": "forward",
         "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
+        "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS417ENC"
+        ]
     },
     {
         "accession": "ENCLB072ZZZ",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_methods": ["sonication (generic)"],
         "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
+        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS000RNA"
+        ]
     },
     {
         "accession": "ENCLB304ZZZ",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_methods": ["sonication (generic)"],
         "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "835e166d-0253-41ce-add2-de67429a3612"
+        "uuid": "835e166d-0253-41ce-add2-de67429a3612",
+        "dataset": "ENCSR003SER",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS175SCS"
+        ]
     },
     {
         "accession": "ENCLB071ZZZ",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ENC",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_methods": ["sonication (generic)"],
         "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
+        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77",
+        "dataset": "ENCSR000AJK",
+        "derived_from": [
+            "ENCBS356AAA"
+        ]
     },
     {
         "accession": "ENCLB000ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ANI",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_methods": ["sonication (generic)"],
         "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f"
+        "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f",
+        "dataset": "ENCSR001ADI",
+        "derived_from": [
+            "ENCBS492ENC"
+        ]
     },
     {
         "accession": "ENCLB001ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS045ANI",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_methods": ["sonication (generic)"],
         "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
+        "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b",
+        "dataset": "ENCSR001ADI",
+        "derived_from": [
+            "ENCBS493ENC"
+        ]
     },
     {
         "accession": "ENCLB058ZZZ",
-        "award": "U54HG007005",
-        "biosample": "ENCBS088RNA",
         "documents": [
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
-        "extraction_method": "Trizol",
-        "fragmentation_methods": ["chemical (Illumina TruSeq)"],
         "lab": "brenton-graveley",
-        "library_size_selection_method": "SPRI beads",
-        "nucleic_acid_term_name": "RNA",
-        "size_range": ">200",
-        "strand_specificity": "strand-specific",
         "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
+        "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS044RNA"
+        ]
     },
     {
         "accession": "ENCLB163ZZZ",
-        "award": "ENCODE2",
-        "biosample": "ENCBS417ENC",
         "documents": [
             "encode:Myers_Methyl450_protocol"
         ],
-        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "9a230485-0062-4590-be42-6ea7c4258941"
+        "uuid": "9a230485-0062-4590-be42-6ea7c4258941",
+        "dataset": "ENCSR000ACY",
+        "derived_from": [
+            "ENCBS278TPS"
+        ]
     },
     {
         "_test": "test -new",
         "accession": "ENCLB158ZZZ",
-        "award": "ENCODE2",
-        "biosample": "ENCBS417ENC",
         "documents": [
             "encode:Myers_Methyl450_protocol"
         ],
-        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79"
-    },
-    {
-        "_test": "test -new",
-        "accession": "ENCLB159ZZZ",
-        "award": "ENCODE2",
-        "biosample": "ENCBS000GEN",
-        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
-        "lab": "richard-myers",
-        "nucleic_acid_term_name": "DNA",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "27ad2ec3-d1ff-49df-a1f7-2cf1d9cfa816"
+        "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79",
+        "dataset": "ENCSR000ACT",
+        "derived_from": [
+            "ENCBS804RUL"
+        ]
     },
     {
         "_test": "DNA-me pipeline",
@@ -324,508 +328,318 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "documents": [],
         "uuid": "0cbd1597-831a-4628-9cd0-c428b208d259",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
         "status": "in progress",
-        "nucleic_acid_term_name": "DNA",
-        "treatments": [],
-        "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
-        "size_range": "100-300",
-        "biosample": "ENCBS039ENC"
+        "dataset": "ENCSR765JPC/",
+        "derived_from": [
+            "ENCBS376EJL"
+        ]
     },
     {
         "accession": "ENCLB723GTS",
-        "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
         "lab": "michael-snyder/",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
+        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29",
+        "dataset": "ENCSR751ISO/",
+        "derived_from": [
+            "ENCBS009WOO"
+        ]
     },
     {
         "accession": "ENCLB209APR",
-        "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
         "lab": "michael-snyder",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
+        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26",
+        "dataset": "ENCSR808QCJ",
+        "derived_from": [
+            "ENCBS061XGD"
+        ]
     },
     {
         "accession": "ENCLB209APS",
-        "award": "ENCODE2",
-        "biosample": "ENCBS630AAA",
         "lab": "michael-snyder",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "de797662-a71b-45d5-96bf-9dd800194907"
+        "uuid": "de797662-a71b-45d5-96bf-9dd800194907",
+        "dataset": "ENCSR000DZQ",
+        "derived_from": [
+            "ENCBS204NZH"
+        ]
     },
     {
         "_test": "Paired set 1 library",
         "lab": "john-stamatoyannopoulos",
         "accession": "ENCLB376WDO",
-        "biosample": "ENCBS278TPS",
         "status": "released",
-        "award": "U54HG007010",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939"
+        "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS123AAA"
+        ]
     },
     {
         "_test": "Paired set 2 library",
         "accession": "ENCLB033CJI",
-        "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "uuid": "2b0693ed-6f10-449f-82c2-ca3bd6b34daa",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "Organism development series 1 library",
-        "accession": "ENCLB857STI",
-        "biosample": "ENCBS757XTA",
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "RNA",
-        "uuid": "d82037c7-d189-4111-bff8-589d0b614e84",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "aliases": ["robert-waterston:library_RB884_80_1_1"],
-        "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
-    },
-    {
-        "_test": "Organism development series 2 library",
-        "accession": "ENCLB332ELH",
-        "biosample": "ENCBS201ZPO",
-        "lab": "robert-waterston",
-        "status": "released",
-        "nucleic_acid_term_name": "RNA",
-        "uuid": "c36567eb-880a-41af-9b19-5d879a4ff6ce",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "aliases": ["robert-waterston:library_RB884_680_1_1"],
-        "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
-    },
-    {
-        "_test": "Organism development series 3 library",
-        "accession": "ENCLB595GWE",
-        "biosample": "ENCBS598ADI",
-        "lab": "robert-waterston",
-        "status": "revoked",
-        "nucleic_acid_term_name": "RNA",
-        "uuid": "2f98377b-0305-4af2-aa6c-b39d04478817",
-        "aliases": ["robert-waterston:library_RB884_880_1_1"],
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["shearing (Covaris generic)"],
-        "depleted_in_term_name": ["rRNA"],
-        "extraction_method": "Trizol"
+        "dataset": "ENCSR003SER",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS123AAB"
+        ]
     },
     {
         "_test": "Treatment time series 1 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
         "accession": "ENCLB001SER",
-        "biosample": "ENCBS001SER",
-        "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a"
+        "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a",
+        "dataset": "ENCSR000AHF",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS123AAC"
+        ]
     },
     {
         "_test": "Treatment time series 2 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
-        "accession": "ENCLB002SER",
-        "biosample": "ENCBS002SER",
-        "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef"
+        "accession": "ENCLB903SER",
+        "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef",
+        "dataset": "ENCSR003SER",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS123AAD"
+        ]
     },
     {
         "_test": "Treatment time series 3 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
         "accession": "ENCLB003SER",
-        "biosample": "ENCBS003SER",
-        "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e"
+        "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e",
+        "dataset": "ENCSR003SER/",
+        "protocol": "10X-v2-3'",
+        "derived_from": [
+            "ENCBS123AAE"
+        ]
     },
     {
         "_test": "Treatment concentration series 1 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
         "accession": "ENCLB001CON",
-        "biosample": "ENCBS001SER",
-        "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89"
+        "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89",
+        "dataset": "ENCSR001CON/",
+        "derived_from": []
     },
     {
         "_test": "Treatment time series 2 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
         "accession": "ENCLB002CON",
-        "biosample": "ENCBS002CON",
-        "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d"
+        "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d",
+        "dataset": "ENCSR002CON/",
+        "derived_from": []
     },
     {
         "_test": "Treatment time series 3 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
         "accession": "ENCLB003CON",
-        "biosample": "ENCBS003CON",
-        "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d"
+        "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d",
+        "dataset": "ENCSR003CON/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library RNA-seq",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "RNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "350-600",
-        "fragmentation_methods": ["sonication (Bioruptor generic)"],
-        "extraction_method": "Trizol",
         "accession": "ENCLB001EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc"
+        "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc",
+        "dataset": "ENCSR001EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library WGBS",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB002EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91"
+        "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91",
+        "dataset": "ENCSR002EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me1",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB003EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89"
+        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89",
+        "dataset": "ENCSR003EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library H3K4me3",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB004EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62"
+        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62",
+        "dataset": "ENCSR004EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB005EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba"
+        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba",
+        "dataset": "ENCSR005EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library H3K27ac",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB006EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa"
+        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa",
+        "dataset": "ENCSR006EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library H3K27me3",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB007EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137"
+        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137",
+        "dataset": "ENCSR007EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library H3K9me3",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB008EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c"
+        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c",
+        "dataset": "ENCSR008EPI/",
+        "derived_from": []
     },
     {
         "_test": "Reference epigenome series 1 library control",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB009EPI",
-        "biosample": "ENCBS001EPI",
-        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136"
+        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136",
+        "dataset": "ENCSR009EPI/",
+        "derived_from": []
     },
     {
         "_test": "Replication timing series 1 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-200",
         "accession": "ENCLB001REP",
-        "biosample": "ENCBS001REP",
-        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6"
+        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6",
+        "dataset": "ENCSR001REP/",
+        "derived_from": []
     },
     {
         "_test": "Replication timing series 2 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "150-250",
         "accession": "ENCLB002REP",
-        "biosample": "ENCBS002REP",
-        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970"
+        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970",
+        "dataset": "ENCSR002REP/",
+        "derived_from": []
     },
     {
         "_test": "Replication timing series 3 library",
         "lab": "robert-waterston",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U41HG007355",
-        "size_range": "170-200",
         "accession": "ENCLB003REP",
-        "biosample": "ENCBS003REP",
-        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0"
+        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0",
+        "dataset": "ENCSR003REP/",
+        "derived_from": []
     },
     {
         "_test": "RCC files",
         "accession": "ENCLB000RCC",
-        "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "dataset": "ENCSR000AAL/",
+        "derived_from": []
     },
     {
         "_test": "RCC files",
         "accession": "ENCLB001RCC",
-        "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "dataset": "ENCSR000AAL/",
+        "derived_from": []
     },
     {
         "_test": "idat files",
         "accession": "ENCLB000DAT",
-        "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
-        "nucleic_acid_term_name": "DNA",
         "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "single cell barcodes",
-        "accession": "ENCLB001SCL",
-        "biosample": "ENCBS804RUL",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "barcode_details": [
-            {
-                "barcode": "ABCDEFG1"
-            },
-            {
-                "barcode": "ABCDEFG12",
-                "plate_id": "plate_1",
-                "plate_location": "A11"
-            }
-        ],
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "bbadf7f4-41ca-4410-b6c2-3003f98b41fe",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "CRISPR screen library",
-        "accession": "ENCLB009ACL",
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b1710-70f0-11e9-a923-1681be663d3e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "pooled clone sequencing library",
-        "accession": "ENCLB001ACL",
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b19ea-70f0-11e9-a923-1681be663d3e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "MPRA library",
-        "accession": "ENCLB001MPR",
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "released",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b19ea-10f0-11e4-a923-1681be663d2e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "STARR-seq library",
-        "accession": "ENCLB011STR",
-        "biosample": "ENCBS888RUL",
-        "lab": "gregory-crawford",
-        "status": "in progress",
-        "nucleic_acid_term_name": "DNA",
-        "uuid": "eb4b29ea-10f0-11e4-a921-1681be563d2e",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
-    },
-    {
-        "_test": "eCLIP control library",
-        "accession": "ENCLB011ECL",
-        "strand_specificity": "strand-specific",
-        "biosample": "ENCBS804RUL",
-        "lab": "robert-waterston",
-        "status": "in progress",
-        "nucleic_acid_term_name": "RNA",
-        "queried_RNP_size_range": "25-75",
-        "uuid": "f0344255-883d-4828-a909-a557a72a447c",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "award": "U54HG007010"
+        "dataset": "ENCSR000AAL/",
+        "derived_from": []
     },
     {
         "_test": "microRNA-seq rep1 library",
         "date_created": "2018-07-04T00:03:13.006401+00:00",
         "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
-        "nucleic_acid_term_name": "miRNA",
         "accession": "ENCLB136UZC",
+        "uuid": "75ff4e2c-7e70-4084-9b57-9f34e4afcdcb",
         "status": "released",
-        "size_range": "<30",
-        "award": "/awards/U54HG006998/",
         "aliases": [
             "ali-mortazavi:K562-Lib1"
         ],
-        "biosample": "/biosamples/ENCBS001EPI/",
         "lab": "/labs/ali-mortazavi/",
-        "adapters": [
-            {
-              "type": "3' adapter",
-              "file": "ENCFF463QEL"
-            },
-            {
-              "type": "5' adapter",
-              "file": "ENCFF980GYX"
-            }
-        ]
+        "dataset": "ENCSR123MRN/",
+        "derived_from": []
     },
     {
         "_test": "microRNA-seq rep2 library",
         "date_created": "2018-07-04T00:03:13.133968+00:00",
         "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
-        "nucleic_acid_term_name": "miRNA",
-        "award": "/awards/U54HG006998/",
+        "uuid": "2e836c5c-29a7-472b-b224-4c31329a4c44",
         "aliases": [
             "ali-mortazavi:K562-Lib2"
         ],
         "accession": "ENCLB339NLX",
-        "size_range": "<30",
         "lab": "/labs/ali-mortazavi/",
-        "biosample": "/biosamples/ENCBS088RNA/",
         "status": "released",
-        "adapters": [
-            {
-              "type": "3' adapter",
-              "file": "ENCFF463QEL"
-            },
-            {
-              "type": "5' adapter",
-              "file": "ENCFF379BCO"
-            }
-        ]
+        "dataset": "ENCSR123MRN/",
+        "derived_from": []
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -833,13 +647,12 @@
         "aliases": [
             "john-stamatoyannopoulos:56768A"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS204NZH",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5"
+        "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5",
+        "dataset": "ENCSR458AOS",
+        "derived_from": []
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -847,13 +660,12 @@
         "aliases": [
             "john-stamatoyannopoulos:58768A"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS061XGD",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416"
+        "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416",
+        "dataset": "ENCSR459AOS",
+        "derived_from": []
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -861,13 +673,12 @@
         "aliases": [
             "john-stamatoyannopoulos:58288A"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS009WOO",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa"
+        "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa",
+        "dataset": "ENCSR460AOS",
+        "derived_from": []
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -875,13 +686,12 @@
         "aliases": [
             "john-stamatoyannopoulos:57126A"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS376EJL",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c",
+        "dataset": "ENCSR856XLJ",
+        "derived_from": []
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -889,13 +699,12 @@
         "aliases": [
             "john-stamatoyannopoulos:57126B"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS123AAA",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d",
+        "dataset": "ENCSR123AAA",
+        "derived_from": []
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -903,13 +712,12 @@
         "aliases": [
             "john-stamatoyannopoulos:57126C"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS123AAB",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e",
+        "dataset": "ENCSR123AAB",
+        "derived_from": []
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -917,13 +725,12 @@
         "aliases": [
             "john-stamatoyannopoulos:57126D"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS123AAC",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f",
+        "dataset": "ENCSR123AAC",
+        "derived_from": []
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -931,13 +738,12 @@
         "aliases": [
             "john-stamatoyannopoulos:57126E"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS123AAD",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee43e476d"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee43e476d",
+        "dataset": "ENCSR123AAD",
+        "derived_from": []
     },
     {
         "_test": "For Mouse Dev matrix testing",
@@ -945,12 +751,11 @@
         "aliases": [
             "john-stamatoyannopoulos:57126F"
         ],
-        "award": "UM1HG009390",
-        "biosample": "ENCBS123AAE",
         "lab": "encode2-project",
-        "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e"
+        "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e",
+        "dataset": "ENCSR123AAE",
+        "derived_from": []
     }
 ]

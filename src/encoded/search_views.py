@@ -1,15 +1,13 @@
 from pyramid.view import view_config
 
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
-from snovault.elasticsearch.searches.interfaces import MATRIX_TITLE
 from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
-from snovault.elasticsearch.searches.interfaces import SUMMARY
+from snovault.elasticsearch.searches.interfaces import SUMMARY_MATRIX
 from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
 from snovault.elasticsearch.searches.fields import BasicMatrixWithFacetsResponseField
-from snovault.elasticsearch.searches.fields import MissingMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchResponseField
 from snovault.elasticsearch.searches.fields import BasicSearchWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import BasicReportWithFacetsResponseField
@@ -21,7 +19,6 @@ from snovault.elasticsearch.searches.fields import FiltersResponseField
 from snovault.elasticsearch.searches.fields import IDResponseField
 from snovault.elasticsearch.searches.fields import NotificationResponseField
 from snovault.elasticsearch.searches.fields import NonSortableResponseField
-from snovault.elasticsearch.searches.fields import RawMatrixWithAggsResponseField
 from snovault.elasticsearch.searches.fields import RawSearchWithAggsResponseField
 from snovault.elasticsearch.searches.fields import SearchBaseResponseField
 from snovault.elasticsearch.searches.fields import SortResponseField
@@ -38,32 +35,23 @@ def includeme(config):
     config.add_route('searchv2_raw', '/searchv2_raw{slash:/?}')
     config.add_route('searchv2_quick', '/searchv2_quick{slash:/?}')
     config.add_route('report', '/report{slash:/?}')
-    config.add_route('matrixv2_raw', '/matrixv2_raw{slash:/?}')
-    config.add_route('matrix', '/matrix{slash:/?}')
-    config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
-    config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
-    config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
-    config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
 
 
 DEFAULT_ITEM_TYPES = [
-    'AntibodyLot',
     'Award',
     'Biosample',
     'BiosampleType',
     'Dataset',
+    'Document',
     'Donor',
-    'GeneticModification',
     'Page',
-    'Pipeline',
     'Publication',
     'Software',
     'Gene',
-    'Target',
-    'File',
+    'DataFile',
     'Lab'
 ]
 
@@ -177,165 +165,6 @@ def report(context, request):
     return fr.render()
 
 
-@view_config(route_name='matrixv2_raw', request_method='GET', permission='search')
-def matrixv2_raw(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            RawMatrixWithAggsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
-            )
-        ]
-    )
-    return fr.render()
-
-
-@view_config(route_name='matrix', request_method='GET', permission='search')
-def matrix(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title=MATRIX_TITLE
-            ),
-            TypeResponseField(
-                at_type=[MATRIX_TITLE]
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
-@view_config(route_name='chip-seq-matrix', request_method='GET', permission='search')
-def chip_seq_matrix(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title='ChIP-seq Matrix'
-            ),
-            TypeResponseField(
-                at_type=['ChipSeqMatrix']
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='chip_seq_matrix',
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
-@view_config(route_name='reference-epigenome-matrix', request_method='GET', permission='search')
-def reference_epigenome_matrix(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title='Reference Epigenome Matrix'
-            ),
-            TypeResponseField(
-                at_type=['ReferenceEpigenomeMatrix']
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='reference_epigenome'
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
-@view_config(route_name='entex-matrix', request_method='GET', permission='search')
-def entex_matrix(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title='ENTEx Matrix'
-            ),
-            TypeResponseField(
-                at_type=['EntexMatrix']
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            MissingMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='entex'
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
-@view_config(route_name='mouse-development-matrix', request_method='GET', permission='search')
-def mouse_development(context, request):
-    fr = FieldedResponse(
-        _meta={
-            'params_parser': ParamsParser(request)
-        },
-        response_fields=[
-            TitleResponseField(
-                title='Mouse Development Matrix'
-            ),
-            TypeResponseField(
-                at_type=['MouseDevelopmentMatrix']
-            ),
-            IDResponseField(),
-            SearchBaseResponseField(),
-            ContextResponseField(),
-            BasicMatrixWithFacetsResponseField(
-                default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name='mouse_development'
-            ),
-            NotificationResponseField(),
-            FiltersResponseField(),
-            TypeOnlyClearFiltersResponseField(),
-            DebugQueryResponseField()
-        ]
-    )
-    return fr.render()
-
-
 @view_config(route_name='summary', request_method='GET', permission='search')
 def summary(context, request):
     fr = FieldedResponse(
@@ -354,7 +183,7 @@ def summary(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=SUMMARY
+                matrix_definition_name=SUMMARY_MATRIX
             ),
             NotificationResponseField(),
             FiltersResponseField(),

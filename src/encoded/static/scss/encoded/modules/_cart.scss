@@ -217,9 +217,14 @@
 
         &:hover {
             background-color: #e0e0e0;
+
+            &:disabled {
+                background-color: #fff;
+            }
         }
 
         &:disabled {
+            cursor: default;
             stroke: #a0a0a0;
             fill: #a0a0a0;
         }
@@ -250,10 +255,6 @@
     @at-root #{&}__tools {
         display: flex;
         flex: 0 1 auto;
-
-        button {
-            margin-left: 5px;
-        }
     }
 
     // Header of cart panel.
@@ -262,7 +263,7 @@
         justify-content: space-between;
     }
 
-    @at-root #{&}__facet-progress-overlay {
+    @at-root #{&}__facet-disabled-overlay {
         position: absolute;
         top: 0;
         right: 0;
@@ -569,16 +570,6 @@ $deleted-bg: #ffe0e0;
         margin: -5px;
     }
 
-    @at-root #{&}__action-button {
-        display: inline-block;
-        position: relative;
-        margin-left: 5px;
-
-        &:first-child {
-            margin-left: 0;
-        }
-    }
-
     @at-root #{&}__name-header {
         width: 50%;
     }
@@ -603,7 +594,7 @@ $deleted-bg: #ffe0e0;
         background-color: $autosave-bg;
     }
 
-    @at-root #{&}__delete-group {
+    @at-root #{&}__tooltip-group {
         position: relative;
     }
 
@@ -1096,4 +1087,68 @@ $file-type-colors: (
         flex: 1 1 auto;
     }
 
+}
+
+
+// Control to batch download cart files.
+.cart-download {
+    margin-right: 5px;
+
+    button {
+        @extend .btn;
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+
+    @at-root #{&}__option-title {
+        margin: 5px 0;
+        font-size: 1rem;
+        font-weight: bold;
+        pointer-events: none;
+    }
+
+    @at-root #{&}__option-description {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        font-weight: normal;
+        pointer-events: none;
+    }
+
+    .dropdown-button__content {
+        button {
+            color: #000;
+
+            &:hover {
+                color: #fff;
+                
+                background-color: #4f689e;
+            }
+        }
+    }
+}
+
+// Button to lock/unlock cart
+.btn.cart-lock-trigger {
+    width: 85px;
+    color: #000;
+
+    &:disabled {
+        color: #000;
+    }
+
+    .svg-icon {
+        fill: #000;
+    }
+}
+
+// Lock icon in the menu.
+.cart-nav-lock {
+    display: inline-block;
+    margin-left: 10px;
+    width: 13px;
+    height: 13px;
+
+    > svg {
+        fill: #000;
+    }
 }

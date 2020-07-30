@@ -8,7 +8,7 @@ import FacetRegistry from './registry';
  * The type facet renders like the default facet, but often gets hidden unless conditions allow for
  * its display.
  */
-const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryString }) => {
+const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryString, isExpanded, handleExpanderClick, handleKeyDown }) => {
     // Get "normal" facets, meaning non-audit facets.
     const nonAuditFacets = results.facets.filter(resultFacets => resultFacets.field.substring(0, 6) !== 'audit.');
 
@@ -33,6 +33,9 @@ const TypeFacet = ({ facet, results, mode, relevantFilters, pathname, queryStrin
                 pathname={pathname}
                 queryString={queryString}
                 allowNegation={false}
+                isExpanded={isExpanded}
+                handleExpanderClick={handleExpanderClick}
+                handleKeyDown={handleKeyDown}
             />
         );
     }
@@ -54,11 +57,20 @@ TypeFacet.propTypes = {
     pathname: PropTypes.string.isRequired,
     /** Query-string portion of current URL without initial ? */
     queryString: PropTypes.string,
+    /** True if facet is expanded */
+    isExpanded: PropTypes.bool,
+    /** Expand or collapse facet */
+    handleExpanderClick: PropTypes.func,
+    /** Handles key-press and toggling facet */
+    handleKeyDown: PropTypes.func,
 };
 
 TypeFacet.defaultProps = {
     mode: '',
     queryString: '',
+    isExpanded: false,
+    handleExpanderClick: () => {},
+    handleKeyDown: () => {},
 };
 
 FacetRegistry.Facet.register('type', TypeFacet);

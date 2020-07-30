@@ -1,0 +1,16 @@
+[
+    {
+        "accession": "ENCBS222SCS",
+        "biosample_ontology": "NTR_0002319",
+        "description": "Brain organoid",
+        "post_differentiation_time": 80,
+        "post_differentiation_time_units": "hour",
+        "source": "dana-levasseur",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "66df3a6b-1234-4ea9-954f-06ecf41bb6ad",
+        "derived_from": [
+            "ENCBS000AAA"
+        ],
+        "derivation_process": ["organoid growth"]
+    }
+]

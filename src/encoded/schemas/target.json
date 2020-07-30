@@ -106,7 +106,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "1"
         },
         "dbxref": {
             "title": "External resources",
@@ -251,18 +251,7 @@
             "title": "Gene symbol"
         }
     },
-    "boost_values": {
-        "label": 20.0, 
-        "dbxref": 1.0, 
-        "aliases": 1.0, 
-        "organism.name": 1.0,  
-        "organism.scientific_name": 1.0, 
-        "genes.geneid": 1.0,
-        "genes.symbol": 1.0,
-        "modifications.modification": 1.0,
-        "modifications.amino_acid_code": 1.0,
-        "organism.taxon_id": 1.0
-    },
+    "boost_values": {},
     "changelog": "/profiles/changelogs/target.md"
 
 }
