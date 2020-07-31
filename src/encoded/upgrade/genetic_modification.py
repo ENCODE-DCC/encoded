@@ -288,5 +288,5 @@ def genetic_modification_9_10(value, system):
         'mouse pronuclear microinjection'
     ]
     if value['method'] in removed_methods:
-        value['nucleic_acid_delivery_method'] = value['method']
+        value['nucleic_acid_delivery_method'] = [value['method']]
         value.pop('method')

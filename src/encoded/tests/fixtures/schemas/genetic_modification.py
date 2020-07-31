@@ -113,7 +113,7 @@ def bombardment_tag(lab, award):
         'award': award['@id'],
         'category': 'insertion',
         'purpose': 'tagging',
-        'method': 'bombardment'
+        'nucleic_acid_delivery_method': ['bombardment']
     }
 
 
@@ -135,7 +135,7 @@ def transfection_tag(lab, award):
         'award': award['@id'],
         'category': 'insertion',
         'purpose': 'tagging',
-        'method': 'stable transfection'
+        'nucleic_acid_delivery_method': ['stable transfection']
     }
 
 
@@ -190,7 +190,7 @@ def mpra(lab, award):
         'award': award['@id'],
         'category': 'insertion',
         'purpose': 'characterization',
-        'method': 'transduction'
+        'nucleic_acid_delivery_method': ['transduction']
     }
 
 
@@ -201,7 +201,7 @@ def starr_seq(lab, award):
         'award': award['@id'],
         'category': 'episome',
         'purpose': 'characterization',
-        'method': 'transient transfection'
+        'nucleic_acid_delivery_method': ['transient transfection']
     }
 
 
@@ -212,7 +212,7 @@ def introduced_elements(lab, award):
         'award': award['@id'],
         'category': 'episome',
         'purpose': 'characterization',
-        'method': 'transient transfection',
+        'nucleic_acid_delivery_method': ['transient transfection'],
         'introduced_elements': 'genomic DNA regions'
     }
 
@@ -237,7 +237,7 @@ def mpra_1(testapp, lab, award):
         'award': award['@id'],
         'category': 'insertion',
         'purpose': 'characterization',
-        'method': 'transduction',
+        'nucleic_acid_delivery_method': ['transduction'],
         'introduced_elements': 'synthesized DNA',
         'modified_site_nonspecific': 'random'
     }
@@ -480,7 +480,7 @@ def construct_genetic_modification(
         'lab': lab['@id'],
         'category': 'insertion',
         'purpose': 'tagging',
-        'method': 'stable transfection',
+        'nucleic_acid_delivery_method': ['stable transfection'],
         'introduced_tags': [{'name':'eGFP', 'location': 'C-terminal', 'promoter_used': target_promoter['@id']}],
         'modified_site_by_target_id': target['@id']
     }
@@ -500,7 +500,7 @@ def construct_genetic_modification_N(
         'lab': lab['@id'],
         'category': 'insertion',
         'purpose': 'tagging',
-        'method': 'stable transfection',
+        'nucleic_acid_delivery_method': ['stable transfection'],
         'introduced_tags': [{'name':'eGFP', 'location': 'N-terminal'}],
         'modified_site_by_target_id': target['@id']
     }
@@ -561,7 +561,7 @@ def characterization_insertion_transfection(lab, award):
         'award': award['@id'],
         'category': 'insertion',
         'purpose': 'characterization',
-        'method': 'stable transfection',
+        'nucleic_acid_delivery_method': ['stable transfection'],
         'modified_site_nonspecific': 'random',
         'introduced_elements': 'synthesized DNA'
     }
@@ -618,6 +618,17 @@ def HR_knockout(lab, award, target):
 
 @pytest.fixture
 def CRISPR_introduction(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'nucleic_acid_delivery_method': ['transient transfection']
+    }
+
+
+@pytest.fixture
+def genetic_modification_9(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],

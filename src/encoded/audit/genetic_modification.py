@@ -48,6 +48,8 @@ def audit_genetic_modification_reagents(value, system):
              'd1072fd2-8374-4f9b-85ce-8bc2c61de122',
              'b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b',
              '0bdd955a-57f0-4e4b-b93d-6dd1df9b766c']
+    if 'method' not in value:
+        return
     if value['method'] == 'RNAi' and 'biosamples_modified' in value:
         for biosample in value['biosamples_modified']:
             if biosample['organism']['uuid'] in flies:

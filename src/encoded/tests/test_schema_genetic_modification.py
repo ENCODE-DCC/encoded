@@ -237,7 +237,7 @@ def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
     starr_seq.update({'introduced_elements': 'sheared genomic DNA'})
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 422
-    starr_seq.update({'donor': mouse_donor['@id']})
+    starr_seq.update({'introduced_elements_donor': mouse_donor['@id']})
     res = testapp.post_json('/genetic_modification', starr_seq, expect_errors=True)
     assert res.status_code == 201
 
@@ -245,7 +245,7 @@ def test_starr_seq_properties(testapp, starr_seq, mouse_donor):
 def test_introduced_elements_properties(testapp, introduced_elements, mouse_donor):
     # genomic DNA regions in introduced_elements property requires donor specification
     testapp.post_json('/genetic_modification', introduced_elements, status=422)
-    introduced_elements.update({'donor': mouse_donor['@id']})
+    introduced_elements.update({'introduced_elements_donor': mouse_donor['@id']})
     testapp.post_json('/genetic_modification', introduced_elements, status=201)
 
 

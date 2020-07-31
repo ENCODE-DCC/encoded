@@ -93,8 +93,8 @@ def test_genetic_modification_upgrade_8_9(upgrader, genetic_modification_8):
     assert value.get('purpose') == 'characterization'
 
 
-def test_genetic_modification_upgrade_9_10(upgrader, CRISPR_introduction):
-    value = upgrader.upgrade('genetic_modification', CRISPR_introduction,
+def test_genetic_modification_upgrade_9_10(upgrader, genetic_modification_9):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_9,
                              current_version='9', target_version='10')
-    assert value['nucleic_acid_delivery_method'] == 'transient transfection'
+    assert value['nucleic_acid_delivery_method'] == ['transient transfection']
     assert 'method' not in value

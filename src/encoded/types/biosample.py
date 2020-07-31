@@ -536,7 +536,14 @@ class Biosample(Item):
                                         '@@object').get('label')
                         modification_dict['tags'].append(tag_dict)
 
-                modifications_list.append((gm_object['method'], modification_dict))
+                if 'method' in gm_object:
+                    modifications_list.append((gm_object['method'], modification_dict))
+                elif 'nucleic_acid_delivery_method' in gm_object:
+                    if len(gm_object['nucleic_acid_delivery_method']) < 3:
+                        delivery_methods = ' and '.join(gm_object['nucleic_acid_delivery_method'])
+                    else:
+                        delivery_methods = ', '.join(gm_object['nucleic_acid_delivery_method'][:-1]) + ', and ' + gm_object['nucleic_acid_delivery_method'][-1]
+                    modifications_list.append((delivery_methods, modification_dict))
 
         if biosample_ontology:
             biosample_type_object = request.embed(biosample_ontology, '@@object')

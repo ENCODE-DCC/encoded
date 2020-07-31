@@ -355,7 +355,7 @@ class CalculatedAssayTitle:
                             if genetic_modifications:
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object?skip_calculated=true')
-                                    if gm_object.get('purpose') == 'characterization' and gm_object.get('method') == 'CRISPR':
+                                    if gm_object.get('purpose') == 'characterization' and gm_object.get('method', '') == 'CRISPR':
                                         CRISPR_gms.append(gm_object['category'])
                 # Return a specific CRISPR assay title if there is only one category type for CRISPR characterization genetic modifications for all replicate biosample genetic modifications
                 if len(set(CRISPR_gms)) == 1:
