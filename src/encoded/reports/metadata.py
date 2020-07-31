@@ -82,6 +82,10 @@ def make_file_cell(paths, file_):
 
 
 def file_matches_file_params(file_, file_param_list):
+    # Expects file_param_list where 'files.' has been
+    # stripped off of key (files.file_type -> file_type)
+    # and params with field negation (i.e. file_type!=bigWig)
+    # have been filtered out.
     for k, v in file_param_list.items():
         if '.' in k:
             file_prop_value = list(simple_path_ids(file_, k))
