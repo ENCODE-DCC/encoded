@@ -84,9 +84,9 @@ def make_file_cell(paths, file_):
 def file_matches_file_params(file_, file_param_list):
     for k, v in file_param_list.items():
         if '.' in k:
-            file_prop_value = list(simple_path_ids(file_, k[len('files.'):]))
+            file_prop_value = list(simple_path_ids(file_, k))
         else:
-            file_prop_value = file_.get(k[len('files.'):])
+            file_prop_value = file_.get(k)
         if not file_prop_value:
             return False
         if isinstance(file_prop_value, list):
@@ -154,7 +154,7 @@ class MetadataReport:
 
     def _set_file_param_list(self):
         self.file_param_list = {
-            k: v
+            k.replace('files.'): v
             for k, v in self.param_list.items()
             if k.startswith('files.')
         }

@@ -214,27 +214,27 @@ def test_metadata_make_file_cell():
 
 def test_metadata_file_matches_file_params():
     from encoded.reports.metadata import file_matches_file_params
-    file_param_list = {'files.assembly': ['GRCh38']}
+    file_param_list = {'assembly': ['GRCh38']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.assembly': ['hg19']}
+    file_param_list = {'assembly': ['hg19']}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.missing_field': ['missing_value']}
+    file_param_list = {'missing_field': ['missing_value']}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.derived_from': ['/files/ENCFF089RYQ/']}
+    file_param_list = {'derived_from': ['/files/ENCFF089RYQ/']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.derived_from': ['/files/ENCFF089RYQ/', '/files/ENCFFABC123/']}
+    file_param_list = {'derived_from': ['/files/ENCFF089RYQ/', '/files/ENCFFABC123/']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/']}
+    file_param_list = {'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.technical_replicates': ['2_1']}
+    file_param_list = {'technical_replicates': ['2_1']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.biological_replicates': ['2']}
+    file_param_list = {'biological_replicates': ['2']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.file_size': ['3356650']}
+    file_param_list = {'file_size': ['3356650']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.replicate.rbns_protein_concentration': ['20']}
+    file_param_list = {'replicate.rbns_protein_concentration': ['20']}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'files.replicate.rbns_protein_concentration_units': ['nM']}
+    file_param_list = {'replicate.rbns_protein_concentration_units': ['nM']}
     assert file_matches_file_params(file_(), file_param_list)
 
 
