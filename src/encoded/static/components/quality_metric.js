@@ -59,6 +59,12 @@ const qcAttachmentProperties = {
     DnaseFootprintingQualityMetric: [
         { dispersion_model: 'Dispersion model' },
     ],
+    DnaseAlignmentQualityMetric: [
+        { insert_size_histogram: 'Insert size histogram' },
+        { insert_size_metric: 'Insert size metric file'},
+        { nuclear_preseq: 'Total read metric file'},
+        { nuclear_preseq_targets: 'Sequencing depths file'},
+    ],
 };
 
 

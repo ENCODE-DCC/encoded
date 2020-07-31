@@ -59,16 +59,6 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
-                },
-                "width": {
-                    "title": "Image width",
-                    "type": "integer",
-                    "minimum": 0
-                },
-                "height": {
-                    "title": "Image height",
-                    "type": "integer",
-                    "minimum": 0
                 }
             }
         },
@@ -108,7 +98,7 @@
             }
         },
         "large_small_ratio": {
-            "title": "Large small radio",
+            "title": "Large small ratio",
             "description": "Ratio of long to short reads",
             "type": "number",
             "minimum": 0
