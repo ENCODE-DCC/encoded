@@ -238,6 +238,12 @@
         "category": "episome",
         "donor": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
         "introduced_elements": "genomic DNA regions",
+        "reagents": [
+            {
+                "source": "thermo-fisher",
+                "identifier": "thermo-fisher:L3000008"
+            }
+        ],
         "lab": "/labs/kevin-white/",
         "method": "transient transfection",
         "purpose": "characterization",
