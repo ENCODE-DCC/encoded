@@ -166,6 +166,145 @@ def file_():
     }
 
 
+def audits_():
+    return {
+        "WARNING": [
+            {
+                "category": "inconsistent control read length",
+                "detail": "File {ENCFF783ZRQ|/files/ENCFF783ZRQ/} is 36 but its control file {ENCFF454ZHO|/files/ENCFF454ZHO/} is 30.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/files/ENCFF783ZRQ/",
+                "name": "audit_file"
+            },
+            {
+                "category": "inconsistent platforms",
+                "detail": "possible_controls is a list of experiment(s) that can serve as analytical controls for a given experiment. Experiment {ENCSR814EAU|/experiments/ENCSR814EAU/} found in possible_controls list of this experiment contains data produced on platform Illumina Genome Analyzer II/e/x which is not compatible with platform Illumina HiSeq 2000/2500 used in this experiment.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            }, {
+                "category": "low read length",
+                "detail": "Fastq file {ENCFF557LZC|/files/ENCFF557LZC/} has read length of 36bp. For mapping accuracy ENCODE standards recommend that sequencing reads should be at least 50bp long. (See {ENCODE ChIP-seq data standards|/data-standards/chip-seq/} )",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "low read length",
+                "detail": "Fastq file {ENCFF783ZRQ|/files/ENCFF783ZRQ/} has read length of 36bp. For mapping accuracy ENCODE standards recommend that sequencing reads should be at least 50bp long. (See {ENCODE ChIP-seq data standards|/data-standards/chip-seq/} )",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "moderate library complexity",
+                "detail": "NRF (Non Redundant Fraction) is equal to the result of the division of the number of reads after duplicates removal by the total number of reads. An NRF value in the range 0 - 0.5 is poor complexity, 0.5 - 0.8 is moderate complexity, and > 0.8 high complexity. NRF value > 0.8 is recommended, but > 0.5 is acceptable.  ENCODE processed alignments file {ENCFF553TUY|/files/ENCFF553TUY/} was generated from a library with NRF value of 0.64.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "mild to moderate bottlenecking",
+                "detail": "PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) is the ratio of the number of genomic locations where exactly one read maps uniquely (M1) to the number of genomic locations where some reads map (M_distinct). A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is acceptable.  ENCODE processed alignments file {ENCFF553TUY|/files/ENCFF553TUY/} was generated from a library with PBC1 value of 0.73.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "mild to moderate bottlenecking",
+                "detail": "PBC2 (PCR Bottlenecking Coefficient 2, M1/M2) is the ratio of the number of genomic locations where exactly one read maps uniquely (M1) to the number of genomic locations where two reads map uniquely (M2). A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable.  ENCODE processed alignments file {ENCFF553TUY|/files/ENCFF553TUY/} was generated from a library with PBC2 value of 4.26.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            }, {
+                "category": "moderate library complexity",
+                "detail": "NRF (Non Redundant Fraction) is equal to the result of the division of the number of reads after duplicates removal by the total number of reads. An NRF value in the range 0 - 0.5 is poor complexity, 0.5 - 0.8 is moderate complexity, and > 0.8 high complexity. NRF value > 0.8 is recommended, but > 0.5 is acceptable.  ENCODE processed alignments file {ENCFF349SRS|/files/ENCFF349SRS/} was generated from a library with NRF value of 0.64.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "mild to moderate bottlenecking",
+                "detail": "PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) is the ratio of the number of genomic locations where exactly one read maps uniquely (M1) to the number of genomic locations where some reads map (M_distinct). A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is acceptable.  ENCODE processed alignments file {ENCFF349SRS|/files/ENCFF349SRS/} was generated from a library with PBC1 value of 0.73.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "mild to moderate bottlenecking",
+                "detail": "PBC2 (PCR Bottlenecking Coefficient 2, M1/M2) is the ratio of the number of genomic locations where exactly one read maps uniquely (M1) to the number of genomic locations where two reads map uniquely (M2). A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable.  ENCODE processed alignments file {ENCFF349SRS|/files/ENCFF349SRS/} was generated from a library with PBC2 value of 4.26.",
+                "level": 40,
+                "level_name": "WARNING", "path": "/experiments/ENCSR891KGZ/", "name": "audit_experiment"
+            },
+            {
+                "category": "moderate library complexity", "detail": "NRF (Non Redundant Fraction) is equal to the result of the division of the number of reads after duplicates removal by the total number of reads. An NRF value in the range 0 - 0.5 is poor complexity, 0.5 - 0.8 is moderate complexity, and > 0.8 high complexity. NRF value > 0.8 is recommended, but > 0.5 is acceptable.  ENCODE processed alignments file {ENCFF293PPG|/files/ENCFF293PPG/} was generated from a library with NRF value of 0.80.",
+                "level": 40,
+                "level_name": "WARNING", "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "mild to moderate bottlenecking", "detail": "PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) is the ratio of the number of genomic locations where exactly one read maps uniquely (M1) to the number of genomic locations where some reads map (M_distinct). A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is acceptable.  ENCODE processed alignments file {ENCFF293PPG|/files/ENCFF293PPG/} was generated from a library with PBC1 value of 0.88.",
+                "level": 40,
+                "level_name": "WARNING",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "mild to moderate bottlenecking",
+                "detail": "PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) is the ratio of the number of genomic locations where exactly one read maps uniquely (M1) to the number of genomic locations where some reads map (M_distinct). A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is acceptable.  ENCODE processed alignments file {ENCFF610NUD|/files/ENCFF610NUD/} was generated from a library with PBC1 value of 0.88.",
+                "level": 40,
+                "level_name": "WARNING", "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            }
+        ],
+        "NOT_COMPLIANT": [
+            {
+                "category": "insufficient read depth",
+                "detail": "Processed alignments file {ENCFF553TUY|/files/ENCFF553TUY/} produced by ChIP-seq read mapping pipeline ( {ENCPL220NBH|/pipelines/ENCPL220NBH/} ) using the hg19 assembly has 8345584 usable fragments. The minimum ENCODE standard for each replicate in a ChIP-seq experiment targeting H4K8ac-human and investigated as a transcription factor is 10 million usable fragments. The recommended value is > 20 million, but > 10 million is acceptable. (See {ENCODE ChIP-seq data standards|/data-standards/chip-seq/} )",
+                "level": 50,
+                "level_name": "NOT_COMPLIANT",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "insufficient read depth",
+                "detail": "Processed alignments file {ENCFF349SRS|/files/ENCFF349SRS/} produced by ChIP-seq read mapping pipeline ( {ENCPL220NBH|/pipelines/ENCPL220NBH/} ) using the GRCh38 assembly has 8338604 usable fragments. The minimum ENCODE standard for each replicate in a ChIP-seq experiment targeting H4K8ac-human and investigated as a transcription factor is 10 million usable fragments. The recommended value is > 20 million, but > 10 million is acceptable. (See {ENCODE ChIP-seq data standards|/data-standards/chip-seq/} )",
+                "level": 50,
+                "level_name": "NOT_COMPLIANT",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            }
+        ],
+        "ERROR": [
+            {
+                "category": "extremely low read depth",
+                "detail": "Processed alignments file {ENCFF293PPG|/files/ENCFF293PPG/} produced by ChIP-seq read mapping pipeline ( {ENCPL220NBH|/pipelines/ENCPL220NBH/} ) using the GRCh38 assembly has 1372444 usable fragments. The minimum ENCODE standard for each replicate in a ChIP-seq experiment targeting H4K8ac-human and investigated as a transcription factor is 10 million usable fragments. The recommended value is > 20 million, but > 10 million is acceptable. (See {ENCODE ChIP-seq data standards|/data-standards/chip-seq/} )",
+                "level": 60,
+                "level_name": "ERROR",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            },
+            {
+                "category": "extremely low read depth",
+                "detail": "Processed alignments file {ENCFF610NUD|/files/ENCFF610NUD/} produced by ChIP-seq read mapping pipeline ( {ENCPL220NBH|/pipelines/ENCPL220NBH/} ) using the hg19 assembly has 1374194 usable fragments. The minimum ENCODE standard for each replicate in a ChIP-seq experiment targeting H4K8ac-human and investigated as a transcription factor is 10 million usable fragments. The recommended value is > 20 million, but > 10 million is acceptable. (See {ENCODE ChIP-seq data standards|/data-standards/chip-seq/} )",
+                "level": 60,
+                "level_name": "ERROR",
+                "path": "/experiments/ENCSR891KGZ/",
+                "name": "audit_experiment"
+            }
+        ]
+    }
+
+
 def test_metadata_allowed_types_decorator_raises_error():
     from encoded.reports.metadata import allowed_types
 
@@ -236,6 +375,37 @@ def test_metadata_file_matches_file_params():
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'replicate.rbns_protein_concentration_units': ['nM']}
     assert file_matches_file_params(file_(), file_param_list)
+
+
+def test_metadata_group_audits_by_files_and_type():
+    from encoded.reports.metadata import group_audits_by_files_and_type
+    grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(audits_())
+    expected_grouped_file_audits = {
+        '/files/ENCFF783ZRQ/': {
+            'WARNING': (
+                'inconsistent control read length',
+            )
+        }
+    }
+    expected_grouped_other_audits = {
+        'WARNING': (
+            'inconsistent platforms',
+            'low read length',
+            'mild to moderate bottlenecking',
+            'moderate library complexity'
+        ),
+        'NOT_COMPLIANT': (
+            'insufficient read depth',
+        ),
+        'ERROR': (
+            'extremely low read depth',
+        )
+    }
+    for file_id, audits in grouped_file_audits.items():
+        for audit, audit_value in expected_grouped_file_audits[file_id].items():
+            assert tuple(sorted(audits[audit])) == audit_value
+    for audit, audit_value in grouped_other_audits.items():
+        assert tuple(sorted(audit_value)) == expected_grouped_other_audits[audit]
 
 
 @pytest.mark.indexing
