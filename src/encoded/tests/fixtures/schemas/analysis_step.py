@@ -157,3 +157,17 @@ def analysis_step_atac_encode4_replicate_concordance(testapp):
         'major_version': 1
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_9(testapp):
+    item = {
+        'schema_version': '9',
+        'step_label': 'splice-junction-extraction-step',
+        'title': 'spike-in step',
+        'major_version': 1,
+        'analysis_step_types': ['splice junction extraction'],
+        'input_file_types': ['spike-in sequence'],
+        'output_file_types': ['spike-in sequence']
+    }
+    return item

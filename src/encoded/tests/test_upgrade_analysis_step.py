@@ -58,3 +58,12 @@ def test_analysis_step_8_9(upgrader, analysis_step_8):
     assert 'representative dnase hypersensitivity sites' not in value['output_file_types']
     assert 'representative DNase hypersensitivity sites (rDHSs)' in value['input_file_types']
     assert 'representative DNase hypersensitivity sites (rDHSs)' in value['output_file_types']
+
+
+def test_analysis_step_9_10(upgrader, analysis_step_9):
+    value = upgrader.upgrade('analysis_step', analysis_step_9, current_version='9', target_version='10')
+    assert value['schema_version'] == '10'
+    assert 'spike-in sequence' not in value['input_file_types']
+    assert 'spike-in sequence' not in value['output_file_types']
+    assert 'spike-ins' in value['input_file_types']
+    assert 'spike-ins' in value['output_file_types']

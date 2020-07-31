@@ -695,3 +695,12 @@ def file_21_22(value, system):
         if 'replicate' not in value:
             value['replicate'] = '70d6e704-bba5-4475-97b8-03bf717eecf3'
             value['notes'] = notes + ' This file lacks its correct replicate specified.'
+
+
+@upgrade_step('file', '22', '23')
+def file_22_23(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5424
+    output_type = value.get('output_type', None)
+    if output_type == 'spike-in sequence':
+        value['output_type'] = 'spike-ins'
+    return

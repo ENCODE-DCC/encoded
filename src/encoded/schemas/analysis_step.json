@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "step_label": {
             "title": "Step label",
@@ -218,7 +218,7 @@
                     "signal p-value",
                     "smoothed methylation stage at CpG",
                     "snRNA reference",
-                    "spike-in sequence",
+                    "spike-ins",
                     "splice junctions",
                     "stable peaks",
                     "subreads",
@@ -363,7 +363,7 @@
                     "signal p-value",
                     "smoothed methylation stage at CpG",
                     "snRNA reference",
-                    "spike-in sequence",
+                    "spike-ins",
                     "splice junctions",
                     "stable peaks",
                     "subreads",
