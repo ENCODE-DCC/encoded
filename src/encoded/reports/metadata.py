@@ -154,7 +154,7 @@ class MetadataReport:
 
     def _set_file_param_list(self):
         self.file_param_list = {
-            k.replace('files.'): v
+            k.replace('files.', ''): v
             for k, v in self.param_list.items()
             if k.startswith('files.')
         }
