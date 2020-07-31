@@ -403,9 +403,9 @@ def test_metadata_group_audits_by_files_and_type():
     }
     for file_id, audits in grouped_file_audits.items():
         for audit, audit_value in expected_grouped_file_audits[file_id].items():
-            assert tuple(sorted(audits[audit])) == audit_value
+            assert tuple(sorted(set(audits[audit]))) == audit_value
     for audit, audit_value in grouped_other_audits.items():
-        assert tuple(sorted(audit_value)) == expected_grouped_other_audits[audit]
+        assert tuple(sorted(set(audit_value))) == expected_grouped_other_audits[audit]
 
 
 @pytest.mark.indexing
