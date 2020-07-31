@@ -2,7 +2,6 @@ from rdflib import ConjunctiveGraph, exceptions, Namespace
 from rdflib import RDFS, RDF, BNode
 from rdflib.collection import Collection
 from .ntr_terms import (
-    ntr_assays,
     ntr_biosamples
 )
 from .manual_slims import slim_shims
@@ -41,7 +40,7 @@ developental_slims = {
 }
 
 system_slims = {
-    'UBERON:0001015': 'musculature',
+    'UBERON:0000383': 'musculature of body',
     'UBERON:0000949': 'endocrine system',
     'UBERON:0002330': 'exocrine system',
     'UBERON:0000990': 'reproductive system',
@@ -119,7 +118,6 @@ organ_slims = {
     'UBERON:0002384': 'connective tissue',
     'UBERON:0002101': 'limb',
     'UBERON:0000922': 'embryo',
-    'UBERON:0000383': 'musculature of body',
     'UBERON:0001021': 'nerve',
     'UBERON:0002371': 'bone marrow',
     'UBERON:0006314': 'bodily fluid',
@@ -160,8 +158,7 @@ cell_slims = {
     'EFO:0002009': 'fibroblast',  # fibroblast derived cell line
     'CL:0000988': 'hematopoietic cell',
     'EFO:0004905': 'induced pluripotent stem cell',
-    # induced pluripotent stem cell derived cell line
-    'EFO:0005740': 'induced pluripotent stem cell',
+    'EFO:0005740': 'induced pluripotent stem cell',  # ipsc derived cell line
     'CL:0000312': 'keratinocyte',
     'CL:0000738': 'leukocyte',
     'EFO:0005292': 'lymphoblast',  # lymphoblastoid cell line
@@ -178,81 +175,6 @@ cell_slims = {
     'EFO:0002886': 'stem cell',  # stem cell derived cell line
     'CL:0000084': 'T cell',
     'NTR:0000550': 'progenitor cell'
-}
-
-assay_slims = {
-    # Note shortened synonyms are provided
-    'OBI:0000634': 'DNA methylation',  # 'DNA methylation profiling'
-    'OBI:0000424': 'Transcription',  # 'transcription profiling'
-    'OBI:0001398': 'DNA binding',  # "protein and DNA interaction"
-    'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
-    # 'chromosome conformation identification objective'
-    'OBI:0001917': '3D chromatin structure',
-    # 'single-nucleotide-resolution nucleic acid structure mapping assay'
-    'OBI:0000870': 'DNA accessibility',
-    'OBI:0001916': 'Replication timing',
-    'OBI:0000435': 'Genotyping',
-    'OBI:0000615': 'Proteomics',
-    'OBI:0000626': 'DNA sequencing',
-    'OBI:0000845': 'RNA structure',
-    'NTR:0000516': 'Functional characterization'
-}
-
-preferred_name = {
-    "OBI:0002117": "WGS",
-    "OBI:0001247": "genotyping HTS",
-    "OBI:0001332": "DNAme array",
-    "OBI:0001335": "microRNA counts",
-    "OBI:0001463": "RNA microarray",
-    "OBI:0001863": "WGBS",
-    "OBI:0001923": "MS-MS",
-    "OBI:0001271": "RNA-seq",
-    "OBI:0000716": "ChIP-seq",
-    "OBI:0001853": "DNase-seq",
-    "OBI:0001920": "Repli-seq",
-    "OBI:0001864": "RAMPAGE",
-    "OBI:0001393": "genotyping array",
-    "OBI:0002042": "Hi-C",
-    "OBI:0002457": "PRO-seq",
-    "OBI:0002458": "4C",
-    "OBI:0002629": "direct RNA-seq",
-    "OBI:0002144": "Circulome-seq",
-    "OBI:0002459": "genotyping HiC",
-    "OBI:0002675": "MPRA",
-    "OBI:0002571": "polyA plus RNA-seq",
-    "OBI:0002572": "polyA minus RNA-seq",
-    "OBI:0002631": "scRNA-seq"
-}
-
-category_slims = {
-    'OBI:0000634': 'DNA methylation profiling',
-    'OBI:0000424': 'transcription profiling',
-    'OBI:0000435': 'genotyping',
-    'OBI:0000615': 'proteomics',
-    'OBI:0001916': 'replication',
-    'OBI:0001398': "protein and DNA interaction",
-    'OBI:0001854': "protein and RNA interaction"
-}
-
-objective_slims = {
-    'OBI:0000218': 'cellular feature identification objective',
-    'OBI:0001691': 'cellular structure feature identification objective',
-    'OBI:0001916': 'DNA replication identification objective',
-    'OBI:0001917': 'chromosome conformation identification objective',
-    'OBI:0001234': 'epigenetic modification identification objective',
-    'OBI:0001331': 'transcription profiling identification objective',
-    'OBI:0001690': 'molecular function identification objective',
-    'OBI:0000268': 'organism feature identification objective',
-    'OBI:0001623': 'organism identification objective',
-    'OBI:0001398': 'protein and DNA interaction identification objective',
-    'OBI:0001854': 'protein and RNA interaction identification objective'
-}
-
-type_slims = {
-    'OBI:0001700': 'immunoprecipitation assay',
-    'OBI:0000424': 'transcription profiling assay',
-    'OBI:0000634': 'DNA methylation profiling assay',
-    'OBI:0000435': 'genotyping assay'
 }
 
 
@@ -541,14 +463,6 @@ def getSlims(goid, terms, slimType):
         slimTerms = cell_slims
     elif slimType == 'system':
         slimTerms = system_slims
-    elif slimType == 'assay':
-        slimTerms = assay_slims
-    elif slimType == 'category':
-        slimTerms = category_slims
-    elif slimType == 'objective':
-        slimTerms = objective_slims
-    elif slimType == 'type':
-        slimTerms = type_slims
     for slimTerm in slimTerms:
         if slimType == 'developmental':
             if slimTerm in terms[goid]['closure_with_develops_from']:
@@ -571,7 +485,6 @@ def getTermStructure():
     return {
         'id': '',
         'name': '',
-        'preferred_name': '',
         'parents': [],
         'part_of': [],
         'has_part': [],
@@ -585,37 +498,29 @@ def getTermStructure():
         'data': [],
         'closure_with_develops_from': [],
         'data_with_develops_from': [],
-        'synonyms': [],
-        'category': [],
-        'assay': [],
-        'types': [],
-        'objectives': []
+        'synonyms': []
     }
 
 
 def main():
-    ''' Downloads UBERON, EFO, OBI and CLO ontologies and create a JSON file '''
+    ''' Downloads UBERON and EFO ontologies and create a JSON file '''
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="Get Uberon, EFO, OBI, and CLO ontologies and generate the JSON file", epilog=EPILOG,
+        description="Get Uberon and EFO ontologies and generate the JSON file", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
-    parser.add_argument('--obi-url', help="OBI version URL")
-    parser.add_argument('--clo-url', help="CLO version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
-    obi_url = args.obi_url
-    clo_url = args.clo_url
-    whitelist = [uberon_url, efo_url, obi_url]
+    url_whitelist = [uberon_url, efo_url]
 
     terms = {}
     # Run on ontologies defined in whitelist
-    for url in whitelist:
+    for url in url_whitelist:
         data = Inspector(url)
         for c in data.allclasses:
             if isBlankNode(c):
@@ -631,16 +536,16 @@ def main():
                             if HUMAN_TAXON in col_list:
                                 if PART_OF in col_list:
                                     for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(collection[0])[
-                                            0].replace('_', ':')
+                                        term_id = splitNameFromNamespace(
+                                            collection[0])[0].replace('_', ':')
                                         if term_id not in terms:
                                             terms[term_id] = getTermStructure()
                                         terms[term_id]['part_of'].append(
                                             splitNameFromNamespace(subC)[0].replace('_', ':'))
                                 elif DEVELOPS_FROM in col_list:
                                     for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
-                                        term_id = splitNameFromNamespace(collection[0])[
-                                            0].replace('_', ':')
+                                        term_id = splitNameFromNamespace(
+                                            collection[0])[0].replace('_', ':')
                                         if term_id not in terms:
                                             terms[term_id] = getTermStructure()
                                         terms[term_id]['develops_from'].append(
@@ -656,8 +561,6 @@ def main():
                 except:
                     terms[term_id]['name'] = ''
 
-                terms[term_id]['preferred_name'] = preferred_name.get(
-                    term_id, '')
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
                     if isBlankNode(parent):
@@ -715,21 +618,6 @@ def main():
                         terms[term_id]['synonyms'].append(syn.__str__())
                     except:
                         pass
-
-    # Get only CLO terms from the CLO owl file
-    data = Inspector(clo_url)
-    for c in data.allclasses:
-        if c.startswith('http://purl.obolibrary.org/obo/CLO'):
-            term_id = splitNameFromNamespace(c)[0].replace('_', ':')
-            if term_id not in terms:
-                terms[term_id] = getTermStructure()
-                terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
-            for syn in data.entitySynonyms(c):
-                try:
-                    terms[term_id]['synonyms'].append(syn.__str__())
-                except:
-                    pass
-
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(
             terms[term]['derives_from']) | set(terms[term]['achieves_planned_objective']))
@@ -753,10 +641,6 @@ def main():
         terms[term]['organs'] = getSlims(term, terms, 'organ')
         terms[term]['cells'] = getSlims(term, terms, 'cell')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
-        terms[term]['assay'] = getSlims(term, terms, 'assay')
-        terms[term]['category'] = getSlims(term, terms, 'category')
-        terms[term]['objectives'] = getSlims(term, terms, 'objective')
-        terms[term]['types'] = getSlims(term, terms, 'type')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
@@ -765,7 +649,6 @@ def main():
         del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
 
-    terms.update(ntr_assays)
     terms.update(ntr_biosamples)
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
