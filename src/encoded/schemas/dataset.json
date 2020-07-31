@@ -11,6 +11,7 @@
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accession"},
@@ -60,13 +61,6 @@
                 "format": "accession",
                 "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
-        },
-        "award": {
-            "title": "Award",
-            "description": "The HCA Seed Network or HCA Pilot Project award used to fund the dataset.",
-            "comment": "Required. See award.json for list of available identifiers.",
-            "type": "string",
-            "linkTo": "Award"
         },
         "corresponding_contributor": {
             "title": "Corresponding contributor",
