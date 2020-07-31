@@ -63,6 +63,24 @@ class MouseDonor(Donor):
     embedded = Donor.embedded + []
 
 
+    @calculated_property(condition='life_stage', schema={
+        "title": "Life stage term ID",
+        "type": "string",
+    })
+    def life_stage_term_id(self, request, life_stage):
+        term_lookup = {
+            'embryonic': 'MmusDv:0000002',
+            'fetal': 'MmusDv:0000031',
+            'newborn': 'MmusDv:0000036',
+            'premature': 'MmusDv:0000112',
+            'adult': 'MmusDv:0000110'
+        }
+        term_id = None
+        if life_stage in term_lookup:
+            term_id = term_lookup.get(life_stage)
+        return term_id
+
+
 @abstract_collection(
     name='human-donors',
     unique_key='accession',
@@ -75,6 +93,26 @@ class HumanDonor(Donor):
     base_types = ['HumanDonor'] + Donor.base_types
     schema = load_schema('encoded:schemas/human_donor.json')
     embedded = Donor.embedded + []
+
+
+    @calculated_property(condition='life_stage', schema={
+        "title": "Life stage term ID",
+        "type": "string",
+    })
+    def life_stage_term_id(self, request, life_stage):
+        term_lookup = {
+            'embryonic': 'HsapDv:0000002',
+            'fetal': 'HsapDv:0000037',
+            'newborn': 'HsapDv:0000082',
+            'infant': 'HsapDv:0000083',
+            'child': 'HsapDv:0000081',
+            'adolescent': 'HsapDv:0000086',
+            'adult': 'HsapDv:0000087'
+        }
+        term_id = None
+        if life_stage in term_lookup:
+            term_id = term_lookup.get(life_stage)
+        return term_id
 
 
 @collection(

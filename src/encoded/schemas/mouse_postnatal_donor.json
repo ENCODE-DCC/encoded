@@ -79,9 +79,9 @@
         },
         "life_stage": {
             "enum": [
+                "newborn",
+                "premature",
                 "adult",
-                "early postnatal",
-                "adolescent",
                 "unknown"
             ]
         },
