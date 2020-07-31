@@ -158,7 +158,11 @@ def file_():
         ],
         'href': '/files/ENCFF244PJU/@@download/ENCFF244PJU.bed.gz',
         'file_format': 'bed',
-        'status': 'released'
+        'status': 'released',
+        'replicate': {
+            'rbns_protein_concentration': 20,
+            'rbns_protein_concentration_units': 'nM'
+        }
     }
 
 
@@ -227,6 +231,10 @@ def test_metadata_file_matches_file_params():
     file_param_list = {'files.biological_replicates': ['2']}
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'files.file_size': ['3356650']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'files.replicate.rbns_protein_concentration': ['20']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'files.replicate.rbns_protein_concentration_units': ['nM']}
     assert file_matches_file_params(file_(), file_param_list)
 
 

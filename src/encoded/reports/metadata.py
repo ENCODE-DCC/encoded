@@ -83,7 +83,10 @@ def make_file_cell(paths, file_):
 
 def file_matches_file_params(file_, file_param_list):
     for k, v in file_param_list.items():
-        file_prop_value = file_.get(k[len('files.'):])
+        if '.' in k:
+            file_prop_value = list(simple_path_ids(file_, k[len('files.'):]))
+        else:
+            file_prop_value = file_.get(k[len('files.'):])
         if not file_prop_value:
             return False
         if isinstance(file_prop_value, list):
