@@ -1,5 +1,5 @@
 import pytest
-from encoded.types.file import File
+from encoded.types.data_file import DataFile
 from moto import (
     mock_sts,
     mock_s3
@@ -27,7 +27,7 @@ def test_set_external_sheet(root, file_with_external_sheet):
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.public_s3_statuses
+    for status in DataFile.public_s3_statuses
 ])
 def test_public_file_not_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
     testapp.patch_json(
@@ -41,7 +41,8 @@ def test_public_file_not_in_correct_bucket(testapp, root, dummy_request, file_wi
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
-    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(
+        dummy_request)
     assert result is False
     assert current_path == 's3://test_file_bucket/xyz.bed'
     assert destination_path == 's3://pds_public_bucket_test/xyz.bed'
@@ -51,7 +52,8 @@ def test_file_in_correct_bucket_no_external_sheet(root, dummy_request, file_with
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
     file_item = root.get_by_uuid(file_with_no_external_sheet['uuid'])
-    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(
+        dummy_request)
     assert result is True
     assert current_path is None
     assert destination_path is None
@@ -59,7 +61,7 @@ def test_file_in_correct_bucket_no_external_sheet(root, dummy_request, file_with
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.public_s3_statuses
+    for status in DataFile.public_s3_statuses
 ])
 def test_public_file_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
     testapp.patch_json(
@@ -74,14 +76,15 @@ def test_public_file_in_correct_bucket(testapp, root, dummy_request, file_with_e
     file_item._set_external_sheet({'bucket': 'pds_public_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_public_bucket_test'
-    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(
+        dummy_request)
     assert result is True
     assert current_path == destination_path == 's3://pds_public_bucket_test/xyz.bed'
 
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.private_s3_statuses
+    for status in DataFile.private_s3_statuses
 ])
 def test_private_file_not_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
     testapp.patch_json(
@@ -95,7 +98,8 @@ def test_private_file_not_in_correct_bucket(testapp, root, dummy_request, file_w
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'test_file_bucket'
-    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(
+        dummy_request)
     assert result is False
     assert current_path == 's3://test_file_bucket/xyz.bed'
     assert destination_path == 's3://pds_private_bucket_test/xyz.bed'
@@ -103,7 +107,7 @@ def test_private_file_not_in_correct_bucket(testapp, root, dummy_request, file_w
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.private_s3_statuses
+    for status in DataFile.private_s3_statuses
 ])
 def test_private_file_in_correct_bucket(testapp, root, dummy_request, file_with_external_sheet, file_status):
     testapp.patch_json(
@@ -118,7 +122,8 @@ def test_private_file_in_correct_bucket(testapp, root, dummy_request, file_with_
     file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_private_bucket_test'
-    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(
+        dummy_request)
     assert result is True
     assert current_path == destination_path == 's3://pds_private_bucket_test/xyz.bed'
 
@@ -137,7 +142,8 @@ def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_reque
     file_item._set_external_sheet({'bucket': 'pds_private_bucket_test'})
     external = file_item._get_external_sheet()
     assert external.get('bucket') == 'pds_private_bucket_test'
-    result, current_path, destination_path = file_item._file_in_correct_bucket(dummy_request)
+    result, current_path, destination_path = file_item._file_in_correct_bucket(
+        dummy_request)
     assert result is True
     assert current_path == destination_path == None
 
@@ -146,10 +152,11 @@ def test_restricted_or_missing_file_in_private_bucket(testapp, root, dummy_reque
 @mock_s3
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.public_s3_statuses
+    for status in DataFile.public_s3_statuses
 ])
 def test_public_file_has_cloud_metadata(testapp, file_with_external_sheet, file_status):
-    testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
+    testapp.patch_json(
+        file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
     assert 'cloud_metadata' in res.json
     cm = res.json['cloud_metadata']
@@ -197,11 +204,12 @@ def test_private_no_file_available_file_does_not_have_cloud_metadata(testapp, fi
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.private_s3_statuses
+    for status in DataFile.private_s3_statuses
     if status != 'replaced'
 ])
 def test_private_file_does_have_cloud_metadata(testapp, file_with_external_sheet, file_status):
-    testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
+    testapp.patch_json(
+        file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
     assert 'cloud_metadata' in res.json
 
@@ -214,10 +222,11 @@ def test_public_file_with_no_external_sheet_no_cloud_metadata(testapp, file):
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.public_s3_statuses
+    for status in DataFile.public_s3_statuses
 ])
 def test_public_file_has_s3_uri(testapp, file_with_external_sheet, file_status):
-    testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
+    testapp.patch_json(
+        file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' in res.json
     assert res.json['s3_uri'] == 's3://test_file_bucket/xyz.bed'
@@ -225,11 +234,12 @@ def test_public_file_has_s3_uri(testapp, file_with_external_sheet, file_status):
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in File.private_s3_statuses
+    for status in DataFile.private_s3_statuses
     if status != 'replaced'
 ])
 def test_private_file_does_have_s3_uri(testapp, file_with_external_sheet, file_status):
-    testapp.patch_json(file_with_external_sheet['@id'], {'status': file_status})
+    testapp.patch_json(
+        file_with_external_sheet['@id'], {'status': file_status})
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' in res.json
 
@@ -254,7 +264,7 @@ def test_public_restricted_file_does_not_have_s3_uri(testapp, file_with_external
 
 @pytest.mark.parametrize("file_status", [
     status
-    for status in ['uploading','upload failed']
+    for status in ['uploading', 'upload failed']
 ])
 def test_encode_files_does_have_s3_uri(testapp, file_with_external_sheet, file_status):
     testapp.patch_json(
@@ -278,7 +288,7 @@ def test_encode_files_content_error_does_have_s3_uri(testapp, file_with_external
     res = testapp.get(file_with_external_sheet['@id'])
     assert 's3_uri' in res.json
 
-    
+
 def test_file_update_bucket_as_admin(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],
@@ -289,7 +299,8 @@ def test_file_update_bucket_as_admin(testapp, dummy_request, file_with_external_
     dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
-    res = testapp.patch_json(file_with_external_sheet['@id'] + '@@update_bucket', {'new_bucket': 'pds_public_bucket_test'})
+    res = testapp.patch_json(
+        file_with_external_sheet['@id'] + '@@update_bucket', {'new_bucket': 'pds_public_bucket_test'})
     assert res.json['old_bucket'] == 'test_file_bucket'
     assert res.json['new_bucket'] == 'pds_public_bucket_test'
 
@@ -321,7 +332,8 @@ def test_file_update_bucket_as_admin_unkown_bucket_with_force(testapp, dummy_req
     dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
-    res = testapp.patch_json(file_with_external_sheet['@id'] + '@@update_bucket?force=true', {'new_bucket': 'unknown bucket'})
+    res = testapp.patch_json(
+        file_with_external_sheet['@id'] + '@@update_bucket?force=true', {'new_bucket': 'unknown bucket'})
     assert res.json['old_bucket'] == 'test_file_bucket'
     assert res.json['new_bucket'] == 'unknown bucket'
 
@@ -343,7 +355,8 @@ def test_file_reset_file_upload_bucket_on_upload_credentials(testapp, root, dumm
     dummy_request.registry.settings['file_upload_bucket'] = 'test_file_bucket'
     dummy_request.registry.settings['pds_public_bucket'] = 'pds_public_bucket_test'
     dummy_request.registry.settings['pds_private_bucket'] = 'pds_private_bucket_test'
-    res = testapp.patch_json(file_with_external_sheet['@id'] + '@@update_bucket', {'new_bucket': 'pds_public_bucket_test'})
+    res = testapp.patch_json(
+        file_with_external_sheet['@id'] + '@@update_bucket', {'new_bucket': 'pds_public_bucket_test'})
     file_item = root.get_by_uuid(file_with_external_sheet['uuid'])
     external = file_item._get_external_sheet()
     assert external.get('key') == 'xyz.bed'
