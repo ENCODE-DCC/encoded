@@ -721,6 +721,73 @@ def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
     assert set(mr.param_list['field']) == set(expected_fields)
 
 
+def test_metadata_metadata_report_initialize_at_id_param(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    assert mr.param_list['@id'] == []
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&@id=/experiments/ENCSR123ABC/'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    assert mr.param_list['@id'] == ['/experiments/ENCSR123ABC/']
+
+
+def test_metadata_metadata_report_maybe_add_cart_elements_to_param_list(dummy_request, mocker):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    mocker.patch.object(dummy_request, 'embed')
+    dummy_request.embed.return_value = {
+        "status": "current",
+        "date_created": "2018-11-29T22:36:42.389928+00:00",
+        "submitted_by": "/users/7e95dcd6-9c35-4082-9c53-09d14c5752be/",
+        "schema_version": "1",
+        "name": "Keenan Graham cart",
+        "locked": False,
+        "elements": [
+            "/experiments/ENCSR483RKN/",
+            "/experiments/ENCSR514NTD/"
+        ],
+        "@id": "/carts/8759684c-9f00-4300-a72f-5eea736adb4a/",
+        "@type": ["Cart", "Item"],
+        "uuid": "8759684c-9f00-4300-a72f-5eea736adb4a",
+        "@context": "/terms/",
+        "audit": {}
+    }
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    mr._maybe_add_cart_elements_to_param_list()
+    assert mr.param_list['@id'] == []
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&cart=1234'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    mr._maybe_add_cart_elements_to_param_list()
+    assert mr.param_list['@id'] == [
+        "/experiments/ENCSR483RKN/",
+        "/experiments/ENCSR514NTD/"
+    ]
+
+
 @pytest.mark.indexing
 def test_metadata_view(testapp, index_workbook):
     r = testapp.get('/metadata/?type=Experiment')
