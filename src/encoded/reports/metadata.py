@@ -84,7 +84,11 @@ def make_file_cell(paths, file_):
 def file_matches_file_params(file_, file_param_list):
     for k, v in file_param_list.items():
         file_prop_value = file_.get(k[len('files.'):])
-        if not file_prop_value or file_prop_value not in v:
+        if not file_prop_value:
+            return False
+        if isinstance(file_prop_value, list):
+            return any([str(x) in v for x in file_prop_value])
+        if str(file_prop_value) not in v:
             return False
     return True
 
