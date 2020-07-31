@@ -958,6 +958,27 @@
         "uuid": "332d0e03-a907-4f53-8358-bb00118277c8"
     },
     {
+        "email": "jychien@stanford.edu",
+        "first_name": "Jennifer",
+        "groups": [
+            "admin",
+            "verified"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Chien",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "CZI003CNS",
+            "community"
+        ],
+        "uuid": "71c7b6d6-f6dd-4ed4-826c-6b3003a8ad9b"
+    },
+    {
         "email": "clitton@stanford.edu",
         "first_name": "Casey",
         "groups": [
