@@ -836,7 +836,7 @@ def check_experiment_dnase_seq_standards(experiment,
                         file_list.append(f)
                     file_names_string = str(file_names).replace('\'', ' ')
                     file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('Replicate concordance in DNase-seq expriments is measured by '
+                    detail = ('Replicate concordance in DNase-seq experiments is measured by '
                         'calculating the Pearson correlation between signal quantification '
                         'of the replicates. '
                         'ENCODE processed signal files {} produced by {} ( {} ) {} '
@@ -1535,7 +1535,7 @@ def check_idr(metrics, rescue, self_consistency):
                 for f in m['quality_metric_of']:
                     file_list.append(f)
                 file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('Replicate concordance in ChIP-seq expriments is measured by '
+                detail = ('Replicate concordance in ChIP-seq experiments is measured by '
                     'calculating IDR values (Irreproducible Discovery Rate). '
                     'ENCODE processed IDR thresholded peaks files {} '
                     'have a rescue ratio of {:.2f} and a '
@@ -1556,7 +1556,7 @@ def check_idr(metrics, rescue, self_consistency):
                 for f in m['quality_metric_of']:
                     file_list.append(f)
                 file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('Replicate concordance in ChIP-seq expriments is measured by '
+                detail = ('Replicate concordance in ChIP-seq experiments is measured by '
                     'calculating IDR values (Irreproducible Discovery Rate). '
                     'ENCODE processed IDR thresholded peaks files {} '
                     'have a rescue ratio of {:.2f} and a '
@@ -1707,7 +1707,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                 for f in m['quality_metric_of']:
                     file_names.append(f)
                 file_names_links = [audit_link(path_to_text(f), f) for f in file_names]
-                detail = ('Replicate concordance in RNA-seq expriments is measured by '
+                detail = ('Replicate concordance in RNA-seq experiments is measured by '
                     'calculating the Spearman correlation between gene quantifications '
                     'of the replicates. '
                     'ENCODE processed gene quantification files {} '
