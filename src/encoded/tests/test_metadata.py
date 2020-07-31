@@ -408,6 +408,319 @@ def test_metadata_group_audits_by_files_and_type():
         assert tuple(sorted(set(audit_value))) == expected_grouped_other_audits[audit]
 
 
+def test_metadata_metadata_report_init(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    assert isinstance(mr, MetadataReport)
+
+
+def test_metadata_metadata_report_query_string_init_and_param_list(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    assert isinstance(mr.query_string, QueryString)
+    expected_param_list = {'type': ['Experiment']}
+    assert mr.param_list['type'] == expected_param_list['type']
+
+
+def test_metadata_metadata_report_visualizable_and_raw_only_boolean(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    assert not mr.visualizable_only
+    assert not mr.raw_only
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&option=visualizable'
+    )
+    mr = MetadataReport(dummy_request)
+    assert mr.visualizable_only
+    assert not mr.raw_only
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&option=raw'
+    )
+    mr = MetadataReport(dummy_request)
+    assert not mr.visualizable_only
+    assert mr.raw_only
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&option=visualizable&option=raw'
+    )
+    mr = MetadataReport(dummy_request)
+    assert mr.visualizable_only
+    assert mr.raw_only
+
+
+def test_metadata_metadata_report_excluded_columns(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    assert mr.EXCLUDED_COLUMNS == (
+        'Restricted',
+        'No File Available'
+    )
+
+
+def test_metadata_metadata_report_build_header(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._build_header()
+    expected_header = [
+        'File accession',
+        'File format',
+        'File type',
+        'File format type',
+        'Output type',
+        'File assembly',
+        'Experiment accession',
+        'Assay',
+        'Biosample term id',
+        'Biosample term name',
+        'Biosample type',
+        'Biosample organism',
+        'Biosample treatments',
+        'Biosample treatments amount',
+        'Biosample treatments duration',
+        'Biosample genetic modifications methods',
+        'Biosample genetic modifications categories',
+        'Biosample genetic modifications targets',
+        'Biosample genetic modifications gene targets',
+        'Biosample genetic modifications site coordinates',
+        'Biosample genetic modifications zygosity',
+        'Experiment target',
+        'Library made from',
+        'Library depleted in',
+        'Library extraction method',
+        'Library lysis method',
+        'Library crosslinking method',
+        'Library strand specific',
+        'Experiment date released',
+        'Project',
+        'RBNS protein concentration',
+        'Library fragmentation method',
+        'Library size range',
+        'Biological replicate(s)',
+        'Technical replicate(s)',
+        'Read length',
+        'Mapped read length',
+        'Run type',
+        'Paired end',
+        'Paired with',
+        'Index of',
+        'Derived from',
+        'Size',
+        'Lab',
+        'md5sum',
+        'dbxrefs',
+        'File download URL',
+        'Genome annotation',
+        'Platform',
+        'Controlled by',
+        'File Status',
+        's3_uri',
+        'Audit WARNING',
+        'Audit NOT_COMPLIANT',
+        'Audit ERROR'
+    ]
+    assert mr.header == expected_header
+
+
+def test_metadata_metadata_report_split_column_and_fields_by_experiment_and_file(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._split_column_and_fields_by_experiment_and_file()
+    expected_file_column_to_fields_mapping = {
+        'File accession': ['title'],
+        'File format': ['file_type'],
+        'File type': ['file_format'],
+        'File format type': ['file_format_type'],
+        'Output type': ['output_type'],
+        'File assembly': ['assembly'],
+        'RBNS protein concentration': [
+            'replicate.rbns_protein_concentration',
+            'replicate.rbns_protein_concentration_units'
+        ],
+        'Library fragmentation method': ['replicate.library.fragmentation_method'],
+        'Library size range': ['replicate.library.size_range'],
+        'Biological replicate(s)': ['biological_replicates'],
+        'Technical replicate(s)': ['technical_replicates'],
+        'Read length': ['read_length'],
+        'Mapped read length': ['mapped_read_length'],
+        'Run type': ['run_type'],
+        'Paired end': ['paired_end'],
+        'Paired with': ['paired_with'],
+        'Index of': ['index_of'],
+        'Derived from': ['derived_from'],
+        'Size': ['file_size'],
+        'Lab': ['lab.title'],
+        'md5sum': ['md5sum'],
+        'dbxrefs': ['dbxrefs'],
+        'File download URL': ['href'],
+        'Genome annotation': ['genome_annotation'],
+        'Platform': ['platform.title'],
+        'Controlled by': ['controlled_by'],
+        'File Status': ['status'],
+        'No File Available': ['no_file_available'],
+        'Restricted': ['restricted'],
+        's3_uri': ['s3_uri']
+    }
+    expected_experiment_column_to_fields_mapping = {
+        'Experiment accession': ['accession'],
+        'Assay': ['assay_title'],
+        'Biosample term id': ['biosample_ontology.term_id'],
+        'Biosample term name': ['biosample_ontology.term_name'],
+        'Biosample type': ['biosample_ontology.classification'],
+        'Biosample organism': ['replicates.library.biosample.organism.scientific_name'],
+        'Biosample treatments': ['replicates.library.biosample.treatments.treatment_term_name'],
+        'Biosample treatments amount': [
+            'replicates.library.biosample.treatments.amount',
+            'replicates.library.biosample.treatments.amount_units'
+        ],
+        'Biosample treatments duration': [
+            'replicates.library.biosample.treatments.duration',
+            'replicates.library.biosample.treatments.duration_units'
+        ],
+        'Biosample genetic modifications methods': ['replicates.library.biosample.applied_modifications.method'],
+        'Biosample genetic modifications categories': ['replicates.library.biosample.applied_modifications.category'],
+        'Biosample genetic modifications targets': ['replicates.library.biosample.applied_modifications.modified_site_by_target_id'],
+        'Biosample genetic modifications gene targets': ['replicates.library.biosample.applied_modifications.modified_site_by_gene_id'],
+        'Biosample genetic modifications site coordinates': [
+            'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
+            'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
+            'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
+            'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end'
+        ],
+        'Biosample genetic modifications zygosity': [
+            'replicates.library.biosample.applied_modifications.zygosity'
+        ],
+        'Experiment target': ['target.name'],
+        'Library made from': ['replicates.library.nucleic_acid_term_name'],
+        'Library depleted in': ['replicates.library.depleted_in_term_name'],
+        'Library extraction method': ['replicates.library.extraction_method'],
+        'Library lysis method': ['replicates.library.lysis_method'],
+        'Library crosslinking method': ['replicates.library.crosslinking_method'],
+        'Library strand specific': ['replicates.library.strand_specificity'],
+        'Experiment date released': ['date_released'],
+        'Project': ['award.project']
+    }
+    for k, v in mr.file_column_to_fields_mapping.items():
+        assert tuple(expected_file_column_to_fields_mapping[k]) == tuple(v)
+    for k, v in mr.experiment_column_to_fields_mapping.items():
+        assert tuple(expected_experiment_column_to_fields_mapping[k]) == tuple(v)
+
+
+def test_metadata_metadata_report_set_positive_file_param_list(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._set_positive_file_param_list()
+    expected_positive_file_param_list = {
+        'file_type': ['bigWig', 'bam'],
+        'replicate.library.size_range': ['50-100'],
+        'biological_replicates': ['2']
+    }
+    for k, v in mr.positive_file_param_list.items():
+        assert tuple(expected_positive_file_param_list[k]) == tuple(v)
+
+
+def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from snovault.elasticsearch.searches.parsers import QueryString
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._add_fields_to_param_list()
+    expected_fields = [
+        'files.title',
+        'files.file_type',
+        'files.file_format',
+        'files.file_format_type',
+        'files.output_type',
+        'files.assembly',
+        'accession',
+        'assay_title',
+        'biosample_ontology.term_id',
+        'biosample_ontology.term_name',
+        'biosample_ontology.classification',
+        'replicates.library.biosample.organism.scientific_name',
+        'replicates.library.biosample.treatments.treatment_term_name',
+        'replicates.library.biosample.treatments.amount',
+        'replicates.library.biosample.treatments.amount_units',
+        'replicates.library.biosample.treatments.duration',
+        'replicates.library.biosample.treatments.duration_units',
+        'replicates.library.biosample.applied_modifications.method',
+        'replicates.library.biosample.applied_modifications.category',
+        'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
+        'replicates.library.biosample.applied_modifications.modified_site_by_gene_id',
+        'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly',
+        'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome',
+        'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start',
+        'replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end',
+        'replicates.library.biosample.applied_modifications.zygosity',
+        'target.name',
+        'replicates.library.nucleic_acid_term_name',
+        'replicates.library.depleted_in_term_name',
+        'replicates.library.extraction_method',
+        'replicates.library.lysis_method',
+        'replicates.library.crosslinking_method',
+        'replicates.library.strand_specificity',
+        'date_released',
+        'award.project',
+        'files.replicate.rbns_protein_concentration',
+        'files.replicate.rbns_protein_concentration_units',
+        'files.replicate.library.fragmentation_method',
+        'files.replicate.library.size_range',
+        'files.biological_replicates',
+        'files.technical_replicates',
+        'files.read_length',
+        'files.mapped_read_length',
+        'files.run_type',
+        'files.paired_end',
+        'files.paired_with',
+        'files.index_of',
+        'files.derived_from',
+        'files.file_size',
+        'files.lab.title',
+        'files.md5sum',
+        'files.dbxrefs',
+        'files.href',
+        'files.genome_annotation',
+        'files.platform.title',
+        'files.controlled_by',
+        'files.status',
+        'files.no_file_available',
+        'files.restricted',
+        'files.s3_uri'
+    ]
+    assert set(mr.param_list['field']) == set(expected_fields)
+
+
 @pytest.mark.indexing
 def test_metadata_view(testapp, index_workbook):
     r = testapp.get('/metadata/?type=Experiment')

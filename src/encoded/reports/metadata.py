@@ -217,10 +217,6 @@ class MetadataReport:
         )
 
     def _get_search_path(self):
-        if 'referrer' in self.param_list:
-            return '/{}/'.format(
-                self.param_list.pop('referrer')[0]
-            )
         return self.SEARCH_PATH
 
     def _validate_request(self):
