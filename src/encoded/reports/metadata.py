@@ -81,12 +81,12 @@ def make_file_cell(paths, file_):
     return ', '.join(sorted(set(last)))
 
 
-def file_matches_file_params(file_, file_param_list):
+def file_matches_file_params(file_, positive_file_param_list):
     # Expects file_param_list where 'files.' has been
     # stripped off of key (files.file_type -> file_type)
     # and params with field negation (i.e. file_type!=bigWig)
     # have been filtered out.
-    for k, v in file_param_list.items():
+    for k, v in positive_file_param_list.items():
         if '.' in k:
             file_prop_value = list(simple_path_ids(file_, k))
         else:
@@ -130,7 +130,7 @@ class MetadataReport:
         self.request = request
         self.query_string = QueryString(request)
         self.param_list = self.query_string.group_values_by_key()
-        self.file_param_list = {}
+        self.positive_file_param_list = {}
         self.header = []
         self.experiment_column_to_fields_mapping = OrderedDict()
         self.file_column_to_fields_mapping = OrderedDict()
@@ -156,8 +156,8 @@ class MetadataReport:
             else:
                 self.experiment_column_to_fields_mapping[column] = fields
 
-    def _set_file_param_list(self):
-        self.file_param_list = {
+    def _set_positive_file_param_list(self):
+        self.positive_file_param_list = {
             k.replace('files.', ''): v
             for k, v in self.param_list.items()
             if k.startswith('files.') and '!' not in k
@@ -231,7 +231,7 @@ class MetadataReport:
     def _initialize_report(self):
         self._build_header()
         self._split_column_and_fields_by_experiment_and_file()
-        self._set_file_param_list()
+        self._set_positive_file_param_list()
 
     def _build_params(self):
         self._add_fields_to_param_list()
@@ -253,7 +253,7 @@ class MetadataReport:
 
     def _should_not_report_file(self, file_):
         conditions = [
-            not file_matches_file_params(file_, self.file_param_list),
+            not file_matches_file_params(file_, self.positive_file_param_list),
             self.visualizable_only and not is_file_visualizable(file_),
             self.raw_only and file_.get('assembly'),
             file_.get('restricted'),
