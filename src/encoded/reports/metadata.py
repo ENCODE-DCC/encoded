@@ -156,7 +156,7 @@ class MetadataReport:
         self.file_param_list = {
             k.replace('files.', ''): v
             for k, v in self.param_list.items()
-            if k.startswith('files.')
+            if k.startswith('files.') and '!' not in k
         }
 
     def _add_fields_to_param_list(self):
