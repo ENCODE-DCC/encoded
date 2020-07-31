@@ -1,5 +1,9 @@
 ## Changelog for analysis_step_run.json
 
+### Minor changes since schema version 5
+
+* Add *pipeline_run_id*.
+
 ### Schema version 5
 
 * Remove *virtual* as status and use *standard_status* mixin.
