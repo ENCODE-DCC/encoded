@@ -17,7 +17,7 @@
             "UCSC-ENCODE-cv:diffProtB_6hr"
         ],
         "documents": [
-            "encode:diffProtB_6hr_protocol"
+            "lattice:diffProtB_6hr_protocol"
         ],
         "submitted_by": "blandit.orci@conubia.magna",
         "treatment_term_id": "CHEBI:34730",
@@ -43,7 +43,7 @@
             "UCSC-ENCODE-cv:4OHTAM_100nM_30m"
         ],
         "documents": [
-            "encode:MCF-7_Farnham_treatment_protocol"
+            "lattice:MCF-7_Farnham_treatment_protocol"
         ],
         "submitted_by": "metus.donec@nisl.montes",
         "treatment_term_id": "CHEBI:44616",
@@ -56,7 +56,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:CIP_Protocol"
+            "anna-greka:CIP_Protocol"
         ],
         "duration": 30,
         "duration_units": "minute",
@@ -87,7 +87,9 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_8hr"]
+        "aliases": [
+            "jason-spence:100mM_dex_8hr"
+        ]
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -99,7 +101,9 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_10hr"]
+        "aliases": [
+            "jason-spence:100mM_dex_10hr"
+        ]
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -111,7 +115,9 @@
         "duration_units": "hour",
         "amount": 100,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:100mM_dex_12hr"]
+        "aliases": [
+            "jason-spence:100mM_dex_12hr"
+        ]
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -123,7 +129,9 @@
         "duration_units": "hour",
         "amount": 80,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:80mM_dex_8hr"]
+        "aliases": [
+            "jason-spence:80mM_dex_8hr"
+        ]
     },
     {
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -135,12 +143,14 @@
         "duration_units": "hour",
         "amount": 60,
         "amount_units": "nM",
-        "aliases": ["robert-waterston:60mM_dex_8hr"]
+        "aliases": [
+            "jason-spence:60mM_dex_8hr"
+        ]
     },
     {
         "uuid": "a7ab9449-73ea-4693-be2d-a726a9e82056",
         "aliases": [
-            "encode:PhiC31-integrase-treatment"
+            "lattice:PhiC31-integrase-treatment"
         ],
         "antibodies_used": [],
         "biosamples_used": [],
@@ -155,7 +165,7 @@
     {
         "uuid": "9e8a867f-6b82-4542-a228-e927914833bb",
         "aliases": [
-            "encode:injection_of_rTr_2"
+            "lattice:injection_of_rTr_2"
         ],
         "amount": 20,
         "amount_units": "μg/kg",

@@ -17,7 +17,7 @@
         ],
         "description": "Some mouse postnatal data",
         "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "lattice:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "status": "released",
         "date_released": "2016-01-01",
@@ -65,7 +65,7 @@
         ],
         "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "status": "released",
         "date_released": "2016-01-01",
@@ -83,7 +83,7 @@
         ],
         "description": "UW  SAEC",
         "documents": [
-            "encode:Myers_Methyl450_protocol"
+            "lattice:Myers_Methyl450_protocol"
         ],
         "status": "released",
         "date_released": "2016-01-01",

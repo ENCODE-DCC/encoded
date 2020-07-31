@@ -2,9 +2,9 @@
     {
         "accession": "ENCBS000AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 3",
-            "rob-spitale:biosample 1",
-            "andrew-fire:biosample 1"
+            "anna-greka:MCF-7 rep 3",
+            "jason-spence:biosample 1",
+            "jimmie-ye:biosample 1"
         ],
         "biosample_ontology": "EFO_0001203",
         "culture_harvest_date": "2012-04-10",
@@ -17,7 +17,7 @@
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "lattice:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -31,7 +31,7 @@
     {
         "accession": "ENCBS001AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 4"
+            "anna-greka:MCF-7 rep 4"
         ],
         "biosample_ontology": "EFO_0001203",
         "culture_harvest_date": "2012-04-10",
@@ -44,7 +44,7 @@
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "lattice:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -64,7 +64,7 @@
         ],
         "product_id": "CCL-243",
         "documents": [
-            "encode:K562_protocol"
+            "lattice:K562_protocol"
         ],
         "source": "atcc",
         "submitted_by": "elementum.mus@dictumst.nostra",
