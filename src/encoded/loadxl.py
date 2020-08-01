@@ -23,7 +23,7 @@ ORDER = [
     'document',
     'library_protocol',
     'antibody_lot',
-    'biosample_type',
+    'ontology_term',
     'treatment',
     'human_postnatal_donor',
     'human_prenatal_donor',

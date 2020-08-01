@@ -9,20 +9,20 @@ from .base import (
 
 
 @collection(
-    name='biosample-types',
-    unique_key='biosample_type:name',
+    name='ontology-terms',
+    unique_key='ontology_term:name',
     properties={
-        'title': 'Biosample type',
-        'description': 'General types of biosample used in the ENCODE project',
+        'title': 'Ontology term',
+        'description': 'Ontology terms in the Lattice metadata.',
     })
-class BiosampleType(SharedItem):
-    item_type = 'biosample_type'
-    schema = load_schema('encoded:schemas/biosample_type.json')
+class OntologyTerm(SharedItem):
+    item_type = 'ontology_term'
+    schema = load_schema('encoded:schemas/ontology_term.json')
     embedded = ['references']
 
     def unique_keys(self, properties):
-        keys = super(BiosampleType, self).unique_keys(properties)
-        keys.setdefault('biosample_type:name', []).append(self.name(properties))
+        keys = super(OntologyTerm, self).unique_keys(properties)
+        keys.setdefault('ontology_term:name', []).append(self.name(properties))
         return keys
 
     @calculated_property(schema={

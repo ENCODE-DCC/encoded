@@ -1,8 +1,7 @@
 {
-    "title": "Biosample Type",
-    "description": "Schema for describing the type of a specific biosample.",
-    "comment": "This object collects common properties of a group of similar biosamples to help reduce ambiguity and duplications. Do not submit. DCC personnel is responsible for creating and maintaining these objects",
-    "id": "/profiles/biosample_type.json",
+    "title": "Ontology Term",
+    "description": "Schema for collecting information from external ontology databases.",
+    "id": "/profiles/ontology_term.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["term_id", "term_name"],
@@ -32,17 +31,17 @@
         },
         "term_id": {
             "@type": "@id",
-            "title": "Biosample ontology ID",
-            "description": "An ontology identifier describing BiosampleType.",
+            "title": "Term ID",
+            "description": "An ontology identifier describing OntologyTerm.",
             "permission": "import_items",
-            "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
+            "comment": "For detailed description of ontologies used by Lattice visit https://www.lattice-data.org/data-organization/. In cases where a new ontology term is needed, NTR (new term request) identifier would be created by Lattice.",
             "type": "string",
-            "pattern": "^(UBERON|EFO|CL|NTR):[0-9]{2,8}$"
+            "pattern": "^(UBERON|EFO|CL|MONDO|NTR):[0-9]{2,8}$"
         },
         "term_name": {
-            "title": "Biosample name",
-            "description": "Ontology term describing BiosampleType.",
-            "comment": "The term should match the ontology identifiers specified in term_id. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
+            "title": "Term name",
+            "description": "Ontology term describing OntologyTerm.",
+            "comment": "The term should match the ontology identifiers specified in term_id. For detailed description of ontologies used by Lattice visit https://www.lattice-data.org/data-organization/.",
             "permission": "import_items",
             "pattern": "^(?![\\s\"'])[\\S|\\s]*[^\\s\"']$",
             "type":  "string"
@@ -51,6 +50,9 @@
     "facets": {
         "status": {
             "title": "Status"
+        },
+        "ontology_database": {
+            "title": "Ontology DB"
         },
         "organ_slims": {
             "title": "Organ"
@@ -61,15 +63,24 @@
     },
     "columns": {
         "term_id": {
-            "title": "Biosample ontology ID"
+            "title": "Ontology ID"
         },
         "term_name": {
-            "title": "Biosample name"
+            "title": "Term name"
+        },
+        "ontology_database": {
+            "title": "Ontology DB"
+        },
+        "organ_slims": {
+            "title": "Organ"
+        },
+        "cell_slims": {
+            "title": "Cell"
         },
         "status": {
             "title": "Status"
         }
     },
     "boost_values": {},
-    "changelog": "/profiles/changelogs/biosample_type.md"
+    "changelog": "/profiles/changelogs/ontology_term.md"
 }

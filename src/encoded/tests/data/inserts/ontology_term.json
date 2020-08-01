@@ -185,5 +185,11 @@
         "term_name": "DNA cloning sample",
         "term_id": "NTR:0000545",
         "status": "released"
+    },
+    {
+        "uuid": "f271c29e-6145-434c-8c37-f38bd1a891de",
+        "term_name": "endocardium cancer",
+        "term_id": "MONDO:0003687",
+        "status": "released"
     }
 ]

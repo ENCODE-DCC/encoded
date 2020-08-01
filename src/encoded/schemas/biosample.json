@@ -70,9 +70,9 @@
         "biosample_ontology": {
             "title": "Biosample ontology",
             "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
-            "comment": "See biosample_type.json for available identifiers.",
+            "comment": "See ontology_term.json for available identifiers.",
             "type": "string",
-            "linkTo": "BiosampleType"
+            "linkTo": "OntologyTerm"
         },
         "description": {
             "elasticsearch_mapping_index_type": {
@@ -108,8 +108,7 @@
             "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified."
         },
         "diseases": {
-            "description": "Known diseases of the specific sample",
-            "comment": ""
+            "description": "Known diseases of the specific sample"
         },
         "dbxrefs": {
             "items": {

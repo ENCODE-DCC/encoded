@@ -10,7 +10,9 @@
             "ENCDO117AAA"
         ],
         "ethnicity": "Caucasian",
-        "diseases": ["Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV"],
+        "diseases": [
+            "MONDO_0003687"
+        ],
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",
