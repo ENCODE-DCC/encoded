@@ -945,7 +945,7 @@ def test_metadata_metadata_report_validate_request(dummy_request):
         '&files.status!=archived&files.biological_replicates=2'
     )
     mr = MetadataReport(dummy_request)
-    assert mr._validate_request() is None
+    assert mr._validate_request()
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&type=Annotation&files.file_type=bigWig&files.file_type=bam'
         '&files.replicate.library.size_range=50-100'

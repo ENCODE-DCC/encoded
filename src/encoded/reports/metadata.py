@@ -223,6 +223,7 @@ class MetadataReport:
         type_params = self.param_list.get('type', [])
         if len(type_params) != 1:
             raise HTTPBadRequest(explanation='URL requires one "type" parameter.')
+        return True
 
     def _initialize_report(self):
         self._build_header()
