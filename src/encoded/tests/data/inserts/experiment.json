@@ -179,6 +179,20 @@
         "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
     },
     {
+        "_test": "NTR for assay and no replicates",
+        "accession": "ENCSR270OQH",
+        "assay_term_name": "ChIA-PET",
+        "award": "U54HG006998",
+        "biosample_ontology": "cell-free_sample_NTR_0000471",
+        "description": "Irvine Hi-C GM12878",
+        "lab": "ali-mortazavi",
+        "status": "released",
+        "date_submitted": "2015-09-20",
+        "date_released": "2016-01-01",
+        "submitted_by": "netus.lorem@risus.lobortis",
+        "uuid": "e5400c98-8333-4c7b-b537-c42480dd4f98"
+    },
+    {
         "_test": "shared biosample",
         "accession": "ENCSR000AEN",
         "analyses": [

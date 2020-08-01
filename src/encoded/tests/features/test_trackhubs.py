@@ -149,3 +149,35 @@ def test_visualize(submitter_testapp, index_workbook):
     }
     res = submitter_testapp.get("/experiments/ENCSR000AEN/")
     assert set(expected['GRCh38']) == set(res.json['visualize']['GRCh38']) and set(expected['hg19']) == set(res.json['visualize']['hg19'])
+
+
+@pytest.mark.parametrize('expected', [
+    "track ENCSR270OQH",
+    "compositeTrack on",
+    "type bed 3",
+    "longLabel Unknown Target ChIA-PET of Unknown Biosample - ENCSR270OQH",
+    "shortLabel Unknown Target ChIA-PET of cell-free sample ENCSR270OQH",
+    "visibility full",
+    "subGroup1 view Views CHRINTR=Chromatin_interactions LRCI=Long_range_interactions PEAKS=Peaks SIGBL=Signal_of_unique_reads SIGBM=Signal_of_all_reads",
+    "subGroup2 BS Biosample cell45free_sample=cell-free_sample",
+    "subGroup3 EXP Experiment ENCSR270OQH=ENCSR270OQH",
+    "subGroup4 REP Replicates rep01=Replicate_1",
+    "sortOrder BS=+ REP=+ view=+",
+    "dimensions dimA=REP",
+    "dimensionAchecked rep01",
+    "    track ENCSR270OQH_CHRINTR_view",
+    "    parent ENCSR270OQH on",
+    "    view CHRINTR",
+    "    type bigInteract",
+    "    visibility full",
+    "        track ENCFF727BIF",
+    "        parent ENCSR270OQH_CHRINTR_view on",
+    "        bigDataUrl /files/ENCFF727BIF/@@download/ENCFF727BIF.bigInteract?proxy=true",
+    "        longLabel ChIA-PET of cell-free sample long range chromatin interactions rep1 ENCSR270OQH - ENCFF727BIF",
+    "        shortLabel rep1 lrci",
+    "        type bigInteract",
+    "        subGroups BS=cell45free_sample EXP=ENCSR270OQH REP=rep01 view=CHRINTR",
+])
+def test_bigInteract_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR270OQH/@@hub/hg19/trackDb.txt")
+    assert expected in res.text
