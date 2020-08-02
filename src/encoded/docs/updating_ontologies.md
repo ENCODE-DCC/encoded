@@ -1,15 +1,19 @@
 Updating ontologies
 =========================
 
-This document describes how to update the ontology versions used for searching and validation in the encoded application, ```ontology.json``` .
+This document describes how to update the ontology versions used for searching and validation in the encoded application, `ontology.json` .
 
 Ontologies used
 ---------------- 
 
-* [Uber-anatomy ontology (UBERON)]
-* [Cell Ontology (CL)]
-* [Experimental Factor Ontology (EFO)]
-* [Mondo Disease Ontology (MONDO)]
+| Ontology | Version in use | Version reference |
+|:--|:--|:--|
+| [Uber-anatomy ontology (UBERON)]     | 2020-06-05          | [UBERON release date] |
+| [Cell Ontology (CL)]                 | incl. w/ UBERON     | incl. w/ UBERON       |
+| [Experimental Factor Ontology (EFO)] | 2020-07-15 (3.20.0) | [EFO release date]    |
+| [Mondo Disease Ontology (MONDO)]     | 2020-06-30          | [MONDO release date]  |
+**Current ontology.json:** `ontology-2020-08-03.json`
+**Updated with site version:** 1
 
 How to update the ontology versions
 ---------------- 
@@ -24,7 +28,8 @@ How to update the ontology versions
 ```
 	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl
 ```
-3. Rename the ```ontology.json``` to one with the date that it was generated:
+
+3. Rename the `ontology.json` to one with the date that it was generated:
 ```
 	$ cp ontology.json ontology-YYYY-MM-DD.json
 ```
@@ -32,17 +37,11 @@ How to update the ontology versions
 ```
 	$ aws s3 cp ontology-YYYY-MM-DD.json s3://latticed-build/ontology/
 ```
-5.  Update the ontology version in the [buildout.cfg]:
-```
-	$ curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json
-```
-6.  Update the following information, which notes the versions currently in use by the Lattice database
-    |-----------|:-----------:|
-    | Site release version | 1 |
-    | ontology.json file | ontology-2020-08-03.json |
-    | [UBERON release date] | 2020-06-05 |
-    | [EFO release date] | 2020-07-15 (3.20.0) |
-    | [MONDO release date] | 2020-06-30 |
+5.  Update the ontology.json file in the [buildout.cfg]:
+	`curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json`
+
+6.  Update the **Version in use** and ontology.json/site versions above
+
 
 [Uber-anatomy ontology (UBERON)]: http://uberon.org/
 [Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
