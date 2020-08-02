@@ -34,15 +34,15 @@ How to update the ontology versions
 ```
 5.  Update the ontology version in the [buildout.cfg]:
 ```
-	curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json
+	$ curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json
 ```
-6.  Update the following information
+6.  Update the following information, which notes the versions currently in use by the Lattice database
     
-    Site release version: 1
-    ontology.json file: ontology-2020-08-03.json
-    [UBERON release date]: 2020-06-05
-    [EFO release date]: 2020-07-15 (3.20.0)
-    [MONDO release date]: 2020-06-30
+    | Site release version | 1 |
+    | ontology.json file | ontology-2020-08-03.json |
+    | [UBERON release date] | 2020-06-05 |
+    | [EFO release date] | 2020-07-15 (3.20.0) |
+    | [MONDO release date] | 2020-06-30 |
 
 [Uber-anatomy ontology (UBERON)]: http://uberon.org/
 [Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
