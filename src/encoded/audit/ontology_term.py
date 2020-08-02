@@ -23,13 +23,13 @@ def audit_term(value, system):
     term_id = value['term_id']
 
     if term_id.startswith('NTR:'):
-        detail = ('BiosampleType {} has a New Term Request {} - {}.'.format(
+        detail = ('OntologyTerm {} has a New Term Request {} - {}.'.format(
             audit_link(path_to_text(value['@id']), value['@id']),
             term_id,
             term_name
             )
         )
-        yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('NTR term', detail, level='INTERNAL_ACTION')
         return
 
     if term_id not in ontology:
@@ -47,7 +47,7 @@ def audit_term(value, system):
     ontology_term_name = ontology[term_id]['name']
     if (ontology_term_name != term_name
         and term_name not in ontology[term_id]['synonyms']):
-        detail = ('BiosampleType {object_id} has a mismatch between'
+        detail = ('OntologyTerm {object_id} has a mismatch between'
             ' term_id ({term_id}) and term_name ({term_name}),'
             ' ontology term_name for term_id {term_id} is'
             ' {ontology_term_name}.'.format(
@@ -62,12 +62,12 @@ def audit_term(value, system):
 
 
 function_dispatcher = {
-    'audit_biosample_type_term': audit_term,
+    'audit_ontology_term_term': audit_term,
 }
 
 
-@audit_checker('BiosampleType', frame='object')
-def audit_biosample_type(value, system):
+@audit_checker('OntologyTerm', frame='object')
+def audit_ontology_term(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
             yield failure
