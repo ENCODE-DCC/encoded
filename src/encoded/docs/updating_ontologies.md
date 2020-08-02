@@ -6,21 +6,23 @@ This document describes how to update the ontology versions used for searching a
 Ontologies used
 ---------------- 
 
-* [Uber anatomy ontology (Uberon)]
+* [Uber-anatomy ontology (UBERON)]
 * [Cell Ontology (CL)]
 * [Experimental Factor Ontology (EFO)]
+* [Mondo Disease Ontology (MONDO)]
 
 How to update the ontology versions
 ---------------- 
 
 1. Ontology files to use:
 	
-	* Uberon and CL: composite-metazoan.owl  from [Uberon download]
-	* EFO: EFO_inferred.owl from [EFO src tree]
+	* UBERON and CL: uberon/ext.owl from [UBERON download]
+	* EFO: efo-base.owl from [EFO releases]
+	* MONDO: mondo.owl from [Mondo Disease Ontology (MONDO)]
 
 2. Run generate-ontology, an example is: 
 
-	$ bin/generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw
+	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl
 
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 
@@ -37,15 +39,18 @@ How to update the ontology versions
 6.  Update the following information
     
     Site release version: 1
-    ontology.json file: ontology-2020-07-31.json
+    ontology.json file: ontology-2020-08-03.json
     [UBERON release date]: 2020-06-05
-    [EFO release date]: 2020-07-15
+    [EFO release date]: 2020-07-15 (3.20.0)
+    [MONDO release date]: 2020-06-30
 
-[Uber anatomy ontology (Uberon)]: http://uberon.org/
-[Cell Ontology (CL)]: http://cellontology.org/
+[Uber anatomy ontology (UBERON)]: http://uberon.org/
+[Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
 [Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
-[Uberon download]: http://uberon.github.io/downloads.html
-[EFO src tree]: https://github.com/EBISPOT/efo/
+[Mondo Disease Ontology (MONDO)]: http://obofoundry.org/ontology/mondo.html
+[UBERON download]: http://uberon.github.io/downloads.html
+[EFO releases]: https://github.com/EBISPOT/efo/releases
 [buildout.cfg]: ../../../buildout.cfg
 [UBERON release date]: http://svn.code.sf.net/p/obo/svn/uberon/releases/
-[EFO release date]: https://github.com/EBISPOT/efo/blob/master/ExFactor%20Ontology%20release%20notes.txt
+[EFO release date]: https://github.com/EBISPOT/efo/releases
+[MONDO release date]: https://github.com/monarch-initiative/mondo/releases

@@ -177,6 +177,20 @@ cell_slims = {
     'NTR:0000550': 'progenitor cell'
 }
 
+disease_slims = {
+    'MONDO:0002280': 'anemia',
+    'MONDO:0005578': 'arthritis',
+    'MONDO:0005113': 'bacterial infection',
+    'MONDO:0004992': 'cancer',
+    'MONDO:0005015': 'diabetes',
+    'MONDO:0004335': 'digestive system disease',
+    'MONDO:0005044': 'hypertensive disorder',
+    'MONDO:0005240': 'kidney disease',
+    'MONDO:0005084': 'mental disorder',
+    'MONDO:0005066': 'metabolic disease',
+    'MONDO:0100081': 'sleep disorder'
+}
+
 
 class Inspector(object):
 
@@ -463,6 +477,8 @@ def getSlims(goid, terms, slimType):
         slimTerms = cell_slims
     elif slimType == 'system':
         slimTerms = system_slims
+    elif slimType == 'disease_category':
+        slimTerms = disease_slims
     for slimTerm in slimTerms:
         if slimType == 'developmental':
             if slimTerm in terms[goid]['closure_with_develops_from']:
@@ -493,6 +509,7 @@ def getTermStructure():
         'achieves_planned_objective': [],
         'organs': [],
         'cells': [],
+        'disease_categories': [],
         'closure': [],
         'slims': [],
         'data': [],
@@ -507,16 +524,18 @@ def main():
 
     import argparse
     parser = argparse.ArgumentParser(
-        description="Get Uberon and EFO ontologies and generate the JSON file", epilog=EPILOG,
+        description="Get Uberon, EFO, and MONDO ontologies and generate the JSON file", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
+    parser.add_argument('--mondo-url', help="MONDO version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
-    url_whitelist = [uberon_url, efo_url]
+    mondo_url = args.mondo_url
+    url_whitelist = [uberon_url, efo_url, mondo_url]
 
     terms = {}
     # Run on ontologies defined in whitelist
@@ -641,6 +660,7 @@ def main():
         terms[term]['organs'] = getSlims(term, terms, 'organ')
         terms[term]['cells'] = getSlims(term, terms, 'cell')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
+        terms[term]['disease_categories'] = getSlims(term, terms, 'disease_category')
 
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
