@@ -16,26 +16,26 @@ How to update the ontology versions
 
 1. Ontology files to use:
 	
-	* UBERON and CL: uberon/ext.owl from [UBERON download]
-	* EFO: efo-base.owl from [EFO releases]
-	* MONDO: mondo.owl from [Mondo Disease Ontology (MONDO)]
+	* UBERON and CL: `uberon/ext.owl` from [UBERON download]
+	* EFO: `efo-base.owl` from [EFO releases]
+	* MONDO: `mondo.owl` from [Mondo Disease Ontology (MONDO)]
 
 2. Run generate-ontology, an example is: 
-
+```
 	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl
-
+```
 3. Rename the ```ontology.json``` to one with the date that it was generated:
-
+```
 	$ cp ontology.json ontology-YYYY-MM-DD.json
-
+```
 4. Load new ontology file into the encoded-build/ontology directory on S3
-
+```
 	$ aws s3 cp ontology-YYYY-MM-DD.json s3://latticed-build/ontology/
-
+```
 5.  Update the ontology version in the [buildout.cfg]:
-
+```
 	curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json
-
+```
 6.  Update the following information
     
     Site release version: 1
@@ -44,7 +44,7 @@ How to update the ontology versions
     [EFO release date]: 2020-07-15 (3.20.0)
     [MONDO release date]: 2020-06-30
 
-[Uber anatomy ontology (UBERON)]: http://uberon.org/
+[Uber-anatomy ontology (UBERON)]: http://uberon.org/
 [Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
 [Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
 [Mondo Disease Ontology (MONDO)]: http://obofoundry.org/ontology/mondo.html
