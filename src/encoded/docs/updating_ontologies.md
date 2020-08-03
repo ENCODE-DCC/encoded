@@ -20,7 +20,7 @@ How to update the ontology versions
 ---------------- 
 
 1. Run generate-ontology  
-(*note: first look up the latest [EFO release] and include the version in the `efo-url`*)
+*note: first look up the latest [EFO release] and include the version in the `efo-url`*
 ```
 	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl
 ```
