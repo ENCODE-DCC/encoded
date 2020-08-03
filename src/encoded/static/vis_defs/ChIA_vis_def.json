@@ -16,6 +16,7 @@
                     "tag": "CHRINTR",
                     "type": "bigInteract",
                     "visibility": "full",
+                    "interactUp": true,
                     "output_type": [ "chromatin interactions", "long range chromatin interactions" ]
                 },
                 "Long range interactions": {

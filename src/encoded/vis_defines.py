@@ -252,7 +252,8 @@ SUPPORTED_TRACK_SETTINGS = [
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
     "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
-    "qValueFilter", "qValueFilterLimits" ]
+    "qValueFilter", "qValueFilterLimits", "interactUp"
+]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
 # UCSC trackDb settings that are supported
