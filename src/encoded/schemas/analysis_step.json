@@ -104,6 +104,7 @@
                 "enum": [
                     "alignments",
                     "bed",
+                    "bias model",
                     "blacklisted regions",
                     "candidate Cis-Regulatory Elements",
                     "candidate enhancers",
@@ -248,6 +249,7 @@
                 "type": "string",
                 "enum": [
                     "alignments",
+                    "bias model",
                     "bigBed",
                     "blacklisted regions",
                     "candidate Cis-Regulatory Elements",
