@@ -133,6 +133,109 @@ def experiment():
     }
 
 
+def embedded_experiment():
+    return {
+        '@id': '/experiments/ENCSR434TGY/',
+        '@type': ['Experiment', 'Dataset', 'Item'],
+        'accession': 'ENCSR434TGY',
+        'assay_title': 'DNase-seq',
+        'award': {'project': 'ENCODE'},
+        'biosample_ontology': {
+            'term_name': 'ZHBTc4',
+            'term_id': 'EFO:0005914',
+            'classification': 'cell line'
+        },
+        'date_released': '2020-07-28',
+        'files': [
+            {
+                'dbxrefs': [],
+                'file_format_type': 'bed3+',
+                'output_type': 'DHS peaks',
+                'technical_replicates': ['1_1'],
+                'lab': {'title': 'John Stamatoyannopoulos, UW'},
+                'title': 'ENCFF237ENG',
+                'file_size': 642625,
+                's3_uri': 's3://encode-public/2020/07/28/d24b3680-9453-403e-94b8-2393ed02ccb6/ENCFF237ENG.bed.gz',
+                'md5sum': 'c954093c70a9c0f2067dc480a5135936',
+                'file_type': 'bed bed3+',
+                'no_file_available': False,
+                'assembly': 'mm10',
+                'biological_replicates': [1],
+                'href': '/files/ENCFF237ENG/@@download/ENCFF237ENG.bed.gz',
+                'read_length': 36,
+                'file_format': 'bed',
+                'status': 'released'
+            },
+            {
+                'dbxrefs': [],
+                'output_type': 'reads',
+                'run_type': 'single-ended',
+                'technical_replicates': ['1_1'],
+                'lab': {
+                    'title': 'John Stamatoyannopoulos, UW'
+                },
+                'title': 'ENCFF001QIF',
+                'platform': {
+                    'title': 'Illumina HiSeq 2000'
+                },
+                'file_size': 237982153,
+                's3_uri': 's3://encode-public/2011/05/06/7c35d915-aea2-4f20-9f52-b2af18991cab/ENCFF001QIF.fastq.gz',
+                'md5sum': 'cfb4e7dd7dbb0add6efbe0e52ae5618a',
+                'file_type': 'fastq',
+                'no_file_available': False,
+                'biological_replicates': [1],
+                'href': '/files/ENCFF001QIF/@@download/ENCFF001QIF.fastq.gz',
+                'read_length': 36,
+                'file_format': 'fastq',
+                'status': 'released'
+            },
+            {
+                'dbxrefs': [],
+                'output_type': 'reads',
+                'run_type': 'single-ended',
+                'technical_replicates': ['1_1'],
+                'lab': {
+                    'title': 'John Stamatoyannopoulos, UW'
+                },
+                'title': 'ENCFF001QIE',
+                'platform': {
+                    'title': 'Illumina Genome Analyzer'
+                },
+                'file_size': 1338237475,
+                's3_uri': 's3://encode-public/2011/05/06/11f63cfc-6da6-4f23-a9a0-1b1b04744dbd/ENCFF001QIE.fastq.gz',
+                'md5sum': '315ebbab452358fe188024e3637fd965',
+                'file_type': 'fastq',
+                'no_file_available': False,
+                'biological_replicates': [1],
+                'href': '/files/ENCFF001QIE/@@download/ENCFF001QIE.fastq.gz',
+                'read_length': 36,
+                'file_format': 'fastq',
+                'status': 'released'}
+        ],
+        'replicates': [
+            {
+                'library': {
+                    'nucleic_acid_term_name': 'DNA',
+                    'biosample': {
+                        'organism': {
+                            'scientific_name': 'Mus musculus'
+                        },
+                        'treatments': [
+                            {
+                                'duration': 96,
+                                'treatment_term_name': 'doxycycline hyclate',
+                                'amount': 100,
+                                'duration_units': 'hour',
+                                'amount_units': 'ng/mL'
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+
+
 def file_():
     return {
         'dbxrefs': [],
@@ -1104,6 +1207,47 @@ def test_metadata_metadata_report_should_not_report_file(dummy_request):
     mr._build_params()
     # File not raw.
     assert mr._should_not_report_file(file_())
+
+
+def test_metadata_metadata_report_get_experiment_data(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    expected_experiment_data = {
+        'Experiment accession': 'ENCSR434TGY',
+        'Assay': 'DNase-seq',
+        'Biosample term id': 'EFO:0005914',
+        'Biosample term name': 'ZHBTc4',
+        'Biosample type': 'cell line',
+        'Biosample organism': 'Mus musculus',
+        'Biosample treatments': 'doxycycline hyclate',
+        'Biosample treatments amount': '100 ng/mL',
+        'Biosample treatments duration': '96 hour',
+        'Biosample genetic modifications methods': '',
+        'Biosample genetic modifications categories': '',
+        'Biosample genetic modifications targets': '',
+        'Biosample genetic modifications gene targets': '',
+        'Biosample genetic modifications site coordinates': '',
+        'Biosample genetic modifications zygosity': '',
+        'Experiment target': '',
+        'Library made from': 'DNA',
+        'Library depleted in': '',
+        'Library extraction method': '',
+        'Library lysis method': '',
+        'Library crosslinking method': '',
+        'Library strand specific': '',
+        'Experiment date released': '2020-07-28',
+        'Project': 'ENCODE'
+    }
+    experiment_data = mr._get_experiment_data(embedded_experiment())
+    for k, v in expected_experiment_data.items():
+        assert (experiment_data[k] == v, f'{experiment_data[k]} not equal to {v}')
 
 
 @pytest.mark.indexing
