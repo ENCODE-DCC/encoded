@@ -133,7 +133,7 @@ class Dataset(Item):
         if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
@@ -320,7 +320,7 @@ class FileSet(Dataset):
         if status in ('released'):
             return paths_filtered_by_status(
                 request, outside_files,
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
@@ -340,7 +340,7 @@ class FileSet(Dataset):
         if status in ('released'):
             return paths_filtered_by_status(
                 request, chain(original_files, related_files),
-                include=('released',),
+                include=('released', 'archived'),
             )
         else:
             return paths_filtered_by_status(
