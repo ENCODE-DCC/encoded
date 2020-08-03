@@ -1045,6 +1045,67 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
     new_request.effective_principals == ['system.Everyone']
 
 
+def test_metadata_metadata_report_should_not_report_file(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    # File attribute mismatch.
+    assert mr._should_not_report_file(file_())
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    # File attribute match.
+    assert not mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    modified_file = file_()
+    modified_file['restricted'] = True
+    # File restricted.
+    assert mr._should_not_report_file(modified_file)
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    modified_file = file_()
+    modified_file['no_file_available'] = True
+    # File not available.
+    assert mr._should_not_report_file(modified_file)
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed'
+        '&option=visualizable'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    # File not visualizable.
+    assert mr._should_not_report_file(file_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_format=bed'
+        '&option=raw'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    # File not raw.
+    assert mr._should_not_report_file(file_())
+
+
 @pytest.mark.indexing
 def test_metadata_metadata_report_get_search_results_generator(dummy_request, index_workbook):
     from types import GeneratorType
