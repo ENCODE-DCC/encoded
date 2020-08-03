@@ -3,12 +3,12 @@
 ### Schema version 10
 
 * Moved the following enum values from *method* to a new property, *nucleic_acid_delivery_method*. Genetic modifications must specify at least one of *method* or *nucleic_acid_delivery_method*.
- * bombardment
- * microinjection
- * stable transfection
- * transduction
- * transient transfection
- * mouse pronuclear microinjection
+ - bombardment
+ - microinjection
+ - stable transfection
+ - transduction
+ - transient transfection
+ - mouse pronuclear microinjection
 * The *donor* property was renamed to *introduced_elements_donor*.
 * Added new property *introduced_elements_organism*.
 
