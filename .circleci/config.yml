@@ -35,7 +35,6 @@ commands:
             sudo apt-get install -y \
               bsdtar \
               elasticsearch \
-              graphviz \
               nodejs \
               openjdk-11-jdk \
               postgresql-10
