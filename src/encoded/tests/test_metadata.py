@@ -1322,7 +1322,7 @@ def test_metadata_metadata_report_get_audit_data(dummy_request):
 
 
 @pytest.mark.indexing
-def test_metadata_metadata_report_get_search_results_generator(dummy_request, index_workbook):
+def test_metadata_metadata_report_get_search_results_generator(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
     from encoded.reports.metadata import MetadataReport
@@ -1337,13 +1337,13 @@ def test_metadata_metadata_report_get_search_results_generator(dummy_request, in
 
 
 @pytest.mark.indexing
-def test_metadata_view(testapp, index_workbook):
+def test_metadata_view(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     assert len(r.text.split('\n')) >= 81
 
 
 @pytest.mark.indexing
-def test_metadata_contains_audit_values(testapp, index_workbook):
+def test_metadata_contains_audit_values(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     audit_values = [
         'inconsistent library biosample',
@@ -1357,7 +1357,7 @@ def test_metadata_contains_audit_values(testapp, index_workbook):
 
 
 @pytest.mark.indexing
-def test_metadata_contains_all_values(testapp, index_workbook):
+def test_metadata_contains_all_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=Experiment')
     actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
