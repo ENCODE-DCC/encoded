@@ -73,6 +73,65 @@ def supportive_med_frequency(request, supportive_medication):
         supportive_meds.append(med_freq)
     return supportive_meds
 
+def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
+
+        all_traced_dates=[]
+        # last_follow_up_date="Not available"
+        if len(vitals) > 0:
+            for path in vitals:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                vital_dates=properties.get("date")
+                all_traced_dates.append(vital_dates)
+        if len(labs) > 0:
+            for path in labs:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                lab_dates=properties.get("date")
+                all_traced_dates.append(lab_dates)
+        if len(surgery) > 0:
+            for path in surgery:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                sur_dates=properties.get("date")
+                all_traced_dates.append(sur_dates)
+        if len(germline) > 0:
+            for path in germline:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                ger_dates=properties.get("service_date")
+                all_traced_dates.append(ger_dates)
+        if len(ihc) > 0:
+            for path in ihc:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                ihc_dates=properties.get("service_date")
+                all_traced_dates.append(ihc_dates)
+        if len(radiation) > 0:
+            for path in radiation:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                if 'end_date' in properties:
+                    rad_dates=properties.get("end_date")
+                else:
+                    rad_dates=properties.get("start_date")
+                all_traced_dates.append(rad_dates)
+        if len(medical_imaging) > 0:
+            for path in medical_imaging:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                med_img_dates=properties.get("procedure_date")
+                all_traced_dates.append(med_img_dates)
+        if len(medication) > 0:
+            for path in medication:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                med_dates=properties.get("end_date")
+                all_traced_dates.append(med_dates)
+        if len(supportive_medication) > 0:
+            for path in supportive_medication:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                sup_med_dates=properties.get("start_date")
+                all_traced_dates.append(sup_med_dates)
+
+        if len(all_traced_dates) > 0:
+            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d"))
+            last_follow_up_date = all_traced_dates[-1]
+        else: last_follow_up_date="Not available"
+        print('last_follow_up_date',last_follow_up_date)
+        return last_follow_up_date
 
 @collection(
      name='patients',
@@ -121,62 +180,10 @@ class Patient(Item):
         "type": "string",
     })
     def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
+        
+        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
 
-        all_traced_dates=[]
-        last_follow_up_date="Not available"
-        if len(vitals) > 0:
-            for obj in vitals:
-                v_obj = request.embed(obj, "@@object")
-                vital_dates=v_obj.get("date")
-                all_traced_dates.append(vital_dates)
-        if len(labs) > 0:
-            for obj in labs:
-                l_obj = request.embed(obj, "@@object")
-                lab_dates=l_obj.get("date")
-                all_traced_dates.append(lab_dates)
-        if len(surgery) > 0:
-            for obj in surgery:
-                s_obj = request.embed(obj, "@@object")
-                sur_dates=s_obj.get("date")
-                all_traced_dates.append(sur_dates)
-        if len(germline) > 0:
-            for obj in germline:
-                g_obj = request.embed(obj, "@@object")
-                ger_dates=g_obj.get("service_date")
-                all_traced_dates.append(ger_dates)
-        if len(ihc) > 0:
-            for obj in ihc:
-                ihc_obj = request.embed(obj, "@@object")
-                ihc_dates=ihc_obj.get("service_date")
-                all_traced_dates.append(ihc_dates)
-        if len(radiation) > 0:
-            for obj in radiation:
-                r_obj = request.embed(obj, "@@object")
-                if 'end_date' in r_obj:
-                    rad_dates=r_obj.get("end_date")
-                else:
-                    rad_dates=r_obj.get("start_date")
-                all_traced_dates.append(rad_dates)
-        if len(medical_imaging) > 0:
-            for obj in medical_imaging:
-                mi_obj = request.embed(obj, "@@object")
-                med_img_dates=mi_obj.get("procedure_date")
-                all_traced_dates.append(med_img_dates)
-        if len(medication) > 0:
-            for obj in medication:
-                m_obj = request.embed(obj, "@@object")
-                med_dates=m_obj.get("end_date")
-                all_traced_dates.append(med_dates)
-        if len(supportive_medication) > 0:
-            for obj in supportive_medication:
-                sm_obj = request.embed(obj, "@@object")
-                sup_med_dates=sm_obj.get("start_date")
-                all_traced_dates.append(sup_med_dates)
-
-        if len(all_traced_dates) > 0:
-            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d"))
-            last_follow_up_date = all_traced_dates[-1]
-        return last_follow_up_date
+    
 
     @calculated_property( schema={
         "title": "Labs",
@@ -495,43 +502,84 @@ class Patient(Item):
 
         return diagnosis
 
-    @calculated_property(condition="diagnosis" and "last_follow_up_date", schema={
-        "title": "Duration of follow-up",
-        "description": "Customized range for duration of follow-up",
-        "type": "array",
-        "items": {
-            "type": "string",
-        }
-    })
+    # @calculated_property(define=True,schema={
+    #     "title": "Duration of follow-up",
+    #     "description": "Customized range for duration of follow-up",
+    #     "type": "string",
+    # })
     
-    def duration_of_followup_range(self,request,diagnosis=None,last_follow_up_date=None):
-        if diagnosis is not None:
-        #     for do in diagnosis:
-            # diagnosis_object=request.embed(diagnosis,"@@object")
-            diagnosis_date = diagnosis['diagnosis_date']
-        follow_up_duration_range=[]
+    # def duration_of_follow_up_range(self,request,diagnosis=None,last_follow_up_date="Not available"):
+    #     follow_up_duration_range="Not available"
+    #     if diagnosis:
+    #         if "diagnosis_date" in diagnosis.keys():
+    #             diagnosis_date = diagnosis['diagnosis_date']
+    #             print("diagnosis_date",diagnosis_date)    
+    #             if diagnosis_date is not "Not available":         
+    #                 start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
+    #                 if last_follow_up_date:
+    #                     if last_follow_up_date is not "Not available":
+    #                         end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
+    #                         follow_up_duration=(end_date-start_date).days/365
+
+    #                         if follow_up_duration >= 5:
+    #                             follow_up_duration_range=">5 year"
+    #                         elif follow_up_duration >= 3:
+    #                             follow_up_duration_range="3-5 year"
+    #                         elif follow_up_duration >= 1.5:
+    #                             follow_up_duration_range="1.5-3 year"
+    #                         else:
+    #                             follow_up_duration_range="0-1.5 year"
+                
+
+    #     print("follow_up_duration_range:",follow_up_duration_range) 
+
+    #     return follow_up_duration_range   
+ 
+    # @calculated_property(  schema={
+    #     "title": "Follow Up Duration",
+    #     "description": "Customized follow_up duratione for patient",
+    #     "type": "string",
+
+    # })
+    # # duration_of_follow_up_range
+    # def duration_of_follow_up_range(self):
+    #     return self.__duration_of_follow_up_range__
+    
+    # @property
+    # def __duration_of_follow_up_range__(self):
+    #     properties = self.upgrade_properties()
+    #     return self._duration_of_follow_up_range(properties)
+
+    # def _duration_of_follow_up_range(self, properties):
+
+    #     follow_up_duration_range="Not available" 
         
-        if diagnosis_date is not "Not available":
-            start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
-        if last_follow_up_date is not None and last_follow_up_date is not "Not available":
-            end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
+    #     diagnosis=properties['diagnosis']
+    #     last_follow_up_date=properties['last_follow_up_date']
+    #     if diagnosis and last_follow_up_date:
 
-            follow_up_duration=(end_date-start_date).days/365
+    #         if 'diagnosis_date' in diagnosis:
 
-            if follow_up_duration >= 5:
-                follow_up_duration_range.append(">5 year")
-            elif follow_up_duration >= 3:
-                follow_up_duration_range.append("3-5 year")
-            elif follow_up_duration >= 1.5:
-                follow_up_duration_range.append("1.5-3 year")
-            else:
-                follow_up_duration_range.append("0-1.5 year")
+    #             diagnosis_date = properties['diagnosis']['diagnosis_date']
+    #             last_follow_up_date=properties['last_follow_up_date']
+    #             if diagnosis_date is not "Not available" and last_follow_up_date is not "Not available":
+    #                 start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
+    #                 end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
+    #                 follow_up_duration=(end_date-start_date).days/365
+
+    #                 if follow_up_duration >= 5:
+    #                     follow_up_duration_range=">5 year"
+    #                 elif follow_up_duration >= 3:
+    #                     follow_up_duration_range="3-5 year"
+    #                 elif follow_up_duration >= 1.5:
+    #                     follow_up_duration_range="1.5-3 year"
+    #                 else:
+    #                     follow_up_duration_range="0-1.5 year"
+    #     return follow_up_duration_range  
+    # "duration_of_follow_up_range": {
+    #         "title": "Duration of follow-up"
+    #     },
         
-        else:
-            follow_up_duration_range.append("Not available")
-
-        return follow_up_duration_range        
-
     matrix = {
         'y': {
             'facets': [
@@ -838,7 +886,7 @@ def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'medical_imaging',
-                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','duration_of_followup_range','sur_nephr_robotic_assist']:
+                'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','duration_of_follow_up_range','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
