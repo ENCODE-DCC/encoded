@@ -992,6 +992,74 @@ def test_metadata_metadata_report_build_params(dummy_request):
     assert len(mr.param_list['@id']) == 1
 
 
+def test_metadata_metadata_report_build_new_request(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
+    mr = MetadataReport(dummy_request)
+    mr._build_params()
+    new_request = mr._build_new_request()
+    assert new_request.path_info == '/search/'
+    assert new_request.registry
+    assert new_request.query_string == (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100&files.status%21=archived'
+        '&files.biological_replicates=2&field=audit&field=files.%40id&limit=all'
+        '&field=files.title&field=files.file_type&field=files.file_format'
+        '&field=files.file_format_type&field=files.output_type&field=files.assembly'
+        '&field=accession&field=assay_title&field=biosample_ontology.term_id'
+        '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
+        '&field=replicates.library.biosample.organism.scientific_name'
+        '&field=replicates.library.biosample.treatments.treatment_term_name'
+        '&field=replicates.library.biosample.treatments.amount'
+        '&field=replicates.library.biosample.treatments.amount_units'
+        '&field=replicates.library.biosample.treatments.duration'
+        '&field=replicates.library.biosample.treatments.duration_units'
+        '&field=replicates.library.biosample.applied_modifications.method'
+        '&field=replicates.library.biosample.applied_modifications.category'
+        '&field=replicates.library.biosample.applied_modifications.modified_site_by_target_id'
+        '&field=replicates.library.biosample.applied_modifications.modified_site_by_gene_id'
+        '&field=replicates.library.biosample.applied_modifications.modified_site_by_coordinates.assembly'
+        '&field=replicates.library.biosample.applied_modifications.modified_site_by_coordinates.chromosome'
+        '&field=replicates.library.biosample.applied_modifications.modified_site_by_coordinates.start'
+        '&field=replicates.library.biosample.applied_modifications.modified_site_by_coordinates.end'
+        '&field=replicates.library.biosample.applied_modifications.zygosity&field=target.name'
+        '&field=replicates.library.nucleic_acid_term_name&field=replicates.library.depleted_in_term_name'
+        '&field=replicates.library.extraction_method&field=replicates.library.lysis_method'
+        '&field=replicates.library.crosslinking_method&field=replicates.library.strand_specificity'
+        '&field=date_released&field=award.project&field=files.replicate.rbns_protein_concentration'
+        '&field=files.replicate.rbns_protein_concentration_units'
+        '&field=files.replicate.library.fragmentation_method&field=files.replicate.library.size_range'
+        '&field=files.biological_replicates&field=files.technical_replicates&field=files.read_length'
+        '&field=files.mapped_read_length&field=files.run_type&field=files.paired_end'
+        '&field=files.paired_with&field=files.index_of&field=files.derived_from&field=files.file_size'
+        '&field=files.lab.title&field=files.md5sum&field=files.dbxrefs&field=files.href'
+        '&field=files.genome_annotation&field=files.platform.title&field=files.controlled_by'
+        '&field=files.status&field=files.no_file_available&field=files.restricted'
+        '&field=files.s3_uri&%40id=%2Fexperiments%2FENCSR123ABC%2F'
+    )
+    new_request.effective_principals == ['system.Everyone']
+
+
+@pytest.mark.indexing
+def test_metadata_metadata_report_get_search_results_generator(dummy_request, index_workbook):
+    from types import GeneratorType
+    from encoded.reports.metadata import MetadataReport
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._build_params()
+    search_results = mr._get_search_results_generator()
+    assert isinstance(search_results['@graph'], GeneratorType)
+    assert len(list(search_results['@graph'])) >= 63
+
+
 @pytest.mark.indexing
 def test_metadata_view(testapp, index_workbook):
     r = testapp.get('/metadata/?type=Experiment')
