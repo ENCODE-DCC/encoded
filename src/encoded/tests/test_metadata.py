@@ -437,10 +437,7 @@ def test_metadata_make_experiment_cell():
     assert make_experiment_cell(['assembly'], experiment()) == 'GRCh38'
     assert make_experiment_cell(['protein_tags.location'], experiment()) == 'C-terminal'
     unsorted_cell = make_experiment_cell(['protein_tags.target'], experiment())
-    assert (
-        unsorted_cell == '/targets/STAG1-human/, /targets/STAG2-human/'
-        or unsorted_cell == '/targets/STAG2-human/, /targets/STAG1-human/'
-    )
+    assert unsorted_cell == '/targets/STAG1-human/, /targets/STAG2-human/' or unsorted_cell == '/targets/STAG2-human/, /targets/STAG1-human/'
 
 
 def test_metadata_make_file_cell():
@@ -1247,7 +1244,81 @@ def test_metadata_metadata_report_get_experiment_data(dummy_request):
     }
     experiment_data = mr._get_experiment_data(embedded_experiment())
     for k, v in expected_experiment_data.items():
-        assert (experiment_data[k] == v, f'{experiment_data[k]} not equal to {v}')
+        assert experiment_data[k] == v, f'{experiment_data[k]} not equal to {v}'
+
+
+def test_metadata_metadata_report_get_file_data(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    expected_file_data = {
+        'File accession': 'ENCFF244PJU',
+        'File format': 'bed idr_ranked_peak',
+        'File type': 'bed',
+        'File format type': 'idr_ranked_peak',
+        'Output type': 'IDR ranked peaks',
+        'File assembly': 'GRCh38',
+        'RBNS protein concentration': '20 nM',
+        'Library fragmentation method': '',
+        'Library size range': '',
+        'Biological replicate(s)': '2',
+        'Technical replicate(s)': '2_1',
+        'Read length': '',
+        'Mapped read length': '',
+        'Run type': '',
+        'Paired end': '',
+        'Paired with': '',
+        'Index of': '',
+        'Derived from': '/files/ENCFF895UWM/, /files/ENCFF089RYQ/',
+        'Size': 3356650,
+        'Lab': 'ENCODE Processing Pipeline',
+        'md5sum': '335b6066a184f30f225aec79b376c7e8',
+        'dbxrefs': '',
+        'File download URL': 'http://localhost/files/ENCFF244PJU/@@download/ENCFF244PJU.bed.gz',
+        'Genome annotation': '',
+        'Platform': '',
+        'Controlled by': '',
+        'File Status': 'released',
+        'No File Available': False,
+        'Restricted': '',
+        's3_uri': 's3://encode-public/2020/07/09/dc068c0a-d1c8-461a-a208-418d35121f3b/ENCFF244PJU.bed.gz'
+    }
+    file_data = mr._get_file_data(file_())
+    for k, v in expected_file_data.items():
+        assert file_data[k] == v
+
+
+def test_metadata_metadata_report_get_audit_data(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from encoded.reports.metadata import group_audits_by_files_and_type
+    grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(audits_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    audit_data = mr._get_audit_data(
+        grouped_file_audits.get('/files/ENCFF783ZRQ/'),
+        grouped_other_audits
+    )
+    expected_audit_data = {
+        'Audit WARNING': [
+            'inconsistent control read length',
+            'inconsistent platforms',
+            'low read length',
+            'mild to moderate bottlenecking',
+            'moderate library complexity'
+        ],
+        'Audit NOT_COMPLIANT': ['insufficient read depth'],
+        'Audit ERROR': ['extremely low read depth']
+    }
+    for k, v in expected_audit_data.items():
+        assert sorted(audit_data[k].split(', ')) == v, f'{sorted(audit_data[k].split(", "))} does not match {v}'
 
 
 @pytest.mark.indexing
@@ -1282,10 +1353,7 @@ def test_metadata_contains_audit_values(testapp, index_workbook):
         'unreplicated experiment'
     ]
     for value in audit_values:
-        assert (
-            value in r.text,
-            f'{value} not in metadata report'
-        )
+        assert value in r.text, f'{value} not in metadata report'
 
 
 @pytest.mark.indexing
@@ -1301,7 +1369,4 @@ def test_metadata_contains_all_values(testapp, index_workbook):
             # Sometimes lists are out of order.
             expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
             actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
-            assert (
-                expected_value == actual_value,
-                f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
-            )
+            assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
