@@ -59,6 +59,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.functional_characterization_experiment',
     'encoded.tests.fixtures.schemas.hotspot_quality_metric',
     'encoded.tests.fixtures.schemas.human_donor',
+    'encoded.tests.fixtures.schemas.idr_quality_metric',
     'encoded.tests.fixtures.schemas.lab',
     'encoded.tests.fixtures.schemas.library',
     'encoded.tests.fixtures.schemas.long_read_rna_quantification_quality_metric',

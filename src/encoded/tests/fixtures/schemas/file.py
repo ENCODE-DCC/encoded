@@ -299,6 +299,42 @@ def file_bed_narrowPeak_chip_peaks(testapp, experiment_chip_H3K27me3, file_bed_n
 
 
 @pytest.fixture
+def file_bed_narrowPeak_chip_peaks2(testapp, experiment_chip_H3K27me3, file_bed_narrowPeak_chip_background2, award, lab):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bed',
+        'derived_from':[file_bed_narrowPeak_chip_background2['@id']],
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'e008ab267ff36d93dd070ef0712b8ee7',
+        'output_type': 'optimal IDR thresholded peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bed_narrowPeak_chip_background2(testapp, experiment_chip_H3K27me3, file_bam_1_chip, award, lab):
+    item = {
+        'dataset': experiment_chip_H3K27me3['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'derived_from': [file_bam_1_chip['@id']],
+        'file_format': 'bed',
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'e008ab106ab36d93dd070ef0712b8ee7',
+        'output_type': 'peaks and background as input for IDR',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
     item = {
         'dataset': base_experiment['uuid'],
