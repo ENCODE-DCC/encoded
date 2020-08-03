@@ -78,6 +78,12 @@
                     }
                 }
             }
+        },
+        "pipeline_run_id": {
+            "title": "Pipeline run ID",
+            "description": "UUID from certain analysis platforms (Cromwell/WDL, etc) for corresponding pipeline run.",
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}$"
         }
     },
     "facets": {
