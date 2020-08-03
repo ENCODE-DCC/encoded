@@ -320,11 +320,6 @@ const DocumentDetail = (props) => {
                     </div>
                 : null}
 
-                <div data-test="lab">
-                    <dt>Lab</dt>
-                    <dd>{doc.lab.title}</dd>
-                </div>
-
                 {doc.award && doc.award.name ?
                     <div data-test="award">
                         <dt>Grant</dt>
