@@ -13,13 +13,14 @@ Ontologies used
 | [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2020-07-15 (3.20.0) | [EFO releases] |
 | [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2020-06-30 | [MONDO release date] |
 
-**Current ontology.json:** `ontology-2020-08-03.json`
+**Current ontology.json:** `ontology-2020-08-03.json`  
 **Updated with site version:** 1
 
 How to update the ontology versions
 ---------------- 
 
-1. Run generate-ontology (*note: first look up the latest [EFO release] and include the version in the `efo-url`*)
+1. Run generate-ontology  
+(*note: first look up the latest [EFO release] and include the version in the `efo-url`*)
 ```
 	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl
 ```
