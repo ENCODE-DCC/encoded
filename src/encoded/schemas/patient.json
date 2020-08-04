@@ -220,8 +220,8 @@
         "diagnosis.age_unit": {
             "title": "Diagnosis age units"
         },
-        "duration_of_follow_up_range": {
-            "title": "Duration of follow-up"
+        "diagnosis.follow_up_duration_range": {
+            "title": "Follow Up Duration"
         },
         "sex": {
             "title": "Sex"
