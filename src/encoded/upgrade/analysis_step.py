@@ -221,3 +221,18 @@ def analysis_step_8_9(value, system):
         input_file_types.remove('representative dnase hypersensitivity sites')
         input_file_types.append('representative DNase hypersensitivity sites (rDHSs)')
     return
+
+
+@upgrade_step('analysis_step', '9', '10')
+def analysis_step_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5424
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'spike-in sequence' in output_file_types:
+        output_file_types.remove('spike-in sequence')
+        output_file_types.append('spike-ins')
+    if input_file_types and 'spike-in sequence' in input_file_types:
+        input_file_types.remove('spike-in sequence')
+        input_file_types.append('spike-ins')
+    return

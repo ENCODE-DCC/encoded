@@ -993,7 +993,7 @@
         "file_format": "tsv",
         "lab":"j-michael-cherry",
         "md5sum": "d151fab2c55504980fc432e1def8dd5f",
-        "output_type": "spike-in sequence",
+        "output_type": "spike-ins",
         "status": "revoked",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "hg19/wgEncodeUmassDekker5C/wgEncodeUmassDekker5CEnmPrimer.doc.tgz",

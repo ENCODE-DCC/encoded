@@ -702,7 +702,7 @@
                             "not": {
                                 "properties": {
                                     "output_type": {
-                                        "enum": ["subreads"]
+                                        "enum": ["subreads", "spike-ins"]
                                     }
                                 }
                             }
@@ -717,6 +717,23 @@
                                 "output_type": {
                                     "enum": [
                                         "subreads"
+                                    ]
+                                }
+                            },
+                            "not": {
+                                "required": ["assembly"]
+                            }
+                        },
+                        {
+                            "properties": {
+                                "file_format": {
+                                    "enum": [
+                                        "gtf"
+                                    ]
+                                },
+                                "output_type": {
+                                    "enum": [
+                                        "spike-ins"
                                     ]
                                 }
                             },
@@ -976,7 +993,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "22"
+            "default": "23"
         },
         "accession": {
             "accessionType": "FF"
@@ -1477,7 +1494,7 @@
                         "signal of all reads",
                         "signal of unique reads",
                         "signal p-value",
-                        "spike-in sequence",
+                        "spike-ins",
                         "smoothed methylation stage at CpG",
                         "splice junctions",
                         "pseudo-replicated peaks",
@@ -2036,7 +2053,7 @@
         "male genome reference": "reference",
         "male genome index": "reference",
         "primer sequence": "reference",
-        "spike-in sequence": "reference",
+        "spike-ins": "reference",
         "reference": "reference",
         "restriction enzyme site locations": "reference",
         "sequence alignability": "reference",

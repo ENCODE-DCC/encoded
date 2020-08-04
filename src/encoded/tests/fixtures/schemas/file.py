@@ -1711,3 +1711,18 @@ def oxford_nanopore_fastq_indexed(testapp, lab, award, experiment, base_replicat
             'status': 'in progress'
         }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_22(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fasta',
+        'md5sum': 'bc37b3d8e556703291282149e3ae894f',
+        'output_type': 'spike-in sequence',
+        'file_size': 8888,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',
+    }
+    return item

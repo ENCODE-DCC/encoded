@@ -1,5 +1,8 @@
 ## Changelog for analysis_step.json
 
+### Schema version 10
+* Updated *spike-in sequence* to *spike-ins* in enums for *output_file_types* and *input_file_types*.
+
 ### Minor changes since schema version 9
 * Added *representative peak selection* and *candidate cis-regulatory element identification* to the enum list for *analysis_step_types*
 * Added *bias model* to the enum list for *input_file_types* and *output_file_types*
