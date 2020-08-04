@@ -1415,7 +1415,6 @@ def test_metadata_metadata_report_output_sorted_row(dummy_request):
 def test_metadata_metadata_report_get_search_results_generator(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
-    from encoded.reports.metadata import MetadataReport
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment'
     )
@@ -1426,9 +1425,53 @@ def test_metadata_metadata_report_get_search_results_generator(index_workbook, d
     assert len(list(search_results['@graph'])) >= 63
 
 
+def test_metadata_metadata_report_generate_row(index_workbook, dummy_request):
+    from types import GeneratorType
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    row_generator = mr._generate_rows()
+    assert isinstance(row_generator, GeneratorType)
+    assert len(list(row_generator)) >= 100
+
+
+def test_metadata_metadata_report_generate(index_workbook, dummy_request):
+    from types import GeneratorType
+    from encoded.reports.metadata import MetadataReport
+    from pyramid.response import Response
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    response = mr.generate()
+    assert isinstance(response, Response)
+    assert len(list(response.body)) >= 100
+
+
 def test_metadata_view(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
-    assert len(r.text.split('\n')) >= 81
+    assert len(r.text.split('\n')) >= 100
+
+
+def test_metadata_view_annotation(index_workbook, testapp):
+    r = testapp.get('/metadata/?type=Annotation')
+    assert len(r.text.split('\n')) >= 7
+
+
+def test_metadata_view_publication_data(index_workbook, testapp):
+    r = testapp.get(
+        '/metadata/?type=PublicationData&dataset=/publication-data/ENCSR727WCB/'
+    )
+    assert len(r.text.split('\n')) >= 7
+
+
+def test_metadata_view_unallowed_type(index_workbook, testapp):
+    with pytest.raises(HTTPBadRequest):
+        testapp.get('/metadata/?type=File')
 
 
 def test_metadata_contains_audit_values(index_workbook, testapp):
@@ -1449,6 +1492,7 @@ def test_metadata_contains_all_values(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
     expected_path = resource_filename('encoded', 'tests/data/inserts/expected_metadata.tsv')
+    # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
     with open(expected_path, 'r') as f:
         expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
     for i, row in enumerate(actual):
