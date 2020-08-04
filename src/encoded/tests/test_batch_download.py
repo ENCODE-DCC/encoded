@@ -1,11 +1,9 @@
-# Use workbook fixture from BDD tests (including elasticsearch)
+# Use fixtures from features, indexing workbook
 import json
 import pytest
 import mock
 from collections import OrderedDict
-from encoded.tests.features.conftest import app
-from encoded.tests.features.conftest import app_settings
-from encoded.tests.features.conftest import workbook
+from encoded.tests.features.conftest import app, app_settings, index_workbook
 from encoded.batch_download import lookup_column_value
 from encoded.batch_download import restricted_files_present
 from encoded.batch_download import files_prop_param_list
@@ -17,6 +15,7 @@ from encoded.batch_download import ELEMENT_CHUNK_SIZE
 from encoded.batch_download import _tsv_mapping
 from encoded.batch_download import _audit_mapping
 from encoded.batch_download import _tsv_mapping_annotation
+from encoded.batch_download import _tsv_mapping_publicationdata
 from encoded.batch_download import _excluded_columns
 from encoded.batch_download import get_biosample_accessions
 
@@ -46,8 +45,9 @@ def test__tsv_mapping_value():
         ('File type', ['files.file_format']),
         ('File format type', ['files.file_format_type']),
         ('Output type', ['files.output_type']),
+        ('File assembly', ['files.assembly']),
         ('Experiment accession', ['accession']),
-        ('Assay', ['assay_term_name']),
+        ('Assay', ['assay_title']),
         ('Biosample term id', ['biosample_ontology.term_id']),
         ('Biosample term name', ['biosample_ontology.term_name']),
         ('Biosample type', ['biosample_ontology.classification']),
@@ -79,7 +79,7 @@ def test__tsv_mapping_value():
         ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
         ('Library size range', ['files.replicate.library.size_range']),
         ('Biological replicate(s)', ['files.biological_replicates']),
-        ('Technical replicate', ['files.replicate.technical_replicate_number']),
+        ('Technical replicate(s)', ['files.technical_replicates']),
         ('Read length', ['files.read_length']),
         ('Mapped read length', ['files.mapped_read_length']),
         ('Run type', ['files.run_type']),
@@ -91,7 +91,6 @@ def test__tsv_mapping_value():
         ('md5sum', ['files.md5sum']),
         ('dbxrefs', ['files.dbxrefs']),
         ('File download URL', ['files.href']),
-        ('Assembly', ['files.assembly']),
         ('Genome annotation', ['files.genome_annotation']),
         ('Platform', ['files.platform.title']),
         ('Controlled by', ['files.controlled_by']),
@@ -126,6 +125,7 @@ def test__tsv_mapping_annotation_value():
         ('File accession', ['files.title']),
         ('File format', ['files.file_type']),
         ('Output type', ['files.output_type']),
+        ('Assay term name', ['files.assay_term_name']),
         ('Dataset accession', ['accession']),
         ('Annotation type', ['annotation_type']),
         ('Software used', ['software_used.software.title']),
@@ -148,13 +148,42 @@ def test__tsv_mapping_annotation_value():
         ('Controlled by', ['files.controlled_by']),
         ('File Status', ['files.status']),
         ('Derived from', ['files.derived_from']),
-        ('S3 URL', ['files.cloud_metadata']),
+        ('S3 URL', ['files.cloud_metadata.url']),
         ('Size', ['files.file_size']),
         ('No File Available', ['file.no_file_available']),
         ('Restricted', ['files.restricted'])
     ])
     assert expected == target
 
+def test__tsv_mapping_publicationdata_value():
+    expected = _tsv_mapping_publicationdata
+    target = OrderedDict([
+        ('File accession', ['files.title']),
+        ('File dataset', ['files.dataset']),
+        ('File type', ['files.file_format']),
+        ('File format', ['files.file_type']),
+        ('File output type', ['files.output_type']),
+        ('Assay term name', ['files.assay_term_name']),
+        ('Biosample term id', ['files.biosample_ontology.term_id']),
+        ('Biosample term name', ['files.biosample_ontology.term_name']),
+        ('Biosample type', ['files.biosample_ontology.classification']),
+        ('File target', ['files.target.label']),
+        ('Dataset accession', ['accession']),
+        ('Dataset date released', ['date_released']),
+        ('Project', ['award.project']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Assembly', ['files.assembly']),
+        ('File status', ['files.status']),
+        ('Derived from', ['files.derived_from']),
+        ('S3 URL', ['files.cloud_metadata.url']),
+        ('Size', ['files.file_size']),
+        ('No File Available', ['file.no_file_available']),
+        ('Restricted', ['files.restricted'])
+    ])
+    assert expected == target
 
 def test__excluded_columns_value():
     expected = _excluded_columns
@@ -310,8 +339,8 @@ def test_convert_camel_to_snake_with_one_words():
     target = _convert_camel_to_snake('Camel')
     assert expected == target
 
-
-def test_batch_download_report_download(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=Experiment&sort=accession')
     assert res.headers['content-type'] == 'text/tsv; charset=UTF-8'
     disposition = res.headers['content-disposition']
@@ -327,10 +356,10 @@ def test_batch_download_report_download(testapp, workbook):
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',
     ]
-    assert len(lines) == 64
+    assert len(lines) == 68
 
-
-def test_batch_download_matched_set_report_download(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_matched_set_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=MatchedSet&sort=accession')
     disposition = res.headers['content-disposition']
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
@@ -338,8 +367,8 @@ def test_batch_download_matched_set_report_download(testapp, workbook):
     disposition = res.headers['content-disposition']
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
 
-
-def test_batch_download_restricted_files_present(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_restricted_files_present(testapp, index_workbook):
     results = testapp.get('/search/?limit=all&field=files.href&field=files.file_type&field=files&type=Experiment')
     results = results.body.decode("utf-8")
     results = json.loads(results)
@@ -357,8 +386,8 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
     for path in lookup_column_value_validate.keys():
         assert lookup_column_value_validate[path] == lookup_column_value(lookup_column_value_item, path)
 
-
-def test_batch_download_view(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_view(testapp, index_workbook):
     r = testapp.get('/batch_download/?type=Experiment&status=released')
     lines = r.text.split('\n')
     assert lines[0] == (
@@ -367,8 +396,8 @@ def test_batch_download_view(testapp, workbook):
     assert len(lines) >= 79
     assert 'http://localhost/files/ENCFF002MXF/@@download/ENCFF002MXF.fastq.gz' in lines
 
-
-def test_batch_download_header_and_rows(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_header_and_rows(testapp, index_workbook):
     results = testapp.get('/batch_download/?type=Experiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'
     assert results.headers['Content-Disposition'] == 'attachment; filename="files.txt"'
@@ -378,8 +407,8 @@ def test_batch_download_header_and_rows(testapp, workbook):
     for line in lines[1:]:
         assert '@@download' in line
 
-
-def test_batch_download_view_file_plus(testapp, workbook):
+@pytest.mark.indexing
+def test_batch_download_view_file_plus(testapp, index_workbook):
     r = testapp.get(
         '/batch_download/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json'
     )
@@ -389,15 +418,15 @@ def test_batch_download_view_file_plus(testapp, workbook):
     )
     assert 'http://localhost/files/ENCFF880XNW/@@download/ENCFF880XNW.bigBed' in lines
 
-
-def test_metadata_view(testapp, workbook):
+@pytest.mark.indexing
+def test_metadata_view(testapp, index_workbook):
     r = testapp.get('/metadata/?type=Experiment')
     lines = r.text.split('\n')
     assert len(lines) >= 81
     
 
 @pytest.mark.parametrize("test_input,expected", [
-    (files_prop_param_list(exp_file_1, param_list_2), True),
+    (files_prop_param_list(exp_file_1, param_list_2), False),
     (files_prop_param_list(exp_file_1, param_list_1), True),
     (files_prop_param_list(exp_file_2, param_list_1), False),
     (files_prop_param_list(exp_file_3, param_list_3), True),
@@ -415,8 +444,8 @@ def test_files_prop_param_list(test_input, expected):
 def test_restricted_files_present(test_input, expected):
     assert test_input == expected
 
-
-def test_metadata_tsv_fields(testapp, workbook):
+@pytest.mark.indexing
+def test_metadata_tsv_fields(testapp, index_workbook):
     from encoded.batch_download import (
         _tsv_mapping,
         _excluded_columns,
@@ -427,3 +456,20 @@ def test_metadata_tsv_fields(testapp, workbook):
     assert len(headers) == len(set(headers))
     expected_headers = set(_tsv_mapping.keys()) - set(_excluded_columns)
     assert len(expected_headers - set(headers)) == 0
+
+@pytest.mark.indexing
+def test_metadata_contains_audit_values(testapp, index_workbook):
+     r = testapp.get('/metadata/?type=Experiment&audit=*')
+     audit_values = [
+         'biological replicates with identical biosample',
+         'experiment not submitted to GEO',
+         'inconsistent assay_term_name',
+         'inconsistent library biosample',
+         'lacking processed data',
+         'inconsistent platforms',
+         'mismatched status',
+         'missing documents',
+         'unreplicated experiment'
+     ]
+     for value in audit_values:
+         assert value in r.text

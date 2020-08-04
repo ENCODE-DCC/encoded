@@ -27,6 +27,7 @@
         div {
             background-color: white !important;
             color: #333333;
+            font-family: Mada, sans-serif;
         }
     }
 }
@@ -36,6 +37,7 @@
     background-color: #f2f2f2;
     font-size: 16px;
     box-shadow: none;
+    font-family: 'Mada', sans-serif;
     border: 0;
     border: 1px solid #BFBFBF;
     &.hpgv_track-header {
@@ -85,6 +87,10 @@
     --loading-indicator: #8ea1bf;
     --cursor: #3645653b;
     --secondary-cursor: #3645653b;
+}
+
+.hpgv_track-expander {
+    left: unset;
 }
 
 .hpgv_track-close-button {
@@ -138,6 +144,7 @@
         input {
             width: 100%;
             border-radius: 5px;
+            font-family: Mada, sans-serif;
             padding: 4px;
         }
         .done {
@@ -243,6 +250,7 @@
     font-size: 14px;
     border-radius: 4px;
     display: flex;
+    align-items: center;
     .icon-undo {
         padding-right: 5px;
         flex: 0 1 20px;

@@ -70,7 +70,7 @@
                                 "required": ["pipeline_error_detail"],
                                 "properties": {
                                     "internal_status": {
-                                        "enum": ["unreviewed", "no available pipeline", "unrunnable", "pipeline ready", "processing", "pipeline completed", "requires lab review", "release ready"]
+                                        "enum": ["unreviewed", "no available pipeline", "pre-pipeline review", "pipeline ready", "processing", "pipeline completed", "post-pipeline review", "release ready"]
                                     }
                                 }
                             },
@@ -89,7 +89,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "28"
+            "default": "30"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -166,20 +166,20 @@
         "internal_status": {
             "type": "string",
             "description": "The status of an experiment in the DCC process.",
-            "comment":"unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
+            "comment":"unreviewed:wrangler has not evaluated, pre-pipeline review:experiment being evaluated before pipeline run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through to completion, post-pipeline review:pipeline run is ready for wrangler and lab review, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_detail",
             "default": "unreviewed",
             "permission": "import_items",
             "title": "Internal status",
             "enum": [
                 "unreviewed",
+                "pre-pipeline review",
                 "pipeline ready",
                 "processing",
                 "pipeline completed",
+                "post-pipeline review",
                 "release ready",
-                "requires lab review",
                 "no available pipeline",
-                "pipeline error",
-                "unrunnable"
+                "pipeline error"
             ]
         },
         "pipeline_error_detail": {
@@ -199,7 +199,8 @@
                 "input library",
                 "mock input",
                 "no protein target",
-                "non-specific target"
+                "non-specific target",
+                "wild type"
             ]
         },
         "analyses": {
@@ -284,6 +285,16 @@
                     }
                 }
             }
+        },
+        "analysis_objects": {
+            "title": "Analysis objects",
+            "description": "A list of analysis objects.",
+            "comment": "Will transfer to analyses property in the future release.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "Analysis"
+            }
         }
     },
     "facets": {
@@ -292,19 +303,16 @@
         },
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": true
         },
         "status": {
-            "title": "Status"
+            "title": "Status",
+            "open_on_load": true
         },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "assembly": {
-            "title": "Genome assembly"
+        "perturbed": {
+            "title": "Perturbation",
+            "open_on_load": true
         },
         "target.investigated_as": {
             "title": "Target category"
@@ -312,10 +320,12 @@
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
@@ -323,7 +333,8 @@
         "biosample_ontology.term_name" : {
             "title": "Biosample term name",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -338,6 +349,15 @@
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -378,8 +398,7 @@
         },
         "replication_type": {
             "title": "Replication type"
-        }
-        
+        } 
     },
     "columns": {
         "accession": {
@@ -549,7 +568,7 @@
         "target.aliases": 3.0,
         "target.genes.symbol": 10.0,
         "target.label": 10.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 5.0,
         "target.organism.scientific_name": 5.0,
         "references.title": 1.0,

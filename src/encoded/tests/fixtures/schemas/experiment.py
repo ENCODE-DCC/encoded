@@ -1,8 +1,7 @@
 import pytest
 
-
 @pytest.fixture
-def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum):
+def experiment_chip_control(testapp, lab, award, ileum):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -10,7 +9,36 @@ def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum):
         'date_released': '2019-10-08',
         'biosample_ontology': ileum['uuid'],
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid']
+        'control_type': 'input library'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_chip_H3K4me3(testapp, lab, award, target_H3K4me3, ileum, experiment_chip_control):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'released',
+        'date_released': '2019-10-08',
+        'biosample_ontology': ileum['uuid'],
+        'assay_term_name': 'ChIP-seq',
+        'target': target_H3K4me3['uuid'],
+        'possible_controls': [experiment_chip_control['@id']]
+
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_chip_H3K27me3(testapp, lab, award, target_H3K27me3, experiment_chip_control, ileum):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample_ontology': ileum['uuid'],
+        'assay_term_name': 'ChIP-seq',
+        'target': target_H3K27me3['uuid'],
+        'possible_controls': [experiment_chip_control['uuid']]
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -58,6 +86,7 @@ def experiment_dnase(testapp, lab, award, heart):
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def ctrl_experiment(testapp, lab, award, cell_free):
     item = {
@@ -68,6 +97,7 @@ def ctrl_experiment(testapp, lab, award, cell_free):
         'assay_term_name': 'ChIP-seq'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def experiment_no_read_length(
@@ -365,6 +395,7 @@ def experiment_3():
         'status': "DELETED",
     }
 
+
 @pytest.fixture
 def experiment_6():
     return {
@@ -573,17 +604,6 @@ def ChIP_experiment(testapp, lab, award, cell_free, target, base_matched_set):
 
 
 @pytest.fixture
-def pce_fcc_experiment(testapp, lab, award):
-        return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'assay_term_name': 'pooled clone sequencing',
-        'schema_version': '2',
-        'status': 'in progress'
-    }
-
-
-@pytest.fixture
 def micro_rna_experiment(
     testapp,
     base_experiment,
@@ -673,5 +693,65 @@ def experiment_with_analyses_2(testapp, lab, award, heart, file_bam_1_1, file_ba
                 'files': [file_bam_1_1['@id'], file_bam_2_1['@id'], bam_file['@id']]
             }
         ]
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def experiment_28(testapp, lab, award, heart):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'Mint-ChIP-seq',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_v28(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+            'schema_version': '28',
+            'internal_status': 'pipeline error',
+            'pipeline_error_detail': 'The pipeline didn\'t work for reasons',
+            'notes': 'Insert essential details here'
+    })
+    return properties
+
+
+@pytest.fixture
+def ATAC_experiment(testapp, lab, award, cell_free):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'ATAC-seq',
+        'biosample_ontology': cell_free['uuid']
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_29(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '29',
+        'assay_term_name': 'single cell isolation followed by RNA-seq'
+    })
+    return properties
+
+
+@pytest.fixture
+def experiment_mint_chip(testapp, lab, award, heart, target_H3K27me3, experiment_chip_control):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'Mint-ChIP-seq',
+        'biosample_ontology': heart['uuid'],
+        'status': 'in progress',
+        'target': target_H3K27me3['uuid'],
+        'possible_controls': [experiment_chip_control['uuid']]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

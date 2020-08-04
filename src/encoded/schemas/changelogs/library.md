@@ -1,8 +1,24 @@
 ## Changelog for library.json
 
+### Schema version 14
+
+* Added dependency that does not allow *nucleic_acid_term_name* and *depleted_in_term_name* to have the same value of *polyadenylated mRNA*.
+
+### Schema version 13
+
+* The *adapter* enum list of *type* options was adjusted to make sequencing adapters specific to each read; now *read1 5' adapter*, *read2 5' adapter*, *read1 3' adapter*, and *read2 3' adapter* are available.
+
+### Schema version 12
+
+* *chemical (HindIII/DpnII restriction)* was removed from *fragmentation_methods* enum.
+* *NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)* was added to the *extraction_method* enum.
+
 ### Minor changes since schema version 11
+
 * The properties *fragmentation_duration_time* and *fragmentation_duration_time_units* were added.
-* *chemical (NEBNext Ultra II Directional)* was added to the *fragmentation_method* enum, and *Animal tissue kit (Norgen Biotek cat#: 25700)* was added to the *extraction_method* enum.
+* *chemical (NEBNext Ultra II Directional)* was added to the *fragmentation_methods* enum, and *Animal tissue kit (Norgen Biotek cat#: 25700)* was added to the *extraction_method* enum.
+* *adapters* property is modified to allows specification of adapters as strings.
+* The properties *average_fragment_size*, *fragment_length_CV*, and *fragment_length_SD* were added.
 
 ### Schema version 11
 

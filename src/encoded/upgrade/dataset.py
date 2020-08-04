@@ -578,3 +578,65 @@ def dataset_28_29(value, system):
         value.pop('dbxrefs', None)
     else:
         value['dbxrefs'] = sorted(new_dbxrefs)
+
+
+@upgrade_step('annotation', '27', '28')
+def annotation_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "representative DNase hypersensitivity sites":
+        value['annotation_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return
+
+
+@upgrade_step('reference', '18', '19')
+def reference_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5259
+    if 'examined_loci' in value:
+        examined_loci = value.get('examined_loci', None)
+        if examined_loci == []:
+            value.pop('examined_loci', None)
+
+
+@upgrade_step('annotation', '28', '29')
+def annotation_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4438
+    units = value.get('relevant_timepoint_units')
+    if units == 'stage':
+        info = f'{value.get("relevant_timepoint")} {units}'
+        value.pop('relevant_timepoint', None)
+        value.pop('relevant_timepoint_units', None)
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. Removed timepoint metadata: {info}'
+        else:
+            value['notes'] = info
+    return
+
+
+@upgrade_step('experiment', '28', '29')
+def experiment_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5343
+    unrunnable = f'Previous internal_status claimed this experiment was unrunnable on a pipeline'
+    if 'pipeline_error_detail' in value:
+        error_detail = f'Previous internal_status claimed a pipeline error: {value.get("pipeline_error_detail")}'
+        value.pop('pipeline_error_detail')
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {error_detail}'
+        else:
+            value['notes'] = error_detail
+    if value.get('internal_status') == 'unrunnable':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {unrunnable}'
+        else:
+            value['notes'] = unrunnable
+
+    value['internal_status'] = 'unreviewed'
+    return
+
+
+@upgrade_step('experiment', '29', '30')
+def experiment_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
+        value['assay_term_name'] = 'single-cell RNA sequencing assay'

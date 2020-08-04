@@ -29,7 +29,7 @@ def app(app_settings):
 
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
-def workbook(request, app):
+def index_workbook(request, app):
     from snovault import DBSESSION
     connection = app.registry[DBSESSION].bind.pool.unique_connection()
     connection.detach()
@@ -97,7 +97,7 @@ def splinter_window_size():
 
 # Depend on workbook fixture here to avoid remote browser timeouts.
 @pytest.fixture(scope='session')
-def browser(workbook, session_browser):
+def browser(index_workbook, session_browser):
     return session_browser
 
 

@@ -112,6 +112,25 @@
                 {
                     "properties": {
                         "purpose": {
+                            "enum": ["expression"]
+                        },
+                        "category": {
+                            "enum": ["insertion"]
+                        },
+                        "method": {
+                            "enum": ["transduction", "transient transfection"]
+                        },
+                        "introduced_elements": {
+                            "enum": ["gRNAs and CRISPR machinery"]
+                        }
+                    },
+                    "not": {
+                        "required": ["modified_site_nonspecific"]
+                    }
+                },
+                {
+                    "properties": {
+                        "purpose": {
                             "enum": ["characterization"]
                         },
                         "method": {
@@ -126,44 +145,83 @@
                             "required": ["introduced_gene"]
                         }
                     ]
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["in vivo enhancer characterization"]
+                        },
+                        "method": {
+                            "enum": ["mouse pronuclear microinjection"]
+                        },
+                        "category": {
+                            "enum": ["transgene insertion"]
+                        }
+                    },
+                    "required": ["introduced_sequence"],
+                    "oneOf": [
+                        {
+                            "required": ["modified_site_by_target_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_coordinates"]
+                        },
+                        {
+                            "required": ["modified_site_by_sequence"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
+                        }
+                    ]
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["binding"]
+                        }
+                    }
                 }
             ]
         },
         "category": {
-            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at modified_site_nonspecific. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
+            "comment": "Insertions need to specify introduced_tags, introduced_sequence, introduced_gene, or introduced_elements at either modified_site_nonspecific or specifying gRNAs and CRISPR machinery. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified (unless the purpose is characterization and method is CRISPR) and mutagenesis needs treatment specified. Episome needs to specify introduced_elements.",
             "oneOf": [
                 {
                     "oneOf": [
                         {
                             "anyOf": [
-                            {
-                                "required": ["introduced_tags"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    },
-                                    "purpose": {
-                                        "enum": ["tagging"]
+                                {
+                                    "required": ["introduced_tags"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        },
+                                        "purpose": {
+                                            "enum": ["tagging"]
+                                        }
+                                    }
+                                },
+                                {
+                                    "required": ["introduced_sequence"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        }
+                                    }
+                                },
+                                {
+                                    "required": ["introduced_gene"],
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["insertion"]
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                "required": ["introduced_sequence"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    }
-                                }
-                            },
-                            {
-                                "required": ["introduced_gene"],
-                                "properties": {
-                                    "category": {
-                                        "enum": ["insertion"]
-                                    }
-                                }
-                            }
-                        ]},
+                            ]
+                        },
                         {
                             "required": ["modified_site_nonspecific", "introduced_elements"],
                             "properties": {
@@ -171,7 +229,28 @@
                                     "enum": ["insertion"]
                                 }
                             }
+                        },
+                        {    
+                            "not": {
+                                "required": ["modified_site_nonspecific"]
+                            },
+                            "required": ["introduced_elements"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["expression"]
+                                },
+                                "method": {
+                                    "enum": ["transduction", "transient transfection"]
+                                },
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
+                                }
+                            }
                         }
+
                     ]
                 },
                 {
@@ -275,7 +354,7 @@
                             "enum": ["knockout"]
                         },
                         "method": {
-                            "enum": ["site-specific recombination"]
+                            "enum": ["site-specific recombination", "homologous recombination"]
                         },
                         "purpose": {
                             "enum": ["repression"]
@@ -283,6 +362,44 @@
                     },
                     "not": {
                         "required": ["modified_site_nonspecific"]
+                    }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["modified_site_by_coordinates"]
+                        },
+                        {
+                            "required": ["modified_site_by_target_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_sequence"]
+                        },
+                        {
+                            "required": ["modified_site_by_gene_id"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
+                        }
+                    ],
+                    "required": ["introduced_sequence"],
+                    "properties": {
+                        "category": {
+                            "enum": ["transgene insertion"]
+                        },
+                        "method": {
+                            "enum": ["mouse pronuclear microinjection"]
+                        },
+                        "purpose": {
+                            "enum": ["in vivo enhancer characterization"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["binding"]
+                        }
                     }
                 }
             ]
@@ -302,7 +419,7 @@
             }
         },
         "introduced_elements": {
-            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or inserted randomly.",
+            "comment": "introduced_elements are currently restricted to sets of indeterminate elements to be characterized either on episome or inserted randomly; or the general introduction of guide RNAs and CRISPR machinery prior to a CRISPR screen.",
             "allOf": [
                 {
                     "oneOf": [
@@ -314,6 +431,13 @@
                                 "purpose": {
                                     "enum": ["characterization"]
                                 }
+                            },
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["gRNAs and CRISPR machinery"]
+                                    }
+                                }
                             }
                         },
                         {
@@ -324,6 +448,32 @@
                                 },
                                 "purpose": {
                                     "enum": ["characterization"]
+                                }
+                            },
+                            "not": {
+                                "properties": {
+                                    "introduced_elements": {
+                                        "enum": ["gRNAs and CRISPR machinery"]
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "category": {
+                                    "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["expression"]
+                                },
+                                "method": {
+                                    "enum": ["transduction", "transient transfection"]
+                                },
+                                "introduced_elements": {
+                                    "enum": ["gRNAs and CRISPR machinery"]
+                                },
+                                "not":{
+                                    "required": ["modified_site_nonspecific"]
                                 }
                             }
                         }
@@ -403,12 +553,29 @@
             }
         },
         "introduced_sequence": {
-            "comment": "Introduced sequences apply only to category = insertion and replacement.",
-            "properties": {
-                "category": {
-                    "enum": ["insertion", "replacement"]
+            "comment": "Introduced sequences apply only to category = insertion, replacement, or transgene insertion.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["insertion", "replacement"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "category": {
+                            "enum": ["transgene insertion"]
+                        },
+                        "method": {
+                            "enum": ["mouse pronuclear microinjection"]
+                        },
+                        "purpose": {
+                            "enum": ["in vivo enhancer characterization"]
+                        }
+                    }
                 }
-            }
+            ]
         },
         "reagents": {
             "comment": "Specified reagent availablity details should include at least one entry.",
@@ -442,7 +609,9 @@
                                 "transient transfection",
                                 "transduction",
                                 "microinjection",
-                                "bombardment"
+                                "bombardment",
+                                "homologous recombination",
+                                "mouse pronuclear microinjection"
                             ]
                         }
                     }
@@ -533,7 +702,9 @@
                 "activation",
                 "knockout",
                 "disruption",
-                "inhibition"
+                "inhibition",
+                "binding",
+                "transgene insertion"
             ]
         },
         "purpose":{
@@ -545,7 +716,8 @@
                 "repression",
                 "tagging",
                 "characterization",
-                "expression"
+                "expression",
+                "in vivo enhancer characterization"
             ]
         },
         "zygosity":{
@@ -706,7 +878,8 @@
             "enum": [
                 "sheared genomic DNA",
                 "genomic DNA regions",
-                "synthesized DNA"
+                "synthesized DNA",
+                "gRNAs and CRISPR machinery"
             ]
         },
         "method": {
@@ -723,7 +896,9 @@
                 "stable transfection",
                 "TALEN",
                 "transduction",
-                "transient transfection"
+                "transient transfection",
+                "homologous recombination",
+                "mouse pronuclear microinjection"
             ]
         },
         "treatments": {
@@ -814,7 +989,7 @@
                         "title": "Identifier",
                         "description": "Identifier of the reagent (as assigned by the source) used to produce the describe genetic modification, if applicable.",
                         "type": "string",
-                        "pattern": "^((addgene:\\d{5,6})|(bacpac:([A-Z]{2,3}\\d{2,3}|[A-Z]{3})-\\d{1,4}[A-Z]\\d{1,2})|(dharmacon:[DL]-\\d{6}-\\d{2}(-\\d{2,4})?)|(hugo-bellen:MI\\d{5})|(human-orfeome:([A-Z]{2})?\\d{1,9})|(plasmid-repository:HsCD\\d{8})|(sigma:[A-Z]{3}\\d{3})|(source-bioscience:[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(_[A-Z]\\d{2})?)|(thermo-fisher:[a-zA-Z]{1,3}\\d{5,6})|(trc:TRCN\\d{10})|(brenton-graveley:BGC#\\d{7}))$"
+                        "pattern": "^((addgene:\\d{5,6})|(bacpac:([A-Z]{2,3}\\d{2,3}|[A-Z]{3})-\\d{1,4}[A-Z]\\d{1,2})|(dharmacon:[DL]-\\d{6}-\\d{2}(-\\d{2,4})?)|(hugo-bellen:MI\\d{5})|(human-orfeome:([A-Z]{2})?\\d{1,9})|(plasmid-repository:HsCD\\d{8})|(sigma:[A-Z]{3}\\d{3})|(source-bioscience:[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(_[A-Z]\\d{2})?)|(thermo-fisher:[a-zA-Z]{1,3}\\d{5,7})|(trc:TRCN\\d{10})|(brenton-graveley:BGC#\\d{7}))$"
                     },
                     "url": {
                         "@type": "@id",
@@ -891,7 +1066,7 @@
         "alternate_accessions": 1.0,
         "aliases": 1.0,
         "modified_site_by_target_id.label": 1.0,
-        "modified_site_by_target_id.dbxref": 1.0,
+        "modified_site_by_target_id.genes.dbxrefs": 1.0,
         "modified_site_by_target_id.genes.symbol": 1.0,
         "modified_site_by_target_id.aliases": 1.0
     },

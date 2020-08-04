@@ -20,7 +20,7 @@
         @at-root #{&}-title {
             flex: 1 1 auto;
 
-            h4 {
+            h2 {
                 font-size: 1.3rem;
                 margin: 0;
             }
@@ -95,7 +95,13 @@
     background-color: #000;
 
     &.in {
-        opacity: 0.5;
+        opacity: 0.3;
     }
 }
 
+
+.modal-batch-download {
+    @at-root #{&}__footer-note {
+        align-self: center;
+    }
+}

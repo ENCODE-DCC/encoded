@@ -15,6 +15,176 @@ $row-data-header-width: 200px;
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
 }
 
+.ReferenceEpigenomeMatrix {
+    .matrix-header__title {
+        padding-bottom: 5px;
+    }
+    // Flex styles for "body-image-thumbnail" and "matrix__presentation"
+    .matrix-facet-container {
+        display: flex;
+        border: 0;
+        @media screen and (max-width: $screen-sm-min) {
+            flex-wrap: wrap;
+        }
+        .matrix__presentation {
+            flex: 0 1 auto;
+        }
+    }
+    .test-project-selector {
+        label {
+            margin-left: 5px;
+        }
+    }
+    .matrix-header {
+        border-bottom: 0;
+    }
+    .header-clear-links {
+        margin-top: 20px;
+        @media screen and (max-width: $screen-sm-min) {
+            margin: 10px 5px;
+        }
+        button {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            @media screen and (max-width: $screen-sm-min) {
+                width: auto;
+            }
+        }
+    }
+    .filter-container {
+        font-family: Mada;
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+    }
+    .tab-nav-Homosapiens {
+        border-bottom: 2px solid $Homo-sapiens;
+    }
+    .tab-nav-Musmusculus {
+        border-bottom: 2px solid $Mus-musculus;
+    }
+    .nav-tabs {
+        li {
+            margin-bottom: -1px;
+            &.active {
+                border-bottom: 0;
+                .organism-button {
+                    font-weight: 800;
+                }
+            }
+            .organism-button {
+                background-color: unset;
+                border: 0;
+                padding: 3px 10px;
+                margin: 0;
+                font-weight: 600;
+                &:hover {
+                    background-color: unset;
+                }
+            }
+            a[disabled] {
+                pointer-events: none;
+                cursor: unset;
+                opacity: 0.7;
+                .organism-button {
+                    color: #828282;
+                }
+                img {
+                    opacity: 0.5;
+                }
+            }
+        }
+        .Homosapiens-tab {
+            &.active {
+                a {
+                    border-right: 3px solid $Homo-sapiens;
+                    border-left: 3px solid $Homo-sapiens;
+                    border-top: 3px solid $Homo-sapiens;
+                }
+            }
+            .organism-button {
+                color: $Homo-sapiens;
+            }
+        }
+        .Musmusculus-tab {
+            &.active {
+                a {
+                    border-right: 3px solid $Mus-musculus;
+                    border-left: 3px solid $Mus-musculus;
+                    border-top: 3px solid $Mus-musculus;
+                }
+            }
+            .organism-button {
+                color: $Mus-musculus;
+            }
+        }
+    }
+    .results-count {
+        font-family: Mada;
+        font-size: 1rem;
+        margin: 20px 0;
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+        .bold-total {
+            font-size: 1.1rem;
+            @media screen and (max-width: $screen-xs-min) {
+                font-size: 0.9rem;
+            }
+        }
+        text-align: left;
+    }
+    .matrix-header__filter-controls {
+        display: block;
+        flex: unset;
+        margin: 10px 0 0;
+    }
+    .matrix-general-search {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        text-align: left;
+        input[type="search"] {
+            font-size: 0.8rem;
+        }
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+        i {
+            padding: 5px;
+        }
+        p {
+            margin: 0;
+            margin-right: 5px;
+        }
+        .searchform {
+            margin-left: 5px;
+        }
+        .general-search-entry {
+            padding-right: 0;
+        }
+    }
+    .matrix-facet-container {
+        margin-top: 20px;
+        @media screen and (max-width: $screen-sm-min) {
+            margin-top: 10px;
+        }
+    }
+    .view-controls-container {
+        .btn {
+            margin: 0 2px;
+        }
+    }
+}
+
 .mouse-dev-legend {
     p {
         margin-bottom: 10px;
@@ -165,7 +335,7 @@ $row-data-header-width: 200px;
     display: flex;
     align-items: center;
     line-height: 1.5;
-    
+
     .label-stage {
         font-family: Mada;
         flex: 0 0 60%;
@@ -326,7 +496,7 @@ $row-data-header-width: 200px;
                 text-decoration: none;
                 font-weight: 400;
                 line-height: 1.15;
-                
+
                 &.embryo {
                     &:hover {
                         background-color: darken(#FFE9C6, 8%);
@@ -564,6 +734,7 @@ $row-data-header-width: 200px;
         h2 {
             margin: 0;
             font-size: 1.3rem;
+            border-bottom: none;
         }
     }
 
@@ -581,24 +752,41 @@ $row-data-header-width: 200px;
     border-bottom: 1px solid #ccc;
 
     @at-root #{&}__title {
-        display: flex;
-        justify-content: space-between;
+        margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            justify-content: space-between;
+        }
 
         h1 {
             flex: 0 1 auto;
             margin: 0;
-            font-size: 1.5rem;
         }
 
         .matrix-tags {
-            flex: 0 1 auto;
+            margin: 20px 0;
+
+            @media screen and (min-width: $screen-sm-min) {
+                margin: 0;
+                flex: 0 1 40%;
+                text-align: right;
+            }
 
             img {
                 display: inline-block;
                 margin-left: 5px;
                 height: 22px;
             }
+
+            .matrix-description {
+                color: #606060;
+            }
         }
+    }
+
+    @at-root #{&}__title-sescc-spacing {
+        margin-bottom: 15px;
     }
 
     @at-root #{&}__controls {
@@ -618,6 +806,16 @@ $row-data-header-width: 200px;
     @at-root #{&}__search-controls {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 75%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
+
+    @at-root #{&}__search-controls-sescc {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 100%;
         }
 
         .results-table-control {
@@ -708,13 +906,6 @@ table.matrix th.group-all-groups-cell {
     @extend .group-more-cell__button;
 }
 
-.matrix-general-search {
-    .general-search-entry {
-        margin-bottom: 0;
-        padding-bottom: 0;
-    }
-}
-
 
 /**
  * Styles specific to the reference-epigenome matrix.
@@ -729,6 +920,9 @@ table.matrix th.group-all-groups-cell {
         .tab-content {
             padding-left: 10px;
             overflow: hidden;
+            @media screen and (max-width: $screen-sm-min) {
+                padding-left: 0;
+            }
         }
     }
 
@@ -805,14 +999,14 @@ table.matrix th.group-all-groups-cell {
 }
 
 .chip_seq_matrix__data  {
-    table { 
+    table {
         tr:nth-child(2) td:nth-child(2) {
             border-top-left-radius: 14px;
         }
         tr:nth-child(2) td:last-child {
             border-top-right-radius: 14px;
         }
-    }  
+    }
 }
 
 
@@ -1061,4 +1255,104 @@ $divider-color: #000; // Color of dividers between assays with targets
     &.divider--end {
         border-right: 1px solid $divider-color;
     }
+}
+
+.sescc_matrix {
+    @at-root #{&}__title-img {
+        @media screen and (max-width: $screen-xs-min) {
+            display: none;
+        }
+    }
+
+    @at-root #{&}__graph-region {
+        display: flex;
+        justify-content: center;
+
+        @media screen and (max-width: $screen-sm-min) {
+            display: block;
+        }
+    }
+
+    @at-root #{&}__graph {
+        display: flex;
+        justify-content: left;
+    }
+
+    @at-root #{&}__data {
+        overflow-x: auto;
+
+        a {
+            cursor: pointer;
+        }
+
+        table {
+            tr:nth-child(2) td:nth-child(2) {
+                border-top-left-radius: 14px;
+            }
+            tr:nth-child(2) td:last-child {
+                border-top-right-radius: 14px;
+            }
+        }
+    }
+
+    @at-root #{&}__show-all {
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+        .btn {
+            margin-right: 3px;
+        }
+    }
+
+    @at-root #{&}__germ-layer {
+        display:flex;
+        align-items: center;
+        font-weight: bold;
+
+        @at-root #{&}-title {
+            display:flex;
+            justify-content: center;
+        }
+
+        ul {
+            display: flex;
+            list-style: none;
+            margin-top: 0;
+            padding-top: 0;
+            flex-direction: column;
+            padding-left: 0;
+        }
+
+        li {
+            margin: 10px;
+        }
+
+        hr {
+            margin-bottom:0;
+        }
+
+        .endodermColor {
+            color: blue
+        }
+
+        .mesodermColor {
+            color: green;
+        }
+
+        .ectoDermColor {
+            color: purple;
+        }
+    }
+
+    @at-root #{&}__node {
+        text {
+            font-size: 1.15em;
+            font-weight: 500;
+        }
+    }
+
+    @at-root #{&}__link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
 }

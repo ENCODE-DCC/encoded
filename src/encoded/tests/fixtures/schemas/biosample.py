@@ -325,3 +325,110 @@ def biosample_21(biosample_0, biosample):
         'biosample_term_name': 'BG01'
     })
     return item
+
+
+@pytest.fixture
+def biosample_human_1(testapp, lab, award, source, organism, human_donor_1, heart):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': heart['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_human_2(testapp, lab, award, source, organism, human_donor_1, heart):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': heart['uuid'],
+        'lab': lab['uuid'],
+        'donor': human_donor_1['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_22(testapp, lab, award, source, organism, epiblast):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': epiblast['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_23(testapp, lab, award, source, organism, epiblast):
+    item = {
+        'award': award['uuid'],
+        'biosample_ontology': epiblast['uuid'],
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_pooled_from_not_characterized_biosamples(
+    testapp,
+    biosample_data,
+    construct_genetic_modification,
+    biosample_1,
+    biosample_2,
+):
+    item = biosample_data.copy()
+    item['genetic_modifications'] = [construct_genetic_modification['@id']]
+    item['pooled_from'] = [biosample_1['@id'], biosample_2['@id']]
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_pooled_from_characterized_and_not_characterized_biosamples(
+    testapp,
+    biosample_data,
+    construct_genetic_modification,
+    biosample_1,
+    biosample_2,
+    biosample_characterization,
+):
+    item = biosample_data.copy()
+    item['genetic_modifications'] = [construct_genetic_modification['@id']]
+    item['pooled_from'] = [biosample_1['@id'], biosample_2['@id']]
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {'characterizes': biosample_1['@id']}
+    )
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_pooled_from_characterized_biosamples(
+    testapp,
+    biosample_data,
+    construct_genetic_modification,
+    biosample_1,
+    biosample_2,
+    biosample_characterization,
+    biosample_characterization_no_review,
+):
+    item = biosample_data.copy()
+    item['genetic_modifications'] = [construct_genetic_modification['@id']]
+    item['pooled_from'] = [biosample_1['@id'], biosample_2['@id']]
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {'characterizes': biosample_1['@id']}
+    )
+    testapp.patch_json(
+        biosample_characterization_no_review['@id'],
+        {'characterizes': biosample_2['@id']}
+    )
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]

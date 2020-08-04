@@ -20,6 +20,7 @@ from encoded.cart_view import (
     get_userid,
     get_cart_objects_by_user,
     CART_USER_MAX,
+    CART_ADMIN_MAX,
 )
 
 
@@ -63,6 +64,7 @@ def _create_cart(request, user, name=None, identifier=None, status=None):
         'submitted_by': str(user.uuid),
         'status': status or 'current',
         'name': cart_name,
+        'locked': False,
         'elements': []
     }
     if identifier:
@@ -107,7 +109,9 @@ def get_or_create_cart_by_user(context, request):
 def create_cart_by_user(context, request):
     userid = get_userid(request)
     user = _get_user(request, userid)
-    blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
+    is_admin = 'group.admin' in request.effective_principals 
+    blocked_statuses = ['deleted'] if not is_admin else []
+    cart_max_count = CART_ADMIN_MAX if is_admin else CART_USER_MAX
     carts = get_cart_objects_by_user(request, userid, blocked_statuses=blocked_statuses)
     cart_status = request.json.get('status')
     cart_name = request.json.get('name', '').strip()

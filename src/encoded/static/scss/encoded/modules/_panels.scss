@@ -29,6 +29,27 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     }
 }
 
+.antibody-statuses {
+    .panel {
+        border: 0;
+    }
+}
+
+.Page, .Search, .Matrix, .ChipSeqMatrix, .Summary, .EntexMatrix, .SESCCStemCellMatrix, .ReferenceEpigenomeMatrix, .MouseDevelopmentMatrix {
+    .panel {
+        border: 0;
+    }
+}
+
+.view-item {
+    &.type-Experiment {
+        .panel {
+            border: 1px solid #a0a0a0;
+            border-radius: $border-radius-base;
+        }
+    }
+}
+
 .panel-heading {
     position: relative;
     padding: $panel-heading-inset;
@@ -60,7 +81,6 @@ $panel-body-inset:    10px; // Number of pixels padding inside panel body
     background-color: #4284d8;
     border: 1px solid #3276ca;
     border-radius: $border-radius-base;
-    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
     margin: 10px 0 20px;
     padding: 15px 30px;
     overflow: hidden;
@@ -351,7 +371,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
                 display: none;
             }
         }
-        
+
         &.collapsed {
             flex: 0 1 30px;
             @media screen and (max-width: $screen-md-min) {
@@ -447,7 +467,7 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
     display: flex;
     align-items: center;
     padding: 5px;
-    
+
     @media screen and (max-width: $screen-sm-min) {
         display: block;
         select {
@@ -460,14 +480,14 @@ $file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-con
         margin-right: 5px;
 
         select {
-            height: $file-gallery-controls-height + 2;
+            height: $file-gallery-controls-height;
         }
     }
 
     @at-root #{&}__visualization-selector {
         select {
             display: inline-block;
-            height: $file-gallery-controls-height + 2;
+            height: $file-gallery-controls-height;
             width: auto;
             margin-right: 5px;
         }
@@ -756,7 +776,7 @@ $nav-tab-border-radius: 4px;
     font-size: 0.8rem;
 }
 
-.file-table-paged {
+.table-paged {
     @at-root #{&}__count {
         @extend .file-gallery-counts;
         border-top: 1px solid #a0a0a0;

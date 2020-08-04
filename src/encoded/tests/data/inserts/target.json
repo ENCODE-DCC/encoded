@@ -1,11 +1,5 @@
 [
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101126",
-            "GeneID:23394",
-            "HGNC:ADNP1",
-            "UniProtKB:Q9H2P0"
-        ],
         "genes": ["23394"],
         "label": "ADNP",
         "status": "released",
@@ -13,33 +7,14 @@
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000102974",
-            "GeneID:10664",
-            "UniProtKB:P49711"
-        ],
         "genes": ["10664"],
         "label": "CTCF",
         "status": "released",
+        "dbxrefs": ["FactorBook:CTCF"],
         "investigated_as": ["transcription factor"],
         "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000154832",
-            "GeneID:30827",
-            "HGNC:CFP1",
-            "HGNC:CGBP",
-            "HGNC:SPP1",
-            "HGNC:PCCX1",
-            "HGNC:PHF18",
-            "HGNC:hCGBP",
-            "HGNC:ZCGPC1",
-            "HGNC:HsT2645",
-            "HGNC:2410002I16Rik",
-            "HGNC:5830420C16Rik",
-            "UniProtKB:Q9P0U4"
-        ],
         "genes": ["30827"],
         "label": "CXXC1",
         "status": "released",
@@ -47,13 +22,6 @@
         "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101412",
-            "GeneID:1869",
-            "HGNC:RBBP3",
-            "HGNC:RBP3",
-            "UniProtKB:Q01094"
-        ],
         "genes": ["1869"],
         "label": "E2F1",
         "status": "released",
@@ -61,13 +29,6 @@
         "uuid": "b39e16c2-b1d7-4690-b92c-e7006e5a8332"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101412",
-            "GeneID:1869",
-            "HGNC:RBBP3",
-            "HGNC:RBP3",
-            "UniProtKB:Q01094"
-        ],
         "genes": ["1869"],
         "modifications": [{
             "modification": "eGFP",
@@ -80,13 +41,6 @@
         "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000101412",
-            "GeneID:1869",
-            "HGNC:RBBP3",
-            "HGNC:RBP3",
-            "UniProtKB:Q01094"
-        ],
         "genes": ["1869"],
         "modifications": [{
             "modification": "HA",
@@ -99,9 +53,6 @@
         "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
     },
     {
-        "dbxref": [
-            "UniProtKB:P84228"
-        ],
         "genes": ["15077"],
         "label": "H3K4me3",
         "status": "released",
@@ -109,9 +60,6 @@
         "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
     },
     {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
         "genes": ["126961"],
         "label": "H3K9ac",
         "status": "released",
@@ -119,9 +67,6 @@
         "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
     },
     {
-        "dbxref": [
-            "UniProtKB:P84228"
-        ],
         "investigated_as": ["histone"],
         "genes": ["15077"],
         "label": "H3K9ac",
@@ -129,14 +74,6 @@
         "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000135486",
-            "GeneID:3178",
-            "HGNC:HNRPA1",
-            "HGNC:hnRNPA1",
-            "HGNC:hnRNP-A1",
-            "UniProtKB:P09651"
-        ],
         "genes": ["3178"],
         "label": "HNRNPA1",
         "status": "released",
@@ -144,20 +81,6 @@
         "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000147133",
-            "GeneID:6872",
-            "HGNC:TAF2A",
-            "HGNC:BA2R",
-            "HGNC:CCG1",
-            "HGNC:CCGS",
-            "HGNC:DYT3",
-            "HGNC:NSCL2",
-            "HGNC:TAFII250",
-            "HGNC:KAT4",
-            "HGNC:DYT3/TAF1",
-            "UniProtKB:P21675"
-        ],
         "genes": ["6872"],
         "label": "TAF1",
         "status": "released",
@@ -165,22 +88,6 @@
         "uuid": "993bd05d-a6bd-4718-b51b-abe99f14f8c3"
     },
     {
-        "dbxref": [
-            "ENSEMBL:ENSG00000196628",
-            "GeneID:6925",
-            "HGNC:E2-2",
-            "HGNC:ITF2",
-            "HGNC:PTHS",
-            "HGNC:SEF2",
-            "HGNC:ITF-2",
-            "HGNC:SEF-2",
-            "HGNC:TCF-4",
-            "HGNC:SEF2-1",
-            "HGNC:SEF2-1A",
-            "HGNC:SEF2-1B",
-            "HGNC:bHLHb19",
-            "UniProtKB:P15884"
-        ],
         "genes": ["6925"],
         "label": "TCF4",
         "status": "released",
@@ -189,17 +96,6 @@
     },
     {
         "_test": "non-ascii",
-        "dbxref": [
-            "GeneID:7025",
-            "HGNC:EAR3",
-            "HGNC:EAR-3",
-            "HGNC:NR2F2",
-            "HGNC:SVP44",
-            "HGNC:ERBAL3",
-            "HGNC:TFCOUP1",
-            "HGNC:COUP-TFI",
-            "HGNC:TCFCOUP1"
-        ],
         "genes": ["7025"],
         "label": "NR2F1\u00c2",
         "status": "released",
@@ -209,11 +105,6 @@
     {
         "uuid": "714c9ca5-63a1-48e3-9603-5b867dbc0c7f",
         "label": "mes-4",
-        "dbxref": [
-            "WormBase:WBGene00003222",
-            "WormBase:Y2H9A.1",
-            "UniProtKB:Q9NH52"
-        ],
         "genes": ["179824"],
         "investigated_as": ["transcription factor"],
         "status": "released"
@@ -221,13 +112,6 @@
     {
         "uuid": "79cbe489-930b-410e-8cc2-783e4c37d9f5",
         "label": "3XFLAG-pab-1",
-        "dbxref": [
-            "WormBase:WBGene00003902",
-            "WormBase:Y106G6H.2",
-            "UniProtKB:Q7K797",
-            "UniProtKB:Q9U302",
-            "UniProtKB:Q7K798"
-        ],
         "genes": ["172920"],
         "modifications": [{
             "modification": "3xFLAG",
@@ -242,7 +126,10 @@
         "label": "eGFP",
         "target_organism": "avictoria",
         "investigated_as": ["tag"],
-        "status": "released"
+        "status": "released",
+        "dbxrefs": [
+            "UniProtKB:P42212"
+        ]
     },
     {
         "_test": "synthetic target",
@@ -259,13 +146,6 @@
         "status": "released"
     },
     {
-        "dbxref": [
-           "ENSEMBL:ENSG00000164330",
-            "GeneID:1879",
-            "HGNC:EBF",
-            "HGNC:OLF1",
-            "UniProtKB:Q9UH73"
-        ],
         "genes": ["1879"],
         "investigated_as": [
             "transcription factor"
@@ -284,19 +164,11 @@
     {
         "uuid": "bb5fc7cf-5909-4bf8-92d2-557477ce8646",
         "label": "fkh-10",
-        "dbxref": [
-            "WormBase:WBGene00001442",
-            "WormBase:C25A1.2",
-            "UniProtKB:O17593"
-        ],
         "genes": ["182874"],
         "investigated_as": ["transcription factor"],
         "status": "released"
     },
     {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
         "genes": ["126961"],
         "investigated_as": [
             "histone"
@@ -306,9 +178,6 @@
         "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
     },
     {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
         "genes": ["126961"],
         "investigated_as": [
             "histone"
@@ -322,9 +191,6 @@
         "investigated_as": [
             "histone"
         ],
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
         "status": "released",
         "genes": ["126961"],
         "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
@@ -334,17 +200,11 @@
         "investigated_as": [
             "histone"
         ],
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
         "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72",
         "genes": ["126961"],
         "status": "released"
     },
     {
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
         "genes": ["126961"],
         "label": "H3K27me3",
         "status": "released",
@@ -360,10 +220,7 @@
         "investigated_as": [
             "histone"
         ],
-        "status": "released",
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ]
+        "status": "released"
     },
     {
         "uuid": "1aa5391a-01f1-4983-bdb6-d93db5f53334",
@@ -372,19 +229,11 @@
         "investigated_as": [
             "histone"
         ],
-        "status": "released",
-        "dbxref": [
-            "UniProtKB:Q71DI3"
-        ]
+        "status": "released"
     },
     {
         "uuid": "452c5ea6-5880-499d-b8bb-392790fd2b89",
         "status": "released",
-        "dbxref": [
-            "GeneID:8335",
-            "GeneID:3012",
-            "UniProtKB:P04908"
-        ],
         "genes": [
             "8335",
             "3012"
@@ -401,39 +250,11 @@
             "RNA binding protein"
         ],
         "label": "FTO",
-        "dbxref": [
-            "ENSEMBL:ENSG00000140718",
-            "HGNC:24678",
-            "HGNC:ALKBH9",
-            "HGNC:KIAA1752",
-            "HGNC:MGC5149",
-            "GeneID:79068",
-            "UniProtKB:Q9C0B1"
-        ],
         "status": "released"
     },
     {
         "uuid": "670a9892-e1b6-4c31-a79f-7db1919b07f9",
         "aliases": [],
-        "dbxref": [
-            "FlyBase:CG43860",
-            "FlyBase:FBtr0332562",
-            "FlyBase:FBtr0332558",
-            "FlyBase:CG43860-RA",
-            "FlyBase:FBtr0332557",
-            "UniProtKB:Q9W1P8",
-            "FlyBase:CG43860-RB",
-            "FlyBase:FBtr0332560",
-            "FlyBase:CG43860-RF",
-            "FlyBase:ab-RA",
-            "FlyBase:ab-RD",
-            "RefSeq:NM_079098",
-            "FlyBase:ab-RF",
-            "FlyBase:abrupt",
-            "FlyBase:FBgn0264442",
-            "FlyBase:ab-RB",
-            "FlyBase:CG43860-RD"
-        ],
         "genes": ["34560"],
         "modifications": [{
             "modification": "eGFP",

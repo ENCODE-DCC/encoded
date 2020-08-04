@@ -5,8 +5,9 @@ import url from 'url';
 import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
 import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartStatus } from './cart';
-import { productionHost } from './globals';
-
+import { isProductionHost } from './globals';
+import Tooltip from '../libs/ui/tooltip';
+import { BrowserFeat } from './browserfeat';
 
 /**
  * Navigation bar home-page button.
@@ -36,7 +37,6 @@ HomeBrand.contextTypes = {
     portal: PropTypes.object,
 };
 
-
 export default class Navigation extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -46,7 +46,7 @@ export default class Navigation extends React.Component {
             /** ID of the currently dropped-down main navigation menu; '' if none */
             openDropdown: '',
             /** True if test warning banner visible; default depends on domain */
-            testWarning: !productionHost[url.parse(context.location_href).hostname],
+            testWarning: !isProductionHost(context.location_href),
         };
 
         // Bind this to non-React methods.
@@ -65,19 +65,30 @@ export default class Navigation extends React.Component {
 
     componentDidMount() {
         // Add a click handler to the DOM document -- the entire page
-        document.addEventListener('click', this.documentClickHandler);
+        document.addEventListener('click', e => this.documentClickHandler(e));
     }
 
     componentWillUnmount() {
         // Remove the DOM document click handler now that the DropdownButton is going away.
-        document.removeEventListener('click', this.documentClickHandler);
+        document.removeEventListener('click', e => this.documentClickHandler(e));
     }
 
     /**
      * A click outside the DropdownButton closes the dropdown.
      */
-    documentClickHandler() {
-        this.setState({ openDropdown: '' });
+    documentClickHandler(e) {
+        const className = e.target.className;
+        // Only close navigation hamburger when user does not click on tooltip icon
+        // Note: "toString" is required for hamburger SVG on mobile which does not have a className that is a string
+        // Elements with validClassName and validTagName should not close the menu when clicked on
+        let validClassName = false;
+        if (className) {
+            validClassName = (className.toString().indexOf('icon-question-circle') > -1) || (className.toString().indexOf('tooltip-container__trigger') > -1);
+        }
+        const validTagName = e.target.tagName === 'LI' || e.target.tagName === 'I';
+        if (!(validClassName || validTagName)) {
+            this.setState({ openDropdown: '' });
+        }
     }
 
     /**
@@ -86,26 +97,17 @@ export default class Navigation extends React.Component {
      * @param {object} e React synthetic event
      */
     dropdownClick(dropdownId, e) {
-        // Check if device has touch events
-        function isMobile() {
-            try {
-                document.createEvent('TouchEvent');
-                return true;
-            } catch (evt) {
-                return false;
-            }
-        }
-        const isMobileDevice = isMobile();
         // Clicks and mouseover actions do not behave the same way (clicks should toggle activation whereas hovering should maintain activation)
         // so depending on the device we want user actions have different results
         // We do enable clicks on non-touch devices so that menus are available by keyboard (tab)
         let activateMenuItem = false;
+        const isMobile = BrowserFeat.getBrowserCaps('touchEnabled');
         const dropdownIdIsString = typeof dropdownId === 'string';
         if (e) {
             // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
             e.nativeEvent.stopImmediatePropagation();
             // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
-            if (e.type === 'click' && isMobileDevice) {
+            if (e.type === 'click' && isMobile) {
                 activateMenuItem = dropdownId !== this.state.openDropdown;
                 this.setState(prevState => ({
                     openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
@@ -119,7 +121,7 @@ export default class Navigation extends React.Component {
                 });
             // On non-touch devices, activate menu item on mouseenter or deactivate on mouseleave
             // Note that mouseenter and mouseleave are not available on touch devices
-            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !(isMobileDevice)) {
+            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !isMobile) {
                 // On mousenter, activate menu item
                 if (e.type === 'mouseenter') {
                     activateMenuItem = true;
@@ -133,7 +135,7 @@ export default class Navigation extends React.Component {
                 });
             }
         // If there is no event trigger, user's cursor has left dropdown so we want to close it
-        } else if (!isMobileDevice) {
+        } else if (!isMobile) {
             this.setState({ openDropdown: '' });
         }
     }
@@ -205,9 +207,9 @@ Navigation.childContextTypes = {
     dropdownClick: PropTypes.func, // Called when a dropdown title gets clicked
 };
 
-
 // Main navigation menus
 const GlobalSections = (props, context) => {
+    const glossary = require('./glossary/glossary.json');
     const actions = context.listActionsFor('global_sections').map(action =>
         <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} >
             {action.children ?
@@ -217,7 +219,28 @@ const GlobalSections = (props, context) => {
                         if (childAction.id.substring(0, 4) === 'sep-') {
                             return <DropdownMenuSep key={childAction.id} />;
                         }
-
+                        const glossaryMatch = glossary.find(def => def.term === childAction.title);
+                        if (glossaryMatch) {
+                            return (
+                                <div
+                                    key={childAction.id}
+                                    className={`${childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'} ${childAction.url ? 'hoverable' : ''}`}
+                                >
+                                    <a href={childAction.url || ''}>
+                                        {childAction.title}
+                                    </a>
+                                    <Tooltip
+                                        trigger={<i className="icon icon-question-circle" />}
+                                        tooltipId={childAction.id}
+                                        timerFlag={false}
+                                        innerCss={`menu-tooltip ${childAction.tag ? 'sub-menu' : ''}`}
+                                        relativeTooltipFlag
+                                    >
+                                        {glossaryMatch.definition}
+                                    </Tooltip>
+                                </div>
+                            );
+                        }
                         // Render any regular linked items in the dropdown
                         return (
                             <a href={childAction.url || ''} key={childAction.id} className={childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'}>

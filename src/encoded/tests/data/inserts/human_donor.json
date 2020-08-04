@@ -223,5 +223,39 @@
         "sex": "male",
         "status": "released",
         "uuid": "845eda3c-7503-43e8-a65b-0d08e8d4674d"
+    },
+    {
+        "_test": "test external_ids",
+        "accession": "ENCDO516EPW",
+        "award": "/awards/UM1HG009411/",
+        "external_ids": [
+            "AllCells:10219"
+        ],
+        "lab": "/labs/j-michael-cherry/",
+        "organism": "/organisms/human/",
+        "sex": "unknown",
+        "status": "in progress",
+        "uuid": "97cc5ec8-178f-42bb-87fe-77cae5fb1b09"
+    },
+    {
+        "accession": "ENCDO575EGL",
+        "age": "16",
+        "age_units": "year",
+        "aliases": [
+            "michael-snyder:donor_W62"
+        ],
+        "award": "UM1HG009442",
+        "dbxrefs": [
+            "GEO:SAMN13691287"
+        ],
+        "ethnicity": "Caucasian",
+        "health_status": "DM: no; HTN: no; CAD: no",
+        "lab": "michael-snyder",
+        "life_stage": "child",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "5475b837-6ee9-47b9-ae70-dc292f4b936e"
     }
 ]

@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
 
-/** List of object @type allowed in the cart. */
-const allowedCartTypes = [
-    'Experiment',
-];
+/** List of object @type and object path element allowed in the cart. */
+const allowedCartTypes = {
+    Experiment: 'experiments',
+};
 
 /** Maximum number of elements allowed in cart while not logged in */
 export const CART_MAXIMUM_ELEMENTS_LOGGEDOUT = 4000;
@@ -35,6 +35,25 @@ MaximumElementsLoggedoutModal.propTypes = {
 
 
 /**
+ * Get a mutatable array of object types allowed in carts.
+ * @return {array} Copy of `allowedCartTypes` global
+ */
+export const cartGetAllowedTypes = () => (
+    Object.keys(allowedCartTypes)
+);
+
+
+/**
+ * Get a mutatable array of object path types allowed in carts, i.e. the part in an object path:
+ * /{object path type}/{accession}/ e.g. /experiments/ENCSR000AAA/
+ * @return {array} Copy of `allowedCartTypes` global
+ */
+export const cartGetAllowedObjectPathTypes = () => (
+    Object.keys(allowedCartTypes).map(type => allowedCartTypes[type])
+);
+
+
+/**
  * Given an array of search-result filters, determine if these filters could potentially lead to
  * search results containing object types allowed in carts, including:
  *  - type=<allowed cart type> included in filters or...
@@ -44,24 +63,16 @@ MaximumElementsLoggedoutModal.propTypes = {
  */
 export const isAllowedElementsPossible = (resultFilters) => {
     let typeFilterExists = false;
+    const allowedTypes = cartGetAllowedTypes();
     const allowedFilters = resultFilters.filter((resultFilter) => {
         if (resultFilter.field === 'type') {
             typeFilterExists = true;
-            return allowedCartTypes.indexOf(resultFilter.term) >= 0;
+            return allowedTypes.indexOf(resultFilter.term) >= 0;
         }
         return false;
     });
     return allowedFilters.length > 0 || !typeFilterExists;
 };
-
-
-/**
- * Get a mutatable array of object types allowed in carts.
- * @return {array} Copy of `allowedCartTypes` global
- */
-export const getAllowedCartTypes = () => (
-    allowedCartTypes.slice(0)
-);
 
 
 /**

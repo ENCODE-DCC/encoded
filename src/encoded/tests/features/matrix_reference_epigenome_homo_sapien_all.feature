@@ -1,4 +1,4 @@
-@matrix @usefixtures(workbook)
+@matrix @usefixtures(index_workbook)
 Feature: Matrix
     Scenario: Matrix Reference Epigenome
         When I visit "/"
@@ -10,7 +10,7 @@ Feature: Matrix
         And I wait for the content to load
         Then the title should contain the text "Reference Epigenome Matrix – ENCODE"
         And I should see at least 5 elements with the css selector "tbody > tr"
-        And I should see at least 16 elements with the css selector "tr > th"
+        And I should see at least 15 elements with the css selector "tr > th"
         And I should see exactly one element with the css selector ".test-project-selector [for='all']"
         And I should see exactly one element with the css selector ".test-project-selector [for='roadmap']"
         And I should see exactly one element with the css selector ".test-project-selector [for='nonroadmap']"

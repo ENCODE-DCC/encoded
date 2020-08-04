@@ -5,7 +5,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
@@ -15,6 +17,7 @@ import { requestObjects, ItemAccessories, isFileVisualizable, computeAssemblyAnn
 import { ResultTableList } from '../search';
 import CartBatchDownload from './batch_download';
 import CartClearButton from './clear';
+import CartLockTrigger from './lock';
 import CartMergeShared from './merge_shared';
 import Status from '../status';
 
@@ -168,7 +171,7 @@ const CartBrowser = ({ files, assembly, pageNumber }) => {
             setPageFiles([]);
         }
     }, [files, assembly, pageNumber]);
-    return <GenomeBrowser files={pageFiles} assembly={assembly} expanded />;
+    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded />;
 };
 
 CartBrowser.propTypes = {
@@ -294,11 +297,7 @@ class FileCount extends React.Component {
             );
         }
 
-        return (
-            <div className="cart__facet-progress-overlay">
-                <progress value={facetLoadProgress} max="100" />
-            </div>
-        );
+        return <progress value={facetLoadProgress} max="100" />;
     }
 }
 
@@ -742,7 +741,16 @@ class FileFacets extends React.Component {
     }
 
     render() {
-        const { facets, selectedTerms, selectedFileCount, termClickHandler, visualizableOnly, visualizableOnlyChangeHandler, facetLoadProgress } = this.props;
+        const {
+            facets,
+            selectedTerms,
+            selectedFileCount,
+            termClickHandler,
+            visualizableOnly,
+            visualizableOnlyChangeHandler,
+            facetLoadProgress,
+            disabled,
+        } = this.props;
 
         return (
             <div className="cart__display-facets">
@@ -781,6 +789,9 @@ class FileFacets extends React.Component {
                         </React.Fragment>
                     }
                 </div>
+                {disabled || facetLoadProgress !== -1 ?
+                    <div className="cart__facet-disabled-overlay" />
+                : null}
             </div>
         );
     }
@@ -801,6 +812,8 @@ FileFacets.propTypes = {
     visualizableOnlyChangeHandler: PropTypes.func.isRequired,
     /** Facet-loading progress for progress bar, or null if not displayed */
     facetLoadProgress: PropTypes.number,
+    /** True to disable the facets; grayed out and non-clickable */
+    disabled: PropTypes.bool,
 };
 
 FileFacets.defaultProps = {
@@ -809,6 +822,67 @@ FileFacets.defaultProps = {
     selectedFileCount: 0,
     visualizableOnly: false,
     facetLoadProgress: null,
+    disabled: false,
+};
+
+
+/**
+ * Display a button that links to experiment search results. This *only* works for Experiments, not
+ * FCCs for now.
+ */
+const MAX_SEARCHABLE_DATASETS = 125; // Maximum number of datasets for search-results links.
+const CartDatasetSearch = ({ elements }, reactContext) => {
+    const [isWarningVisible, setIsWarningVisible] = React.useState(false);
+
+    // * For now only include experiments. Might need to expand this in the future.
+    const experimentElements = elements.filter(element => element.includes('/experiments/'));
+
+    // Called when the user clicks the Dataset Search button.
+    const handleButtonClick = () => {
+        if (experimentElements.length > MAX_SEARCHABLE_DATASETS) {
+            setIsWarningVisible(true);
+        } else {
+            const datasetsQuery = experimentElements.map(element => `@id=${encodedURIComponent(element)}`).join('&');
+            const query = `/search/?type=Experiment&${datasetsQuery}`;
+            reactContext.navigate(query);
+        }
+    };
+
+    // Called when the user closes the warning modal.
+    const handleCloseClick = () => {
+        setIsWarningVisible(false);
+    };
+
+    // Only display the Dataset Search button if we have at least one experiment in the cart.
+    if (experimentElements.length > 0) {
+        return (
+            <React.Fragment>
+                <button onClick={handleButtonClick} className="btn btn-sm btn-info btn-inline">Dataset search</button>
+                {isWarningVisible ?
+                    <Modal closeModal={handleCloseClick}>
+                        <ModalHeader title={<h4>Cart dataset search results</h4>} closeModal={handleCloseClick} />
+                        <ModalBody>
+                            Viewing cart dataset search results requires {MAX_SEARCHABLE_DATASETS} datasets
+                            or fewer. This cart contains {elements.length} datasets.
+                        </ModalBody>
+                        <ModalFooter
+                            closeModal={handleCloseClick}
+                        />
+                    </Modal>
+                : null}
+            </React.Fragment>
+        );
+    }
+    return null;
+};
+
+CartDatasetSearch.propTypes = {
+    /** Dataset @ids in the cart */
+    elements: PropTypes.array.isRequired,
+};
+
+CartDatasetSearch.contextTypes = {
+    navigate: PropTypes.func,
 };
 
 
@@ -816,7 +890,7 @@ FileFacets.defaultProps = {
  * Display cart tool buttons. If `savedCartObj` is supplied, supply it for the metadata.tsv line
  * in the resulting files.txt.
  */
-const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCount, cartType, sharedCart, visualizable }) => (
+const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fileCounts, cartType, sharedCart, visualizable, inProgress }) => (
     <div className="cart__tools">
         {elements.length > 0 ?
             <CartBatchDownload
@@ -826,12 +900,14 @@ const CartTools = ({ elements, selectedTerms, savedCartObj, viewableDatasets, fi
                 cartType={cartType}
                 savedCartObj={savedCartObj}
                 sharedCart={sharedCart}
-                fileCount={fileCount}
+                fileCounts={fileCounts}
                 visualizable={visualizable}
             />
         : null}
         {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
+        {cartType === 'ACTIVE' ? <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} /> : null}
         {cartType === 'ACTIVE' || cartType === 'MEMORY' ? <CartClearButton /> : null}
+        <CartDatasetSearch elements={elements} />
     </div>
 );
 
@@ -848,10 +924,12 @@ CartTools.propTypes = {
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
-    /** Number of files batch download will cause to be downloaded */
-    fileCount: PropTypes.number,
+    /** Number of files batch download will download for each download type */
+    fileCounts: PropTypes.object,
     /** True if only visualizable files should be downloaded */
     visualizable: PropTypes.bool,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool.isRequired,
 };
 
 CartTools.defaultProps = {
@@ -860,7 +938,7 @@ CartTools.defaultProps = {
     savedCartObj: null,
     viewableDatasets: null,
     sharedCart: null,
-    fileCount: 0,
+    fileCounts: {},
     visualizable: false,
 };
 
@@ -974,9 +1052,10 @@ const addFileTermToFacet = (facets, field, file) => {
 const assembleFacets = (selectedTerms, files) => {
     const assembledFacets = [];
     const facetSelectedFiles = [];
-    if (files.length > 0) {
+    const processedFiles = files.filter(file => file.assembly);
+    if (processedFiles.length > 0) {
         const selectedFacetKeys = Object.keys(selectedTerms).filter(term => selectedTerms[term].length > 0);
-        files.forEach((file) => {
+        processedFiles.forEach((file) => {
             // Determine whether the file passes the currently selected facet terms. Properties
             // within the file have to match any of the terms within a facet, and across all
             // facets that include selected terms. This is the "first test" I refer to later.
@@ -1308,7 +1387,7 @@ const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCo
  * only the file object properties requested in `requestedFacetFields`. When visualizing a subset
  * of these files, complete file objects get retrieved.
  */
-const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, session }) => {
+const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, fetch, session }) => {
     // Array of currently displayed facets and the terms each contains.
     const [facets, setFacets] = React.useState([]);
     // Keeps track of currently selected facet terms keyed by facet fields.
@@ -1316,9 +1395,9 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
     // Array of dataset @ids the user has access to view; subset of `datasets`; shared carts only.
     const [viewableDatasets, setViewableDatasets] = React.useState(null);
     // Currently displayed page number for each tab panes; for pagers.
-    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, files: 0 });
+    const [pageNumbers, dispatchPageNumbers] = React.useReducer(reducerTabPanePageNumber, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Total number of displayed pages for each tab pane; for pagers.
-    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, files: 0 });
+    const [totalPageCount, dispatchTotalPageCounts] = React.useReducer(reducerTabPaneTotalPageCount, { datasets: 0, browser: 0, processeddata: 0, rawdata: 0 });
     // Currently displayed tab; match key of first TabPanelPane initially.
     const [displayedTab, setDisplayedTab] = React.useState('datasets');
     // All currently selected partial file objects, visualizable or not.
@@ -1331,6 +1410,8 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
     const [visualizableOnly, setVisualizableOnly] = React.useState(false);
     // All partial file objects in the cart datasets. Not affected by currently selected facets.
     const [allFiles, setAllFiles] = React.useState([]);
+    // All raw data files in all datasets in the cart.
+    const [rawdataFiles, setRawdataFiles] = React.useState([]);
 
     // Retrieve current cart information regardless of its source (memory, object, active).
     const { cartType, cartName, cartDatasets } = getCartInfo(context, savedCartObj, elements);
@@ -1406,6 +1487,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
         if (cartDatasets.length > 0) {
             retrieveDatasetsFiles(cartDatasets, setFacetProgress, fetch, session).then(({ datasetFiles, datasets }) => {
                 setAllFiles(datasetFiles);
+                setRawdataFiles(datasetFiles.filter(datasetFile => !datasetFile.assembly));
                 setViewableDatasets(datasets);
             });
         }
@@ -1427,10 +1509,12 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
     React.useEffect(() => {
         const datasetPageCount = calcTotalPageCount(cartDatasets.length, PAGE_ELEMENT_COUNT);
         const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
-        const filePageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
+        const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
+        const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
         dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
         dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
-        dispatchTotalPageCounts({ tab: 'files', totalPageCount: filePageCount });
+        dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
+        dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
 
         // Go to first page if current page number goes out of range of new page count.
         if (pageNumbers.datasets >= datasetPageCount) {
@@ -1439,15 +1523,18 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
         if (pageNumbers.browser >= browserPageCount) {
             dispatchPageNumbers({ tab: 'browser', pageNumber: 0 });
         }
-        if (pageNumbers.files >= filePageCount) {
-            dispatchPageNumbers({ tab: 'files', pageNumber: 0 });
+        if (pageNumbers.processeddata >= processedDataPageCount) {
+            dispatchPageNumbers({ tab: 'processeddata', pageNumber: 0 });
         }
-    }, [cartDatasets, selectedVisualizableFiles, selectedFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.files]);
+        if (pageNumbers.rawdata >= rawdataPageCount) {
+            dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
+        }
+    }, [cartDatasets, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
 
     return (
         <div className={itemClass(context, 'view-item')}>
             <header>
-                <h2>{cartName}</h2>
+                <h1>{cartName}</h1>
                 {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
             </header>
             <Panel addClasses="cart__result-table">
@@ -1460,8 +1547,9 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                             viewableDatasets={viewableDatasets}
                             cartType={cartType}
                             sharedCart={context}
-                            fileCount={selectedFiles.length}
+                            fileCounts={{ processed: selectedFiles.length, raw: rawdataFiles.length, all: allFiles.length }}
                             visualizable={visualizableOnly}
+                            inProgress={inProgress}
                         />
                         {selectedTerms.assembly[0] ? <div className="cart-assembly-indicator">{selectedTerms.assembly[0]}</div> : null}
                     </PanelHeading>
@@ -1479,6 +1567,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, fetch, sessi
                                 visualizableOnlyChangeHandler={handleVisualizableOnlyChange}
                                 loggedIn={loggedIn}
                                 facetLoadProgress={facetProgress}
+                                disabled={displayedTab === 'rawdata'}
                             />
                             <TabPanel
                                 tabPanelCss="cart__display-content"
@@ -1521,6 +1610,8 @@ CartComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** True if user has logged in */
     loggedIn: PropTypes.bool,
+    /** True if cart operation in progress */
+    inProgress: PropTypes.bool,
     /** System fetch function */
     fetch: PropTypes.func.isRequired,
     /** System session information */
@@ -1530,6 +1621,7 @@ CartComponent.propTypes = {
 CartComponent.defaultProps = {
     savedCartObj: null,
     loggedIn: false,
+    inProgress: false,
     session: null,
 };
 
@@ -1543,6 +1635,7 @@ const mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     context: ownProps.context,
     loggedIn: ownProps.loggedIn,
+    inProgress: state.inProgress,
     fetch: ownProps.fetch,
     session: ownProps.session,
 });

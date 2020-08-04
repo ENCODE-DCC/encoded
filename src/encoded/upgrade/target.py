@@ -221,3 +221,16 @@ def target_12_13(value, system):
         value['investigated_as'].remove('recombinant protein')
         if not value['investigated_as']:
             value['investigated_as'].append('other context')
+
+
+@upgrade_step('target', '13', '14')
+def target_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4378
+    if 'dbxref' in value:
+        if 'genes' in value:
+            value.pop('dbxref', None)
+        elif len(value['dbxref']) == 0:
+            value.pop('dbxref', None)
+        else:
+            value['dbxrefs'] = value['dbxref']
+            value.pop('dbxref', None)

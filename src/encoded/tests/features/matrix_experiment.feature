@@ -10,7 +10,7 @@ Feature: Title
         And I wait for the content to load
         Then the title should contain the text "Matrix – KCE"
 
-@matrix @usefixtures(workbook)
+@matrix @usefixtures(index_workbook)
 Feature: Matrix
     Background:
         When I visit "/matrix/?type=Experiment&status=released"
@@ -21,7 +21,7 @@ Feature: Matrix
         Then the title should contain the text "Matrix"
         Then I should see at least 15 elements with the css selector "tbody > tr"
         Then I should see at least 10 elements with the css selector "tr > th"
-        Then I should see at least 5 elements with the css selector "div.orientation > div.facet"
+        Then I should see at least 5 elements with the css selector "div.orientation > div.facet-wrapper > div.facet"
 
 
     Scenario: Matrix Encyclopedia

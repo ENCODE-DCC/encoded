@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import ga from 'google-analytics';
+import url from 'url';
 import Registry from '../libs/registry';
 import DataColors from './datacolors';
 
@@ -110,6 +111,17 @@ export function atIdToAccession(atId) {
 }
 
 
+// Take an @id and return the corresponding object type. If no object type could be found in the
+// @id, the empty string is returned.
+export function atIdToType(atId) {
+    const matched = atId.match(/^\/(.+)\/.+\/$/);
+    if (matched && matched.length === 2) {
+        return matched[1];
+    }
+    return '';
+}
+
+
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
 /* eslint-disable no-extend-native */
@@ -143,7 +155,16 @@ export function zeroFill(n, digits) {
 export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
 
 
-export const productionHost = { 'www.encodeproject.org': 1, 'encodeproject.org': 1, 'www.encodedcc.org': 1 };
+/**
+ * Returns true if code runs on the production host, as opposed to test, demos, or local. This
+ * applies to both server and browser rendering.
+ * @param {string} currentUrl Normally from React context.location_href
+ *
+ * @return True if code runs on production host
+ */
+export const isProductionHost = currentUrl => (
+    ['www.encodeproject.org', 'encodeproject.org', 'www.encodedcc.org'].includes(url.parse(currentUrl).hostname)
+);
 
 export const encodeVersionMap = {
     ENCODE2: '2',

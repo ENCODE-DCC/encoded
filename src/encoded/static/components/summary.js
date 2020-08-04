@@ -1,48 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
+import QueryString from '../libs/query_string';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { LabChart, CategoryChart, ExperimentDate, createBarChart } from './award';
 import * as globals from './globals';
 import { FacetList, ClearFilters } from './search';
 import { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ViewControls } from './view_controls';
-
-
-// Render the title pane.
-const SummaryTitle = (props) => {
-    const { context } = props;
-
-    let clearButton;
-    const searchQuery = url.parse(context['@id']).search;
-    if (searchQuery) {
-        // If we have a 'type' query string term along with others terms, we need a Clear Filters
-        // button.
-        const terms = queryString.parse(searchQuery);
-        const nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
-        clearButton = nonPersistentTerms && terms.type;
-    }
-
-    return (
-        <div className="summary-header__title_control">
-            <div className="summary-header__title">
-                <h1>{context.title}</h1>
-                <div className="results-table-control__main">
-                    <ViewControls results={context} />
-                </div>
-            </div>
-            <ClearFilters searchUri={context.clear_filters} enableDisplay={!!clearButton} />
-        </div>
-    );
-};
-
-SummaryTitle.propTypes = {
-    context: PropTypes.object.isRequired, // Summary search result object
-};
-
+import BodyMap, { systemsField, organField } from './body_map';
 
 /**
  * Generate an array of data from one facet bucket for displaying in a chart, with one array entry
@@ -70,6 +38,17 @@ function generateStatusData(buckets, labels) {
     return statusData;
 }
 
+// Data field for organism
+// We will display different facets depending on the selected organism
+const organismField = 'replicates.library.biosample.donor.organism.scientific_name';
+
+// Mapping of shortened organism name and full scientific organism name
+const organismTerms = [
+    'Homo sapiens',
+    'Mus musculus',
+    'Drosophila melanogaster',
+    'Caenorhabditis elegans',
+];
 
 // Column graph of experiment statuses.
 class SummaryStatusChart extends React.Component {
@@ -197,37 +176,48 @@ SummaryStatusChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
-
-// Render the vertical facets.
-const SummaryVerticalFacets = ({ context }, reactContext) => {
-    // All facets are vertical facets.
-    const vertFacets = context.facets;
+// Render the horizontal facets.
+// Note: these facets are not necessarily horizontal, it depends on the screen width
+const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
+    let horizFacets;
+    if (facetList === 'all') {
+        horizFacets = context.facets.filter(f => ['biosample_ontology.organ_slims', 'biosample_ontology.cell_slims', 'assay_title', 'date_released', 'date_submitted'].includes(f.field));
+    } else {
+        horizFacets = context.facets.filter(f => ['assay_title', 'biosample_ontology.term_name', 'date_released', 'date_submitted'].includes(f.field));
+    }
 
     // Calculate the searchBase, which is the current search query string fragment that can have
     // terms added to it.
     const searchBase = `${url.parse(reactContext.location_href).search}&` || '?';
 
+    // Note: we subtract one from the horizontal facet length because "date-released" and "date-submitted" are collapsed into one facet
     return (
         <FacetList
             context={context}
-            facets={vertFacets}
+            facets={horizFacets}
             filters={context.filters}
             searchBase={searchBase}
-            addClasses="summary-facets"
+            addClasses={`summary-horizontal-facets facet-num-${horizFacets.length - 1} ${facetList}`}
             supressTitle
+            orientation="horizontal"
+            isExpandable={false}
         />
     );
 };
 
-SummaryVerticalFacets.propTypes = {
+SummaryHorizontalFacets.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object
+    facetList: PropTypes.string,
 };
 
-SummaryVerticalFacets.contextTypes = {
+SummaryHorizontalFacets.defaultProps = {
+    facetList: '',
+};
+
+SummaryHorizontalFacets.contextTypes = {
     location_href: PropTypes.string, // Current URL
     navigate: PropTypes.func, // encoded navigation
 };
-
 
 // Update all charts to resize themselves on print.
 const printHandler = () => {
@@ -241,6 +231,9 @@ const printHandler = () => {
 // awards.js for labs and categories, but not for the status chart. That's because the data gets
 // retrieved so differently -- through multiple search requests in awards.js, but in its own
 // property with this summary page. Might be good for a refactor later to share common code.
+
+// "displayCharts" is an optional parameter which allows for display of subset of all possible charts
+// Possible parameter values are "all", "donuts" or "area", and the default is "all"
 class SummaryData extends React.Component {
     constructor() {
         super();
@@ -306,17 +299,22 @@ class SummaryData extends React.Component {
             searchQuery = context.filters.map(filter => `${filter.field}=${encoding.encodedURIComponentOLD(filter.term)}`).join('&');
         }
         const linkUri = `/matrix/?${searchQuery}`;
+        const displayCharts = this.props.displayCharts;
 
         return (
             <div className="summary-content__data">
-                <div className="summary-content__snapshot">
-                    {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
-                    {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
-                    {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} ident="status" /> : null}
-                </div>
-                <div className="summary-content__statistics">
-                    <ExperimentDate experiments={context} panelCss="summary-content__panel" panelHeadingCss="summary-content__panel-heading" />
-                </div>
+                {(displayCharts === 'all' || displayCharts === 'donuts') ?
+                    <div className="summary-content__snapshot">
+                        {labs ? <LabChart labs={labs} linkUri={linkUri} ident="experiments" filteredOutLabs={filteredOutLabs} /> : null}
+                        {assays ? <CategoryChart categoryData={assays} categoryFacet="assay_title" title="Assay" linkUri={linkUri} ident="assay" filteredOutAssays={filteredOutAssays} /> : null}
+                        {statusDataCount ? <SummaryStatusChart statusData={statusData} totalStatusData={statusDataCount} linkUri={linkUri} ident="status" /> : null}
+                    </div>
+                : null}
+                {(displayCharts === 'all' || displayCharts === 'area') ?
+                    <div className="summary-content__statistics">
+                        <ExperimentDate experiments={context} panelCss="summary-content__panel" panelHeadingCss="summary-content__panel-heading" />
+                    </div>
+                : null}
             </div>
         );
     }
@@ -324,41 +322,103 @@ class SummaryData extends React.Component {
 
 SummaryData.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object
+    displayCharts: PropTypes.string, // Optional property that allows display of subset of charts
 };
 
-
-// Render the title panel and the horizontal facets.
-const SummaryHeader = (props) => {
-    const { context } = props;
-
-    return (
-        <div className="summary-header">
-            <SummaryTitle context={context} />
-        </div>
-    );
+SummaryData.defaultProps = {
+    displayCharts: 'all',
 };
 
-SummaryHeader.propTypes = {
+class SummaryBody extends React.Component {
+    constructor(props) {
+        super(props);
+        const searchQuery = url.parse(this.props.context['@id']).search;
+        const terms = queryString.parse(searchQuery);
+        this.state = {
+            selectedOrganism: terms[organismField] ? terms[organismField] : [],
+        };
+        this.chooseOrganism = this.chooseOrganism.bind(this);
+    }
+
+    chooseOrganism(e) {
+        this.setState({
+            selectedOrganism: e.currentTarget.id,
+        });
+        const parsedUrl = url.parse(this.props.context['@id']);
+        const query = new QueryString(parsedUrl.query);
+        query.deleteKeyValue(systemsField);
+        query.deleteKeyValue(organField);
+        query.replaceKeyValue(organismField, e.currentTarget.id, '');
+        const href = `?${query.format()}`;
+        this.context.navigate(href);
+    }
+    render() {
+        const searchQuery = url.parse(this.props.context['@id']).search;
+        const query = new QueryString(searchQuery);
+        const nonPersistentQuery = query.clone();
+        nonPersistentQuery.deleteKeyValue('?type');
+        const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
+        return (
+            <div className="summary-header">
+                <div className="summary-header__title_control">
+                    <div className="summary-header__title">
+                        <h1>{this.props.context.title}</h1>
+                    </div>
+                    <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
+                </div>
+                <div className="summary-controls">
+                    <div className="organism-button-instructions">Choose an organism:</div>
+                    <div className="organism-button-container">
+                        {organismTerms.map(term =>
+                            <button
+                                id={term}
+                                onClick={e => this.chooseOrganism(e)}
+                                className={`organism-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
+                                key={term}
+                            >
+                                <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.png`} alt={term} />
+                                <span>{term}</span>
+                            </button>
+                        )}
+                    </div>
+                    <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
+                        <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
+                        <div className="view-controls-container">
+                            <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
+                        </div>
+                    </div>
+                    {(this.state.selectedOrganism === 'Homo sapiens') ?
+                        <React.Fragment>
+                            <div className="flex-container">
+                                <BodyMap context={this.props.context} />
+                                <SummaryData context={this.props.context} displayCharts={'donuts'} />
+                            </div>
+                            <div className="summary-content">
+                                <SummaryData context={this.props.context} displayCharts={'area'} />
+                            </div>
+                        </React.Fragment>
+                    :
+                        <React.Fragment>
+                            <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
+                            <div className="summary-content">
+                                <SummaryData context={this.props.context} displayCharts={'all'} />
+                            </div>
+                        </React.Fragment>
+                    }
+                </div>
+            </div>
+        );
+    }
+}
+
+SummaryBody.propTypes = {
     context: PropTypes.object.isRequired, // Summary search result object
 };
 
-
-// Render the vertical facets and the summary contents.
-const SummaryContent = (props) => {
-    const { context } = props;
-
-    return (
-        <div className="summary-content">
-            <SummaryVerticalFacets context={context} />
-            <SummaryData context={context} />
-        </div>
-    );
+SummaryBody.contextTypes = {
+    navigate: PropTypes.func,
+    location_href: PropTypes.string,
 };
-
-SummaryContent.propTypes = {
-    context: PropTypes.object.isRequired, // Summary search result object
-};
-
 
 // Render the entire summary page based on summary search results.
 const Summary = (props) => {
@@ -369,8 +429,7 @@ const Summary = (props) => {
         return (
             <Panel addClasses={itemClass}>
                 <PanelBody>
-                    <SummaryHeader context={context} />
-                    <SummaryContent context={context} />
+                    <SummaryBody context={context} />
                 </PanelBody>
             </Panel>
         );

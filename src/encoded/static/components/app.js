@@ -27,6 +27,7 @@ import * as globals from './globals';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
+import jsonldFormatter from '../libs/jsonld';
 import { requestSearch } from './objectutils';
 import newsHead from './page';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
@@ -778,6 +779,8 @@ class App extends React.Component {
 
     /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
     handleClick(event) {
+        const options = {};
+
         // https://github.com/facebook/react/issues/1691
         if (event.isDefaultPrevented()) {
             return;
@@ -805,6 +808,11 @@ class App extends React.Component {
             event.preventDefault();
             this.trigger(dataTrigger);
             return;
+        }
+
+        // data-noscroll attribute prevents scrolling to the top when clicking a link.
+        if (target.getAttribute('data-noscroll') !== null) {
+            options.noscroll = true;
         }
 
         // Ensure this is a plain click
@@ -849,7 +857,7 @@ class App extends React.Component {
         // through the navigate method.
         if (this.constructor.historyEnabled) {
             event.preventDefault();
-            this.navigate(href);
+            this.navigate(href, options);
         }
     }
 
@@ -951,6 +959,7 @@ class App extends React.Component {
 
         // options.skipRequest only used by collection search form
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
+        // options.noscroll to prevent scrolling to the top of the page after navigating.
         let mutatableHref = url.resolve(this.state.href, href);
 
         // Strip url fragment.
@@ -1036,7 +1045,8 @@ class App extends React.Component {
             return response.json();
         }).catch(globals.parseAndLogError.bind(undefined, 'contextRequest')).then(this.receiveContextResponse);
 
-        if (!mutatableOptions.replace) {
+        // Scroll to the top of the page unless replacing the URL or option to not scroll given.
+        if (!mutatableOptions.replace && !mutatableOptions.noscroll) {
             promise.then(this.constructor.scrollTo);
         }
 
@@ -1194,19 +1204,29 @@ class App extends React.Component {
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
-                    <link href="https://fonts.googleapis.com/css?family=Mada:200,400,500,600,700" rel="stylesheet" />
+                    <link href="https://fonts.googleapis.com/css2?family=Mada:wght@200;400;500;600;700&family=Oswald:wght@200;300;400;500&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet" />
                     <script async src="//www.google-analytics.com/analytics.js" />
-                    <script async src="https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/walkme_8c7ff9322d01408798869806f9f5a132_https.js" />
+                    <script async src={`https://cdn.walkme.com/users/8c7ff9322d01408798869806f9f5a132/${globals.isProductionHost(this.props.href) ? '' : 'test/'}walkme_8c7ff9322d01408798869806f9f5a132_https.js`} />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
+                    {this.state.context && this.state.context['@type'] && this.state.context['@type'].some(type => ['experiment', 'functionalcharacterizationexperiment', 'annotation'].includes(type.toLowerCase())) ?
+                        <script
+                            data-prop-name="context"
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: `\n\n${jsonScriptEscape(JSON.stringify(jsonldFormatter(this.state.context, hrefUrl.host)))}\n\n`,
+                            }}
+                        />
+                    : null
+                    }
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script
                         data-prop-name="context"
-                        type="application/ld+json"
+                        type="application/json"
                         dangerouslySetInnerHTML={{
-                            __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
+                            __html: `\n\n${jsonScriptEscape(JSON.stringify((this.state.context)))}\n\n`,
                         }}
                     />
                     <div id="slot-application" className={appClass}>
@@ -1215,7 +1235,7 @@ class App extends React.Component {
                             <Provider store={cartStore}>
                                 <div id="layout">
                                     <Navigation isHomePage={isHomePage} />
-                                    <div id="content" className="container" key={key}>
+                                    <div id="content" className={context['@type'] ? `container ${context['@type'].join(' ')}` : 'container'} key={key}>
                                         {content}
                                     </div>
                                     {errors}

@@ -16,14 +16,14 @@ import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
 import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 
 
 /**
  * 'Experiment' search results view-control filter. For most experiment searches, this just returns
- * the default views for experiments. But if this displays the reference-epigenome matrix, it
- * returns the subset of views relevant to those.
+ * the default views for experiments. But if this displays the reference-epigenome matrix or Stem Cell
+ * Matrix, it returns the subset of views relevant to those.
  * @param {array} types Views defined by default for the Experiment @type.
  * @param {object} results Current page's search-results object
  *
@@ -32,7 +32,8 @@ import ViewControlRegistry, { ViewControlTypes } from './view_controls';
 const viewControlFilter = (types, results) => {
     let views;
     const parsedUrl = url.parse(results['@id']);
-    if (parsedUrl.pathname === '/reference-epigenome-matrix/') {
+    const pathname = parsedUrl.pathname;
+    if (['/reference-epigenome-matrix/', '/sescc-stem-cell-matrix/'].includes(pathname)) {
         views = ['Search', 'Report'];
     } else {
         views = types.filter(type => type !== results['@type'][0]);
@@ -456,10 +457,16 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // indicates isogenic.
     const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
-    // Get a list of related datasets, possibly filtering on their status.
-    let seriesList = [];
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
     if (context.related_series && context.related_series.length > 0) {
-        seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
+        seriesMap = _.groupBy(
+            context.related_series.filter(
+                dataset => loggedIn || dataset.status === 'released'
+            ),
+            series => series['@type'][0]
+        );
     }
 
     // Set up the breadcrumbs.
@@ -495,8 +502,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     ));
 
     const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
-
     const fcexperimentsUrl = `/search/?type=FunctionalCharacterizationExperiment&possible_controls.accession=${context.accession}`;
+    const fcelementsmappingUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_mapping=${context['@id']}`;
+    const fcelementscloningUrl = `/search/?type=FunctionalCharacterizationExperiment&elements_cloning=${context['@id']}`;
+
 
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
@@ -664,6 +673,13 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dd><a href={context.elements_mapping}>{globals.atIdToAccession(context.elements_mapping)}</a></dd>
                                 </div>
                             : null}
+
+                            {context.elements_cloning ?
+                                <div data-test="elements-cloning">
+                                    <dt>Elements cloning</dt>
+                                    <dd><a href={context.elements_cloning}>{globals.atIdToAccession(context.elements_cloning)}</a></dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
 
@@ -720,12 +736,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {seriesList.length > 0 ?
-                                <div data-test="relatedseries">
-                                    <dt>Related datasets</dt>
-                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                            {Object.keys(seriesMap).map(seriesType =>
+                                <div data-test="relatedseries" key={seriesType}>
+                                    <dt>{seriesType.replace(/([A-Z])/g, ' $1')}</dt>
+                                    <dd>
+                                        <RelatedSeriesList seriesList={seriesMap[seriesType]} />
+                                    </dd>
                                 </div>
-                            : null}
+                            )}
 
                             {context.submitter_comment ?
                                 <div data-test="submittercomment">
@@ -757,6 +775,20 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
             <FetchedItems context={context} url={fcexperimentsUrl} Component={ControllingExperiments} />
+
+            <FetchedItems
+                context={context}
+                url={fcelementsmappingUrl}
+                Component={ExperimentTable}
+                title={`Functional characterization experiments with ${context.accession} as an elements mapping`}
+            />
+
+            <FetchedItems
+                context={context}
+                url={fcelementscloningUrl}
+                Component={ExperimentTable}
+                title={`Functional characterization experiments with ${context.accession} as an elements cloning`}
+            />
 
             {combinedDocuments.length > 0 ?
                 <DocumentsPanelReq documents={combinedDocuments} />

@@ -19,7 +19,7 @@ Encoded Application AWS Deployment Helper
 
 ### ES wait nodes
     1. Create es wait node and head for ami instance to build ami images
-        $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami
+        $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami  --profile-name default
     2. Watch the logs of both machines, wait till deployment finishes.
     3. Create the es data and head node ami image from the instance using the commands 
         printed in the console.
@@ -37,7 +37,7 @@ Encoded Application AWS Deployment Helper
 
 ### Frontend
     1. Create frontend ami instance to build fronend ami image
-        $ bin/deploy --cluster-name encdbuildami-frontend --build-ami
+        $ bin/deploy --cluster-name encdbuildami-frontend --build-ami --es-ip 1.2.3.4  --profile-name default
     2. Watch the logs of both machines, wait till deployment finishes.
     3. Create the frontend ami image from the instance using the command
         printed in the console.
@@ -73,17 +73,17 @@ Ex) How to use this script to build a new config files, like the Ubuntu 18/Pytho
     $ bin/deploy --use-prebuilt-config 20191112-pg11-u18-demo
 3. Update the prebuilt yaml by hand with necessary changes.
 4. Repeat 2. and 3. until the update is complete.
-5. Make a new template in encoded/cloud-config/config-build-files/
-    $ cp pg11-demo.yml u18-demo.yml
-6. Create a new set of files in encoded/cloud-config/config-build-files/cc-parts
+5. Make a new template in encoded/cloud-config/
+    $ cp demo-template.yml demo-without-pg.yml # for example
+6. Create a new set of files in encoded/cloud-config/template-parts
     to be used in u18-demo.yml template.  Examine older templates to see how.
 7. Diff the compiled yml with the manual yml.  Fix any differences.
 8. Save the compiled yml to prebuilt using today's date
     $ bin/deploy --save-config-name 20200129
 9. Remove the manualy prebuilt, we'll keep the compiled version
 10. Deploy the new prebuilt as in step two.
-11. Make templates in encoded/cloud-config/config-build-files/ for es nodes and frontend.
-    Try to reused the demo cc-parts is possible.  Make new ones for es or frontend if needed.
+11. Make templates in encoded/cloud-config/ for es nodes and frontend if needed.
+    Try to reused the demo template-parts is possible.  Make new ones for es or frontend if needed.
 
 
 """
@@ -98,273 +98,102 @@ from time import sleep
 
 from difflib import Differ
 from os.path import expanduser
+from datetime import datetime
 
 import boto3
 
 
-def _nameify(in_str):
-    name = ''.join(
-        c if c.isalnum() else '-'
-        for c in in_str.lower()
-    ).strip('-')
-    return re.subn(r'\-+', '-', name)[0]
-
-
-def _short_name(long_name):
-    """
-    Returns a short name for the branch name if found
-    """
-    if not long_name:
-        return None
-    regexes = [
-        '(?:encd|sno)-[0-9]+',  # Demos
-        '^v[0-9]+rc[0-9]+',     # RCs
-        '^v[0-9]+x[0-9]+',      # Prod, Test
-    ]
-    result = long_name
-    for regex_str in regexes:
-        res = re.findall(regex_str, long_name, re.IGNORECASE)
-        if res:
-            result = res[0]
-            break
-    return result[:9].lower()
-
-
-def _tag_ec2_instance(instance, tag_data, elasticsearch, cluster_name):
-    tags = [
-        {'Key': 'Name', 'Value': tag_data['name']},
-        {'Key': 'branch', 'Value': tag_data['branch']},
-        {'Key': 'commit', 'Value': tag_data['commit']},
-        {'Key': 'started_by', 'Value': tag_data['username']},
-    ]
-    if elasticsearch:
-        tags.append({'Key': 'elasticsearch', 'Value': 'yes'})
-        # This if for integration with nagios server.
-        # Only used on production.
-        tags.append({'Key': 'Role', 'Value': 'data'})
-    if cluster_name is not None:
-        tags.append({'Key': 'ec_cluster_name', 'Value': cluster_name})
-    instance.create_tags(Tags=tags)
-    return instance
-
-
-def _read_file_as_utf8(config_file):
-    with io.open(config_file, 'r', encoding='utf8') as file_handler:
-        return file_handler.read()
-
-
-def _write_str_to_file(filepath, str_data):
-    with io.open(filepath, 'w') as file_handler:
-        return file_handler.write(str_data)
-
-
-def _read_ssh_key(identity_file):
-    ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
-    finger_id = subprocess.check_output(
-        ssh_keygen_args
-    ).decode('utf-8').strip()
-    if finger_id:
-        with open(identity_file, 'r') as key_file:
-            ssh_pub_key = key_file.readline().strip()
-            return ssh_pub_key
-    return None
-
-
-def _get_bdm(main_args):
-    return [
-        {
-            'DeviceName': '/dev/sda1',
-            'Ebs': {
-                'VolumeSize': int(main_args.volume_size),
-                'VolumeType': 'gp2',
-                'DeleteOnTermination': True
-            }
-        },
-        {
-            'DeviceName': '/dev/sdb',
-            'NoDevice': "",
-        },
-        {
-            'DeviceName': '/dev/sdc',
-            'NoDevice': "",
-        },
-    ]
-
-
-def _get_user_data(config_yaml, data_insert, main_args):
-    ssh_pub_key = _read_ssh_key(main_args.identity_file)
-    if not ssh_pub_key:
-        print(
-            "WARNING: User is not authorized with ssh access to "
-            "new instance because they have no ssh key"
-        )
-    data_insert['LOCAL_SSH_KEY'] = ssh_pub_key
-    # aws s3 authorized_keys folder
-    auth_base = 's3://encoded-conf-prod/ssh-keys'
-    auth_type = 'prod'
-    if main_args.profile_name != 'production':
-        auth_type = 'demo'
-    auth_keys_dir = '{auth_base}/{auth_type}-authorized_keys'.format(
-        auth_base=auth_base,
-        auth_type=auth_type,
-    )
-    data_insert['S3_AUTH_KEYS'] = auth_keys_dir
-    user_data = config_yaml % data_insert
-    return user_data
-
-
-def _get_commit_sha_for_branch(branch_name):
-    return subprocess.check_output(
-        ['git', 'rev-parse', '--short', branch_name]
-    ).decode('utf-8').strip()
-
-
-def _get_instances_tag_data(main_args):
-    instances_tag_data = {
-        'branch': main_args.branch,
-        'commit': None,
-        'short_name': _short_name(main_args.name),
-        'name': main_args.name,
-        'username': None,
+# AWS/EC2 - Deploy Cloud Config
+def _tag_ec2_instance(
+        instance,
+        tag_data,
+        elasticsearch,
+        cluster_name,
+        image_id,
+        role='demo',
+        profile_name='default',
+        dry_run=False,
+        arm_arch=False,
+        cluster_master=False,
+    ):
+    # Defaults to demo development
+    tags_dict = {
+        # Org
+        'project': 'encoded',
+        'section': 'app',
+        'account': 'cherry-lab',
+        'started_by': tag_data['username'],
+        # Instance
+        'Name': tag_data['name'],
+        'arch': 'x86_64',
+        'branch': tag_data['branch'],
+        'commit': tag_data['commit'],
+        'elasticsearch': 'no',
+        'elasticsearch_head': 'no',
+        'ec_cluster_name': cluster_name if cluster_name else 'single',
+        'lcl_deploy_datetime': str(datetime.today()),
+        'utc_deploy_datetime': str(datetime.utcnow()),
+        # Devops
+        'auto_shutdown': 'true',
+        'auto_resize': 'c5.4xlarge',
+        'elastic_ip_swtich_datatime': 'na',
+        'Role': 'encd',
+        # User: User editable tags for personal use.
+        'detailA': 'notused',
+        'detailB': 'notused',
+        'detailC': 'notused',
     }
-    instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
-    # check if commit is a tag first then branch
-    is_tag = False
-    tag_output = subprocess.check_output(
-        ['git', 'tag', '--contains', instances_tag_data['commit']]
-    ).strip().decode()
-    if tag_output:
-        if tag_output == main_args.branch:
-            is_tag = True
-    is_branch = False
-    git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
-    if subprocess.check_output(git_cmd).strip():
-        is_branch = True
-    if not is_tag and not is_branch:
-        print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
-        sys.exit(1)
-    instances_tag_data['username'] = getpass.getuser()
-    if instances_tag_data['name'] is None:
-        instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
-        instances_tag_data['name'] = _nameify(
-            '%s-%s-%s' % (
-                instances_tag_data['short_name'],
-                instances_tag_data['commit'],
-                instances_tag_data['username'],
-            )
-        )
-        if main_args.es_wait or main_args.es_elect:
-            instances_tag_data['name'] = 'elasticsearch-' + instances_tag_data['name']
-    return instances_tag_data, is_tag
-
-
-def _get_ec2_client(main_args, instances_tag_data):
-    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
-    ec2 = session.resource('ec2')
-    name_to_check = instances_tag_data['name']
-    if main_args.node_name:
-        if int(main_args.cluster_size) != 1:
-            print('--node-name can only be used --cluster-size 1')
-            return None
-        name_to_check = main_args.node_name
-    if any(ec2.instances.filter(
-            Filters=[
-                {'Name': 'tag:Name', 'Values': [name_to_check]},
-                {'Name': 'instance-state-name',
-                 'Values': ['pending', 'running', 'stopping', 'stopped']},
-            ])):
-        print('An instance already exists with name: %s' % name_to_check)
-        return None
-    return ec2
-
-
-def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
-    master_user_data = None
-    git_remote = 'origin' if not is_tag else 'tags'
-    data_insert = {
-        'APP_WORKERS': 'notused',
-        'BATCHUPGRADE_VARS': 'notused',
-        'BUILD_TYPE': 'NONE',
-        'COMMIT': instances_tag_data['commit'],
-        'CC_DIR': '/home/ubuntu/encoded/cloud-config/deploy-run-scripts',
-        'CLUSTER_NAME': 'NONE',
-        'ES_IP': main_args.es_ip,
-        'ES_PORT': main_args.es_port,
-        'ES_OPT_FILENAME': 'notused',
-        'FULL_BUILD': main_args.full_build,
-        'GIT_BRANCH': main_args.branch,
-        'GIT_REMOTE': git_remote,
-        'GIT_REPO': main_args.git_repo,
-        'HOME': '/srv/encoded',
-        'INSTALL_TAG': 'encd-install',
-        'JVM_GIGS': 'notused',
-        'PG_VERSION': main_args.postgres_version,
-        'PY3_PATH': '/usr/bin/python3.6',
-        'REDIS_PORT': main_args.redis_port,
-        'REGION_INDEX': str(main_args.region_indexer),
-        'ROLE': main_args.role,
-        'S3_AUTH_KEYS': 'addedlater',
-        'WALE_S3_PREFIX': main_args.wale_s3_prefix,
-    }
-    if main_args.es_wait or main_args.es_elect:
-        # Data node clusters
-        count = int(main_args.cluster_size)
-        security_groups = ['elasticsearch-https']
-        iam_role = main_args.iam_role_es
-        es_opt = 'es-cluster-wait.yml' if main_args.es_wait else 'es-cluster-elect.yml'
-        data_insert.update({
-            'BUILD_TYPE': 'encd-es-build',
-            'CLUSTER_NAME': main_args.cluster_name,
-            'ES_OPT_FILENAME': es_opt,
-            'JVM_GIGS': main_args.jvm_gigs,
-        })
-        user_data = _get_user_data(config_yaml, data_insert, main_args)
-        # Additional head node
-        if main_args.es_wait and main_args.node_name is None:
-            master_data_insert = copy.copy(data_insert)
-            master_data_insert.update({
-                'ES_OPT_FILENAME': 'es-cluster-head.yml',
-            })
-            master_user_data = _get_user_data(
-                config_yaml,
-                master_data_insert,
-                main_args,
-            )
-    else:
-        # Single demo or Frontends
-        security_groups = ['ssh-http-https']
-        iam_role = main_args.iam_role
-        count = 1
-        data_insert.update({
-            'APP_WORKERS': main_args.app_workers,
-            'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
-            'REGION_INDEX': str(main_args.region_indexer),
-            'ROLE': main_args.role,
-        })
-        if main_args.cluster_name:
-            data_insert.update({
-                'BUILD_TYPE': 'encd-frontend-build',
-                'CLUSTER_NAME': main_args.cluster_name,
-                'REGION_INDEX': 'True',
-            })
+    if profile_name == 'default': 
+        if role == 'rc':
+            tags_dict['Role'] += '-new-rc'
+            tags_dict['section'] += '-rc'
+            tags_dict['ec_cluster_name'] = cluster_name
+            tags_dict['auto_shutdown'] = 'false'
+            tags_dict['auto_resize'] = 'na'
+        elif role == 'test':
+            tags_dict['Role'] += '-new-test'
+            tags_dict['section'] += '-test'
+            tags_dict['ec_cluster_name'] = cluster_name
+            tags_dict['auto_shutdown'] = 'false'
+            tags_dict['auto_resize'] = 'na'
+            tags_dict['elastic_ip_swtich_datatime'] = 'pending'
         else:
-            data_insert.update({
-                'BUILD_TYPE': 'encd-demo-build',
-                'JVM_GIGS': main_args.jvm_gigs,
-                'ES_OPT_FILENAME': 'es-demo.yml',
-            })
-        user_data = _get_user_data(config_yaml, data_insert, main_args)
-    run_args = {
-        'count': count,
-        'iam_role': iam_role,
-        'master_user_data': master_user_data,
-        'user_data': user_data,
-        'security_groups': security_groups,
-        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
-    }
-    if main_args.profile_name == 'production' and main_args.role != 'candidate':
-        run_args['key-pair-name'] += '-prod'
-    return run_args
+            if tag_data['is_qa_demo']:
+                tags_dict['Role'] += '-qa'
+                tags_dict['section'] += '-qa'
+            else:
+                tags_dict['Role'] += '-dev'
+                tags_dict['section'] += '-dev'
+            if cluster_name:
+                tags_dict['Role'] += '-cluster'
+                tags_dict['section'] += '-cluster'
+    elif profile_name == 'production':
+        tags_dict['account'] = 'encode-prod'
+        if role == 'candidate':
+            tags_dict['Role'] += '-new-prod'
+            tags_dict['section'] += '-prod'
+            tags_dict['ec_cluster_name'] = cluster_name
+            tags_dict['auto_shutdown'] = 'false'
+            tags_dict['auto_resize'] = 'na'
+            tags_dict['elastic_ip_swtich_datatime'] = 'pending'
+    if elasticsearch:
+        # the role tags for data machines are used for nagios monitoring
+        tags_dict['Role'] += '-data'
+        tags_dict['elasticsearch'] = 'yes'
+        tags_dict['auto_resize'] = 'na'
+        tags_dict['elastic_ip_swtich_datatime'] = 'na'
+        if cluster_master:
+            tags_dict['elasticsearch_head'] = 'yes'
+            tags_dict['Role'] += 'head'
+    if arm_arch:
+        tags_dict['arch'] = 'arm'
+    # Create tags list
+    tags = []
+    for key, val in tags_dict.items():
+        tags.append({'Key': key, 'Value': val})
+    if not dry_run and instance:
+        instance.create_tags(Tags=tags)
+    return tags, tags_dict
 
 
 def _wait_and_tag_instances(
@@ -372,6 +201,7 @@ def _wait_and_tag_instances(
         run_args,
         instances_tag_data,
         instances,
+        image_id,
         cluster_master=False
 ):
     tmp_name = instances_tag_data['name']
@@ -427,6 +257,11 @@ def _wait_and_tag_instances(
             instance, instances_tag_data,
             (main_args.es_wait or main_args.es_elect),
             main_args.cluster_name,
+            role=main_args.role,
+            profile_name=main_args.profile_name,
+            arm_arch=main_args.arm_image_id,
+            image_id=image_id,
+            cluster_master=cluster_master,
         )
         # Create return info
         instances_info[info_type] = {
@@ -444,21 +279,306 @@ def _wait_and_tag_instances(
     return instances_info
 
 
+# Cloud Config
+def _nameify(in_str):
+    name = ''.join(
+        c if c.isalnum() else '-'
+        for c in in_str.lower()
+    ).strip('-')
+    return re.subn(r'\-+', '-', name)[0]
+
+
+def _short_name(long_name):
+    """
+    Returns a short name for the branch name if found
+    """
+    if not long_name:
+        return None
+    regexes = [
+        '(?:encd|sno)-[0-9]+',  # Demos
+        '^v[0-9]+rc[0-9]+',     # RCs
+        '^v[0-9]+x[0-9]+',      # Prod, Test
+    ]
+    result = long_name
+    for regex_str in regexes:
+        res = re.findall(regex_str, long_name, re.IGNORECASE)
+        if res:
+            result = res[0]
+            break
+    return result[:9].lower()
+
+
+def _read_file_as_utf8(config_file):
+    with io.open(config_file, 'r', encoding='utf8') as file_handler:
+        return file_handler.read()
+
+
+def _write_str_to_file(filepath, str_data):
+    with io.open(filepath, 'w') as file_handler:
+        return file_handler.write(str_data)
+
+
+def _read_ssh_key(identity_file):
+    ssh_keygen_args = ['ssh-keygen', '-l', '-f', identity_file]
+    finger_id = subprocess.check_output(
+        ssh_keygen_args
+    ).decode('utf-8').strip()
+    if finger_id:
+        with open(identity_file, 'r') as key_file:
+            ssh_pub_key = key_file.readline().strip()
+            return ssh_pub_key
+    return None
+
+
+def _get_bdm(main_args):
+    return [
+        {
+            'DeviceName': '/dev/sda1',
+            'Ebs': {
+                'VolumeSize': int(main_args.volume_size),
+                'VolumeType': 'gp2',
+                'DeleteOnTermination': True
+            }
+        },
+        {
+            'DeviceName': '/dev/sdb',
+            'NoDevice': "",
+        },
+        {
+            'DeviceName': '/dev/sdc',
+            'NoDevice': "",
+        },
+    ]
+
+
+def _get_user_data(config_yaml, data_insert, main_args):
+    ssh_pub_key = _read_ssh_key(main_args.identity_file)
+    if not ssh_pub_key:
+        print(
+            "WARNING: User is not authorized with ssh access to "
+            "new instance because they have no ssh key"
+        )
+    data_insert['SSH_KEY'] = ssh_pub_key
+    # aws s3 authorized_keys folder
+    auth_base = 's3://encoded-conf-prod/ssh-keys'
+    auth_type = 'prod'
+    if main_args.profile_name != 'production':
+        auth_type = 'demo'
+    auth_keys_dir = '{auth_base}/{auth_type}-authorized_keys'.format(
+        auth_base=auth_base,
+        auth_type=auth_type,
+    )
+    data_insert['S3_AUTH_KEYS'] = auth_keys_dir
+    user_data = config_yaml % data_insert
+    return user_data
+
+
+def _get_commit_sha_for_branch(branch_name):
+    return subprocess.check_output(
+        ['git', 'rev-parse', '--short', branch_name]
+    ).decode('utf-8').strip()
+
+
+def _get_instances_tag_data(main_args, build_type_template_name):
+    instances_tag_data = {
+        'branch': main_args.branch,
+        'commit': None,
+        'short_name': _short_name(main_args.name),
+        'name': main_args.name,
+        'username': None,
+        'build_type': build_type_template_name,
+        'is_qa_demo': main_args.is_qa_demo,
+    }
+    instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
+    # check if commit is a tag first then branch
+    is_tag = False
+    tag_output = subprocess.check_output(
+        ['git', 'tag', '--contains', instances_tag_data['commit']]
+    ).strip().decode()
+    for tag in tag_output.split('\n'):
+        if tag == main_args.branch:
+            is_tag = True
+    is_branch = False
+    if not is_tag:
+        git_cmd = ['git', 'branch', '-r', '--contains', instances_tag_data['commit']]
+        branch_output = subprocess.check_output(git_cmd).decode()
+        for branch in branch_output.split('\n'):
+            branch_name = branch.strip().replace('origin/', '')
+            if branch_name == main_args.branch:
+                is_branch = True
+    if not is_tag and not is_branch:
+        print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
+    else:
+        instances_tag_data['username'] = getpass.getuser()
+        if instances_tag_data['name'] is None:
+            instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
+            instances_tag_data['name'] = _nameify(
+                '%s-%s-%s' % (
+                    instances_tag_data['short_name'],
+                    instances_tag_data['commit'],
+                    instances_tag_data['username'],
+                )
+            )
+            if main_args.es_wait or main_args.es_elect:
+                instances_tag_data['name'] = 'elasticsearch-' + instances_tag_data['name']
+    return instances_tag_data, is_tag, is_branch
+
+
+def _get_ec2_client(main_args, instances_tag_data):
+    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
+    ec2 = session.resource('ec2')
+    name_to_check = instances_tag_data['name']
+    if main_args.node_name:
+        if int(main_args.cluster_size) != 1:
+            print('--node-name can only be used --cluster-size 1')
+            return None
+        name_to_check = main_args.node_name
+    if any(ec2.instances.filter(
+            Filters=[
+                {'Name': 'tag:Name', 'Values': [name_to_check]},
+                {'Name': 'instance-state-name',
+                 'Values': ['pending', 'running', 'stopping', 'stopped']},
+            ])):
+        print('An instance already exists with name: %s' % name_to_check)
+        return None
+    return ec2
+
+
+def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
+    build_type = instances_tag_data['build_type']  # template_name
+    master_user_data = None
+    git_remote = 'origin' if not is_tag else 'tags'
+    cc_dir = '/home/ubuntu/encoded/cloud-config'
+    data_insert = {
+        'APP_WORKERS': 'notused',
+        'BATCHUPGRADE': 'true' if main_args.do_batchupgrade else 'false',
+        'BATCHUPGRADE_VARS': 'notused',
+        'BUILD_TYPE': build_type,
+        'COMMIT': instances_tag_data['commit'],
+        'CC_DIR': cc_dir,
+        'CLUSTER_NAME': 'NONE',
+        'ES_IP': main_args.es_ip,
+        'ES_PORT': main_args.es_port,
+        'ES_OPT_FILENAME': 'notused',
+        'FE_IP': main_args.fe_ip,
+        'FULL_BUILD': main_args.full_build,
+        'GIT_BRANCH': main_args.branch,
+        'GIT_REMOTE': git_remote,
+        'GIT_REPO': main_args.git_repo,
+        'HOME': '/srv/encoded',
+        'INDEX_PRIMARY': 'false',
+        'INDEX_VIS': 'false',
+        'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
+        'INDEX_PROCS': main_args.index_procs,
+        'INDEX_CHUNK_SIZE': main_args.index_chunk_size,
+        'INSTALL_TAG': 'encd-install',
+        'JVM_GIGS': 'notused',
+        'PG_VERSION': main_args.postgres_version,
+        'PG_OPEN': 'true' if main_args.pg_open else 'false',
+        'PG_IP': main_args.pg_ip,
+        'PY3_PATH': '/usr/bin/python3.6',
+        'REDIS_PORT': main_args.redis_port,
+        'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
+        'ROLE': main_args.role,
+        'S3_AUTH_KEYS': 'addedlater',
+        'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
+        'WALE_S3_PREFIX': main_args.wale_s3_prefix,
+    }
+    if build_type == 'es-nodes':
+        count = int(main_args.cluster_size)
+        security_groups = ['elasticsearch-https']
+        iam_role = main_args.iam_role_es
+        es_opt = 'es-cluster-wait.yml' if main_args.es_wait else 'es-cluster-elect.yml'
+        data_insert.update({
+            'CLUSTER_NAME': main_args.cluster_name,
+            'ES_OPT_FILENAME': es_opt,
+            'JVM_GIGS': main_args.jvm_gigs,
+        })
+        user_data = _get_user_data(config_yaml, data_insert, main_args)
+        # Additional head node: FYI: --node-name is used for adding/recreating an es node in 
+        #  an already existing cluster
+        if main_args.es_wait and main_args.node_name is None:
+            master_data_insert = copy.copy(data_insert)
+            master_data_insert.update({
+                'ES_OPT_FILENAME': 'es-cluster-head.yml',
+            })
+            master_user_data = _get_user_data(
+                config_yaml,
+                master_data_insert,
+                main_args,
+            )
+    else:
+        # Frontends(app-es-pg, app-es, app-pg, app)
+        security_groups = ['ssh-http-https']
+        iam_role = main_args.iam_role
+        count = 1
+        data_insert.update({
+            'APP_WORKERS': main_args.app_workers,
+            'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
+            'ROLE': main_args.role,
+        })
+        if build_type == 'app':
+            data_insert.update({
+                'CLUSTER_NAME': main_args.cluster_name,
+            })
+            if main_args.no_indexing:
+                data_insert.update({
+                    'INDEX_PRIMARY': 'false',
+                    'INDEX_VIS': 'false',
+                    'INDEX_REGION': 'false',
+                })
+        elif build_type == 'app-pg':
+            data_insert.update({
+                'CLUSTER_NAME': main_args.cluster_name,
+                'INDEX_PRIMARY': 'true',
+                'INDEX_VIS': 'true',
+            })
+            if main_args.no_indexing:
+                data_insert.update({
+                    'INDEX_PRIMARY': 'false',
+                    'INDEX_VIS': 'false',
+                    'INDEX_REGION': 'false',
+                })
+        elif build_type == 'app-es':
+            # This needs a remote datbase like in rds
+            data_insert.update({
+                'INDEX_PRIMARY': 'true',
+                'INDEX_VIS': 'true',
+            })
+        else: 
+            # 'app-es-pg' == "Demo"
+            data_insert.update({
+                'JVM_GIGS': main_args.jvm_gigs,
+                'ES_OPT_FILENAME': 'es-demo.yml',
+                'INDEX_PRIMARY': 'true',
+                'INDEX_VIS': 'true',
+                'INDEX_CHUNK_SIZE': 256,  # this will hold for all non es-wait or es-elect front ends.
+            })
+        if main_args.primary_indexing:
+            data_insert.update({
+                'INDEX_PRIMARY': 'true',
+            })
+        user_data = _get_user_data(config_yaml, data_insert, main_args)
+    run_args = {
+        'count': count,
+        'iam_role': iam_role,
+        'master_user_data': master_user_data,
+        'user_data': user_data,
+        'security_groups': security_groups,
+        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
+    }
+    if main_args.profile_name == 'production' and main_args.role != 'candidate':
+        run_args['key-pair-name'] += '-prod'
+    return run_args
+
+
 def _get_cloud_config_yaml(main_args):
     """
     This will return a config yaml file built from a template and template parts
     - There will still be run variables in the template.
     """
     # pylint: disable=too-many-locals, too-many-return-statements
-    cluster_name = main_args.cluster_name
-    conf_dir = main_args.conf_dir
-    diff_configs = main_args.diff_configs
-    es_elect = main_args.es_elect
-    es_wait = main_args.es_wait
-    postgres_version = main_args.postgres_version
-    save_config_name = main_args.save_config_name
-    use_prebuilt_config = main_args.use_prebuilt_config
-
+    
     def _diff_configs(config_one, config_two):
         results = list(
             Differ().compare(
@@ -476,84 +596,104 @@ def _get_cloud_config_yaml(main_args):
 
     def _get_prebuild_config_template():
         read_config_path = "{}/{}/{}.yml".format(
-            conf_dir,
-            'prebuilt-config-yamls',
-            use_prebuilt_config
+            main_args.conf_dir,
+            'assembled-templates',
+            main_args.use_prebuilt_config
         )
         return _read_file_as_utf8(read_config_path)
 
-    def _build_config_template(build_type):
-        template_path = "{}/{}/{}.yml".format(conf_dir, 'config-build-files', build_type)
+    def _build_config_template(template_name):
+        template_path = "{}/{}-template.yml".format(main_args.conf_dir, template_name)
         built_config_template = _read_file_as_utf8(template_path)
         replace_vars = set(re.findall(r'\%\((.*)\)s', built_config_template))
-        # Replace cc parts vars in template.  Run vars are in cc-parts.
-        template_parts_dir = "{}/{}/{}".format(conf_dir, 'config-build-files', 'cc-parts')
-        cc_parts_insert = {}
+        # Replace template part vars in template.  Run vars are in template-parts.
+        template_parts_dir = "{}/{}".format(main_args.conf_dir, 'template-parts')
+        template_parts_insert = {}
         for replace_var_filename in replace_vars:
             replace_var_path = "{}/{}.yml".format(
                 template_parts_dir,
                 replace_var_filename,
             )
             replace_var_data = _read_file_as_utf8(replace_var_path).strip()
-            cc_parts_insert[replace_var_filename] = replace_var_data
-        return built_config_template % cc_parts_insert
+            template_parts_insert[replace_var_filename] = replace_var_data
+        return built_config_template % template_parts_insert
 
     # Incompatibile build arguments
-    if postgres_version and postgres_version not in ['9.3', '11']:
+    if main_args.postgres_version and main_args.postgres_version not in ['9.3', '11']:
         print("Error: postgres_version must be '9.3' or '11'")
         return None, None, None
-    if (es_elect or es_wait) and not cluster_name:
+    if (main_args.es_elect or main_args.es_wait) and not main_args.cluster_name:
         print('Error: --cluster-name required for --es-wait and --es-elect')
         return None, None, None
-    if diff_configs and not use_prebuilt_config:
+    if main_args.diff_configs and not main_args.use_prebuilt_config:
         print('Error: --diff-configs must have --use-prebuilt-config config to diff against')
         return None, None, None
-    # Determine type of build from arguments
-    # - es-nodes builds will overwrite the postgres version
-    build_type = 'u18-demo'
-    if es_elect or es_wait:
-        build_type = 'u18-es-nodes'
-    elif cluster_name:
-        build_type = 'u18-frontend'
-    # elif cluster_name:
-    #     build_type = 'pg{}-frontend'.format(postgres_version.replace('.', ''))
-    # else:
-    #     build_type = 'pg{}-{}'.format(postgres_version.replace('.', ''), build_type)
+    if not (main_args.es_elect or main_args.es_wait) and main_args.cluster_name and main_args.es_ip == 'localhost':
+        print('Error: --cluster-name requires --es-ip')
+        return None, None, None
+    if main_args.cluster_name and main_args.es_ip == 'localhost' and not main_args.pg_ip == '':
+        print('Error: --cluster-name cannot be used without --es-ip')
+        return None, None, None
+    # Determine template 
+    template_name = 'app-es-pg'
+    if main_args.es_elect or main_args.es_wait:
+        template_name = 'es-nodes'
+    elif main_args.cluster_name:
+        if not main_args.es_ip == 'localhost' and main_args.pg_ip == '':
+            # Standard cluster frontend with remote es and local pg
+            template_name = 'app-pg'
+        elif not main_args.es_ip == 'localhost' and not main_args.pg_ip == '':
+            # Remote es and remote pg, just the application
+            template_name = 'app'
+        else:
+            print('Error: Could not find template with --cluster-name')
+            return None, None, None
+    elif main_args.no_indexing:
+        # Standard cluster frontend with remote es and local pg
+        # but the apache build_conf will not add the indexing processes
+        # See env vars with --dry-run 
+            # 'INDEX_PRIMARY': 'false',
+            # 'INDEX_VIS': 'false',
+            # 'INDEX_REGION': 'false',
+        template_name = 'app-pg'
+    elif not main_args.pg_ip == '':
+        # Local es and remote pg
+        template_name = 'app-es'
     # Determine config build method
-    if use_prebuilt_config and not diff_configs:
+    if main_args.use_prebuilt_config and not main_args.diff_configs:
         # Read a prebuilt config file from local dir and use for deployment
         prebuilt_config_template = _get_prebuild_config_template()
         if prebuilt_config_template:
-            return prebuilt_config_template, None, build_type
-        return None, None, build_type
-    # Build config from template using cc-parts
-    config_template = _build_config_template(build_type)
-    if diff_configs:
+            return prebuilt_config_template, None, template_name
+        return None, None, template_name
+    # Build config from template using template-parts
+    config_template = _build_config_template(template_name)
+    if main_args.diff_configs:
         # Read a prebuilt config file from local dir and use for diff
         prebuilt_config_template = _get_prebuild_config_template()
         print('Diffing')
         _diff_configs(config_template, prebuilt_config_template)
         print('Diff Done')
-        return config_template, None, build_type
-    if save_config_name:
+        return config_template, None, template_name
+    if main_args.save_config_name:
         # Having write_file_path set will not deploy
         # After creating a new config rerun
         #  with use_prebuilt_config=subpath/config_name
-        config_name = "{}-{}".format(save_config_name, build_type)
+        config_name = "{}-{}".format(main_args.save_config_name, template_name)
         write_file_path = "{}/{}/{}.yml".format(
-            conf_dir,
-            'prebuilt-config-yamls',
+            main_args.conf_dir,
+            'assembled-templates',
             config_name,
         )
-        return config_template, write_file_path, build_type
-    return config_template, None, build_type
+        return config_template, write_file_path, template_name
+    return config_template, None, template_name
 
 
-def _write_config_to_file(build_config, build_path, build_type):
-    print("    * Made       Prebuild: ${}".format(' '.join(sys.argv)))
-    print("        # Wrote new config to %s" % build_path)
+def _write_config_to_file(build_config, build_path, template_name):
+    print(f' Created assembeled template\n\t{build_path}')
+    _write_str_to_file(build_path, build_config)
+    # Create example deployment command
     deployment_args = []
-    # Clean sys args of --save-config-name and parameter
     config_name = ''
     for index, arg in enumerate(sys.argv):
         if arg == '--save-config-name':
@@ -562,43 +702,75 @@ def _write_config_to_file(build_config, build_path, build_type):
             break
         deployment_args.append(arg)
     deploy_cmd = ' '.join(deployment_args)
-    prebuild = "--use-prebuilt-config {}-{}".format(config_name, build_type)
-    print("    * Diff Build/Prebuild: ${} {} --diff-configs".format(deploy_cmd, prebuild))
-    es_ip_arg = '--es-ip $HEADNODEIP' if build_type == 'frontend' else ''
-    if es_ip_arg:
-        deploy_cmd += ' ' + es_ip_arg
-    print("    * Deploy     Prebuild: ${} {}".format(deploy_cmd, prebuild))
-    print("    * Deploy        Build: ${}".format(deploy_cmd))
-    _write_str_to_file(build_path, build_config)
+    if template_name in ['app-pg', 'app']:
+        deploy_cmd += ' --es-ip $ES_HEAD_IP'
+    if template_name in ['app-es', 'app']:
+        deploy_cmd += ' --pg-ip $PG_DB_IP'
+    deploy_cmd += f' --use-prebuilt-config {config_name}-{template_name}'
+    print(f' Deploy with\n\t$ {deploy_cmd}')
+    print(f' Diff with on the fly assembly\n\t$ {deploy_cmd} --diff-configs')
+    # prebuild = "--use-prebuilt-config {}-{}".format(config_name, template_name)
+    # print("    * Diff Build/Prebuild: ${} {} --diff-configs".format(deploy_cmd, prebuild))
+    # print("    * Deploy     Prebuild: ${} {}".format(deploy_cmd, prebuild))
+    # print("    * Deploy        Build: ${}".format(deploy_cmd))
 
 
 def main():
     """Entry point for deployment"""
     main_args = _parse_args()
-    build_config, build_path, build_type = _get_cloud_config_yaml(main_args)
+    assembled_template, save_path, template_name = _get_cloud_config_yaml(main_args)
     if main_args.diff_configs:
-        # instances_tag_data, is_tag = _get_instances_tag_data(main_args)
-        # run_args = _get_run_args(main_args, instances_tag_data, build_config)
-        # print(run_args['user_data'])
         sys.exit(0)
-    if not build_config or not build_type:
+    if not assembled_template or not template_name:
         print('# Failure: Could not determine configuration type')
         sys.exit(1)
-    if build_path:
-        _write_config_to_file(build_config, build_path, build_type)
+    if save_path:
+        _write_config_to_file(assembled_template, save_path, template_name)
         sys.exit(0)
     # Deploy Frontend, Demo, es elect cluster, or es wait data nodes
-    print('\nDeploying %s' % build_type)
+    indexing = False if main_args.no_indexing or template_name == 'app' else True
+    print(f'\nDeploying {template_name} with indexing={indexing}')
     print("$ {}".format(' '.join(sys.argv)))
-    print('Waiting for instance(s) to start running')
-    instances_tag_data, is_tag = _get_instances_tag_data(main_args)
+    instances_tag_data, is_tag, is_branch = _get_instances_tag_data(main_args, template_name)
     if instances_tag_data is None:
-        sys.exit(10)
+        print('Failure: No instances_tag_data')
+        sys.exit(1)
+    if not is_tag and not is_branch:
+        print('Failure: Not a tag or branch')
+        sys.exit(1)
+    run_args = _get_run_args(main_args, instances_tag_data, assembled_template, is_tag=is_tag)
+    # run_args has the asseblmed_template filled with run variables in 'user_data' key
+    bdm = _get_bdm(main_args)
+    if main_args.dry_run:
+        print(f'\nDry Run')
+        print(f'run_args dict keys: {run_args.keys()}')
+        print(f'\nRun Variables.  In /etc/environment on instance')
+        for line in run_args['user_data'].split('\n'):
+            line = line.strip()
+            if line[:5] == 'ENCD_':
+                print(line)
+        print('\ninstances_tag_data', instances_tag_data)
+        print('\nis_tag:', is_tag, ', is_branch:', is_branch)
+        print('\nInstance Tags:')
+        tags, tags_dict = _tag_ec2_instance(
+            None, instances_tag_data,
+            (main_args.es_wait or main_args.es_elect),
+            main_args.cluster_name,
+            role=main_args.role,
+            profile_name=main_args.profile_name,
+            dry_run=True,
+            arm_arch=main_args.arm_image_id,
+            image_id=main_args.image_id,
+        )
+        for key, val in tags_dict.items():
+            print(f"{key:28}:'{val}'")
+        print('Dry Run')
+        sys.exit(0)
+    # AWS - Below
+    print('Create instance and wait for running state')
     ec2_client = _get_ec2_client(main_args, instances_tag_data)
     if ec2_client is None:
         sys.exit(20)
-    run_args = _get_run_args(main_args, instances_tag_data, build_config, is_tag=is_tag)
-    bdm = _get_bdm(main_args)
     # Create aws demo instance or frontend instance
     # OR instances for es_wait nodes, es_elect nodes depending on count
     instances = ec2_client.create_instances(
@@ -618,7 +790,13 @@ def main():
         },
         KeyName=run_args['key-pair-name'],
     )
-    instances_info = _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
+    instances_info = _wait_and_tag_instances(
+        main_args,
+        run_args,
+        instances_tag_data,
+        instances,
+        main_args.image_id,
+    )
     # Create aws es_wait frontend instance
     if main_args.es_wait and run_args.get('master_user_data'):
         instances = ec2_client.create_instances(
@@ -644,6 +822,7 @@ def main():
                 run_args,
                 instances_tag_data,
                 instances,
+                main_args.eshead_image_id,
                 cluster_master=True,
             )
         )
@@ -665,7 +844,10 @@ def main():
                 )
             )
         else:
-            print('Deploying Demo:', instance_info['url'])
+            print('Deploying Demo({}): {}'.format(
+                instance_info['private_ip'],
+                instance_info['url']
+            ))
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
     elif 'cluster_master' in instances_info and main_args.es_wait:
@@ -686,9 +868,11 @@ def main():
                 )
             )
         else:
-            print('Deploying Head ES Node:', instance_info['name'])
+            print('Deploying Head ES Node({}): {}'.format(
+                instance_info['private_ip'],
+                instance_info['name']
+            ))
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
-            print(" --es-ip {}".format(instance_info['private_ip']))
         print('\nRun the following command to view es head deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         print('')
@@ -709,13 +893,13 @@ def main():
                         )
                     )
                 print('Run the following command to view this es node deployment log.')
-                print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
+                print("ssh ubuntu@{}{}".format(node_info['public_dns'], tail_cmd))
             else:
                 print("ES node{} ssh:\n ssh ubuntu@{}".format(index, node_info['public_dns']))
     elif 'frontend' in instances_info:
         instance_info = instances_info['frontend']
         if main_args.build_ami:
-            print('AMI Build: Frontend deploying:', instance_info['name'])
+            print('AMI Build: Deploying Frontend:', instance_info['name'])
             print('instance_id:', instance_info['instance_id'])
             print(
                 'After it builds, create the ami: '
@@ -726,7 +910,10 @@ def main():
                 )
             )
         else:
-            print('Deploying Frontend:', instance_info['url'])
+            print('Deploying Frontend({}): {}'.format(
+                instance_info['private_ip'],
+                instance_info['url'],
+            ))
             print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print('\n\nRun the following command to view the deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
@@ -739,6 +926,7 @@ def main():
         # helps vars for release and building amis
         for helper_var in helper_vars:
             print(helper_var)
+    print('Done')
 
 
 def _parse_args():
@@ -776,6 +964,7 @@ def _parse_args():
         dest='role',
         help="Set role"
     )
+    parser.add_argument('--is-qa-demo', action='store_true', help="Flagged as qa demo")
     parser.add_argument(
         '--git-repo',
         default='https://github.com/ENCODE-DCC/encoded.git',
@@ -783,6 +972,7 @@ def _parse_args():
     )
 
     # User Data Yamls
+    parser.add_argument('--dry-run', action='store_true', help="Exit before aws calls")
     parser.add_argument('--app-workers', default='6', help="Apache config app workers")
     parser.add_argument(
         '--conf-dir',
@@ -816,6 +1006,11 @@ def _parse_args():
         help="ssh identity file path"
     )
     parser.add_argument(
+        '--do-batchupgrade',
+        default=None,
+        help="Set batchupgrade to 'yes' or 'no'.  This overrides defaults if set"
+    )
+    parser.add_argument(
         '--batchupgrade-vars',
         nargs=4,
         default=['1000', '1', '16', '1'],
@@ -825,7 +1020,33 @@ def _parse_args():
             "Where the args are batchsize, chunksize, processes, and maxtasksperchild"
         )
     )
-
+    parser.add_argument(
+        '--no-indexing',
+        action='store_true',
+        help="Do not add indexing procs to apache"
+    )
+    parser.add_argument(
+        '--primary-indexing',
+        action='store_true',
+        help="Force primary indexing"
+    )
+    parser.add_argument(
+        '--remote-indexing',
+        action='store_true',
+        help="Remote indexing"
+    )
+    parser.add_argument(
+        '--index-procs',
+        default=16,
+        type=int,
+        help="Remote indexing"
+    )
+    parser.add_argument(
+        '--index-chunk-size',
+        default=512,
+        type=int,
+        help="Should be set lower for single-node demos"
+    )
     # Cluster
     parser.add_argument(
         '--es-elect',
@@ -843,10 +1064,13 @@ def _parse_args():
         type=hostname,
         help="Name of single node to add to already existing cluster"
     )
+    parser.add_argument('--fe-ip', default='localhost', help="Primary frontend ip address")
     parser.add_argument('--jvm-gigs', default='8', help="JVM Xms and Xmx gigs")
 
     # Database
     parser.add_argument('--postgres-version', default='11', help="Postegres version. '9.3' or '11'")
+    parser.add_argument('--pg-open', action='store_true', help="Allow all connections on postgres post.")
+    parser.add_argument('--pg-ip', default='', help="Skip pg install script, setup app to connect to remote ip.")
     parser.add_argument('--redis-ip', default='localhost', help="Redis IP.")
     parser.add_argument('--redis-port', default=6379, help="Redis Port.")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production-pg11')
@@ -863,11 +1087,17 @@ def _parse_args():
     parser.add_argument(
         '--full-build',
         action='store_true',
+        default=True, # Defaulting to True b/c amis are more overhead than needed at the moment.
         help='Flag to indicate building without an ami'
     )
     parser.add_argument(
         '--image-id',
         help=('Demo, Frontend, and es data node override default image ami')
+    )
+    parser.add_argument(
+        '--arm-image-id',
+        action='store_true',
+        help=('Override default image ami for demo to use arm')
     )
     parser.add_argument(
         '--eshead-image-id',
@@ -897,42 +1127,48 @@ def _parse_args():
     ami_map = {
         # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
         'default': 'ami-0d1cd67c26f5fca19',
+        'arm_default': 'ami-003b90277095b7a42',
 
         # Private AMIs: Add comments to each build
 
-        # encdami-demo build on 2020-03-31 20:02:16.534336: encdami-demo-2020-03-31_200216
-        'demo': 'ami-0d2bf0b7292964598',
-        # encdami-es-wait-head build on 2020-03-31 20:13:17.094941: encdami-es-wait-head-2020-03-31_201317
-        'es-wait-head': 'ami-03e019cdd3cc178a0',
-        # encdami-es-wait-node build on 2020-03-31 20:08:41.739802: encdami-es-wait-node-2020-03-31_200841
-        'es-wait-node': 'ami-077951301740d5be6',
+        # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
+        'demo': 'ami-02ee743e10e6bca42',
+        # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
+        'es-wait-head': 'ami-04637560d9b9c4cb9',
+        # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
+        'es-wait-node': 'ami-03c53286feed8040f',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head': None,
         'es-elect-node': None,
-        # encdami-frontend build on 2020-03-31 20:12:17.290966: encdami-frontend-2020-03-31_201217
-        'frontend': 'ami-061e7ad04e9de334d',
+        # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
+        'frontend': 'ami-004367e4b7cdfc264',
 
         # Production Private AMIs: Add comments to each build
 
-        # encdami-es-wait-head build on 2020-03-31 20:20:04.987640: encdami-es-wait-head-2020-03-31_202004
-        'es-wait-head-prod': 'ami-0f2c2547107497579',
-        # encdami-es-wait-node build on 2020-03-31 20:21:11.386147: encdami-es-wait-node-2020-03-31_202111
-        'es-wait-node-prod': 'ami-09875dbadceee1dad',
+        # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
+        'es-wait-head-prod': 'ami-03530bdf05c08bf32',
+        # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
+        'es-wait-node-prod': 'ami-0de906a6f1894057b',
         #  ES elect builds were not bulit since we rarely use them
         'es-elect-head-prod': None,
         'es-elect-node-prod': None,
-        # encdami-frontend build on 2020-03-31 20:40:37.969622: encdami-frontend-2020-03-31_204037
-        'frontend-prod': 'ami-07a066a69e1fd3f4c',
+        # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
+        'frontend-prod': 'ami-0e13a1f4c36d19ac1',
     }
     if not args.image_id:
         # Select ami by build type.  
-        if args.build_ami or args.full_build:
+        if args.build_ami:
             # Building new amis or making full builds from scratch
             # should start from base ubutnu image
             args.image_id = ami_map['default']
             args.eshead_image_id = ami_map['default']
             # We only need one es node to make an ami
             args.cluster_size = 1
+        elif args.full_build:
+            # Full builds from scratch
+            # should start from base ubutnu image
+            args.image_id = ami_map['default']
+            args.eshead_image_id = ami_map['default']
         elif args.cluster_name:
             # Cluster builds have three prebuilt priviate amis
             if args.es_wait:
@@ -956,6 +1192,8 @@ def _parse_args():
                     args.image_id = ami_map['frontend']
         else:
             args.image_id = ami_map['demo']
+    elif args.arm_image_id:
+        args.image_id = ami_map['arm_default']
     else:
         args.image_id = ami_map['default']
     # Aws instance size.  If instance type is not specified, choose based on build type
@@ -964,15 +1202,20 @@ def _parse_args():
             # datanode
             args.instance_type = 'm5.xlarge'
             # Head node
-            args.eshead_instance_type = 'c5.9xlarge'
+            args.eshead_instance_type = 'm5.xlarge'
+        elif args.arm_image_id:
+            # Type/Size for arm architecture
+            args.instance_type = 'm6g.4xlarge'
         else:
             # frontend
             args.instance_type = 'c5.9xlarge'
     # Check cluster name overrides name
     if args.cluster_name:
         cluster_tag = '-cluster'
-        args.name = args.cluster_name.replace(cluster_tag, '')
-        args.cluster_name = args.name + cluster_tag
+        cluster_name = args.cluster_name.replace(cluster_tag, '')
+        args.cluster_name = cluster_name + cluster_tag
+        if args.name is None:
+            args.name = cluster_name
         # adding a single node to a pre existing cluster
         if args.node_name and int(args.cluster_size) != 1:
             raise ValueError(
@@ -1008,6 +1251,15 @@ def _parse_args():
             args.candidate = False
         elif args.candidate:
             args.role = 'candidate'
+    # do_batchupgrade is default True for everything but rcs and candidates
+    if args.do_batchupgrade is None:
+        args.do_batchupgrade = 'y'
+        if args.role in ['rc', 'candidate']:
+            args.do_batchupgrade = 'n'
+    if args.do_batchupgrade[0].lower() == 'y':
+        args.do_batchupgrade = True
+    else:
+        args.do_batchupgrade = False
     # region_indexer is default True for everything but demos
     if args.region_indexer is not None:
         if args.region_indexer[0].lower() == 'y':
@@ -1023,6 +1275,9 @@ def _parse_args():
         args.branch = subprocess.check_output(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
         ).decode('utf-8').strip()
+    # arm arch only available on demo
+    if not args.role == 'demo' and args.arm_image_id:
+        raise ValueError('Arm architecture is only available on demos')
     return args
 
 

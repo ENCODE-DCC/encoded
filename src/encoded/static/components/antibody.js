@@ -258,8 +258,14 @@ const LotComponent = (props, reactContext) => {
             </Panel>
 
             <RelatedItems
-                title="Experiments using this antibody"
+                title="Functional genomics experiments using this antibody"
                 url={`/search/?type=Experiment&replicates.antibody.accession=${context.accession}`}
+                Component={ExperimentTable}
+            />
+
+            <RelatedItems
+                title="Functional characterization experiments using this antibody"
+                url={`/search/?type=FunctionalCharacterizationExperiment&replicates.antibody.accession=${context.accession}`}
                 Component={ExperimentTable}
             />
 
@@ -349,7 +355,7 @@ const AntibodyStatus = (props) => {
                                             {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
                                         </div>
                                         <div className="antibody-status__status">
-                                            {i === 0 ? <Status item={status} inline /> : null}
+                                            <Status item={status} inline />
                                         </div>
                                     </div>
                                 );

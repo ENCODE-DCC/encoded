@@ -28,6 +28,7 @@ def test_pipeline_upgrade_8_9(upgrader, pipeline_8):
     assert value['schema_version'] == '9'
     assert value.get('status') == 'released'
 
+
 def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
     pipeline_8['schema_version'] = '9'
     pipeline_8['assay_term_names'] = ['single-nuclei ATAC-seq', 'HiC']
@@ -36,4 +37,15 @@ def test_pipeline_upgrade_9_10(upgrader, pipeline_8):
     TestCase().assertListEqual(
         sorted(value['assay_term_names']),
         sorted(['single-nucleus ATAC-seq', 'HiC'])
+    )
+
+
+def test_pipeline_upgrade_10_11(upgrader, pipeline_8):
+    pipeline_8['schema_version'] = '10'
+    pipeline_8['assay_term_names'] = ['single cell isolation followed by RNA-seq', 'RNA-seq']
+    value = upgrader.upgrade('pipeline', pipeline_8, target_version='11')
+    assert value['schema_version'] == '11'
+    TestCase().assertListEqual(
+        sorted(value['assay_term_names']),
+        sorted(['single-cell RNA sequencing assay', 'RNA-seq'])
     )

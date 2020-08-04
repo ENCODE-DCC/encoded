@@ -10,6 +10,7 @@ import { SortTablePanel, SortTable } from '../sorttable';
 import Status from '../status';
 import { setCartNameIdentifierAndSave, cartOperationInProgress } from './actions';
 import { cartCreate, cartUpdate, cartRetrieve } from './database';
+import CartLockTrigger from './lock';
 import { cartSetSettingsCurrent } from './settings';
 import CartShare from './share';
 import switchCart from './switch';
@@ -73,8 +74,11 @@ CurrentCartButtonComponent.defaultProps = {
 };
 
 CurrentCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
+    current: ownProps.current,
     inProgress: state.inProgress,
-    ...ownProps,
+    user: ownProps.user,
+    onCurrentCartClick: ownProps.onCurrentCartClick,
 });
 
 CurrentCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
@@ -326,14 +330,16 @@ class NameCartButtonComponent extends React.Component {
         const modalTitle = create ? 'New cohort' : <span>Rename cohort: {cart.name}</span>;
         const actuatorTitle = create ? 'New cohort' : 'Rename';
         return (
-            <div className="cart-manager-table__action-button">
-                {disabled ?
-                    <div
-                        className="cart-manager-table__button-overlay"
-                        title={disabledTooltip}
-                    />
-                : null}
-                <button className={`btn btn-info btn-sm${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
+            <React.Fragment>
+                <div className="cart-manager-table__tooltip-group">
+                    {disabled ?
+                        <div
+                            className="cart-manager-table__button-overlay"
+                            title={disabledTooltip}
+                        />
+                    : null}
+                    <button className={`btn btn-info btn-sm btn-inline${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
+                </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleClose} labelId="name-cart-label" descriptionId="name-cart-description">
                         <ModalHeader title={<h4>{modalTitle}</h4>} labelId="name-cart-label" closeModal={this.handleClose} />
@@ -386,7 +392,7 @@ class NameCartButtonComponent extends React.Component {
                         />
                     </Modal>
                 : null}
-            </div>
+            </React.Fragment>
         );
     }
 }
@@ -423,8 +429,16 @@ NameCartButtonComponent.defaultProps = {
 };
 
 NameCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cartManager: ownProps.cartManager,
+    cart: ownProps.cart,
     inProgress: state.inProgress,
-    ...ownProps,
+    create: ownProps.create,
+    actuatorCss: ownProps.actuatorCss,
+    disabled: ownProps.disabled,
+    disabledTooltip: ownProps.disabledTooltip,
+    onRename: ownProps.onRename,
+    onCreate: ownProps.onCreate,
+    updateCartManager: ownProps.updateCartManager,
 });
 
 NameCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
@@ -488,15 +502,15 @@ class DeleteCartButtonComponent extends React.Component {
             disabledTooltip = 'Cohort operation in progress';
         }
         return (
-            <div className="cart-manager-table__action-button">
-                <div className="cart-manager-table__delete-group">
+            <React.Fragment>
+                <div className="cart-manager-table__tooltip-group">
                     {disabledTooltip ?
                         <div
                             className="cart-manager-table__button-overlay"
                             title={disabledTooltip}
                         />
                     : null}
-                    <button className="btn btn-danger btn-sm" onClick={this.handleDeleteClick} disabled={!!disabledTooltip}><i className="icon icon-trash-o" />&nbsp;Delete</button>
+                    <button className="btn btn-danger btn-sm btn-inline" onClick={this.handleDeleteClick} disabled={!!disabledTooltip}><i className="icon icon-trash-o" />&nbsp;Delete</button>
                 </div>
                 {this.state.modalOpen ?
                     <Modal closeModal={this.handleCloseClick}>
@@ -511,7 +525,7 @@ class DeleteCartButtonComponent extends React.Component {
                         />
                     </Modal>
                 : null}
-            </div>
+            </React.Fragment>
         );
     }
 }
@@ -532,8 +546,12 @@ DeleteCartButtonComponent.propTypes = {
 };
 
 DeleteCartButtonComponent.mapStateToProps = (state, ownProps) => ({
+    cart: ownProps.cart,
+    current: ownProps.current,
     inProgress: state.inProgress,
-    ...ownProps,
+    setInProgress: ownProps.setInProgress,
+    updateCartManager: ownProps.updateCartManager,
+    fetch: ownProps.fetch,
 });
 DeleteCartButtonComponent.mapDispatchToProps = dispatch => ({
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
@@ -587,18 +605,20 @@ class ShareCartButtonComponent extends React.Component {
             disabledTooltip = 'Cannot share the auto-save cohort';
         }
         return (
-            <div className="cart-manager-table__action-button">
-                {disabledTooltip ?
-                    <div
-                        className="cart-manager-table__button-overlay"
-                        title={disabledTooltip}
-                    />
-                : null}
-                <button className="btn btn-info btn-sm" onClick={this.handleShareClick} disabled={!!disabledTooltip}>Share</button>
+            <React.Fragment>
+                <div className="cart-manager-table__tooltip-group">
+                    {disabledTooltip ?
+                        <div
+                            className="cart-manager-table__button-overlay"
+                            title={disabledTooltip}
+                        />
+                    : null}
+                    <button className="btn btn-info btn-sm btn-inline" onClick={this.handleShareClick} disabled={!!disabledTooltip}>Share</button>
+                </div>
                 {this.state.modalOpen ?
                     <CartShare userCart={cart} closeShareCart={this.closeShareCart} />
                 : null}
-            </div>
+            </React.Fragment>
         );
     }
 }
@@ -659,6 +679,7 @@ const cartTableColumns = {
                     />
                     <ShareCartButton cart={item} />
                     <DeleteCartButton cartManager={meta.cartManager} cart={item} current={meta.current} updateCartManager={meta.updateCartManager} />
+                    <CartLockTrigger savedCartObj={item} inProgress={meta.operationInProgress} />
                 </div>
             );
         },

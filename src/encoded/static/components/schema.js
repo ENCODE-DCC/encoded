@@ -51,47 +51,6 @@ const linkedTerms = ['properties'];
 
 
 /**
- * Create a brace read-only editor instance that goes into the HTML element with the given ID and
- * displaying the given schema term.
- *
- * @param {*} elementId - HTML element ID to draw the editor into.
- * @param {*} term - Schema term object to display.
- */
-function createJsonDisplay(elementId, term) {
-    return new Promise((resolve) => {
-        require.ensure([
-            'brace',
-            'brace/mode/json',
-            'brace/theme/katzenmilch',
-        ], (require) => {
-            const ace = require('brace');
-            require('brace/mode/json');
-            require('brace/theme/katzenmilch');
-            const value = JSON.stringify(term, null, 4);
-            const editor = ace.edit(elementId);
-            const session = editor.getSession();
-            session.setMode('ace/mode/json');
-            editor.setTheme('ace/theme/katzenmilch');
-            editor.setValue(value);
-            editor.setOptions({
-                maxLines: 500,
-                minLines: 1,
-                readOnly: true,
-                highlightActiveLine: false,
-                highlightGutterLine: false,
-                showGutter: false,
-                showPrintMargin: false,
-            });
-            editor.clearSelection();
-            editor.textInput.getElement().disabled = true;
-            editor.renderer.$cursorLayer.element.style.opacity = 0;
-            resolve(editor);
-        }, 'brace');
-    });
-}
-
-
-/**
  * Convert the contents of the `id` field of a schema to a schema name.
  *
  * @param {*} schemaId - `id` property from schema
@@ -213,50 +172,6 @@ SchemaTermLinksSection.propTypes = {
 };
 
 
-// Display JSON for one schema term.
-class SchemaTermJsonDisplay extends React.Component {
-    constructor(props) {
-        super(props);
-
-        // Initialize component properties.
-        this.editor = null; // Tracks brace editor reference.
-        this.id = `profile-value-json-${props.term}`; // HTML ID of component to draw brace editor into
-    }
-
-    componentDidMount() {
-        // Now that the JSON display component has mounted,
-        const { schemaValue, term } = this.props;
-
-        // Create a read-only brace editor to display the formatted JSON.
-        createJsonDisplay(this.id, schemaValue[term]).then((editor) => {
-            // The brace editor successfully created. Save the reference to the brace editor
-            // instance so we can get rid of it when the JSON display is closed.
-            this.editor = editor;
-        });
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
-        }
-    }
-
-    render() {
-        return (
-            <div className="profile-value__json-content">
-                <div id={this.id} />
-            </div>
-        );
-    }
-}
-
-SchemaTermJsonDisplay.propTypes = {
-    schemaValue: PropTypes.object.isRequired, // Schema object to display
-    term: PropTypes.string.isRequired, // Item within the schema object to display
-};
-
-
 // Display one object-type term, with associated JSON.
 class SchemaTermItemDisplay extends React.Component {
     constructor() {
@@ -289,7 +204,7 @@ class SchemaTermItemDisplay extends React.Component {
                 </div>
                 {this.state.jsonOpen ?
                     <div>
-                        <SchemaTermJsonDisplay schemaValue={schemaValue} term={term} />
+                        <DisplayRawObject schema={schemaValue} term={term} />
                         {linkedTerm ? <SchemaTermLinksSection schemaProp={schemaValue[term]} profilesMap={profilesMap} /> : null}
                     </div>
                 : null}
@@ -471,38 +386,117 @@ DisplayObject.defaultProps = {
 };
 
 
-// Display a complete raw schema object.
-class DisplayRawObject extends React.Component {
-    constructor() {
-        super();
-
-        // Set object properties.
-        this.editor = null;
-    }
-
-    componentDidMount() {
-        // Create a read-only brace editor to display the formatted JSON.
-        createJsonDisplay('raw-schema', this.props.schema).then((editor) => {
-            // The brace editor successfully created. Save the reference to the brace editor
-            // instance so we can get rid of it when the JSON display is closed.
-            this.editor = editor;
-        });
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
+/**
+ * Display the copy-JSON controls at the top of raw schema displays.
+ */
+const RawObjectControls = ({ rawSchemaElement, textHasSelection }) => {
+    const copyHandler = () => {
+        // Select all raw schema text in preparation for copying it, but only if the user hasn't
+        // manually selected raw schema text.
+        // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_execCommand()
+        if (rawSchemaElement && !textHasSelection) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(rawSchemaElement);
+            selection.removeAllRanges();
+            selection.addRange(range);
         }
-    }
 
-    render() {
-        return <div id="raw-schema" />;
-    }
-}
+        // Execute copy command. Firefox can throw errors on rare occasion. As this is so unusual,
+        // we just show a console warning in that case.
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.warn('Text copy failed.');
+        }
+
+        // Deselect text if the user hasn't manually selected raw schema text.
+        if (!textHasSelection) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+        }
+    };
+
+    return (
+        <div className="raw-schema__controls">
+            <button className="btn btn-info btn-xs" onClick={copyHandler}>
+                {textHasSelection ? <>Copy selected JSON</> : <>Copy all JSON</>}
+            </button>
+        </div>
+    );
+};
+
+RawObjectControls.propTypes = {
+    /** DOM element for the raw schema display */
+    rawSchemaElement: PropTypes.object,
+    /** True if text in the raw schema has a user selection */
+    textHasSelection: PropTypes.bool,
+};
+
+RawObjectControls.defaultProps = {
+    rawSchemaElement: null,
+    textHasSelection: false,
+};
+
+
+/**
+ * Display a complete schema object as text. At mount rawSchemaRef.current gets mutated with
+ * <pre>'s DOM node, which we need to handle text selections within it.
+ */
+const DisplayRawObject = ({ schema, term }) => {
+    // True if user has selected raw schema text.
+    const [textHasSelection, setTextHasSelection] = React.useState(false);
+    // Raw schema DOM element; `rawSchemaRef.current` doesn't cause the rerender we need.
+    const [rawSchemaElement, setRawSchemaElement] = React.useState(null);
+
+    // For displaying a fragment of the schema instead of the whole thing.
+    const schemaFragment = term ? schema[term] : '';
+
+    // Called when the user selects or deselects text anywhere on the page so we can tell if the
+    // user has selected text in the raw schema element or simply clicked to clear a text
+    // selection. Cache so we don't set this function as the event listener on every render.
+    const handleSelection = React.useCallback(() => {
+        const selection = window.getSelection();
+        const isRangeSelection = !selection.isCollapsed;
+        const isSchemaSelection = selection.anchorNode && selection.anchorNode.parentNode === rawSchemaElement;
+        setTextHasSelection(isSchemaSelection ? isRangeSelection : false);
+    }, [rawSchemaElement]);
+
+    // Callback ref to set the state that holds the raw schema DOM element. Need this as a state so
+    // that RawObjectControls can rerender at mount.
+    const rawSchemaRef = (element) => {
+        if (element) {
+            setRawSchemaElement(element);
+        }
+    };
+
+    React.useEffect(() => {
+        // React to text-selection changes anywhere on the page, partly because text selections
+        // outside the raw schema change the raw schema selection, and partly because
+        // 'selectionchange' only works on `document`.
+        document.addEventListener('selectionchange', handleSelection);
+        return (() => {
+            document.removeEventListener('selectionchange', handleSelection);
+        });
+    }, [handleSelection]);
+
+    return (
+        <div className="raw-schema">
+            <RawObjectControls rawSchemaElement={rawSchemaElement} textHasSelection={textHasSelection} />
+            <pre ref={rawSchemaRef}>{JSON.stringify(schemaFragment || schema, null, 4)}</pre>
+        </div>
+    );
+};
 
 DisplayRawObject.propTypes = {
-    schema: PropTypes.object.isRequired, // Schema to display as a raw object
+    /** Schema or fragment to display as a raw object */
+    schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    /** Term within schema to display if not displaying the whole thing */
+    term: PropTypes.string,
+};
+
+DisplayRawObject.defaultProps = {
+    term: '',
 };
 
 
@@ -548,15 +542,14 @@ const SchemaPanel = (props, reactContext) => {
     // state.
     const roles = globals.getRoles(reactContext.session_properties);
     const isAuthorized = ['admin', 'submitter'].some(role => roles.includes(role));
-    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
-    const decorationClasses = isAuthorized ? 'profiles-add-obj' : '';
+    const decoration = isAuthorized ? <a href={`/${schemaName}/#!add`} className="btn btn-info">Add</a> : null;
 
     return (
         <Panel>
             <TabPanel
                 tabs={{ formatted: 'Formatted', raw: 'Raw' }}
                 decoration={decoration}
-                decorationClasses={decorationClasses}
+                decorationClasses="profiles-controls"
             >
                 <TabPanelPane key="formatted">
                     <PanelBody>
@@ -610,7 +603,7 @@ const SchemaPage = (props) => {
         <div className={itemClass}>
             <header>
                 <Breadcrumbs root="/profiles/" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                <h2>{title}</h2>
+                <h1>{title}</h1>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <SchemaPanel schema={context} schemaName={schemaName} />

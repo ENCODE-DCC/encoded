@@ -568,7 +568,7 @@ class DonorComponent extends React.Component {
             <div className={itemClass}>
                 <header>
                     <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.accession}</h2>
+                    <h1>{context.accession}</h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
@@ -597,8 +597,14 @@ class DonorComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title={`Experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    title={`Functional genomics experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
                     url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title={`Functional characterization experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
 

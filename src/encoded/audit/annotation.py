@@ -7,6 +7,7 @@ from .formatter import (
     path_to_text,
 )
 
+
 @audit_checker('Annotation', frame='object')
 def audit_annotation_organism(value, system):
     '''
@@ -19,3 +20,22 @@ def audit_annotation_organism(value, system):
     if 'organism' not in value:
         detail = ('Annotation {} lacks organism information.'.format(audit_link(path_to_text(value['@id']), value['@id'])))
         raise AuditFailure('missing organism', detail, level='INTERNAL_ACTION')
+
+
+@audit_checker('Annotation')
+def audit_annotation_derived_from_revoked(value, system):
+    '''
+    Annotations with files derived from a revoked file should be flagged with an audit.
+    '''
+    request = system.get('request')
+    for file in value.get('files'):
+        if 'derived_from' in file:
+            for f in file['derived_from']:
+                parent = request.embed(f + '@@object?skip_calculated=true')
+                if parent['status'] == 'revoked':
+                    detail = (
+                        f'Annotation {audit_link(path_to_text(value["@id"]), value["@id"])} '
+                        f'includes a file {audit_link(path_to_text(file["@id"]), file["@id"])} '
+                        f'that was derived from a revoked file {audit_link(path_to_text(f), f)}.'
+                    )
+                    raise AuditFailure('derived from revoked file', detail, level='WARNING')

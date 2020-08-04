@@ -45,3 +45,17 @@ def test_audit_annotation_uploading_files(
     res = testapp.get(annotation_dataset['@id'] + '@@index-data')
     assert any(error['category'] == 'file in uploading state'
                for error in collect_audit_errors(res))
+
+
+def test_audit_annotation_derived_from_revoked(
+    testapp,
+    file,
+    annotation_dataset,
+    file_with_derived,
+    file_with_replicate
+):
+    testapp.patch_json(file_with_derived['@id'], {'dataset': annotation_dataset['@id']})
+    testapp.patch_json(file_with_replicate['@id'], {'status': 'revoked'})
+    res = testapp.get(annotation_dataset['@id'] + '@@index-data')
+    assert any(error['category'] == 'derived from revoked file'
+               for error in collect_audit_errors(res))

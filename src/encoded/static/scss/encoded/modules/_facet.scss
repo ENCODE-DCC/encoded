@@ -1,16 +1,18 @@
 // Title of page when included in a facet list.
 @mixin facet-title {
-    font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 5px;
     padding-bottom: 5px;
     border-bottom: 1px solid #ccc;
+    line-height: 1.3;
 }
 
-
-.box.facets {
+.facet-wrapper {
     padding: 10px;
     border: 1px #ccc solid;
+}
+
+.box.facets {
     border-radius: 3px;
     overflow: hidden;
 
@@ -124,6 +126,29 @@
         padding-bottom: 0;
         margin-bottom: 0;
     }
+
+    @at-root #{&}__expander {
+        @at-root #{&}--header {
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+            justify-content: space-between;
+            padding: 10px 10px 0;
+            line-height: 1;
+        }
+    }
+
+    .hiddenscroll & .facet-chevron {
+        padding-right: 10px;
+    }
+
+    .facet-open {
+        display: inline;
+    }
+
+    .facet-close {
+        display: none;
+    }
 }
 
 // Radio button facet styles.
@@ -163,6 +188,13 @@ fieldset.facet {
             padding-right: 27px;
         }
     }
+}
+
+.facet-list-disabled {
+    background-color: ghostwhite;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 9999;
 }
 
 .facet-list {
@@ -376,6 +408,9 @@ fieldset.facet {
         display: inline-block;
         input {
             margin: 5px;
+        }
+        input[disabled] + label {
+            color: #9F9F9F;
         }
         margin-right: 10px;
     }

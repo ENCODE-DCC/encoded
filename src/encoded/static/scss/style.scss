@@ -43,7 +43,7 @@ $border-radius-base:        4px !default;
 $border-radius-large:       6px !default;
 $border-radius-small:       3px !default;
 
-$font-size-base:               14px;
+$font-size-base:               16px;
 $font-size-large:              ceil(($font-size-base * 1.25)) !default; // ~18px
 $font-size-small:              ceil(($font-size-base * 0.85)) !default; // ~12px
 $mobile-font-factor:           1.2; // Amount text increases size on mobile
@@ -238,6 +238,8 @@ $link-hover-color:                          darken($link-color, 15%);
         "encoded/modules/tables",
         "encoded/modules/search",
         "encoded/modules/summary",
+        "encoded/modules/body_map",
+        "encoded/modules/body_map_facet",
         "encoded/modules/genome_browser",
         "encoded/modules/characterizations",
         "encoded/modules/audits",

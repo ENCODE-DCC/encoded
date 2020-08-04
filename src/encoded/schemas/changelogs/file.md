@@ -1,7 +1,32 @@
 ## Changelog for file.json
 
+### Schema version 22
+* bam files with *output_type: subreads* must have a replicate object specified.
+
+### Minor changes since schema version 21
+* The *file_format_type* enum was updated to include *idr_ranked_peak*.
+* Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *output_type*.
+
+### Schema version 21
+* *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.
+* Added *hotspots_prefix* property.
+* DNase files with *output_type* *enrichment* changed to *output_type* *FDR cut rate*.
+
+### Schema version 20
+* Added upgrade required due to re-implementation of the *run_type* dependency
+
+### Minor changes since schema version 19
+* Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum for *output_type*.
+
+### Schema version 19
+* Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *output_type*.
+
 ### Minor changes since schema version 18
 * *output_type* list was updated to include the enum *regulatory elements*.
+* Added *cropped_read_length* property
+* Added *gRNAs* to *output_type* enum list.
+* Added *element quantifications* to *output_type* enum list.
+* Added *cropped_read_length_tolerance* property.
 
 ### Schema version 18
 * Added dependency restrictions for files of *output_type* subreads, preventing specification of *assembly* and requiring that *platform* be one of the Pacific Biosciences platforms.

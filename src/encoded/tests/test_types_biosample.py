@@ -115,11 +115,15 @@ def test_biosample_summary(testapp,
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             "biosample_ontology": liver['uuid'],
+                                            'disease_term_id': 'DOID:0080600',
                                             "preservation_method": "cryopreservation",
+                                            "post_nucleic_acid_delivery_time": 3,
+                                            "post_nucleic_acid_delivery_time_units": "week",
                                             'treatments': [treatment_5['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens male child (10 days) liver tissue treated with ethanol, preserved by cryopreservation')
+        'Homo sapiens male child (10 days) liver tissue with COVID-19 treated with ethanol,'
+        ' 3 weeks post-nucleic acid delivery time, preserved by cryopreservation')
 
 
 def test_biosample_summary_construct(testapp,
@@ -159,11 +163,12 @@ def test_biosample_summary_construct_2(
     testapp.patch_json(biosample_1['@id'], {
         'donor': human_donor_1['@id'],
         'biosample_ontology': liver['uuid'],
-        'organism': human['@id']
+        'organism': human['@id'],
+        'disease_term_id': 'DOID:0080600'
         })
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens female adult (31 years) liver tissue')
+        'Homo sapiens female adult (31 years) liver tissue with COVID-19')
 
 
 def test_biosample_summary_construct_3(
@@ -242,3 +247,35 @@ def test_perturbed_none(
 ):
     res = testapp.get(biosample_1['@id'] + '@@index-data')
     assert res.json['object']['perturbed'] is False
+
+
+def test_undefined_sample_collection_age(
+    testapp,
+    biosample,
+    human,
+    human_donor_1,
+):
+    testapp.patch_json(
+        biosample['@id'],
+        {'organism': human['@id'], 'donor': human_donor_1['@id']}
+    )
+    testapp.patch_json(
+        human_donor_1['@id'],
+        {'age': '30000', 'age_units': 'month', 'life_stage': 'embryonic'}
+    )
+    res = testapp.get(biosample['@id'] + '@@index-data')
+    assert res.json['object']['age'] == '30000'
+    assert res.json['object']['age_units'] == 'month'
+    assert res.json['object']['age_display'] == '30000 months'
+    testapp.patch_json(
+        biosample['@id'],
+        {
+            'organism': human['@id'],
+            'sample_collection_age': '90 or above',
+            'sample_collection_age_units': 'year'
+        }
+    )
+    res = testapp.get(biosample['@id'] + '@@index-data')
+    assert res.json['object']['age'] == '90 or above'
+    assert res.json['object']['age_units'] == 'year'
+    assert res.json['object']['age_display'] == '90 or above years'

@@ -216,3 +216,34 @@ def liver(testapp):
         'classification': 'tissue',
     }
     return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def cloning_sample(testapp):
+    item = {
+        'term_id': 'NTR:0000545',
+        'term_name': 'DNA cloning sample',
+        'classification': 'cloning host',
+        'uuid': '09e6c39a-92af-41fc-a535-7a86d5e9590a'
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def epiblast(testapp):
+    item = {
+        'term_id': 'CL:0000352',
+        'term_name': 'epiblast cell',
+        'classification': 'in vitro differentiated cells',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]
+
+
+@pytest.fixture
+def epidermis(testapp):
+    item = {
+        'term_id': 'UBERON:0001003',
+        'term_name': 'skin epidermis',
+        'classification': 'tissue',
+    }
+    return testapp.post_json('/biosample_type', item).json['@graph'][0]

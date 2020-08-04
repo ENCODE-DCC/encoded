@@ -40,13 +40,14 @@ def functional_characterization_experiment(testapp, lab, award, cell_free):
 
 
 @pytest.fixture
-def functional_characterization_experiment_4(testapp, lab, award):
+def functional_characterization_experiment_4(testapp, lab, award, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'CRISPR screen',
         'status': 'in progress',
-        'target_expression_percentile': 70
+        'target_expression_percentile': 70,
+        'biosample_ontology': heart['uuid']
     }
     return item
 
@@ -67,11 +68,12 @@ def functional_characterization_experiment_5(testapp, lab, award, ctcf):
     
 
 @pytest.fixture
-def functional_characterization_experiment_6(testapp, lab, award, ctcf):
+def functional_characterization_experiment_6(testapp, lab, award, ctcf, heart):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'CRISPR screen',
+        'biosample_ontology': heart['uuid'],
         'status': 'in progress',
         'examined_loci': [{
              'gene': ctcf['uuid']
@@ -102,3 +104,47 @@ def functional_characterization_experiment_disruption_screen(testapp, lab, award
         'status': 'in progress'
     }
     return testapp.post_json('/functional_characterization_experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def pce_fcc_experiment(testapp, lab, award):
+        return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'assay_term_name': 'pooled clone sequencing',
+        'schema_version': '2',
+        'status': 'in progress'
+    }
+
+
+@pytest.fixture
+def pce_fcc_experiment_2(pce_fcc_experiment):
+    item = pce_fcc_experiment.copy()
+    item.update({
+        'schema_version': '4'
+    })
+    return item
+
+
+@pytest.fixture
+def pce_fcc_other_experiment(pce_fcc_experiment):
+    item = pce_fcc_experiment.copy()
+    item.update({
+        'schema_version': '5',
+        'plasmids_library_type': 'other'
+    })
+    return item
+
+
+@pytest.fixture
+def pooled_clone_sequencing(testapp, lab, award, liver):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'pooled clone sequencing',
+        'biosample_ontology': liver['uuid'],
+        'plasmids_library_type': 'elements cloning'
+    }
+    return testapp.post_json(
+        '/functional_characterization_experiment', item
+    ).json['@graph'][0]

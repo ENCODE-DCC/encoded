@@ -49,6 +49,7 @@ class Experiment(Dataset,
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
+        'analysis_objects',
         'biosample_ontology',
         'files.platform',
         'files.analysis_step_version.analysis_step',
@@ -312,6 +313,30 @@ class Experiment(Dataset,
             updated_analyses.append(analysis)
         return analyses
 
+    @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether any biosamples have been perturbed with treatments or genetic modifications.",
+        "type": "boolean",
+    })
+    def perturbed(self, request, replicates=None):
+        if replicates is not None:
+            bio_perturbed = set()
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] in ('deleted', 'revoked'):
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] in ('deleted', 'revoked'):
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
+                            continue
+                        bio_perturbed.add(biosampleObject['perturbed'])
+            return any(bio_perturbed)
+        return False
+
     matrix = {
         'y': {
             'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
@@ -319,6 +344,17 @@ class Experiment(Dataset,
         },
         'x': {
             'group_by': 'assay_title',
+            'label': 'Assay',
+        },
+    }
+
+    sescc_stem_cell_matrix = {
+        'y': {
+            'group_by': ['biosample_ontology.classification', 'biosample_ontology.term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'group_by': ['assay_title', 'target.label'],
             'label': 'Assay',
         },
     }
@@ -337,7 +373,7 @@ class Experiment(Dataset,
         },
     }
 
-    summary = {
+    summary_matrix = {
         'x': {
             'group_by': 'status'
         },

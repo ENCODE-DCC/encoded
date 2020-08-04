@@ -294,19 +294,17 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         if (!this.context.readonly) {
             if (subtypes.length > 1) {
                 button = (
-                    <DropdownButton title="Add" buttonClasses="rf-RepeatingFieldset__add">
-                        <DropdownMenu>
-                            {subtypes.map(subtype =>
-                                <a
-                                    href="#"
-                                    key={subtype}
-                                    data-subtype={subtype}
-                                    onClick={this.handleAdd}
-                                >
-                                    {schemas[subtype].title}
-                                </a>)}
-                        </DropdownMenu>
-                    </DropdownButton>
+                    <DropdownButton.Immediate label="Add" css="rf-RepeatingFieldset__add">
+                        {subtypes.map(subtype =>
+                            <a
+                                href="#"
+                                key={subtype}
+                                data-subtype={subtype}
+                                onClick={this.handleAdd}
+                            >
+                                {schemas[subtype].title}
+                            </a>)}
+                    </DropdownButton.Immediate>
                 );
             } else {
                 button = (
@@ -688,7 +686,7 @@ export class Field extends UpdateChildMixin(React.Component) {
                 searchBase={`?mode=picker&type=${schema.linkTo}`}
             />);
         } else if (schema.type === 'boolean') {
-            input = <input type="checkbox" {...inputProps} />;
+            input = <input type="checkbox" {...inputProps} checked={!!value} />;
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {

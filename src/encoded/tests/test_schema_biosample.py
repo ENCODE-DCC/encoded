@@ -128,3 +128,10 @@ def test_biosample_post_nucleic_acid_delivery_props(testapp, biosample_data):
         }
     )
     assert res.status_code == 200
+
+
+def test_biosample_disease_term_id(testapp, biosample_data):
+    biosample_data.update({'disease_term_id': 'DOID:002'})
+    testapp.post_json('/biosample', biosample_data, status=422)
+    biosample_data.update({'disease_term_id': 'DOID:0080600'})
+    testapp.post_json('/biosample', biosample_data, status=201)

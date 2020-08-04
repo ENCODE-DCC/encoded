@@ -118,7 +118,7 @@
     }
 }
 
-// Adds blue outline to rectangles 
+// Adds blue outline to rectangles
 .rectangle-box {
     stroke-width: 6px;
     stroke: #0000EE;
@@ -134,6 +134,29 @@
         fill-opacity: 0.4;
     }
 }
+
+// Links overlaid on the classic image.
+.classic-img-link {
+    &:hover > .classic-img-link__underline {
+        visibility: visible;
+    }
+
+    // Rectangle over promoters/enhancers.
+    @at-root #{&}__rect {
+        @extend .rectangle-box;
+    }
+
+    // Text describing promoters/enhancers.
+    @at-root #{&}__text {
+        opacity: 0;
+    }
+
+    // Rectangle defining link underline of text above.
+    @at-root #{&}__underline {
+        fill: $std-href-color;
+        visibility: hidden;
+    }
+};
 
 // Graph titles
 .title {
@@ -351,7 +374,6 @@
 
 .news-header {
     @extend .twitter-header;
-    border-bottom: 1px solid #e0e0e0;
 }
 
 .site-search {
@@ -366,7 +388,9 @@
 
         label {
             color: #000;
-            font-weight: bold;
+            font-weight: 600;
+            line-height: 1;
+            padding: 10px 0 0;
         }
 
         .icon {
@@ -390,9 +414,18 @@
     @at-root #{&}__submit {
         display: flex;
         flex-wrap: wrap;
+        margin-top: 10px;
+        margin-right: -3px;
+        margin-left: -3px;
+
+        a {
+            flex: 1 1 auto;
+            margin: 3px;
+        }
 
         &-element {
-            flex: 0 1 auto;
+            flex: 1 1 auto;
+            margin: 3px;
 
             .icon {
                 margin-left: 5px;
@@ -460,13 +493,6 @@
         font-size: 0.9rem;
         font-weight: normal;
         font-style: italic;
-    }
-
-    @at-root #{&}__submit {
-        margin-top: 10px;
-        a {
-            flex: 1 1 auto;
-        }
     }
 }
 

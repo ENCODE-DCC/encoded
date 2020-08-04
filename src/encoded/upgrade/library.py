@@ -233,3 +233,40 @@ def library_10_11(value, system):
             value.pop('strand_specificity')
         elif value['strand_specificity'] == True:
             value['strand_specificity'] = 'strand-specific'
+
+
+@upgrade_step('library', '11', '12')
+def library_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5321
+    if 'fragmentation_methods' in value:
+        frag_methods = value.get('fragmentation_methods')
+        if 'chemical (HindIII/DpnII restriction)' in frag_methods:
+            frag_methods.remove('chemical (HindIII/DpnII restriction)')
+            if 'chemical (DpnII restriction)' not in frag_methods:
+                frag_methods.append('chemical (DpnII restriction)')
+            if 'chemical (HindIII restriction)' not in frag_methods:
+                frag_methods.append('chemical (HindIII restriction)')
+            value['fragmentation_methods'] = frag_methods
+
+
+@upgrade_step('library', '12', '13')
+def library_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5297
+    if 'adapters' in value:
+        for adapter in value['adapters']:
+            if 'type' in adapter:
+                if adapter['type'] == '5\' adapter': adapter['type'] = 'read1 5\' adapter'
+                if adapter['type'] == '3\' adapter': adapter['type'] = 'read1 3\' adapter'
+            else:
+                adapter['type'] = 'unspecified adapter'
+
+
+@upgrade_step('library', '13', '14')
+def library_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5368
+    notes = value.get('notes', '')
+    if 'depleted_in_term_name' in value:
+        if 'polyadenylated mRNA' in value['depleted_in_term_name']:
+            if value['nucleic_acid_term_name'] == 'polyadenylated mRNA':
+                value['nucleic_acid_term_name'] = 'RNA'
+                value['notes'] = (notes + ' The nucleic_acid_term_name of this library was automatically upgraded by ENCD-5368.').strip()

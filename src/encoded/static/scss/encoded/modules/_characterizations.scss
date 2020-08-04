@@ -106,6 +106,16 @@ $attachment-button-margin: 3px;
     background-image: url(/static/img/file-broken.svg);
 }
 
+.file-thumbnail {
+    @extend %file-icon;
+    display: inline-block;
+
+    img {
+        height: 100px;
+        width: 120px; 
+    }
+}
+
 .facet-term-key {
     margin-right: 5px;
     font-size: 1.1rem;

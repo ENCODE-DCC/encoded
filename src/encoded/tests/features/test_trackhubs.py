@@ -1,5 +1,6 @@
 import pytest
 
+pytestmark = [pytest.mark.indexing]
 
 @pytest.mark.parametrize('expected', [
     "# http://localhost/batch_hub/type=Experiment/hub.txt",
@@ -9,7 +10,7 @@ import pytest
     "genomesFile genomes.txt",
     "email encode-help@lists.stanford.edu"
 ])
-def test_hub(testapp, workbook, expected):
+def test_hub(testapp, index_workbook, expected):
     res = testapp.get("/batch_hub/type=Experiment/hub.txt")
     assert expected in res.text
 
@@ -22,7 +23,7 @@ def test_hub(testapp, workbook, expected):
     "genome hg19",
     "trackDb hg19/trackDb.txt",
 ])
-def test_genomes(testapp, workbook, expected):
+def test_genomes(testapp, index_workbook, expected):
     res = testapp.get("/batch_hub/type=Experiment/genomes.txt")
     assert expected in res.text
 
@@ -98,16 +99,26 @@ def test_genomes(testapp, workbook, expected):
 @pytest.mark.parametrize('expected', [
     ""
 ])
+<<<<<<< HEAD
 def test_fileset_files_trackDb(testapp, workbook, expected):
     res = testapp.get("/publication-data/KCESR727WCB/@@hub/hg19/trackDb.txt")
+=======
+def test_fileset_files_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/publication-data/ENCSR727WCB/@@hub/hg19/trackDb.txt")
+>>>>>>> dev-encoded
     assert expected in res.text
 
 
 @pytest.mark.parametrize('expected', [
     "# Empty composite for KCESR000ACY.  It cannot be visualized at this time.",
 ])
+<<<<<<< HEAD
 def test_experiment_trackDb(testapp, workbook, expected):
     res = testapp.get("/experiments/KCESR000ACY/@@hub/trackDb.txt")
+=======
+def test_experiment_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR000ACY/@@hub/trackDb.txt")
+>>>>>>> dev-encoded
     assert expected in res.text
 
 
@@ -115,7 +126,7 @@ def test_experiment_trackDb(testapp, workbook, expected):
     "genome hg38",
     "trackDb hg38/trackDb.txt",
 ])
-def test_genome_txt(testapp, workbook, expected):
+def test_genome_txt(testapp, index_workbook, expected):
     res = testapp.get("/batch_hub/type=Experiment&assembly=GRCh38/genomes.txt")
     assert expected in res.text
 
@@ -123,20 +134,30 @@ def test_genome_txt(testapp, workbook, expected):
     "GRCh38",
     "hg19"
 ])
+<<<<<<< HEAD
 def test_assembly(testapp, workbook, expected):
     res = testapp.get("/experiments/KCESR000AEN/")
+=======
+def test_assembly(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR000AEN/")
+>>>>>>> dev-encoded
     assert expected in res.json['assembly']
 
 
 @pytest.mark.parametrize('expected', [
     "/experiments/KCESR000AEN/@@hub/hub.txt",
 ])
+<<<<<<< HEAD
 def test_hub_field(testapp, workbook, expected):
     res = testapp.get("/experiments/KCESR000AEN/")
+=======
+def test_hub_field(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR000AEN/")
+>>>>>>> dev-encoded
     assert expected in res.json['hub']
 
 
-def test_visualize(submitter_testapp, workbook):
+def test_visualize(submitter_testapp, index_workbook):
     expected = {
         'GRCh38': [
             "Ensembl",

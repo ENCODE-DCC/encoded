@@ -1,5 +1,19 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 30
+* Added *analysis_objects* property.
+
+### Schema version 30
+
+* *assay_term_name* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
+### Minor changes since schema version 29
+* Added *wild type* enum to *control_type*
+
+### Schema version 29
+
+* The *internal_status* enum was adjusted to remove *requires lab review* and *unrunnable*; *pre-pipeline review* and *post-pipeline review* were added.
+
 ### Minor changes since schema version 28
 
 * Removed FCC *assay_term_name* enums *STARR-seq*, *MPRA*, *CRISPR screen*, and *pooled clone sequencing* from Experiment schema. They are to be used only in FunctionalCharacterizationExperiment objects

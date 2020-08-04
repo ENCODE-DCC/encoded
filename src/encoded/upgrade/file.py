@@ -1,4 +1,7 @@
-from snovault import upgrade_step
+from snovault import (
+    CONNECTION,
+    upgrade_step,
+)
 from pyramid.traversal import find_root
 from datetime import datetime, time
 
@@ -633,3 +636,62 @@ def file_17_18(value, system):
     if output_type == "subreads" and 'assembly' in value:
         value.pop('assembly', None)
     return
+
+
+@upgrade_step('file', '18', '19')
+def file_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    output_type = value.get('output_type', None)
+
+    if output_type == "representative dnase hypersensitivity sites":
+        value['output_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return
+
+
+@upgrade_step('file', '19', '20')
+def file_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5258
+    platforms_to_exclude = [
+        'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+        'c7564b38-ab4f-4c42-a401-3de48689a998',
+        'e2be5728-5744-4da4-8881-cb9526d0389e',
+        '6c275b37-018d-4bf8-85f6-6e3b830524a9',
+        '8f1a9a8c-3392-4032-92a8-5d196c9d7810'
+    ]
+    formats_to_check = ['fastq', 'sra']
+    file_format = value.get('file_format', None)
+    platform = value.get('platform', None)
+    run_type = value.get('run_type', None)
+    notes = value.get('notes', '')
+
+    if file_format in formats_to_check and \
+            run_type is None and \
+            platform not in platforms_to_exclude:
+        value['run_type'] = 'single-ended'
+        value['notes'] = (notes + ' The run_type of this file was automatically upgraded by ENCD-5258.').strip()
+    return
+
+
+@upgrade_step('file', '20', '21')
+def file_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5271
+    output_type = value.get('output_type', None)
+
+    conn = system['registry'][CONNECTION]
+    datasetContext = conn.get_by_uuid(value['dataset'])
+    assay_type = datasetContext.properties.get('assay_term_name', None)
+
+    if assay_type == 'DNase-seq' and output_type == 'enrichment':
+        value['output_type'] = 'FDR cut rate'
+    return
+
+
+@upgrade_step('file', '21', '22')
+def file_21_22(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5286
+    output_type = value.get('output_type', None)
+    notes = value.get('notes', '')
+    if output_type == 'subreads':
+        if 'replicate' not in value:
+            value['replicate'] = '70d6e704-bba5-4475-97b8-03bf717eecf3'
+            value['notes'] = notes + ' This file lacks its correct replicate specified.'

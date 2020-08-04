@@ -55,12 +55,12 @@ function getQualityMetricsByReplicate(experiment, field) {
 // legend should be shown or not. So this collection should be color coded
 // columns only.
 const hideColorCodedColumns = {
-    readDepth: series => !series.assay_term_name.includes('ChIP-seq'),
-    NRF: series => !series.assay_term_name.includes('ChIP-seq'),
-    NSC: series => !series.assay_term_name.includes('ChIP-seq'),
-    PBC1: series => !series.assay_term_name.includes('ChIP-seq'),
-    PBC2: series => !series.assay_term_name.includes('ChIP-seq'),
-    IDR: series => !series.assay_term_name.includes('ChIP-seq') || series.target.some(target => target.investigated_as.includes('histone')),
+    readDepth: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    NRF: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    NSC: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    PBC1: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    PBC2: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
+    IDR: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']) || series.target.some(target => target.investigated_as.includes('histone')),
 };
 
 const experimentTableColumns = {
@@ -72,14 +72,14 @@ const experimentTableColumns = {
     file_assembly: {
         title: 'Assembly',
         getValue: experiment => _.uniq(experiment.files.map(f => f.assembly)),
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     _biological_replicate_number: {
         title: 'Replicate',
         getValue: (experiment, meta) => meta.bioRepNum,
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     antibody: {
@@ -91,7 +91,7 @@ const experimentTableColumns = {
                     const lotReviews = rep.antibody.lot_reviews;
                     const organism = rep.library.biosample.organism['@id'];
                     const biosampleTermId = rep.library.biosample.biosample_ontology.term_id;
-                    if (experiment.target.investigated_as.includes('histone')) {
+                    if (experiment.target && experiment.target.investigated_as.includes('histone')) {
                         lotReviews.forEach((rev) => {
                             if (rev.organisms.includes(organism)) {
                                 statuses.push(rev.status);
@@ -116,7 +116,7 @@ const experimentTableColumns = {
             );
         },
         replicateSpecific: true,
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     readDepth: {
@@ -125,7 +125,7 @@ const experimentTableColumns = {
             const low = 5000000;
             let minimal = 10000000;
             let recommended = 20000000;
-            if (experiment.target.investigated_as.includes('broad histone mark')) {
+            if (experiment.target && experiment.target.investigated_as.includes('broad histone mark')) {
                 minimal = 35000000;
                 recommended = 45000000;
             }
@@ -134,7 +134,7 @@ const experimentTableColumns = {
                 (flatQualityMetrics, qms) => flatQualityMetrics.concat(qms), []
             );
             let qm = [];
-            if (['H3K9me3-human', 'H3K9me3-mouse'].includes(experiment.target.name)) {
+            if (experiment.target && ['H3K9me3-human', 'H3K9me3-mouse'].includes(experiment.target.name)) {
                 qm = _.uniq(qualityMetrics.filter(q => q.processing_stage === 'unfiltered').map(q => q.mapped / ((q.read1 && q.read2) ? 2 : 1)).filter(q => q));
             } else {
                 qm = _.uniq(qualityMetrics.filter(q => q.processing_stage === 'filtered').map(q => q.total / ((q.read1 && q.read2) ? 2 : 1)).filter(q => q));
@@ -307,7 +307,7 @@ const experimentTableColumns = {
             }
             return '';
         },
-        hide: series => !series.assay_term_name.includes('ChIP-seq'),
+        hide: series => !_.isEqual(series.assay_term_name, ['ChIP-seq']),
     },
 
     status: {
@@ -521,10 +521,11 @@ class ExperimentSeriesComponent extends React.Component {
         const viewableDatasets = this.state.viewableDatasets;
         if (Object.keys(viewableDatasets).length > 0) {
             // Add the "Add all to cart" button and internal tags from all related datasets.
+            const experimentIds = Object.values(viewableDatasets).map(experiment => experiment['@id']);
             addAllToCartControl = (
                 <div className="experiment-table__header">
                     <h4 className="experiment-table__title">{`Experiments in experiment series ${context.accession}`}</h4>
-                    <CartAddAllElements elements={Object.values(viewableDatasets)} />
+                    <CartAddAllElements elements={experimentIds} />
                 </div>
             );
 
@@ -583,7 +584,7 @@ class ExperimentSeriesComponent extends React.Component {
             <div className={itemClass}>
                 <header>
                     <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>Summary for experiment series {context.accession}</h2>
+                    <h1>Summary for experiment series {context.accession}</h1>
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
                 </header>
                 {auditDetail(context.audit, 'series-audit', { session: this.context.session, sessionProperties: this.context.session_properties })}

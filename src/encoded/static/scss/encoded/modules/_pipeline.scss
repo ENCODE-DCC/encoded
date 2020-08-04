@@ -73,7 +73,6 @@ g.pipeline-node-file-type {
 
 g.label {
     font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: bold;
     fill: #000;
 }
@@ -174,7 +173,6 @@ g.pipeline-node-qc-metric {
     }
 
     > text {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: bold;
         fill: #000;
     }
@@ -329,6 +327,7 @@ g.pipeline-node-qc-metric {
         h2 {
             margin: 0;
             font-size: 1.3rem;
+            border-bottom: none;
         }
 
         h5 {
@@ -381,5 +380,16 @@ $color-unknown: #ffc0c0;
         fill: label-color($color-unknown);
         background-color: $color-unknown;
         box-shadow: inset 0 0 0 1px lighten($color-unknown, 20%);
+    }
+}
+
+
+.analyses-selector {
+    @at-root #{&}--file-gallery-facets {
+        margin-bottom: 25px;
+    }
+
+    .file-gallery-facets.collapsed & {
+        display: none;
     }
 }

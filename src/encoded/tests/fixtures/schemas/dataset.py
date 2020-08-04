@@ -45,6 +45,7 @@ def dataset_reference_2(lab, award):
         'notes': 'preexisting comment.'
     }
 
+
 @pytest.fixture
 def ucsc_browser_composite(testapp, lab, award):
     item = {
@@ -53,3 +54,13 @@ def ucsc_browser_composite(testapp, lab, award):
     }
     return testapp.post_json('/ucsc_browser_composite', item).json['@graph'][0]
 
+
+@pytest.fixture
+def transgenic_enhancer_experiment(testapp, lab, award, whole_organism):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'biosample_ontology': whole_organism['uuid'],
+        'assay_term_name': 'transgenic enhancer assay'
+    }
+    return testapp.post_json('/transgenic_enhancer_experiment', item).json['@graph'][0]

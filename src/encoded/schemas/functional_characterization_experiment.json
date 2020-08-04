@@ -5,7 +5,7 @@
     "id": "/profiles/functional_characterization_experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name"],
+    "required": ["award", "lab", "assay_term_name", "biosample_ontology"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -104,7 +104,7 @@
     "properties": {
         "schema_version": {
 
-            "default": "4"
+            "default": "6"
         },
         "assay_term_name": {
             "title": "Assay name",
@@ -219,21 +219,10 @@
             "title": "Plasmids library type",
             "description": "The purpose of a pooled clone sequencing experiment.",
             "type": "string",
-            "oneOf": [
-                {
-                    "enum": [
-                        "elements cloning",
-                        "elements mapping",
-                        "gRNA cloning"
-                    ]
-                },
-                {
-                    "comment": "Temporary choice for the requirement of this property.",
-                    "permission": "import_items",
-                    "enum": [
-                        "other"
-                    ]
-                }
+            "enum": [
+                "elements cloning",
+                "elements mapping",
+                "gRNA cloning"
             ]
         },
         "examined_loci": {
@@ -293,24 +282,14 @@
         }
     },
     "facets": {
-        "assay_slims": {
-            "title": "Assay type"
-        },
         "assay_title": {
             "title": "Assay title",
-            "type": "typeahead"
+            "type": "typeahead",
+            "open_on_load": true
         },
         "status": {
-            "title": "Status"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "assembly": {
-            "title": "Genome assembly"
+            "title": "Status",
+            "open_on_load": true
         },
         "target.investigated_as": {
             "title": "Target category"
@@ -318,10 +297,12 @@
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism",
+            "open_on_load": true
         },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
@@ -329,7 +310,8 @@
         "biosample_ontology.term_name" : {
             "title": "Biosample term name",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
@@ -344,6 +326,15 @@
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -542,7 +533,7 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,

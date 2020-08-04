@@ -59,6 +59,7 @@
             "title": "Software used",
             "description": "A list of software used to derive the reference file set.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Software used",
                 "description": "Version of software used to derived the reference file set.",

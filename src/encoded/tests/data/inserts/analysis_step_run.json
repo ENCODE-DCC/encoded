@@ -494,5 +494,13 @@
         "date_created": "2017-10-16T16:12:30.339473+00:00",
         "status": "released",
         "uuid": "41cf4efe-5de6-4e67-9b17-a15201f72348"
+    },
+    {
+        "aliases": [
+            "encode:atac-alignment"
+        ],
+        "uuid": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024",
+        "status": "released",
+        "analysis_step_version": "5c4042c6-27b0-42c5-b608-9061005e32ab"
     }
 ]

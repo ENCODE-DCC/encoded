@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 // This module lets you have a tooltip pop up when any component is hovered over or focused. The
 // general usage is:
 //
@@ -14,107 +13,106 @@ import PropTypes from 'prop-types';
 // of the tooltip between the opening and closing <Tooltip> tags. This can simply be a string if
 // that's all you need, or a full-fledged component.
 
-export default class Tooltip extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            tooltipDisplayed: false,
+const Tooltip = (props) => {
+    const [showDefinition, setDefinition] = React.useState(false);
+    const [isMobile, setIsMobile] = React.useState(false);
+    const { trigger, position, tooltipId, css, innerCss, children, timerFlag, relativeTooltipFlag } = props;
+    const wrapperCss = `tooltip-container${css ? ` ${css}` : ''}`;
+    const tooltipCss = `${innerCss || `tooltip ${position}`}`;
+
+    // Display or hide tooltip pop-up
+    const setDefinitionVisibility = (param, e) => {
+        // Set delay on hiding the pop-up on "mouseleave" unless timerFlag is set to false
+        if (timerFlag && e.type === 'mouseleave') {
+            setTimeout(() => {
+                setDefinition(param);
+            }, 1000);
+        } else {
+            setDefinition(param);
+        }
+    };
+
+    // Check to see if device is mobile (small width with touch screen)
+    React.useEffect(() => {
+        const updateWidth = () => {
+            const screenWidth = Math.min(screen.width, window.innerWidth);
+            setIsMobile(screenWidth <= 960);
         };
-        this.timer = null;
-        this.hoveringOverTooltip = false;
-        this.handleTriggerMouseEnter = this.handleTriggerMouseEnter.bind(this);
-        this.handleTriggerMouseLeave = this.handleTriggerMouseLeave.bind(this);
-        this.handleTooltipMouseEnter = this.handleTooltipMouseEnter.bind(this);
-        this.handleTooltipMouseLeave = this.handleTooltipMouseLeave.bind(this);
-        this.handleTriggerFocus = this.handleTriggerFocus.bind(this);
-        this.handleTriggerBlur = this.handleTriggerBlur.bind(this);
-    }
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+        return () => window.removeEventListener('resize', updateWidth);
+    }, [isMobile, setIsMobile]);
 
-    handleTriggerMouseEnter() {
-        // Mouse entered the tooltip trigger element.
-        this.setState({ tooltipDisplayed: true });
-
-        // If we happen to have a running timer, clear it so we don't hide the tooltip while
-        // hovering over the trigger.
-        if (this.timer) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
-    }
-
-    handleTriggerMouseLeave() {
-        // Start a timer that might hide the tooltip after a second passes. It won't hide the
-        // tooltip if they're now hovering over the tooltip itself.
-        this.timer = setTimeout(() => {
-            this.timer = null;
-            if (!this.hoveringOverTooltip) {
-                this.setState({ tooltipDisplayed: false });
-            }
-        }, 1000);
-    }
-
-    handleTriggerFocus() {
-        // Show tooltip when keyboard focus lands on tooltip trigger.
-        this.setState({ tooltipDisplayed: true });
-    }
-
-    handleTriggerBlur() {
-        // Hide tooltip when keyboard focus leaves tooltip trigger.
-        this.setState({ tooltipDisplayed: false });
-    }
-
-    handleTooltipMouseEnter() {
-        // Mouse started hovering over the tooltip itself. Prevent the tooltip from hiding even if
-        // the one-second trigger time expires.
-        this.hoveringOverTooltip = true;
-    }
-
-    handleTooltipMouseLeave() {
-        // Mouse stopped hovering over the tooltip itself. If the timer's not running, hide the
-        // tooltip, otherwise let the existing timer hide the tooltip when it expires.
-        this.hoveringOverTooltip = false;
-        if (!this.timer) {
-            this.setState({ tooltipDisplayed: false });
-        }
-    }
-
-    render() {
-        const { trigger, position, tooltipId, css } = this.props;
-        const tooltipCss = `tooltip ${position}`;
-        const wrapperCss = `tooltip-container${css ? ` ${css}` : ''}`;
+    // Special case for menu tooltips on mobile to allow the pop-up to be displayed as position relative on devices smaller than 800px wide with touch screens
+    if (isMobile && relativeTooltipFlag) {
         return (
-            <div className={wrapperCss}>
-                {this.state.tooltipDisplayed ?
-                    <div className={tooltipCss} role="tooltip" id={tooltipId} onMouseEnter={this.handleTooltipMouseEnter} onMouseLeave={this.handleTooltipMouseLeave}>
-                        <div className="tooltip-arrow" />
-                        <div className="tooltip-inner">{this.props.children}</div>
-                    </div>
-                : null}
+            <React.Fragment>
                 <button
-                    aria-describedby={this.state.tooltipDisplayed ? tooltipId : ''}
-                    onMouseEnter={this.handleTriggerMouseEnter}
-                    onMouseLeave={this.handleTriggerMouseLeave}
-                    onFocus={this.handleTriggerFocus}
-                    onBlur={this.handleTriggerBlur}
-                    className="tooltip-container__trigger"
+                    aria-describedby={showDefinition ? tooltipId : ''}
+                    onMouseEnter={e => setDefinitionVisibility(true, e)}
+                    onMouseLeave={e => setDefinitionVisibility(false, e)}
+                    onFocus={e => setDefinitionVisibility(true, e)}
+                    onBlur={e => setDefinitionVisibility(false, e)}
+                    className={`tooltip-container__trigger ${showDefinition ? 'show' : ''}`}
                 >
                     {trigger}
                 </button>
-            </div>
+                {showDefinition ?
+                    <div
+                        className={tooltipCss}
+                        role="tooltip"
+                        id={tooltipId}
+                    >
+                        <div className="tooltip-inner">{children}</div>
+                    </div>
+                : null}
+            </React.Fragment>
         );
     }
-}
+    return (
+        <div className={wrapperCss}>
+            <button
+                aria-describedby={showDefinition ? tooltipId : ''}
+                onMouseEnter={e => setDefinitionVisibility(true, e)}
+                onMouseLeave={e => setDefinitionVisibility(false, e)}
+                onFocus={e => setDefinitionVisibility(true, e)}
+                onBlur={e => setDefinitionVisibility(false, e)}
+                className={`tooltip-container__trigger ${showDefinition ? 'show' : ''}`}
+            >
+                {trigger}
+            </button>
+            {showDefinition ?
+                <div
+                    className={tooltipCss}
+                    role="tooltip"
+                    id={tooltipId}
+                >
+                    <div className="tooltip-arrow" />
+                    <div className="tooltip-inner">{children}</div>
+                </div>
+            : null}
+        </div>
+    );
+};
 
 Tooltip.propTypes = {
     trigger: PropTypes.element.isRequired, // Visible tooltip triggering component
     tooltipId: PropTypes.string.isRequired, // HTML ID of tooltip <div>; unique within page
     position: PropTypes.oneOf(['left', 'top', 'bottom', 'right']), // Position of bootstrap tooltip location
     css: PropTypes.string, // CSS classes to add to tooltip-container wrapper class
-    children: PropTypes.node,
+    innerCss: PropTypes.string, // CSS classes to add to tooltip class
+    children: PropTypes.node, // Tooltip pop-up component
+    timerFlag: PropTypes.bool, // Optional flag for when timer should be implemented on mouseLeave
+    relativeTooltipFlag: PropTypes.bool, // Optional flag for tooltips that have relative position (touch device only)
 };
 
 Tooltip.defaultProps = {
     position: 'bottom',
     css: '',
+    innerCss: '',
     children: null,
+    timerFlag: true,
+    relativeTooltipFlag: false,
 };
+
+export default Tooltip;

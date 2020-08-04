@@ -93,6 +93,16 @@ form.table-filter {
     }
 }
 
+.tcell-thumbnail {
+    display: flex;
+    justify-content: center;
+
+    img {
+        height: 100px;
+        width: 120px;
+    }
+}
+
 /* initial state is hidden (see template; class=hide) */
 #total-records {
     font-weight: normal;
@@ -132,6 +142,7 @@ form.table-filter {
                 vertical-align: middle;
                 border-left: 1px solid #e0e0e0;
                 text-align: left;
+                font-weight: 600;
 
                 &:first-child {
                     border-left: none;
@@ -173,6 +184,7 @@ form.table-filter {
     th {
         padding: 0 !important;
         height: auto !important;
+        font-weight: 600;
     }
 }
 
@@ -216,7 +228,7 @@ form.table-filter {
     td {
         background-color: #606060 !important;
         color: #fff;
-        font-weight: bold;
+        font-weight: 400;
 
         a {
             color: #fff !important;
@@ -315,6 +327,12 @@ form.table-filter {
                 &.pair-bottom {
                     border-bottom: 2px solid #606060;
                 }
+
+                &.index-reads {
+                    padding-top: 2px;
+                    padding-bottom: 2px;
+                    background-color: #f0f0f0;
+                }
             }
         }
     }
@@ -322,4 +340,22 @@ form.table-filter {
 
 .table-raw-separator td {
     border-top: 2px solid #606060;
+}
+
+
+// Header for a SortTable including a pager.
+.header-paged-sorttable {
+    display: flex;
+    justify-content: space-between;
+
+    @at-root #{&}__controls {
+        display: flex;
+        margin-top: -3px;
+        margin-right: -3px;
+        margin-bottom: -3px;
+
+        .pager {
+            margin-left: 5px;
+        }
+    }
 }

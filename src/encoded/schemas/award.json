@@ -14,7 +14,7 @@
     "type": "object",
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
@@ -71,6 +71,7 @@
                             "CRISPR genome editing followed by RNA-seq",
                             "CRISPR screen",
                             "CRISPRi followed by RNA-seq",
+                            "CUT&RUN",
                             "direct RNA-seq",
                             "DNA methylation profiling by array assay",
                             "DNA-PET",
@@ -108,8 +109,8 @@
                             "RNA-seq",
                             "RRBS",
                             "shRNA knockdown followed by RNA-seq",
-                            "single cell isolation followed by RNA-seq",
                             "single-cell ATAC-seq",
+                            "single-cell RNA sequencing assay",
                             "single-nucleus ATAC-seq",
                             "siRNA knockdown followed by RNA-seq",
                             "small RNA-seq",

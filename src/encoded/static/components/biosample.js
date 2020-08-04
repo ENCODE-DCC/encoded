@@ -147,6 +147,15 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
+                                {context.post_nucleic_acid_delivery_time && context.post_nucleic_acid_delivery_time_units ?
+                                    <div data-test="postnucleicaciddeliverytime">
+                                        <dt>Post-nucleic acid delivery time</dt>
+                                        <dd>
+                                            {formatMeasurement(context.post_nucleic_acid_delivery_time, context.post_nucleic_acid_delivery_time_units)}
+                                        </dd>
+                                    </div>
+                                : null}
+
                                 {context.subcellular_fraction_term_name ?
                                     <div data-test="subcellulartermname">
                                         <dt>Subcellular fraction</dt>
@@ -373,8 +382,14 @@ class BiosampleComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title="Experiments using this biosample"
+                    title="Functional genomics experiments using this biosample"
                     url={`/search/?type=Experiment&replicates.library.biosample.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title="Functional characterization experiments using this biosample"
+                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
 
@@ -451,6 +466,7 @@ const urlMap = {
     EFO: 'http://www.ebi.ac.uk/efo/',
     UBERON: 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
     CL: 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/',
+    CLO: 'http://www.ontobee.org/ontology/CLO?iri=http://purl.obolibrary.org/obo/',
 };
 
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix

@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-    browser-tools: circleci/browser-tools@0.1.0
+    browser-tools: circleci/browser-tools@0.1.4
 
 executors:
   pandiseased-executor:
@@ -44,6 +44,13 @@ commands:
             sudo apt-get install -y python3.7-dev python3-pip
             sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 0
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic1_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
+            sudo apt-get install -f
       - run:
           name: Run buildout
           command: |
@@ -57,11 +64,13 @@ jobs:
     resource_class: large
     steps:
       - buildout
+      # orb dependencies
+      - run: sudo apt-get update -y && sudo apt-get install -y libgbm1
+      # Use install tasks from the orb
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:
           name: Run bdd tests
-          # collected 2189 items / 2119 deselected / 70 selected
           command: |
             bin/test -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait 10 \
@@ -77,8 +86,7 @@ jobs:
       - run:
           name: non bdd indexing tests
           command: |
-            # collected 2189 items / 2184 deselected / 5 selected
-            bin/test -s -vv -m "not bdd" -k test_indexing
+            bin/test -s -vv -m "indexing"
   not-bdd-non-indexing:
     executor: encoded-executor
     resource_class: large
@@ -87,8 +95,7 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            # collected 2189 items / 75 deselected / 2114 selected
-            bin/test -s -vv -m "not bdd" -k 'not test_indexing'
+            bin/test -s -vv -m "not bdd and not indexing"
   npm:
     executor: encoded-executor
     resource_class: large

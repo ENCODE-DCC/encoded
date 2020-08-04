@@ -8,7 +8,6 @@ import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls } from './cart';
 import FacetRegistry from './facets';
 import * as globals from './globals';
-import { Attachment } from './image';
 import {
     DisplayAsJson,
     DocTypeTitle,
@@ -58,6 +57,16 @@ const datasetTypes = {
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
 
+// session storage used to preserve opened/closed facets
+const FACET_STORAGE = 'FACET_STORAGE';
+
+// marker for determining user just opened the page
+const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
+
+/**
+ * Maximum  downloadable result count
+ */
+const MAX_DOWNLOADABLE_RESULT = 500;
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -286,6 +295,15 @@ const ExperimentComponent = (props, reactContext) => {
 
     const uniqueTreatments = getUniqueTreatments(treatments);
 
+    // Get a map of related datasets, possibly filtering on their status and
+    // categorized by their type.
+    let seriesMap = {};
+    if (result.related_series && result.related_series.length > 0) {
+        seriesMap = _.groupBy(
+            result.related_series, series => series['@type'][0]
+        );
+    }
+
     return (
         <li className={resultItemClass(result)}>
             <div className="result-item">
@@ -333,6 +351,21 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     </div>
                                 : null}
+                                {Object.keys(seriesMap).map(seriesType =>
+                                    <div key={seriesType}>
+                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
+                                        {seriesMap[seriesType].map(
+                                            (series, i) => (
+                                                <span key={series.accession}>
+                                                    {i > 0 ? ', ' : null}
+                                                    <a href={series['@id']}>
+                                                        {series.accession}
+                                                    </a>
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                )}
                             </React.Fragment>
                         : null}
                     </div>
@@ -511,8 +544,8 @@ const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reac
                 </a>
                 <div className="result-item__target-external-resources">
                     <p>External resources:</p>
-                    {result.dbxref && result.dbxref.length > 0 ?
-                        <DbxrefList context={result} dbxrefs={result.dbxref} />
+                    {result.dbxrefs && result.dbxrefs.length > 0 ?
+                        <DbxrefList context={result} dbxrefs={result.dbxrefs} />
                     : <em>None submitted</em> }
                 </div>
             </div>
@@ -796,11 +829,17 @@ const Image = (props) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.caption}</a>
-                    <Attachment context={result} attachment={result.attachment} />
+                    <a href={result['@id']} className="result-item__link">{result['@id']}</a>
+                    <div className="attachment">
+                        <div className="file-thumbnail">
+                            <img src={result.thumb_nail} alt="thumbnail" />
+                        </div>
+                    </div>
+                    {result.caption}
                 </div>
                 <div className="result-item__meta">
                     <p className="type meta-title">Image</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                 </div>
                 <PickerActions context={result} />
             </div>
@@ -1644,12 +1683,89 @@ TextFilter.propTypes = {
 
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter } = props;
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable } = props;
+
+    const [expandedFacets, setExpandFacets] = React.useState(new Set());
+
+    // Get facets from storage that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, []);
+
+    // Only on initialize load, get facets from facet-section and schema that need to be expanded
+    React.useEffect(() => {
+        const facetsStorage = sessionStorage.getItem(FACET_STORAGE);
+        const facetList = new Set(facetsStorage ? facetsStorage.split(',') : []);
+
+        facets.forEach((facet) => {
+            const field = facet.field;
+            const newlyLoadedFacetStorage = `${MARKER_FOR_NEWLY_LOADED_FACET_PREFIX}${field}`;
+            const isFacetNewlyLoaded = sessionStorage.getItem(newlyLoadedFacetStorage);
+
+            const relevantFilters = context && context.filters.filter(filter => (
+                filter.field === facet.field || filter.field === `${facet.field}!`
+            ));
+
+            // auto-open facets based on selected terms (see url) or it set in the schema (open_on_load)
+            if (!isFacetNewlyLoaded && ((relevantFilters && relevantFilters.length > 0) || facet.open_on_load === true)) {
+                sessionStorage.setItem(newlyLoadedFacetStorage, field); // ensure this is not called again on this active session storage
+                facetList.add(facet.field);
+            }
+        });
+
+        sessionStorage.setItem(FACET_STORAGE, facetList.size !== 0 ? [...facetList].join(',') : []);
+        setExpandFacets(facetList); // initalize facet collapse-state
+    }, [context, facets]);
+
     if (facets.length === 0 && mode !== 'picker') {
         return <div />;
     }
 
     const parsedUrl = context && context['@id'] && url.parse(context['@id']);
+
+    /**
+     * Handlers opening or closing a tab
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+     */
+    const handleExpanderClick = (e, status, field) => {
+        let facetList = null;
+
+        if (e.altKey) {
+            // user has held down option-key (alt-key in Windows and Linux)
+            sessionStorage.removeItem(FACET_STORAGE);
+            facetList = new Set(status ? [] : facets.map(f => f.field));
+        } else {
+            facetList = new Set(expandedFacets);
+            facetList[status ? 'delete' : 'add'](field);
+        }
+
+        sessionStorage.setItem(FACET_STORAGE, [...facetList].join(',')); // replace rather than update memory
+        setExpandFacets(facetList); // controls open/closed facets
+    };
+
+    /**
+     * Called when user types a key while focused on a facet term. If the user types a space or
+     * return we call the term click handler -- needed for a11y because we have a <div> acting as a
+     * button instead of an actual <button>.
+     *
+     * @param {event} e React synthetic event
+     * @param {bool} status True for open, false for closed
+     * @param {string} field Tab name
+    */
+    const handleKeyDown = (e, status, field) => {
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            // keyCode: 13 = enter-key. 32 = spacebar
+            e.preventDefault();
+            handleExpanderClick(e, status, field);
+        }
+    };
 
     // See if we need the Clear filters link based on combinations of query-string parameters.
     let clearButton = false;
@@ -1680,7 +1796,7 @@ export const FacetList = (props) => {
     return (
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
-                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`}>
+                <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
                     {(!supressTitle || clearButton) ?
                         <div className="search-header-control">
                             <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
@@ -1690,28 +1806,35 @@ export const FacetList = (props) => {
                         </div>
         : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
-                    {facets.map((facet) => {
-                        // Filter the filters to just the ones relevant to the current facet,
-                        // matching negation filters too.
-                        const relevantFilters = context && context.filters.filter(filter => (
-                            filter.field === facet.field || filter.field === `${facet.field}!`
-                        ));
+                    <div className="facet-wrapper">
+                        {facets.map((facet) => {
+                            // Filter the filters to just the ones relevant to the current facet,
+                            // matching negation filters too.
+                            const relevantFilters = context && context.filters.filter(filter => (
+                                filter.field === facet.field || filter.field === `${facet.field}!`
+                            ));
 
-                        // Look up the renderer registered for this facet and use it to render this
-                        // facet if a renderer exists. A non-existing renderer supresses the
-                        // display of a facet.
-                        const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
-                        return FacetRenderer && <FacetRenderer
-                            key={facet.field}
-                            facet={facet}
-                            results={context}
-                            mode={mode}
-                            relevantFilters={relevantFilters}
-                            pathname={parsedUrl.pathname}
-                            queryString={parsedUrl.query}
-                            onFilter={onFilter}
-                        />;
-                    })}
+                            // Look up the renderer registered for this facet and use it to render this
+                            // facet if a renderer exists. A non-existing renderer supresses the
+                            // display of a facet.
+                            const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                            const isExpanded = expandedFacets.has(facet.field);
+                            return FacetRenderer && <FacetRenderer
+                                key={facet.field}
+                                facet={facet}
+                                results={context}
+                                mode={mode}
+                                relevantFilters={relevantFilters}
+                                pathname={parsedUrl.pathname}
+                                queryString={parsedUrl.query}
+                                onFilter={onFilter}
+                                isExpanded={isExpanded}
+                                handleExpanderClick={handleExpanderClick}
+                                handleKeyDown={handleKeyDown}
+                                isExpandable={isExpandable}
+                            />;
+                        })}
+                    </div>
                 </div>
             </div>
         </div>
@@ -1732,8 +1855,10 @@ FacetList.propTypes = {
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
     /** True to supress the display of facet-list title */
     supressTitle: PropTypes.bool,
-    /** Special search-result click handler */
+    /** Special facet-term click handler for edit forms */
     onFilter: PropTypes.func,
+    /** True if the collapsible, false otherwise  */
+    isExpandable: PropTypes.bool,
 };
 
 FacetList.defaultProps = {
@@ -1744,6 +1869,7 @@ FacetList.defaultProps = {
     docTypeTitleSuffix: 'search',
     supressTitle: false,
     onFilter: null,
+    isExpandable: true,
 };
 
 FacetList.contextTypes = {
@@ -1777,10 +1903,34 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters, showDownloadButton }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+    const canDownload = context.total <= MAX_DOWNLOADABLE_RESULT;
+    const modalText = canDownload ?
+        <>
+            <p>
+                Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                The first line of the file has the URL or command line to download the metadata file.
+            </p>
+            <p>
+                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+            </p>
+            <p>
+                The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+                The following command using cURL can be used to download all the files in the list:
+            </p>
+            <code>xargs -L 1 curl -O -J -L &lt; files.txt</code><br />
+        </> :
+        <>
+            <p>
+                This search is too large (&gt;{MAX_DOWNLOADABLE_RESULT} datasets) to automatically generate a manifest or metadata file.  We are currently working on methods to download from large searches.
+            </p>
+            <p>
+                You can directly access the files in AWS: <a href="https://registry.opendata.aws/encode-project/" target="_blank" rel="noopener noreferrer">https://registry.opendata.aws/encode-project/</a>
+            </p>
+        </>;
 
     let resultsToggle = null;
     if (showResultsToggle) {
@@ -1817,7 +1967,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
             <div className="results-table-control__main">
                 <ViewControls results={context} activeFilters={activeFilters} />
                 {resultsToggle}
-                <BatchDownloadControls results={context} />
+                {showDownloadButton ? <BatchDownloadControls results={context} modalText={modalText} canDownload={canDownload} /> : ''}
                 {!hideBrowserSelector ?
                     <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} activeFilters={activeFilters} />
                 : null}
@@ -1852,6 +2002,8 @@ SearchControls.propTypes = {
     hideBrowserSelector: PropTypes.bool,
     /** Add filters to search links if needed */
     activeFilters: PropTypes.array,
+    /** Determines whether or not download button is displayed */
+    showDownloadButton: PropTypes.bool,
 };
 
 SearchControls.defaultProps = {
@@ -1860,6 +2012,7 @@ SearchControls.defaultProps = {
     onFilter: null,
     hideBrowserSelector: false,
     activeFilters: [],
+    showDownloadButton: true,
 };
 
 SearchControls.contextTypes = {

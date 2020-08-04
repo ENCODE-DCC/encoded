@@ -602,3 +602,26 @@ def activation_genetic_modification(testapp, lab, award):
         'method': 'CRISPR'
     }
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+
+@pytest.fixture
+def HR_knockout(lab, award, target):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'knockout',
+        'purpose': 'repression',
+        'method': 'homologous recombination',
+        'modified_site_by_target_id': target['@id']
+    }
+
+
+@pytest.fixture
+def CRISPR_introduction(lab, award):
+    return {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'category': 'insertion',
+        'purpose': 'expression',
+        'method': 'transient transfection'
+    }

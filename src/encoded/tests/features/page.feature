@@ -1,4 +1,4 @@
-@page @usefixtures(workbook,admin_user)
+@page @usefixtures(index_workbook,admin_user)
 Feature: Portal pages
 
     Scenario: Render page layout

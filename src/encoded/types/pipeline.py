@@ -40,7 +40,8 @@ class Pipeline(Item):
         'analysis_steps.versions.software_versions.software.references',
         'lab',
         'award.pi.lab',
-        'standards_page'
+        'standards_page',
+        'reference_filesets'
     ]
     set_status_up = [
         'analysis_steps',

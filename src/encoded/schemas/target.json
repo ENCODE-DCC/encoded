@@ -106,20 +106,22 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
-        "dbxref": {
+        "dbxrefs": {
             "title": "External resources",
-            "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
+            "description": "Unique identifiers from external resources (e.g. UniProtKB or FactorBook).",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
+            "minItems": 1,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
-                "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
-                "type":  "string"
-            }
+                "description": "A unique identifier from external resource (e.g. UniProtKB or FactorBook).",
+                "comment": "Submit as database name:target name (e.g. FactorBook:HMFN0395)",
+                "type":  "string",
+                "pattern": "^((UniProtKB:[0-9A-Z]+)|(FactorBook:[0-9a-zA-Z-]+))$"
+            },
+            "permission": "import_items"
         },
         "target_organism": {
             "title": "Target organism",
@@ -244,7 +246,7 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "dbxref": {
+        "dbxrefs": {
             "title": "External resources"
         },	
         "genes.symbol": {	
@@ -252,13 +254,14 @@
         }
     },
     "boost_values": {
-        "label": 20.0, 
-        "dbxref": 1.0, 
-        "aliases": 1.0, 
-        "organism.name": 1.0,  
-        "organism.scientific_name": 1.0, 
+        "label": 20.0,
+        "dbxrefs": 1.0,
+        "aliases": 1.0,
+        "organism.name": 1.0,
+        "organism.scientific_name": 1.0,
         "genes.geneid": 1.0,
         "genes.symbol": 1.0,
+        "genes.dbxrefs": 1.0,
         "modifications.modification": 1.0,
         "modifications.amino_acid_code": 1.0,
         "organism.taxon_id": 1.0

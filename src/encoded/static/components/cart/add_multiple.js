@@ -7,8 +7,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as encoding from '../../libs/query_encoding';
 import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
+import { atIdToType } from '../globals';
 import { requestSearch } from '../objectutils';
-import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT, getAllowedCartTypes, mergeCarts } from './util';
+import {
+    MaximumElementsLoggedoutModal,
+    CART_MAXIMUM_ELEMENTS_LOGGEDOUT,
+    cartGetAllowedTypes,
+    cartGetAllowedObjectPathTypes,
+    mergeCarts,
+} from './util';
 
 /**
  * Button to add all qualifying elements to the user's cart.
@@ -32,7 +39,7 @@ class CartAddAllSearchComponent extends React.Component {
         // Get the array of object types in the cart and remove any types found in the filter
         // array of the current search results. Also make a copy of the current search results
         // including only the properties we need to avoid mutating a prop.
-        const allowedTypes = getAllowedCartTypes();
+        const allowedTypes = cartGetAllowedTypes();
         const queryFilters = [];
         this.props.searchResults.filters.forEach((filter) => {
             // Copy all filter fields and terms to our array of filters used for the query, except
@@ -96,7 +103,7 @@ class CartAddAllSearchComponent extends React.Component {
         return (
             <React.Fragment>
                 <button
-                    disabled={inProgress}
+                    disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
                     onClick={this.handleClick}
                     title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
@@ -166,42 +173,42 @@ CartAddAllSearch.contextTypes = {
 /**
  * Renders a button to add all elements from an array of dataset objects to the current cart.
  */
-class CartAddAllElementsComponent extends React.Component {
-    constructor() {
-        super();
-        this.handleClick = this.handleClick.bind(this);
-    }
-
+const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAllResults }) => {
     /**
      * Handle a click in the button to add all datasets from a list to the current cart.
      */
-    handleClick() {
-        const elementAtIds = this.props.elements.map(element => element['@id']);
-        this.props.addAllResults(elementAtIds);
-    }
+    const handleClick = () => {
+        // Filter the added elements to those allowed in carts.
+        const allowedPathTypes = cartGetAllowedObjectPathTypes();
+        const allowedElements = elements.filter(element => (
+            allowedPathTypes.includes(atIdToType(element))
+        ));
 
-    render() {
-        const { savedCartObj, inProgress } = this.props;
-        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
-        return (
-            <div className="cart__add-all-element-control">
-                <button
-                    disabled={inProgress}
-                    className="btn btn-info btn-sm"
-                    onClick={this.handleClick}
-                    title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
-                >
-                    Add all items to cart
-                </button>
-            </div>
-        );
-    }
-}
+        // Add the allowed elements to the cart.
+        if (allowedElements.length > 0) {
+            addAllResults(allowedElements);
+        }
+    };
+
+    const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+    return (
+        <div className="cart__add-all-element-control">
+            <button
+                disabled={inProgress || savedCartObj.locked}
+                className="btn btn-info btn-sm"
+                onClick={handleClick}
+                title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
+            >
+                Add all items to cart
+            </button>
+        </div>
+    );
+};
 
 CartAddAllElementsComponent.propTypes = {
     /** Current cart saved object */
     savedCartObj: PropTypes.object,
-    /** New elements to add to cart as array of dataset objects */
+    /** New elements to add to cart as array of @ids */
     elements: PropTypes.array.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,
@@ -232,7 +239,7 @@ export const CartAddAllElements = ({ elements }, reactContext) => (
 );
 
 CartAddAllElements.propTypes = {
-    /** New elements to add to cart as array of dataset objects */
+    /** New elements to add to cart as array of @ids */
     elements: PropTypes.array,
 };
 

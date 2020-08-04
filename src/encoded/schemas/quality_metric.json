@@ -60,7 +60,8 @@
                     "enum": [
                         "image/png",
                         "text/plain",
-                        "application/pdf"
+                        "application/pdf",
+                        "application/json"
                     ]
                 },
                 "size": {

@@ -4,7 +4,7 @@ from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
 from snovault.elasticsearch.searches.interfaces import MATRIX_TITLE
 from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
-from snovault.elasticsearch.searches.interfaces import SUMMARY
+from snovault.elasticsearch.searches.interfaces import SUMMARY_MATRIX
 from snovault.elasticsearch.searches.interfaces import SUMMARY_TITLE
 from snovault.elasticsearch.searches.fields import AuditMatrixWithFacetsResponseField
 from snovault.elasticsearch.searches.fields import AllResponseField
@@ -42,6 +42,7 @@ def includeme(config):
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('reference-epigenome-matrix', '/reference-epigenome-matrix{slash:/?}')
     config.add_route('entex-matrix', '/entex-matrix{slash:/?}')
+    config.add_route('sescc-stem-cell-matrix', '/sescc-stem-cell-matrix{slash:/?}')
     config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
     config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
@@ -55,6 +56,7 @@ DEFAULT_ITEM_TYPES = [
     'Biosample',
     'BiosampleType',
     'Dataset',
+    'Document',
     'Donor',
     'GeneticModification',
     'Page',
@@ -220,6 +222,35 @@ def matrix(context, request):
     return fr.render()
 
 
+@view_config(route_name='sescc-stem-cell-matrix', request_method='GET', permission='search')
+def sescc_stem_cell_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Stem Cell Development Matrix (SESCC)'
+            ),
+            TypeResponseField(
+                at_type=['SESCCStemCellMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='sescc_stem_cell_matrix',
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
 @view_config(route_name='chip-seq-matrix', request_method='GET', permission='search')
 def chip_seq_matrix(context, request):
     fr = FieldedResponse(
@@ -286,7 +317,7 @@ def entex_matrix(context, request):
         },
         response_fields=[
             TitleResponseField(
-                title='ENTEx Matrix'
+                title='Epigenomes from four individuals (ENTEx)'
             ),
             TypeResponseField(
                 at_type=['EntexMatrix']
@@ -354,7 +385,7 @@ def summary(context, request):
             ContextResponseField(),
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
-                matrix_definition_name=SUMMARY
+                matrix_definition_name=SUMMARY_MATRIX
             ),
             NotificationResponseField(),
             FiltersResponseField(),

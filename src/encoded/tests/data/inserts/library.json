@@ -793,11 +793,11 @@
         "lab": "/labs/ali-mortazavi/",
         "adapters": [
             {
-              "type": "3' adapter",
+              "type": "read1 3' adapter",
               "file": "ENCFF463QEL"
             },
             {
-              "type": "5' adapter",
+              "type": "read1 5' adapter",
               "file": "ENCFF980GYX"
             }
         ]
@@ -818,11 +818,11 @@
         "status": "released",
         "adapters": [
             {
-              "type": "3' adapter",
+              "type": "read1 3' adapter",
               "file": "ENCFF463QEL"
             },
             {
-              "type": "5' adapter",
+              "type": "read1 5' adapter",
               "file": "ENCFF379BCO"
             }
         ]
@@ -839,7 +839,17 @@
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5"
+        "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5",
+        "adapters": [
+            {
+              "type": "read1 3' adapter",
+              "sequence": "ACCCCTG"
+            },
+            {
+              "type": "read1 5' adapter",
+              "sequence": "GGGGGGCNA"
+            }
+        ]
     },
     {
         "_test": "For ENTEx matrix testing",
@@ -949,6 +959,7 @@
         "biosample": "ENCBS123AAE",
         "lab": "encode2-project",
         "nucleic_acid_term_name": "DNA",
+        "extraction_method": "NucleoBond Xtra Midi kit (Machery-Nagel cat#: 740410)",
         "status": "released",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e"
@@ -968,5 +979,75 @@
         "accession": "ENCLB001FRA",
         "biosample": "ENCBS124ENC",
         "uuid": "0017c28f-bacd-40b2-80d0-36b825933edc"
+    },
+    {
+        "accession": "ENCLB642NXW",
+        "aliases": [
+            "michael-snyder:mL-scATAC-W62_LNGL_B-8819-X020-S03-B1-T1"
+        ],
+        "award": "UM1HG009442",
+        "biosample": "ENCBS248BKB",
+        "fragmentation_methods": ["chemical (Tn5 transposase)"],
+        "lab": "michael-snyder",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "200-7000",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "3b602e58-f527-490b-8171-b4fe533cc2a9"
+    },
+    {
+        "accession": "ENCLB643NXW",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS475JUN",
+        "fragmentation_methods": ["chemical (Tn5 transposase)"],
+        "lab": "michael-snyder",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "200-7000",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "de54ef3e-bfbd-4105-b495-428424ccb480"
+    },
+    {
+        "accession": "ENCLB543LDY",
+        "aliases": [
+            "modencode:F45C12.2_GFP_OP212_L4_Rep1-library"
+        ],
+        "award": "UM1HG009442",
+        "biosample": "ENCBS881WJU",
+        "fragmentation_methods": [
+            "sonication (generic microtip)"
+        ],
+        "lab": "michael-snyder",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "a0223fde-021d-4d0b-875e-3fa7ad731862"
+    },
+    {
+        "accession": "ENCLB031QDV",
+        "aliases": [
+            "michael-snyder:mL-scATAC-SK-N-SH_LINE_B-11765-X021-S05-B1-T1"
+        ],
+        "award": "UM1HG009442",
+        "biosample": "ENCBS474KMT",
+        "fragmentation_methods": [
+            "chemical (Tn5 transposase)"
+        ],
+        "lab": "michael-snyder",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "200-7000",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "0e71dd42-2565-4720-bf3b-db9bc296f02e"
+    },
+    {
+        "accession": "ENCLB723ATA",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS630AAA",
+        "lab": "michael-snyder/",
+        "nucleic_acid_term_name": "DNA",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "60c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
     }
 ]

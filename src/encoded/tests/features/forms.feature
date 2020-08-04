@@ -1,4 +1,4 @@
-@forms @usefixtures(workbook,admin_user)
+@forms @usefixtures(index_workbook,admin_user)
 Feature: Edit forms
 
     Scenario: Save a change to an antibody

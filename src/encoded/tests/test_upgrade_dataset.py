@@ -388,3 +388,45 @@ def test_upgrade_reference_17_to_18(upgrader, dataset_reference_1, dataset_refer
     assert value['schema_version'] == '18'
     assert 'dbxrefs' not in value
     assert 'IHEC:IHECRE00004703' in value['notes']
+
+
+def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
+    value = upgrader.upgrade(
+        'annotation', annotation_27, current_version='27', target_version='28'
+    )
+    assert value['schema_version'] == '28'
+    assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
+    upgrade_18_19_reference['examined_loci'] = []
+    print(upgrade_18_19_reference['examined_loci'])
+    value = upgrader.upgrade(
+        'reference', upgrade_18_19_reference, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert 'examined_loci' not in value
+
+
+def test_upgrade_annotation_28_to_29(upgrader, annotation_28):
+    value = upgrader.upgrade(
+        'annotation', annotation_28, current_version='28', target_version='29'
+    )
+    assert value['notes'] == 'Lorem ipsum. Removed timepoint metadata: 3 stage'
+    assert 'relevant_timepoint' not in value
+    assert 'relevant_timepoint_units' not in value
+
+
+def test_upgrade_experiment_28_to_29(upgrader, experiment_v28):
+    assert experiment_v28['schema_version'] == '28'
+    value = upgrader.upgrade('experiment', experiment_v28, current_version='28', target_version='29')
+    assert experiment_v28['schema_version'] == '29'
+    assert 'pipeline_error_detail' not in value
+    assert 'Previous internal_status' in value['notes']
+    assert value['internal_status'] == 'unreviewed'
+
+
+def test_upgrade_experiment_29_to_30(upgrader, experiment_29):
+    assert experiment_29['schema_version'] == '29'
+    value = upgrader.upgrade('experiment', experiment_29, current_version='29', target_version='30')
+    assert value['schema_version'] == '30'
+    assert value['assay_term_name'] == 'single-cell RNA sequencing assay'

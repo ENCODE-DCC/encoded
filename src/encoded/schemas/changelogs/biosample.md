@@ -5,6 +5,9 @@
 * Added *post_differentiation_time* and *post_differentiation_time_units* properties.
 * Added *perturbed* calculated property to indicate if the biosample has been perturbed using a treatment or a genetic modification for non-tagging purposes.
 * Added *post_nucleic_acid_delivery_time* and *post_nucleic_acid_delivery_time_units* properties.
+* The *summary* property has been updated to include post nucleic acid delivery time.
+* Added *sample_collection_age* and *sample_collection_age_units* for cases where more than one biosamples are collected from the same human donor at different ages.
+* Added *disease_term_id* and *disease_term_name* to indicate the ontological term of a disease affecting a biosample.
 
 ### Schema version 24
 

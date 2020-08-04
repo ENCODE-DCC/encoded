@@ -182,3 +182,90 @@ def library_schema_10(lab, award):
         'lab': lab['uuid'],
         'strand_specificity': True
     }
+
+
+@pytest.fixture
+def library_1_chip(testapp, lab, award, biosample_human_1):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample': biosample_human_1['@id'],
+        'nucleic_acid_term_name': 'DNA'
+    }
+    return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def library_2_chip(testapp, lab, award, biosample_human_2):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample': biosample_human_2['@id'],
+        'nucleic_acid_term_name': 'DNA'
+    }
+    return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def library_size_range(library):
+    item = library.copy()
+    item.update({
+        'size_range': '100-800',
+    })
+    return item
+
+
+@pytest.fixture
+def library_fragment_length_CV(library):
+    item = library.copy()
+    item.update({
+        'fragment_length_CV': 68,
+    })
+    return item
+
+
+@pytest.fixture
+def library_schema_11a(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'shearing (generic)']
+    }
+
+
+@pytest.fixture
+def library_schema_11b(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'fragmentation_methods': ['chemical (HindIII/DpnII restriction)', 'chemical (DpnII restriction)', 'shearing (generic)']
+    }
+
+
+@pytest.fixture
+def library_schema_12(library, award, lab, biosample_human_2):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'biosample': biosample_human_2['@id'],
+        'nucleic_acid_term_name': 'DNA',
+        'adapters': [
+            {
+              'type': '3\' adapter',
+              'sequence': 'ACCCCTG'
+            },
+            {
+              'sequence': 'GGGGGGCN'
+            }
+        ]
+    }
+
+
+@pytest.fixture
+def library_schema_13(lab, award):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'depleted_in_term_name': ['polyadenylated mRNA'],
+        'nucleic_acid_term_name': 'polyadenylated mRNA'
+    }
