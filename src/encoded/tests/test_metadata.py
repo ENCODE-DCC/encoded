@@ -1321,6 +1321,97 @@ def test_metadata_metadata_report_get_audit_data(dummy_request):
         assert sorted(audit_data[k].split(', ')) == v, f'{sorted(audit_data[k].split(", "))} does not match {v}'
 
 
+def test_metadata_metadata_report_output_sorted_row(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from encoded.reports.metadata import group_audits_by_files_and_type
+    grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(audits_())
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    file_data = mr._get_file_data(file_())
+    experiment_data = mr._get_experiment_data(embedded_experiment())
+    audit_data = mr._get_audit_data(
+        grouped_file_audits.get('/files/ENCFF783ZRQ/'),
+        grouped_other_audits
+    )
+    file_data.update(audit_data)
+    actual_sorted_row = mr._output_sorted_row(experiment_data, file_data)
+    expected_sorted_row = [
+        'ENCFF244PJU',
+        'bed idr_ranked_peak',
+        'bed',
+        'idr_ranked_peak',
+        'IDR ranked peaks',
+        'GRCh38',
+        'ENCSR434TGY',
+        'DNase-seq',
+        'EFO:0005914',
+        'ZHBTc4',
+        'cell line',
+        'Mus musculus',
+        'doxycycline hyclate',
+        '100 ng/mL',
+        '96 hour',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'DNA',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '2020-07-28',
+        'ENCODE',
+        '20 nM',
+        '',
+        '',
+        '2',
+        '2_1',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        (
+            '/files/ENCFF895UWM/',
+            '/files/ENCFF089RYQ/'
+        ),
+        3356650,
+        'ENCODE Processing Pipeline',
+        '335b6066a184f30f225aec79b376c7e8',
+        '',
+        'http://localhost/files/ENCFF244PJU/@@download/ENCFF244PJU.bed.gz',
+        '',
+        '',
+        '',
+        'released',
+        's3://encode-public/2020/07/09/dc068c0a-d1c8-461a-a208-418d35121f3b/ENCFF244PJU.bed.gz',
+        (
+            'inconsistent control read length',
+            'low read length',
+            'mild to moderate bottlenecking',
+            'moderate library complexity',
+            'inconsistent platforms',
+        ),
+        'insufficient read depth',
+        'extremely low read depth'
+    ]
+    for expected, actual in zip(expected_sorted_row, actual_sorted_row):
+        if isinstance(expected, tuple):
+            assert list(sorted(expected)) == sorted(actual.split(', '))
+        else:
+            assert expected == actual
+
+
 def test_metadata_metadata_report_get_search_results_generator(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
