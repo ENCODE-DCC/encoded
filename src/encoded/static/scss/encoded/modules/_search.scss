@@ -293,6 +293,7 @@ $form-bg: #f3f3f3;
 
             svg {
                 display: block;
+                margin-right: 5px;
             }
 
             .btn {
@@ -313,6 +314,10 @@ $form-bg: #f3f3f3;
                 border-right: 1px solid #c0c0c0;
             }
         }
+    }
+
+    &--centered {
+        justify-content: center;
     }
 
     .dropdown-menu {

@@ -383,8 +383,10 @@ class SummaryBody extends React.Component {
                     </div>
                     <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
                         <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
-                        <div className="view-controls-container">
-                            <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
+                        <div className="results-table-control results-table-control--centered">
+                            <div className="results-table-control__main">
+                                <ViewControls results={this.props.context} />
+                            </div>
                         </div>
                     </div>
                     {(this.state.selectedOrganism === 'Homo sapiens') ?

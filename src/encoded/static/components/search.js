@@ -934,7 +934,7 @@ ClearFilters.defaultProps = {
  * Display and react to controls at the top of search result output, like the search and matrix
  * pages.
  */
-export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters, showDownloadButton }, reactContext) => {
+export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, additionalFilters, showDownloadButton }, reactContext) => {
     const results = context['@graph'];
     const searchBase = url.parse(reactContext.location_href).search || '';
     const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
@@ -996,11 +996,11 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
-                <ViewControls results={context} activeFilters={activeFilters} />
+                <ViewControls results={context} additionalFilters={additionalFilters} />
                 {resultsToggle}
-                {showDownloadButton ? <BatchDownloadControls results={context} modalText={modalText} canDownload={canDownload} /> : ''}
+                {showDownloadButton ? <BatchDownloadControls results={context} additionalFilters={additionalFilters} modalText={modalText} canDownload={canDownload} /> : ''}
                 {!hideBrowserSelector ?
-                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} activeFilters={activeFilters} />
+                    <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} additionalFilters={additionalFilters} />
                 : null}
             </div>
             <div className="results-table-control__json">
@@ -1032,7 +1032,7 @@ SearchControls.propTypes = {
     /** True to hide the Visualize button */
     hideBrowserSelector: PropTypes.bool,
     /** Add filters to search links if needed */
-    activeFilters: PropTypes.array,
+    additionalFilters: PropTypes.array,
     /** Determines whether or not download button is displayed */
     showDownloadButton: PropTypes.bool,
 };
@@ -1042,7 +1042,7 @@ SearchControls.defaultProps = {
     showResultsToggle: false,
     onFilter: null,
     hideBrowserSelector: false,
-    activeFilters: [],
+    additionalFilters: [],
     showDownloadButton: true,
 };
 

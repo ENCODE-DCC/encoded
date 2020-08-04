@@ -47,31 +47,6 @@ $results-background: #E9E9E9;
     }
 }
 
-.view-controls-container {
-    img {
-        margin-bottom: -14px;
-        width: 32px;
-        margin-right: 5px;
-    }
-    .btn-attached {
-        display: inline-block;
-        a {
-            padding-top: 5px;
-            font-size: 1rem;
-            font-weight: 500;
-            margin: 0 2px;
-            @media screen and (max-width: $screen-sm-min) {
-                font-size: 0.8rem;
-                margin: 2px;
-            }
-            .svg-icon {
-                vertical-align: text-bottom;
-                margin-right: 10px;
-            }
-        }
-    }
-}
-
 // Make summary page full-width
 .container {
     &.Summary {
@@ -266,13 +241,6 @@ $results-background: #E9E9E9;
         @media screen and (max-width: $screen-sm-min) {
             font-size: 1rem;
         }
-    }
-}
-
-.view-controls-container {
-    margin: auto;
-    a {
-        display: inline-block;
     }
 }
 

@@ -687,9 +687,11 @@ class MatrixPresentation extends React.Component {
 
         return (
             <React.Fragment>
-                <div className="view-controls-container">
-                    <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
-                    <BatchDownloadControls results={context} />
+                <div className="results-table-control">
+                    <div className="results-table-control__main">
+                        <ViewControls results={this.props.context} alternativeNames={['Search list', 'Tabular report', 'Summary matrix']} />
+                        <BatchDownloadControls results={context} />
+                    </div>
                 </div>
                 <div className="results-count">Showing <b className="bold-total">{rowCount(context.matrix)}</b> result{rowCount(context.matrix) > 1 ? 's' : ''}.</div>
                 <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
