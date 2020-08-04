@@ -12,7 +12,6 @@
         "accession": "ENCSR000AHF",
         "award": "ENCODE2",
         "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH003317",
             "GEO:GSM1010811"
         ],
         "description": "Some mouse postnatal data",
@@ -59,7 +58,6 @@
         "accession": "ENCSR001ADI",
         "award": "ENCODE2-Mouse",
         "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002004",
             "GEO:GSM798327",
             "GEO:GSE32218"
         ],
@@ -77,7 +75,6 @@
         "accession": "ENCSR000ACY",
         "award": "ENCODE2",
         "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH002229",
             "GEO:GSM999346",
             "GEO:GSE40699"
         ],
@@ -136,7 +133,6 @@
         "accession": "ENCSR000DZQ",
         "award": "ENCODE2/",
         "dbxrefs": [
-            "UCSC-ENCODE-hg19:wgEncodeEH001832",
             "GEO:GSM935375"
         ],
         "description": "EBF1 ChIP-seq on human GM12878 produced by the Snyder lab",

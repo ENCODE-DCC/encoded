@@ -116,7 +116,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+)|(Cellosaurus:CVCL_\\w{4}))$"
+                "pattern": "^((GEO:SAM\\d+)|(SRA:SRS\\d+)|(ENA:(ERS|SAM)\\d+)$"
             }
         },
         "date_obtained": {

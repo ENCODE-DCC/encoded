@@ -13,9 +13,6 @@
         "amount_units": "nM",
         "duration": 6,
         "duration_units": "hour",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:diffProtB_6hr"
-        ],
         "documents": [
             "encode:diffProtB_6hr_protocol"
         ],
@@ -39,9 +36,6 @@
         "amount_units": "nM",
         "duration": 30,
         "duration_units": "minute",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:4OHTAM_100nM_30m"
-        ],
         "documents": [
             "encode:MCF-7_Farnham_treatment_protocol"
         ],
@@ -60,9 +54,6 @@
         ],
         "duration": 30,
         "duration_units": "minute",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CIP-TAP"
-        ],
         "submitted_by": "metus.donec@nisl.montes",
         "treatment_term_name": "Antarctic Phosphatase",
         "treatment_type": "protein",
