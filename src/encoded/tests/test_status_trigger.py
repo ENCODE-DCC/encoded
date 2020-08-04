@@ -649,12 +649,9 @@ def test_set_status_no_validation_error_on_content_error_details(testapp, file):
 
 
 def test_set_status_analysis_step_run(testapp, analysis_step_run, analysis_step_version, analysis_step):
-    res = testapp.get(analysis_step_run['@id'])
-    assert res.json['status'] == 'in progress'
-    res = testapp.get(analysis_step_version['@id'])
-    assert res.json['status'] == 'in progress'
-    res = testapp.get(analysis_step['@id'])
-    assert res.json['status'] == 'in progress'
+    testapp.patch_json(analysis_step_run['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step['@id'], {'status': 'in progress'})
     testapp.patch_json(analysis_step_run['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
     res = testapp.get(analysis_step_run['@id'])
     assert res.json['status'] == 'released'
