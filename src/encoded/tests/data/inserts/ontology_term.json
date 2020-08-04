@@ -191,5 +191,29 @@
         "term_name": "endocardium cancer",
         "term_id": "MONDO:0003687",
         "status": "released"
+    },
+    {
+        "uuid": "403c82d8-c0da-4c8d-a0fa-23d30fa23246",
+        "term_name": "African",
+        "term_id": "HANCESTRO:0010",
+        "status": "released"
+    },
+    {
+        "uuid": "71bcb5eb-234d-4325-8a34-00729e3a67b8",
+        "term_name": "Hispanic or Latin American",
+        "term_id": "HANCESTRO:0014",
+        "status": "released"
+    },
+    {
+        "uuid": "55d718dc-ee34-4bf5-8a6e-ec97ddadc26d",
+        "term_name": "European",
+        "term_id": "HANCESTRO:0005",
+        "status": "released"
+    },
+    {
+        "uuid": "760a1f6c-078c-491c-b95f-f467eb652d09",
+        "term_name": "Oceanian",
+        "term_id": "HANCESTRO:0017",
+        "status": "released"
     }
 ]

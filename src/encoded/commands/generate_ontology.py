@@ -206,7 +206,7 @@ class Inspector(object):
                 self.rdfGraph.parse(uri, format="n3")
             except:
                 raise exceptions.Error(
-                    "Could not parse the file! Is it a valid RDF/OWL ontology?")
+                    "Could not parse the file! Is `%s` a valid RDF/OWL ontology?" % uri)
         finally:
             self.baseURI = self.get_OntologyURI() or uri
             self.allclasses = self.__getAllClasses(
@@ -530,12 +530,14 @@ def main():
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
     parser.add_argument('--mondo-url', help="MONDO version URL")
+    parser.add_argument('--hancestro-url', help="HANCESTRO version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     mondo_url = args.mondo_url
-    url_whitelist = [uberon_url, efo_url, mondo_url]
+    hancestro_url = args.hancestro_url
+    url_whitelist = [uberon_url, efo_url, mondo_url, hancestro_url]
 
     terms = {}
     # Run on ontologies defined in whitelist

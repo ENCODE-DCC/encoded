@@ -36,7 +36,7 @@
             "permission": "import_items",
             "comment": "For detailed description of ontologies used by Lattice visit https://www.lattice-data.org/data-organization/. In cases where a new ontology term is needed, NTR (new term request) identifier would be created by Lattice.",
             "type": "string",
-            "pattern": "^(UBERON|EFO|CL|MONDO|NTR):[0-9]{2,8}$"
+            "pattern": "^(UBERON|EFO|CL|MONDO|HANCESTRO|NTR):[0-9]{2,8}$"
         },
         "term_name": {
             "title": "Term name",

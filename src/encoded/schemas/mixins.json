@@ -314,7 +314,8 @@
             "items": {
                 "title": "Disease",
                 "type": "string",
-                "linkTo": "OntologyTerm"
+                "linkTo": "OntologyTerm",
+                "pattern": "^(MONDO|NTR)_[0-9]{2,8}$"
             }
         }
     },
