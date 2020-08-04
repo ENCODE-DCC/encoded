@@ -76,7 +76,6 @@ def supportive_med_frequency(request, supportive_medication):
 def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
 
         all_traced_dates=[]
-        # last_follow_up_date="Not available"
         if len(vitals) > 0:
             for path in vitals:
                 properties = request.embed(path, '@@object?skip_calculated=true')
@@ -130,76 +129,7 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
             all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d"))
             last_follow_up_date = all_traced_dates[-1]
         else: last_follow_up_date="Not available"
-        print('last_follow_up_date',last_follow_up_date)
         return last_follow_up_date
-
-
-def diagnosis_fun(self, request, surgery, radiation, medication):
-        nephrectomy_dates = []
-        non_nephrectomy_dates = []
-        diagnosis_date = "Not available"
-        if len(surgery) > 0:
-            for path in surgery:
-                properties = request.embed(path, '@@object?skip_calculated=true')
-                # surgery_object = request.embed(surgery_record, '@@object')
-                surgery_procedure = properties['surgery_procedure']
-                for path in surgery_procedure:
-                    properties = request.embed(path, '@@object?skip_calculated=true')
-                    # procedure_obj = request.embed(procedure_record, '@@object')
-                    if properties['procedure_type'] == "Nephrectomy":
-                        nephrectomy_dates.append(properties['date'])
-                    elif  properties['procedure_type'] == "Biopsy" or properties['procedure_type'] == "Metastectomy":
-                        non_nephrectomy_dates.append(properties['date'])
-        if len(nephrectomy_dates) > 0 :
-            nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            diagnosis_date = nephrectomy_dates[0]
-        else:
-            if len(radiation) > 0:
-                # add radiation dates
-                for path in radiation:
-                    properties = request.embed(path, '@@object?skip_calculated=true')
-                    # radiation_object = request.embed(radiation_record, '@@object')
-                    non_nephrectomy_dates.append(properties['start_date'])
-            if len(medication) > 0:
-                # add medication dates
-                for path in medication:
-                    properties = request.embed(path, '@@object?skip_calculated=true')
-                    # medication_object = request.embed(medication_record, '@@object')
-                    non_nephrectomy_dates.append(properties['start_date'])
-
-            if len(non_nephrectomy_dates) > 0:
-                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                diagnosis_date = non_nephrectomy_dates[0]
-        age_range = "Unknown"
-        ageString = "Unknown"
-        if diagnosis_date != "Not available":
-            birth_date = datetime.strptime("1800-01-01", "%Y-%m-%d")
-            end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
-            age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
-            ageString = str(age)
-            if age >= 90:
-                ageString = "90 or above"
-
-
-            if age >= 80:
-                age_range = "80+"
-            elif age >= 60:
-                age_range = "60 - 79"
-            elif age >= 40:
-                age_range = "40 - 59"
-            elif age >= 20:
-                age_range = "20 - 39"
-            else:
-                age_range = "0 - 19"
-
-        diagnosis = dict()
-        diagnosis['diagnosis_date'] = diagnosis_date
-        diagnosis['age'] = ageString
-        diagnosis['age_unit'] = "year"
-        diagnosis['age_range'] = age_range
-
-        return diagnosis
-
 
 @collection(
      name='patients',
@@ -248,9 +178,7 @@ class Patient(Item):
         "type": "string",
     })
     def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-        x=last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
-        # return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
-        return x
+        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
     
 
     @calculated_property( schema={
@@ -568,32 +496,25 @@ class Patient(Item):
                 age_range = "20 - 39"
             else:
                 age_range = "0 - 19"
-    #setup a follow_up_duration_range
-        # if diagnosis:
-        #     if "diagnosis_date" in diagnosis.keys():
-        #         diagnosis_date = diagnosis['diagnosis_date']
-        #         print("diagnosis_date",diagnosis_date)    
-                # if diagnosis_date is not "Not available":         
+
+            #Add follow up duration:
             follow_up_start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
             last_follow_up_date=last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
-            # if last_follow_up_date:
             if last_follow_up_date is not "Not available":
                 follow_up_end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
                 follow_up_duration=(follow_up_end_date-follow_up_start_date).days/365
 
                 if follow_up_duration >= 5:
-                    follow_up_duration_range=">5 year"
+                    follow_up_duration_range="> 5 year"
                 elif follow_up_duration >= 3:
-                    follow_up_duration_range="3-5 year"
+                    follow_up_duration_range="3 - 5 year"
                 elif follow_up_duration >= 1.5:
-                    follow_up_duration_range="1.5-3 year"
+                    follow_up_duration_range="1.5 - 3 year"
                 else:
-                    follow_up_duration_range="0-1.5 year"
+                    follow_up_duration_range="0 - 1.5 year"
                 
 
-        # print("follow_up_duration_range:",follow_up_duration_range) 
 
-        # return follow_up_duration_range   
         diagnosis = dict()
         diagnosis['diagnosis_date'] = diagnosis_date
         diagnosis['age'] = ageString
@@ -603,83 +524,6 @@ class Patient(Item):
 
         return diagnosis
 
-    # @calculated_property(define=True,schema={
-    #     "title": "Duration of follow-up",
-    #     "description": "Customized range for duration of follow-up",
-    #     "type": "string",
-    # })
-    
-    # def duration_of_follow_up_range(self,request,diagnosis=None,last_follow_up_date="Not available"):
-    #     follow_up_duration_range="Not available"
-    #     if diagnosis:
-    #         if "diagnosis_date" in diagnosis.keys():
-    #             diagnosis_date = diagnosis['diagnosis_date']
-    #             print("diagnosis_date",diagnosis_date)    
-    #             if diagnosis_date is not "Not available":         
-    #                 start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
-    #                 if last_follow_up_date:
-    #                     if last_follow_up_date is not "Not available":
-    #                         end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
-    #                         follow_up_duration=(end_date-start_date).days/365
-
-    #                         if follow_up_duration >= 5:
-    #                             follow_up_duration_range=">5 year"
-    #                         elif follow_up_duration >= 3:
-    #                             follow_up_duration_range="3-5 year"
-    #                         elif follow_up_duration >= 1.5:
-    #                             follow_up_duration_range="1.5-3 year"
-    #                         else:
-    #                             follow_up_duration_range="0-1.5 year"
-                
-
-    #     print("follow_up_duration_range:",follow_up_duration_range) 
-
-    #     return follow_up_duration_range   
- 
-    # @calculated_property(  schema={
-    #     "title": "Follow Up Duration",
-    #     "description": "Customized follow_up duratione for patient",
-    #     "type": "string",
-
-    # })
-    # # duration_of_follow_up_range
-    # def duration_of_follow_up_range(self):
-    #     return self.__duration_of_follow_up_range__
-    
-    # @property
-    # def __duration_of_follow_up_range__(self):
-    #     properties = self.upgrade_properties()
-    #     return self._duration_of_follow_up_range(properties)
-
-    # def _duration_of_follow_up_range(self, properties):
-
-    #     follow_up_duration_range="Not available" 
-        
-    #     diagnosis=properties['diagnosis']
-    #     last_follow_up_date=properties['last_follow_up_date']
-    #     if diagnosis and last_follow_up_date:
-
-    #         if 'diagnosis_date' in diagnosis:
-
-    #             diagnosis_date = properties['diagnosis']['diagnosis_date']
-    #             last_follow_up_date=properties['last_follow_up_date']
-    #             if diagnosis_date is not "Not available" and last_follow_up_date is not "Not available":
-    #                 start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
-    #                 end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
-    #                 follow_up_duration=(end_date-start_date).days/365
-
-    #                 if follow_up_duration >= 5:
-    #                     follow_up_duration_range=">5 year"
-    #                 elif follow_up_duration >= 3:
-    #                     follow_up_duration_range="3-5 year"
-    #                 elif follow_up_duration >= 1.5:
-    #                     follow_up_duration_range="1.5-3 year"
-    #                 else:
-    #                     follow_up_duration_range="0-1.5 year"
-    #     return follow_up_duration_range  
-    # "duration_of_follow_up_range": {
-    #         "title": "Duration of follow-up"
-    #     },
         
     matrix = {
         'y': {
