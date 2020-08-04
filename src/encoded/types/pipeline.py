@@ -181,3 +181,7 @@ class AnalysisStepRun(Item):
     audit_inherit = ['*']
     # Avoid using reverse links on this object as invalidating a
     # step_run can cause thousands of objects to be reindexed.
+    set_status_up = [
+        'analysis_step_version',
+    ]
+    set_status_down = []
