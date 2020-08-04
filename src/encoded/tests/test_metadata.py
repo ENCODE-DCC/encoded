@@ -1470,8 +1470,7 @@ def test_metadata_view_publication_data(index_workbook, testapp):
 
 
 def test_metadata_view_unallowed_type(index_workbook, testapp):
-    with pytest.raises(HTTPBadRequest):
-        testapp.get('/metadata/?type=File')
+    testapp.get('/metadata/?type=File', status=400)
 
 
 def test_metadata_contains_audit_values(index_workbook, testapp):
