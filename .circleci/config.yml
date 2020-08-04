@@ -87,6 +87,7 @@ jobs:
           name: non bdd indexing tests
           command: |
             bin/test -s -vv -m "indexing"
+            bin/test -s -vv -m "indexer"
   not-bdd-non-indexing:
     executor: encoded-executor
     resource_class: large
@@ -95,7 +96,7 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            bin/test -s -vv -m "not bdd and not indexing"
+            bin/test -s -vv -m "not bdd and not indexing and not indexer"
   npm:
     executor: encoded-executor
     resource_class: large

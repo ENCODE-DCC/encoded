@@ -27,6 +27,11 @@ def app(app_settings):
         yield app
 
 
+index_workbook_shared_state = {
+    'index_workbook_loaded': False
+}
+
+
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def index_workbook(request, app):
@@ -46,12 +51,15 @@ def index_workbook(request, app):
         'REMOTE_USER': 'TEST',
     }
     testapp = TestApp(app, environ)
-
-    from encoded.loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir, log_level=log_level)
+    # This prevents index_workbook from getting loaded everytime it is
+    # explicitly imported in tests.
+    if not index_workbook_shared_state.get('index_workbook_loaded'):
+        from encoded.loadxl import load_all
+        from pkg_resources import resource_filename
+        inserts = resource_filename('encoded', 'tests/data/inserts/')
+        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+        load_all(testapp, inserts, docsdir, log_level=log_level)
+        index_workbook_shared_state['index_workbook_loaded'] = True
 
     testapp.post_json('/index', {'is_testing_full': True})
     yield
