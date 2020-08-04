@@ -734,7 +734,7 @@ class RawSequencingTable extends React.Component {
                                         {showReplicateNumber && !rawIsIndex ?
                                             <td rowSpan={rawHasIndex ? 2 : null} className={`table-raw-biorep${nextRawIsIndex ? ' pair-bottom merge-right + table-raw-merged' : ''}`}>{file.biological_replicates && file.biological_replicates.length > 0 ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         : null}
-                                        {showReplicateNumber && !rawIsIndex ?
+                                        {!rawIsIndex ?
                                             <td rowSpan={rawHasIndex ? 2 : null} className={nextRawIsIndex ? 'pair-bottom merge-right + table-raw-merged' : null}>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         : null}
                                         <td className={singleClass}>
