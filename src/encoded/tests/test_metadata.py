@@ -1321,7 +1321,6 @@ def test_metadata_metadata_report_get_audit_data(dummy_request):
         assert sorted(audit_data[k].split(', ')) == v, f'{sorted(audit_data[k].split(", "))} does not match {v}'
 
 
-@pytest.mark.indexing
 def test_metadata_metadata_report_get_search_results_generator(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
@@ -1336,13 +1335,11 @@ def test_metadata_metadata_report_get_search_results_generator(index_workbook, d
     assert len(list(search_results['@graph'])) >= 63
 
 
-@pytest.mark.indexing
 def test_metadata_view(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     assert len(r.text.split('\n')) >= 81
 
 
-@pytest.mark.indexing
 def test_metadata_contains_audit_values(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     audit_values = [
@@ -1356,7 +1353,6 @@ def test_metadata_contains_audit_values(index_workbook, testapp):
         assert value in r.text, f'{value} not in metadata report'
 
 
-@pytest.mark.indexing
 def test_metadata_contains_all_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=Experiment')
