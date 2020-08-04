@@ -4179,7 +4179,8 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # https://encodedcc.atlassian.net/browse/ENCD-5255
     # https://encodedcc.atlassian.net/browse/ENCD-5350
     alignment_files = files_structure.get('alignments').values()
-    atac_peaks_files = {}
+    stable_peaks_files = files_structure.get('stable_peaks_files').values()
+    atac_peaks_files = []
     assay_term_name = experiment['assay_term_name']
     if assay_term_name != 'ATAC-seq':
         return
@@ -4190,14 +4191,15 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     if pipeline_title is False:
         return
 
-    # Peaks files being audited are the output from overlap_peaks software
-    # Unreplicated experiments use stable peaks from partition concordance step
-    if 'replication_type' in experiment and experiment['replication_type'] == 'unreplicated':
+    # Replicated experiments should use the stable peaks from partition concordance step
+    if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
+        for file in stable_peaks_files:
+            if 'biological_replicates' in file:
+                reps = file['biological_replicates']
+                if len(reps) > 1:
+                    atac_peaks_files.append(file)
+    else:
         atac_peaks_files = files_structure.get('stable_peaks_files').values()
-    # Replicated experiments use replicated peaks from replicate concordance step
-    elif 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-        atac_peaks_files = files_structure.get('replicated_peaks_files').values()
-
     alignment_metrics = get_metrics(alignment_files, 'AtacAlignmentQualityMetric')
     align_enrich_metrics = get_metrics(alignment_files, 'AtacAlignmentEnrichmentQualityMetric')
     library_metrics = get_metrics(alignment_files, 'AtacLibraryQualityMetric')
@@ -4365,12 +4367,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # Checks in AtacPeakEnrichmentQualityMetric
     if peak_enrich_metrics is not None and len(peak_enrich_metrics) > 0:
         for metric in peak_enrich_metrics:
-            if 'replication_type' in experiment and experiment['replication_type'] == 'unreplicated':
-                atac_peaks_file = files_structure.get('stable_peaks_files')[metric['quality_metric_of'][0]]
-            elif 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-                atac_peaks_file = files_structure.get('replicated_peaks_files')[metric['quality_metric_of'][0]]
-            else:
-                continue
+            atac_peaks_file = files_structure.get('stable_peaks_files')[metric['quality_metric_of'][0]]
             if 'frip' in metric and 'quality_metric_of' in metric:
                 frip = float(metric['frip'])
                 detail = (
@@ -4385,16 +4382,10 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                 elif frip >= 0.2 and PBC1 <= 0.3:
                     yield AuditFailure('moderate FRiP score', detail, level='WARNING')
 
-    # # Checks in AtacReplicationQualityMetric
+    # Checks in AtacReplicationQualityMetric
     if replication_metrics is not None and len(replication_metrics) > 0:
         for metric in replication_metrics:
-            if 'replication_type' in experiment and experiment['replication_type'] == 'unreplicated':
-                atac_peaks_file = files_structure.get('stable_peaks_files')[metric['quality_metric_of'][0]]
-            elif 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-                atac_peaks_file = files_structure.get('replicated_peaks_files')[metric['quality_metric_of'][0]]
-            else:
-                continue
-
+            atac_peaks_file = files_structure.get('stable_peaks_files')[metric['quality_metric_of'][0]]
             if 'rescue_ratio' in metric and 'self_consistency_ratio' in metric:
                 rescue = metric['rescue_ratio']
                 self_consistency = metric['self_consistency_ratio']
@@ -4774,7 +4765,6 @@ def create_files_mapping(files_list, excluded):
                  'raw_data': {},
                  'processed_data': {},
                  'stable_peaks_files': {},
-                 'replicated_peaks_files': {},
                  'excluded_types': excluded}
     if files_list:
         for file_object in files_list:
@@ -4841,10 +4831,6 @@ def create_files_mapping(files_list, excluded):
                 if file_format and file_format == 'bed' and \
                         file_output and file_output == 'stable peaks':
                     to_return['stable_peaks_files'][file_object['@id']] = file_object
-                if file_format and file_format == 'bed' and \
-                        file_output and file_output == 'replicated peaks':
-                    to_return['replicated_peaks_files'][file_object['@id']] = file_object
-
                 if file_output_category == 'raw data':
                     to_return['raw_data'][file_object['@id']] = file_object
                 else:

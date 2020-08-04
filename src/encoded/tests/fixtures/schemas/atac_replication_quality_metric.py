@@ -3,10 +3,10 @@ import pytest
 
 @pytest.fixture 
 def atac_replication_quality_metric_borderline_replicate_concordance(testapp, award, encode_lab,
-                                                    analysis_step_run_atac_encode4_replicate_concordance,
+                                                    analysis_step_run_atac_encode4_partition_concordance,
                                                     file_bed_replicated_peaks_atac):
     item = {
-        'step_run': analysis_step_run_atac_encode4_replicate_concordance['@id'],
+        'step_run': analysis_step_run_atac_encode4_partition_concordance['@id'],
         'award': award['uuid'],
         'lab': encode_lab['uuid'],
         'assay_term_name': 'ATAC-seq',

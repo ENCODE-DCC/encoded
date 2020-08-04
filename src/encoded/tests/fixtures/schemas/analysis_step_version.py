@@ -63,10 +63,10 @@ def analysis_step_version_atac_encode4_alignment(testapp, analysis_step_atac_enc
 
 
 @pytest.fixture
-def analysis_step_version_atac_encode4_replicate_concordance(testapp,
-                analysis_step_atac_encode4_replicate_concordance, software_version):
+def analysis_step_version_atac_encode4_partition_concordance(testapp,
+                analysis_step_atac_encode4_partition_concordance, software_version):
     item = {
-        'analysis_step': analysis_step_atac_encode4_replicate_concordance['@id'],
+        'analysis_step': analysis_step_atac_encode4_partition_concordance['@id'],
         'minor_version': 0,
         'software_versions': [
             software_version['@id'],

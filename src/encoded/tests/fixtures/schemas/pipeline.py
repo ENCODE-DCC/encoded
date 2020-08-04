@@ -115,7 +115,7 @@ def pipeline_without_assay_term_names(testapp, lab, award):
 def ATAC_pipeline(testapp, encode_lab, award,
                   analysis_step_atac_encode4_alignment,
                   analysis_step_atac_encode4_pseudoreplicate_concordance,
-                  analysis_step_atac_encode4_replicate_concordance
+                  analysis_step_atac_encode4_partition_concordance
                   ):
     item = {
         'award': award['uuid'],
@@ -124,6 +124,6 @@ def ATAC_pipeline(testapp, encode_lab, award,
         'assay_term_names': ['ATAC-seq'],
         'analysis_steps': [analysis_step_atac_encode4_alignment['@id'],
                            analysis_step_atac_encode4_pseudoreplicate_concordance['@id'],
-                           analysis_step_atac_encode4_replicate_concordance['@id']]
+                           analysis_step_atac_encode4_partition_concordance['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]

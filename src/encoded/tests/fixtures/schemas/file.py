@@ -1772,7 +1772,7 @@ def ATAC_bam2(testapp, encode_lab, award, ATAC_experiment_replicated,
 @pytest.fixture
 def file_bed_replicated_peaks_atac(testapp, ATAC_experiment_replicated, ATAC_bam2,
                                    ATAC_bam, award, encode_lab,
-                                   analysis_step_run_atac_encode4_replicate_concordance):
+                                   analysis_step_run_atac_encode4_partition_concordance):
     item = {
         'dataset': ATAC_experiment_replicated['@id'],
         'lab': encode_lab['@id'],
@@ -1783,8 +1783,8 @@ def file_bed_replicated_peaks_atac(testapp, ATAC_experiment_replicated, ATAC_bam
         'file_size': 345,
         'assembly': 'GRCh38',
         'md5sum': 'a220ab102df36d93dd070ef0712b8ee7',
-        'output_type': 'replicated peaks',
+        'output_type': 'stable peaks',
         'status': 'in progress',  # avoid s3 upload codepath
-        'step_run': analysis_step_run_atac_encode4_replicate_concordance['@id']
+        'step_run': analysis_step_run_atac_encode4_partition_concordance['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
