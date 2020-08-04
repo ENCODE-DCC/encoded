@@ -161,6 +161,16 @@
                 "m",
                 "cm"
             ]
+        },
+        "test_results": {
+            "title": "Test results",
+            "description": "The results from any test to measure the donor's health in the format of key (test name):value (test results)",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+            }
         }
     },
     "facets": {
