@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
-import { DocumentsPanelReq } from './doc';
+import { DocumentsPanelReq, DocumentsSubpanels } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
@@ -313,7 +313,7 @@ DatasetConstructionPlatform.propTypes = {
 
 
 /**
- * Renders both Experiment and FunctionalCharacterizationExperiment objects.
+ * Renders Experiment, FunctionalCharacterizationExperiment, and TransgenicEnhancerExperiment objects.
  */
 const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
     let condensedReplicates = [];
@@ -321,14 +321,18 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const adminUser = !!(reactContext.session_properties && reactContext.session_properties.admin);
     const itemClass = globals.itemClass(context, 'view-item');
 
-    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment or TransgenicEnhancerExperiment.
     const experimentType = context['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
+    const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
     let displayType;
     let displayTypeBreadcrumbs;
     if (isFunctionalExperiment) {
         displayTypeBreadcrumbs = 'Functional Characterization Experiments';
         displayType = 'Functional Characterization Experiment';
+    } else if (isEnhancerExperiment) {
+        displayTypeBreadcrumbs = 'Transgenic Enhancer Experiments';
+        displayType = 'Transgenic Enhancer Experiment';
     } else {
         displayTypeBreadcrumbs = 'Experiments';
         displayType = 'Experiment';
@@ -349,20 +353,39 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
 
     // Make array of all replicate biosamples, not including biosample-less replicates. Also
-    // collect up library documents.
+    // collect up library documents, this only apply to Experiment and FunctionalCharacterizationExperiment.
+    // collect biosample characterizations for TransgenicEnhancerExperiment only.
     const libraryDocs = [];
     let biosamples = [];
-    if (replicates.length > 0) {
-        biosamples = _.compact(replicates.map((replicate) => {
-            if (replicate.library) {
-                if (replicate.library.documents && replicate.library.documents.length > 0) {
-                    Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+    const biosampleCharacterizations = [];
+    const appliedModifications = [];
+    if (isEnhancerExperiment) {
+        if (context.biosamples) {
+            biosamples = (context.biosamples && context.biosamples.length > 0) ? context.biosamples : [];
+        }
+        if (biosamples && biosamples.length > 0) {
+            biosamples.forEach((biosample) => {
+                if (biosample.characterizations && biosample.characterizations.length > 0) {
+                    biosampleCharacterizations.push(...biosample.characterizations);
                 }
+                if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
+                    appliedModifications.push(...biosample.applied_modifications);
+                }
+            });
+        }
+    } else if (!isEnhancerExperiment) {
+        if (replicates.length > 0) {
+            biosamples = _.compact(replicates.map((replicate) => {
+                if (replicate.library) {
+                    if (replicate.library.documents && replicate.library.documents.length > 0) {
+                        Array.prototype.push.apply(libraryDocs, replicate.library.documents);
+                    }
 
-                return replicate.library.biosample;
-            }
-            return null;
-        }));
+                    return replicate.library.biosample;
+                }
+                return null;
+            }));
+        }
     }
 
     // Create platforms array from file platforms; ignore duplicate platforms.
@@ -447,7 +470,11 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     let nameTip = '';
     const names = organismNames.map((organismName, i) => {
         nameTip += (nameTip.length > 0 ? ' + ' : '') + organismName;
-        nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
+        if (isEnhancerExperiment) {
+            nameQuery += `${nameQuery.length > 0 ? '&' : ''}biosamples.donor.organism.scientific_name=${organismName}`;
+        } else if (!isEnhancerExperiment) {
+            nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
+        }
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
     });
     const crumbs = [
@@ -560,6 +587,23 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
+                            {isEnhancerExperiment && biosamples && biosamples.length > 0 ?
+                                <div data-test="biosamples">
+                                    <dt>Biosample</dt>
+                                    <dd>
+                                        <ul>
+                                            {biosamples.map(biosample => (
+                                                <li key={biosample['@id']}>
+                                                    <a href={biosample['@id']}>
+                                                        {biosample.accession}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.biosample_summary ?
                                 <div data-test="biosample-summary">
                                     <dt>Biosample summary</dt>
@@ -601,7 +645,14 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            <LibraryProperties replicates={replicates} />
+                            {/* Display library properties for Experiment and FunctionalCharacterizationExperiment only. */}
+                            {!isEnhancerExperiment ?
+                                <React.Fragment>
+                                    <LibraryProperties replicates={replicates} />
+                                    <DatasetConstructionPlatform context={context} />
+                                </React.Fragment>
+                            : null}
+
 
                             {Object.keys(platforms).length > 0 ?
                                 <div data-test="platform">
@@ -616,8 +667,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     </dd>
                                 </div>
                             : null}
-
-                            <DatasetConstructionPlatform context={context} />
 
                             {context.possible_controls && context.possible_controls.length > 0 ?
                                 <div data-test="possible-controls">
@@ -664,6 +713,45 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="elements-cloning">
                                     <dt>Elements cloning</dt>
                                     <dd><a href={context.elements_cloning}>{globals.atIdToAccession(context.elements_cloning)}</a></dd>
+                                </div>
+                            : null}
+
+                            {appliedModifications && appliedModifications.length > 0 ?
+                                <div data-test="applied-modifications">
+                                    <dt>Genetic modification</dt>
+                                    <dd>
+                                        <ul>
+                                            {appliedModifications.map(am => (
+                                                <li key={am}>
+                                                    <a href={am}>
+                                                        {am.split('/', 3)[2]}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.element_location ?
+                                <div data-test="element-location">
+                                    <dt>Element location</dt>
+                                    <dd>{`${context.element_location.assembly} ${context.element_location.chromosome}:${context.element_location.start}-${context.element_location.end}`}</dd>
+                                </div>
+                            : null}
+
+                            {context.tissue_with_enhancer_activity && context.tissue_with_enhancer_activity.length > 0 ?
+                                <div data-test="tissue-with-enhancer-activity">
+                                    <dt>Tissues with enhancer activity</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.tissue_with_enhancer_activity.map(tissue =>
+                                                <li key={tissue}>
+                                                    <span>{tissue}</span>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
                         </dl>
@@ -738,7 +826,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            <LibrarySubmitterComments replicates={replicates} />
+                            {!isEnhancerExperiment ?
+                                <LibrarySubmitterComments replicates={replicates} />
+                            : null}
 
                             {context.internal_tags && context.internal_tags.length > 0 ?
                                 <div className="tag-badges" data-test="tags">
@@ -755,8 +845,24 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
             : null}
 
-            {/* Display the file widget with the facet, graph, and tables */}
-            <FileGallery context={fileGraphContext} encodevers={encodevers} anisogenic={anisogenic} />
+
+            {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
+            {!isEnhancerExperiment ?
+                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+            : null}
+
+            {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
+                <div>
+                    <Panel>
+                        <PanelHeading>
+                            <h4>Characterizations</h4>
+                        </PanelHeading>
+                        <PanelBody addClasses="panel-body-doc-interior">
+                            <DocumentsSubpanels documentSpec={{ documents: biosampleCharacterizations }} />
+                        </PanelBody>
+                    </Panel>
+                </div>
+            : null}
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
 
@@ -800,6 +906,7 @@ export default Experiment;
 
 globals.contentViews.register(Experiment, 'Experiment');
 globals.contentViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.contentViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
 const replicateTableColumns = {

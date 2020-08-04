@@ -277,24 +277,38 @@ globals.listingViews.register(Biosample, 'Biosample');
 
 
 /**
- * Renders both Experiment and FunctionalCharacterizationExperiment search results.
+ * Renders both Experiment, FunctionalCharacterizationExperiment, TransgenicEnhancerExperiment search results.
  */
 const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
     let synchronizations;
 
-    // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
+    // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
-    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
+    const isEnhancerExperiment = experimentType === 'TransgenicEnhancerExperiment';
+    let displayType;
+    if (isFunctionalExperiment) {
+        displayType = 'Functional Characterization Experiment';
+    } else if (isEnhancerExperiment) {
+        displayType = 'Transgenic Enhancer Experiment';
+    } else {
+        displayType = 'Experiment';
+    }
 
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
     const treatments = [];
 
-    if (result.replicates && result.replicates.length > 0) {
-        biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+    if (isEnhancerExperiment) {
+        if (result.biosamples && result.biosamples.length > 0) {
+            biosamples = result.biosamples.map(sample => biosamples);
+        }
+    } else {
+        if (result.replicates && result.replicates.length > 0) {
+            biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+        }
         // flatten treatment array of arrays
         _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
     }
@@ -303,7 +317,13 @@ const ExperimentComponent = (props, reactContext) => {
     const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
 
     // Collect synchronizations
-    if (result.replicates && result.replicates.length > 0) {
+    if (isEnhancerExperiment) {
+        if (biosamples && biosamples.length > 0) {
+            synchronizations = _.uniq(biosamples.filter(biosample => biosample && biosample.synchronization).map((biosample) => {
+                return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
+            }));
+        }
+    } else if (result.replicates && result.replicates.length > 0) {
         synchronizations = _.uniq(result.replicates.filter(replicate =>
             replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
         ).map((replicate) => {
@@ -434,6 +454,7 @@ const Experiment = auditDecor(ExperimentComponent);
 
 globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
+globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
 
 
 const DatasetComponent = (props, reactContext) => {

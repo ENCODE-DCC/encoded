@@ -215,6 +215,10 @@ class TransgenicEnhancerExperiment(
     embedded = Dataset.embedded + [
         'biosample_ontology',
         'biosamples',
+        'biosamples.donor.organism',
+        'biosamples.biosample_ontology',
+        'biosamples.organism',
+        'biosamples.characterizations',
     ]
     audit_inherit = [
         'submitted_by',

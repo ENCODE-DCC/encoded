@@ -394,6 +394,12 @@ class BiosampleComponent extends React.Component {
                 />
 
                 <RelatedItems
+                    title="Transgenic enhancer experiments using this biosample"
+                    url={`/search/?type=TransgenicEnhancerExperiment&biosamples.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
                     title="Biosamples that are part of this biosample"
                     url={`/search/?type=Biosample&part_of.uuid=${context.uuid}`}
                     Component={BiosampleTable}
