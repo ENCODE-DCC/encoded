@@ -401,6 +401,16 @@ class GeneTypeQuantificationQualityMetric(QualityMetric, CalculatedAssayTermID):
 
 
 @collection(
+    name='dnase-alignment-quality-metrics',
+    properties={
+        'title': "DNase Alignment Quality Metrics",
+    })
+class DnaseAlignmentQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'dnase_alignment_quality_metric'
+    schema = load_schema('encoded:schemas/dnase_alignment_quality_metric.json')
+
+
+@collection(
     name='dnase-footprinting-quality-metrics',
     properties={
         'title': "DNase Footprinting Quality Metrics",
