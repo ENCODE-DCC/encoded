@@ -1500,3 +1500,35 @@ def test_metadata_contains_all_values(index_workbook, testapp):
             expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
             actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
             assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
+
+
+def test_metadata_contains_all_annotation_values(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/metadata/?type=Annotation')
+    actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_annotation_metadata.tsv')
+    # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
+    for i, row in enumerate(actual):
+        for j, column in enumerate(row):
+            # Sometimes lists are out of order.
+            expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
+            actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
+            assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
+
+
+def test_metadata_contains_all_publication_data_values(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/metadata/?type=PublicationData&dataset=/publication-data/ENCSR727WCB/')
+    actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_publication_data_metadata.tsv')
+    # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = sorted([tuple(x.split('\t')) for x in f.readlines()])
+    for i, row in enumerate(actual):
+        for j, column in enumerate(row):
+            # Sometimes lists are out of order.
+            expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
+            actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
+            assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
