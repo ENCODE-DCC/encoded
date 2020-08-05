@@ -1585,3 +1585,28 @@ def test_metadata_batched_search_generator_make_batches_from_batch_params(dummy_
        )
        bsg = BatchedSearchGenerator(dummy_request)
        assert list(bsg._make_batches_from_batch_params()) == []
+       from encoded.reports.metadata import BatchedSearchGenerator
+       dummy_request.environ['QUERY_STRING'] = (
+           'type=Experiment&@id=/files/ENCFFABC123/'
+           '&@id=/files/ENCFFABC345/&@id=/files/ENCFFABC567/'
+           '&@id=/files/ENCFFABC789/&@id=/files/ENCFFDEF123/'
+           '&@id=/files/ENCFFDEF345/&@id=/files/ENCFFDEF567/'
+       )
+       bsg = BatchedSearchGenerator(dummy_request, batch_size=2)
+       assert list(bsg._make_batches_from_batch_params()) == [
+           ['/files/ENCFFABC123/', '/files/ENCFFABC345/'],
+           ['/files/ENCFFABC567/', '/files/ENCFFABC789/'],
+           ['/files/ENCFFDEF123/', '/files/ENCFFDEF345/'],
+           ['/files/ENCFFDEF567/']
+       ]
+       bsg = BatchedSearchGenerator(dummy_request, batch_field='accession', batch_size=2)
+       assert list(bsg._make_batches_from_batch_params()) == []
+       dummy_request.environ['QUERY_STRING'] = (
+           'type=Experiment&@id=/files/ENCFFABC123/'
+           '&@id=/files/ENCFFABC345/&@id=/files/ENCFFABC567/'
+           '&@id=/files/ENCFFABC789/&@id=/files/ENCFFDEF123/'
+           '&@id=/files/ENCFFDEF345/&@id=/files/ENCFFDEF567/'
+           '&accession=ENCFFAAA111'
+       )
+       bsg = BatchedSearchGenerator(dummy_request, batch_field='accession')
+       assert next(bsg._make_batches_from_batch_params()) == ['ENCFFAAA111']
