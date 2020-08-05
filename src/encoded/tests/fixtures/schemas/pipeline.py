@@ -112,12 +112,18 @@ def pipeline_without_assay_term_names(testapp, lab, award):
 
 
 @pytest.fixture
-def ATAC_pipeline(testapp, encode_lab, award, analysis_step_atac_encode4_alignment):
+def ATAC_pipeline(testapp, encode_lab, award,
+                  analysis_step_atac_encode4_alignment,
+                  analysis_step_atac_encode4_pseudoreplicate_concordance,
+                  analysis_step_atac_encode4_partition_concordance
+                  ):
     item = {
         'award': award['uuid'],
         'lab': encode_lab['uuid'],
-        'title': "ATAC-seq (replicated)",
+        'title': 'ATAC-seq (replicated)',
         'assay_term_names': ['ATAC-seq'],
-        'analysis_steps': [analysis_step_atac_encode4_alignment['@id']]
+        'analysis_steps': [analysis_step_atac_encode4_alignment['@id'],
+                           analysis_step_atac_encode4_pseudoreplicate_concordance['@id'],
+                           analysis_step_atac_encode4_partition_concordance['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]

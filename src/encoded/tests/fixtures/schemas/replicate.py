@@ -356,9 +356,9 @@ def replicate_ATAC_seq(testapp, ATAC_experiment, library_1):
 
 
 @pytest.fixture
-def replicate_ATAC_seq_2(testapp, ATAC_experiment, library_2):
+def replicate_ATAC_seq_2(testapp, ATAC_experiment_replicated, library_2):
     item = {
-        'experiment': ATAC_experiment['@id'],
+        'experiment': ATAC_experiment_replicated['@id'],
         'library': library_2['@id'],
         'biological_replicate_number': 2,
         'technical_replicate_number': 1,

@@ -148,12 +148,26 @@ def analysis_step_atac_encode4_alignment(testapp):
 
 
 @pytest.fixture
-def analysis_step_atac_encode4_replicate_concordance(testapp):
+def analysis_step_atac_encode4_pseudoreplicate_concordance(testapp):
     item = {
-        'step_label': 'atac-seq-replicated-overlap-step',
-        'title': 'ATAC seq replicated-overlap step',
-        'input_file_types': ['alignments', 'blacklisted regions'],
-        'analysis_step_types': ['peak calling', 'replicate concordance'],
+        'step_label': 'atac-seq-unreplicated-overlap-step',
+        'title': 'ATAC seq unreplicated overlap step',
+        'input_file_types': ['alignments'],
+        'output_file_types': ['stable peaks'],
+        'analysis_step_types': ['peak calling', 'partition concordance'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_atac_encode4_partition_concordance(testapp):
+    item = {
+        'step_label': 'atac-seq-partition-concordance-step',
+        'title': 'ATAC seq partition concordance step',
+        'input_file_types': ['alignments'],
+        'output_file_types': ['stable peaks'],
+        'analysis_step_types': ['peak calling', 'partition concordance'],
         'major_version': 1
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
