@@ -1422,6 +1422,7 @@ def test_metadata_metadata_report_output_sorted_row(dummy_request):
             assert expected == actual
 
 
+@pytest.mark.indexing
 def test_metadata_metadata_report_get_search_results_generator(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
@@ -1435,6 +1436,7 @@ def test_metadata_metadata_report_get_search_results_generator(index_workbook, d
     assert len(list(search_results['@graph'])) >= 63
 
 
+@pytest.mark.indexing
 def test_metadata_metadata_report_generate_row(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
@@ -1449,6 +1451,7 @@ def test_metadata_metadata_report_generate_row(index_workbook, dummy_request):
     assert len(list(row_generator)) >= 100
 
 
+@pytest.mark.indexing
 def test_metadata_metadata_report_generate(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
@@ -1462,16 +1465,19 @@ def test_metadata_metadata_report_generate(index_workbook, dummy_request):
     assert len(list(response.body)) >= 100
 
 
+@pytest.mark.indexing
 def test_metadata_view(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     assert len(r.text.split('\n')) >= 100
 
 
+@pytest.mark.indexing
 def test_metadata_view_annotation(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Annotation')
     assert len(r.text.split('\n')) >= 7
 
 
+@pytest.mark.indexing
 def test_metadata_view_publication_data(index_workbook, testapp):
     r = testapp.get(
         '/metadata/?type=PublicationData&dataset=/publication-data/ENCSR727WCB/'
@@ -1479,10 +1485,12 @@ def test_metadata_view_publication_data(index_workbook, testapp):
     assert len(r.text.split('\n')) >= 7
 
 
+@pytest.mark.indexing
 def test_metadata_view_unallowed_type(index_workbook, testapp):
     testapp.get('/metadata/?type=File', status=400)
 
 
+@pytest.mark.indexing
 def test_metadata_contains_audit_values(index_workbook, testapp):
     r = testapp.get('/metadata/?type=Experiment')
     audit_values = [
@@ -1496,6 +1504,7 @@ def test_metadata_contains_audit_values(index_workbook, testapp):
         assert value in r.text, f'{value} not in metadata report'
 
 
+@pytest.mark.indexing
 def test_metadata_contains_all_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=Experiment')
@@ -1512,6 +1521,7 @@ def test_metadata_contains_all_values(index_workbook, testapp):
             assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
 
 
+@pytest.mark.indexing
 def test_metadata_contains_all_annotation_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=Annotation')
@@ -1528,6 +1538,7 @@ def test_metadata_contains_all_annotation_values(index_workbook, testapp):
             assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
 
 
+@pytest.mark.indexing
 def test_metadata_contains_all_publication_data_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/metadata/?type=PublicationData&dataset=/publication-data/ENCSR727WCB/')
