@@ -569,5 +569,19 @@
         ],
         "status": "released",
         "uuid": "71a92bc4-26f1-4b3c-8553-902817da4095"
+    },
+    {
+        "step_label": "chromatin-loop-interaction-step",
+        "major_version": 1,
+        "title": "Chromatin loop interaction step",
+        "analysis_step_types": ["chromatin loop identification"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "bigInteract"
+        ],
+        "status": "released",
+        "uuid": "6acd1987-9464-4eba-bb23-b6b656f9e53a"
     }
 ]

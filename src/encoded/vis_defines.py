@@ -116,7 +116,7 @@ ASSEMBLY_DETAILS = {
 }
 
 BROWSER_FILE_TYPES = {
-    'ucsc': {'bigWig', 'bigBed'},
+    'ucsc': {'bigWig', 'bigBed', 'bigInteract'},
     'ensembl': {'bigWig', 'bigBed'},
     'quickview': {'bigWig', 'bigBed'},
     'hic': {'hic'},
@@ -143,7 +143,8 @@ VISIBLE_FILE_STATUSES = ["released"]
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 HIC_FILE_TYPES = ['hic']
-VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES
+BIGINTERACT_FILE_TYPES = ['bigInteract']
+VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES + BIGINTERACT_FILE_TYPES
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
 
@@ -252,7 +253,8 @@ SUPPORTED_TRACK_SETTINGS = [
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
     "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
-    "qValueFilter", "qValueFilterLimits" ]
+    "qValueFilter", "qValueFilterLimits", "interactUp"
+]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
 # UCSC trackDb settings that are supported

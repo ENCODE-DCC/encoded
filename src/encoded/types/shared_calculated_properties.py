@@ -185,7 +185,7 @@ class CalculatedVisualize:
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         vis_assembly = set()
-        viewable_file_formats = ['bigWig', 'bigBed', 'hic']
+        viewable_file_formats = ['bigWig', 'bigBed', 'hic', 'bigInteract']
         viewable_file_status = ['released', 'in progress']
         vis_assembly = {
             properties['assembly']
