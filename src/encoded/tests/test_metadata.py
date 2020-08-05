@@ -569,6 +569,16 @@ def test_metadata_metadata_report_excluded_columns(dummy_request):
     )
 
 
+def test_metadata_metadata_report_get_column_to_fields_mapping(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    mr = MetadataReport(dummy_request)
+    assert mr._get_column_to_fields_mapping() == METADATA_COLUMN_TO_FIELDS_MAPPING
+
+
 def test_metadata_metadata_report_build_header(dummy_request):
     from encoded.reports.metadata import MetadataReport
     dummy_request.environ['QUERY_STRING'] = (

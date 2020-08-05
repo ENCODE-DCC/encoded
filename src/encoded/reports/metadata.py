@@ -139,15 +139,18 @@ class MetadataReport:
         self.search_request = None
         self.csv = CSVGenerator()
 
+    def _get_column_to_fields_mapping(self):
+        return METADATA_COLUMN_TO_FIELDS_MAPPING
+
     def _build_header(self):
-        for column in METADATA_COLUMN_TO_FIELDS_MAPPING:
+        for column in self._get_column_to_fields_mapping():
             if column not in self.EXCLUDED_COLUMNS:
                 self.header.append(column)
         for audit, column in METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING:
             self.header.append(column)
         
     def _split_column_and_fields_by_experiment_and_file(self):
-        for column, fields in METADATA_COLUMN_TO_FIELDS_MAPPING.items():
+        for column, fields in self._get_column_to_fields_mapping().items():
             if fields[0].startswith('files'):
                 self.file_column_to_fields_mapping[column] = [
                     field.replace('files.', '')
@@ -165,7 +168,7 @@ class MetadataReport:
 
     def _add_fields_to_param_list(self):
         self.param_list['field'] = []
-        for column, fields in METADATA_COLUMN_TO_FIELDS_MAPPING.items():
+        for column, fields in self._get_column_to_fields_mapping().items():
             self.param_list['field'].extend(fields)
 
     def _initialize_at_id_param(self):
