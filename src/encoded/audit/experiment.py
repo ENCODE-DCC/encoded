@@ -4372,8 +4372,8 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                 frip = float(metric['frip'])
                 detail = (
                     f'According to ENCODE4 standards, overlap peaks files in ATAC-seq assays processed '
-                    f'by the uniform processing pipeline should have FRiP scores (fraction of '
-                    f'reads in called peak regions) > 0.3. FRiP scores 0.2-0.3 are acceptable, '
+                    f'by the uniform processing pipeline should have FRiP (fraction of reads in '
+                    f'called peak regions) scores > 0.3. FRiP scores 0.2-0.3 are acceptable, '
                     f'and < 0.2 are not compliant. '
                     f'{audit_link(path_to_text(atac_peaks_file["@id"]),atac_peaks_file["@id"])} '
                     f' has a FRiP score of {frip:.2f}.')
@@ -4397,10 +4397,10 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                     f' has a rescue ratio score of {rescue:.2f} and self-consistency ratio of '
                     f'{self_consistency:.2f}.'
                     )
-                if rescue < 2 or self_consistency < 2:
-                    yield AuditFailure('borderline replicate concordance', detail, level='WARNING')
                 if rescue >= 2 and self_consistency >= 2:
                     yield AuditFailure('insufficient replicate concordance', detail, level='NOT_COMPLIANT')
+                elif rescue >= 2 or self_consistency >= 2:
+                    yield AuditFailure('borderline replicate concordance', detail, level='WARNING')
 
             if 'reproducible_peaks' in metric:
                 rep_peaks = metric['reproducible_peaks']
@@ -4409,7 +4409,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                     f'by the uniform processing pipeline should have > 150k reproducible peaks. '
                     f'100-150k reproducible peaks is acceptable, and < 100k is not compliant. '
                     f'{audit_link(path_to_text(atac_peaks_file["@id"]),atac_peaks_file["@id"])} '
-                    f' file(s) have {rep_peaks}.')
+                    f' file has {rep_peaks}.')
                 if rep_peaks <= 150000 and rep_peaks >= 100000:
                     yield AuditFailure('moderate number of reproducible peaks', detail, level='WARNING')
                 if rep_peaks < 100000:
