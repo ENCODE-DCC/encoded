@@ -2308,7 +2308,8 @@ def test_audit_experiment_chip_seq_standards(testapp,
 
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'mm10',
-                                             'derived_from': [file_fastq_3['@id']]})
+                                             'derived_from': [file_fastq_3['@id']],
+                                             'output_type': 'unfiltered alignments'})
     testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})

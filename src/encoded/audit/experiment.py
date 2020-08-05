@@ -759,7 +759,7 @@ def check_experiment_dnase_seq_standards(experiment,
                     audit_link(path_to_text(pipelines[0]['@id']), pipelines[0]['@id'])
                 )
             )
-            yield AuditFailure('missing read depth', detail, level='WARNING')
+            yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
 
         alignments_assemblies = {}
         for alignment_file in alignment_files:
@@ -1108,6 +1108,7 @@ def check_experiment_chip_seq_standards(
 
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
+    unfil_alignment_files = files_structure.get('unfiltered_alignments').values()
     idr_peaks_files = files_structure.get('preferred_default_idr_peaks').values()
     assay_name = experiment.get('assay_term_name')
 
@@ -1141,6 +1142,11 @@ def check_experiment_chip_seq_standards(
         if target is False and not experiment.get('control_type'):
             return
 
+        yield from check_file_chip_seq_library_complexity(f)
+
+        if target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
+            break
+
         read_depth = get_file_read_depth_from_alignment(f, target, assay_name)
         yield from check_file_chip_seq_read_depth(
             f,
@@ -1150,7 +1156,23 @@ def check_experiment_chip_seq_standards(
             read_depth,
             standards_version
         )
-        yield from check_file_chip_seq_library_complexity(f)
+
+    # Specifically for experiments with H3K9me3 mark
+    for file in unfil_alignment_files:
+        target = get_target(experiment)
+        if target is False:
+            return
+        if target['name'] not in ['H3K9me3-human', 'H3K9me3-mouse']:
+            return
+        read_depth = get_file_read_depth_from_unfiltered_alignment(file, target, assay_name)
+        yield from check_file_chip_seq_read_depth(
+            file,
+            experiment.get('control_type'),
+            organism_name,
+            target,
+            read_depth,
+            standards_version
+        )
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
 
@@ -4626,27 +4648,10 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
         mapped_run_type = alignment_file.get('mapped_run_type', None)
         if target is not False and \
            'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
-            # exception (mapped)
-            for metric in quality_metrics:
-                if 'mapped_reads' in metric:
-                    mappedReads = metric['mapped_reads']
-                elif 'mapped' in metric:
-                    mappedReads = metric['mapped']
-                if 'processing_stage' in metric and \
-                    metric['processing_stage'] == 'unfiltered' and \
-                        ('mapped' in metric or 'mapped_reads' in metric):
-                    if mapped_run_type:
-                        if  mapped_run_type == 'paired-ended':
-                            return int(mappedReads / 2)
-                        else:
-                            return int(mappedReads)
-                    else:
-                        if ("read1" in metric and "read2" in metric):
-                            return int(mappedReads / 2)
-                        else:
-                            return int(mappedReads)     
+            return False
+
         else:
-            # not exception (useful fragments)
+            # not exception (useful fragments). All marks other than H3K9me3
             for metric in quality_metrics:
                 if 'total_reads' in metric:
                     totalReads = metric['total_reads']
@@ -4665,6 +4670,50 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                             return int(totalReads / 2)
                         else:
                             return int(totalReads)
+    return False
+
+
+def get_file_read_depth_from_unfiltered_alignment(unfil_alignment_file, target, assay_name):
+    # https://encodedcc.atlassian.net/browse/ENCD-5453
+    # For the H3K9me3 mark only, unfiltered bam QC metrics are used to get mapped reads
+    if unfil_alignment_file.get('output_type') not in ['unfiltered alignments']:
+        return False
+
+    if unfil_alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
+        return False
+
+    quality_metrics = unfil_alignment_file.get('quality_metrics')
+
+    if not quality_metrics:
+        return False
+
+    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq']:
+        return False
+
+    else:
+        mapped_run_type = unfil_alignment_file.get('mapped_run_type', None)
+        if target is not False and \
+           'name' in target and target['name'] not in ['H3K9me3-human', 'H3K9me3-mouse']:
+            return False
+        else:
+            for metric in quality_metrics:
+                if 'mapped_reads' in metric:
+                    mappedReads = metric['mapped_reads']
+                elif 'mapped' in metric:
+                    mappedReads = metric['mapped']
+                if 'processing_stage' in metric and \
+                    metric['processing_stage'] == 'unfiltered' and \
+                        ('mapped' in metric or 'mapped_reads' in metric):
+                    if mapped_run_type:
+                        if mapped_run_type == 'paired-ended':
+                            return int(mappedReads / 2)
+                        else:
+                            return int(mappedReads)
+                    else:
+                        if ('read1' in metric and 'read2' in metric):
+                            return int(mappedReads / 2)
+                        else:
+                            return int(mappedReads)
     return False
 
 
