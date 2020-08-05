@@ -6,12 +6,9 @@ from collections import OrderedDict
 from encoded.tests.features.conftest import app, app_settings, index_workbook
 from encoded.batch_download import lookup_column_value
 from encoded.batch_download import restricted_files_present
-from encoded.batch_download import make_audit_cell
 from encoded.batch_download import format_row
 from encoded.batch_download import _convert_camel_to_snake
 from encoded.batch_download import ELEMENT_CHUNK_SIZE
-from encoded.batch_download import _audit_mapping
-from encoded.batch_download import _tsv_mapping_annotation
 from encoded.batch_download import _tsv_mapping_publicationdata
 from encoded.batch_download import get_biosample_accessions
 
@@ -33,59 +30,6 @@ def test_ELEMENT_CHUNK_SIZE_value():
     expected = ELEMENT_CHUNK_SIZE
     assert expected == target
 
-def test__audit_mapping_value():
-    expected = _audit_mapping
-    target = OrderedDict([
-        ('Audit WARNING', ['audit.WARNING.path',
-                       'audit.WARNING.category',
-                       'audit.WARNING.detail']),
-        ('Audit INTERNAL_ACTION', ['audit.INTERNAL_ACTION.path',
-                               'audit.INTERNAL_ACTION.category',
-                               'audit.INTERNAL_ACTION.detail']),
-        ('Audit NOT_COMPLIANT', ['audit.NOT_COMPLIANT.path',
-                             'audit.NOT_COMPLIANT.category',
-                             'audit.NOT_COMPLIANT.detail']),
-        ('Audit ERROR', ['audit.ERROR.path',
-                     'audit.ERROR.category',
-                     'audit.ERROR.detail'])
-    ])
-    assert expected == target
-
-def test__tsv_mapping_annotation_value():
-    expected = _tsv_mapping_annotation
-    target = OrderedDict([
-        ('File accession', ['files.title']),
-        ('File format', ['files.file_type']),
-        ('Output type', ['files.output_type']),
-        ('Assay term name', ['files.assay_term_name']),
-        ('Dataset accession', ['accession']),
-        ('Annotation type', ['annotation_type']),
-        ('Software used', ['software_used.software.title']),
-        ('Encyclopedia Version', ['encyclopedia_version']),
-        ('Biosample term id', ['biosample_ontology.term_id']),
-        ('Biosample term name', ['biosample_ontology.term_name']),
-        ('Biosample type', ['biosample_ontology.classification']),
-        ('Life stage', ['relevant_life_stage']),
-        ('Age', ['relevant_timepoint']),
-        ('Age units', ['relevant_timepoint_units']),
-        ('Organism', ['organism.scientific_name']),
-        ('Targets', ['targets.name']),
-        ('Dataset date released', ['date_released']),
-        ('Project', ['award.project']),
-        ('Lab', ['files.lab.title']),
-        ('md5sum', ['files.md5sum']),
-        ('dbxrefs', ['files.dbxrefs']),
-        ('File download URL', ['files.href']),
-        ('Assembly', ['files.assembly']),
-        ('Controlled by', ['files.controlled_by']),
-        ('File Status', ['files.status']),
-        ('Derived from', ['files.derived_from']),
-        ('S3 URL', ['files.cloud_metadata.url']),
-        ('Size', ['files.file_size']),
-        ('No File Available', ['file.no_file_available']),
-        ('Restricted', ['files.restricted'])
-    ])
-    assert expected == target
 
 def test__tsv_mapping_publicationdata_value():
     expected = _tsv_mapping_publicationdata
@@ -115,34 +59,6 @@ def test__tsv_mapping_publicationdata_value():
         ('No File Available', ['file.no_file_available']),
         ('Restricted', ['files.restricted'])
     ])
-    assert expected == target
-
-
-@mock.patch('encoded.batch_download._audit_mapping')
-@mock.patch('encoded.batch_download.simple_path_ids')
-def test_make_audit_cell_for_vanilla(simple_path_ids, audit_mapping):
-    expected = 'a2, a1'
-    simple_path_ids.return_value = ['a1', 'a2']
-    audit_mapping_data = {'file1': [
-        ['path', '/files/',],
-        ['category',],
-    ]}
-    audit_mapping.__getitem__.side_effect = audit_mapping_data.__getitem__
-    audit_mapping.__iter__.side_effect = audit_mapping_data.__iter__
-    file_json = {}
-    target = make_audit_cell('file1', [], file_json)
-    is_target_valid = True
-    for i in target:
-        if i not in expected:
-            is_target_valid = False
-            break
-    assert is_target_valid
-
-
-def test_format_row_removes_special_characters():
-    columns = ['col1', 'col2\t', 'col4\n\t', 'col4\t\n\r', 'col5']
-    expected = b'col1\tcol2\tcol4\tcol4\tcol5\r\n'
-    target = format_row(columns)
     assert expected == target
 
 
