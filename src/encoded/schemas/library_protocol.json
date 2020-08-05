@@ -176,33 +176,51 @@
                 "poly(dT)"
             ]
         },
-        "cell_barcode_length": {
-            "title": "Cell barcode length",
-            "description": "The length of the sequence barcode used to distinguish a cell in the library.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "cell_barcode_offset": {
-            "title": "Cell barcode offset",
-            "description": "The number of bases in the sequence read preceding the first base of the cell barcode, 0 if there is no offset.",
-            "type": "integer"
-        },
-        "cell_barcode_whitelist": {
-            "title": "Cell barcode whitelist",
-            "description": "The file containing the list of legitimate cell barcode sequences.",
-            "type": "string",
-            "linkTo": "DataFile"
-        },
-        "feature_barcode_length": {
-            "title": "Feature barcode length",
-            "description": "The length of the sequence barcode used to distinguish a feature in the library.",
-            "type": "integer",
-            "minimum": 0
-        },
-        "feature_barcode_offset": {
-            "title": "Feature barcode offset",
-            "description": "The number of bases in the sequence read preceding the first base of the feature barcode, 0 if there is no offset.",
-            "type": "integer"
+        "read_structure": {
+            "title": "Read structure",
+            "description": "A list of elements in the read describing the structure of a read.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequence element",
+                "description": "One element in the read with start and end coordinates.",
+                "required": ["sequence_element", "start", "end"],
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "sequence_element": {
+                        "title": "Element name",
+                        "type": "string",
+                        "enum": [
+                            "cell barcode",
+                            "feature_barcode",
+                            "UMI"
+                        ]
+                    },
+                    "located_in_read_type": {
+                        "title": "Located in read type",
+                        "type": "string",
+                        "enum": [
+                            "Read 1",
+                            "Read 1N",
+                            "Read 2",
+                            "Read 2N",
+                            "i5 index",
+                            "i7 index"
+                        ]
+                    },
+                    "start": {
+                        "title": "Start coordinate",
+                        "description": "The 1-based start coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    },
+                    "end": {
+                        "title": "End coordinate",
+                        "description": "The 1-based end coordinate within the read. A negative number stands for a position counting from the end of the read.",
+                        "type": "integer"
+                    }
+                }
+            }
         },
         "library_amplification_method": {
             "title": "Library amplification method",
@@ -240,16 +258,6 @@
                 "TSO",
                 "adapter"
             ]
-        },
-        "umi_length": {
-            "title": "UMI length",
-            "description": "The length of the sequence barcode used to distinguish a unique molecule in the library.",
-            "type": "integer"
-        },
-        "umi_offset": {
-            "title": "UMI offset",
-            "description": "The number of bases in the sequence read preceding the first base of the UMI barcode, 0 if there is no offset.",
-            "type": "integer"
         }
     },
     "facets": {

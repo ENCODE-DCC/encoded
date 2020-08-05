@@ -182,7 +182,7 @@
             "type": "string",
             "linkTo": "RawSequenceFile"
         },
-        "read_name_details": {
+        "read_name_structure": {
             "title": "Fastq read name details",
             "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
             "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
@@ -285,7 +285,7 @@
                 "i7 index"
             ]
         },
-        "sequence_type": {
+        "sequence_elements": {
             "title": "Sequence type",
             "description": "The biological content of the sequence reads.",
             "type": "array",
