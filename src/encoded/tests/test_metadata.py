@@ -1563,3 +1563,25 @@ def test_metadata_annotation_metadata_report_get_column_to_fields_mapping(dummy_
     )
     amr = AnnotationMetadataReport(dummy_request)
     assert amr._get_column_to_fields_mapping() == ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
+
+
+def test_metadata_batched_search_generator_init(dummy_request):
+    from encoded.reports.metadata import BatchedSearchGenerator
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    bsg = BatchedSearchGenerator(dummy_request)
+    assert isinstance(bsg, BatchedSearchGenerator)
+    assert bsg.batch_field == '@id'
+    assert bsg.batch_size == 5000
+    assert bsg.param_list == {'type': ['Experiment']}
+    assert bsg.batch_param_values == []
+
+
+def test_metadata_batched_search_generator_make_batches_from_batch_params(dummy_request):
+       from encoded.reports.metadata import BatchedSearchGenerator
+       dummy_request.environ['QUERY_STRING'] = (
+           'type=Experiment'
+       )
+       bsg = BatchedSearchGenerator(dummy_request)
+       assert list(bsg._make_batches_from_batch_params()) == []

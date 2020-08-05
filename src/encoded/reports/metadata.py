@@ -353,9 +353,18 @@ class CSVGenerator:
 
 class BatchedSearchGenerator:
 
-    def __init__(self, batch_field='@id', batch_size=5000):
+    def __init__(self, request, batch_field='@id', batch_size=5000):
+        self.requeset = request
         self.batch_field = batch_field
         self.batch_size = batch_size
+        self.query_string = QueryString(request)
+        self.param_list = self.query_string.group_values_by_key()
+        self.batch_param_values = self.param_list.get(batch_field, []).copy()
+
+    def _make_batches_from_batch_params(self):
+        end = len(self.batch_param_values)
+        for start in range(0, end, self.batch_size):
+            yield self.batch_param_values[start:min(start + self.batch_size, end)]
 
 
 def _get_metadata(context, request):
