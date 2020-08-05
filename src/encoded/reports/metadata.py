@@ -351,6 +351,13 @@ class CSVGenerator:
         self.row = row.encode('utf-8')
 
 
+class BatchedSearchGenerator:
+
+    def __init__(self, batch_field='@id', batch_size=5000):
+        self.batch_field = batch_field
+        self.batch_size = batch_size
+
+
 def _get_metadata(context, request):
     metadata_report = MetadataReport(request)
     return metadata_report.generate()
