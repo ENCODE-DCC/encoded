@@ -142,7 +142,7 @@ class AnalysisStepVersion(Item):
     item_type = 'analysis_step_version'
     schema = load_schema('encoded:schemas/analysis_step_version.json')
     set_status_up = [
-        'software_version',
+        'software_versions',
     ]
     set_status_down = []
 
