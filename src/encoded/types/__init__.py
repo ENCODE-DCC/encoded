@@ -331,6 +331,10 @@ class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('encoded:schemas/software_version.json')
     embedded = ['software', 'software.references']
+    set_status_up = [
+        'software',
+    ]
+    set_status_down = []
 
     def __ac_local_roles__(self):
         # Use lab/award from parent software object for access control.

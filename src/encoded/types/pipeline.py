@@ -141,6 +141,10 @@ class AnalysisStep(Item):
 class AnalysisStepVersion(Item):
     item_type = 'analysis_step_version'
     schema = load_schema('encoded:schemas/analysis_step_version.json')
+    set_status_up = [
+        'software_version',
+    ]
+    set_status_down = []
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)
