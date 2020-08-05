@@ -646,3 +646,32 @@ def test_set_status_no_validation_error_on_content_error_details(testapp, file):
     r = testapp.get(file['@id'] + '@@raw')
     assert 'content_error_detail' in r.json
     testapp.patch_json(file['@id'] + '@@set_status?update=true&validate=false', {'status': 'uploading'}, status=200)
+
+
+def test_set_status_analysis_step_run(testapp, analysis_step_run, analysis_step_version, analysis_step):
+    testapp.patch_json(analysis_step_run['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_run['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(analysis_step_run['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(analysis_step_version['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(analysis_step['@id'])
+    assert res.json['status'] == 'in progress'
+
+
+def test_set_status_analysis_step_version(testapp, analysis_step_version, analysis_step, software_version, software):
+    testapp.patch_json(analysis_step_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step['@id'], {'status': 'in progress'})
+    testapp.patch_json(software_version['@id'], {'status': 'in progress'})
+    testapp.patch_json(software['@id'], {'status': 'in progress'})
+    testapp.patch_json(analysis_step_version['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(analysis_step_version['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(analysis_step['@id'])
+    assert res.json['status'] == 'in progress'
+    res = testapp.get(software_version['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(software['@id'])
+    assert res.json['status'] == 'released'

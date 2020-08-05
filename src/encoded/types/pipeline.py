@@ -141,6 +141,10 @@ class AnalysisStep(Item):
 class AnalysisStepVersion(Item):
     item_type = 'analysis_step_version'
     schema = load_schema('encoded:schemas/analysis_step_version.json')
+    set_status_up = [
+        'software_versions',
+    ]
+    set_status_down = []
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)
@@ -181,3 +185,7 @@ class AnalysisStepRun(Item):
     audit_inherit = ['*']
     # Avoid using reverse links on this object as invalidating a
     # step_run can cause thousands of objects to be reindexed.
+    set_status_up = [
+        'analysis_step_version',
+    ]
+    set_status_down = []
