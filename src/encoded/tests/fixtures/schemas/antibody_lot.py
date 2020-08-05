@@ -2,13 +2,11 @@ import pytest
 
 
 @pytest.fixture
-def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_target):
+def encode4_tag_antibody_lot(testapp, lab, encode4_award, mouse, gfp_target):
     item = {
         'product_id': 'WH0000468M1',
         'lot_id': 'CB191-2B3',
-        'award': encode4_award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
+        'source': 'Acme',
         'host_organism': mouse['@id'],
         'targets': [gfp_target['@id']],
     }
@@ -16,13 +14,11 @@ def encode4_tag_antibody_lot(testapp, lab, encode4_award, source, mouse, gfp_tar
 
 
 @pytest.fixture
-def antibody_lot_base(lab, award, source):
+def antibody_lot_base(lab, award):
     return {
-        'award': award['uuid'],
         'product_id': 'SAB2100398',
         'lot_id': 'QC8343',
-        'lab': lab['uuid'],
-        'source': source['uuid'],
+        'source': 'Acme',
     }
 
 
@@ -41,7 +37,6 @@ def antibody_lot_2(antibody_lot_base):
     item = antibody_lot_base.copy()
     item.update({
         'schema_version': '2',
-        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
         'status': "CURRENT"
     })
     return item
@@ -72,7 +67,6 @@ def antibody_lot_4(root, antibody_lot_3):
 @pytest.fixture
 def mass_spec(testapp, award, lab, antibody_lot, target, attachment):
     item = {
-        'award': award['@id'],
         'lab': lab['@id'],
         'target': target['@id'],
         'characterizes': antibody_lot['@id'],
@@ -84,13 +78,11 @@ def mass_spec(testapp, award, lab, antibody_lot, target, attachment):
 
 
 @pytest.fixture
-def antibody_lot(testapp, lab, award, source, mouse, target):
+def antibody_lot(testapp, lab, award, mouse, target):
     item = {
         'product_id': 'WH0000468M1',
         'lot_id': 'CB191-2B3',
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
+        'source': 'Acme',
         'host_organism': mouse['@id'],
         'targets': [target['@id']],
     }
@@ -100,8 +92,6 @@ def antibody_lot(testapp, lab, award, source, mouse, target):
 @pytest.fixture
 def immunoblot(testapp, award, lab, antibody_lot, target, attachment):
     item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
         'target': target['@id'],
         'characterizes': antibody_lot['@id'],
         'attachment': attachment,

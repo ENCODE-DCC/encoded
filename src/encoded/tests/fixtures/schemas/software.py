@@ -25,7 +25,5 @@ def software(testapp, award, lab):
         "name": "fastqc",
         "title": "FastQC",
         "description": "A quality control tool for high throughput sequence data.",
-        "award": award['@id'],
-        "lab": lab['@id'],
     }
     return testapp.post_json('/software', item).json['@graph'][0]

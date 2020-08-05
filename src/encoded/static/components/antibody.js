@@ -51,9 +51,9 @@ const LotComponent = (props, reactContext) => {
     const context = props.context;
 
     // Compile the document list
-    const characterizations = getAntibodyCharacterizations(context.characterizations, reactContext);
+    const characterizations = [];
     const documentSpecs = [
-        { documents: characterizations },
+        { documents: [] },
     ];
 
     // Build antibody status panel
@@ -123,10 +123,6 @@ const LotComponent = (props, reactContext) => {
     ];
 
     const crumbsReleased = (context.status === 'released');
-
-    // ENCD-4608 ENCODE4 tag antibodies rely on linked biosample
-    // characterizations and antibody characterizations are ignored.
-    const isENCODE4tagAb = context.award.rfa === 'ENCODE4' && context.targets.some(target => target.investigated_as.includes('tag') || target.investigated_as.includes('synthetic tag'));
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
@@ -256,27 +252,6 @@ const LotComponent = (props, reactContext) => {
                     </dl>
                 </PanelBody>
             </Panel>
-
-            <RelatedItems
-                title="Functional genomics experiments using this antibody"
-                url={`/search/?type=Experiment&replicates.antibody.accession=${context.accession}`}
-                Component={ExperimentTable}
-            />
-
-            <RelatedItems
-                title="Functional characterization experiments using this antibody"
-                url={`/search/?type=FunctionalCharacterizationExperiment&replicates.antibody.accession=${context.accession}`}
-                Component={ExperimentTable}
-            />
-
-            {isENCODE4tagAb ?
-                <RelatedItems
-                    title="Biosample characterizations using this antibody"
-                    url={`/search/?type=BiosampleCharacterization&antibody=/antibodies/${context.accession}/`}
-                    Component={BiosampleCharacterizationTable}
-                />
-            : <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />}
-
         </div>
     );
 };

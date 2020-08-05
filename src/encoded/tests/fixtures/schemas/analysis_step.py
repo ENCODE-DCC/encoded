@@ -19,11 +19,7 @@ def base_analysis_step(testapp, software_version):
 def analysis_step(testapp):
     item = {
         'step_label': 'fastqc-step',
-        'title': 'fastqc step',
-        'major_version': 1,
-        'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
-
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
 
@@ -121,6 +117,7 @@ def analysis_step_8(testapp):
         'output_file_types': ['representative dnase hypersensitivity sites']
     }
     return item
+
 
 @pytest.fixture
 def analysis_step_chip_encode4(testapp):

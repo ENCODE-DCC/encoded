@@ -14,6 +14,7 @@ def disabled_user(testapp, lab, award):
     res = testapp.post_json('/user', item)
     return testapp.get(res.location).json
 
+
 @pytest.fixture
 def user_0_0():
     return{
@@ -73,6 +74,7 @@ def user_8(user_0_0):
         'groups': ['admin', 'verified', 'wrangler'],
     })
     return item
+
 
 @pytest.fixture
 def admin(testapp):
@@ -134,7 +136,6 @@ def submitter(testapp, lab, award):
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
         'submits_for': [lab['@id']],
-        'viewing_groups': [award['viewing_group']],
     }
     # User @@object view has keys omitted.
     res = testapp.post_json('/user', item)
@@ -166,4 +167,3 @@ def remc_member(testapp, remc_lab):
     # User @@object view has keys omitted.
     res = testapp.post_json('/user', item)
     return testapp.get(res.location).json
-
