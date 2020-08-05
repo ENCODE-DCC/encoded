@@ -518,8 +518,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             fileGraphContext.analyses.push(
                 Object.assign(
                     {
-                        assemblies: [obj.assembly],
-                        genome_annotations: [obj.genome_annotation],
+                        assemblies: obj.assembly ? [obj.assembly] : [],
+                        genome_annotations: obj.genome_annotation ? [obj.genome_annotation] : [],
                     },
                     obj
                 )
