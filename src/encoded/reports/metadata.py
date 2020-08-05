@@ -3,8 +3,8 @@ import csv
 from collections import defaultdict
 from collections import OrderedDict
 from functools import wraps
-from encoded.batch_download import _get_annotation_metadata
 from encoded.batch_download import _get_publicationdata_metadata
+from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
@@ -328,6 +328,12 @@ class MetadataReport:
         )
 
 
+class AnnotationMetadataReport(MetadataReport):
+
+    def _get_column_to_fields_mapping(self):
+        return ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
+
+
 class CSVGenerator:
 
     def __init__(self, delimiter='\t', lineterminator='\n'):
@@ -348,6 +354,11 @@ class CSVGenerator:
 def _get_metadata(context, request):
     metadata_report = MetadataReport(request)
     return metadata_report.generate()
+
+
+def _get_annotation_metadata(context, request):
+    annotation_metadata_report = AnnotationMetadataReport(request)
+    return annotation_metadata_report.generate()
 
 
 def metadata_report_factory(context, request):

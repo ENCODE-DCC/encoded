@@ -1542,3 +1542,13 @@ def test_metadata_contains_all_publication_data_values(index_workbook, testapp):
             expected_value = tuple(sorted([x.strip() for x in expected[i][j].split(',')]))
             actual_value = tuple(sorted([x.strip() for x in column.split(',')]))
             assert expected_value == actual_value, f'Mistmatch on row {i} column {j}. {expected_value} != {actual_value}'
+
+
+def test_metadata_annotation_metadata_report_get_column_to_fields_mapping(dummy_request):
+    from encoded.reports.metadata import AnnotationMetadataReport
+    from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    amr = AnnotationMetadataReport(dummy_request)
+    assert amr._get_column_to_fields_mapping() == ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING

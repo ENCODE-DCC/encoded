@@ -98,3 +98,39 @@ METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING = [
     ('NOT_COMPLIANT', 'Audit NOT_COMPLIANT'),
     ('ERROR', 'Audit ERROR'),
 ]
+
+
+ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+    [
+        ('File accession', ['files.title']),
+        ('File format', ['files.file_type']),
+        ('Output type', ['files.output_type']),
+        ('Assay term name', ['files.assay_term_name']),
+        ('Dataset accession', ['accession']),
+        ('Annotation type', ['annotation_type']),
+        ('Software used', ['software_used.software.title']),
+        ('Encyclopedia Version', ['encyclopedia_version']),
+        ('Biosample term id', ['biosample_ontology.term_id']),
+        ('Biosample term name', ['biosample_ontology.term_name']),
+        ('Biosample type', ['biosample_ontology.classification']),
+        ('Life stage', ['relevant_life_stage']),
+        ('Age', ['relevant_timepoint']),
+        ('Age units', ['relevant_timepoint_units']),
+        ('Organism', ['organism.scientific_name']),
+        ('Targets', ['targets.name']),
+        ('Dataset date released', ['date_released']),
+        ('Project', ['award.project']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Assembly', ['files.assembly']),
+        ('Controlled by', ['files.controlled_by']),
+        ('File Status', ['files.status']),
+        ('Derived from', ['files.derived_from']),
+        ('S3 URL', ['files.cloud_metadata.url']),
+        ('Size', ['files.file_size']),
+        ('No File Available', ['file.no_file_available']),
+        ('Restricted', ['files.restricted'])
+    ]
+)
