@@ -176,6 +176,12 @@
                 "poly(dT)"
             ]
         },
+        "cell_barcode_whitelist": {
+            "title": "Cell barcode whitelist",
+            "description": "The file containing the list of legitimate cell barcode sequences.",
+            "type": "string",
+            "linkTo": "DataFile"
+        },
         "read_structure": {
             "title": "Read structure",
             "description": "A list of elements in the read describing the structure of a read.",
