@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 23
+
+* Added *bias model* to the enum list for *output_type*.
+
 ### Schema version 23
 * The file *output_type* enum *spike-in sequence* has been adjusted to *spike-ins* to accomodate other spike-in file types. *gtf* files that are *spike-ins* will not be required to specify an *assembly.*
 
