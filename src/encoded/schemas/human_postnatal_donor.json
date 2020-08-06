@@ -95,6 +95,11 @@
             "description": "Number of pregnancies of the donor.",
             "type": "integer"
         },
+        "living_at_sample_collection": {
+            "title": "Living at sample collection",
+            "description": "If true, the donor was alive at the time of sample collection.",
+            "type": "boolean"
+        },
         "family_history_breast_cancer": {
             "title": "Family history breast cancer",
             "description": "Familial relations with history of breast cancer.",

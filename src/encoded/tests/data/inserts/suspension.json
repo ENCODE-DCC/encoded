@@ -94,7 +94,7 @@
         "derived_from": [
             "ENCBS222SCS"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS128ENC",
@@ -109,7 +109,7 @@
         "derived_from": [
             "ENCBS356AAA"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS175ENC",
@@ -127,7 +127,7 @@
         "derived_from": [
             "ENCDO017AAA"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS417ENC",
@@ -144,7 +144,7 @@
         "derived_from": [
             "ENCBS123AAC"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS000RNA",
@@ -169,7 +169,7 @@
         "derived_from": [
             "ENCBS123AAC"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS175SCS",
@@ -181,7 +181,7 @@
         "derived_from": [
             "ENCBS123AAE"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS111JAH",
@@ -193,7 +193,7 @@
         "derived_from": [
             "ENCBS009WOO"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"]
     },
     {
         "accession": "ENCBS222JAH",
@@ -206,6 +206,6 @@
             "ENCBS128ENC",
             "ENCBS111JAH"
         ],
-        "derivation_process": ["solubilization"]
+        "derivation_process": ["enzymatic dissociation"]
     }
 ]

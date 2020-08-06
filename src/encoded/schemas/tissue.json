@@ -43,6 +43,30 @@
         "biosample_ontology": {
             "pattern": "^(UBERON|NTR)_[0-9]{2,8}$"
         },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A donor or sample from which this object was directly derived.",
+                "type": "string",
+                "linkTo": [
+                    "Donor",
+                    "Tissue"
+                ]
+            }
+        },
+        "derivation_process": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "dissection",
+                    "resection",
+                    "blood draw",
+                    "percutaneous biopsy",
+                    "open biopsy",
+                    "aspiration"
+                ]
+            }
+        },
         "postmortem_interval": {
             "title": "Post-mortem interval",
             "description": "The amount of time elapsed since death.",
@@ -98,33 +122,6 @@
             "title": "Spatial information",
             "description": "Information describing the specific anatomical site that the sample was collected from.",
             "type": "string"
-        },
-        "derived_from": {
-            "items": {
-                "title": "Derived from",
-                "description": "A donor or sample from which this object was directly derived.",
-                "type": "string",
-                "linkTo": [
-                    "Donor",
-                    "Tissue"
-                ]
-            }
-        },
-        "derivation_process": {
-            "items": {
-                "type": "string",
-                "enum": [
-                    "dissection",
-                    "surgical resection",
-                    "blood draw",
-                    "percutaneous kidney biopsy",
-                    "biopsy",
-                    "bone marrow aspiration",
-                    "organ extraction",
-                    "Ficoll-Hypaque method",
-                    "collecting specimen from organ postmortem"
-                ]
-            }
         }
     },
     "facets": {

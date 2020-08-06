@@ -35,11 +35,6 @@
         "biosample_ontology": {
             "pattern": "^(UBERON|NTR)_[0-9]{2,8}$"
         },
-        "embedded_in_matrigel": {
-            "title": "Embedded in matrigel",
-            "description": "Whether or not the organoids were grown in embedded in matrigel.",
-            "type": "boolean"
-        },
         "derived_from": {
             "items": {
                 "title": "Derived from",
@@ -51,6 +46,11 @@
                     "Organoid"
                 ]
             }
+        },
+        "embedded_in_matrigel": {
+            "title": "Embedded in matrigel",
+            "description": "Whether or not the organoids were grown in embedded in matrigel.",
+            "type": "boolean"
         }
     },
     "facets": {

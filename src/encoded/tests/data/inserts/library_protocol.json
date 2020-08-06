@@ -1,21 +1,21 @@
 [
     {
-        "name": "10X-v2-3'",
-        "construction_platform": "10X",
+        "name": "10x-v2-3'",
+        "construction_platform": "10x",
         "construction_platform_version": 2,
         "library_type": "RNA-seq",
         "end_bias": "3'"
     },
     {
-        "name": "10X-v3-3'",
-        "construction_platform": "10X",
+        "name": "10x-v3-3'",
+        "construction_platform": "10x",
         "construction_platform_version": 3,
         "library_type": "RNA-seq",
         "end_bias": "3'"
     },
     {
-        "name": "10X-ATAC",
-        "construction_platform": "10X",
+        "name": "10x-ATAC",
+        "construction_platform": "10x",
         "library_type": "ATAC-seq"
     }
 ]

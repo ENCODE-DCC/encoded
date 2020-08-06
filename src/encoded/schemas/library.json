@@ -60,6 +60,12 @@
             "type": "string",
             "linkTo": "LibraryProtocol"
         },
+        "protocol_version": {
+            "title": "Protocol version",
+            "description": "The specific protocol version used to make the library.",
+            "comment": "This should be a minor version of the major version noted in the protocol object.",
+            "type": "number"
+        },
         "derived_from": {
             "title": "Derived from",
             "description": "The biosamples that nucleic acid was isolated from to generate the library.",
