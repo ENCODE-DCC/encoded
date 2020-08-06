@@ -411,9 +411,17 @@ class PublicationDataMetadataReport(MetadataReport):
         self._add_experiment_file_filters_as_fields_to_file_params()
         self._add_experiment_file_filters_to_file_params()
 
+    def _filter_file_params_from_query_string(self):
+        self.query_string.params = [
+            (k, v)
+            for k, v in self.query_string.params
+            if not k.startwith('files.')
+        ]
+
     # Overrides parent.
     def _build_params(self):
         super()._build_params()
+        self._filter_file_params_from_query_string()
         self._build_file_params()
 
     def _get_at_id_file_params(self):
