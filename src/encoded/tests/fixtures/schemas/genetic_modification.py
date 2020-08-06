@@ -628,10 +628,11 @@ def CRISPR_introduction(lab, award):
 
 
 @pytest.fixture
-def genetic_modification_9(lab, award):
+def genetic_modification_9(lab, award, human_donor_1):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
+        'donor': human_donor_1['@id'],
         'category': 'insertion',
         'purpose': 'expression',
         'method': 'transient transfection'

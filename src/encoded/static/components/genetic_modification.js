@@ -186,7 +186,7 @@ const ModificationMethod = (props) => {
             <dl className={itemClass}>
                 <div data-test="technique">
                     <dt>Technique</dt>
-                    <dd>{geneticModification.method || geneticModification.nucleic_acid_delivery_method.join(', ')}</dd>
+                    <dd>{geneticModification.method}</dd>
                 </div>
 
                 {treatments.length > 0 ?
@@ -673,7 +673,7 @@ const ListingComponent = (props, reactContext) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose} &mdash; {result.method || result.nucleic_acid_delivery_method.join(', ')}</a>
+                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose} &mdash; {result.method}</a>
                     <div className="result-item__data-row">
                         {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
