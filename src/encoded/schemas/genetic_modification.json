@@ -249,7 +249,7 @@
                             "not": {
                                 "required": ["modified_site_nonspecific"]
                             },
-                            "required": ["introduced_elements"],
+                            "required": ["introduced_elements", "nucleic_acid_delivery_method"],
                             "properties": {
                                 "category": {
                                     "enum": ["insertion"]
@@ -394,7 +394,7 @@
                             "required": ["modified_site_nonspecific"]
                         }
                     ],
-                    "required": ["introduced_sequence"],
+                    "required": ["introduced_sequence", "nucleic_acid_delivery_method"],
                     "properties": {
                         "category": {
                             "enum": ["transgene insertion"]

@@ -290,3 +290,7 @@ def genetic_modification_9_10(value, system):
     if value['method'] in removed_methods:
         value['nucleic_acid_delivery_method'] = [value['method']]
         value.pop('method')
+
+    if 'donor' in value:
+        value['introduced_elements_donor'] = value['donor']
+        value.pop('donor')
