@@ -9,7 +9,6 @@ from encoded.batch_download import restricted_files_present
 from encoded.batch_download import format_row
 from encoded.batch_download import _convert_camel_to_snake
 from encoded.batch_download import ELEMENT_CHUNK_SIZE
-from encoded.batch_download import _tsv_mapping_publicationdata
 from encoded.batch_download import get_biosample_accessions
 
 
@@ -28,37 +27,6 @@ exp_file_3 = {'file_type': 'gz',
 def test_ELEMENT_CHUNK_SIZE_value():
     target = 1000
     expected = ELEMENT_CHUNK_SIZE
-    assert expected == target
-
-
-def test__tsv_mapping_publicationdata_value():
-    expected = _tsv_mapping_publicationdata
-    target = OrderedDict([
-        ('File accession', ['files.title']),
-        ('File dataset', ['files.dataset']),
-        ('File type', ['files.file_format']),
-        ('File format', ['files.file_type']),
-        ('File output type', ['files.output_type']),
-        ('Assay term name', ['files.assay_term_name']),
-        ('Biosample term id', ['files.biosample_ontology.term_id']),
-        ('Biosample term name', ['files.biosample_ontology.term_name']),
-        ('Biosample type', ['files.biosample_ontology.classification']),
-        ('File target', ['files.target.label']),
-        ('Dataset accession', ['accession']),
-        ('Dataset date released', ['date_released']),
-        ('Project', ['award.project']),
-        ('Lab', ['files.lab.title']),
-        ('md5sum', ['files.md5sum']),
-        ('dbxrefs', ['files.dbxrefs']),
-        ('File download URL', ['files.href']),
-        ('Assembly', ['files.assembly']),
-        ('File status', ['files.status']),
-        ('Derived from', ['files.derived_from']),
-        ('S3 URL', ['files.cloud_metadata.url']),
-        ('Size', ['files.file_size']),
-        ('No File Available', ['file.no_file_available']),
-        ('Restricted', ['files.restricted'])
-    ])
     assert expected == target
 
 

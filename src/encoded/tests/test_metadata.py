@@ -1609,7 +1609,7 @@ def test_metadata_batched_search_generator_make_batched_values_from_batch_param_
         '&accession=ENCFFAAA111'
     )
     bsg = BatchedSearchGenerator(dummy_request, batch_field='accession')
-    assert next(bsg._make_batches_from_batch_params()) == ['ENCFFAAA111']
+    assert next(bsg._make_batched_values_from_batch_param_values()) == ['ENCFFAAA111']
 
 
 def test_metadata_batched_search_generator_make_batched_params_from_batched_values(dummy_request):
@@ -1651,6 +1651,7 @@ def test_metadata_batched_search_generator_build_new_request(dummy_request):
         'type=Experiment'
         '&%40id=%2Ffiles%2FENCFFABC123%2F'
         '&%40id=%2Ffiles%2FENCFFABC345%2F'
+        '&limit=all'
     )
     assert request.path_info == '/search/'
     assert request.registry
@@ -1668,6 +1669,7 @@ def test_metadata_batched_search_generator_build_new_request(dummy_request):
         'type=Experiment&field=accession&files.status=released'
         '&%40id=%2Ffiles%2FENCFFABC123%2F'
         '&%40id=%2Ffiles%2FENCFFABC345%2F'
+        '&limit=all'
     )
     assert request.path_info == '/search/'
     assert request.registry
