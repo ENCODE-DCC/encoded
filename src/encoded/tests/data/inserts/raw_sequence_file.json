@@ -527,7 +527,7 @@
         "output_type": "assigned reads",
         "platform": "Illumina NovaSeq 6000",
         "output_type": "assigned reads",
-        "read_name_details": {
+        "read_name_structure": {
             "read_number_location": 2,
             "flowcell_id_location": 3,
             "lane_id_location": 4,
