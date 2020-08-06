@@ -291,6 +291,8 @@
             "description": "A list of analysis objects.",
             "comment": "Will transfer to analyses property in the future release.",
             "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
             "items": {
                 "type": "string",
                 "linkTo": "Analysis"
