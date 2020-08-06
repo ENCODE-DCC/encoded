@@ -171,7 +171,7 @@ def test_batch_download_view(testapp, index_workbook):
     r = testapp.get('/batch_download/?type=Experiment&status=released')
     lines = r.text.split('\n')
     assert lines[0] == (
-        'http://localhost/metadata/?type=Experiment&status=released'
+        '"http://localhost/metadata/?type=Experiment&status=released"'
     )
     assert len(lines) >= 79
     assert 'http://localhost/files/ENCFF002MXF/@@download/ENCFF002MXF.fastq.gz' in lines
@@ -194,6 +194,6 @@ def test_batch_download_view_file_plus(testapp, index_workbook):
     )
     lines = r.text.split('\n')
     assert lines[0] == (
-        'http://localhost/metadata/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json'
+        '"http://localhost/metadata/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json"'
     )
     assert 'http://localhost/files/ENCFF880XNW/@@download/ENCFF880XNW.bigBed' in lines
