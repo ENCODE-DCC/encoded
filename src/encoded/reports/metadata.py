@@ -415,7 +415,7 @@ class PublicationDataMetadataReport(MetadataReport):
         self.query_string.params = [
             (k, v)
             for k, v in self.query_string.params
-            if not k.startwith('files.')
+            if not k.startswith('files.')
         ]
 
     # Overrides parent.
