@@ -383,10 +383,12 @@ class BatchedSearchGenerator:
         return request
 
     def results(self):
+        if not self.batch_param_values:
+            yield from search_generator(self._build_new_request([]))['@graph']
         for batched_values in self._make_batched_values_from_batch_param_values():
             batched_params = self._make_batched_params_from_batched_values(batched_values)
             request = self._build_new_request(batched_params)
-            yield from search_generator(request)
+            yield from search_generator(request)['@graph']
 
 
 

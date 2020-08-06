@@ -1671,3 +1671,14 @@ def test_metadata_batched_search_generator_build_new_request(dummy_request):
     )
     assert request.path_info == '/search/'
     assert request.registry
+
+
+def test_metadata_batched_search_generator_results(index_workbook, dummy_request):
+    from encoded.reports.metadata import BatchedSearchGenerator
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    bsg = BatchedSearchGenerator(dummy_request)
+    results = bsg.results()
+    print(list(results))
+    assert False
