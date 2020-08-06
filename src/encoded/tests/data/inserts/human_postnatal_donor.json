@@ -11,6 +11,7 @@
         ],
         "diseases": [
             "MONDO_0003687"
+        ],
         "test_results": [
             {"Bac/Fung/Myc": "negative"},
             {"HIV-1/HBV/HCV": "negative"},
