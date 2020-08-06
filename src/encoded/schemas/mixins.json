@@ -1,5 +1,14 @@
  {
     "title": "Mixin properties",
+    "award": {
+        "award": {
+            "title": "Award",
+            "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
+            "comment": "Required. See award.json for list of available identifiers.",
+            "type": "string",
+            "linkTo": "Award"
+        }
+    },
     "schema_version": {
         "schema_version": {
             "title": "Schema version",

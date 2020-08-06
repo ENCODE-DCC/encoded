@@ -10,6 +10,7 @@
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/notes"},
