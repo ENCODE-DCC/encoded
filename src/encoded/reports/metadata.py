@@ -389,7 +389,7 @@ class PublicationDataMetadataReport(MetadataReport):
 
     def _convert_experiment_params_to_file_params(self):
         return [
-            (k.replace('files.'), v)
+            (k.replace('files.', ''), v)
             for k, v in self.query_string.params
             if k.startswith('files.')
         ]
