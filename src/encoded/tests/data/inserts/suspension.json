@@ -85,11 +85,6 @@
         "accession": "ENCBS026ENC",
         "biosample_ontology": "NTR_0000031",
         "description": "liver fraction CD117+,CD71+,TER119-",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:EPC_(CD117+_CD71+_TER119-)",
-            "UCSC-ENCODE-cv:EPCPPM",
-            "UCSC-ENCODE-cv:EPC (CD117+ CD71+ TER119-)"
-        ],
         "documents": [
             "lattice:EPC_Stam_protocol"
         ],
@@ -138,9 +133,6 @@
         "accession": "ENCBS417ENC",
         "biosample_ontology": "CL_1000350",
         "description": "small airway epithelial cells",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:SAEC"
-        ],
         "product_id": "CC-2547",
         "documents": [
             "lattice:SAEC_Stam_protocol"

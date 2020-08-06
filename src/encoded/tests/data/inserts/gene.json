@@ -91,7 +91,7 @@
 }, {
     "geneid": "179824",
     "uuid": "6d4d22fb-99ee-4246-94a0-184aee5d72a1",
-    "dbxrefs": ["WormBase:WBGene00003222", "UniProtKB:Q9NH52"],
+    "dbxrefs": ["UniProtKB:Q9NH52"],
     "name": "Histone-lysine N-methyltransferase mes-4",
     "ncbi_entrez_status": "live",
     "organism": "celegans",
@@ -100,7 +100,7 @@
 }, {
     "geneid": "172920",
     "uuid": "de7d137a-dafd-46c8-99c3-111b5255e304",
-    "dbxrefs": ["WormBase:WBGene00003902", "UniProtKB:Q7K798", "UniProtKB:Q9U302", "UniProtKB:Q7K797"],
+    "dbxrefs": ["UniProtKB:Q7K798", "UniProtKB:Q9U302", "UniProtKB:Q7K797"],
     "name": "PolyA Binding protein;Polyadenylate-binding protein",
     "ncbi_entrez_status": "live",
     "organism": "celegans",
@@ -119,7 +119,7 @@
 }, {
     "geneid": "35341",
     "uuid": "a562a789-e89d-498f-a6e3-3fbbdd042ec3",
-    "dbxrefs": ["FlyBase:FBgn0000251", "UniProtKB:P09085", "UniProtKB:M9PDI3"],
+    "dbxrefs": ["UniProtKB:P09085", "UniProtKB:M9PDI3"],
     "name": "caudal",
     "ncbi_entrez_status": "live",
     "organism": "dmelanogaster",
@@ -129,7 +129,7 @@
 }, {
     "geneid": "182874",
     "uuid": "08e44197-9c28-4f80-b9ef-2f420869b443",
-    "dbxrefs": ["WormBase:WBGene00001442", "UniProtKB:O17593"],
+    "dbxrefs": ["UniProtKB:O17593"],
     "name": "ForKHead transcription factor family",
     "ncbi_entrez_status": "live",
     "organism": "celegans",
@@ -148,7 +148,7 @@
 }, {
     "geneid": "34560",
     "uuid": "6e42c31d-0fcc-4793-80e1-e93d83f33bb5",
-    "dbxrefs": ["FlyBase:FBgn0264442", "UniProtKB:Q24174", "UniProtKB:M9PB99"],
+    "dbxrefs": ["UniProtKB:Q24174", "UniProtKB:M9PB99"],
     "name": "abrupt",
     "ncbi_entrez_status": "live",
     "organism": "dmelanogaster",

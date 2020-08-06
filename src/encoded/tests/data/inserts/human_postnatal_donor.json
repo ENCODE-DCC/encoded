@@ -10,7 +10,11 @@
             "ENCDO117AAA"
         ],
         "ethnicity": "Caucasian",
-        "diseases": ["Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV"],
+        "test_results": [
+            {"Bac/Fung/Myc": "negative"},
+            {"HIV-1/HBV/HCV": "negative"},
+            {"IFTA": "1-10%"}
+        ],
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",

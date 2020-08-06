@@ -258,7 +258,7 @@ const PublicationComponent = (props, reactContext) => {
                 </Panel>
             : null}
 
-            {context.publication_data.length > 0 ?
+            {context.publication_data && context.publication_data.length > 0 ?
                 <PublicationDataTable publicationDataIds={context.publication_data} />
             : null}
 

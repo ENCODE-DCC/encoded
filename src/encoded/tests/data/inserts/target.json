@@ -210,8 +210,6 @@
         "uuid": "714c9ca5-63a1-48e3-9603-5b867dbc0c7f",
         "label": "mes-4",
         "dbxref": [
-            "WormBase:WBGene00003222",
-            "WormBase:Y2H9A.1",
             "UniProtKB:Q9NH52"
         ],
         "genes": ["179824"],
@@ -222,8 +220,6 @@
         "uuid": "79cbe489-930b-410e-8cc2-783e4c37d9f5",
         "label": "3XFLAG-pab-1",
         "dbxref": [
-            "WormBase:WBGene00003902",
-            "WormBase:Y106G6H.2",
             "UniProtKB:Q7K797",
             "UniProtKB:Q9U302",
             "UniProtKB:Q7K798"
@@ -285,8 +281,6 @@
         "uuid": "bb5fc7cf-5909-4bf8-92d2-557477ce8646",
         "label": "fkh-10",
         "dbxref": [
-            "WormBase:WBGene00001442",
-            "WormBase:C25A1.2",
             "UniProtKB:O17593"
         ],
         "genes": ["182874"],
@@ -414,25 +408,7 @@
     },
     {
         "uuid": "670a9892-e1b6-4c31-a79f-7db1919b07f9",
-        "dbxref": [
-            "FlyBase:CG43860",
-            "FlyBase:FBtr0332562",
-            "FlyBase:FBtr0332558",
-            "FlyBase:CG43860-RA",
-            "FlyBase:FBtr0332557",
-            "UniProtKB:Q9W1P8",
-            "FlyBase:CG43860-RB",
-            "FlyBase:FBtr0332560",
-            "FlyBase:CG43860-RF",
-            "FlyBase:ab-RA",
-            "FlyBase:ab-RD",
-            "RefSeq:NM_079098",
-            "FlyBase:ab-RF",
-            "FlyBase:abrupt",
-            "FlyBase:FBgn0264442",
-            "FlyBase:ab-RB",
-            "FlyBase:CG43860-RD"
-        ],
+        "aliases": [],
         "genes": ["34560"],
         "modifications": [{
             "modification": "eGFP",

@@ -15,9 +15,9 @@ from elasticsearch.exceptions import (
 )
 from elasticsearch.helpers import scan
 from snovault import DBSESSION, COLLECTIONS
-#from snovault.storage import (
+# from snovault.storage import (
 #    TransactionRecord,
-#)
+# )
 from snovault.elasticsearch.indexer import (
     Indexer
 )
@@ -52,7 +52,8 @@ SUPPORTED_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 
 ENCODED_ALLOWED_FILE_FORMATS = ['bed']
 ENCODED_ALLOWED_STATUSES = ['released']
-RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of what datsets are resident in one place
+# in regions_es, keeps track of what datsets are resident in one place
+RESIDENT_REGIONSET_KEY = 'resident_regionsets'
 
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
@@ -70,9 +71,10 @@ ENCODED_REGION_REQUIREMENTS = {
 }
 
 # On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
-TESTABLE_FILES = ['ENCFF002COS']  # '/static/test/peak_indexer/ENCFF002COS.bed.gz']
-                                  # '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
-                                  # '/static/test/peak_indexer/ENCFF000PAR.bed.gz']
+# '/static/test/peak_indexer/ENCFF002COS.bed.gz']
+TESTABLE_FILES = ['ENCFF002COS']
+# '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
+# '/static/test/peak_indexer/ENCFF000PAR.bed.gz']
 
 
 def includeme(config):
@@ -83,6 +85,7 @@ def includeme(config):
     is_region_indexer = registry.settings.get('regionindexer')
     if is_region_indexer:
         registry['region'+INDEXER] = RegionIndexer(registry)
+
 
 def tsvreader(file):
     reader = csv.reader(file, delimiter='\t')
@@ -103,7 +106,7 @@ def get_mapping(assembly_name='hg19'):
             },
             'properties': {
                 'uuid': {
-                    'type': 'keyword' # WARNING: to add local files this must be 'type': 'string'
+                    'type': 'keyword'  # WARNING: to add local files this must be 'type': 'string'
                 },
                 'positions': {
                     'type': 'nested',
@@ -130,13 +133,15 @@ def index_settings():
     }
 
 
-#def all_regionable_dataset_uuids(registry):
+# def all_regionable_dataset_uuids(registry):
 #    # NOTE: this old method needs postgres.  Avoid using postgres
 #    return list(all_uuids(registry, types=["experiment"]))
 
 
 def encoded_regionable_datasets(request, restrict_to_assays=[]):
     '''return list of all dataset uuids eligible for regions'''
+
+    return []  # evaluate usage for Lattice DB
 
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
@@ -147,20 +152,24 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
     for assay in restrict_to_assays:
         query += '&assay_term_name=' + assay
     results = request.embed(query)['@graph']
-    return [ result['uuid'] for result in results ]
+    return [result['uuid'] for result in results]
 
 
 class RegionIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and region_indexer state by cycle.
     def __init__(self, es, key):
-        super(RegionIndexerState, self).__init__(es,key, title='region')
-        self.files_added_set    = self.title + '_files_added'
-        self.files_dropped_set  = self.title + '_files_dropped'
-        self.success_set        = self.files_added_set
-        self.cleanup_last_cycle.extend([self.files_added_set,self.files_dropped_set])  # Clean up at beginning of next cycle
+        super(RegionIndexerState, self).__init__(es, key, title='region')
+        self.files_added_set = self.title + '_files_added'
+        self.files_dropped_set = self.title + '_files_dropped'
+        self.success_set = self.files_added_set
+        # Clean up at beginning of next cycle
+        self.cleanup_last_cycle.extend(
+            [self.files_added_set, self.files_dropped_set])
         # DO NOT INHERIT! These keys are for passing on to other indexers
-        self.followup_prep_list = None                        # No followup to a following indexer
-        self.staged_cycles_list = None                        # Will take all of primary self.staged_for_regions_list
+        # No followup to a following indexer
+        self.followup_prep_list = None
+        # Will take all of primary self.staged_for_regions_list
+        self.staged_cycles_list = None
 
     def file_added(self, uuid):
         self.list_extend(self.files_added_set, [uuid])
@@ -171,40 +180,46 @@ class RegionIndexerState(IndexerState):
     def all_indexable_uuids(self, request):
         '''returns list of uuids pertinant to this indexer.'''
         assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-        return encoded_regionable_datasets(request, assays)  # Uses elasticsearch query
+        # Uses elasticsearch query
+        return encoded_regionable_datasets(request, assays)
 
     def priority_cycle(self, request):
         '''Initial startup, reindex, or interupted prior cycle can all lead to a priority cycle.
            returns (priority_type, uuids).'''
         # Not yet started?
-        initialized = self.get_obj("indexing")  # http://localhost:9200/snovault/meta/indexing
+        # http://localhost:9200/snovault/meta/indexing
+        initialized = self.get_obj("indexing")
         self.is_reindexing = self._get_is_reindex()
         if not initialized:
             self.is_initial_indexing = True
             self.delete_objs([self.override])
             staged_count = self.get_count(self.staged_for_regions_list)
             if staged_count > 0:
-                log.warn('Initial indexing handoff almost dropped %d staged uuids' % (staged_count))
+                log.warn(
+                    'Initial indexing handoff almost dropped %d staged uuids' % (staged_count))
             state = self.get()
             state['status'] = 'uninitialized'
             self.put(state)
-            return ("uninitialized", [])  # primary indexer will know what to do and region indexer should do nothing yet
+            # primary indexer will know what to do and region indexer should do nothing yet
+            return ("uninitialized", [])
 
         # Is a full indexing underway
         primary_state = self.get_obj("primary_indexer")
-        if primary_state.get('cycle_count',0) > SEARCH_MAX:
+        if primary_state.get('cycle_count', 0) > SEARCH_MAX:
             return ("uninitialized", [])
 
         # Rare call for reindexing...
         reindex_uuids = self.reindex_requested(request)
         if reindex_uuids is not None and reindex_uuids != []:
             uuids_count = len(reindex_uuids)
-            log.warn('%s reindex of %d uuids requested with force' % (self.state_id, uuids_count))
+            log.warn('%s reindex of %d uuids requested with force' %
+                     (self.state_id, uuids_count))
             return ("reindex", reindex_uuids)
 
         if self.get().get('status', '') == 'indexing':
             uuids = self.get_list(self.todo_set)
-            log.info('%s restarting on %d datasets' % (self.state_id, len(uuids)))
+            log.info('%s restarting on %d datasets' %
+                     (self.state_id, len(uuids)))
             return ("restart", uuids)
 
         return ("normal", [])
@@ -215,7 +230,8 @@ class RegionIndexerState(IndexerState):
         # never indexed, request for full reindex?
         (status, uuids) = self.priority_cycle(request)
         if status == 'uninitialized':
-            return ([], False)            # Until primary_indexer has finished, do nothing!
+            # Until primary_indexer has finished, do nothing!
+            return ([], False)
 
         if len(uuids) > 0:
             if status == "reindex":
@@ -225,15 +241,16 @@ class RegionIndexerState(IndexerState):
                 #log.info('%s skipping this restart' % (self.state_id))
                 #state = self.get()
                 #state['status'] = "interrupted"
-                #self.put(state)
-                #return ([], False)
+                # self.put(state)
+                # return ([], False)
         assert(uuids == [])
 
         # Normal case, look for uuids staged by primary indexer
         staged_list = self.get_list(self.staged_for_regions_list)
         if not staged_list or staged_list == []:
             return ([], False)            # Nothing to do!
-        self.delete_objs([self.staged_for_regions_list])  # TODO: tighten this by adding a locking semaphore
+        # TODO: tighten this by adding a locking semaphore
+        self.delete_objs([self.staged_for_regions_list])
 
         # we don't need no stinking xmins... just take the whole set of uuids
         uuids = []
@@ -247,10 +264,11 @@ class RegionIndexerState(IndexerState):
             # There is an efficiency trade off examining many non-dataset uuids
             # # vs. the cost of eliminating those uuids from the list ahead of time.
             assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-            uuids = list(set(encoded_regionable_datasets(request, assays)).intersection(uuids))
+            uuids = list(set(encoded_regionable_datasets(
+                request, assays)).intersection(uuids))
             uuid_count = len(uuids)
 
-        return (list(set(uuids)),False)  # Only unique uuids
+        return (list(set(uuids)), False)  # Only unique uuids
 
     def finish_cycle(self, state, errors=None):
         '''Every indexing cycle must be properly closed.'''
@@ -268,7 +286,7 @@ class RegionIndexerState(IndexerState):
         dropped = self.get_count(self.files_dropped_set)
         state['indexed'] = added + dropped
 
-        #self.rename_objs(self.done_set, self.last_set)   # cycle-level accounting so todo => done => last in this function
+        # self.rename_objs(self.done_set, self.last_set)   # cycle-level accounting so todo => done => last in this function
         self.delete_objs(self.cleanup_this_cycle)
         state['status'] = 'done'
         state['cycles'] = state.get('cycles', 0) + 1
@@ -290,8 +308,9 @@ class RegionIndexerState(IndexerState):
 def regionindexer_state_show(request):
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
-    regions_es    = request.registry[SNP_SEARCH_ES]
-    state = RegionIndexerState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
+    regions_es = request.registry[SNP_SEARCH_ES]
+    # Consider putting this in regions es instead of encoded es
+    state = RegionIndexerState(encoded_es, encoded_INDEX)
     if not state.get():
         return "%s is not in service." % (state.state_id)
     # requesting reindex
@@ -305,21 +324,24 @@ def regionindexer_state_show(request):
     who = request.params.get("notify")
     bot_token = request.params.get("bot_token")
     if who is not None or bot_token is not None:
-        notices = state.set_notices(request.host_url, who, bot_token, request.params.get("which"))
+        notices = state.set_notices(
+            request.host_url, who, bot_token, request.params.get("which"))
         if notices is not None:
             return notices
 
     display = state.display(uuids=request.params.get("uuids"))
 
     try:
-        count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type='default').get('count',0)
+        count = regions_es.count(
+            index=RESIDENT_REGIONSET_KEY, doc_type='default').get('count', 0)
         if count:
             display['files_in_index'] = count
     except:
         display['files_in_index'] = 'Not Found'
         pass
 
-    if not request.registry.settings.get('testing',False):  # NOTE: _indexer not working on local instances
+    # NOTE: _indexer not working on local instances
+    if not request.registry.settings.get('testing', False):
         try:
             r = requests.get(request.host_url + '/_regionindexer')
             display['listener'] = json.loads(r.text)
@@ -344,9 +366,8 @@ def index_regions(request):
     indexer = request.registry['region'+INDEXER]
     uuids = []
 
-
     # keeping track of state
-    state = RegionIndexerState(encoded_es,encoded_INDEX)
+    state = RegionIndexerState(encoded_es, encoded_INDEX)
     result = state.get_initial_state()
 
     (uuids, force) = state.get_one_cycle(request)
@@ -354,7 +375,7 @@ def index_regions(request):
     # Note: if reindex=all_uuids then maybe we should delete the entire index
     # On the otherhand, that should probably be left for extreme cases done by hand
     # curl -XDELETE http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/
-    #if force == 'all':  # Unfortunately force is a simple boolean
+    # if force == 'all':  # Unfortunately force is a simple boolean
     #    try:
     #        r = indexer.regions_es.indices.delete(index='chr*')  # Note region_es and encoded_es may be the same!
     #        r = indexer.regions_es.indices.delete(index=self.residents_index)
@@ -369,7 +390,8 @@ def index_regions(request):
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)
         if result['indexed'] == 0:
-            log.info("Region indexer added %d file(s) from %d dataset uuids" % (result['indexed'], uuid_count))
+            log.info("Region indexer added %d file(s) from %d dataset uuids" % (
+                result['indexed'], uuid_count))
 
         # cycle_took: "2:31:55.543311" reindex all with force (2017-10-16ish)
 
@@ -380,12 +402,15 @@ def index_regions(request):
 class RegionIndexer(Indexer):
     def __init__(self, registry):
         super(RegionIndexer, self).__init__(registry)
-        self.encoded_es    = registry[ELASTIC_SEARCH]    # yes this is self.es but we want clarity
-        self.encoded_INDEX = registry.settings['snovault.elasticsearch.index']  # yes this is self.index, but clarity
-        self.regions_es    = registry[SNP_SEARCH_ES]
+        # yes this is self.es but we want clarity
+        self.encoded_es = registry[ELASTIC_SEARCH]
+        # yes this is self.index, but clarity
+        self.encoded_INDEX = registry.settings['snovault.elasticsearch.index']
+        self.regions_es = registry[SNP_SEARCH_ES]
         self.residents_index = RESIDENT_REGIONSET_KEY
-        self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
-        self.test_instance = registry.settings.get('testing',False)
+        # WARNING, race condition is avoided because there is only one worker
+        self.state = RegionIndexerState(self.encoded_es, self.encoded_INDEX)
+        self.test_instance = registry.settings.get('testing', False)
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
@@ -410,23 +435,25 @@ class RegionIndexer(Indexer):
             # less efficient than going to es directly but keeps methods in one place
             dataset = request.embed(str(dataset_uuid), as_user=True)
         except:
-            log.warn("dataset is not found for uuid: %s",dataset_uuid)
+            log.warn("dataset is not found for uuid: %s", dataset_uuid)
             # Not an error if it wasn't found.
             return
 
         # TODO: add case where files are never dropped (when demos share test server this might be necessary)
         if not self.encoded_candidate_dataset(dataset):
-            return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
+            # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
+            return
         #log.debug("dataset is a candidate: %s", dataset['accession'])
 
         assay_term_name = dataset.get('assay_term_name')
         if assay_term_name is None:
             return
 
-        files = dataset.get('files',[])
+        files = dataset.get('files', [])
         for afile in files:
             if afile.get('file_format') not in ENCODED_ALLOWED_FILE_FORMATS:
-                continue  # Note: if file_format changed to not allowed but file already in regions es, it doesn't get removed.
+                # Note: if file_format changed to not allowed but file already in regions es, it doesn't get removed.
+                continue
 
             file_uuid = afile['uuid']
 
@@ -436,23 +463,25 @@ class RegionIndexer(Indexer):
                 if force:
                     using = "with FORCE"
                     #log.debug("file is a candidate: %s %s", afile['accession'], using)
-                    self.remove_from_regions_es(file_uuid)  # remove all regions first
+                    # remove all regions first
+                    self.remove_from_regions_es(file_uuid)
                 else:
                     #log.debug("file is a candidate: %s", afile['accession'])
                     if self.in_regions_es(file_uuid):
                         continue
 
                 if self.add_encoded_file_to_regions_es(request, assay_term_name, afile):
-                    log.info("added file: %s %s %s", dataset['accession'], afile['href'], using)
+                    log.info("added file: %s %s %s",
+                             dataset['accession'], afile['href'], using)
                     self.state.file_added(file_uuid)
 
             else:
                 if self.remove_from_regions_es(file_uuid):
-                    log.info("dropped file: %s %s %s", dataset['accession'], afile['@id'], using)
+                    log.info("dropped file: %s %s %s",
+                             dataset['accession'], afile['@id'], using)
                     self.state.file_dropped(file_uuid)
 
         # TODO: gather and return errors
-
 
     def encoded_candidate_file(self, afile, assay_term_name):
         '''returns True if an encoded file should be in regions es'''
@@ -461,13 +490,13 @@ class RegionIndexer(Indexer):
         if afile.get('href') is None:
             return False
 
-        assembly = afile.get('assembly','unknown')
+        assembly = afile.get('assembly', 'unknown')
         if assembly == 'mm10-minimal':        # Treat mm10-minimal as mm10
             assembly = 'mm10'
         if assembly not in SUPPORTED_ASSEMBLIES:
             return False
 
-        required = ENCODED_REGION_REQUIREMENTS.get(assay_term_name,{})
+        required = ENCODED_REGION_REQUIREMENTS.get(assay_term_name, {})
         if not required:
             return False
 
@@ -489,34 +518,35 @@ class RegionIndexer(Indexer):
         if 'Experiment' not in dataset['@type']:  # Only experiments?
             return False
 
-        if dataset.get('assay_term_name','unknown') not in list(ENCODED_REGION_REQUIREMENTS.keys()):
+        if dataset.get('assay_term_name', 'unknown') not in list(ENCODED_REGION_REQUIREMENTS.keys()):
             return False
 
-        if len(dataset.get('files',[])) == 0:
+        if len(dataset.get('files', [])) == 0:
             return False
         return True
 
     def in_regions_es(self, id):
         '''returns True if an id is in regions es'''
-        #return False # DEBUG
+        # return False # DEBUG
         try:
-            doc = self.regions_es.get(index=self.residents_index, doc_type='default', id=str(id)).get('_source',{})
+            doc = self.regions_es.get(
+                index=self.residents_index, doc_type='default', id=str(id)).get('_source', {})
             if doc:
                 return True
         except NotFoundError:
             return False
         except:
-            #raise
+            # raise
             pass
 
         return False
 
-
     def remove_from_regions_es(self, id):
         '''Removes all traces of an id (usually uuid) from region search elasticsearch index.'''
-        #return True # DEBUG
+        # return True # DEBUG
         try:
-            doc = self.regions_es.get(index=self.residents_index, doc_type='default', id=str(id)).get('_source',{})
+            doc = self.regions_es.get(
+                index=self.residents_index, doc_type='default', id=str(id)).get('_source', {})
             if not doc:
                 return False
         except:
@@ -524,23 +554,25 @@ class RegionIndexer(Indexer):
 
         for chrom in doc['chroms']:
             try:
-                self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(uuid))
+                self.regions_es.delete(
+                    index=chrom, doc_type=doc['assembly'], id=str(uuid))
             except:
                 #log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))
-                return False # Will try next full cycle
+                return False  # Will try next full cycle
 
         try:
-            self.regions_es.delete(index=self.residents_index, doc_type='default', id=str(uuid))
+            self.regions_es.delete(
+                index=self.residents_index, doc_type='default', id=str(uuid))
         except:
-            log.error("Region indexer failed to remove %s from %s" % (id, self.residents_index))
-            return False # Will try next full cycle
+            log.error("Region indexer failed to remove %s from %s" %
+                      (id, self.residents_index))
+            return False  # Will try next full cycle
 
         return True
 
-
     def add_to_regions_es(self, id, assembly, assay_term_name, regions, source='encoded'):
         '''Given regions from some source (most likely encoded file) loads the data into region search es'''
-        #return True # DEBUG
+        # return True # DEBUG
         for key in regions:
             doc = {
                 'uuid': str(id),
@@ -548,12 +580,15 @@ class RegionIndexer(Indexer):
             }
             # Could be a chrom never seen before!
             if not self.regions_es.indices.exists(key):
-                self.regions_es.indices.create(index=key, body=index_settings())
+                self.regions_es.indices.create(
+                    index=key, body=index_settings())
 
             if not self.regions_es.indices.exists_type(index=key, doc_type=assembly):
-                self.regions_es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
+                self.regions_es.indices.put_mapping(
+                    index=key, doc_type=assembly, body=get_mapping(assembly))
 
-            self.regions_es.index(index=key, doc_type=assembly, body=doc, id=str(id))
+            self.regions_es.index(
+                index=key, doc_type=assembly, body=doc, id=str(id))
 
         # Now add dataset to residency list
         doc = {
@@ -565,20 +600,23 @@ class RegionIndexer(Indexer):
         }
         # Make sure there is an index set up to handle whether uuids are resident
         if not self.regions_es.indices.exists(self.residents_index):
-            self.regions_es.indices.create(index=self.residents_index, body=index_settings())
+            self.regions_es.indices.create(
+                index=self.residents_index, body=index_settings())
 
         if not self.regions_es.indices.exists_type(index=self.residents_index, doc_type='default'):
             mapping = {'default': {"enabled": False}}
-            self.regions_es.indices.put_mapping(index=self.residents_index, doc_type='default', body=mapping)
+            self.regions_es.indices.put_mapping(
+                index=self.residents_index, doc_type='default', body=mapping)
 
-        self.regions_es.index(index=self.residents_index, doc_type='default', body=doc, id=str(id))
+        self.regions_es.index(index=self.residents_index,
+                              doc_type='default', body=doc, id=str(id))
         return True
 
     def add_encoded_file_to_regions_es(self, request, assay_term_name, afile):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
-        #return True # DEBUG
+        # return True # DEBUG
 
-        assembly = afile.get('assembly','unknown')
+        assembly = afile.get('assembly', 'unknown')
         if assembly == 'mm10-minimal':        # Treat mm10-minimal as mm10
             assembly = 'mm10'
         if assembly not in SUPPORTED_ASSEMBLIES:
@@ -586,25 +624,25 @@ class RegionIndexer(Indexer):
 
         # Special case local instace so that tests can work...
         if self.test_instance:
-            #if request.host_url == 'http://localhost':
+            # if request.host_url == 'http://localhost':
             # assume we are running in dev-servers
             #href = request.host_url + ':8000' + afile['submitted_file_name']
             href = 'http://www.encodeproject.org' + afile['href']
         else:
             href = request.host_url + afile['href']
 
-        ### Works with localhost:8000
+        # Works with localhost:8000
         # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
         #r = requests.get(href)
-        #if not r or r.status_code != 200:
+        # if not r or r.status_code != 200:
         #    log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
         #    return False
         #file_in_mem = io.StringIO()
-        #file_in_mem.write(r.text)
-        #file_in_mem.seek(0)
+        # file_in_mem.write(r.text)
+        # file_in_mem.seek(0)
         #
         #file_data = {}
-        #if afile['file_format'] == 'bed':
+        # if afile['file_format'] == 'bed':
         #    for row in tsvreader(file_in_mem):
         #        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
         #        if isinstance(start, int) and isinstance(end, int):
@@ -617,9 +655,9 @@ class RegionIndexer(Indexer):
         #                file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
         #        else:
         #            log.warn('positions are not integers, will not index file')
-        ##else:  Other file types?
+        # else:  Other file types?
 
-        ### Works with http://www.encodeproject.org
+        # Works with http://www.encodeproject.org
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
         urllib3.disable_warnings()
@@ -629,7 +667,8 @@ class RegionIndexer(Indexer):
         )
         r = http.request('GET', href)
         if r.status != 200:
-            log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+            log.warn("File (%s or %s) not found" %
+                     (afile.get('accession', id), href))
             return False
         file_in_mem = io.BytesIO()
         file_in_mem.write(r.data)
@@ -639,9 +678,11 @@ class RegionIndexer(Indexer):
         file_data = {}
         if afile['file_format'] == 'bed':
             # NOTE: requests doesn't require gzip but http.request does.
-            with gzip.open(file_in_mem, mode='rt') as file:  # localhost:8000 would not require localhost
+            # localhost:8000 would not require localhost
+            with gzip.open(file_in_mem, mode='rt') as file:
                 for row in tsvreader(file):
-                    chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+                    chrom, start, end = row[0].lower(), int(
+                        row[1]), int(row[2])
                     if isinstance(start, int) and isinstance(end, int):
                         if chrom in file_data:
                             file_data[chrom].append({
@@ -649,10 +690,12 @@ class RegionIndexer(Indexer):
                                 'end': end + 1
                             })
                         else:
-                            file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+                            file_data[chrom] = [
+                                {'start': start + 1, 'end': end + 1}]
                     else:
-                        log.warn('positions are not integers, will not index file')
-        #else:  Other file types?
+                        log.warn(
+                            'positions are not integers, will not index file')
+        # else:  Other file types?
 
         if file_data:
             if self.test_instance:

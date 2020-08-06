@@ -42,6 +42,13 @@
                 "GENCODE M18",
                 "GENCODE M9"
             ]
+        },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with Lattice objects.",
+                "type":  "string"
+            }
         }
     },
     "facets": {},
