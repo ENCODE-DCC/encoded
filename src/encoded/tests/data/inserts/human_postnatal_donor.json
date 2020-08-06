@@ -9,7 +9,8 @@
         "alternate_accessions": [
             "ENCDO117AAA"
         ],
-        "ethnicity": "Caucasian",
+        "diseases": [
+            "MONDO_0003687"
         "test_results": [
             {"Bac/Fung/Myc": "negative"},
             {"HIV-1/HBV/HCV": "negative"},
@@ -27,10 +28,16 @@
         "aliases": [
             "jimmie-ye:STL003"
         ],
-        "ethnicity": "Caucasian",
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",
+        "ancestry": [
+            {"ancestry_group": "HANCESTRO_0014", "percentage": 65},
+            {"ancestry_group": "HANCESTRO_0010", "percentage": 20},
+            {"ancestry_group": "HANCESTRO_0005", "percentage": 10},
+            {"ancestry_group": "HANCESTRO_0017", "percentage": 5}
+        ],
+        "ethnicity": "HANCESTRO_0014",
         "uuid": "13e91df8-6ba4-460f-baf3-c313d884bf4b"
     },
     {
@@ -56,7 +63,6 @@
     },
     {
         "accession": "ENCDO275AAA",
-        "ethnicity": "Black",
         "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
@@ -64,7 +70,6 @@
     },
     {
         "accession": "ENCDO276AAA",
-        "ethnicity": "Asian",
         "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
@@ -78,7 +83,6 @@
             "lattice:donor_of_GM12878",
             "lattice:donor of GM12878"
         ],
-        "ethnicity": "Caucasian",
         "life_stage": "adult",
         "organism": "human",
         "sex": "female",

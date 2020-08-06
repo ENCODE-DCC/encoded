@@ -316,12 +316,15 @@
     "diseases": {
         "diseases": {
             "title": "Diseases",
+            "comment": "See ontology_term.json for available identifiers.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Disease",
-                "type": "string"
+                "type": "string",
+                "linkTo": "OntologyTerm",
+                "pattern": "^(MONDO|NTR)_[0-9]{2,8}$"
             }
         }
     },

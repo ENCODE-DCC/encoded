@@ -1,63 +1,57 @@
 Updating ontologies
 =========================
 
-This document describes how to update the ontology versions used for searching and validation in the encoded application, ```ontology.json``` .
+This document describes how to update the ontology versions used for searching and validation in the encoded application.
 
 Ontologies used
 ---------------- 
 
-* [Uber anatomy ontology (Uberon)]
-* [Cell Ontology (CL)]
-* [Experimental Factor Ontology (EFO)]
-* [Ontology for Biomedical Investigations (OBI)]
-* [Cell Line Ontology (CLO)]
+| Ontology |  File used | Version in use | Version reference |
+|:--|:--|:--|:--|
+| [Uber-anatomy ontology (UBERON)] | `uberon/ext.owl` from [UBERON download] | 2020-06-05 | [UBERON release date] |
+| [Cell Ontology (CL)] | incl. w/ UBERON | incl. w/ UBERON | incl. w/ UBERON |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2020-07-15 (3.20.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2020-06-30 | [MONDO release date] |
+| [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2019-07-22 (2.3) | [HANCESTRO releases] |
+
+**Current ontology.json:** `ontology-2020-08-04.json`  
+**Updated with site version:** 1
 
 How to update the ontology versions
 ---------------- 
 
-1. Ontology files to use:
-	
-	* Uberon and CL: composite-metazoan.owl  from [Uberon download]
-	* EFO: EFO_inferred.owl from [EFO src tree]
-	* OBI: obi.owl [OBI download]
-	* CLO: clo.owl [CLO download]
+1. Run generate-ontology  
+*note: first look up the latest [EFO release] and include the version in the `efo-url`*
+```
+	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl
+```
 
-2. Run generate-ontology, an example is: 
-
-	$ bin/generate-ontology --uberon-url=http://svn.code.sf.net/p/obo/svn/uberon/releases/YYYY-MM-DD/composite-metazoan.owl --efo-url=http://www.ebi.ac.uk/efo/efo_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl --clo-url=http://purl.obolibrary.org/obo/clo.owl
-
-3. Rename the ```ontology.json``` to one with the date that it was generated:
-
+2. Rename the `ontology.json` to one with the date that it was generated
+```
 	$ cp ontology.json ontology-YYYY-MM-DD.json
+```
+3. Load new ontology file into the encoded-build/ontology directory on S3
+```
+	$ aws s3 cp ontology-YYYY-MM-DD.json s3://latticed-build/ontology/
+```
+4.  Update the ontology.json file in [buildout.cfg]
 
-4. Load new ontology file into the encoded-build/ontology directory on S3
+	`curl -o ontology.json https://latticed-build.s3-us-west-2.amazonaws.com/ontology/ontology-YYYY-MM-DD.json`
 
-	$ aws s3 cp ontology-YYYY-MM-DD.json s3://encoded-build/ontology/
+5.  Update the **Version in use** and ontology.json/site versions above
 
-5.  Update the ontology version in the [buildout.cfg]:
 
-	curl -o ontology.json https://s3-us-west-1.amazonaws.com/encoded-build/ontology/ontology-YYYY-MM-DD.json
-
-6.  Update the following information
-    
-    Site release version: 103
-    ontology.json file: ontology-2020-07-07.json
-    [UBERON release date]: 2020-06-05
-    [OBI release date]: 2020-04-23
-    [EFO release date]: 2020-06-15
-    [CLO release date]: 2019-02-10
-
-[Uber anatomy ontology (Uberon)]: http://uberon.org/
-[Cell Ontology (CL)]: http://cellontology.org/
-[Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
-[Ontology for Biomedical Investigations (OBI)]: http://obi-ontology.org/
-[Cell Line Ontology (CLO)]: http://www.clo-ontology.org
-[Uberon download]: http://uberon.github.io/downloads.html
-[EFO src tree]: https://github.com/EBISPOT/efo/
-[OBI download]: http://www.ontobee.org/ontology/OBI
-[CLO download]: http://www.ontobee.org/ontology/CLO
-[buildout.cfg]: ../../../buildout.cfg
+[Uber-anatomy ontology (UBERON)]: http://uberon.org/
+[UBERON download]: http://uberon.github.io/downloads.html
 [UBERON release date]: http://svn.code.sf.net/p/obo/svn/uberon/releases/
-[OBI release date]: http://www.ontobee.org/ontology/OBI 
-[EFO release date]: https://github.com/EBISPOT/efo/blob/master/ExFactor%20Ontology%20release%20notes.txt
-[CLO release date]: http://www.ontobee.org/ontology/CLO
+[Cell Ontology (CL)]: https://github.com/obophenotype/cell-ontology
+[Experimental Factor Ontology (EFO)]: http://www.ebi.ac.uk/efo
+[EFO releases]: https://github.com/EBISPOT/efo/releases
+[EFO release]: https://github.com/EBISPOT/efo/releases
+[Mondo Disease Ontology (MONDO)]: http://obofoundry.org/ontology/mondo.html
+[MONDO]: http://obofoundry.org/ontology/mondo.html
+[MONDO release date]: https://github.com/monarch-initiative/mondo/releases
+[Human Ancestry Ontology (HANCESTRO)]: https://github.com/EBISPOT/ancestro
+[OLS]: https://www.ebi.ac.uk/ols/ontologies/hancestro
+[HANCESTRO releases]: https://github.com/EBISPOT/ancestro/releases
+[buildout.cfg]: ../../../buildout.cfg

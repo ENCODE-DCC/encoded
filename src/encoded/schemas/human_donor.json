@@ -24,29 +24,33 @@
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
         },
+        "ancestry": {
+            "title": "Ancestry",
+            "description": "Ancestry of the donor, as determined by genotype.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ancestry_group": {
+                        "description": "An ancestry group, preferably defined by the Human Ancestry Ontology.",
+                        "type": "string",
+                        "linkTo": "OntologyTerm",
+                        "pattern": "^(HANCESTRO|NTR)_[0-9]{2,8}$"
+                    },
+                    "percentage": {
+                        "description": "An estimated percent ancestry to the corresponding group, as determined by genotype data.",
+                        "type": "number",
+                        "maximum": 100
+                    }
+                }
+            }
+        },
         "ethnicity": {
             "title": "Ethnicity",
-            "description": "Ethnic group to which the donor belongs.",
+            "description": "Ethnic group to which the donor belongs, usually self-reported by the donor.",
             "type": "string",
-            "enum": [
-                "African American",
-                "Arab",
-                "Arab Indian",
-                "Asian",
-                "Asian Hawaiian Eskimo",
-                "Black",
-                "Black African",
-                "Caucasian",
-                "Caucasian Hispanic",
-                "Chinese",
-                "Eskimo",
-                "Han Chinese",
-                "Hawaiian",
-                "Hispanic",
-                "Indian",
-                "Japanese",
-                "Yoruba"
-            ]
+            "linkTo": "OntologyTerm",
+            "pattern": "^(HANCESTRO|NTR)_[0-9]{2,8}$"
         },
         "parents": {
             "title": "Parents",
