@@ -1,5 +1,35 @@
 [
     {
+        "accession": "ENCBS002ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "6dbdb485-154d-44c0-84f4-397db06748b2",
+        "derived_from": [
+            "ENCBS200XYZ"
+        ],
+        "derivation_process": ["fluorescence-activated cell sorting"],
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "suspension_type": "cell"
+    },
+    {
+        "accession": "ENCBS001ABC",
+        "biosample_ontology": "UBERON_0002107",
+        "description": "",
+        "documents": [],
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "c25970d6-61aa-449e-b8b0-ebc4a93e5328",
+        "derived_from": [
+            "ENCBS100XYZ"
+        ],
+        "derivation_process": ["fluorescence-activated cell sorting"],
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "suspension_type": "cell"
+    },
+    {
         "accession": "ENCBS006ABC",
         "biosample_ontology": "UBERON_0002107",
         "description": "",
@@ -52,36 +82,6 @@
         "suspension_type": "cell"
     },
     {
-        "accession": "ENCBS002ABC",
-        "biosample_ontology": "UBERON_0002107",
-        "description": "",
-        "documents": [],
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "6dbdb485-154d-44c0-84f4-397db06748b2",
-        "derived_from": [
-            "ENCBS200XYZ"
-        ],
-        "derivation_process": ["fluorescence-activated cell sorting"],
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 3,
-        "suspension_type": "cell"
-    },
-    {
-        "accession": "ENCBS001ABC",
-        "biosample_ontology": "UBERON_0002107",
-        "description": "",
-        "documents": [],
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "c25970d6-61aa-449e-b8b0-ebc4a93e5328",
-        "derived_from": [
-            "ENCBS100XYZ"
-        ],
-        "derivation_process": ["fluorescence-activated cell sorting"],
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 3,
-        "suspension_type": "cell"
-    },
-    {
         "accession": "ENCBS026ENC",
         "biosample_ontology": "NTR_0000031",
         "description": "liver fraction CD117+,CD71+,TER119-",
@@ -94,7 +94,8 @@
         "derived_from": [
             "ENCBS222SCS"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS128ENC",
@@ -109,7 +110,8 @@
         "derived_from": [
             "ENCBS356AAA"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS175ENC",
@@ -127,7 +129,8 @@
         "derived_from": [
             "ENCDO017AAA"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS417ENC",
@@ -144,7 +147,8 @@
         "derived_from": [
             "ENCBS123AAC"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS000RNA",
@@ -169,7 +173,8 @@
         "derived_from": [
             "ENCBS123AAC"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS175SCS",
@@ -181,7 +186,8 @@
         "derived_from": [
             "ENCBS123AAE"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS111JAH",
@@ -193,7 +199,8 @@
         "derived_from": [
             "ENCBS009WOO"
         ],
-        "derivation_process": ["sample dissociation"]
+        "derivation_process": ["mechanical dissociation"],
+        "suspension_type": "cell"
     },
     {
         "accession": "ENCBS222JAH",
@@ -206,6 +213,7 @@
             "ENCBS128ENC",
             "ENCBS111JAH"
         ],
-        "derivation_process": ["solubilization"]
+        "derivation_process": ["enzymatic dissociation"],
+        "suspension_type": "cell"
     }
 ]

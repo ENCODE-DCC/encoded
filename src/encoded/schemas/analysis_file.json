@@ -4,9 +4,6 @@
     "id": "/profiles/analysis_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_type", "md5sum"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
-    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"}
     ],
@@ -50,112 +47,5 @@
                 "type":  "string"
             }
         }
-    },
-    "facets": {},
-    "columns": {
-        "title": {
-            "title": "Title"
-        },
-        "accession": {
-            "title": "Accession"
-        },
-        "dataset": {
-            "title": "Dataset"
-        },
-        "assembly": {
-            "title": "Genome assembly"
-        },
-        "technical_replicates": {
-            "title": "Technical replicates"
-        },
-        "biological_replicates": {
-            "title": "Biological replicates"
-        },
-        "file_format": {
-            "title": "File Format"
-        },
-        "file_type": {
-            "title": "File type"
-        },
-        "file_format_type": {
-            "title": "File format type"
-        },
-        "file_size": {
-            "title": "File size"
-        },
-        "assay_term_name": {
-            "title": "Assay term name"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample name"
-        },
-        "target.label": {
-            "title": "Target label"
-        },    
-        "href": {
-            "title": "Download URL"
-        },
-        "derived_from": {
-            "title": "Derived from"
-        },
-        "genome_annotation": {
-            "title": "Genome annotation"
-        },
-        "replicate.library.accession": {
-            "title": "Library"
-        },
-        "paired_end": {
-            "title": "Paired end identifier"
-        },
-        "paired_with": {
-            "title": "Paired with"
-        },
-        "run_type": {
-            "title": "Run type"
-        },
-        "read_length": {
-            "title": "Read length"
-        },
-        "mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "read_length_units": {
-            "title": "Read length units"
-        },
-        "output_category": {
-            "title": "Output category"
-        },
-        "output_type": {
-            "title": "Output type"
-        },
-        "quality_metrics": {
-            "title": "QC Metric"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "step_run": {
-            "title": "Analysis step run"
-        },
-        "date_created": {
-            "title": "Date created"
-        },
-        "analysis_step_version": {
-            "title": "Analysis step version"
-        },
-        "restricted": {
-            "title": "Restricted file"
-        },
-        "submitter_comment": {
-            "title": "Submitter comment"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
-    "boost_values": {},
-    "changelog": "/profiles/changelogs/analysis_file.md"
+    }
 }

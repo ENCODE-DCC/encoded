@@ -6,18 +6,27 @@
         "documents": [
             "lattice:PanIsletD_Crawford_protocol"
         ],
-        "uuid": "a67605ad-45d9-4ec3-8470-18be07a676f0"
+        "uuid": "a67605ad-45d9-4ec3-8470-18be07a676f0",
+        "life_stage": "adult",
+        "sex": "male",
+        "strain_term_name": "C57BL/6"
     },
     {
         "accession": "ENCDO015AAA",
         "organism": "mouse",
         "strain_background": "129/Ola",
-        "uuid": "1a8dd515-63da-40d8-a166-351858c77fd7"
+        "uuid": "1a8dd515-63da-40d8-a166-351858c77fd7",
+        "life_stage": "adult",
+        "sex": "female",
+        "strain_term_name": "C57BL/6"
     },
     {
         "accession": "ENCDO001MUS",
         "organism": "mouse",
         "strain_background": "unknown",
-        "uuid": "f08acb61-5af6-4b7d-a7c8-f08be52d8012"
+        "uuid": "f08acb61-5af6-4b7d-a7c8-f08be52d8012",
+        "life_stage": "adult",
+        "sex": "mixed",
+        "strain_term_name": "C57BL/6"
     }
 ]

@@ -5,8 +5,8 @@
     "id": "/profiles/cell_culture.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["biosample_ontology"],
-    "identifyingProperties": ["uuid", "accession", "aliases", "derived_from", "derivation_process"],
+    "required": ["biosample_ontology", "derived_from", "derivation_process"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
@@ -35,6 +35,18 @@
         "biosample_ontology": {
             "pattern": "^(CL|EFO|NTR)_[0-9]{2,8}$"
         },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A donor or sample from which this object was directly derived.",
+                "type": "string",
+                "linkTo": [
+                    "Suspension",
+                    "CellCulture",
+                    "Tissue"
+                ]
+            }
+        },
         "passage_number": {
             "title": "Passage number",
             "description": "Number of passages including the passages from the source.",
@@ -56,17 +68,6 @@
             "title": "Mycoplasma testing results",
             "description": "Test results for mycoplasm testing.",
             "type": "string"
-        },
-        "derived_from": {
-            "items": {
-                "title": "Derived from",
-                "description": "A donor or sample from which this object was directly derived.",
-                "type": "string",
-                "linkTo": [
-                    "Suspension",
-                    "CellCulture"
-                ]
-            }
         }
     },
     "facets": {
@@ -121,6 +122,5 @@
         "status": {
             "title": "Status"
         }
-    },
-    "changelog": "/profiles/changelogs/cell_culture.md"
+    }
 }

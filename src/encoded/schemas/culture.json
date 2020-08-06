@@ -5,22 +5,9 @@
     "id": "/profiles/culture.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [],
-    "identifyingProperties": [],
-    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"}
     ],
-    "dependencies": {
-        "post_differentiation_time": {
-            "required":["post_differentiation_time_units"],
-            "comment": "Biosample with a specified post_differentiation_time requires post_differentiation_time_units specification."
-        },
-        "post_differentiation_time_units": {
-            "required":["post_differentiation_time"],
-            "comment": "Biosample with a specified post_differentiation_time_units requires post_differentiation_time specification."
-        }
-    },
     "properties": {
         "schema_version": {
             "default": "1"

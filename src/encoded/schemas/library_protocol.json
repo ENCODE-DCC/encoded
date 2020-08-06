@@ -4,7 +4,7 @@
     "id": "/profiles/library_protocol.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name"],
+    "required": ["name", "title", "library_type", "biological_macromolecule"],
     "identifyingProperties": ["uuid", "name"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -36,10 +36,10 @@
         "construction_platform": {
             "title": "Platform",
             "description": "The device used to construct the library.",
-            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
+            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10x, etc.)",
             "type": "string",
             "enum": [
-                "10X",
+                "10x",
                 "Smart-seq",
                 "SMARTer",
                 "sci-seq"
@@ -250,7 +250,7 @@
             "description": "The primer used to create the first-strand in library synthesis.",
             "type": "string",
             "enum": [
-                "poly-dT",
+                "poly(dT)",
                 "capture sequence",
                 "TSO",
                 "adapter"

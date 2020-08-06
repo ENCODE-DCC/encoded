@@ -12,7 +12,7 @@
         "derived_from": [
             "ENCBS005ABC"
         ],
-        "protocol": "10X-v3-3'"
+        "protocol": "10x-3'-v3"
     },
     {
         "accession": "ENCLB888MNO",
@@ -27,7 +27,7 @@
         "derived_from": [
             "ENCBS004ABC"
         ],
-        "protocol": "10X-v3-3'"
+        "protocol": "10x-3'-v3"
     },
     {
         "accession": "ENCLB777MNO",
@@ -41,7 +41,7 @@
         "derived_from": [
             "ENCBS005ABC"
         ],
-        "protocol": "10X-ATAC"
+        "protocol": "10x-ATAC"
     },
     {
         "accession": "ENCLB666MNO",
@@ -55,7 +55,7 @@
         "derived_from": [
             "ENCBS003ABC"
         ],
-        "protocol": "10X-ATAC"
+        "protocol": "10x-ATAC"
     },
     {
         "accession": "ENCLB309ZZZ",
@@ -77,7 +77,8 @@
         "dataset": "ENCSR000AJK",
         "derived_from": [
             "ENCBS000AAA"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB310ZZZ",
@@ -92,7 +93,7 @@
         "rna_integrity_number": 2.0,
         "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS001AAA"
         ]
@@ -112,7 +113,7 @@
         "rna_integrity_number": 7.3,
         "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS039ENC"
         ]
@@ -135,7 +136,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407",
         "dataset": "ENCSR003SER",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS044ENC"
         ]
@@ -151,7 +152,8 @@
         "dataset": "ENCSR000AER",
         "derived_from": [
             "ENCBS222SCS"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB066ZZZ",
@@ -164,7 +166,8 @@
         "dataset": "ENCSR000AER",
         "derived_from": [
             "ENCBS026ENC"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB067ZZZ",
@@ -180,7 +183,8 @@
         "dataset": "ENCSR000AES",
         "derived_from": [
             "ENCBS128ENC"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB068ZZZ",
@@ -196,7 +200,8 @@
         "dataset": "ENCSR000AES",
         "derived_from": [
             "ENCBS175ENC"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB057ZZZ",
@@ -208,7 +213,7 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS417ENC"
         ]
@@ -222,7 +227,7 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS000RNA"
         ]
@@ -236,7 +241,7 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "835e166d-0253-41ce-add2-de67429a3612",
         "dataset": "ENCSR003SER",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS175SCS"
         ]
@@ -252,7 +257,8 @@
         "dataset": "ENCSR000AJK",
         "derived_from": [
             "ENCBS356AAA"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB000ANI",
@@ -265,7 +271,8 @@
         "dataset": "ENCSR001ADI",
         "derived_from": [
             "ENCBS492ENC"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB001ANI",
@@ -278,7 +285,8 @@
         "dataset": "ENCSR001ADI",
         "derived_from": [
             "ENCBS493ENC"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB058ZZZ",
@@ -290,7 +298,7 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS044RNA"
         ]
@@ -306,7 +314,8 @@
         "dataset": "ENCSR000ACY",
         "derived_from": [
             "ENCBS278TPS"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "_test": "test -new",
@@ -320,7 +329,8 @@
         "dataset": "ENCSR000ACT",
         "derived_from": [
             "ENCBS804RUL"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "_test": "DNA-me pipeline",
@@ -333,7 +343,8 @@
         "dataset": "ENCSR765JPC/",
         "derived_from": [
             "ENCBS376EJL"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB723GTS",
@@ -344,7 +355,8 @@
         "dataset": "ENCSR751ISO/",
         "derived_from": [
             "ENCBS009WOO"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB209APR",
@@ -355,7 +367,8 @@
         "dataset": "ENCSR808QCJ",
         "derived_from": [
             "ENCBS061XGD"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "accession": "ENCLB209APS",
@@ -366,7 +379,8 @@
         "dataset": "ENCSR000DZQ",
         "derived_from": [
             "ENCBS204NZH"
-        ]
+        ],
+        "protocol": "10x-3'-v2"
     },
     {
         "_test": "Paired set 1 library",
@@ -376,7 +390,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "0766f43b-8be7-4d46-8aac-dc503931e939",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS123AAA"
         ]
@@ -389,7 +403,7 @@
         "uuid": "2b0693ed-6f10-449f-82c2-ca3bd6b34daa",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "dataset": "ENCSR003SER",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS123AAB"
         ]
@@ -402,7 +416,7 @@
         "accession": "ENCLB001SER",
         "uuid": "74f6be13-0f69-40b9-9c40-6a6931fa5f6a",
         "dataset": "ENCSR000AHF",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS123AAC"
         ]
@@ -415,7 +429,7 @@
         "accession": "ENCLB903SER",
         "uuid": "605efe1e-f774-407b-8a51-7af9bf7631ef",
         "dataset": "ENCSR003SER",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS123AAD"
         ]
@@ -428,334 +442,9 @@
         "accession": "ENCLB003SER",
         "uuid": "3d0d9ef4-5e1c-4e0b-b958-6e2364cd629e",
         "dataset": "ENCSR003SER/",
-        "protocol": "10X-v2-3'",
+        "protocol": "10x-3'-v2",
         "derived_from": [
             "ENCBS123AAE"
         ]
-    },
-    {
-        "_test": "Treatment concentration series 1 library",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB001CON",
-        "uuid": "1f262751-7820-403b-a0dc-f9ead4467a89",
-        "dataset": "ENCSR001CON/",
-        "derived_from": []
-    },
-    {
-        "_test": "Treatment time series 2 library",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB002CON",
-        "uuid": "f1c0f296-d0fb-437b-b6a1-1f1068fe0e0d",
-        "dataset": "ENCSR002CON/",
-        "derived_from": []
-    },
-    {
-        "_test": "Treatment time series 3 library",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB003CON",
-        "uuid": "9e2dab86-21d8-43fd-a0df-28105bda006d",
-        "dataset": "ENCSR003CON/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library RNA-seq",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB001EPI",
-        "uuid": "0028b17f-bacd-40b2-80d0-36b825933edc",
-        "dataset": "ENCSR001EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library WGBS",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB002EPI",
-        "uuid": "b98607e6-2c2d-4799-b0fc-cc9905e33b91",
-        "dataset": "ENCSR002EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K4me1",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB003EPI",
-        "uuid": "82d268dc-908a-46c8-8cb8-e0f69428ed89",
-        "dataset": "ENCSR003EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K4me3",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB004EPI",
-        "uuid": "db92ea63-8a7f-47d6-8d93-1cda5fc1aa62",
-        "dataset": "ENCSR004EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K27ac",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB005EPI",
-        "uuid": "a719fab3-af05-4fd4-bc1e-ca9613d2abba",
-        "dataset": "ENCSR005EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K27ac",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB006EPI",
-        "uuid": "757678aa-e8f3-4de8-b2f9-5ae004e863fa",
-        "dataset": "ENCSR006EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K27me3",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB007EPI",
-        "uuid": "d0a9fe33-30b0-447d-aba2-7ee5d40f9137",
-        "dataset": "ENCSR007EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library H3K9me3",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB008EPI",
-        "uuid": "6a4c4c28-572a-4999-9d2b-e408b88d319c",
-        "dataset": "ENCSR008EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Reference epigenome series 1 library control",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB009EPI",
-        "uuid": "28ea6429-9aec-4ae9-a808-be2353f08136",
-        "dataset": "ENCSR009EPI/",
-        "derived_from": []
-    },
-    {
-        "_test": "Replication timing series 1 library",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB001REP",
-        "uuid": "0ee66d3a-b9b3-4508-b232-1d44e7d467c6",
-        "dataset": "ENCSR001REP/",
-        "derived_from": []
-    },
-    {
-        "_test": "Replication timing series 2 library",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB002REP",
-        "uuid": "1ed1c288-0541-46b8-a827-b771cef26970",
-        "dataset": "ENCSR002REP/",
-        "derived_from": []
-    },
-    {
-        "_test": "Replication timing series 3 library",
-        "lab": "robert-waterston",
-        "status": "released",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "accession": "ENCLB003REP",
-        "uuid": "cc6238c1-5650-4139-8927-7150154d18e0",
-        "dataset": "ENCSR003REP/",
-        "derived_from": []
-    },
-    {
-        "_test": "RCC files",
-        "accession": "ENCLB000RCC",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "dataset": "ENCSR000AAL/",
-        "derived_from": []
-    },
-    {
-        "_test": "RCC files",
-        "accession": "ENCLB001RCC",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "dataset": "ENCSR000AAL/",
-        "derived_from": []
-    },
-    {
-        "_test": "idat files",
-        "accession": "ENCLB000DAT",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "dataset": "ENCSR000AAL/",
-        "derived_from": []
-    },
-    {
-        "_test": "microRNA-seq rep1 library",
-        "date_created": "2018-07-04T00:03:13.006401+00:00",
-        "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
-        "accession": "ENCLB136UZC",
-        "uuid": "75ff4e2c-7e70-4084-9b57-9f34e4afcdcb",
-        "status": "released",
-        "aliases": [
-            "jimmie-ye:K562-Lib1"
-        ],
-        "lab": "/labs/ali-mortazavi/",
-        "dataset": "ENCSR123MRN/",
-        "derived_from": []
-    },
-    {
-        "_test": "microRNA-seq rep2 library",
-        "date_created": "2018-07-04T00:03:13.133968+00:00",
-        "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
-        "uuid": "2e836c5c-29a7-472b-b224-4c31329a4c44",
-        "aliases": [
-            "jimmie-ye:K562-Lib2"
-        ],
-        "accession": "ENCLB339NLX",
-        "lab": "/labs/ali-mortazavi/",
-        "status": "released",
-        "dataset": "ENCSR123MRN/",
-        "derived_from": []
-    },
-    {
-        "_test": "For ENTEx matrix testing",
-        "accession": "ENCLB826TVQ",
-        "aliases": [
-            "jimmie-ye:56768A"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "dfc344a1-e3dc-4c58-9249-23aa8e6dd2a5",
-        "dataset": "ENCSR458AOS",
-        "derived_from": []
-    },
-    {
-        "_test": "For ENTEx matrix testing",
-        "accession": "ENCLB827TVQ",
-        "aliases": [
-            "jimmie-ye:58768A"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e7bd9164-9646-4352-b6e3-3acb74fa3416",
-        "dataset": "ENCSR459AOS",
-        "derived_from": []
-    },
-    {
-        "_test": "For ENTEx matrix testing",
-        "accession": "ENCLB828TVQ",
-        "aliases": [
-            "jimmie-ye:58288A"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "5faff51d-e5e0-4012-8263-364adf49edfa",
-        "dataset": "ENCSR460AOS",
-        "derived_from": []
-    },
-    {
-        "_test": "For ENTEx matrix testing",
-        "accession": "ENCLB646BFR",
-        "aliases": [
-            "jimmie-ye:57126A"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476c",
-        "dataset": "ENCSR856XLJ",
-        "derived_from": []
-    },
-    {
-        "_test": "For Mouse Dev matrix testing",
-        "accession": "ENCLB123AAA",
-        "aliases": [
-            "jimmie-ye:57126B"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476d",
-        "dataset": "ENCSR123AAA",
-        "derived_from": []
-    },
-    {
-        "_test": "For Mouse Dev matrix testing",
-        "accession": "ENCLB123AAB",
-        "aliases": [
-            "jimmie-ye:57126C"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476e",
-        "dataset": "ENCSR123AAB",
-        "derived_from": []
-    },
-    {
-        "_test": "For Mouse Dev matrix testing",
-        "accession": "ENCLB123AAC",
-        "aliases": [
-            "jimmie-ye:57126D"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee33e476f",
-        "dataset": "ENCSR123AAC",
-        "derived_from": []
-    },
-    {
-        "_test": "For Mouse Dev matrix testing",
-        "accession": "ENCLB123AAD",
-        "aliases": [
-            "jimmie-ye:57126E"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ee43e476d",
-        "dataset": "ENCSR123AAD",
-        "derived_from": []
-    },
-    {
-        "_test": "For Mouse Dev matrix testing",
-        "accession": "ENCLB123AAE",
-        "aliases": [
-            "jimmie-ye:57126F"
-        ],
-        "lab": "encode2-project",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "1ab49d81-c1e2-459e-ac43-a96ef33e476e",
-        "dataset": "ENCSR123AAE",
-        "derived_from": []
     }
 ]

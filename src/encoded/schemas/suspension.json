@@ -5,9 +5,8 @@
     "id": "/profiles/suspension.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["biosample_ontology"],
-    "identifyingProperties": ["uuid", "accession", "aliases", "derived_from", "derivation_process"],
-    "additionalProperties": false,
+    "required": ["biosample_ontology", "derived_from", "derivation_process", "suspension_type"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
@@ -33,6 +32,30 @@
         },
         "biosample_ontology": {
             "pattern": "^(CL|EFO|UBERON|NTR)_[0-9]{2,8}$"
+        },
+        "derived_from": {
+            "items": {
+                "title": "Derived from",
+                "description": "A donor or sample from which this object was directly derived.",
+                "type": "string",
+                "linkTo": [
+                    "Biosample",
+                    "Donor"
+                ]
+            }
+        },
+        "derivation_process": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "enzymatic dissociation",
+                    "mechanical dissociation",
+                    "fluorescence-activated cell sorting",
+                    "density gradient centrifugation",
+                    "positive magnetic affinity cell sorting",
+                    "negative magnetic affinity cell sorting"
+                ]
+            }
         },
         "suspension_type": {
             "title": "Suspension type",
@@ -62,13 +85,10 @@
             "description": "The method by which cell viability or nuclei integrity was assessed.",
             "type": "string",
             "enum": [
-                "Thermo Fisher Live/Dead¬Æ Viability/Cytotoxicity Kit",
-                "Visual inspection",
-                "trypan blue stain",
-                "Countess II trypan blue assay",
-                "Trypan blue / manual haemacytometer (C-chip)",
-                "Countess II automated cell counter",
-                "Flow cytometry staining"
+                "trypan blue staining",
+                "calcein-AM green/ethidium homodimer-1 red staining",
+                "free amine staining",
+                "visual inspection"
             ]
         },
         "percent_cell_viability": {
@@ -179,35 +199,6 @@
                 "minute",
                 "hour"
             ]
-        },
-        "derived_from": {
-            "items": {
-                "title": "Derived from",
-                "description": "A donor or sample from which this object was directly derived.",
-                "type": "string",
-                "linkTo": [
-                    "Biosample",
-                    "Donor"
-                ]
-            }
-        },
-        "derivation_process": {
-            "items": {
-                "type": "string",
-                "enum": [
-                    "solubilization",
-                    "enzymatic dissociation",
-                    "fluorescence-activated cell sorting",
-                    "sample dissociation",
-                    "mechanical dissociation",
-                    "10X v2 sequencing",
-                    "cell size selection",
-                    "Ficoll-Hypaque method",
-                    "magnetic affinity cell sorting",
-                    "density gradient centrifugation",
-                    "magnetic negative selection"
-                ]
-            }
         }
     },
     "facets": {

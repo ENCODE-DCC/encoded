@@ -5,8 +5,8 @@
     "id": "/profiles/human_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "required": ["organism", "life_stage"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "sex"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
@@ -94,6 +94,11 @@
             "title": "Times pregnant",
             "description": "Number of pregnancies of the donor.",
             "type": "integer"
+        },
+        "living_at_sample_collection": {
+            "title": "Living at sample collection",
+            "description": "If true, the donor was alive at the time of sample collection.",
+            "type": "boolean"
         },
         "family_history_breast_cancer": {
             "title": "Family history breast cancer",

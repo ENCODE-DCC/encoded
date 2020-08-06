@@ -4,7 +4,7 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab"],
+    "required": ["lab", "dataset", "protocol", "derived_from"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -59,6 +59,12 @@
             "comment": "See library_protocol.json for available identifiers.",
             "type": "string",
             "linkTo": "LibraryProtocol"
+        },
+        "protocol_version": {
+            "title": "Protocol version",
+            "description": "The specific protocol version used to make the library.",
+            "comment": "This should be a minor version of the major version noted in the protocol object.",
+            "type": "number"
         },
         "derived_from": {
             "title": "Derived from",

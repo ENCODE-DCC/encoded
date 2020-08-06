@@ -21,7 +21,7 @@
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
         "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999",
         "derived_from": [
-            "ENCBS128ENC"
+            "ENCBS100XYZ"
         ],
         "derivation_process": ["cell differentation"]
     },
@@ -45,7 +45,7 @@
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
         "uuid": "2ec6f642-95fc-4f3a-a7b7-a2d3c5abe426",
         "derived_from": [
-            "ENCBS417ENC"
+            "ENCBS200XYZ"
         ],
         "derivation_process": ["cell differentation"]
     },
@@ -62,7 +62,7 @@
         "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
         "uuid": "60dff9b7-875a-47e3-8283-a855ebe1775a",
         "derived_from": [
-            "ENCBS417ENC"
+            "ENCBS356AAA"
         ],
         "derivation_process": ["cell differentation"]
     },
@@ -74,7 +74,7 @@
         "submitted_by": "semper.habitant@ut.venenatis",
         "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f",
         "derived_from": [
-            "ENCBS175SCS"
+            "ENCBS492ENC"
         ],
         "derivation_process": ["cell differentation"]
     }

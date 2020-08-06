@@ -50,7 +50,8 @@
         "date_created": "2019-07-01T22:14:15.601240+00:00",
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "in progress",
-        "accession": "ENCSR819DEL"
+        "accession": "ENCSR819DEL",
+        "description": "some description"
     },
     {
         "accession": "ENCSR001GEN",
