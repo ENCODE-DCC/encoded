@@ -102,7 +102,7 @@ def _batch_download_publicationdata(request):
     file_ids = object.get('files', [])
 
     # Generate the metadata link that heads the file.
-    metadata_link = '{host_url}/metadata/?{search_params}'.format(
+    metadata_link = '"{host_url}/metadata/?{search_params}"'.format(
         host_url=request.host_url,
         search_params=qs._get_original_query_string()
     )
@@ -268,12 +268,12 @@ def batch_download(context, request):
                 raise HTTPBadRequest(explanation='Specified cart does not exist.')
 
             # metadata.tsv link includes a cart UUID
-            metadata_link = '{host_url}/metadata/?{search_params}'.format(
+            metadata_link = '"{host_url}/metadata/?{search_params}"'.format(
                 host_url=request.host_url,
                 search_params=qs._get_original_query_string()
             )
         else:
-            metadata_link = '{host_url}/metadata/?{search_params} -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
+            metadata_link = '"{host_url}/metadata/?{search_params}" -X GET -H "Accept: text/tsv" -H "Content-Type: application/json" --data \'{{"elements": [{elements_json}]}}\''.format(
                 host_url=request.host_url,
                 search_params=qs._get_original_query_string(),
                 elements_json=','.join('"{0}"'.format(element) for element in elements)
@@ -298,7 +298,7 @@ def batch_download(context, request):
             raise HTTPBadRequest(explanation='You must download cart file manifests from the portal.')
 
         # Regular batch download has single simple call to request.embed
-        metadata_link = '{host_url}/metadata/?{search_params}'.format(
+        metadata_link = '"{host_url}/metadata/?{search_params}"'.format(
             host_url=request.host_url,
             search_params=qs._get_original_query_string()
         )
