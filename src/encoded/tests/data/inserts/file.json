@@ -2871,38 +2871,6 @@
         "uuid": "12171a1b-23de-431c-9001-181acb0642c2"
     },
     {
-        "_test": "bias model",
-        "accession": "ENCFF102BIA",
-        "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
-        "date_created": "2020-04-18T16:46:18.670068+00:00",
-        "file_format": "txt",
-        "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "2a7515b6ea573ea6f26869771fa95843",
-        "output_type": "bias model",
-        "status": "released",
-        "file_size": 201332222,
-        "submitted_by": "sit.duis@blandit.hendrerit",
-        "submitted_file_name": "adapter_set.txt",
-        "uuid": "5b47258e-d11e-11ea-87d0-0242ac130003"
-    },
-    {
-        "_test": "chromosomes reference",
-        "accession": "ENCFF301CHR",
-        "award": "U41HG006992",
-        "dataset": "ENCSR123MRN",
-        "date_created": "2020-04-18T16:46:18.670068+00:00",
-        "file_format": "txt",
-        "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "4a7515b6aa573ea8f26869771fa95841",
-        "output_type": "chromosomes reference",
-        "status": "released",
-        "file_size": 2013328222,
-        "submitted_by": "sit.duis@blandit.hendrerit",
-        "submitted_file_name": "adapter_set.txt",
-        "uuid": "99b7f8c0-d11e-11ea-87d0-0242ac130003"
-    },
-    {
         "_test": "elements reference",
         "accession": "ENCFF814ELR",
         "award": "U41HG006992",
