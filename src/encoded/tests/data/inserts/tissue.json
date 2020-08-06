@@ -29,9 +29,6 @@
         "accession": "ENCBS356AAA",
         "biosample_ontology": "UBERON_0000006",
         "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:PanIsletD"
-        ],
         "documents": [
             "encode:PanIsletD_Crawford_protocol"
         ],
@@ -78,9 +75,6 @@
         "biosample_ontology": "UBERON_0000948",
         "date_obtained": "2012-12-01",
         "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:Heart_STL003"
-        ],
         "documents": [
             "encode:Heart_STL003_excision_protocol",
             "encode:Heart_STL003_general_protocol"
