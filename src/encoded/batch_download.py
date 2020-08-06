@@ -95,7 +95,7 @@ def _batch_download_publicationdata(request):
     param_list = qs.group_values_by_key()
 
     # Get the required "dataset={path}" parameter.
-    dataset_path = param_list.get('dataset', [''])[0]
+    dataset_path = param_list.get('@id', [''])[0]
 
     # Retrieve the files property of the requested PublicationData object.
     object = request.embed(dataset_path, as_user=True)

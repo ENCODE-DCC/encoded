@@ -761,7 +761,7 @@ export const FileTablePaged = ({ context, fileIds, files, title }) => {
                         title={headerTitle}
                         currentPage={currentPageNum}
                         totalPageCount={totalPages}
-                        control={context ? <BatchDownloadControls queryString={`type=${context['@type'][0]}&dataset=${context['@id']}`} modalText={!canDownload ? <AltModalMessage /> : null} canDownload={canDownload} /> : null}
+                        control={context ? <BatchDownloadControls queryString={`type=${context['@type'][0]}&@id=${context['@id']}`} modalText={!canDownload ? <AltModalMessage /> : null} canDownload={canDownload} /> : null}
                         updateCurrentPage={updateCurrentPage}
                     />
                 }
