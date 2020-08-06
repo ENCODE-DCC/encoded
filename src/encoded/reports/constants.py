@@ -134,3 +134,33 @@ ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Restricted', ['files.restricted'])
     ]
 )
+
+
+PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+    [
+        ('File accession', ['files.title']),
+        ('File dataset', ['files.dataset']),
+        ('File type', ['files.file_format']),
+        ('File format', ['files.file_type']),
+        ('File output type', ['files.output_type']),
+        ('Assay term name', ['files.assay_term_name']),
+        ('Biosample term id', ['files.biosample_ontology.term_id']),
+        ('Biosample term name', ['files.biosample_ontology.term_name']),
+        ('Biosample type', ['files.biosample_ontology.classification']),
+        ('File target', ['files.target.label']),
+        ('Dataset accession', ['accession']),
+        ('Dataset date released', ['date_released']),
+        ('Project', ['award.project']),
+        ('Lab', ['files.lab.title']),
+        ('md5sum', ['files.md5sum']),
+        ('dbxrefs', ['files.dbxrefs']),
+        ('File download URL', ['files.href']),
+        ('Assembly', ['files.assembly']),
+        ('File status', ['files.status']),
+        ('Derived from', ['files.derived_from']),
+        ('S3 URL', ['files.cloud_metadata.url']),
+        ('Size', ['files.file_size']),
+        ('No File Available', ['files.no_file_available']),
+        ('Restricted', ['files.restricted'])
+    ]
+)

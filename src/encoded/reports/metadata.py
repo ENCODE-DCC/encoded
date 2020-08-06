@@ -3,11 +3,11 @@ import csv
 from collections import defaultdict
 from collections import OrderedDict
 from functools import wraps
-from encoded.batch_download import _get_publicationdata_metadata
 from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
+from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.search_views import search_generator
 from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
@@ -334,6 +334,123 @@ class AnnotationMetadataReport(MetadataReport):
         return ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 
 
+class PublicationDataMetadataReport(MetadataReport):
+    '''
+    PublicationData objects don't embed file attributes so
+    we have to get file metadata with separate search request.
+    We try to get all the file metadata together in a batched request
+    instead of making a request for every file. This requires some
+    extra machinery compared to normal MetdataReport.
+    '''
+
+    DEFAULT_PARAMS = [
+        ('limit', 'all'),
+        ('field', 'files')
+    ]
+    DEFAULT_FILE_PARAMS = [
+        ('type', 'File'),
+        ('limit', 'all'),
+        ('field', '@id')
+    ]
+
+    def __init__(self, request):
+        super().__init__(request)
+        self.file_query_string = QueryString(request)
+        self.file_params = []
+        self.file_at_ids = []
+
+    # Overrides parent.
+    def _get_column_to_fields_mapping(self):
+        return PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
+
+    # Overrides parent.
+    def _build_header(self):
+        for column in self._get_column_to_fields_mapping():
+            if column not in self.EXCLUDED_COLUMNS:
+                self.header.append(column)
+
+    # Overrides parent.
+    def _add_fields_to_param_list(self):
+        self.param_list['field'] = []
+        for column, fields in self.experiment_column_to_fields_mapping.items():
+            self.param_list['field'].extend(fields)
+
+    def _add_default_file_params_to_file_params(self):
+        self.file_params.extend(self.DEFAULT_FILE_PARAMS)
+
+    def _add_report_file_fields_to_file_params(self):
+        for column, fields in self.file_column_to_fields_mapping.items():
+            self.file_params.extend(
+                [
+                    ('field', field)
+                    for field in fields
+                ]
+            )
+
+    def _convert_experiment_params_to_file_params(self):
+        return [
+            (k.replace('files.'), v)
+            for k, v in self.query_string.params
+            if k.startswith('files.')
+        ]
+
+    def _add_experiment_file_filters_as_fields_to_file_params(self):
+        self.file_params.extend(
+            ('field', v)
+            for k, v in self._convert_experiment_params_to_file_params()
+        )
+
+    def _add_experiment_file_filters_to_file_params(self):
+        self.file_params.extend(
+            self._convert_experiment_params_to_file_params()
+        )
+
+    def _build_file_params(self):
+        self._add_default_file_params_to_file_params()
+        self._add_report_file_fields_to_file_params()
+        self._add_experiment_file_filters_as_fields_to_file_params()
+        self._add_experiment_file_filters_to_file_params()
+
+    # Overrides parent.
+    def _build_params(self):
+        super()._build_params()
+        self._build_file_params()
+
+    def _get_at_id_file_params(self):
+        return [
+            ('@id', file_at_id)
+            for file_at_id in self.file_at_ids
+        ]
+
+    def _build_new_file_request(self):
+        self.file_query_string.params = self.file_params + self._get_at_id_file_params()
+        request = self.file_query_string.get_request_with_new_query_string()
+        request.path_info = self._get_search_path()
+        request.registry = self.request.registry
+        return request
+
+    def _get_file_search_results_generator(self):
+        request = self._build_new_file_request()
+        bsg = BatchedSearchGenerator(request)
+        return bsg.results()
+
+    # Overrides parent.
+    def _generate_rows(self):
+        yield self.csv.writerow(self.header)
+        for experiment in self._get_search_results_generator()['@graph']:
+            self.file_at_ids = experiment.get('files', [])
+            if not self.file_at_ids:
+                continue
+            experiment_data = self._get_experiment_data(experiment)
+            for file_ in self._get_file_search_results_generator():
+                if self._should_not_report_file(file_):
+                    continue
+                file_data = self._get_file_data(file_)
+                yield self.csv.writerow(
+                    self._output_sorted_row(experiment_data, file_data)
+                )
+
+
 class CSVGenerator:
 
     def __init__(self, delimiter='\t', lineterminator='\n'):
@@ -354,6 +471,9 @@ class CSVGenerator:
 class BatchedSearchGenerator:
 
     SEARCH_PATH = '/search/'
+    DEFAULT_PARAMS = [
+        ('limit', 'all')
+    ]
 
     def __init__(self, request, batch_field='@id', batch_size=5000):
         self.request = request
@@ -375,8 +495,11 @@ class BatchedSearchGenerator:
         ]
 
     def _build_new_request(self, batched_params):
+        self.query_string.drop('limit')
         self.query_string.drop(self.batch_field)
-        self.query_string.extend(batched_params)
+        self.query_string.extend(
+            batched_params + self.DEFAULT_PARAMS
+        )
         request = self.query_string.get_request_with_new_query_string()
         request.path_info = self.SEARCH_PATH
         request.registry = self.request.registry
@@ -391,7 +514,6 @@ class BatchedSearchGenerator:
             yield from search_generator(request)['@graph']
 
 
-
 def _get_metadata(context, request):
     metadata_report = MetadataReport(request)
     return metadata_report.generate()
@@ -402,6 +524,11 @@ def _get_annotation_metadata(context, request):
     return annotation_metadata_report.generate()
 
 
+def _get_publication_data_metadata(context, request):
+    publication_data_metadata_report = PublicationDataMetadataReport(request)
+    return publication_data_metadata_report.generate()
+
+
 def metadata_report_factory(context, request):
     qs = QueryString(request)
     specified_type = qs.get_one_value(
@@ -410,7 +537,7 @@ def metadata_report_factory(context, request):
     if specified_type == 'Annotation':
         return _get_annotation_metadata(context, request)
     elif specified_type == 'PublicationData':
-        return _get_publicationdata_metadata(context, request)
+        return _get_publication_data_metadata(context, request)
     else:
         return _get_metadata(context, request)
 

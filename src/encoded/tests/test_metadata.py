@@ -1541,7 +1541,7 @@ def test_metadata_contains_all_annotation_values(index_workbook, testapp):
 @pytest.mark.indexing
 def test_metadata_contains_all_publication_data_values(index_workbook, testapp):
     from pkg_resources import resource_filename
-    r = testapp.get('/metadata/?type=PublicationData&dataset=/publication-data/ENCSR727WCB/')
+    r = testapp.get('/metadata/?type=PublicationData&@id=/publication-data/ENCSR727WCB/')
     actual = sorted([tuple(x.split('\t')) for x in r.text.strip().split('\n')])
     expected_path = resource_filename('encoded', 'tests/data/inserts/expected_publication_data_metadata.tsv')
     # To write new expected_metadata.tsv change 'r' to 'w' and f.write(r.text); return;
@@ -1676,9 +1676,133 @@ def test_metadata_batched_search_generator_build_new_request(dummy_request):
 def test_metadata_batched_search_generator_results(index_workbook, dummy_request):
     from encoded.reports.metadata import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
-        'type=Experiment'
+        'type=Experiment&field=@id&field=status'
     )
     bsg = BatchedSearchGenerator(dummy_request)
-    results = bsg.results()
-    print(list(results))
-    assert False
+    results = list(bsg.results())
+    assert len(results) >= 63, f'{len(results)} not expected'
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&@id=/experiments/ENCSR001ADI/'
+        '&field=@id&field=status'
+    )
+    bsg = BatchedSearchGenerator(dummy_request)
+    results = list(bsg.results())
+    assert len(results) == 1
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+        '&@id=/experiments/ENCSR001ADI/'
+        '&@id=/experiments/ENCSR003CON/'
+        '&@id=/experiments/ENCSR000ACY/'
+        '&@id=/experiments/ENCSR001CON/'
+        '&@id=/experiments/ENCSR751STT/'
+        '&@id=/experiments/ENCSR604DNT/'
+        '&@id=/experiments/ENCSR001SER/'
+        '&@id=/experiments/ENCSR000AEM/'
+        '&@id=/experiments/ENCSR334EJI/'
+        '&@id=/experiments/ENCSR123AAD/'
+        '&field=@id&field=status'
+    )
+    bsg = BatchedSearchGenerator(dummy_request)
+    results = list(bsg.results())
+    assert len(results) == 10
+    for result in results:
+        # (@type, @id, status)
+        assert len(result.keys()) == 3
+    bsg = BatchedSearchGenerator(dummy_request, batch_size=2)
+    results = list(bsg.results())
+    assert len(results) == 10
+    for result in results:
+        assert len(result.keys()) == 3
+    bsg = BatchedSearchGenerator(dummy_request, batch_size=3)
+    results = list(bsg.results())
+    assert len(results) == 10
+    for result in results:
+        assert len(result.keys()) == 3
+    bsg = BatchedSearchGenerator(dummy_request, batch_size=5)
+    results = list(bsg.results())
+    assert len(results) == 10
+    for result in results:
+        assert len(result.keys()) == 3
+    bsg = BatchedSearchGenerator(dummy_request, batch_field='accession')
+    results = list(bsg.results())
+    assert len(results) == 10
+    for result in results:
+        assert len(result.keys()) == 3
+
+
+def test_metadata_publication_data_metadata_report_init(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicationData'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    assert isinstance(pdmr, PublicationDataMetadataReport)
+    assert pdmr.file_query_string
+
+
+def test_metadata_publication_data_metadata_report_get_column_to_field_mapping(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicationData'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    assert pdmr._get_column_to_fields_mapping() == PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
+
+
+def test_metadata_publication_data_metadata_report_split_column_and_fields_by_experiment_and_file(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._split_column_and_fields_by_experiment_and_file()
+    expected_file_column_to_fields_mapping = {
+        'File accession': ['title'],
+        'File dataset': ['dataset'],
+        'File type': ['file_format'],
+        'File format': ['file_type'],
+        'File output type': ['output_type'],
+        'Assay term name': ['assay_term_name'],
+        'Biosample term id': ['biosample_ontology.term_id'],
+        'Biosample term name': ['biosample_ontology.term_name'],
+        'Biosample type': ['biosample_ontology.classification'],
+        'File target': ['target.label'],
+        'Lab': ['lab.title'],
+        'md5sum': ['md5sum'],
+        'dbxrefs': ['dbxrefs'],
+        'File download URL': ['href'],
+        'Assembly': ['assembly'],
+        'File status': ['status'],
+        'Derived from': ['derived_from'],
+        'S3 URL': ['cloud_metadata.url'],
+        'Size': ['file_size'],
+        'No File Available': ['no_file_available'],
+        'Restricted': ['restricted']
+    }
+    expected_experiment_column_to_fields_mapping = {
+        'Dataset accession': ['accession'],
+        'Dataset date released': ['date_released'],
+        'Project': ['award.project']
+    }
+    for k, v in pdmr.file_column_to_fields_mapping.items():
+        assert expected_file_column_to_fields_mapping[k] == v
+    for k, v in pdmr.experiment_column_to_fields_mapping.items():
+        assert expected_experiment_column_to_fields_mapping[k] == v
+
+
+def test_metadata_publication_data_metadata_report_add_fields_to_param_list(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    pdmr._add_fields_to_param_list()
+    expected_fields = [
+        'accession',
+        'date_released',
+        'award.project',
+    ]
+    actual_fields = pdmr.param_list['field']
+    assert set(expected_fields) == set(actual_fields)
