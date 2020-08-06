@@ -1474,7 +1474,7 @@ def test_metadata_view_annotation(index_workbook, testapp):
 
 def test_metadata_view_publication_data(index_workbook, testapp):
     r = testapp.get(
-        '/metadata/?type=PublicationData&dataset=/publication-data/ENCSR727WCB/'
+        '/metadata/?type=PublicationData&@id=/publication-data/ENCSR727WCB/'
     )
     assert len(r.text.split('\n')) >= 7
 
