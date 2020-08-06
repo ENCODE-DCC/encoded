@@ -1,6 +1,6 @@
 import pytest
 
-from encoded.tests.features.conftest import app, app_settings, index_workbook
+#from encoded.tests.features.conftest import app, app_settings, index_workbook
 from pyramid.exceptions import HTTPBadRequest
 
 
@@ -1752,6 +1752,39 @@ def test_metadata_publication_data_metadata_report_get_column_to_field_mapping(d
     assert pdmr._get_column_to_fields_mapping() == PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
 
 
+def test_metadata_publication_data_metadata_report_build_header(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicationData'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._build_header()
+    assert pdmr.header == [
+        'File accession',
+        'File dataset',
+        'File type',
+        'File format',
+        'File output type',
+        'Assay term name',
+        'Biosample term id',
+        'Biosample term name',
+        'Biosample type',
+        'File target',
+        'Dataset accession',
+        'Dataset date released',
+        'Project',
+        'Lab',
+        'md5sum',
+        'dbxrefs',
+        'File download URL',
+        'Assembly',
+        'File status',
+        'Derived from',
+        'S3 URL',
+        'Size'
+    ]
+
+
 def test_metadata_publication_data_metadata_report_split_column_and_fields_by_experiment_and_file(dummy_request):
     from encoded.reports.metadata import PublicationDataMetadataReport
     dummy_request.environ['QUERY_STRING'] = (
@@ -1808,3 +1841,184 @@ def test_metadata_publication_data_metadata_report_add_fields_to_param_list(dumm
     ]
     actual_fields = pdmr.param_list['field']
     assert set(expected_fields) == set(actual_fields)
+
+
+def test_metadata_publication_data_metadata_report_add_default_file_params_to_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._add_default_file_params_to_file_params()
+    assert pdmr.file_params == [
+        ('type', 'File'),
+        ('limit', 'all'),
+        ('field', '@id')
+    ]
+
+
+def test_metadata_publication_data_metadata_report_add_report_file_fields_to_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    pdmr._add_report_file_fields_to_file_params()
+    assert pdmr.file_params == [
+        ('field', 'title'),
+        ('field', 'dataset'),
+        ('field', 'file_format'),
+        ('field', 'file_type'),
+        ('field', 'output_type'),
+        ('field', 'assay_term_name'),
+        ('field', 'biosample_ontology.term_id'),
+        ('field', 'biosample_ontology.term_name'),
+        ('field', 'biosample_ontology.classification'),
+        ('field', 'target.label'),
+        ('field', 'lab.title'),
+        ('field', 'md5sum'),
+        ('field', 'dbxrefs'),
+        ('field', 'href'),
+        ('field', 'assembly'),
+        ('field', 'status'),
+        ('field', 'derived_from'),
+        ('field', 'cloud_metadata.url'),
+        ('field', 'file_size'),
+        ('field', 'no_file_available'),
+        ('field', 'restricted')
+    ]
+
+
+def test_metadata_publication_data_metadata_report_convert_experiment_params_to_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+        '&files.biological_replicates=2&files.file_type=bigBed+narrowPeak'
+        '&files.replicates.library.size_range=200-500&status=released'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    assert pdmr._convert_experiment_params_to_file_params() == [
+        ('file_type', 'bigWig'),
+        ('biological_replicates', '2'),
+        ('file_type', 'bigBed narrowPeak'),
+        ('replicates.library.size_range', '200-500')
+    ]
+
+
+def test_metadata_publication_data_metadata_report_add_experiment_file_filters_as_fields_to_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+        '&files.biological_replicates=2&files.file_type=bigBed+narrowPeak'
+        '&files.replicates.library.size_range=200-500&status=released'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._add_experiment_file_filters_as_fields_to_file_params()
+    assert pdmr.file_params == [
+        ('field', 'file_type'),
+        ('field', 'biological_replicates'),
+        ('field', 'file_type'),
+        ('field', 'replicates.library.size_range')
+    ]
+
+
+def test_metadata_publication_data_metadata_report_add_experiment_file_filters_to_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+        '&files.biological_replicates=2&files.file_type=bigBed+narrowPeak'
+        '&files.replicates.library.size_range=200-500&status=released'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._add_experiment_file_filters_to_file_params()
+    assert pdmr.file_params == [
+        ('file_type', 'bigWig'),
+        ('biological_replicates', '2'),
+        ('file_type', 'bigBed narrowPeak'),
+        ('replicates.library.size_range', '200-500')
+    ]
+
+
+def test_metadata_publication_data_metadata_report_build_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+        '&files.biological_replicates=2&files.file_type=bigBed+narrowPeak'
+        '&files.replicates.library.size_range=200-500&status=released'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._build_file_params()
+    assert pdmr.file_params == [
+        ('type', 'File'),
+        ('limit', 'all'),
+        ('field', '@id'),
+        ('field', 'file_type'),
+        ('field', 'biological_replicates'),
+        ('field', 'file_type'),
+        ('field', 'replicates.library.size_range'),
+        ('file_type', 'bigWig'),
+        ('biological_replicates', '2'),
+        ('file_type', 'bigBed narrowPeak'),
+        ('replicates.library.size_range', '200-500')
+    ]
+
+
+def test_metadata_publication_data_metadata_report_filter_file_params_from_query_string(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    assert False
+
+
+def test_metadata_publication_data_metadata_report_build_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    assert False
+
+
+def test_metadata_publication_data_metadata_report_ge_at_id_file_params(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    assert False
+
+
+def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    assert False
+
+
+def test_metadata_publication_data_metadata_report_get_file_search_results_generator(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    assert False
+
+
+def test_metadata_publication_data_metadata_report_generate_rows(dummy_request):
+    from encoded.reports.metadata import PublicationDataMetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicaitonDatat&files.file_type=bigWig'
+    )
+    pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
+    assert False
