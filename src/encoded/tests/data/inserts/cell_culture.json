@@ -2,22 +2,19 @@
     {
         "accession": "ENCBS000AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 3",
-            "rob-spitale:biosample 1",
-            "andrew-fire:biosample 1"
+            "anna-greka:MCF-7 rep 3",
+            "jason-spence:biosample 1",
+            "jimmie-ye:biosample 1"
         ],
         "biosample_ontology": "EFO_0001203",
         "culture_harvest_date": "2012-04-10",
         "culture_start_date": "2012-03-16",
         "description": "mammary gland, adenocarcinoma",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
         "submitter_comment": "(PMID: 4357757)",
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "lattice:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -31,20 +28,17 @@
     {
         "accession": "ENCBS001AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 4"
+            "anna-greka:MCF-7 rep 4"
         ],
         "biosample_ontology": "EFO_0001203",
         "culture_harvest_date": "2012-04-10",
         "culture_start_date": "2012-03-16",
         "description": "mammary gland, adenocarcinoma",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:MCF-7"
-        ],
         "submitter_comment": "(PMID: 4357757)",
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "lattice:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -59,12 +53,9 @@
         "accession": "ENCBS039ENC",
         "biosample_ontology": "EFO_0002067",
         "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:K562"
-        ],
         "product_id": "CCL-243",
         "documents": [
-            "encode:K562_protocol"
+            "lattice:K562_protocol"
         ],
         "source": "atcc",
         "submitted_by": "elementum.mus@dictumst.nostra",
@@ -79,9 +70,6 @@
         "accession": "ENCBS044ENC",
         "biosample_ontology": "EFO_0005233",
         "description": "B-cell lymphoma (GM12878 analog)",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:CH12"
-        ],
         "source": "sherman-weissman",
         "submitted_by": "semper.habitant@ut.venenatis",
         "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f",

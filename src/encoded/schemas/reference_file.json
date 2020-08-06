@@ -163,6 +163,14 @@
                 "linkTo": "ReferenceFile"
             }
         },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with Lattice objects.",
+                "type":  "string",
+                "pattern": "^(Cell-Ranger:\\d+)$"
+            }
+        },
         "reference_version": {
             "title": "Reference version",
             "description": "The version of the genome reference assembly that is associated with this reference file.",

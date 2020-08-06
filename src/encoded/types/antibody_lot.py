@@ -8,6 +8,7 @@ from .base import (
     paths_filtered_by_status,
 )
 
+
 @collection(
     name='antibodies',
     unique_key='accession',
@@ -21,20 +22,17 @@ class AntibodyLot(SharedItem):
     name_key = 'accession'
     rev = {}
     embedded = [
-        'source',
         'host_organism',
         'targets',
         'targets.genes',
         'targets.organism'
     ]
     audit_inherit = [
-        'source',
         'host_organism',
         'targets',
         'targets.organism'
     ]
     set_status_up = [
-        'source',
         'targets',
         'host_organism',
     ]
@@ -45,7 +43,8 @@ class AntibodyLot(SharedItem):
         source = properties['source']
         product_id = properties['product_id']
         lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
-        values = (u'{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
+        values = (u'{}/{}/{}'.format(source, product_id, lot_id)
+                  for lot_id in lot_ids)
         keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
         return keys
 

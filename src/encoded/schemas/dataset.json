@@ -11,6 +11,7 @@
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/accession"},
@@ -60,13 +61,6 @@
                 "format": "accession",
                 "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
-        },
-        "award": {
-            "title": "Award",
-            "description": "The HCA Seed Network or HCA Pilot Project award used to fund the dataset.",
-            "comment": "Required. See award.json for list of available identifiers.",
-            "type": "string",
-            "linkTo": "Award"
         },
         "corresponding_contributor": {
             "title": "Corresponding contributor",
@@ -127,7 +121,7 @@
                 "title": "External identifier",
                 "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(FactorBook:ENCSR\\d{3}[A-Z]{3}|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*|4DN:4DNES[A-Z0-9]+)$"
+                "pattern": "^(GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|BioProject:PRJ\\d+|BioStudies:\\d+|ArrayExpress:\\d+|dbGaP:phs\\d+|SRA:SRP\\d+|ENA:ERP\\d+|ENA:PRJ\\d+|EGA:EGAS\\d+)$"
             }
         },
         "documents": {

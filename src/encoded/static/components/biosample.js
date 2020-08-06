@@ -273,15 +273,9 @@ class BiosampleComponent extends React.Component {
                         <div className="panel__split-element">
                             <div className="panel__split-heading panel__split-heading--biosample">
                                 <h4>Attribution</h4>
-                                <ProjectBadge award={context.award} addClasses="badge-heading" />
                             </div>
                             <dl className="key-value">
-                                <div data-test="lab">
-                                    <dt>Lab</dt>
-                                    <dd>{context.lab.title}</dd>
-                                </div>
-
-                                {context.award.pi && context.award.pi.lab ?
+                                {context.award && context.award.pi && context.award.pi.lab ?
                                     <div data-test="awardpi">
                                         <dt>Award PI</dt>
                                         <dd>{context.award.pi.lab.title}</dd>
@@ -306,10 +300,6 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                <div data-test="project">
-                                    <dt>Project</dt>
-                                    <dd>{context.award.project}</dd>
-                                </div>
 
                                 {dbxrefs.length > 0 ?
                                     <div data-test="externalresources">

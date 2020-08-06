@@ -60,10 +60,10 @@
     {
         "accession": "ENCLB309ZZZ",
         "aliases": [
-            "richard-myers:SL14572"
+            "anna-greka:SL14572"
         ],
         "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "lattice:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "lab": "richard-myers",
         "nucleic_acid_starting_quantity": 1,
@@ -82,10 +82,10 @@
     {
         "accession": "ENCLB310ZZZ",
         "aliases": [
-            "richard-myers:SL16339"
+            "anna-greka:SL16339"
         ],
         "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "lattice:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "lab": "richard-myers",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -100,12 +100,12 @@
     {
         "accession": "ENCLB055ZZZ",
         "aliases": [
-            "thomas-gingeras:SID38806"
+            "anna-greka:SID38806"
         ],
         "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
+            "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "anna-greka:Ambion-NIST_Spikes_Corrected",
+            "anna-greka:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -120,12 +120,12 @@
     {
         "accession": "ENCLB056ZZZ",
         "aliases": [
-            "thomas-gingeras:SID38807"
+            "anna-greka:SID38807"
         ],
         "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
+            "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "anna-greka:Ambion-NIST_Spikes_Corrected",
+            "anna-greka:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
         "lab": "thomas-gingeras",
         "spike_ins_used": [
@@ -143,7 +143,7 @@
     {
         "accession": "ENCLB065ZZZ",
         "aliases": [
-            "thomas-gingeras:SID38815"
+            "anna-greka:SID38815"
         ],
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -156,7 +156,7 @@
     {
         "accession": "ENCLB066ZZZ",
         "aliases": [
-            "thomas-gingeras:SID38816"
+            "anna-greka:SID38816"
         ],
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -169,10 +169,10 @@
     {
         "accession": "ENCLB067ZZZ",
         "aliases": [
-            "thomas-gingeras:SID38822"
+            "anna-greka:SID38822"
         ],
         "documents": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
+            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
         ],
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -185,10 +185,10 @@
     {
         "accession": "ENCLB068ZZZ",
         "aliases": [
-            "thomas-gingeras:SID38823"
+            "anna-greka:SID38823"
         ],
         "documents": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
+            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
         ],
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -201,8 +201,8 @@
     {
         "accession": "ENCLB057ZZZ",
         "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+            "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "anna-greka:Ambion-NIST_Spikes_Corrected"
         ],
         "lab": "brenton-graveley",
         "submitted_by": "platea.a@volutpat.viverra",
@@ -216,7 +216,7 @@
     {
         "accession": "ENCLB072ZZZ",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "submitted_by": "amet.fusce@est.fermentum",
@@ -230,7 +230,7 @@
     {
         "accession": "ENCLB304ZZZ",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "submitted_by": "amet.fusce@est.fermentum",
@@ -244,7 +244,7 @@
     {
         "accession": "ENCLB071ZZZ",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "submitted_by": "amet.fusce@est.fermentum",
@@ -257,7 +257,7 @@
     {
         "accession": "ENCLB000ANI",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "submitted_by": "amet.fusce@est.fermentum",
@@ -270,7 +270,7 @@
     {
         "accession": "ENCLB001ANI",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "submitted_by": "amet.fusce@est.fermentum",
@@ -283,8 +283,8 @@
     {
         "accession": "ENCLB058ZZZ",
         "documents": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+            "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "anna-greka:Ambion-NIST_Spikes_Corrected"
         ],
         "lab": "brenton-graveley",
         "submitted_by": "platea.a@volutpat.viverra",
@@ -298,7 +298,7 @@
     {
         "accession": "ENCLB163ZZZ",
         "documents": [
-            "encode:Myers_Methyl450_protocol"
+            "lattice:Myers_Methyl450_protocol"
         ],
         "lab": "richard-myers",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -312,7 +312,7 @@
         "_test": "test -new",
         "accession": "ENCLB158ZZZ",
         "documents": [
-            "encode:Myers_Methyl450_protocol"
+            "lattice:Myers_Methyl450_protocol"
         ],
         "lab": "richard-myers",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -621,7 +621,7 @@
         "uuid": "75ff4e2c-7e70-4084-9b57-9f34e4afcdcb",
         "status": "released",
         "aliases": [
-            "ali-mortazavi:K562-Lib1"
+            "jimmie-ye:K562-Lib1"
         ],
         "lab": "/labs/ali-mortazavi/",
         "dataset": "ENCSR123MRN/",
@@ -633,7 +633,7 @@
         "submitted_by": "/users/9f161054-aa2c-40b7-8239-04eb7f08b15d/",
         "uuid": "2e836c5c-29a7-472b-b224-4c31329a4c44",
         "aliases": [
-            "ali-mortazavi:K562-Lib2"
+            "jimmie-ye:K562-Lib2"
         ],
         "accession": "ENCLB339NLX",
         "lab": "/labs/ali-mortazavi/",
@@ -645,7 +645,7 @@
         "_test": "For ENTEx matrix testing",
         "accession": "ENCLB826TVQ",
         "aliases": [
-            "john-stamatoyannopoulos:56768A"
+            "jimmie-ye:56768A"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -658,7 +658,7 @@
         "_test": "For ENTEx matrix testing",
         "accession": "ENCLB827TVQ",
         "aliases": [
-            "john-stamatoyannopoulos:58768A"
+            "jimmie-ye:58768A"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -671,7 +671,7 @@
         "_test": "For ENTEx matrix testing",
         "accession": "ENCLB828TVQ",
         "aliases": [
-            "john-stamatoyannopoulos:58288A"
+            "jimmie-ye:58288A"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -684,7 +684,7 @@
         "_test": "For ENTEx matrix testing",
         "accession": "ENCLB646BFR",
         "aliases": [
-            "john-stamatoyannopoulos:57126A"
+            "jimmie-ye:57126A"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -697,7 +697,7 @@
         "_test": "For Mouse Dev matrix testing",
         "accession": "ENCLB123AAA",
         "aliases": [
-            "john-stamatoyannopoulos:57126B"
+            "jimmie-ye:57126B"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -710,7 +710,7 @@
         "_test": "For Mouse Dev matrix testing",
         "accession": "ENCLB123AAB",
         "aliases": [
-            "john-stamatoyannopoulos:57126C"
+            "jimmie-ye:57126C"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -723,7 +723,7 @@
         "_test": "For Mouse Dev matrix testing",
         "accession": "ENCLB123AAC",
         "aliases": [
-            "john-stamatoyannopoulos:57126D"
+            "jimmie-ye:57126D"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -736,7 +736,7 @@
         "_test": "For Mouse Dev matrix testing",
         "accession": "ENCLB123AAD",
         "aliases": [
-            "john-stamatoyannopoulos:57126E"
+            "jimmie-ye:57126E"
         ],
         "lab": "encode2-project",
         "status": "released",
@@ -749,7 +749,7 @@
         "_test": "For Mouse Dev matrix testing",
         "accession": "ENCLB123AAE",
         "aliases": [
-            "john-stamatoyannopoulos:57126F"
+            "jimmie-ye:57126F"
         ],
         "lab": "encode2-project",
         "status": "released",

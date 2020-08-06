@@ -937,7 +937,9 @@
     },
     {
         "email": "jahilton@stanford.edu",
-        "aliases": ["encode:jah-user"],
+        "aliases": [
+            "lattice:jah-user"
+        ],
         "first_name": "Jason",
         "groups": [
             "admin",

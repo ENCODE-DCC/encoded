@@ -527,7 +527,7 @@
         "output_type": "assigned reads",
         "platform": "Illumina NovaSeq 6000",
         "output_type": "assigned reads",
-        "read_name_details": {
+        "read_name_structure": {
             "read_number_location": 2,
             "flowcell_id_location": 3,
             "lane_id_location": 4,
@@ -545,7 +545,6 @@
         "dataset": "ENCSR765JPC",
         "alternate_accessions": [],
         "file_size": 16204266570,
-        "aliases": [],
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s2/7bp_Index_6/HAA2RADXX_s2_1_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "e394868c-5e63-48c6-bfda-8cbebe62e36d",
         "file_format": "fastq",
@@ -568,7 +567,6 @@
         "paired_with": "ENCFF504RKH",
         "alternate_accessions": [],
         "file_size": 15409926897,
-        "aliases": [],
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s2/7bp_Index_6/HAA2RADXX_s2_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "78a74a6e-8e89-4d51-aac1-73d7e6cf234d",
         "file_format": "fastq",
@@ -589,7 +587,6 @@
         "paired_with": "ENCFF431TKZ/",
         "alternate_accessions": [],
         "file_size": 15031538605,
-        "aliases": [],
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "7acdc827-3806-448e-b0d4-2d463a42179f",
         "file_format": "fastq",
@@ -654,7 +651,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF001EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0"
+            "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0"
         ],
         "platform": "Illumina HiSeq 2500",
         "sequencing_run_type": "single-ended",
@@ -676,7 +673,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF003EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
+            "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
         ],
         "platform": "Illumina HiSeq 2500",
         "sequencing_run_type": "single-ended",
@@ -698,7 +695,7 @@
         "content_md5sum": "91ce74b6e11c15393507f4ebfa66d78c",
         "accession": "ENCFF005EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
+            "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
         ],
         "platform": "Illumina HiSeq 2500",
         "sequencing_run_type": "single-ended",
@@ -720,7 +717,7 @@
         "content_md5sum": "91be74b651151a393507f5ebfa66d78c",
         "accession": "ENCFF006EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
+            "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
         ],
         "platform": "Illumina HiSeq 2500",
         "sequencing_run_type": "single-ended",
@@ -742,7 +739,7 @@
         "content_md5sum": "91be74b6e115a5393507f4ebfa66da7a",
         "accession": "ENCFF007EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
+            "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
         ],
         "platform": "Illumina HiSeq 2500",
         "sequencing_run_type": "single-ended",
@@ -764,7 +761,7 @@
         "content_md5sum": "92be74b6e11215393507f4ebfa22d77a",
         "accession": "ENCFF004CON",
         "aliases": [
-            "robert-waterston:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
+            "jason-spence:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
         ],
         "platform": "Illumina HiSeq 2500",
         "sequencing_run_type": "single-ended",

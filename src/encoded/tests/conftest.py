@@ -19,7 +19,6 @@ pytest_plugins = [
     'encoded.tests.fixtures.testapp',
 
     'encoded.tests.fixtures.schemas.access_key',
-    'encoded.tests.fixtures.schemas.analysis_step_version',
     'encoded.tests.fixtures.schemas.analysis_step',
     'encoded.tests.fixtures.schemas.annotation',
     'encoded.tests.fixtures.schemas.antibody_characterization',
@@ -28,7 +27,6 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.atac_library_complexity_quality_metric',
     'encoded.tests.fixtures.schemas.atac_replication_quality_metric',
     'encoded.tests.fixtures.schemas.genetic_modification',
-    'encoded.tests.fixtures.schemas.analysis_step_run',
     'encoded.tests.fixtures.schemas.antibody_lot',
     'encoded.tests.fixtures.schemas.antibody',
     'encoded.tests.fixtures.schemas.award',
@@ -80,7 +78,6 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.single_cell_rna_series',
     'encoded.tests.fixtures.schemas.software_version',
     'encoded.tests.fixtures.schemas.software',
-    'encoded.tests.fixtures.schemas.source',
     'encoded.tests.fixtures.schemas.star_quality_metric',
     'encoded.tests.fixtures.schemas.target',
     'encoded.tests.fixtures.schemas.treatment_time_series',

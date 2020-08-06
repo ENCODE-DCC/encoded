@@ -16,6 +16,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/notes"},
@@ -100,6 +101,14 @@
         "dataset": {
             "linkTo": "Dataset"
         },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with Lattice objects.",
+                "type":  "string",
+                "pattern": "^(SRA:SRR\\d+|ENA:ERR\\d+)$"
+            }
+        },
         "supersedes": {
             "items": {
                 "comment": "The files in this list should be archived or revoked.",
@@ -182,7 +191,7 @@
             "type": "string",
             "linkTo": "RawSequenceFile"
         },
-        "read_name_details": {
+        "read_name_structure": {
             "title": "Fastq read name details",
             "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
             "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
@@ -285,7 +294,7 @@
                 "i7 index"
             ]
         },
-        "sequence_type": {
+        "sequence_elements": {
             "title": "Sequence type",
             "description": "The biological content of the sequence reads.",
             "type": "array",

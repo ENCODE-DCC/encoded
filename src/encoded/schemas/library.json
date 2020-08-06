@@ -10,6 +10,7 @@
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/notes"},
@@ -114,7 +115,7 @@
                 "title": "External identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(GEO:GSM\\d+|GEO-obsolete:GSM\\d+)$"
+                "pattern": "^(GEO:GSM\\d+|GEO-obsolete:GSM\\d+|SRA:SRX\\d+|ENA:ERX\\d+)$"
             }
         },
         "nucleic_acid_starting_quantity": {

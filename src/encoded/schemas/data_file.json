@@ -9,8 +9,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/dbxrefs"}
+        {"$ref": "mixins.json#/accession"}
     ],
     "properties": {
         "schema_version": {
@@ -138,14 +137,6 @@
                 "revoked",
                 "content error"
             ]
-        },
-        "dbxrefs": {
-            "items": {
-                "title": "External identifier",
-                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
-                "type":  "string",
-                "pattern": "^(SRA:(SRR|SRX)\\d+)$"
-            }
         },
         "content_error_detail": {
             "title": "Content error detail",

@@ -9,7 +9,8 @@ def _type_length():
     import json
     utf8 = codecs.getreader("utf-8")
     return {
-        name: len(json.load(utf8(resource_stream('encoded', 'tests/data/inserts/%s.json' % name))))
+        name: len(json.load(utf8(resource_stream(
+            'encoded', 'tests/data/inserts/%s.json' % name))))
         for name in ORDER
         if name != "access_key"
     }
@@ -110,14 +111,15 @@ def test_json_basic_auth(anonhtmltestapp):
     from base64 import b64encode
     from pyramid.compat import ascii_native_
     url = '/'
-    value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
-    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=401)
+    value = "Authorization: Basic %s" % ascii_native_(
+        b64encode(b'nobody:pass'))
+    res = anonhtmltestapp.get(
+        url, headers={'Authorization': value}, status=401)
     assert res.content_type == 'application/json'
 
 
 def test_load_sample_data(
         analysis_step,
-        analysis_step_run,
         antibody_characterization,
         antibody_lot,
         award,
@@ -136,11 +138,10 @@ def test_load_sample_data(
         replicate,
         software,
         software_version,
-        source,
         submitter,
         target,
         ucsc_browser_composite,
-        ):
+):
     assert True, 'Fixtures have loaded sample data'
 
 
@@ -195,26 +196,32 @@ def test_collection_post_missing_content_type(testapp):
 def test_collection_post_bad_(anontestapp):
     from base64 import b64encode
     from pyramid.compat import ascii_native_
-    value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
-    anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
+    value = "Authorization: Basic %s" % ascii_native_(
+        b64encode(b'nobody:pass'))
+    anontestapp.post_json(
+        '/organism', {}, headers={'Authorization': value}, status=401)
 
 
 def test_collection_actions_filtered_by_permission(workbook, testapp, anontestapp):
     res = testapp.get('/pages/')
-    assert any(action for action in res.json.get('actions', []) if action['name'] == 'add')
+    assert any(action for action in res.json.get(
+        'actions', []) if action['name'] == 'add')
 
     res = anontestapp.get('/pages/')
-    assert not any(action for action in res.json.get('actions', []) if action['name'] == 'add')
+    assert not any(action for action in res.json.get(
+        'actions', []) if action['name'] == 'add')
 
 
 def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, source):
     location = source['@id']
 
     res = testapp.get(location)
-    assert any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
+    assert any(action for action in res.json.get(
+        'actions', []) if action['name'] == 'edit')
 
     res = authenticated_testapp.get(location)
-    assert not any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
+    assert not any(action for action in res.json.get(
+        'actions', []) if action['name'] == 'edit')
 
 
 def test_collection_put(testapp, execute_counter):
