@@ -442,6 +442,7 @@
         "date_created": "2020-03-01T15:56:52.458705+00:00",
         "input_file_types": [
             "alignments",
+            "bias model",
             "genome reference",
             "blacklisted regions",
             "hotspots1 reference",
@@ -450,6 +451,7 @@
         "major_version": 1,
         "output_file_types": [
             "hotspots",
+            "bias model",
             "peaks",
             "read-depth normalized signal",
             "FDR cut rate",

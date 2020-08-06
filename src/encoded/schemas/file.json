@@ -879,7 +879,9 @@
                                 "output_type": {
                                     "enum": [
                                         "restriction enzyme site locations",
-                                        "sequence adapters"
+                                        "sequence adapters",
+                                        "bias model",
+                                        "chromosomes reference"
                                     ]
                                 }
                             }
@@ -1387,6 +1389,7 @@
                 {
                     "enum": [
                         "alignments",
+                        "bias model",
                         "blacklisted regions",
                         "candidate Cis-Regulatory Elements",
                         "candidate enhancers",
@@ -1952,6 +1955,7 @@
         "wavelet-smoothed signal": "signal",
         "relative replication signal": "signal",
 
+        "bias model": "quantification",
         "enrichment": "quantification",
         "FDR cut rate": "quantification",
         "library fraction": "quantification",
