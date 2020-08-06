@@ -91,6 +91,10 @@
         "diagnosis.age_range": {
             "title": "Age at Diagnosis"
         },
+        "diagnosis.follow_up_duration_range": {
+            "title": "Follow Up Duration"
+        },
+        
         "sex": {
             "title": "Sex"
         },
@@ -228,6 +232,9 @@
         },
         "diagnosis.age_unit": {
             "title": "Diagnosis age units"
+        },
+        "diagnosis.follow_up_duration_range": {
+            "title": "Follow Up Duration"
         },
         "sex": {
             "title": "Sex"
