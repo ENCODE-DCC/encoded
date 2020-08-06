@@ -170,8 +170,8 @@
     {
         "step_label": "wgbs-lambda-qc-step",
         "aliases": [
-            "encode:ONE",
-            "encode:TWO"
+            "lattice:ONE",
+            "lattice:TWO"
         ],
         "documents": [
             "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",

@@ -8,7 +8,7 @@
     },
     {
         "aliases": [
-            "axel-visel:HAoSMC_PC_8121902.2P_certificate_of_analysis"
+            "ido-amit:HAoSMC_PC_8121902.2P_certificate_of_analysis"
         ],
         "attachment": "8121902.2P.pdf",
         "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
@@ -18,7 +18,7 @@
     },
     {
         "aliases": [
-            "kevin-white:K562_BAC_transfection_White_protocol"
+            "ido-amit:K562_BAC_transfection_White_protocol"
         ],
         "attachment": "BACTransfectionProtocolK562Cells.pdf",
         "description": "UChicago IGSB ENCODE K562 Transfection Protocol March 5, 2013",
@@ -28,7 +28,7 @@
     },
     {
         "aliases": [
-            "encode:bedMethyl.as"
+            "lattice:bedMethyl.as"
         ],
         "attachment": "bedMethyl.txt",
         "document_type": "other",
@@ -37,7 +37,7 @@
     },
     {
         "aliases": [
-            "encode:C2C12_Wold_differentiation_protocol"
+            "lattice:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
         "document_type": "differentiation protocol",
@@ -46,7 +46,7 @@
     },
     {
         "aliases": [
-            "encode:C2C12_Wold_growth_protocol"
+            "lattice:C2C12_Wold_growth_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
         "document_type": "growth protocol",
@@ -55,7 +55,7 @@
     },
     {
         "aliases": [
-            "kevin-white:pBACGK1.1_BAC_vector"
+            "ido-amit:pBACGK1.1_BAC_vector"
         ],
         "attachment": "CH17_pBACGK1.1n.png",
         "description": "Vector pBACGK1.1 information and map retrieved from http://bacpac.chori.org/pbacgk11.htm on May 23, 2013.",
@@ -70,7 +70,7 @@
     },
     {
         "aliases": [
-            "encode:diffProtB_6hr_protocol"
+            "lattice:diffProtB_6hr_protocol"
         ],
         "attachment": "diffProtB_6hr_protocol.txt",
         "document_type": "treatment protocol",
@@ -79,7 +79,7 @@
     },
     {
         "aliases": [
-            "encode:EPC_Stam_protocol"
+            "lattice:EPC_Stam_protocol"
         ],
         "attachment": "EPC_Stam_protocol.pdf",
         "description": "Isolation of mouse fetal liver cell subsets",
@@ -89,7 +89,7 @@
     },
     {
         "aliases": [
-            "encode:Heart_STL003_excision_protocol"
+            "lattice:Heart_STL003_excision_protocol"
         ],
         "attachment": "Heart_STL003_excision_protocol.txt",
         "description": "Heart_STL003 excision protocol",
@@ -99,7 +99,7 @@
     },
     {
         "aliases": [
-            "encode:Myers_Methyl450_protocol"
+            "lattice:Myers_Methyl450_protocol"
         ],
         "attachment": "human.wgEncodeHaibMethyl450.txt",
         "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2. Isolation of mouse fetal liver cell subsets. Heart_STL003 general protocol.",
@@ -109,7 +109,7 @@
     },
     {
         "aliases": [
-            "encode:K562_protocol"
+            "lattice:K562_protocol"
         ],
         "attachment": "K562_protocol.pdf",
         "document_type": "growth protocol",
@@ -118,7 +118,7 @@
     },
     {
         "aliases": [
-            "encode:Heart_STL003_general_protocol"
+            "lattice:Heart_STL003_general_protocol"
         ],
         "attachment": "LID48879.pdf",
         "description": "Heart_STL003 general protocol",
@@ -128,7 +128,7 @@
     },
     {
         "aliases": [
-            "encode:MCF-7_Crawford_growth_protocol"
+            "lattice:MCF-7_Crawford_growth_protocol"
         ],
         "attachment": "MCF-7_Crawford_protocol.pdf",
         "description": "MCF-7 Cell Culture and +/- estrogen treatment",
@@ -138,7 +138,7 @@
     },
     {
         "aliases": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "lattice:MCF-7_Farnham_growth_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
         "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
@@ -148,7 +148,7 @@
     },
     {
         "aliases": [
-            "encode:MCF-7_Farnham_treatment_protocol"
+            "lattice:MCF-7_Farnham_treatment_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
         "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
@@ -158,7 +158,7 @@
     },
     {
         "aliases": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "lattice:Snyder_Histone_Mouse_protocol"
         ],
         "attachment": "mouse.wgEncodeSydhHist.txt",
         "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
@@ -175,7 +175,7 @@
     },
     {
         "aliases": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "lattice:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
         "document_type": "general protocol",
@@ -184,7 +184,7 @@
     },
     {
         "aliases": [
-            "encode:PanIsletD_Crawford_protocol"
+            "lattice:PanIsletD_Crawford_protocol"
         ],
         "attachment": "PanIsletD_Crawford_protocol.pdf",
         "document_type": "other",
@@ -193,7 +193,7 @@
     },
     {
         "aliases": [
-            "encode:SAEC_Stam_protocol"
+            "lattice:SAEC_Stam_protocol"
         ],
         "attachment": "SAEC_Stam_protocol.pdf",
         "document_type": "growth protocol",
@@ -202,7 +202,7 @@
     },
     {
         "aliases": [
-            "encode:HAoSMC_PC_8121902.2P_general_protocol"
+            "lattice:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "attachment": "SID38242.pdf",
         "description": "PromoCell Normal Human Aortic Smooth Muscle Cells general protocol",
@@ -212,7 +212,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
+            "anna-greka:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
         "attachment": "SID38806.pdf",
         "document_type": "general protocol",
@@ -221,7 +221,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
+            "anna-greka:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
         "attachment": "SID38807.pdf",
         "document_type": "general protocol",
@@ -230,7 +230,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
+            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
         ],
         "attachment": "SID38822.pdf",
         "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS087RNA",
@@ -240,7 +240,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
+            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
         ],
         "attachment": "SID38823.pdf",
         "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS088RNA",
@@ -250,7 +250,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+            "anna-greka:Ambion-NIST_Spikes_Corrected"
         ],
         "attachment": "Spikes.fixed.fasta.txt",
         "document_type": "other",
@@ -259,7 +259,7 @@
     },
     {
         "aliases": [
-            "encode:Stam_15_protocols"
+            "lattice:Stam_15_protocols"
         ],
         "attachment": "Stam_15_protocols.pdf",
         "document_type": "growth protocol",
@@ -268,7 +268,7 @@
     },
     {
         "aliases": [
-            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations"
+            "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations"
         ],
         "attachment": "wgEncodeCshlSpikeinsConcentrations.txt",
         "document_type": "other",
@@ -277,7 +277,7 @@
     },
     {
         "aliases": [
-            "encode:ZhBTc4_Stam_protocol"
+            "lattice:ZhBTc4_Stam_protocol"
         ],
         "attachment": "ZhBTc4_Stam_protocol.pdf",
         "document_type": "growth protocol",
@@ -286,7 +286,7 @@
     },
     {
         "aliases": [
-            "gregory-crawford:pLKO1"
+            "jimmie-ye:pLKO1"
         ],
         "attachment": "pLKO1_vector.png",
         "document_type": "other",
@@ -295,7 +295,7 @@
     },
     {
         "aliases": [
-            "encode:Antibody_characterization_standards_February_2014"
+            "lattice:Antibody_characterization_standards_February_2014"
         ],
         "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
         "document_type": "other",
@@ -304,7 +304,7 @@
     },
     {
         "aliases": [
-            "encode:sample_strain_generation_protocol"
+            "lattice:sample_strain_generation_protocol"
         ],
         "attachment": "sample_strain_generation_protocol.pdf",
         "document_type": "other",
@@ -313,7 +313,7 @@
     },
     {
         "aliases": [
-            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
+            "jimmie-ye:Graveley_Group_RNA-Seq_Pipeline_02042013"
         ],
         "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
         "document_type": "pipeline protocol",
@@ -323,7 +323,7 @@
     },
     {
         "aliases": [
-            "roderic-guigo:GeneQuantificationPipeline"
+            "jimmie-ye:GeneQuantificationPipeline"
         ],
         "attachment": "GeneQuantificationPipeline.pdf",
         "document_type": "pipeline protocol",
@@ -333,7 +333,7 @@
     },
     {
         "aliases": [
-            "encode:ENCODE2_ChIP_seq_pipeline_diagram"
+            "lattice:ENCODE2_ChIP_seq_pipeline_diagram"
         ],
         "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
         "document_type": "pipeline protocol",
@@ -343,7 +343,7 @@
     },
     {
         "aliases": [
-            "encode:ENCODE2ChIP-seqpipelinespecifications"
+            "lattice:ENCODE2ChIP-seqpipelinespecifications"
         ],
         "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
         "document_type": "pipeline protocol",
@@ -353,7 +353,7 @@
     },
     {
         "aliases": [
-            "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
+            "jimmie-ye:iCLIP_pipeline_ENCODE.pdf"
         ],
         "attachment": "iCLIP_pipeline_ENCODE.pdf",
         "document_type": "pipeline protocol",

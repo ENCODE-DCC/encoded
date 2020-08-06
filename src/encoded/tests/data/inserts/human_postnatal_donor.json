@@ -4,7 +4,7 @@
         "age": "21",
         "age_units": "year",
         "aliases": [
-            "encode:8121902"
+            "lattice:8121902"
         ],
         "alternate_accessions": [
             "ENCDO117AAA"
@@ -25,7 +25,7 @@
         "age": "34",
         "age_units": "year",
         "aliases": [
-            "michael-snyder:STL003"
+            "jimmie-ye:STL003"
         ],
         "ethnicity": "Caucasian",
         "life_stage": "adult",
@@ -36,7 +36,7 @@
     {
         "accession": "ENCDO000HUM",
         "documents": [
-            "encode:PanIsletD_Crawford_protocol"
+            "lattice:PanIsletD_Crawford_protocol"
         ],
         "life_stage": "unknown",
         "organism": "human",
@@ -75,8 +75,8 @@
         "age": "53",
         "age_units": "year",
         "aliases": [
-            "encode:donor_of_GM12878",
-            "encode:donor of GM12878"
+            "lattice:donor_of_GM12878",
+            "lattice:donor of GM12878"
         ],
         "ethnicity": "Caucasian",
         "life_stage": "adult",
@@ -95,10 +95,10 @@
         "age": "51",
         "age_units": "year",
         "aliases": [
-            "gtex:ENC-DEJ",
-            "gtex:PT-1LVAN",
-            "gtex:ENC-004",
-            "bradley-bernstein:Donor GTEX-1LVAN"
+            "lattice:ENC-DEJ",
+            "lattice:PT-1LVAN",
+            "lattice:ENC-004",
+            "jimmie-ye:Donor GTEX-1LVAN"
         ],
         "life_stage": "adult",
         "organism": "human",
@@ -111,10 +111,10 @@
         "age": "53",
         "age_units": "year",
         "aliases": [
-            "gtex:ENC-MAC",
-            "gtex:ENC-003",
-            "gtex:PT-1LGRB",
-            "bradley-bernstein:Donor GTEX-1LGRB"
+            "lattice:ENC-MAC",
+            "lattice:ENC-003",
+            "lattice:PT-1LGRB",
+            "jimmie-ye:Donor GTEX-1LGRB"
         ],
         "life_stage": "adult",
         "organism": "human",
@@ -127,10 +127,10 @@
         "age": "54",
         "age_units": "year",
         "aliases": [
-            "gtex:PT-1K2DA",
-            "gtex:ENC-LQT",
-            "gtex:ENC-002",
-            "bradley-bernstein:Donor GTEX-1K2DA"
+            "lattice:PT-1K2DA",
+            "lattice:ENC-LQT",
+            "lattice:ENC-002",
+            "jimmie-ye:Donor GTEX-1K2DA"
         ],
         "life_stage": "adult",
         "organism": "human",
@@ -143,10 +143,10 @@
         "age": "37",
         "age_units": "year",
         "aliases": [
-            "gtex:ENC-QWZ",
-            "gtex:ENC-001",
-            "gtex:PT-1JKYN",
-            "bradley-bernstein:Donor GTEX-1JKYN"
+            "lattice:ENC-QWZ",
+            "lattice:ENC-001",
+            "lattice:PT-1JKYN",
+            "jimmie-ye:Donor GTEX-1JKYN"
         ],
         "life_stage": "adult",
         "organism": "human",

@@ -86,7 +86,7 @@
         "biosample_ontology": "NTR_0000031",
         "description": "liver fraction CD117+,CD71+,TER119-",
         "documents": [
-            "encode:EPC_Stam_protocol"
+            "lattice:EPC_Stam_protocol"
         ],
         "source": "michael-bender",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -101,7 +101,7 @@
         "biosample_ontology": "NTR_0000022",
         "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
         "documents": [
-            "encode:C2C12_Wold_differentiation_protocol"
+            "lattice:C2C12_Wold_differentiation_protocol"
         ],
         "source": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -116,7 +116,7 @@
         "biosample_ontology": "CL_0002322",
         "description": "Undifferentiated mouse embryonic stem cells",
         "documents": [
-            "encode:ZhBTc4_Stam_protocol"
+            "lattice:ZhBTc4_Stam_protocol"
         ],
         "source": "dana-levasseur",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -135,7 +135,7 @@
         "description": "small airway epithelial cells",
         "product_id": "CC-2547",
         "documents": [
-            "encode:SAEC_Stam_protocol"
+            "lattice:SAEC_Stam_protocol"
         ],
         "source": "lonza",
         "submitted_by": "facilisis.venenatis@mauris.mauris",
@@ -149,7 +149,7 @@
     {
         "accession": "ENCBS000RNA",
         "aliases": [
-            "thomas-gingeras:140WC"
+            "anna-greka:140WC"
         ],
         "biosample_ontology": "CL_0002539",
         "description": "Normal Human Aortic Smooth Muscle Cells (HAoSMC)",
@@ -157,8 +157,8 @@
         "submitter_comment": "Purchased as total RNA",
         "product_id": "C-14053",
         "documents": [
-            "axel-visel:HAoSMC_PC_8121902.2P_certificate_of_analysis",
-            "encode:HAoSMC_PC_8121902.2P_general_protocol"
+            "ido-amit:HAoSMC_PC_8121902.2P_certificate_of_analysis",
+            "lattice:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "source": "promocell",
         "starting_amount": 600000.0,
