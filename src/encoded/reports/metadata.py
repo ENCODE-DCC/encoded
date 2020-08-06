@@ -136,7 +136,6 @@ class MetadataReport:
         self.file_column_to_fields_mapping = OrderedDict()
         self.visualizable_only = self.query_string.is_param('option', 'visualizable')
         self.raw_only = self.query_string.is_param('option', 'raw')
-        self.search_request = None
         self.csv = CSVGenerator()
 
     def _get_column_to_fields_mapping(self):
