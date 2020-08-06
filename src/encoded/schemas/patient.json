@@ -190,6 +190,19 @@
         "radiation.treatment_intention" : {
           "title": "Radiation Treatment Intention"
         },
+        "metastasis_status": {
+            "title": "Metastasis Status"
+        },
+        "metastasis.histology_proven": {
+            "title": "Metastasis Histology Proven"
+        },
+        "metastasis.site": {
+            "title": "Metastatic Site"
+        },
+        "metastasis.source": {
+            "title": "Metastasis Source"
+        },
+
         "biospecimen.sample_type": {
               "title": "Biospecimen Sample Type"
         },
@@ -295,3 +308,5 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
+

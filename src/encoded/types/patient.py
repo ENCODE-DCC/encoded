@@ -268,6 +268,31 @@ class Patient(Item):
         return radiation_summary
 
     @calculated_property(define=True, schema={
+        "title": "Metastasis status ",
+        "type": "string",
+    })
+    def metastasis_status(self, request, radiation=None, surgery=None):
+        status = "No"
+        if len(radiation) > 0:
+            
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object') 
+                #site mapping
+                if radiation_object['site_general'] != "Kidney, right" and radiation_object['site_general'] != "Kidney, thrombus" and radiation_object['site_general'] != "Kidney, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, right":
+                    status = "Yes"
+        else:
+            if len(surgery) > 0:               
+                for surgery_record in surgery:
+                    surgery_object = request.embed(surgery_record, '@@object')
+                    path_reports = surgery_object['pathology_report']               
+                    if len(path_reports) > 0:                
+                        for path_report in path_reports:
+                            path_report_obj = request.embed(path_report, '@@object')                        
+                            if path_report_obj['path_source_procedure'] == 'path_metasis':                           
+                                status = "Yes"                            
+        return status
+
+    @calculated_property(define=True, schema={
         "title": "Vital Status",
         "type": "string",
     })
@@ -524,7 +549,98 @@ class Patient(Item):
 
         return diagnosis
 
-        
+      
+    @calculated_property(schema={
+        "title": "Metastasis",
+        "description": "Infomation related to Metastasis",
+        "type": "array",
+        "items": {
+            "title": "Metastasis Record",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "date": {
+                    "title": "Date of Metastasis Record",
+                    "description": "Date of Metastasis Record",
+                    "type": "string"
+                },
+                "histology_proven": {
+                    "title": "Histology Proven",
+                    "type": "string"
+                },
+                "source": {
+                    "title": "Source",
+                    "description": "Source of the record",
+                    "type": "string",
+                    "enum": [
+                        "Pathology report",
+                        "Radiation treatment"
+                    ]
+                },
+                "site": {
+                    "title": "Metastasis Site",
+                    "type": "string",
+                    "enum": [
+                        "Adrenal",
+                        "Bone",
+                        "Brain",
+                        "Liver",
+                        "Lung and pleura",
+                        "Lymph node",
+                        "Other"
+                    ]
+                }
+
+            },
+        }
+    })
+    def metastasis(self, request, surgery, radiation):
+        records = []
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                path_reports = surgery_object['pathology_report']               
+                if len(path_reports) > 0:                
+                    for path_report in path_reports:
+                        path_report_obj = request.embed(path_report, '@@object')                        
+                        if path_report_obj['path_source_procedure'] == 'path_metasis':                           
+                            record = {
+                                'date': path_report_obj['date'],
+                                'source': 'Pathology report',
+                                'site': path_report_obj['metasis_details']['site'],
+                                'histology_proven': 'Yes'
+                            }
+                            if record not in records:
+                                records.append(record)               
+        if len(radiation) > 0 :
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object') 
+                #site mapping
+                if radiation_object['site_general'] == "Adrenal gland, left" or radiation_object['site_general'] == "Adrenal gland, right":
+                    radiation_site = "Adrenal"
+                elif radiation_object['site_general'] == "Spine" or radiation_object['site_general'] == "Bone":
+                    radiation_site = "Bone"
+                elif radiation_object['site_general'] == "Brain" or radiation_object['site_general'] == "Liver":
+                    radiation_site = radiation_object['site_general']
+                elif radiation_object['site_general'] == "Connective, subcutaneous and other soft tissues, NOS" or radiation_object['site_general'] == "Retroperitoneum & peritoneum" or radiation_object['site_general'] == "Connective, subcutaneous and other soft tissue, abdomen" or radiation_object['site_general'] == "Gastrointestine/ digestive system & spleen" or radiation_object['site_general'] == "Salivary gland":
+                    radiation_site = "Other"
+                elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
+                    radiation_site = "Lung and pleura"
+                elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
+                    radiation_site = "Lymph Node"
+
+                record = {
+                    'date': radiation_object['start_date'],
+                    'source': 'Radiation treatment',
+                    'site': radiation_site,
+                    'histology_proven': 'No'
+                }
+                if record not in records:
+                    records.append(record)
+
+        return records
+
+      
     matrix = {
         'y': {
             'facets': [
@@ -837,4 +953,8 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
+
+
+
 
