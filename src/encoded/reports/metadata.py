@@ -390,13 +390,13 @@ class PublicationDataMetadataReport(MetadataReport):
     def _convert_experiment_params_to_file_params(self):
         return [
             (k.replace('files.', ''), v)
-            for k, v in self.query_string.params
+            for k, v in self.query_string._get_original_params()
             if k.startswith('files.')
         ]
 
     def _add_experiment_file_filters_as_fields_to_file_params(self):
         self.file_params.extend(
-            ('field', v)
+            ('field', k)
             for k, v in self._convert_experiment_params_to_file_params()
         )
 
@@ -421,8 +421,8 @@ class PublicationDataMetadataReport(MetadataReport):
     # Overrides parent.
     def _build_params(self):
         super()._build_params()
-        self._filter_file_params_from_query_string()
         self._build_file_params()
+        self._filter_file_params_from_query_string()
 
     def _get_at_id_file_params(self):
         return [
@@ -431,7 +431,9 @@ class PublicationDataMetadataReport(MetadataReport):
         ]
 
     def _build_new_file_request(self):
-        self.file_query_string.params = self.file_params + self._get_at_id_file_params()
+        self.file_query_string.params = (
+            self.file_params + self._get_at_id_file_params()
+        )
         request = self.file_query_string.get_request_with_new_query_string()
         request.path_info = self._get_search_path()
         request.registry = self.request.registry

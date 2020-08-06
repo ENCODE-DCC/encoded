@@ -1,6 +1,6 @@
 import pytest
 
-#from encoded.tests.features.conftest import app, app_settings, index_workbook
+from encoded.tests.features.conftest import app, app_settings, index_workbook
 from pyramid.exceptions import HTTPBadRequest
 
 
@@ -1948,11 +1948,33 @@ def test_metadata_publication_data_metadata_report_build_file_params(dummy_reque
         '&files.replicates.library.size_range=200-500&status=released'
     )
     pdmr = PublicationDataMetadataReport(dummy_request)
+    pdmr._initialize_report()
     pdmr._build_file_params()
     assert pdmr.file_params == [
         ('type', 'File'),
         ('limit', 'all'),
         ('field', '@id'),
+        ('field', 'title'),
+        ('field', 'dataset'),
+        ('field', 'file_format'),
+        ('field', 'file_type'),
+        ('field', 'output_type'),
+        ('field', 'assay_term_name'),
+        ('field', 'biosample_ontology.term_id'),
+        ('field', 'biosample_ontology.term_name'),
+        ('field', 'biosample_ontology.classification'),
+        ('field', 'target.label'),
+        ('field', 'lab.title'),
+        ('field', 'md5sum'),
+        ('field', 'dbxrefs'),
+        ('field', 'href'),
+        ('field', 'assembly'),
+        ('field', 'status'),
+        ('field', 'derived_from'),
+        ('field', 'cloud_metadata.url'),
+        ('field', 'file_size'),
+        ('field', 'no_file_available'),
+        ('field', 'restricted'),
         ('field', 'file_type'),
         ('field', 'biological_replicates'),
         ('field', 'file_type'),
@@ -1983,20 +2005,64 @@ def test_metadata_publication_data_metadata_report_build_params(dummy_request):
     from encoded.reports.metadata import PublicationDataMetadataReport
     dummy_request.environ['QUERY_STRING'] = (
         'type=PublicaitonData&files.file_type=bigWig'
+        '&files.biological_replicates=2&files.file_type=bigBed+narrowPeak'
+        '&files.replicates.library.size_range=200-500&status=released'
     )
     pdmr = PublicationDataMetadataReport(dummy_request)
     pdmr._initialize_report()
-    assert False
+    pdmr._build_params()
+    assert pdmr.file_params == [
+        ('type', 'File'),
+        ('limit', 'all'),
+        ('field', '@id'),
+        ('field', 'title'),
+        ('field', 'dataset'),
+        ('field', 'file_format'),
+        ('field', 'file_type'),
+        ('field', 'output_type'),
+        ('field', 'assay_term_name'),
+        ('field', 'biosample_ontology.term_id'),
+        ('field', 'biosample_ontology.term_name'),
+        ('field', 'biosample_ontology.classification'),
+        ('field', 'target.label'),
+        ('field', 'lab.title'),
+        ('field', 'md5sum'),
+        ('field', 'dbxrefs'),
+        ('field', 'href'),
+        ('field', 'assembly'),
+        ('field', 'status'),
+        ('field', 'derived_from'),
+        ('field', 'cloud_metadata.url'),
+        ('field', 'file_size'),
+        ('field', 'no_file_available'),
+        ('field', 'restricted'),
+        ('field', 'file_type'),
+        ('field', 'biological_replicates'),
+        ('field', 'file_type'),
+        ('field', 'replicates.library.size_range'),
+        ('file_type', 'bigWig'),
+        ('biological_replicates', '2'),
+        ('file_type', 'bigBed narrowPeak'),
+        ('replicates.library.size_range', '200-500')
+    ]
+    assert pdmr.query_string.params == [
+        ('type', 'PublicaitonData'),
+        ('status', 'released')
+    ]
 
 
-def test_metadata_publication_data_metadata_report_ge_at_id_file_params(dummy_request):
+def test_metadata_publication_data_metadata_report_get_at_id_file_params(dummy_request):
     from encoded.reports.metadata import PublicationDataMetadataReport
     dummy_request.environ['QUERY_STRING'] = (
         'type=PublicaitonData&files.file_type=bigWig'
     )
     pdmr = PublicationDataMetadataReport(dummy_request)
-    pdmr._initialize_report()
-    assert False
+    assert pdmr._get_at_id_file_params() == []
+    pdmr.file_at_ids = ['/files/ENCFFABC123/', '/files/ENCFFDEF345/']
+    assert pdmr._get_at_id_file_params() == [
+        ('@id', '/files/ENCFFABC123/'),
+        ('@id', '/files/ENCFFDEF345/')
+    ]
 
 
 def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_request):
