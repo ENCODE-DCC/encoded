@@ -1148,7 +1148,7 @@ def check_experiment_chip_seq_standards(
         yield from check_file_chip_seq_library_complexity(f)
 
         if target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
-            break
+            continue
 
         read_depth = get_file_read_depth_from_alignment(f, target, assay_name)
         yield from check_file_chip_seq_read_depth(
