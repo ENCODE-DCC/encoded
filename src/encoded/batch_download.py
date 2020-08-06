@@ -31,33 +31,6 @@ def includeme(config):
     config.scan(__name__)
 
 
-_tsv_mapping_publicationdata = OrderedDict([
-    ('File accession', ['files.title']),
-    ('File dataset', ['files.dataset']),
-    ('File type', ['files.file_format']),
-    ('File format', ['files.file_type']),
-    ('File output type', ['files.output_type']),
-    ('Assay term name', ['files.assay_term_name']),
-    ('Biosample term id', ['files.biosample_ontology.term_id']),
-    ('Biosample term name', ['files.biosample_ontology.term_name']),
-    ('Biosample type', ['files.biosample_ontology.classification']),
-    ('File target', ['files.target.label']),
-    ('Dataset accession', ['accession']),
-    ('Dataset date released', ['date_released']),
-    ('Project', ['award.project']),
-    ('Lab', ['files.lab.title']),
-    ('md5sum', ['files.md5sum']),
-    ('dbxrefs', ['files.dbxrefs']),
-    ('File download URL', ['files.href']),
-    ('Assembly', ['files.assembly']),
-    ('File status', ['files.status']),
-    ('Derived from', ['files.derived_from']),
-    ('S3 URL', ['files.cloud_metadata.url']),
-    ('Size', ['files.file_size']),
-    ('No File Available', ['file.no_file_available']),
-    ('Restricted', ['files.restricted'])
-])
-
 _excluded_columns = ('Restricted', 'No File Available')
 
 # For extracting accession from @id paths
@@ -108,90 +81,6 @@ def get_peak_metadata_links(request):
         search_params=quote(search_params)
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
-
-
-def _get_publicationdata_metadata(context, request):
-    """
-    Generate PublicationData metadata.tsv.
-
-        :param request: Pyramid request
-    """
-    qs = QueryString(request)
-    param_list = qs.group_values_by_key()
-
-    # Get the required "dataset={path}" parameter.
-    dataset_path = param_list.get('dataset', [''])[0]
-
-    # Open the metadata.tsv file for writing.
-    fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t')
-
-    # Build the column-title header row and write it to the file.
-    header = [header for header in _tsv_mapping_publicationdata if header not in _excluded_columns]
-    writer.writerow(header)
-
-    # Load the specified PublicationData object and extract its files to build the rows.
-    dataset = request.embed(dataset_path, as_user=True)
-    file_ids = dataset.get('files', [])
-    if file_ids:
-        for file_id in file_ids:
-            # Load the file object and disqualify those we don't handle.
-            file = request.embed(file_id, as_user=True)
-
-            # Load the file object and disqualify those we don't handle.
-            biosample_ontology = file.get('biosample_ontology', {})
-            if restricted_files_present(file):
-                continue
-            if is_no_file_available(file):
-                continue
-
-            # Extract the file's dataset accession from the @id; avoids loading the dataset object.
-            dataset_accession = ''
-            accession_match = accession_re.match(file.get('dataset', ''))
-            if accession_match:
-                dataset_accession = accession_match.group(1)
-
-            # Extract the file's derived_from accessions from their @id.
-            derived_from_accessions = []
-            derived_from_file_ids = file.get('derived_from', '')
-            for derived_from_file_id in derived_from_file_ids:
-                accession_match = accession_re.match(derived_from_file_id)
-                if accession_match:
-                    derived_from_accessions.append(accession_match.group(1))
-
-            # Build the row's data; must sync with _tsv_mapping_publicationdata.
-            row = [
-                file.get('title', ''),
-                dataset_accession,
-                file.get('file_format', ''),
-                file.get('file_type', ''),
-                file.get('output_type', ''),
-                file.get('assay_term_name', ''),
-                biosample_ontology.get('term_id'),
-                biosample_ontology.get('term_name'),
-                biosample_ontology.get('classification'),
-                file.get('target', {}).get('label', ''),
-                dataset.get('accession', ''),
-                dataset.get('date_released', ''),
-                dataset.get('award', {}).get('project', ''),
-                file.get('lab', {}).get('title', ''),
-                file.get('md5sum', ''),
-                ', '.join(file.get('dbxrefs', '')),
-                file.get('href', ''),
-                file.get('assembly', ''),
-                file.get('status', ''),
-                ', '.join(derived_from_accessions),
-                file.get('cloud_metadata', {}).get('url', ''),
-                file.get('file_size', ''),
-            ]
-            writer.writerow(row)
-
-        # All rows collected; write to the metadata.tsv file and download.
-        return Response(
-            content_type='text/tsv',
-            body=fout.getvalue(),
-            content_disposition='attachment;filename="%s"' % 'metadata.tsv'
-        )
 
 
 def _batch_download_publicationdata(request):
