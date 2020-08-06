@@ -5,9 +5,6 @@
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [],
-    "identifyingProperties": ["accession"],
-    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/dbxrefs"},
@@ -16,40 +13,6 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"}
     ],
-    "dependencies": {
-        "post_treatment_time": {
-            "required":["post_treatment_time_units", "treatments"],
-            "comment": "Biosample with a specified post_treatment_time requires non-empty treatments list and post_treatment_time_units specification.",
-            "properties":{
-                "treatments": {
-                    "minItems": 1
-                }
-            }
-        },
-        "post_treatment_time_units": {
-            "required":["post_treatment_time", "treatments"],
-            "comment": "Biosample with a specified post_treatment_time_units requires non-empty treatments list post_treatment_time specification.",
-            "properties":{
-                "treatments": {
-                    "minItems": 1
-                }
-            }
-        },
-        "starting_amount":{
-            "required": ["starting_amount_units"],
-            "comment": "Biosamples with a specified starting_amount require starting_amount_units to also be specified."
-        },
-        "starting_amount_units": {
-            "required":["starting_amount"],
-            "comment": "Biosamples with a specified starting_amount_units require starting_amount to also be specified."
-        },
-        "preservation_time":{
-            "required": ["preservation_time_units"]
-        },
-        "preservation_time_units": {
-            "required":["preservation_time"]
-        }
-    },
     "properties": {
         "schema_version": {
             "default": "1"
@@ -195,6 +158,5 @@
                 "month"
             ]
         }
-    },
-    "changelog": "/profiles/changelogs/biosample.md"
+    }
 }

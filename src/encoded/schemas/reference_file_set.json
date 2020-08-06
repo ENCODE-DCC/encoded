@@ -4,7 +4,7 @@
     "id": "/profiles/reference_file_set.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [],
+    "required": ["description"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

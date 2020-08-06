@@ -30,9 +30,9 @@ ORDER = [
     'mouse_postnatal_donor',
     'mouse_prenatal_donor',
     'tissue',
-    'suspension',
     'cell_culture',
     'organoid',
+    'suspension',
     'dataset',
     'reference_file_set',
     'library',
@@ -540,15 +540,6 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
 PHASE1_PIPELINES = {
     'user': [
         remove_keys('lab', 'submits_for'),
-    ],
-    'cell_culture': [
-        remove_keys('derived_from'),
-    ],
-    'suspension': [
-        remove_keys('derived_from'),
-    ],
-    'organoid': [
-        remove_keys('derived_from'),
     ],
     'library': [
         remove_keys('spikeins_used', 'adapters'),

@@ -4,18 +4,27 @@
         "organism": "mouse",
         "strain_background": "B6NTac;B6NCrl/Lap",
         "submitter_comment": "Not sure about the origin of this strain.",
-        "uuid": "3cfe2618-368f-45a0-9aa9-a5277f1a56a9"
+        "uuid": "3cfe2618-368f-45a0-9aa9-a5277f1a56a9",
+        "life_stage": "embryonic",
+        "sex": "unknown",
+        "strain_term_name": "C57BL/6"
     },
     {
         "accession": "ENCDO000MUS",
         "organism": "mouse",
         "strain_background": "unknown",
-        "uuid": "b432527c-0f19-4bc3-a810-e1bf583cfb38"
+        "uuid": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
+        "life_stage": "embryonic",
+        "sex": "unknown",
+        "strain_term_name": "C57BL/6"
     },
     {
         "accession": "ENCDO003MUS",
         "organism": "mouse",
         "strain_background": "unknown",
-        "uuid": "caf5635e-0f6d-4e24-a0cf-99263a37d22e"
+        "uuid": "caf5635e-0f6d-4e24-a0cf-99263a37d22e",
+        "life_stage": "embryonic",
+        "sex": "unknown",
+        "strain_term_name": "C57BL/6"
     }
 ]

@@ -92,6 +92,7 @@
     },
     {
         "accession": "ENCDO003HUM",
+        "life_stage": "unknown",
         "organism": "human",
         "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
     },

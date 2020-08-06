@@ -4,7 +4,7 @@
     "id": "/profiles/sequence_alignment_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_type", "md5sum"],
+    "required": ["dataset", "file_format", "output_type", "md5sum", "derived_from"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

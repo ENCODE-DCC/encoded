@@ -4,7 +4,7 @@
     "id": "/profiles/publication.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "title"],
+    "required": [ "title", "abstract"],
     "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [

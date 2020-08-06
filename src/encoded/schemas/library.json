@@ -4,7 +4,7 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab"],
+    "required": ["lab", "dataset", "protocol", "derived_from"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

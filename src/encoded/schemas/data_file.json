@@ -4,9 +4,6 @@
     "id": "/profiles/data_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_type", "md5sum"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
-    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/accession"}
@@ -153,30 +150,5 @@
             "permission": "import_items"
         }
     },
-    "facets": {
-        "status": {
-            "title": "Status"
-        },
-        "output_category": {
-            "title": "Output category"
-        },
-        "output_type": {
-            "title": "Output type"
-        },
-        "file_format": {
-            "title": "File format"
-        },
-        "file_format_type": {
-            "title": "File format type"
-        },
-        "file_type": {
-            "title": "File type"
-        },
-        "assembly": {
-            "title": "Genome assembly"
-        }
-    },
-    "columns": {},
-    "boost_values": {},
     "changelog": "/profiles/changelogs/data_file.md"
 }

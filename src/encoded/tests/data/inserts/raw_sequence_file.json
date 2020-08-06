@@ -660,7 +660,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "fd039c7c-4e72-40dd-8ce0-1d045f55a959",
-        "derived_from": "ENCLB001EPI"
+        "derived_from": "ENCLB999MNO"
     },
     {
         "_test": "raw file for reference epigenome series WGBS",
@@ -682,7 +682,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "596bc2e5-1b0f-485b-8b65-1b278810ba52",
-        "derived_from": "ENCLB002EPI"
+        "derived_from": "ENCLB999MNO"
     },
     {
         "_test": "raw file for reference epigenome series H3K4me1",
@@ -704,7 +704,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "2cfe2226-8d50-44eb-bc62-4f7802175be5",
-        "derived_from": "ENCLB003EPI"
+        "derived_from": "ENCLB999MNO"
     },
     {
         "_test": "raw file for reference epigenome series H3K4me3",
@@ -726,7 +726,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "060c7ebc-6f31-49c0-93aa-cdbc02e68fc7",
-        "derived_from": "ENCLB004EPI"
+        "derived_from": "ENCLB999MNO"
     },
     {
         "_test": "raw file for reference epigenome series H3K27ac",
@@ -748,7 +748,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "ca0eb75a-660e-40ab-be58-c017450ace0b",
-        "derived_from": "ENCLB005EPI"
+        "derived_from": "ENCLB999MNO"
     },
     {
         "_test": "raw file for reatment concentration series 3",
@@ -770,7 +770,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 1726244936,
         "uuid": "127931f7-864d-4d79-9d60-4a6e7cdf6bf9",
-        "derived_from": "ENCLB003CON"
+        "derived_from": "ENCLB888MNO"
     },
     {
         "_test": "raw file for replication timing series 3 1",
@@ -789,7 +789,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 1726244936,
         "uuid": "244436f5-aa0f-46a0-a97c-1ff6983b1740",
-        "derived_from": "ENCLB003REP"
+        "derived_from": "ENCLB888MNO"
     },
     {
         "content_md5sum": "4840832d88a1dc7ecb01d56e75104c66",
@@ -888,7 +888,7 @@
         "uuid": "1234830f-154f-449f-814b-fd3435417edf",
         "sequencing_run_type": "single-ended",
         "read_length": 76,
-        "derived_from": "ENCLB136UZC"
+        "derived_from": "ENCLB888MNO"
     },
     {
         "accession": "ENCFF002MRN",
@@ -906,7 +906,7 @@
         "uuid": "5678830f-154f-449f-814b-fd3435417edf",
         "sequencing_run_type": "single-ended",
         "read_length": 76,
-        "derived_from": "ENCLB339NLX"
+        "derived_from": "ENCLB888MNO"
     },
     {
         "_test": "rep1 reads for long read RNA-seq experiment",

@@ -17,6 +17,7 @@
     },
     {
         "status": "in progress",
+        "abstract": "something super interesting",
         "uuid": "baf202c2-b7af-4c43-b135-15104394daac",
         "title": "DNase-seq: a high-resolution technique for mapping active gene regulatory elements across the genome from mammalian cells.",
         "issue": "2",
@@ -31,6 +32,7 @@
     },
     {
         "status": "in progress",
+        "abstract": "something super interesting",
         "uuid": "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2",
         "title": "The reality of pervasive transcription.",
         "issue": "7",
@@ -45,6 +47,7 @@
     },
     {
         "status": "in progress",
+        "abstract": "something super interesting",
         "uuid": "e9b33b63-3a85-47cf-9fc5-b1904c56d7ee",
         "title": "Missing lincs in the transcriptome.",
         "issue": "4",
@@ -59,6 +62,7 @@
     },
     {
         "status": "in progress",
+        "abstract": "something super interesting",
         "uuid": "f1d4ec0c-9c90-437e-a6e2-4688791abeea",
         "title": "Molecular biology: RNA discrimination.",
         "issue": "7385",
@@ -277,6 +281,7 @@
     },
     {
         "authors": "Lajoie BR, van Berkum NL, Sanyal A, Dekker J.",
+        "abstract": "something super interesting",
         "identifiers": [
             "PMID:19789528"
         ],

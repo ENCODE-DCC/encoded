@@ -10,7 +10,8 @@
         "file_size": 2941813,
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "elements_ref.fasta",
-        "uuid": "26a96f85-0e22-463c-83d0-4106ba588e4c"
+        "uuid": "26a96f85-0e22-463c-83d0-4106ba588e4c",
+        "reference_version": "hg19"
     },
     {
         "status": "in progress",
@@ -41,7 +42,8 @@
             "ENCFF021HBG"
         ],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "in progress",
@@ -68,7 +70,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "replaced",
@@ -82,7 +85,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "released",
@@ -96,7 +100,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "released",
@@ -110,7 +115,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "released",
@@ -124,7 +130,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "released",
@@ -138,7 +145,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "released",
@@ -152,7 +160,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "released",
@@ -166,7 +175,8 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     },
     {
         "status": "in progress",
@@ -179,6 +189,7 @@
         "file_format": "tar",
         "dataset": "ENCSR001REF",
         "file_size": 6252517704,
-        "output_type": "genome index"
+        "output_type": "genome index",
+        "reference_version": "hg19"
     }
 ]

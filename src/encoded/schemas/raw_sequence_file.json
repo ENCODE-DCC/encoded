@@ -131,13 +131,11 @@
             ]
         },
         "derived_from": {
-            "items": {
-                "title": "Derived from",
-                "description": "A file participating as input into software to produce this output file.",
-                "comment": "See file.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "RawSequenceFile"
-            }
+            "title": "Derived from",
+            "description": "The experimental library designation for the file.",
+            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
         },
         "fastq_signature": {
             "title": "Fastq file flowcell based signature",
@@ -272,13 +270,6 @@
                 "undetermined reads",
                 "assigned reads"
             ]
-        },
-        "derived_from": {
-            "title": "Derived from",
-            "description": "The experimental library designation for the file.",
-            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
         },
         "read_type": {
             "title": "Read type",

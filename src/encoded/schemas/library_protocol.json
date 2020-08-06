@@ -4,7 +4,7 @@
     "id": "/profiles/library_protocol.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name"],
+    "required": ["name", "title", "library_type", "biological_macromolecule"],
     "identifyingProperties": ["uuid", "name"],
     "additionalProperties": false,
     "mixinProperties": [

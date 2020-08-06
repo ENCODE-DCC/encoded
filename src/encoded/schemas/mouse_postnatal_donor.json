@@ -5,7 +5,7 @@
     "id": "/profiles/mouse_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["organism"],
+    "required": ["organism", "life_stage", "sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
