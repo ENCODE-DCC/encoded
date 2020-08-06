@@ -46,7 +46,11 @@ def biosample_summary_information(request, biosampleObject):
                     if tag.get('promoter_used'):
                         tag_dict['promoter'] = request.embed(tag.get('promoter_used'), '@@object').get['label']
                     modification_dict['tags'].append(tag_dict)
-            modifications_list.append((gm_object['method'], modification_dict))
+            if 'method' in gm_object:
+                modifications_list.append((gm_object['method'], modification_dict))
+            elif 'nucleic_acid_delivery_method' in gm_object:
+                    for item in gm_object['nucleic_acid_delivery_method']:
+                        modifications_list.append((item, modification_dict))
 
     preservation_method = None
     dictionary_to_add = generate_summary_dictionary(

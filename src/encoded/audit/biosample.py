@@ -69,7 +69,7 @@ def audit_biosample_CRISPR_modifications(value, system):
             CRISPRchar = 0
             GM_ids = set()
             for GM in value['applied_modifications']:
-                if GM['method'] == 'CRISPR' and GM['purpose'] == 'characterization':
+                if 'method' in GM and GM['method'] == 'CRISPR' and GM['purpose'] == 'characterization':
                     CRISPRchar += 1
                     GM_ids.add(GM['@id'])
             GM_ids_links = [audit_link(path_to_text(m), m) for m in GM_ids]

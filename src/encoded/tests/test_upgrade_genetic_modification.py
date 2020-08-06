@@ -91,3 +91,12 @@ def test_genetic_modification_upgrade_8_9(upgrader, genetic_modification_8):
                              current_version='8', target_version='9')
     assert value['schema_version'] == '9'
     assert value.get('purpose') == 'characterization'
+
+
+def test_genetic_modification_upgrade_9_10(upgrader, genetic_modification_9, human_donor_1):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_9,
+                             current_version='9', target_version='10')
+    assert value['nucleic_acid_delivery_method'] == ['transient transfection']
+    assert 'method' not in value
+    assert value['introduced_elements_donor'] == human_donor_1['@id']
+    assert 'donor' not in value
