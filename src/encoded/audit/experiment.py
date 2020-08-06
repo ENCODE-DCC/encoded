@@ -1161,19 +1161,17 @@ def check_experiment_chip_seq_standards(
         )
 
     # Specifically handles read_depth for experiments with H3K9me3 mark
-    for f in unfiltered_alignment_files:
-        if target and target['name'] not in ['H3K9me3-human', 'H3K9me3-mouse']:
-            return
-
-        read_depth = get_file_read_depth_from_alignment(f, target, assay_name)
-        yield from check_file_chip_seq_read_depth(
-            f,
-            experiment.get('control_type'),
-            organism_name,
-            target,
-            read_depth,
-            standards_version
-        )
+    if target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
+        for f in unfiltered_alignment_files:
+            read_depth = get_file_read_depth_from_alignment(f, target, assay_name)
+            yield from check_file_chip_seq_read_depth(
+                f,
+                experiment.get('control_type'),
+                organism_name,
+                target,
+                read_depth,
+                standards_version
+            )
 
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
