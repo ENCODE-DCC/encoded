@@ -130,7 +130,7 @@
     "tumor_size": 2,
     "tumor_size_units": "cm",
     "focality": "Unifocal",
-    "histology": "RON,favor RO",
+    "histology": "RON, favor RO",
     "sarcomatoid": "Present",
     "sarcomatoid_percentage": "90",
     "rhabdoid": "Not applicable",
@@ -154,7 +154,7 @@
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "3C",
-    "report_source": "Tumor Registery",
+    "report_source": "Tumor Registry",
     "path_source_procedure": "path_biopsy",
     "metasis_details":{
       "site":"Liver",

@@ -202,7 +202,7 @@ class Patient extends React.Component {
 
               <div data-test="diagnosis_date">
                 <dt>Diagnosis Date</dt>
-                <dd>{context.diagnosis.diagnosis_date}</dd>
+                <dd>{`${context.diagnosis.diagnosis_date} ( Diagnosis Source: `}{`${context.diagnosis.diagnosis_source} )`}</dd>
               </div>
 
               <div data-test="last_follow_up_date">
@@ -224,8 +224,8 @@ class Patient extends React.Component {
         {hasRadiation && <CollapsiblePanel panelId="myPanelId5" title="Radiation History" content={radiationPanelBody} />}
         {hasMetastasis && <CollapsiblePanel panelId="myPanelId6" title="Metastasis History" content={metastasisPanelBody} />}
         {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
-        {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>} 
-        {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}       
+        {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
+        {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
         {hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>
@@ -243,4 +243,3 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
-

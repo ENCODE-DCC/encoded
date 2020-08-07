@@ -73,6 +73,7 @@ def supportive_med_frequency(request, supportive_medication):
         supportive_meds.append(med_freq)
     return supportive_meds
 
+
 def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
 
         all_traced_dates=[]
@@ -128,8 +129,11 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
         if len(all_traced_dates) > 0:
             all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d"))
             last_follow_up_date = all_traced_dates[-1]
-        else: last_follow_up_date="Not available"
+        else:
+            last_follow_up_date = "Not available"
+
         return last_follow_up_date
+
 
 @collection(
      name='patients',
@@ -179,7 +183,7 @@ class Patient(Item):
     })
     def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
         return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
-    
+
 
     @calculated_property( schema={
         "title": "Labs",
@@ -303,7 +307,7 @@ class Patient(Item):
             vital_status = "Deceased"
         return vital_status
 
-    
+
     @calculated_property(schema={
         "title": "Medical Imaging",
         "type": "array",
@@ -440,6 +444,11 @@ class Patient(Item):
                 "description": "Date of Diagnosis",
                 "type": "string",
             },
+            "diagnosis_source": {
+                "title": "Diagnosis Source",
+                "description": "The source of the diagnosis date",
+                "type": "string",
+            },
             "age": {
                 "title": "Diagnosis age",
                 "description": "The age of diagnosis.",
@@ -457,7 +466,6 @@ class Patient(Item):
             "age_range": {
                 "title": "Age at Diagnosis",
                 "type": "string"
-
             },
             "follow_up_duration_range": {
                 "title": "Follow Up Duration",
@@ -467,18 +475,13 @@ class Patient(Item):
 
         },
     })
-    def diagnosis(self, request, surgery, radiation, medication,labs, vitals, germline,ihc, consent,medical_imaging,supportive_medication):
+    def diagnosis(self, request, surgery, radiation, medication,labs, vitals,
+                    germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None):
         nephrectomy_dates = []
         non_nephrectomy_dates = []
         surgery_dates = []
         diagnosis_date = "Not available"
-
-        # Add radiation data first to get potential metasis
-        if len(radiation) > 0:
-            # add radiation dates
-            for radiation_record in radiation:
-                radiation_object = request.embed(radiation_record, '@@object')
-                non_nephrectomy_dates.append(radiation_object['start_date'])
+        diagnosis_source = "Not applicable"
 
         # Calculate
         if len(surgery) > 0:
@@ -491,33 +494,40 @@ class Patient(Item):
                         nephrectomy_dates.append(surgery_object['date'])
                     elif  path_report_obj['path_source_procedure'] == "path_biopsy" or path_report_obj['path_source_procedure'] == "path_metasis":
                         non_nephrectomy_dates.append(surgery_object['date'])
-            if len(nephrectomy_dates) > 0 :
-                    nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                    diagnosis_date = nephrectomy_dates[0]
-                    surgery_dates.append(nephrectomy_dates[0])
-            if len(non_nephrectomy_dates) > 0:
-                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                surgery_dates.append(non_nephrectomy_dates[0])
-                surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                diagnosis_date = surgery_dates[0]
-        else:
-            if len(medication) > 0:
-                # add medication dates
-                for medication_record in medication:
-                    medication_object = request.embed(medication_record, '@@object')
-                    non_nephrectomy_dates.append(medication_object['start_date'])
 
+        if len(nephrectomy_dates) > 0 :
+                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                diagnosis_date = nephrectomy_dates[0]
+                surgery_dates.append(nephrectomy_dates[0])
+                diagnosis_source = "Pathology Report"
+
+        elif len(non_nephrectomy_dates) > 0:
+            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            surgery_dates.append(non_nephrectomy_dates[0])
+            surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = surgery_dates[0]
+            diagnosis_source = "Pathology Report"
+
+        elif diagnosis_date_tumor_registry is not None:
+             diagnosis_date = diagnosis_date_tumor_registry
+        elif len(medication) > 0:
+            diagnosis_source = "Medication"
+            for medication_record in medication:
+                medication_object = request.embed(medication_record, '@@object')
+                non_nephrectomy_dates.append(medication_object['start_date'])
+                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                diagnosis_date = non_nephrectomy_dates[0]
 
         age_range = "Unknown"
         ageString = "Unknown"
-        follow_up_duration_range="Not available"
+        follow_up_duration_range = "Not available"
 
-        if diagnosis_date != "Not available":
+        if diagnosis_date is not "Not available":
             birth_date = datetime.strptime("1800-01-01", "%Y-%m-%d")
             end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
             age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
             ageString = str(age)
-            
+
             if age >= 90:
                 ageString = "90 or above"
 
@@ -533,33 +543,34 @@ class Patient(Item):
                 age_range = "0 - 19"
 
             #Add follow up duration:
-            follow_up_start_date=datetime.strptime(diagnosis_date,"%Y-%m-%d")
-            last_follow_up_date=last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
-            if last_follow_up_date is not "Not available":
-                follow_up_end_date=datetime.strptime(last_follow_up_date,"%Y-%m-%d")
-                follow_up_duration=(follow_up_end_date-follow_up_start_date).days/365
+            follow_up_start_date = datetime.strptime(diagnosis_date,"%Y-%m-%d")
+            last_follow_up_date = last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication, supportive_medication, surgery)
+            if last_follow_up_date != "Not available":
+                follow_up_end_date = datetime.strptime(last_follow_up_date,"%Y-%m-%d")
+                follow_up_duration = (follow_up_end_date-follow_up_start_date).days/365
 
                 if follow_up_duration >= 5:
-                    follow_up_duration_range="> 5 year"
+                    follow_up_duration_range = "> 5 year"
                 elif follow_up_duration >= 3:
-                    follow_up_duration_range="3 - 5 year"
+                    follow_up_duration_range = "3 - 5 year"
                 elif follow_up_duration >= 1.5:
-                    follow_up_duration_range="1.5 - 3 year"
+                    follow_up_duration_range = "1.5 - 3 year"
                 else:
-                    follow_up_duration_range="0 - 1.5 year"
-                
+                    follow_up_duration_range = "0 - 1.5 year"
+
 
 
         diagnosis = dict()
         diagnosis['diagnosis_date'] = diagnosis_date
+        diagnosis['diagnosis_source'] = diagnosis_source
         diagnosis['age'] = ageString
         diagnosis['age_unit'] = "year"
         diagnosis['age_range'] = age_range
-        diagnosis['follow_up_duration_range']=follow_up_duration_range
+        diagnosis['follow_up_duration_range'] = follow_up_duration_range
 
         return diagnosis
 
-      
+
     @calculated_property(schema={
         "title": "Metastasis",
         "description": "Infomation related to Metastasis",
@@ -650,7 +661,7 @@ class Patient(Item):
 
         return records
 
-      
+
     matrix = {
         'y': {
             'facets': [
@@ -746,8 +757,7 @@ class Patient(Item):
                 robotic_assist.append("False")
         return robotic_assist
 
-<<<<<<< HEAD
-=======
+
     @calculated_property(condition='surgery', schema={
         "title": "surgery pathology tumor size calculation",
         "type": "array",
@@ -775,17 +785,18 @@ class Patient(Item):
 
         tumor_size_range = []
         for tumor_size in array:
-            if 0 <= tumor_size < 3:
-                tumor_size_range.append("0-3 cm")
-            elif 3 <= tumor_size < 7:
-                tumor_size_range.append("3-7 cm")
-            elif 7 <= tumor_size < 10:
-                tumor_size_range.append("7-10 cm")
-            else:
-                tumor_size_range.append("10+ cm")
+            if tumor_size is not None:
+                if 0 <= tumor_size < 3:
+                    tumor_size_range.append("0-3 cm")
+                elif 3 <= tumor_size < 7:
+                    tumor_size_range.append("3-7 cm")
+                elif 7 <= tumor_size < 10:
+                    tumor_size_range.append("7-10 cm")
+                else:
+                    tumor_size_range.append("10+ cm")
         return tumor_size_range
 
-   
+
 @collection(
     name='lab-results',
     properties={
