@@ -190,7 +190,6 @@ class MetadataReport:
         self._build_query_string()
         request = self.query_string.get_request_with_new_query_string()
         request.path_info = self._get_search_path()
-        request.registry = self.request.registry
         return request
 
     def _get_search_results_generator(self):
@@ -407,7 +406,6 @@ class PublicationDataMetadataReport(MetadataReport):
         )
         request = self.file_query_string.get_request_with_new_query_string()
         request.path_info = self._get_search_path()
-        request.registry = self.request.registry
         return request
 
     def _get_file_search_results_generator(self):
