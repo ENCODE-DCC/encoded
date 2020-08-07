@@ -434,6 +434,10 @@ class Patient(Item):
         "type": "object",
         "additionalProperties": False,
         "properties":{
+            "first_treatment_date": {
+                "title": "Date of First Treatment",
+                "type": "string",
+            },
             "diagnosis_date": {
                 "title": "Diagnosis Date",
                 "description": "Date of Diagnosis",
@@ -470,6 +474,7 @@ class Patient(Item):
         nephrectomy_dates = []
         non_nephrectomy_dates = []
         diagnosis_date = "Not available"
+        
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
@@ -537,8 +542,27 @@ class Patient(Item):
                     follow_up_duration_range="1.5 - 3 year"
                 else:
                     follow_up_duration_range="0 - 1.5 year"
-                
 
+        treatment_dates = []      
+        first_treatment_date = "Not available"
+        #Get the first_treatment_date
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                treatment_dates.append(surgery_object['date'])
+        if len(radiation) > 0:
+                # add radiation dates
+                for radiation_record in radiation:
+                    radiation_object = request.embed(radiation_record, '@@object')
+                    treatment_dates.append(radiation_object['start_date'])
+        if len(medication) > 0:
+            # add medication dates
+            for medication_record in medication:
+                medication_object = request.embed(medication_record, '@@object')
+                treatment_dates.append(medication_object['start_date'])
+        if len(treatment_dates) > 0:
+            treatment_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            first_treatment_date = treatment_dates[0]
 
         diagnosis = dict()
         diagnosis['diagnosis_date'] = diagnosis_date
@@ -546,6 +570,7 @@ class Patient(Item):
         diagnosis['age_unit'] = "year"
         diagnosis['age_range'] = age_range
         diagnosis['follow_up_duration_range']=follow_up_duration_range
+        diagnosis['first_treatment_date']=first_treatment_date
 
         return diagnosis
 
@@ -953,6 +978,7 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
 
 
