@@ -116,18 +116,6 @@ def _batch_download_publicationdata(request):
             # Request individual file object from its path.
             file = request.embed(file_id, as_user=True)
 
-            # All file datasets need to belong to the same type of dataset.
-            if dataset_type:
-                # See if subsequent dataset types match the first one we found.
-                file_dataset_type_match = type_re.match(file.get('dataset', ''))
-                if file_dataset_type_match and file_dataset_type_match.group(1) != dataset_type:
-                    raise HTTPBadRequest(explanation='File dataset types must be homogeneous')
-            else:
-                # Establish the first dataset type we find.
-                dataset_type_match = type_re.match(file.get('dataset', ''))
-                if dataset_type_match:
-                    dataset_type = dataset_type_match.group(1)
-
             # Other disqualifying conditions.
             if restricted_files_present(file):
                 continue

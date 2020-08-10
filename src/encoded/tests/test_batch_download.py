@@ -203,3 +203,25 @@ def test_batch_download_view_file_plus(testapp, index_workbook):
         '"http://localhost/metadata/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json"'
     )
     assert 'http://localhost/files/ENCFF880XNW/@@download/ENCFF880XNW.bigBed' in lines
+
+
+def test_batch_download_contains_all_values(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/batch_download/?type=Experiment')
+    actual = r.text.split('\n')
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_batch_download.tsv')
+    # To write new expected_batch_download.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = [x.strip() for x in f.readlines()]
+    assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
+
+
+def test_batch_download_contains_all_publication_data_values(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/batch_download/?type=PublicationData&@id=/publication-data/ENCSR727WCB/')
+    actual = r.text.split('\n')
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_publication_data_batch_download.tsv')
+    # To write new expected_batch_download.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = [x.strip() for x in f.readlines()]
+    assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
