@@ -217,13 +217,16 @@ class Biosample(Item):
                         })
     def disease_term_name(self, request, registry, disease_term_id=None):
         if disease_term_id is not None:
-            if disease_term_id in registry['ontology']:
-                return registry['ontology'][disease_term_id]['name']
-            else:
-                msg = 'Disease term ID {} is not a valid ID'.format(
-                    disease_term_id
-                )
-                raise ValidationFailure('body', ['disease_term_id'], msg)
+            term_name = list()
+            for term_id in disease_term_id:
+                if term_id in registry['ontology']:
+                    term_name.append(registry['ontology'][term_id]['name'])
+                else:
+                    msg = 'Disease term ID {} is not a valid ID'.format(
+                        disease_term_id
+                    )
+                    raise ValidationFailure('body', ['disease_term_id'], msg)
+            return ', '.join(map(str, term_name))
 
     @calculated_property(define=True,
                          schema={"title": "Health status",

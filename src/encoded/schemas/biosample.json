@@ -349,7 +349,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "24"
+            "default": "25"
         },
         "accession": {
             "accessionType": "BS"
@@ -882,10 +882,16 @@
             ]
         },
         "disease_term_id": {
-            "title": "Disease ontology ID",
-            "description": "An ontology identifier describing the disease affecting the biosample.",
-            "type": "string",
-            "pattern": "^DOID:[0-9]{2,7}$"
+            "title": "Disease ontology IDs",
+            "description": "Ontology identifiers describing the disease affecting the biosample.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Disease ontology ID",
+                "description": "Ontology identifier describing the disease affecting the biosample.",
+                "type": "string",
+                "pattern": "^(DOID:[0-9]{2,7}|HP:[0-9]{7})$"
+            }
         }
     },
     "facets": {

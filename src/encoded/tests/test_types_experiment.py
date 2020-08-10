@@ -199,7 +199,7 @@ def test_experiment_biosample_summary_4(testapp,
     testapp.patch_json(donor_2['@id'], {'sex': 'male'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             'biosample_ontology': epidermis['uuid'],
-                                            'disease_term_id': 'DOID:2513'})
+                                            'disease_term_id': ['DOID:2513']})
 
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
                                             'biosample_ontology': epidermis['uuid']})

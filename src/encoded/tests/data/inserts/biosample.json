@@ -1239,7 +1239,7 @@
         "award": "U54HG006991",
         "biosample_ontology": "tissue_UBERON_0001003",
         "donor": "ENCDO000AAK",
-        "disease_term_id": "DOID:2513",
+        "disease_term_id": ["DOID:2513"],
         "lab": "bradley-bernstein",
         "organism": "human",
         "source": "dana-levasseur",
