@@ -279,3 +279,36 @@ def test_batch_download_maybe_add_json_elements_to_metadata_link(dummy_request):
         '"Content-Type: application/json" '
         '--data \'{"elements": ["/experiments/ENCSR123ABC/", "/experiments/ENCSRDEF567/"]}\''
     )
+
+
+def test_batch_download_get_metadata_link(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    bd = BatchDownload(dummy_request)
+    metadata_link = bd._get_metadata_link()
+    assert metadata_link == (
+        '"http://localhost/metadata/?type=Experiment'
+        '&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status%21=archived&files.biological_replicates=2"'
+    )
+    dummy_request.json = {
+        'elements': [
+            '/experiments/ENCSR123ABC/',
+            '/experiments/ENCSRDEF567/'
+        ]
+    }
+    bd = BatchDownload(dummy_request)
+    metadata_link = bd._get_metadata_link()
+    assert metadata_link == (
+        '"http://localhost/metadata/?type=Experiment'
+        '&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status%21=archived&files.biological_replicates=2"'
+        ' -X GET -H "Accept: text/tsv" -H "Content-Type: application/json"'
+        ' --data \'{"elements": ["/experiments/ENCSR123ABC/", "/experiments/ENCSRDEF567/"]}\''
+    )

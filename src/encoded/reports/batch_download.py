@@ -47,7 +47,7 @@ class BatchDownloadMixin:
         )
 
 
-class BatchDownload(MetadataReport, BatchDownloadMixin):
+class BatchDownload(BatchDownloadMixin, MetadataReport):
 
     def _generate_rows(self):
         yield self.csv.writerow(self._get_metadata_link())
