@@ -164,3 +164,21 @@ PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Restricted', ['files.restricted'])
     ]
 )
+
+
+BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+    [
+        ('File download URL', ['files.href']),
+    ]
+)
+
+
+METADATA_LINK = '"{}/metadata/?{}"'
+
+
+AT_IDS_AS_JSON_DATA_LINK = (
+    ' -X GET '
+    '-H "Accept: text/tsv" '
+    '-H "Content-Type: application/json" '
+    '--data \'{{"elements": [{}]}}\''
+)
