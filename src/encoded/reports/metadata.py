@@ -167,10 +167,21 @@ class MetadataReport:
             if k.startswith('files.') and '!' not in k
         }
 
+    def _add_positive_file_filters_as_fields_to_param_list(self):
+        self.param_list['field'] = self.param_list.get('field', [])
+        self.param_list['field'].extend(
+            (
+                k
+                for k, v in self.query_string._get_original_params()
+                if k.startswith('files') and '!' not in k
+            )
+        )
+
     def _add_fields_to_param_list(self):
-        self.param_list['field'] = []
+        self.param_list['field'] = self.param_list.get('field', [])
         for column, fields in self._get_column_to_fields_mapping().items():
             self.param_list['field'].extend(fields)
+        self._add_positive_file_filters_as_fields_to_param_list()
 
     def _initialize_at_id_param(self):
         self.param_list['@id'] = self.param_list.get('@id', [])
