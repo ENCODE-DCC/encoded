@@ -552,7 +552,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'ES_OPT_FILENAME': 'es-demo.yml',
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
-                'INDEX_CHUNK_SIZE': 256,  # this will hold for all non es-wait or es-elect front ends.
             })
         if main_args.primary_indexing:
             data_insert.update({
@@ -1043,7 +1042,7 @@ def _parse_args():
     )
     parser.add_argument(
         '--index-chunk-size',
-        default=512,
+        default=128,
         type=int,
         help="Should be set lower for single-node demos"
     )
