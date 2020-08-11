@@ -391,3 +391,18 @@ def test_batch_download_get_column_to_field_mapping(dummy_request):
     assert list(bd._get_column_to_fields_mapping().items()) ==  [
         ('File download URL', ['files.href'])
     ]
+
+
+def test_batch_download_generate(index_workbook, dummy_request):
+    from types import GeneratorType
+    from encoded.reports.batch_download import BatchDownload
+    from pyramid.response import Response
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    bd = BatchDownload(dummy_request)
+    response = bd.generate()
+    assert isinstance(response, Response)
+    assert response.content_type == 'text/plain'
+    assert response.content_disposition == 'attachment; filename=files.txt'
+    assert len(list(response.body)) >= 100

@@ -26,6 +26,8 @@ class BatchDownloadMixin:
         ('field', 'files.status'),
         ('field', 'files.assembly'),
     ]
+    CONTENT_TYPE = 'text/plain'
+    CONTENT_DISPOSITION = 'attachment; filename=files.txt'
 
     def _build_header(self):
         for column in self._get_column_to_fields_mapping():
@@ -62,9 +64,6 @@ class BatchDownloadMixin:
 
 
 class BatchDownload(BatchDownloadMixin, MetadataReport):
-
-    CONTENT_TYPE = 'text/plain'
-    CONTENT_DISPOSITION = 'attachment; filename=files.txt'
 
     def _generate_rows(self):
         yield self._get_encoded_metadata_link_with_newline()
