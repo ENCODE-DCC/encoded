@@ -1,5 +1,9 @@
 ## Changelog for functional_characterization_experiment.json
 
+### Minor changes since schema version 6
+
+* Restricted submission of *target* property to admins only.
+
 ### Schema version 6
 
 * *plasmids_library_type* value *other* was removed.

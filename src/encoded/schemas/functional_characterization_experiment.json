@@ -130,7 +130,8 @@
             "description": "For assays, such as CRISPR screen, the name of the gene whose expression or product is under investigation for the functional characterization experiment.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "Target"
+            "linkTo": "Target",
+            "permission": "import_items"
         },
         "target_expression_range_minimum": {
             "title": "Target expression range minimum",
