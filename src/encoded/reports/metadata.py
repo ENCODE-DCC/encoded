@@ -237,23 +237,6 @@ class MetadataReport:
     def _get_search_path(self):
         return self.SEARCH_PATH
 
-    def _validate_request(self):
-        type_params = self.param_list.get('type', [])
-        if len(type_params) != 1:
-            raise HTTPBadRequest(explanation='URL requires one "type" parameter.')
-        return True
-
-    def _initialize_report(self):
-        self._build_header()
-        self._split_column_and_fields_by_experiment_and_file()
-        self._set_positive_file_param_list()
-
-    def _build_params(self):
-        self._add_fields_to_param_list()
-        self._initialize_at_id_param()
-        self._maybe_add_cart_elements_to_param_list()
-        self._maybe_add_json_elements_to_param_list()
-
     def _build_new_request(self):
         self._build_query_string()
         request = self.query_string.get_request_with_new_query_string()
@@ -331,6 +314,23 @@ class MetadataReport:
                 yield self.csv.writerow(
                     self._output_sorted_row(experiment_data, file_data)
                 )
+
+    def _validate_request(self):
+        type_params = self.param_list.get('type', [])
+        if len(type_params) != 1:
+            raise HTTPBadRequest(explanation='URL requires one "type" parameter.')
+        return True
+
+    def _initialize_report(self):
+        self._build_header()
+        self._split_column_and_fields_by_experiment_and_file()
+        self._set_positive_file_param_list()
+
+    def _build_params(self):
+        self._add_fields_to_param_list()
+        self._initialize_at_id_param()
+        self._maybe_add_cart_elements_to_param_list()
+        self._maybe_add_json_elements_to_param_list()
 
     def generate(self):
         self._validate_request()
