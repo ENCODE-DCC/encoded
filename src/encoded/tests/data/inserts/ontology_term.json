@@ -1,5 +1,29 @@
 [
     {
+        "uuid": "caada0f4-db84-11ea-87d0-0242ac130003",
+        "term_name": "amygdala",
+        "term_id": "UBERON:0001876",
+        "status": "released"
+    },
+    {
+        "uuid": "cee0e280-db84-11ea-87d0-0242ac130003",
+        "term_name": "brain",
+        "term_id": "UBERON:0000955",
+        "status": "released"
+    },
+    {
+        "uuid": "f2896bfc-d914-11ea-87d0-0242ac130003",
+        "term_name": "Asian",
+        "term_id": "HANCESTRO:0008",
+        "status": "released"
+    },
+    {
+        "uuid": "2d745ae2-d915-11ea-87d0-0242ac130003",
+        "term_name": "type 2 diabetes mellitus",
+        "term_id": "MONDO:0005147",
+        "status": "released"
+    },
+    {
         "uuid": "979e8378-e5c3-41f3-8376-c6c7ad8a7812",
         "term_name": "liver",
         "term_id": "UBERON:0002107",
