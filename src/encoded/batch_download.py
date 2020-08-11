@@ -25,7 +25,6 @@ currenttime = datetime.datetime.now()
 
 
 def includeme(config):
-    config.add_route('batch_download', '/batch_download{slash:/?}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
@@ -190,7 +189,6 @@ def peak_metadata(context, request):
     )
 
 
-@view_config(route_name='batch_download', request_method=('GET', 'POST'))
 def batch_download(context, request):
     default_params = [
         ('limit', 'all'),

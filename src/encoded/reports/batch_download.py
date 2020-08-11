@@ -2,6 +2,17 @@ from encoded.reports.constants import BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_LINK
 from encoded.reports.constants import AT_IDS_AS_JSON_DATA_LINK
 from encoded.reports.metadata import MetadataReport
+from encoded.reports.constants import METADATA_ALLOWED_TYPES
+from encoded.reports.metadata import allowed_types
+from pyramid.view import view_config
+from snovault.elasticsearch.searches.parsers import QueryString
+
+from encoded.batch_download import _batch_download_publicationdata
+
+
+def includeme(config):
+    config.add_route('batch_download', '/batch_download{slash:/?}')
+    config.scan(__name__)
 
 
 class BatchDownloadMixin:
@@ -46,11 +57,17 @@ class BatchDownloadMixin:
             metadata_link
         )
 
+    def _get_encoded_metadata_link_with_newline(self):
+        return f'{self._get_metadata_link()}\n'.encode('utf-8')
+
 
 class BatchDownload(BatchDownloadMixin, MetadataReport):
 
+    CONTENT_TYPE = 'text/plain'
+    CONTENT_DISPOSITION = 'attachment;filename=files.txt'
+
     def _generate_rows(self):
-        yield self.csv.writerow(self._get_metadata_link())
+        yield self._get_encoded_metadata_link_with_newline()
         for experiment in self._get_search_results_generator()['@graph']:
             if not experiment.get('files', []):
                 continue
@@ -61,3 +78,25 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
                 yield self.csv.writerow(
                     self._output_sorted_row({}, file_data)
                 )
+
+
+def _get_batch_download(context, request):
+    batch_download = BatchDownload(request)
+    return batch_download.generate()
+
+
+def batch_download_factory(context, request):
+    qs = QueryString(request)
+    specified_type = qs.get_one_value(
+            params=qs.get_type_filters()
+    )
+    if specified_type == 'PublicationData':
+        return _batch_download_publicationdata(request)
+    else:
+        return _get_batch_download(context, request)
+
+
+@view_config(route_name='batch_download', request_method='GET')
+@allowed_types(METADATA_ALLOWED_TYPES)
+def batch_download(context, request):
+    return batch_download_factory(context, request)

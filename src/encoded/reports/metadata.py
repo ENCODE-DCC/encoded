@@ -125,6 +125,8 @@ class MetadataReport:
         ('field', 'files.@id'),
         ('limit', 'all'),
     ]
+    CONTENT_TYPE = 'text/tsv'
+    CONTENT_DISPOSITION = 'attachment;filename=metadata.tsv'
 
     def __init__(self, request):
         self.request = request
@@ -324,9 +326,9 @@ class MetadataReport:
         self._initialize_report()
         self._build_params()
         return Response(
-             content_type='text/tsv',
+             content_type=self.CONTENT_TYPE,
              app_iter=self._generate_rows(),
-             content_disposition='attachment;filename=metadata.tsv'
+             content_disposition=self.CONTENT_DISPOSITION,
         )
 
 
