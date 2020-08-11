@@ -64,7 +64,7 @@ class BatchDownloadMixin:
 class BatchDownload(BatchDownloadMixin, MetadataReport):
 
     CONTENT_TYPE = 'text/plain'
-    CONTENT_DISPOSITION = 'attachment;filename=files.txt'
+    CONTENT_DISPOSITION = 'attachment; filename=files.txt'
 
     def _generate_rows(self):
         yield self._get_encoded_metadata_link_with_newline()
