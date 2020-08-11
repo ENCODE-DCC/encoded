@@ -1,5 +1,37 @@
 [
     {
+        "aliases": [
+            "peter-sims:scRNAseq_test_dataset"
+        ],
+        "accession": "ENCSR65432A",
+        "uuid": "2e0694f2-db63-11ea-87d0-0242ac130003",
+        "description": "A scRNAseq test dataset with 6 prenatal and 3 postnatal libraries.",
+        "award": "CZI004LIV",
+        "dbxrefs": [
+            "SRA:SRP123456", "GEO:GSE126030"
+        ],
+        "submitted_by": "jychien@stanford.edu",
+        "date_released": "2020-08-07",
+        "status": "released",
+        "references": [
+            "52e85c70-fe2d-11e3-9191-0800200c9a66"
+        ],
+        "corresponding_contributor": "felis.senectus@hymenaeos.nibh",
+        "internal_contact": "ipsum.mi@torquent.eleifend",
+        "supersedes": [
+            "8f8085dd-8e9c-4b75-a187-21dbafe46de1"
+        ],
+        "references": [
+            "baf202c2-b7af-4c43-b135-15104394daac",
+            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+        ],
+        "urls": [
+            "https://data.humancellatlas.org/explore/projects/4a95101c-9ffc-4f30-a809-f04518a23803"
+        ],
+        "submitter_comment": "Test submitter_comment",
+        "notes": "Test notes"
+    },
+    {
         "accession": "ENCSR123ABC",
         "award": "CZI004LIV",
         "description": "Some liver scRNA & scATAC data",
