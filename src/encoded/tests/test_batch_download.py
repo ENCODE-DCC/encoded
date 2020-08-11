@@ -312,3 +312,47 @@ def test_batch_download_get_metadata_link(dummy_request):
         ' -X GET -H "Accept: text/tsv" -H "Content-Type: application/json"'
         ' --data \'{"elements": ["/experiments/ENCSR123ABC/", "/experiments/ENCSRDEF567/"]}\''
     )
+
+
+def test_batch_download_default_params(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    bd = BatchDownload(dummy_request)
+    assert bd.DEFAULT_PARAMS == [
+        ('limit', 'all'),
+        ('field', 'files.href'),
+        ('field', 'files.restricted'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.status'),
+        ('field', 'files.assembly'),
+    ]
+
+
+def test_batch_download_build_header(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    bd = BatchDownload(dummy_request)
+    bd._build_header()
+    assert bd.header == ['File download URL']
+
+
+def test_batch_download_get_column_to_field_mapping(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    bd = BatchDownload(dummy_request)
+    assert list(bd._get_column_to_fields_mapping().items()) ==  [
+        ('File download URL', ['files.href'])
+    ]
