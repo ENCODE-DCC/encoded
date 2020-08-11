@@ -529,6 +529,8 @@ class Patient(Item):
             age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
             ageString = str(age)
 
+            # For age of diagnosis if age is about 90
+            # we make this a string to represent
             if age >= 90:
                 ageString = "90 or above"
 
