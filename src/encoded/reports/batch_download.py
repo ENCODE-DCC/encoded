@@ -19,8 +19,10 @@ class BatchDownloadMixin:
 
     DEFAULT_PARAMS = [
         ('limit', 'all'),
+        ('field', 'files.@id'),
         ('field', 'files.href'),
         ('field', 'files.restricted'),
+        ('field', 'files.no_file_available'),
         ('field', 'files.file_format'),
         ('field', 'files.file_format_type'),
         ('field', 'files.status'),
