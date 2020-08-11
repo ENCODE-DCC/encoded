@@ -516,8 +516,8 @@ class Patient(Item):
             for medication_record in medication:
                 medication_object = request.embed(medication_record, '@@object')
                 non_nephrectomy_dates.append(medication_object['start_date'])
-                non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                diagnosis_date = non_nephrectomy_dates[0]
+            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = non_nephrectomy_dates[0]
 
         age_range = "Unknown"
         ageString = "Unknown"
