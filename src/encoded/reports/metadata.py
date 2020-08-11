@@ -186,13 +186,16 @@ class MetadataReport:
                     cart.get('elements', [])
                 )
 
-    def _maybe_add_json_elements_to_param_list(self):
+    def _get_json_elements_or_empty_list(self):
         try:
-            self.param_list['@id'].extend(
-                self.request.json.get('elements', [])
-            )
+            return self.request.json.get('elements', [])
         except ValueError:
-            pass
+            return []
+
+    def _maybe_add_json_elements_to_param_list(self):
+        self.param_list['@id'].extend(
+            self._get_json_elements_or_empty_list()
+        )
 
     def _get_field_params(self):
         return [

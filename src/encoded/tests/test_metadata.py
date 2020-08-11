@@ -896,6 +896,31 @@ def test_metadata_metadata_report_maybe_add_cart_elements_to_param_list(dummy_re
     ]
 
 
+def test_metadata_metadata_report_get_json_elements_or_empty_list(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    at_ids = mr._get_json_elements_or_empty_list()
+    assert at_ids == []
+    dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    at_ids = mr._get_json_elements_or_empty_list()
+    assert at_ids == [
+        '/experiments/ENCSR123ABC/'
+    ]
+    dummy_request.json = {'elements': []}
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    at_ids = mr._get_json_elements_or_empty_list()
+    assert at_ids == []
+
+
 def test_metadata_metadata_report_maybe_add_json_elements_to_param_list(dummy_request):
     from encoded.reports.metadata import MetadataReport
     dummy_request.environ['QUERY_STRING'] = (
