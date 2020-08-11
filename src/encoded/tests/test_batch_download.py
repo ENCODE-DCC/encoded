@@ -227,6 +227,12 @@ def test_batch_download_contains_all_publication_data_values(index_workbook, tes
     assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
 
 
+def test_batch_download_init_batch_download_mixin(dummy_request):
+    from encoded.reports.batch_download import BatchDownloadMixin
+    bdm = BatchDownloadMixin()
+    assert isinstance(bdm, BatchDownloadMixin)
+
+
 def test_batch_download_init_batch_download(dummy_request):
     from encoded.reports.batch_download import BatchDownload
     dummy_request.environ['QUERY_STRING'] = (
