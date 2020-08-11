@@ -757,12 +757,33 @@ def test_metadata_metadata_report_set_positive_file_param_list(dummy_request):
         assert tuple(expected_positive_file_param_list[k]) == tuple(v)
 
 
+def test_metadata_metadata_report_add_positive_file_filters_as_fields_to_param_list(dummy_request):
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&files.read_count=123'
+    )
+    mr = MetadataReport(dummy_request)
+    assert mr.param_list.get('field', []) == []
+    mr._add_positive_file_filters_as_fields_to_param_list()
+    assert mr.param_list.get('field') == [
+        'files.file_type',
+        'files.file_type',
+        'files.replicate.library.size_range',
+        'files.biological_replicates',
+        'files.read_count',
+    ]
+
+
 def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
     from encoded.reports.metadata import MetadataReport
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
         '&files.replicate.library.size_range=50-100'
         '&files.status!=archived&files.biological_replicates=2'
+        '&files.read_count=123'
     )
     mr = MetadataReport(dummy_request)
     mr._add_fields_to_param_list()
@@ -826,7 +847,8 @@ def test_metadata_metadata_report_add_fields_to_param_list(dummy_request):
         'files.status',
         'files.no_file_available',
         'files.restricted',
-        'files.s3_uri'
+        'files.s3_uri',
+        'files.read_count',
     ]
     assert set(mr.param_list['field']) == set(expected_fields)
 
@@ -1059,7 +1081,7 @@ def test_metadata_metadata_report_build_query_string(dummy_request):
     )
     mr = MetadataReport(dummy_request)
     mr._build_query_string()
-    mr.query_string == (
+    assert str(mr.query_string) == (
         'type=Experiment&files.file_type=bigWig'
         '&files.file_type=bam&files.replicate.library.size_range=50-100'
         '&files.status%21=archived&files.biological_replicates=2'
@@ -1146,7 +1168,7 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
     new_request = mr._build_new_request()
     assert new_request.path_info == '/search/'
     assert new_request.registry
-    assert new_request.query_string == (
+    assert str(new_request.query_string) == (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
         '&files.replicate.library.size_range=50-100&files.status%21=archived'
         '&files.biological_replicates=2&field=audit&field=files.%40id&limit=all'
@@ -1669,7 +1691,7 @@ def test_metadata_batched_search_generator_build_new_request(dummy_request):
     bsg = BatchedSearchGenerator(dummy_request, batch_size=2)
     batched_params = [('@id', '/files/ENCFFABC123/'), ('@id', '/files/ENCFFABC345/')]
     request = bsg._build_new_request(batched_params)
-    assert request.query_string == (
+    assert str(request.query_string) == (
         'type=Experiment'
         '&%40id=%2Ffiles%2FENCFFABC123%2F'
         '&%40id=%2Ffiles%2FENCFFABC345%2F'
@@ -2114,7 +2136,7 @@ def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_
     assert request.path_info == '/search/'
     pdmr.file_at_ids = ['/files/ENCFFABC123/', '/files/ENCFFDEF345/']
     request = pdmr._build_new_file_request()
-    assert request.query_string == (
+    assert str(request.query_string) == (
         'type=File&limit=all&field=%40id&field=title&field=dataset'
         '&field=file_format&field=file_type&field=output_type'
         '&field=assay_term_name&field=biosample_ontology.term_id'

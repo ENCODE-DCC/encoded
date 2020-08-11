@@ -393,6 +393,45 @@ def test_batch_download_get_column_to_field_mapping(dummy_request):
     ]
 
 
+def test_batch_download_build_query_string(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+    )
+    bd = BatchDownload(dummy_request)
+    bd._initialize_report()
+    bd._build_params()
+    bd._build_query_string()
+    bd.query_string.deduplicate()
+    assert str(bd.query_string) == (
+        'type=Experiment&files.file_type=bigWig'
+        '&files.file_type=bam&limit=all&field=files.%40id'
+        '&field=files.href&field=files.restricted'
+        '&field=files.no_file_available&field=files.file_format'
+        '&field=files.file_format_type&field=files.status'
+        '&field=files.assembly&field=files.file_type'
+    )
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    bd = BatchDownload(dummy_request)
+    bd._initialize_report()
+    bd._build_params()
+    bd._build_query_string()
+    assert str(bd.query_string) == (
+        'type=Experiment&files.file_type=bigWig'
+        '&files.file_type=bam&files.replicate.library.size_range=50-100'
+        '&files.status%21=archived&files.biological_replicates=2'
+        '&limit=all&field=files.%40id&field=files.href&field=files.restricted'
+        '&field=files.no_file_available&field=files.file_format'
+        '&field=files.file_format_type&field=files.status&field=files.assembly'
+        '&field=files.href&field=files.file_type&field=files.file_type'
+        '&field=files.replicate.library.size_range&field=files.biological_replicates'
+    )
+
+
 def test_batch_download_generate(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.batch_download import BatchDownload
