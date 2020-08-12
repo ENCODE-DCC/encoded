@@ -359,8 +359,10 @@ def test_batch_download_default_params(dummy_request):
     bd = BatchDownload(dummy_request)
     assert bd.DEFAULT_PARAMS == [
         ('limit', 'all'),
+        ('field', 'files.@id'),
         ('field', 'files.href'),
         ('field', 'files.restricted'),
+        ('field', 'files.no_file_available'),
         ('field', 'files.file_format'),
         ('field', 'files.file_format_type'),
         ('field', 'files.status'),
@@ -457,5 +459,5 @@ def test_batch_download_generate(index_workbook, dummy_request):
     response = bd.generate()
     assert isinstance(response, Response)
     assert response.content_type == 'text/plain'
-    assert response.content_disposition == 'attachment; filename=files.txt'
+    assert response.content_disposition == 'attachment; filename="files.txt"'
     assert len(list(response.body)) >= 100

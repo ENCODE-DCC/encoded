@@ -14,8 +14,8 @@ http://localhost/files/ENCFF314NBV/@@download/ENCFF314NBV.tsv
 http://localhost/files/ENCFF812BBM/@@download/ENCFF812BBM.bed.gz
 http://localhost/files/ENCFF617GRA/@@download/ENCFF617GRA.tsv
 http://localhost/files/ENCFF000VUS/@@download/ENCFF000VUS.bam
-http://localhost/files/ENCFF001MXA/@@download/ENCFF001MXA.bam
 http://localhost/files/ENCFF001MWZ/@@download/ENCFF001MWZ.bam
+http://localhost/files/ENCFF001MXA/@@download/ENCFF001MXA.bam
 http://localhost/files/ENCFF001MXD/@@download/ENCFF001MXD.bigWig
 http://localhost/files/ENCFF002MXD/@@download/ENCFF002MXD.bigWig
 http://localhost/files/ENCFF003MXD/@@download/ENCFF003MXD.bigWig
@@ -108,7 +108,6 @@ http://localhost/files/ENCFF000LBC/@@download/ENCFF000LBC.csqual.gz
 http://localhost/files/ENCFF000LBB/@@download/ENCFF000LBB.csqual.gz
 http://localhost/files/ENCFF000LBA/@@download/ENCFF000LBA.csfasta.gz
 http://localhost/files/ENCFF000LAZ/@@download/ENCFF000LAZ.csfasta.gz
-http://localhost/files/ENCFF010LAO/@@download/ENCFF010LAO.csfasta.gz
 http://localhost/files/ENCFF129DNA/@@download/ENCFF129DNA.bigWig
 http://localhost/files/ENCFF127ACM/@@download/ENCFF127ACM.fastq.gz
 http://localhost/files/ENCFF718LJW/@@download/ENCFF718LJW.bam

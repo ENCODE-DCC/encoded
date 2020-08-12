@@ -29,7 +29,7 @@ class BatchDownloadMixin:
         ('field', 'files.assembly'),
     ]
     CONTENT_TYPE = 'text/plain'
-    CONTENT_DISPOSITION = 'attachment; filename=files.txt'
+    CONTENT_DISPOSITION = 'attachment; filename="files.txt"'
 
     def _build_header(self):
         for column in self._get_column_to_fields_mapping():
