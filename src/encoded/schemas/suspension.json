@@ -104,7 +104,7 @@
                 "title": "Enriched cell type",
                 "description": "Embedded property to linking to biosample type which describes the ontology of an enriched cell type.",
                 "type":  "string",
-                "linkTo": "BiosampleType"
+                "linkTo": "OntologyTerm"
             }
         },
         "enrichment_factors": {
@@ -120,7 +120,7 @@
                 "title": "Depleted cell type",
                 "description": "Embedded property for linking to biosample type which describes the ontology of a depleted cell type.",
                 "type":  "string",
-                "linkTo": "BiosampleType"
+                "linkTo": "OntologyTerm"
             }
         },
         "cell_depletion_factors": {

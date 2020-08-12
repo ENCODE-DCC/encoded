@@ -110,7 +110,7 @@
             "title": "Antibody capture metrics",
             "description": "The antibody capture metrics that is also associated with the feature expression matrix from which this gene expression metrics was generated.",
             "type": "string",
-            "linkTo": "AntibodyCaptureMetric"
+            "linkTo": "AntibodyCaptureMetrics"
         },
         "doublet_rate": {
             "title": "Doublet rate",
