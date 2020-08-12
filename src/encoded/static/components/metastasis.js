@@ -86,12 +86,9 @@ class Metastasis extends React.Component {
     }
 
     let diagnosisDate;
-    let minX;
+    let minX =new Date(this.props.first_treatment_date + ' 00:00:00');
     if (this.props.diagnosis_date != "Not available") {
-    diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
-    minX = new Date(this.props.diagnosis_date + ' 00:00:00');;
-    } else {
-    minX = new Date(metsData[0].date);
+        diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
     }
     let deceasedDate;
     let lastFollowUpDate;
@@ -243,8 +240,4 @@ class Metastasis extends React.Component {
 }
 
 export default Metastasis;
-
-
-
-
 

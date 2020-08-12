@@ -45,7 +45,7 @@ class MedicationChart extends React.Component {
     let sortedDataPoints = dataPoints.sort((a, b) => (a[0] - b[0]));
     //Get xRange from dateRange.
     let sortedDateUnix = sortedDataPoints.map(i => { return [i[0], i[1]] }).flat();
-    let minDateUnix = Math.min(...sortedDateUnix);
+    let minDateUnix = new Date(this.props.first_treatment_date + ' 00:00:00');
     let maxDateUnix = Math.max(...sortedDateUnix);
 
     let minDate = this.unixToDate(minDateUnix);
@@ -83,13 +83,13 @@ class MedicationChart extends React.Component {
     //for Diagnosis marker:
 
     if (this.props.diagnosis_date != "Not available") {
-      minDateUnix = Date.parse(this.props.diagnosis_date + ' 00:00:00' );
-      minDate = this.unixToDate(minDateUnix);
+      let diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
+     
 
       let trace2 = {};
       trace2 = {
         type: 'scatter',
-        x: [minDateUnix],
+        x: [diagnosisDate],
         y: [0],
         mode: 'markers+text',
         marker: {
@@ -104,7 +104,7 @@ class MedicationChart extends React.Component {
         },
         textposition: 'right',
         showlegend: false,
-        hovertemplate: "Date of diagnosis: " + minDate + "<extra></extra>",
+        hovertemplate: "Date of diagnosis: " + this.props.diagnosis_date + "<extra></extra>",
         xaxis: 'x2',
       };
       
@@ -225,4 +225,5 @@ class MedicationChart extends React.Component {
   }
 }
 export default MedicationChart;
+
 
