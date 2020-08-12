@@ -393,6 +393,20 @@ def test_batch_download_get_column_to_field_mapping(dummy_request):
     ]
 
 
+def test_batch_download__build_params(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
+    bd = BatchDownload(dummy_request)
+    bd._build_params()
+    assert len(bd.param_list['field']) == 5, f'{len(bd.param_list["field"])} not expected'
+    assert len(bd.param_list['@id']) == 1
+
+
 def test_batch_download_build_query_string(dummy_request):
     from encoded.reports.batch_download import BatchDownload
     dummy_request.environ['QUERY_STRING'] = (
