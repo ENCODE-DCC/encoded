@@ -84,6 +84,17 @@
                 "Parkland Hospital",
                 "Tumor Registry"
             ]
+        },
+        "diagnosis_date_tumor_registry": {
+            "title": "Diagnosis Date from Tumor Registry",
+            "description": "Diagnosis date of patient from Tumor Registry.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {
+                    "format": "date"
+                }
+            ]
         }
 
     },
@@ -127,18 +138,15 @@
         "surgery.surgery_procedure.nephrectomy_details.approach": {
             "title": "Nephrectomy Approach"
         },
-
-        "sur_nephr_robotic_assist":{
+        "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "sur_path_tumor_size":{
+        "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
-
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
@@ -248,17 +256,15 @@
         "status": {
             "title": "Status"
         },
-        "sur_nephr_robotic_assist":{
+        "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "sur_path_tumor_size":{
+        "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
-
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
@@ -308,5 +314,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-
-

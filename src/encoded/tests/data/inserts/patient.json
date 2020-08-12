@@ -63,7 +63,8 @@
         "race": "Other",
         "status": "released",
         "uuid": "820b25e6-78fb-44af-87e1-f1bd63f941e0",
-        "mrn": "411"
+        "mrn": "411",
+        "diagnosis_date_tumor_registry": "1878-04-02"
     },
     {
         "accession": "KCEPT802XRB",
@@ -95,7 +96,8 @@
         "race": "Other",
         "status": "released",
         "uuid": "f71399f8-55ce-4260-a010-ba09ce1c8f8a",
-        "mrn": "350"
+        "mrn": "350",
+        "diagnosis_date_tumor_registry": "1827-07-02"
     },
     {
         "accession": "KCEPT139SOR",
