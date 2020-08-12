@@ -2,7 +2,7 @@
 
 ### Schema version 25
 
-* *disease_term_id* and *disease_term_name* properties were changed to be arrays. The *disease_term_id* regex was adjusted to accept Human Phenotype terms from the Disease Ontology.
+* *disease_term_id* and *disease_term_name* properties were changed to be arrays. The *disease_term_id* regex was adjusted to accept Human Phenotype ontology terms.
 
 ### Minor changes since schema version 24
 

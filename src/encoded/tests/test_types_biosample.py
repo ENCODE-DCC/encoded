@@ -164,11 +164,11 @@ def test_biosample_summary_construct_2(
         'donor': human_donor_1['@id'],
         'biosample_ontology': liver['uuid'],
         'organism': human['@id'],
-        'disease_term_id': ['DOID:0080600']
+        'disease_term_id': ['DOID:0080600', 'DOID:9351']
         })
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens female adult (31 years) liver tissue with COVID-19')
+        'Homo sapiens female adult (31 years) liver tissue with COVID-19, diabetes mellitus')
 
 
 def test_biosample_summary_construct_3(

@@ -223,7 +223,7 @@ class Biosample(Item):
                     term_name.append(registry['ontology'][term_id]['name'])
                 else:
                     msg = 'Disease term ID {} is not a valid ID'.format(
-                        disease_term_id
+                        term_id
                     )
                     raise ValidationFailure('body', ['disease_term_id'], msg)
             return ', '.join(map(str, term_name))

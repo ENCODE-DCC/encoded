@@ -883,7 +883,7 @@
         },
         "disease_term_id": {
             "title": "Disease ontology IDs",
-            "description": "Ontology identifiers describing the disease affecting the biosample.",
+            "description": "Ontology identifiers describing the disease(s) affecting the biosample.",
             "type": "array",
             "uniqueItems": true,
             "items": {
