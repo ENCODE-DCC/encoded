@@ -499,12 +499,13 @@ class Patient(Item):
                 nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
                 diagnosis_date = nephrectomy_dates[0]
                 surgery_dates.append(nephrectomy_dates[0])
-                diagnosis_source = "Pathology Report"
 
-        elif len(non_nephrectomy_dates) > 0:
+        if len(non_nephrectomy_dates) > 0:
             non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
             # Check if Non-nephrectomy (Biopsy Kidney) comes before the nephrectomy
             surgery_dates.append(non_nephrectomy_dates[0])
+
+        if len(surgery_dates) > 0:
             surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
             diagnosis_date = surgery_dates[0]
             diagnosis_source = "Pathology Report"
