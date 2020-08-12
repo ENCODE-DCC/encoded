@@ -1,3 +1,4 @@
+from encoded.search_views import search_generator
 from snovault.elasticsearch.searches.parsers import QueryString
 
 
