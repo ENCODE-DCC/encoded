@@ -12,6 +12,7 @@ from encoded.batch_download import ELEMENT_CHUNK_SIZE
 from encoded.batch_download import get_biosample_accessions
 
 
+
 pytestmark = [
     pytest.mark.indexing,
     pytest.mark.usefixtures('index_workbook'),
@@ -154,20 +155,6 @@ def test_batch_download_matched_set_report_download(testapp, index_workbook):
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
 
 
-def test_batch_download_restricted_files_present(testapp, index_workbook):
-    results = testapp.get('/search/?limit=all&field=files.href&field=files.file_type&field=files&type=Experiment')
-    results = results.body.decode("utf-8")
-    results = json.loads(results)
-
-    files_gen = (
-        exp_file
-        for exp in results['@graph']
-        for exp_file in exp.get('files', [])
-    )
-    for exp_file in files_gen:
-        assert exp_file.get('restricted', False) == restricted_files_present(exp_file)
-
-
 def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_column_value_validate):
     for path in lookup_column_value_validate.keys():
         assert lookup_column_value_validate[path] == lookup_column_value(lookup_column_value_item, path)
@@ -187,11 +174,12 @@ def test_batch_download_header_and_rows(testapp, index_workbook):
     results = testapp.get('/batch_download/?type=Experiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'
     assert results.headers['Content-Disposition'] == 'attachment; filename="files.txt"'
-    lines = results.text.split('\n')
+    lines = results.text.strip().split('\n')
     assert len(lines) > 0
     assert '/metadata/?type=Experiment' in lines[0]
     for line in lines[1:]:
-        assert '@@download' in line
+        assert '@@download' in line, f'{line} not download'
+
 
 
 def test_batch_download_view_file_plus(testapp, index_workbook):
@@ -208,7 +196,7 @@ def test_batch_download_view_file_plus(testapp, index_workbook):
 def test_batch_download_contains_all_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/batch_download/?type=Experiment')
-    actual = r.text.split('\n')
+    actual = r.text.strip().split('\n')
     expected_path = resource_filename('encoded', 'tests/data/inserts/expected_batch_download.tsv')
     # To write new expected_batch_download.tsv change 'r' to 'w' and f.write(r.text); return;
     with open(expected_path, 'r') as f:
