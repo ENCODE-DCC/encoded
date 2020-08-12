@@ -8,6 +8,8 @@ from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS
 from encoded.reports.csv import CSVGenerator
 from encoded.reports.decorators import allowed_types
 from encoded.reports.search import BatchedSearchGenerator
+from encoded.reports.serializers import make_experiment_cell
+from encoded.reports.serializers import make_file_cell
 from encoded.search_views import search_generator
 from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
@@ -20,46 +22,6 @@ from snovault.util import simple_path_ids
 def includeme(config):
     config.add_route('metadata', '/metadata{slash:/?}')
     config.scan(__name__)
-
-
-def make_experiment_cell(paths, experiment):
-    last = []
-    for path in paths:
-        cell_value = []
-        for value in simple_path_ids(experiment, path):
-            if str(value) not in cell_value:
-                cell_value.append(str(value))
-        if last and cell_value:
-            last = [
-                v + ' ' + cell_value[0]
-                for v in last
-            ]
-        else:
-            last = cell_value
-    return ', '.join(set(last))
-
-
-def make_file_cell(paths, file_):
-    # Quick return if one level deep.
-    if len(paths) == 1 and '.' not in paths[0]:
-        value = file_.get(paths[0], '')
-        if isinstance(value, list):
-            return ', '.join([str(v) for v in value])
-        return value
-    # Else crawl nested objects.
-    last = []
-    for path in paths:
-        cell_value = []
-        for value in simple_path_ids(file_, path):
-            cell_value.append(str(value))
-        if last and cell_value:
-            last = [
-                v + ' ' + cell_value[0]
-                for v in last
-            ]
-        else:
-            last = cell_value
-    return ', '.join(sorted(set(last)))
 
 
 def file_matches_file_params(file_, positive_file_param_list):

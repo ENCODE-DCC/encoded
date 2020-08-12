@@ -414,25 +414,6 @@ def audits_():
     }
 
 
-def test_metadata_make_experiment_cell():
-    from encoded.reports.metadata import make_experiment_cell
-    assert make_experiment_cell(['assembly'], experiment()) == 'GRCh38'
-    assert make_experiment_cell(['protein_tags.location'], experiment()) == 'C-terminal'
-    unsorted_cell = make_experiment_cell(['protein_tags.target'], experiment())
-    assert unsorted_cell == '/targets/STAG1-human/, /targets/STAG2-human/' or unsorted_cell == '/targets/STAG2-human/, /targets/STAG1-human/'
-
-
-def test_metadata_make_file_cell():
-    from encoded.reports.metadata import make_file_cell
-    assert make_file_cell(['assembly'], file_()) == 'GRCh38'
-    assert make_file_cell(['dbxrefs'], file_()) == ''
-    assert make_file_cell(['technical_replicates'], file_()) == '2_1'
-    assert make_file_cell(['biological_replicates'], file_()) == '2'
-    assert make_file_cell(['status'], file_()) == 'released'
-    assert make_file_cell(['lab.title'], file_()) == 'ENCODE Processing Pipeline'
-    assert make_file_cell(['file_format', 'file_format_type'], file_()) == 'bed idr_ranked_peak'
-
-
 def test_metadata_file_matches_file_params():
     from encoded.reports.metadata import file_matches_file_params
     file_param_list = {'assembly': ['GRCh38']}
