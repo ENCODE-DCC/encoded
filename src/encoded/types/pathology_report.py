@@ -34,38 +34,28 @@ class PathologyReport(Item):
     set_status_up = []
     set_status_down = []
 
-    @calculated_property(  schema={
+
+    @calculated_property( define=True, schema={
         "title": "Pathology Report Tumor Range",
         "description": "Customized tumor range for pathology report",
         "type": "string",
-
     })
 
-    def pathology_report_tumor_range(self):
-        return self.__pathology_report_tumor_range__
 
-    @property
-    def __pathology_report_tumor_range__(self):
-        properties = self.upgrade_properties()
-        return self._pathology_report_tumor_range(properties)
-
-    def _pathology_report_tumor_range(self, properties):
-        tumor_size_range = []
-        path_source_procedure=properties['path_source_procedure']
-        if  path_source_procedure == 'path_nephrectomy':
-            if 'tumor_size' in properties:
-                tumor_size=properties['tumor_size']
-                if 0 <= tumor_size < 3:
-                    tumor_size_range.append("0-3 cm")
-                elif 3 <= tumor_size < 7:
-                    tumor_size_range.append("3-7 cm")
-                elif 7 <= tumor_size < 10:
-                    tumor_size_range.append("7-10 cm")
-                else:
-                    tumor_size_range.append("10+ cm")
+    def pathology_report_tumor_range(self, request, tumor_size=None):
+        if tumor_size is not None:
+            if  tumor_size >=10:
+                pathology_report_tumor_range="10+ cm"
+            elif tumor_size >= 7:
+                pathology_report_tumor_range="7-10 cm"
+            elif  tumor_size >= 3:
+                pathology_report_tumor_range="3-7 cm"
             else:
-                tumor_size_range.append("unknown")
-        return tumor_size_range
+                pathology_report_tumor_range="0-3 cm"
+        else:
+            pathology_report_tumor_range="unknown"
+        return pathology_report_tumor_range
+
 
     @calculated_property(
         schema={
