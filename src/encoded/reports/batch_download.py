@@ -3,7 +3,7 @@ from encoded.reports.constants import METADATA_LINK
 from encoded.reports.constants import AT_IDS_AS_JSON_DATA_LINK
 from encoded.reports.metadata import MetadataReport
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
-from encoded.reports.metadata import allowed_types
+from encoded.reports.decorators import allowed_types
 from pyramid.view import view_config
 from snovault.elasticsearch.searches.parsers import QueryString
 

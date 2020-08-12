@@ -1,13 +1,12 @@
-import csv
-
 from collections import defaultdict
 from collections import OrderedDict
-from functools import wraps
 from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.csv import CSVGenerator
+from encoded.reports.decorators import allowed_types
 from encoded.search_views import search_generator
 from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
@@ -20,25 +19,6 @@ from snovault.util import simple_path_ids
 def includeme(config):
     config.add_route('metadata', '/metadata{slash:/?}')
     config.scan(__name__)
-
-
-def allowed_types(types):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(context, request):
-            qs = QueryString(request)
-            type_filters = qs.get_type_filters()
-            if len(type_filters) != 1:
-                raise HTTPBadRequest(
-                    explanation='URL requires one type parameter.'
-                )
-            if type_filters[0][1] not in types:
-                raise HTTPBadRequest(
-                    explanation=f'{type_filters[0][1]} not a valid type for endpoint.'
-                )
-            return func(context, request)
-        return wrapper
-    return decorator
 
 
 def make_experiment_cell(paths, experiment):
@@ -474,23 +454,6 @@ class PublicationDataMetadataReport(MetadataReport):
                 yield self.csv.writerow(
                     self._output_sorted_row(experiment_data, file_data)
                 )
-
-
-class CSVGenerator:
-
-    def __init__(self, delimiter='\t', lineterminator='\n'):
-        self.writer = csv.writer(
-            self,
-            delimiter=delimiter,
-            lineterminator=lineterminator
-        )
-
-    def writerow(self, row):
-        self.writer.writerow(row)
-        return self.row
-
-    def write(self, row):
-        self.row = row.encode('utf-8')
 
 
 class BatchedSearchGenerator:

@@ -414,30 +414,6 @@ def audits_():
     }
 
 
-def test_metadata_allowed_types_decorator_raises_error():
-    from encoded.reports.metadata import allowed_types
-
-    @allowed_types(['MyType'])
-    def endpoint(context, request):
-        return True
-
-    class Request:
-        def __init__(self, params):
-            self.params = params
-
-    context = {}
-    request = Request({})
-    with pytest.raises(HTTPBadRequest) as error:
-        endpoint(context, request)
-    assert str(error.value) == 'URL requires one type parameter.'
-    request = Request({'type': 'WrongType'})
-    with pytest.raises(HTTPBadRequest) as error:
-        endpoint(context, request)
-    assert str(error.value) == 'WrongType not a valid type for endpoint.'
-    request = Request({'type': 'MyType'})
-    assert endpoint(context, request)
-
-
 def test_metadata_make_experiment_cell():
     from encoded.reports.metadata import make_experiment_cell
     assert make_experiment_cell(['assembly'], experiment()) == 'GRCh38'
@@ -1532,10 +1508,6 @@ def test_metadata_view_publication_data(index_workbook, testapp):
         '/metadata/?type=PublicationData&@id=/publication-data/ENCSR727WCB/'
     )
     assert len(r.text.split('\n')) >= 7
-
-
-def test_metadata_view_unallowed_type(index_workbook, testapp):
-    testapp.get('/metadata/?type=File', status=400)
 
 
 def test_metadata_contains_audit_values(index_workbook, testapp):
