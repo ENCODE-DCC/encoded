@@ -33,8 +33,7 @@ class BatchDownloadMixin:
 
     def _build_header(self):
         for column in self._get_column_to_fields_mapping():
-            if column not in self.EXCLUDED_COLUMNS:
-                self.header.append(column)
+            self.header.append(column)
 
     def _get_column_to_fields_mapping(self):
         return BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
