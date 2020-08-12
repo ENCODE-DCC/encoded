@@ -1,4 +1,13 @@
 [
+    {
+        "uuid": "89ab74fa-dc15-11ea-87d0-0242ac130003",
+        "aliases": [
+            "lattice:insulin"
+        ],
+        "treatment_term_id": "CHEBI:145810",
+        "treatment_term_name": "insulin",
+        "treatment_type": "chemical"
+     },
      {
         "amount": 5000000,
         "amount_units": "pfu",

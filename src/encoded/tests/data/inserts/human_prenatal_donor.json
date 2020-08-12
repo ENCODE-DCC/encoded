@@ -1,6 +1,6 @@
 [
     {
-    	"accession": "ENCDO112233",
+    	"accession": "ENCDO123ABC",
     	"aliases": [
     		"peter-sims:prenatal_donor2"
     	],
@@ -27,7 +27,7 @@
     	"submitter_comment": "Test comment"
     },
         {
-    	"accession": "ENCDO112234",
+    	"accession": "ENCDO124ABC",
     	"aliases": [
     		"peter-sims:prenatal_donor3"
     	],

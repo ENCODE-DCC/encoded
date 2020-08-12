@@ -1,5 +1,239 @@
 [
     {
+        "accession": "ENCBS600AAA",
+        "uuid": "dbe1211e-dc2b-11ea-87d0-0242ac130003",
+        "aliases": [
+            "peter-sims:suspension1a"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension1a",
+        "derived_from": [
+            "peter-sims:tissue_1"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS601AAA",
+        "uuid": "85e227da-dc40-11ea-87d0-0242ac130003",
+        "aliases": [
+            "peter-sims:suspension1b"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension1b",
+        "derived_from": [
+            "peter-sims:tissue_1"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS602AAA",
+        "uuid": "8b927680-dc40-11ea-87d0-0242ac130003",
+        "aliases": [
+            "peter-sims:suspension1c"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension1c",
+        "derived_from": [
+            "peter-sims:tissue_1"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS603AAA",
+        "uuid": "8f62dfe8-dc40-11ea-87d0-0242ac130003",
+        "aliases": [
+            "peter-sims:suspension2a"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "description": "suspension2a",
+        "derived_from": [
+            "peter-sims:tissue_2"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS604AAA",
+        "uuid": "93fb5fda-dc40-11ea-87d0-0242ac130003",
+        "aliases": [
+            "peter-sims:suspension2b"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "description": "suspension2b",
+        "derived_from": [
+            "peter-sims:tissue_2"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS605AAA",
+        "uuid": "e283b5f9-3afc-45b9-aab9-c3704fb0c14e",
+        "aliases": [
+            "peter-sims:suspension2c"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "description": "suspension2c",
+        "derived_from": [
+            "peter-sims:tissue_2"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS606AAA",
+        "uuid": "7973f6f4-5e51-4d3b-9a5a-758f2b09c44c",
+        "aliases": [
+            "peter-sims:suspension3a"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "description": "suspension3a",
+        "derived_from": [
+            "peter-sims:tissue_3"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS607AAA",
+        "uuid": "d41caa1a-5d55-476d-8d92-a0dcc17d4bf8",
+        "aliases": [
+            "peter-sims:suspension3b"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "description": "suspension3b",
+        "derived_from": [
+            "peter-sims:tissue_3"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS608AAA",
+        "uuid": "5da5e505-f754-4d96-8678-4000d079c6b8",
+        "aliases": [
+            "peter-sims:suspension3c"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "description": "suspension3c",
+        "derived_from": [
+            "peter-sims:tissue_3"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
         "accession": "ENCBS002ABC",
         "biosample_ontology": "UBERON_0002107",
         "description": "",

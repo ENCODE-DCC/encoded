@@ -1,5 +1,158 @@
 [
     {
+        "accession": "ENCLB600AAA",
+        "aliases": [
+            "peter-sims:library_1a"
+        ],
+        "description": "library_1a",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension1a"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB601AAA",
+        "aliases": [
+            "peter-sims:library_1b"
+        ],
+        "description": "library_1b",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension1b"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB602AAA",
+        "aliases": [
+            "peter-sims:library_1c"
+        ],
+        "description": "library_1c",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension1c"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB603AAA",
+        "aliases": [
+            "peter-sims:library_2a"
+        ],
+        "description": "library_2a",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension2a"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB604AAA",
+        "aliases": [
+            "peter-sims:library_2b"
+        ],
+        "description": "library_2b",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension2b"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB605AAA",
+        "aliases": [
+            "peter-sims:library_2c"
+        ],
+        "description": "library_2c",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension2c"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB606AAA",
+        "aliases": [
+            "peter-sims:library_3a"
+        ],
+        "description": "library_3a",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension3a"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB607AAA",
+        "aliases": [
+            "peter-sims:library_3b"
+        ],
+        "description": "library_3b",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension3b"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB608AAA",
+        "aliases": [
+            "peter-sims:library_3c"
+        ],
+        "description": "library_3c",
+        "lab": "j-michael-cherry",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI004LIV",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:suspension3c"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "1",
+        "channel_id": "A"
+    },
+    {
         "accession": "ENCLB999MNO",
         "aliases": [],
         "documents": [],

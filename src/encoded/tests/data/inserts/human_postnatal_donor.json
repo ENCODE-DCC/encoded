@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCDO654321",
+        "accession": "ENCDO654AAA",
         "aliases": [
             "peter-sims:postnatal_donor1"
         ],
@@ -13,6 +13,9 @@
         "ethnicity": "HANCESTRO_0008",
         "diseases": [
             "MONDO_0005147"
+        ],
+        "treatments": [
+            "lattice:insulin"
         ],
         "uuid": "2db646f0-d910-11ea-87d0-0242ac130003",
         "cause_of_death": "heart failure",

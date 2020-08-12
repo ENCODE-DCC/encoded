@@ -1,5 +1,89 @@
 [
     {
+        "accession": "ENCBS543ABC",
+        "description": "tissue_1",
+        "aliases": [
+            "peter-sims:tissue_1"
+        ],
+        "uuid": "e6efa52c-dc1b-11ea-87d0-0242ac130003",
+        "submitted_by": "metus.donec@nisl.montes",
+        "derived_from": [
+            "peter-sims:postnatal_donor1"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour",
+        "source": "original lab",
+        "references": [
+            "baf202c2-b7af-4c43-b135-15104394daac",
+            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+        ]
+    },
+    {
+        "accession": "ENCBS544ABC",
+        "description": "tissue_2",
+        "aliases": [
+            "peter-sims:tissue_2"
+        ],
+        "uuid": "2d83973e-dc24-11ea-87d0-0242ac130003",
+        "submitted_by": "metus.donec@nisl.montes",
+        "derived_from": [
+            "peter-sims:prenatal_donor2"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour",
+        "source": "original lab",
+        "references": [
+            "baf202c2-b7af-4c43-b135-15104394daac",
+            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+        ]
+    },
+    {
+        "accession": "ENCBS545ABC",
+        "description": "tissue_3",
+        "aliases": [
+            "peter-sims:tissue_3"
+        ],
+        "uuid": "31b73f0e-dc24-11ea-87d0-0242ac130003",
+        "submitted_by": "metus.donec@nisl.montes",
+        "derived_from": [
+            "peter-sims:prenatal_donor3"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0000955",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour",
+        "source": "original lab",
+        "references": [
+            "baf202c2-b7af-4c43-b135-15104394daac",
+            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+        ]
+    },
+    {
         "accession": "ENCBS100XYZ",
         "biosample_ontology": "UBERON_0002107",
         "description": "liver from a 34 year old male",

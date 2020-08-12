@@ -1,20 +1,47 @@
 [
     {
+        "name": "10x-3'-v3",
+        "title": "10x 3' v3",
+        "construction_platform": "10x",
+        "construction_platform_version": 3,
+        "library_type": "RNA-seq",
+        "biological_macromolecule": "RNA",
+        "extraction_method": "10x GEM generation",
+        "fragmentation_method": "enzymatic",
+        "library_size_selection_method": "SPRIselect",
+        "lysis_method": "10x GEM generation",
+        "size_range": "400-9000",
+        "strand_specificity": "first",
+        "end_bias": "3'",
+        "library_preparation_environment": "droplet",
+        "polyA_selection": true,
+        "polyA_selection_method": "poly(dT)",
+        "library_amplification_method": "PCR",
+        "library_preamplification_method": "RT-PCR",
+        "first_strand_primer": "poly(dT)",
+        "second_strand_primer": "TSO",
+        "read_structure": [
+            {
+                "sequence_element": "cell barcode",
+                "located_in_read_type": "Read 1",
+                "start": 0,
+                "end": 16
+            },
+            {
+                "sequence_element": "UMI",
+                "located_in_read_type": "Read 1",
+                "start": 16,
+                "end": 28
+            }
+        ]
+    },
+    {
         "name": "10x-3'-v2",
         "construction_platform": "10x",
         "construction_platform_version": 2,
         "library_type": "RNA-seq",
         "end_bias": "3'",
         "title": "10x 3' v2",
-        "biological_macromolecule": "RNA"
-    },
-    {
-        "name": "10x-3'-v3",
-        "construction_platform": "10x",
-        "construction_platform_version": 3,
-        "library_type": "RNA-seq",
-        "end_bias": "3'",
-        "title": "10x 3' v3",
         "biological_macromolecule": "RNA"
     },
     {
