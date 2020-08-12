@@ -57,6 +57,25 @@ def test_reports_batch_download_contains_all_publication_data_values(index_workb
     assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
 
 
+def test_reports_batch_download_and_metadata_contain_same_number_of_results(index_workbook, testapp):
+    batch_download_results = testapp.get('/batch_download/?type=Experiment').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.file_format=bigWig').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.file_format=bigWig').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.file_format=bigWig&files.file_format=tsv').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.file_format=bigWig&files.file_format=tsv').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.status=released').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.status=released').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+
+
 def test_reports_batch_download_init_batch_download_mixin(dummy_request):
     from encoded.reports.batch_download import BatchDownloadMixin
     bdm = BatchDownloadMixin()
