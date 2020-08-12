@@ -62,7 +62,7 @@ class SurgeryChart extends React.Component {
         sortedDateUnix = this.props.data.map(i => { return Date.parse(i.date) });
         sortedDateUnix.sort((a, b) => a - b);
 
-        let minDateUnix = sortedDateUnix[0];
+        let minDateUnix = new Date(this.props.first_treatment_date + ' 00:00:00');
         let maxDateUnix = sortedDateUnix[sortedDateUnix.length - 1];
 
         let data = [];
@@ -208,7 +208,7 @@ class SurgeryChart extends React.Component {
         let diagnosisDate;
         if (this.props.diagnosis_date != "Not available") {
             diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
-            minDateUnix = Date.parse(this.props.diagnosis_date + ' 00:00:00');
+           
         }
         if (diagnosisDate != null) {
             trace1 = {
@@ -280,4 +280,5 @@ class SurgeryChart extends React.Component {
 }
 
 export default SurgeryChart;
+
 

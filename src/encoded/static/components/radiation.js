@@ -168,13 +168,11 @@ for (let i = 0; i < ganttData.length; i++) {
 }
 
 let diagnosisDate;
-let minX;
+let minX =new Date(this.props.first_treatment_date + ' 00:00:00');
 if (this.props.diagnosis_date != "Not available") {
   diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
-  minX = new Date(this.props.diagnosis_date + ' 00:00:00');;
-} else {
-  minX = new Date(ganttData[0].startDate);
-}
+  
+} 
 let deceasedDate;
 let lastFollowUpDate;
 let maxX;
