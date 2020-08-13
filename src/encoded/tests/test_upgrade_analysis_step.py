@@ -67,3 +67,15 @@ def test_analysis_step_9_10(upgrader, analysis_step_9):
     assert 'spike-in sequence' not in value['output_file_types']
     assert 'spike-ins' in value['input_file_types']
     assert 'spike-ins' in value['output_file_types']
+
+
+def test_analysis_step_10_11(upgrader, analysis_step_10):
+    value = upgrader.upgrade(
+        'analysis_step',
+        analysis_step_10,
+        current_version='10',
+        target_version='11'
+    )
+    assert value['schema_version'] == '11'
+    assert 'pseudo-replicated peaks' in value['input_file_types']
+    assert 'pseudo-replicated peaks' in value['output_file_types']

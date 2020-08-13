@@ -18,7 +18,7 @@
                 "Peaks",
                 "Replicated Peaks",
                 "Filtered Peaks",
-                "Stable Peaks",
+                "Pseudo-replicated Peaks",
                 "Fold change over control",
                 "Signal p-value", "Signal"
             ],
@@ -106,16 +106,6 @@
                     "pValueFilter": "0",
                     "qValueFilter": "0",
                     "output_type": [ "pseudo-replicated peaks" ]
-                },
-                "Stable Peaks": {
-                    "tag": "hSPKS",
-                    "visibility": "hide",
-                    "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
-                    "signalFilter": "0",
-                    "pValueFilter": "0",
-                    "qValueFilter": "0",
-                    "output_type": [ "stable peaks" ]
                 },
                 "Fold change over control": {
                     "tag": "iFCOC",
