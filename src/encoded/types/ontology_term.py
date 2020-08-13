@@ -97,16 +97,6 @@ class OntologyTerm(SharedItem):
         return self._get_ontology_slims(registry, term_id, 'synonyms')
 
     @calculated_property(condition='term_id', schema={
-        "title": "Disease categories",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def disease_categories(self, registry, term_id):
-        return self._get_ontology_slims(registry, term_id, 'disease_categories')
-
-    @calculated_property(condition='term_id', schema={
         "title": "Ontology DB",
         "type": "string",
     })
