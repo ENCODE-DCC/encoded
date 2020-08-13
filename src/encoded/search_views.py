@@ -36,7 +36,6 @@ def includeme(config):
 DEFAULT_ITEM_TYPES = [
     'Award',
     'Biosample',
-    'BiosampleType',
     'Dataset',
     'Donor',
     'Page',
