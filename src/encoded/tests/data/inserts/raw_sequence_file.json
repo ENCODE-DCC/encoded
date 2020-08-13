@@ -1,5 +1,986 @@
 [
     {
+        "aliases":[
+            "peter-sims:sequence_3c_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3c",
+        "submitted_file_name": "sequence_3c_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d444",
+        "content_md5sum": "4ec503be252d765ea37621a629afda84",
+        "fastq_signature": [
+            "H7FM2DRXX:2:1:GGCTAACA:", "H7FM2DRXX:2:1:GGAGGACC:", "H7FM2DRXX:2:1:GGCTAATT:", "H7FM2DRXX:2:1:GGCTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191920"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3c_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3c",
+        "submitted_file_name": "sequence_3c_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d445",
+        "content_md5sum": "4ec503be252d765ea37621a629afda85",
+        "fastq_signature": [
+            "H7FM2DRXX:2:2:GGCTAACA:", "H7FM2DRXX:2:2:GGAGGACC:", "H7FM2DRXX:2:2:GGCTAATT:", "H7FM2DRXX:2:2:GGCTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_3c_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191921"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3c_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3c",
+        "submitted_file_name": "sequence_3c_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d446",
+        "content_md5sum": "4ec503be252d765ea37621a629afda46",
+        "fastq_signature": [
+            "H7FM2DRXX:2:1:GGCTAACA:", "H7FM2DRXX:2:1:GGAGGACC:", "H7FM2DRXX:2:1:GGCTAATT:", "H7FM2DRXX:2:1:GGCTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_3c_R1.fastq", "peter-sims:sequence_3c_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191922"
+    },    
+    {
+        "aliases":[
+            "peter-sims:sequence_3b_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3b",
+        "submitted_file_name": "sequence_3b_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d441",
+        "content_md5sum": "4ec503be252d765ea37621a629afda81",
+        "fastq_signature": [
+            "H7FM2DRXX:3:1:TTCTAACA:", "H7FM2DRXX:3:1:TTAGGACC:", "H7FM2DRXX:3:1:TTCTAATT:", "H7FM2DRXX:3:1:TTCTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191917"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3b_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3b",
+        "submitted_file_name": "sequence_3b_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d442",
+        "content_md5sum": "4ec503be252d765ea37621a629afda82",
+        "fastq_signature": [
+            "H7FM2DRXX:3:2:TTCTAACA:", "H7FM2DRXX:3:2:TTAGGACC:", "H7FM2DRXX:3:2:TTCTAATT:", "H7FM2DRXX:3:2:TTCTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_3b_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191918"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3b_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3b",
+        "submitted_file_name": "sequence_3b_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d443",
+        "content_md5sum": "4ec503be252d765ea37621a629afda43",
+        "fastq_signature": [
+            "H7FM2DRXX:3:1:TTCTAACA:", "H7FM2DRXX:3:1:TTAGGACC:", "H7FM2DRXX:3:1:TTCTAATT:", "H7FM2DRXX:3:1:TTCTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_3b_R1.fastq", "peter-sims:sequence_3b_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191919"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3a_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3a",
+        "submitted_file_name": "sequence_3a_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d438",
+        "content_md5sum": "4ec503be252d765ea37621a629afda78",
+        "fastq_signature": [
+            "H7FM2DRXX:4:1:AACTAACA:", "H7FM2DRXX:4:1:AAAGGACC:", "H7FM2DRXX:4:1:AACTAATT:", "H7FM2DRXX:4:1:AACTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191914"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3a_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3a",
+        "submitted_file_name": "sequence_3a_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d439",
+        "content_md5sum": "4ec503be252d765ea37621a629afda79",
+        "fastq_signature": [
+            "H7FM2DRXX:4:2:AACTAACA:", "H7FM2DRXX:4:2:AAAGGACC:", "H7FM2DRXX:4:2:AACTAATT:", "H7FM2DRXX:4:2:AACTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_3a_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191915"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_3a_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_3a",
+        "submitted_file_name": "sequence_3a_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d440",
+        "content_md5sum": "4ec503be252d765ea37621a629afda40",
+        "fastq_signature": [
+            "H7FM2DRXX:4:1:AACTAACA:", "H7FM2DRXX:4:1:AAAGGACC:", "H7FM2DRXX:4:1:AACTAATT:", "H7FM2DRXX:4:1:AACTTTCA:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_3a_R1.fastq", "peter-sims:sequence_3a_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191916"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2c_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2c",
+        "submitted_file_name": "sequence_2c_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d435",
+        "content_md5sum": "4ec503be252d765ea37621a629afda75",
+        "fastq_signature": [
+            "HGJWFDSXY:2:1:TTACAAGG:", "HGJWFDSXY:2:1:TTACAATT:", "HGJWFDSXY:2:1:TTACTTGG:", "HGJWFDSXY:2:1:TTTTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191911"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2c_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2c",
+        "submitted_file_name": "sequence_2c_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d436",
+        "content_md5sum": "4ec503be252d765ea37621a629afda76",
+        "fastq_signature": [
+            "HGJWFDSXY:2:2:TTACAAGG:", "HGJWFDSXY:2:2:TTACAATT:", "HGJWFDSXY:2:2:TTACTTGG:", "HGJWFDSXY:2:2:TTTTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_2c_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191912"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2c_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2c",
+        "submitted_file_name": "sequence_2c_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d437",
+        "content_md5sum": "4ec503be252d765ea37621a629afda77",
+        "fastq_signature": [
+            "HGJWFDSXY:2:1:TTACAAGG:", "HGJWFDSXY:2:1:TTACAATT:", "HGJWFDSXY:2:1:TTACTTGG:", "HGJWFDSXY:2:1:TTTTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_2c_R1.fastq", "peter-sims:sequence_2c_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191913"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2b_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2b",
+        "submitted_file_name": "sequence_2b_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d432",
+        "content_md5sum": "4ec503be252d765ea37621a629afda72",
+        "fastq_signature": [
+            "HGJWFDSXY:3:1:GGACAAGG:", "HGJWFDSXY:3:1:GGACAATT:", "HGJWFDSXY:3:1:GGACTTGG:", "HGJWFDSXY:3:1:GGTTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191908"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2b_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2b",
+        "submitted_file_name": "sequence_2b_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d433",
+        "content_md5sum": "4ec503be252d765ea37621a629afda73",
+        "fastq_signature": [
+            "HGJWFDSXY:3:2:GGACAAGG:", "HGJWFDSXY:3:2:GGACAATT:", "HGJWFDSXY:3:2:GGACTTGG:", "HGJWFDSXY:3:2:GGTTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_2b_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191909"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2b_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2b",
+        "submitted_file_name": "sequence_2b_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d434",
+        "content_md5sum": "4ec503be252d765ea37621a629afda74",
+        "fastq_signature": [
+            "HGJWFDSXY:3:1:GGACAAGG:", "HGJWFDSXY:3:1:GGACAATT:", "HGJWFDSXY:3:1:GGACTTGG:", "HGJWFDSXY:3:1:GGTTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_2b_R1.fastq", "peter-sims:sequence_2b_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191910"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2a_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2a",
+        "submitted_file_name": "sequence_2a_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d429",
+        "content_md5sum": "4ec503be252d765ea37621a629afda69",
+        "fastq_signature": [
+            "HGJWFDSXY:4:1:TAACAAGG:", "HGJWFDSXY:4:1:TAACAATT:", "HGJWFDSXY:4:1:TAACTTGG:", "HGJWFDSXY:4:1:TATTAAGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191905"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2a_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2a",
+        "submitted_file_name": "sequence_2a_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d430",
+        "content_md5sum": "4ec503be252d765ea37621a629afda70",
+        "fastq_signature": [
+            "HKYCWDSXX:2:2:GGATTCGAGG", "HKYCWDSXX:2:2:GGGTCCTGCT", "HKYCWDSXX:2:2:GGGTCCTGAA", "HKYCWDSXX:2:2:GGGTCCTGCT"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_2a_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191906"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_2a_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_2a",
+        "submitted_file_name": "sequence_2a_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d431",
+        "content_md5sum": "4ec503be252d765ea37621a629afda71",
+        "fastq_signature": [
+            "HKYCWDSXX:2:1:GGATTCGAGG", "HKYCWDSXX:2:1:GGGTCCTGCT", "HKYCWDSXX:2:1:GGGTCCTGAA", "HKYCWDSXX:2:1:GGGTCCTGCT"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_2a_R1.fastq", "peter-sims:sequence_2a_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191907"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1c_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1c",
+        "submitted_file_name": "sequence_1c_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d426",
+        "content_md5sum": "4ec503be252d765ea37621a629afda66",
+        "fastq_signature": [
+            "HKYCWDSXX:2:1:GGATTCGA:", "HKYCWDSXX:2:1:GGGTCCTG:", "HKYCWDSXX:2:1:GGGTCCAA:", "HKYCWDSXX:2:1:GGGTCCTT:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191902"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1c_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1c",
+        "submitted_file_name": "sequence_1c_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d427",
+        "content_md5sum": "4ec503be252d765ea37621a629afda67",
+        "fastq_signature": [
+            "HKYCWDSXX:2:2:GGATTCGA:", "HKYCWDSXX:2:2:GGGTCCTG:", "HKYCWDSXX:2:2:GGGTCCAA:", "HKYCWDSXX:2:2:GGGTCCTT:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_1c_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191903"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1c_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1c",
+        "submitted_file_name": "sequence_1c_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d428",
+        "content_md5sum": "4ec503be252d765ea37621a629afda68",
+        "fastq_signature": [
+            "HKYCWDSXX:2:1:GGATTCGA:", "HKYCWDSXX:2:1:GGGTCCTG:", "HKYCWDSXX:2:1:GGGTCCAA:", "HKYCWDSXX:2:1:GGGTCCTT:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_1c_R1.fastq", "peter-sims:sequence_1c_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191904"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1b_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1b",
+        "submitted_file_name": "sequence_1b_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d423",
+        "content_md5sum": "4ec503be252d765ea37621a629afda63",
+        "fastq_signature": [
+            "HKYCWDSXX:3:1:AAATTCGA:", "HKYCWDSXX:3:1:AAGTCCTG:", "HKYCWDSXX:3:1:AAGTCCAA:", "HKYCWDSXX:3:1:AAGTCCTT:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191899"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1b_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1b",
+        "submitted_file_name": "sequence_1b_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d424",
+        "content_md5sum": "4ec503be252d765ea37621a629afda64",
+        "fastq_signature": [
+            "HKYCWDSXX:3:2:AAATTCGA:", "HKYCWDSXX:3:2:AAGTCCTG:", "HKYCWDSXX:3:2:AAGTCCAA:", "HKYCWDSXX:3:2:AAGTCCTT:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_1b_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191900"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1b_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1b",
+        "submitted_file_name": "sequence_1b_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d425",
+        "content_md5sum": "4ec503be252d765ea37621a629afda65",
+        "fastq_signature": [
+            "HKYCWDSXX:3:1:AAATTCGA:", "HKYCWDSXX:3:1:AAGTCCTG:", "HKYCWDSXX:3:1:AAGTCCAA:", "HKYCWDSXX:3:1:AAGTCCTT:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_1b_R1.fastq", "peter-sims:sequence_1b_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191901"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1a_R1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1a",
+        "submitted_file_name": "sequence_1a_R1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 28,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d420",
+        "content_md5sum": "4ec503be252d765ea37621a629afda60",
+        "fastq_signature": [
+            "HKYCWDSXX:4:1:TTATTCGA:", "HKYCWDSXX:4:1:TTGTCCTG:", "HKYCWDSXX:4:1:TTGTCCAA:", "HKYCWDSXX:4:1:TTGTCCGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 1",
+        "sequence_type": [
+            "cell barcode", "UMI"
+        ],
+        "demultiplexed_type": "R1",
+        "dbxref": "SRA:SRR7191896"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1a_R2.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1a",
+        "submitted_file_name": "sequence_1a_R2.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 98,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d421",
+        "content_md5sum": "4ec503be252d765ea37621a629afda61",
+        "fastq_signature": [
+            "HKYCWDSXX:4:2:TTATTCGA:", "HKYCWDSXX:4:2:TTGTCCTG:", "HKYCWDSXX:4:2:TTGTCCAA:", "HKYCWDSXX:4:2:TTGTCCGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "Read 2",
+        "paired_with": "peter-sims:sequence_1a_R1.fastq",
+        "sequence_type": [
+            "3' of molecule"
+        ],
+        "demultiplexed_type": "R2",
+        "dbxref": "SRA:SRR7191897"
+    },
+    {
+        "aliases":[
+            "peter-sims:sequence_1a_I1.fastq"
+        ],
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "award": "CZI004LIV",
+        "derived_from": "peter-sims:library_1a",
+        "submitted_file_name": "sequence_1a_I1.fastq.gz",
+        "file_format": "fastq",
+        "output_type": "assigned reads",
+        "read_count": 1500000,
+        "read_length": 8,
+        "file_size": 5000000000,
+        "md5sum": "a6b14a3123d327627a887a6a442d420",
+        "content_md5sum": "4ec503be252d765ea37621a629afda60",
+        "fastq_signature": [
+            "HKYCWDSXX:4:1:TTATTCGA:", "HKYCWDSXX:4:1:TTGTCCTG:", "HKYCWDSXX:4:1:TTGTCCAA:", "HKYCWDSXX:4:1:TTGTCCGG:"
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "flowcell_details": [
+            {
+                "flowcell": "HKYCWDSXX",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "sequencing_run_type": "paired-ended",
+        "read_type": "i7 index",
+        "sequence_type": [
+            "sample index"
+        ],
+        "index_of": [
+            "peter-sims:sequence_1a_R1.fastq", "peter-sims:sequence_1a_R2.fastq"
+        ],
+        "demultiplexed_type": "I1",
+        "dbxref": "SRA:SRR7191898"
+    },
+    {
         "accession": "ENCFF001MYM",
         "dataset": "ENCSR003SER",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
