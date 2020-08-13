@@ -3097,7 +3097,9 @@ def test_audit_experiment_tagging_biosample_characterization(
         biosample_2,
         donor_1,
         k562,
-        award_encode4):
+        award_encode4,
+        wrangler,
+    ):
     testapp.patch_json(biosample_1['@id'],
                        {'genetic_modifications': [interference_genetic_modification['@id']],
                         'biosample_ontology': k562['uuid'],
@@ -3129,6 +3131,43 @@ def test_audit_experiment_tagging_biosample_characterization(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'missing biosample characterization'
                for error in collect_audit_errors(res))
+    # Has characterization but hasn't been reviewed as compliant
+    assert any(
+        error['category'] == 'missing compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    # Has compliant characterization
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] != 'missing compliant biosample characterization'
+        for error in collect_audit_errors(res)
+    )
+    # Has not compliant characterization
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'not compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'not compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
 
 
 def test_audit_experiment_pooled_biosample_no_characterization(
@@ -3197,6 +3236,9 @@ def test_audit_experiment_pooled_biosample_characterization(
     base_target,
     base_replicate,
     base_library,
+    biosample_characterization,
+    biosample_characterization_no_review,
+    wrangler,
 ):
     testapp.patch_json(
         base_experiment['@id'],
@@ -3215,6 +3257,58 @@ def test_audit_experiment_pooled_biosample_characterization(
     assert all(
         error['category'] != 'missing biosample characterization'
         for error in collect_audit_errors(res)
+    )
+    # One compliant parent biosample
+    testapp.patch_json(
+        biosample_characterization['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'missing compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    # One not compliant parent biosample
+    testapp.patch_json(
+        biosample_characterization_no_review['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'not compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(
+        error['category'] == 'not compliant biosample characterization'
+        for error in collect_audit_errors(res, ['ERROR'])
+    )
+    # Both parent biosamples are compliant
+    testapp.patch_json(
+        biosample_characterization_no_review['@id'],
+        {
+            'review': {
+                'lab': base_experiment['lab'],
+                'reviewed_by': wrangler['@id'],
+                'status': 'compliant'
+            }
+        }
+    )
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(
+        error['category'] not in [
+            'missing biosample characterization',
+            'missing compliant biosample characterization',
+            'not compliant biosample characterization',
+        ]
+        for error in collect_audit_errors(res, ['ERROR'])
     )
 
 
