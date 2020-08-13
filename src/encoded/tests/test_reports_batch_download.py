@@ -77,6 +77,22 @@ def test_reports_batch_download_and_metadata_contain_same_number_of_results(inde
     metadata_results = testapp.get('/metadata/?type=Experiment&files.status=released').text.strip().split('\n')
     assert len(batch_download_results) > 0
     assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.file_type=bed+narrowPeak').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.file_type=bed+narrowPeak').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.file_type!=bed+narrowPeak').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.file_type!=bed+narrowPeak').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.assay_term_name=ChIP-seq').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.assay_term_name=ChIP-seq').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Experiment&files.biological_replicates=2').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Experiment&files.biological_replicates=2').text.strip().split('\n')
+    assert len(batch_download_results) > 0
+    assert len(metadata_results) == len(batch_download_results)
 
 
 def test_reports_batch_download_init_batch_download_mixin(dummy_request):
