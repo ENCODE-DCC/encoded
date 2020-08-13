@@ -3,6 +3,9 @@ import pytest
 from encoded.tests.features.conftest import app, app_settings, index_workbook
 
 
+pytestmark = [pytest.mark.indexing]
+
+
 def test_reports_batch_download_view(testapp, index_workbook):
     r = testapp.get('/batch_download/?type=Experiment&status=released')
     lines = r.text.split('\n')

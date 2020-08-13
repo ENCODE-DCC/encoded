@@ -3,7 +3,10 @@ import pytest
 from encoded.tests.features.conftest import app, app_settings, index_workbook
 
 
-def test_metadata_batched_search_generator_init(dummy_request):
+pytestmark = [pytest.mark.indexing]
+
+
+def test_reports_search_batched_search_generator_init(dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment'
@@ -16,7 +19,7 @@ def test_metadata_batched_search_generator_init(dummy_request):
     assert bsg.batch_param_values == []
 
 
-def test_metadata_batched_search_generator_make_batched_values_from_batch_param_values(dummy_request):
+def test_reports_search_batched_search_generator_make_batched_values_from_batch_param_values(dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment'
@@ -50,7 +53,7 @@ def test_metadata_batched_search_generator_make_batched_values_from_batch_param_
     assert next(bsg._make_batched_values_from_batch_param_values()) == ['ENCFFAAA111']
 
 
-def test_metadata_batched_search_generator_make_batched_params_from_batched_values(dummy_request):
+def test_reports_search_batched_search_generator_make_batched_params_from_batched_values(dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&@id=/files/ENCFFABC123/'
@@ -73,7 +76,7 @@ def test_metadata_batched_search_generator_make_batched_params_from_batched_valu
     assert expected_batched_params == actual_batched_params
 
 
-def test_metadata_batched_search_generator_build_new_request(dummy_request):
+def test_reports_search_batched_search_generator_build_new_request(dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&@id=/files/ENCFFABC123/'
@@ -112,7 +115,7 @@ def test_metadata_batched_search_generator_build_new_request(dummy_request):
     assert request.registry
 
 
-def test_metadata_batched_search_generator_results(index_workbook, dummy_request):
+def test_reports_search_batched_search_generator_results(index_workbook, dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&field=@id&field=status'
