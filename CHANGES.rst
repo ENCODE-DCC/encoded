@@ -1,5 +1,36 @@
 Changes
-======= 
+=======
+105.0 (released) snovault 1.0.48
+--------------------------------------------------------------------
+1.	update-snovault-1.0.48 (#3474)
+2.	SNO-163-install-graphviz (#3460)
+3.	ENCD-5439-optimize-metadata-endpoint (#3462)
+4.	ENCD-5372-gm-delivery (#3465)
+5.	ENCD-5453-fix-missing-read-depth-audit (#3470)
+6.	ENCD-5447 dnase reference updates (#3473)
+7.	ENCD-5458-use-analysis-objects-for-file-graph (#3468)
+8.	ENCD-5431-add-bigInteract-to-file (#3466)
+9.	ENCD-5350-encode4-atac-qc-audits (#3469)
+10.	ENCD-5440-update-analysis-step-run-set-status (#3467)
+11.	ENCD-4957-view-control (#3463)
+12.	ENCD-5456-table-shift (#3464)
+13.	ENCD-5443-add-ng-to-biosample-starting-amount-units (#3459)
+14.	ENCD-5424-remove-assembly-for-gtf-files (#3461)
+15.	ENCD-5311-dnase-specific-alignment-quality-metric (#3396)
+16.	ENCD-5410 pseudo replicated peaks (#3457)
+17.	ENCD-5287-archived-file (#3455)
+18.	ENCD-5316-add-workflow-ID (#3458)
+19.	ENCD-5436-audit-idr-enc3-enc4 (#3454)
+20.	ENCD-5447 dnase reference file updates (#3451)
+21.	ENCD-5425-fix-tooltip-in-edge-and-ie (#3456)
+22.	ENCD-5445-fix-typos-experiment-audits (#3453)
+23.	ENCD-5423-modify-GM-reagents-regex (#3452)
+24.	ENCD-5416-misc-font-updates (#3450)
+25.	ENCD-5432-walkme-test (#3446)
+26.	ENCD-5062-add-image-icon-on-report-page (#3449)
+27.	ENCD-5433-refactor-not-bdd-not-indexing-tests (#3445)
+28.	ENCD-5418-adjust-fonts (#3444)
+
 104.0 (released) snovault 1.0.47
 --------------------------------------------------------------------
 	1.	Update snovault 1.0.47 (#3447)
