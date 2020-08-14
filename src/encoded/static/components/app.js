@@ -62,28 +62,11 @@ const portal = {
     ],
     global_sections: [
         {
-            id: 'materialsmethods',
-            title: 'Materials & Methods',
+            id: 'dataorganization',
+            title: 'Data Organization',
             children: [
-                { id: 'references', title: 'Genome references', url: '/data-standards/reference-sequences/' },
-                { id: 'sep-mm-1' },
-                { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
-                { id: 'sep-mm-2' },
-                { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
-                { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
+                { id: 'overview', title: 'Overview', url: '/data-organization/' },
                 { id: 'profiles', title: 'Schemas', url: '/profiles/' },
-            ],
-        },
-        {
-            id: 'help',
-            title: 'Help',
-            children: [
-                { id: 'restapi', title: 'REST API', url: '/help/rest-api/' },
-                { id: 'sep-mm-1' },
-                { id: 'projectoverview', title: 'Project Overview', url: '/help/project-overview/' },
-                { id: 'collaborations', title: 'Collaborations', url: '/help/collaborations/' },
-                { id: 'sep-mm-2' },
-                { id: 'contact', title: 'About the DCC', url: '/help/contacts/' },
             ],
         },
     ],
