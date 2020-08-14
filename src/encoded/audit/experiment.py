@@ -3574,7 +3574,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
                 audit_link(path_to_text(value['@id']), value['@id']),
                 term_id)
             )
-            yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')
+            yield AuditFailure('term_id not in ontology', detail, level='INTERNAL_ACTION')
         else:
             ontology_name = ontology[term_id]['name']
             if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
