@@ -4,4 +4,5 @@
 
 * *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
 * Added *CUT&RUN* to *assay.assay_term_name* enum
+* Added *SPRITE-IP* to *assay.assay_term_name* enum
 

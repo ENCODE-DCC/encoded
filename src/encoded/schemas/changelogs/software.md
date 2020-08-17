@@ -2,6 +2,8 @@
 
 ### Minor changes since schema version 7
 * Added *CUT&RUN* to *purpose* enum
+* Added *SPRITE-IP* to *purpose* enum
+
 
 ### Schema version 7
 
