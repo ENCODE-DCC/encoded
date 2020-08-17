@@ -11,7 +11,7 @@ import DataTable from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander, MATRIX_VISUALIZE_LIMIT } from './matrix';
 import matrixAssaySortOrder from './matrix_reference_epigenome';
-import { MatrixInternalTags } from './objectutils';
+import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
 
 
@@ -591,12 +591,12 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
 const MatrixHeader = ({ context }) => (
     <div className="matrix-header">
         <div className="matrix-header__title">
-            <h1>{context.title}</h1>
-            <div className="matrix-tags">
-                <MatrixInternalTags context={context} />
-                <div className="matrix-description">
-                    The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
-                </div>
+            <div className="matrix-title-badge">
+                <h1>{context.title}</h1>
+                <MatrixBadges context={context} type="MouseDevelopment" />
+            </div>
+            <div className="matrix-description">
+                The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
             </div>
         </div>
     </div>

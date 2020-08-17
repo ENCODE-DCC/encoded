@@ -7,7 +7,7 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import DataTable from './datatable';
 import * as globals from './globals';
 import { MATRIX_VISUALIZE_LIMIT, SearchFilter } from './matrix';
-import { MatrixInternalTags } from './objectutils';
+import { MatrixBadges } from './objectutils';
 import { SearchControls } from './search';
 
 
@@ -468,12 +468,12 @@ const MatrixHeader = ({ context }) => {
     return (
         <div className="matrix-header">
             <div className="matrix-header__title">
-                <h1>{context.title}</h1>
-                <div className="matrix-tags">
-                    <MatrixInternalTags context={context} />
-                    <div className="matrix-description">
-                        ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.
-                    </div>
+                <div className="matrix-title-badge">
+                    <h1>{context.title}</h1>
+                    <MatrixBadges context={context} />
+                </div>
+                <div className="matrix-description">
+                    ENTEx is a collaboration with the GTEx Consortium to profile approximately 30 overlapping tissues from four donors.
                 </div>
             </div>
             <div className="matrix-header__controls">

@@ -13,7 +13,7 @@ import * as globals from './globals';
 import { RowCategoryExpander } from './matrix';
 import { BodyMapThumbnailAndModal, organField, systemsField, clearBodyMapSelectionsFromUrl } from './body_map';
 import { BatchDownloadControls, ViewControls } from './view_controls';
-import { MatrixInternalTags } from './objectutils';
+import { MatrixBadges } from './objectutils';
 
 
 /**
@@ -382,13 +382,13 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
     return (
         <div className="matrix-header">
             <div className="matrix-header__title">
-                <h1>{context.title}</h1>
-                <div className="matrix-tags">
-                    <MatrixInternalTags context={context} />
-                    {matrixDescription ?
-                        <div className="matrix-description">{matrixDescription}</div>
-                    : null}
+                <div className="matrix-title-badge">
+                    <h1>{context.title}</h1>
+                    {organism ? <MatrixBadges context={context} type={`ReferenceEpigenome-${organism}`} /> : null}
                 </div>
+                {matrixDescription ?
+                    <div className="matrix-description">{matrixDescription}</div>
+                : null}
             </div>
             {showProjects ?
                 <div className="test-project-selector">

@@ -9,7 +9,7 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixInternalTags, DisplayAsJson } from './objectutils';
+import { MatrixBadges, DisplayAsJson } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter } from './search';
 import DataTable from './datatable';
@@ -397,9 +397,9 @@ class ChIPSeqMatrixHeader extends React.Component {
         return (
             <div className="matrix-header">
                 <div className="matrix-header__title">
-                    <h1>{this.state.context.title}</h1>
-                    <div className="matrix-tags">
-                        <MatrixInternalTags context={this.state.context} />
+                    <div className="matrix-title-badge">
+                        <h1>{this.state.context.title}</h1>
+                        <MatrixBadges context={this.state.context} type="ChIPseq" />
                     </div>
                 </div>
                 <div className="matrix-header__controls">

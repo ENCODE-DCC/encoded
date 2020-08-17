@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 // Import test component and data.
-import { InternalTags } from '../objectutils';
+import { InternalTags, internalTagsMap } from '../objectutils';
 
 
 describe('InternalTags', () => {
@@ -27,7 +27,7 @@ describe('InternalTags', () => {
 
 
     test('generates the right images in each link', () => {
-        const uris = testTags.map(tag => `/static/img/tag-${tag}.png`);
+        const uris = testTags.map(tag => `/static/img/${internalTagsMap[tag]}`);
         wrapper.find('a').forEach((link, i) => {
             const image = link.find('img');
             expect(image).toHaveLength(1);
