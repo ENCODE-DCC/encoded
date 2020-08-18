@@ -57,12 +57,12 @@ pipelines_with_read_depth = {
     'ATAC-seq (replicated)': {
         'recommended': 25000000,
         'minimal': 20000000,
-        'low': 5000000
+        'low': 15000000
     },
     'ATAC-seq (unreplicated)': {
         'recommended': 25000000,
         'minimal': 20000000,
-        'low': 5000000
+        'low': 15000000
     },
 }
 

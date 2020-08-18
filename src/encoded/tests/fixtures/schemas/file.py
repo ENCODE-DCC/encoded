@@ -1801,3 +1801,66 @@ def file_bed_replicated_peaks_atac(testapp, ATAC_experiment_replicated, ATAC_bam
         'step_run': analysis_step_run_atac_encode4_partition_concordance['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bed_IDR_peaks_atac(testapp, ATAC_experiment_replicated, ATAC_bam2,
+                            ATAC_bam, award, encode_lab,
+                            analysis_step_run_atac_encode4_partition_concordance):
+    item = {
+        'dataset': ATAC_experiment_replicated['@id'],
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'derived_from': [ATAC_bam2['@id'], ATAC_bam['@id']],
+        'file_format': 'bed',
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'b331ba102df36d93dd070ef0712b8ee7',
+        'output_type': 'IDR thresholded peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_atac_encode4_partition_concordance['@id']
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def ATAC_bam3(testapp, encode_lab, award, ATAC_experiment_replicated,
+              replicate_ATAC_seq_3, analysis_step_run_atac_encode4_alignment,
+              file_fastq_2_atac):
+    item = {
+        'dataset': ATAC_experiment_replicated['@id'],
+        'replicate': replicate_ATAC_seq_3['@id'],
+        'file_format': 'bam',
+        'md5sum': 'a74f0cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'derived_from': [file_fastq_2_atac['@id']],
+        'assembly': 'GRCh38',
+        'lab': encode_lab['@id'],
+        'file_size': 34,
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_atac_encode4_alignment['@id'],
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bed_IDR_peaks_2_atac(testapp, ATAC_experiment_replicated, ATAC_bam3,
+                              award, encode_lab, ATAC_bam2,
+                              analysis_step_run_atac_encode4_partition_concordance):
+    item = {
+        'dataset': ATAC_experiment_replicated['@id'],
+        'lab': encode_lab['@id'],
+        'award': award['@id'],
+        'derived_from': [ATAC_bam3['@id'], ATAC_bam2['@id']],
+        'file_format': 'bed',
+        'file_format_type': 'narrowPeak',
+        'file_size': 345,
+        'assembly': 'GRCh38',
+        'md5sum': 'c442cb102df36d93dd070ef0712b8ee7',
+        'output_type': 'IDR thresholded peaks',
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run_atac_encode4_partition_concordance['@id']
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
