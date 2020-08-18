@@ -136,7 +136,7 @@ def test_batch_download_report_download(testapp, index_workbook):
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',
     ]
-    assert len(lines) == 69
+    assert len(lines) == 70
 
 @pytest.mark.indexing
 def test_batch_download_matched_set_report_download(testapp, index_workbook):
