@@ -260,7 +260,7 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000561": {
+    "NTR:0000562": {
         "assay": ['3D chromatin structure'],
         "category": [],
         "developmental": [],
