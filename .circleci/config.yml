@@ -78,15 +78,26 @@ jobs:
               --splinter-socket-timeout 300 \
               --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
           no_output_timeout: 30m
-  not-bdd-indexing:
+  indexing:
     executor: encoded-executor
     resource_class: large
     steps:
       - buildout
       - run:
-          name: non bdd indexing tests
+          name: indexing tests
           command: |
             bin/test -s -vv -m "indexing"
+          no_output_timeout: 5m
+  indexer:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: indexer tests
+          command: |
+            bin/test -s -vv -m "indexer"
+          no_output_timeout: 5m
   not-bdd-non-indexing:
     executor: encoded-executor
     resource_class: large
@@ -95,10 +106,10 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            bin/test -s -vv -m "not bdd and not indexing"
+            bin/test -s -vv -m "not bdd and not indexing and not indexer"
   npm:
     executor: encoded-executor
-    resource_class: large
+    resource_class: medium
     steps:
       - buildout
       - run:
@@ -111,6 +122,7 @@ workflows:
   encoded-tests:
     jobs:
       - bdd
-      - not-bdd-indexing
+      - indexing
+      - indexer
       - not-bdd-non-indexing
       - npm

@@ -1,6 +1,10 @@
 import pytest
 
-pytestmark = [pytest.mark.indexing]
+
+pytestmark = [
+    pytest.mark.bdd,
+]
+
 
 @pytest.mark.parametrize('expected', [
     "# http://localhost/batch_hub/type=Experiment/hub.txt",
