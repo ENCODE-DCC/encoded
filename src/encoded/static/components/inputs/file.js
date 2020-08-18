@@ -2,6 +2,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
+/**
+ * Depending on the filename extension, adjust the type and base64-encoded contents from the
+ * defaults that FileReader assigns. Return unchanged results for any file types that don't need
+ * special treatment.
+ * @param {object} rFile Object from <input type="file" />
+ * @param {string} readerResult FileReader `result` property.
+ *
+ * @return {object} -
+ *   type - mime type for file
+ *   href - base64-encoded contents of file
+ */
+const adjustFileValues = (rFile, readerResult) => {
+    let type = rFile.type;
+    let href = readerResult;
+
+    // https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript/1203361#answer-12900504
+    const extension = rFile.name.slice((Math.max(0, rFile.name.lastIndexOf('.')) || Infinity) + 1);
+
+    // Add to this `if` as more attachment file types need special treatment. Change to a `switch`
+    // if convenient.
+    if (extension === 'as') {
+        // .as AutoSQL files.
+        type = 'text/autosql';
+        href = readerResult.replace(/^(data:).+?(;.*)$/, '$1text/autosql$2');
+    }
+
+    return {
+        type,
+        href,
+    };
+};
+
+
 export default class FileInput extends React.Component {
     static onDragOver(e) {
         e.dataTransfer.dropEffect = 'copy';
@@ -30,10 +63,13 @@ export default class FileInput extends React.Component {
         }
         const reader = new FileReader();
         reader.onloadend = () => {
+            // Fill in the attachment values for edited object PUT requests. Some file types need
+            // special adjustments.
+            const { type, href } = adjustFileValues(rFile, reader.result);
             const value = {
                 download: rFile.name,
-                type: rFile.type || undefined,
-                href: reader.result,
+                type: type || undefined,
+                href,
             };
             this.props.onChange(value);
         };
