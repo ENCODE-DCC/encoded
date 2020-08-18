@@ -101,3 +101,10 @@ def test_functional_characterization_experiment_crispr_assay_title(testapp, func
     testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [disruption_genetic_modification['@id'], activation_genetic_modification['@id']]})
     res = testapp.get(functional_characterization_experiment_disruption_screen['@id']+'@@index-data')
     assert res.json['object']['assay_title']=='CRISPR screen'
+
+
+def test_functional_characterization_experiment_target_import_items(testapp, submitter_testapp, functional_characterization_experiment_item, target):
+    # Target can not be submitted without admin permissions
+    res = testapp.post_json('/functional_characterization_experiment', functional_characterization_experiment_item, status=201)
+    submitter_testapp.patch_json(res.json['@graph'][0]['@id'], {'target': target['uuid']}, status=422)
+    testapp.patch_json(res.json['@graph'][0]['@id'], {'target': target['uuid']}, status=200)
