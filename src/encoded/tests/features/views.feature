@@ -18,7 +18,7 @@ Feature: Views
         And I should see exactly one element with the css selector "[data-test='report']"
 
         When I click the link to "/matrix/?type=Experiment"
-        Then I should see "Showing 69 results"
+        Then I should see "Showing 67 results"
 
         When I click the link to "/report/?type=Experiment"
         Then I should see "Experiment report"
