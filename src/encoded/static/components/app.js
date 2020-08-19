@@ -175,17 +175,12 @@ class Timeout {
 
 const EulaModal = ({ closeModal, signup }) => (
     <Modal>
-        <ModalHeader title="Creating a new account" closeModal={closeModal} />
+        <ModalHeader title="Login failed" closeModal={closeModal} />
         <ModalBody>
             <p>
-                You are about to create an LatticeDB account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
+                Please <a href={`mailto:lattice-info@lists.stanford.edu?subject=Login failed`}>contact us</a> if you think you have received this in error.
             </p>
         </ModalBody>
-        <ModalFooter
-            closeModal={closeModal}
-            submitBtn={signup}
-            submitTitle="Proceed"
-        />
     </Modal>
 );
 
@@ -214,25 +209,6 @@ AccountCreationFailedModal.propTypes = {
     date: PropTypes.string.isRequired,
 };
 
-
-const AccountCreatedModal = ({ closeModal }) => (
-    <Modal>
-        <ModalHeader title="Account Created" closeModal={closeModal} />
-        <ModalBody>
-            <p>
-                Welcome! A new user account is now created for you and you are automatically logged in.
-            </p>
-        </ModalBody>
-        <ModalFooter
-            closeModal={closeModal}
-            cancelTitle={'Close'}
-        />
-    </Modal>
-);
-
-AccountCreatedModal.propTypes = {
-    closeModal: PropTypes.func.isRequired,
-};
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -267,7 +243,6 @@ class App extends React.Component {
             unsavedChanges: [],
             promisePending: false,
             eulaModalVisibility: false,
-            accountCreatedModalVisibility: false,
             accountCreationFailedVisibility: false,
             authResult: '',
         };
@@ -304,7 +279,6 @@ class App extends React.Component {
         this.currentAction = this.currentAction.bind(this);
         this.closeSignupModal = this.closeSignupModal.bind(this);
         this.closeAccountCreationErrorModal = this.closeAccountCreationErrorModal.bind(this);
-        this.closeAccountCreationNotification = this.closeAccountCreationNotification.bind(this);
         this.signup = this.signup.bind(this);
     }
 
@@ -558,10 +532,6 @@ class App extends React.Component {
         this.setState({ eulaModalVisibility: false });
     }
 
-    closeAccountCreationNotification() {
-        this.setState({ accountCreatedModalVisibility: false });
-    }
-
     closeAccountCreationErrorModal() {
         this.setState({ accountCreationFailedVisibility: false });
     }
@@ -586,7 +556,6 @@ class App extends React.Component {
             if (!response.ok) {
                 throw new Error('Failed to create new account');
             }
-            this.setState({ accountCreatedModalVisibility: true }); // tell user account was created
             this.handleAuth0Login(authResult, false, false); // sign in after account creation
         }).catch(() => {
             this.setState({ accountCreationFailedVisibility: true });
@@ -1257,11 +1226,6 @@ class App extends React.Component {
                                 <EulaModal
                                     closeModal={this.closeSignupModal}
                                     signup={this.signup}
-                                />
-                            : null}
-                            { this.state.accountCreatedModalVisibility ?
-                                <AccountCreatedModal
-                                    closeModal={this.closeAccountCreationNotification}
                                 />
                             : null}
                             {this.state.accountCreationFailedVisibility ?
