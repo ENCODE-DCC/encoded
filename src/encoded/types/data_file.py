@@ -209,23 +209,6 @@ class DataFile(Item):
             return "nt"
 
     @calculated_property(schema={
-        "title": "Output category",
-        "description": "The overall catagory of the file content.",
-        "comment": "Do not submit.  This field is calculated from output_type_output_category.",
-        "type": "string",
-        "enum": [
-            "raw data",
-            "alignment",
-            "signal",
-            "annotation",
-            "quantification",
-            "reference"
-        ]
-    })
-    def output_category(self, output_type):
-        return self.schema['output_type_output_category'].get(output_type)
-
-    @calculated_property(schema={
         "title": "File type",
         "description": "The concatenation of file_format and file_format_type",
         "comment": "Do not submit. This field is calculated from file_format and file_format_type.",
