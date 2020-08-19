@@ -1003,6 +1003,7 @@
         "internal_tags": [
             "ENTEx"
         ],
+        "disease_term_id": ["HP:0100543", "DOID:10652"],
         "lab": "encode2-project",
         "nih_institutional_certification": "NIC00019",
         "organism": "human",
