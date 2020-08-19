@@ -981,6 +981,27 @@
         "uuid": "71c7b6d6-f6dd-4ed4-826c-6b3003a8ad9b"
     },
     {
+        "email": "pedroh@stanford.edu",
+        "first_name": "Pedro",
+        "groups": [
+            "admin",
+            "verified"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "H",
+        "schema_version": "8",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "viewing_groups": [
+            "CZI003CNS",
+            "community"
+        ],
+        "uuid": "71c7b6d6-f6dd-4ed4-826c-6b3003a8ad9c"
+    },
+    {
         "email": "clitton@stanford.edu",
         "first_name": "Casey",
         "groups": [
