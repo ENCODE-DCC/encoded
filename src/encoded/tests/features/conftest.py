@@ -1,5 +1,7 @@
 import pytest
+from functools import wraps
 from selenium.webdriver.chrome.options import Options
+
 
 pytest_plugins = [
     'encoded.tests.features.browsersteps',
@@ -27,8 +29,20 @@ def app(app_settings):
         yield app
 
 
-@pytest.mark.fixture_cost(500)
+def load_once_or_yield(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if not wrapper.loaded:
+            wrapper.loaded = True
+            yield from func(*args, **kwargs)
+        else:
+            yield
+    wrapper.loaded = False
+    return wrapper
+
+
 @pytest.yield_fixture(scope='session')
+@load_once_or_yield
 def index_workbook(request, app):
     from snovault import DBSESSION
     connection = app.registry[DBSESSION].bind.pool.unique_connection()

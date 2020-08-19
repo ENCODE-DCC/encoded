@@ -6,8 +6,6 @@ elasticsearch running as subprocesses.
 
 import pytest
 
-pytestmark = [pytest.mark.indexing]
-
 
 def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
@@ -112,7 +110,7 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 2
 
 
-@pytest.mark.slow
+@pytest.mark.indexer
 def test_indexing_workbook(testapp, indexer_testapp):
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
