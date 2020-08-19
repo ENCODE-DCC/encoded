@@ -1,5 +1,283 @@
 [
     {
+        "aliases": [
+            "peter-sims:alignment_3a.bam"
+        ],
+        "uuid": "37017a47-469f-47a5-ba86-9a675e3fac2b",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_3a.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_3a_R1.fastq", 
+            "peter-sims:sequence_3a_R2.fastq", 
+            "peter-sims:sequence_3a_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "AACTAACA", "AAAGGACC", "AACTAATT", "AACTTTCA"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_3b.bam"
+        ],
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_3b.bam",
+        "md5sum": "653e0e3a568b243b1638f79ea8788272",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_3b_R1.fastq", 
+            "peter-sims:sequence_3b_R2.fastq", 
+            "peter-sims:sequence_3b_I1.fastq", 
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "TTCTAACA", "TTAGGACC", "TTCTAATT", "TTCTTTCA"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_3c.bam"
+        ],
+        "uuid": "73e99d2f-fc83-4ed5-9acb-1240bebb9478",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_3c.bam",
+        "md5sum": "c9b249ed3129f7697047e4e8da17fc7f",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_3c_R1.fastq", 
+            "peter-sims:sequence_3c_R2.fastq", 
+            "peter-sims:sequence_3c_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "GGCTAACA", "GGAGGACC", "GGCTAATT", "GGCTTTCA"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_2a.bam"
+        ],
+        "uuid": "81dd0691-8940-4037-ba1b-33788f216126",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_2a.bam",
+        "md5sum": "518d42f603a49cde4339d7fd17865ab6",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_2a_R1.fastq", 
+            "peter-sims:sequence_2a_R2.fastq", 
+            "peter-sims:sequence_2a_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "TAACAAGC", "TAACAATT", "TAACTTGG", "TATTAAGG"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_2b.bam"
+        ],
+        "uuid": "30e741ac-5a5b-457a-a21e-e8bd6ddd11a1",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_2b.bam",
+        "md5sum": "0d70d0a3cc5793767420e41ced9cc87d",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_2b_R1.fastq", 
+            "peter-sims:sequence_2b_R2.fastq", 
+            "peter-sims:sequence_2b_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "GGACAAGG", "GGACAATT", "GGACTTGG", "GGTTAAGG"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_2c.bam"
+        ],
+        "uuid": "4ecb050d-0505-46aa-84d1-f03323a0926e",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_1c.bam",
+        "md5sum": "1bae6123b13b23508c9e50d8f67693ac",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_2c_R1.fastq", 
+            "peter-sims:sequence_2c_R2.fastq", 
+            "peter-sims:sequence_2c_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "TTACAAGG", "TTACAATT", "TTACTTGG", "TTTTAAGG"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_1a.bam"
+        ],
+        "uuid": "a8e5d8db-196e-4e67-bce2-63194a2d0073",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_1a.bam",
+        "md5sum": "be788716a6c61626ffda213dc7c9047f",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_1a_R1.fastq", 
+            "peter-sims:sequence_1a_R2.fastq", 
+            "peter-sims:sequence_1a_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "TTATTCGA", "TTGTCCTG", "TTGTCCAA", "TTGTCCGG"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_1b.bam"
+        ],
+        "uuid": "5ff64249-5aa4-4069-9e21-330a47b1213f",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_1b.bam",
+        "md5sum": "15e856815c830b2daa32e8fb619988cb",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_1b_R1.fastq", 
+            "peter-sims:sequence_1b_R2.fastq", 
+            "peter-sims:sequence_1b_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "AAATTCGA", "AAGTCCTG", "AAGTCCAA", "AAGTCCTT"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment_1c.bam"
+        ],
+        "uuid": "1d30ed0d-700c-4fa9-b797-12ba5d2f000f",
+        "dataset":"peter-sims:scRNAseq_test_dataset",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "file_format": "bam",
+        "file_size": 6000000000,
+        "submitted_file_name": "alignment_1c.bam",
+        "md5sum": "2653b300eb70899c93bf8dd1d30ba367",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "peter-sims:sequence_1c_R1.fastq", 
+            "peter-sims:sequence_1c_R2.fastq", 
+            "peter-sims:sequence_1c_I1.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "sample_barcodes": [
+            "GGATTCGA", "GGGTCCTG", "GGGTCCAA", "GGGTCCTT"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 98,
+        "analysis_step": "peter-sims:alignment-count-step"
+    },
+    {
         "_project": "encode3",
         "accession": "ENCFF001RCV",
         "file_size": 20,
@@ -14,7 +292,9 @@
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "cdf6c42afc135f1f95971e415b8d5fdd",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bam",
@@ -36,7 +316,9 @@
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "ecff397bffc54f01319eb41c6194379b",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
@@ -56,7 +338,9 @@
         "alternate_accessions": [],
         "file_size": 64358869186,
         "lab": "/labs/richard-myers/",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "assembly": "hg19",
         "derived_from": [
             "ENCFF431TKZ",
@@ -81,7 +365,9 @@
         "alternate_accessions": [],
         "file_size": 64358869186,
         "lab": "/labs/richard-myers/",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "assembly": "hg19",
         "derived_from": [
             "ENCFF431TKZ",
@@ -110,7 +396,9 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515390000f4ebfa66d78d",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "status": "released",
         "file_size": 20,
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -130,7 +418,9 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515391212f4ebfa66d78d",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "status": "released",
         "file_size": 20,
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -150,7 +440,9 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "22be74b6e11555393507f4ebfa65d78c",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "alabama.bam",
@@ -170,7 +462,9 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515393434f4ebfa66d78d",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "status": "released",
         "file_size": 20,
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -186,7 +480,9 @@
         "uuid": "3f150408-3e77-47c1-8028-6866ed2facba",
         "accession": "ENCFF032OJW",
         "file_format": "bam",
-        "output_type": "alignments",
+        "output_type": [
+            "transcriptome alignments"
+        ],
         "file_size": 1,
         "assembly": "GRCh38",
         "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
