@@ -108,7 +108,7 @@ def signup(context, request):
 
     :param request: Pyramid request object
     """
-    raise HTTPForbidden()
+    raise HTTPForbidden('Unauthorized user')
 
 
 def _get_first_and_last_names_from_name(name):
