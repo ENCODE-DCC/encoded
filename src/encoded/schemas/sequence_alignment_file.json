@@ -164,12 +164,14 @@
             ]
         },
         "output_type": {
-            "enum": [
-                "alignments",
-                "gene alignments",
-                "transcriptome alignments",
-                "unfiltered alignments"
-            ]
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "genomic alignments",
+                    "transcriptome alignments"
+                ]
+            }
         },
         "sample_barcodes": {
             "title": "Sample barcodes",
