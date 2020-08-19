@@ -1,5 +1,25 @@
 [
     {
+        "aliases" : [
+            "lattice:cellranger_2020-A"
+        ],
+        "uuid": "031ba486-de5a-11ea-87d0-0242ac130003",
+        "file_size": 3000000,
+        "accession": "ENCFF300MMM",
+        "dataset": "ENCSR500ELM",
+        "file_format": "tar",
+        "md5sum": "40fd559ccd398b358840b0ed3ebc745b",
+        "output_type": "genome reference",
+        "reference_version": "GRCh38",
+        "submitted_file_name": "refdata-gex-GRCh38-2020-A.tar.gz",
+        "status": "released",
+        "gene_biotypes_included": [
+            "protein_coding", "lincRNA", "antisense",
+            "IG_LV_gene", "IG_V_gene", "IG_D_gene",
+            "TR_V_gene", "TR_J_gene", "TR_C_gene"
+        ]
+    },
+    {
         "accession": "ENCFF814ELR",
         "dataset": "ENCSR500ELM",
         "date_created": "2019-04-18T16:46:18.670068+00:00",
