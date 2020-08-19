@@ -1,0 +1,597 @@
+[
+	{
+		"aliases": [
+			"peter-sims:postnatal_1a_matrix"
+		],
+		"accession": "ENCFF100AAA",
+		"award": "CZI004LIV",
+		"uuid": "77e45170-df3e-11ea-87d0-0242ac130003",
+		"md5sum": "c0664a9a03dd7443f10279f45895c79d",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "postnatal_1a_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_1a_R1.fastq",
+			"peter-sims:sequence_1a_R2.fastq",
+			"peter-sims:sequence_1a_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:postnatal_1b_matrix"
+		],
+		"accession": "ENCFF101AAA",
+		"award": "CZI004LIV",
+		"uuid": "425a21cd-ad72-49fb-9c9a-cd80d93ea5b4",
+		"md5sum": "806a5a374af888e08dd1ea9482455dc9",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "postnatal_1b_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_1b_R1.fastq",
+			"peter-sims:sequence_1b_R2.fastq",
+			"peter-sims:sequence_1b_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:postnatal_1c_matrix"
+		],
+		"accession": "ENCFF102AAA",
+		"award": "CZI004LIV",
+		"uuid": "2f280832-e0ce-11ea-87d0-0242ac130003",
+		"md5sum": "5e92599bf59d4488a65782576822267e",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "postnatal_1c_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_1c_R1.fastq",
+			"peter-sims:sequence_1c_R2.fastq",
+			"peter-sims:sequence_1c_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_2a_matrix"
+		],
+		"accession": "ENCFF103AAA",
+		"award": "CZI004LIV",
+		"uuid": "28fc5d7c-e0cf-11ea-87d0-0242ac130003",
+		"md5sum": "16fc0e9a18fd8bb798b6e23109614e2d",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_2a_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_2a_R1.fastq",
+			"peter-sims:sequence_2a_R2.fastq",
+			"peter-sims:sequence_2a_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_2b_matrix"
+		],
+		"accession": "ENCFF104AAA",
+		"award": "CZI004LIV",
+		"uuid": "98527040-e1d1-4c89-a354-47a0f0fe738f",
+		"md5sum": "d41871cca478d562840b1647c35ff59b",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_2b_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_2b_R1.fastq",
+			"peter-sims:sequence_2b_R2.fastq",
+			"peter-sims:sequence_2b_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_2c_matrix"
+		],
+		"accession": "ENCFF105AAA",
+		"award": "CZI004LIV",
+		"uuid": "b9996519-e6f0-497e-a4ed-c19ea0ca5a1e",
+		"md5sum": "915a9ad6e55694339ec09a3c15dfabd4",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_2c_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_2c_R1.fastq",
+			"peter-sims:sequence_2c_R2.fastq",
+			"peter-sims:sequence_2c_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_3a_matrix"
+		],
+		"accession": "ENCFF106AAA",
+		"award": "CZI004LIV",
+		"uuid": "f29c27f1-1b93-4650-bf83-5ba8fb898318",
+		"md5sum": "045894f2958e21ade9c500a6a8b2fbf9",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_3a_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_3a_R1.fastq",
+			"peter-sims:sequence_3a_R2.fastq",
+			"peter-sims:sequence_3a_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_3b_matrix"
+		],
+		"accession": "ENCFF107AAA",
+		"award": "CZI004LIV",
+		"uuid": "3b7039d8-e0cf-11ea-87d0-0242ac130003",
+		"md5sum": "2e11e5d889f715c96a4f6e3a00aa3d33",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_3b_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_3b_R1.fastq",
+			"peter-sims:sequence_3b_R2.fastq",
+			"peter-sims:sequence_3b_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_3c_matrix"
+		],
+		"accession": "ENCFF108AAA",
+		"award": "CZI004LIV",
+		"uuid": "32c7e05a-62fa-42ae-a524-0f4d02dc9b47",
+		"md5sum": "320bf46c52bf553c54533da384e6609f",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_3c_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_3c_R1.fastq",
+			"peter-sims:sequence_3c_R2.fastq",
+			"peter-sims:sequence_3c_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:postnatal_1a_filtered_matrix"
+		],
+		"accession": "ENCFF109AAA",
+		"award": "CZI004LIV",
+		"uuid": "e40c90d2-af36-40d0-a947-e872fa5a0e7d",
+		"md5sum": "27c5a28254a58da490c04c5abc981644",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "postnatal_1a_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_1a_R1.fastq",
+			"peter-sims:sequence_1a_R2.fastq",
+			"peter-sims:sequence_1a_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:postnatal_1b_filtered_matrix"
+		],
+		"accession": "ENCFF110AAA",
+		"award": "CZI004LIV",
+		"uuid": "059785ef-9e3c-4014-80d3-16248064fdcc",
+		"md5sum": "611f8ba1f0ee751f100784d9e1ba2325",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "postnatal_1b_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_1b_R1.fastq",
+			"peter-sims:sequence_1b_R2.fastq",
+			"peter-sims:sequence_1b_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:postnatal_1c_filtered_matrix"
+		],
+		"accession": "ENCFF111AAA",
+		"award": "CZI004LIV",
+		"uuid": "be473115-9e5d-4094-9f22-9a8125d3aa68",
+		"md5sum": "e3e716cff4a5b14d50a438d9bcb5d494",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "postnatal_1c_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_1c_R1.fastq",
+			"peter-sims:sequence_1c_R2.fastq",
+			"peter-sims:sequence_1c_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_2a_filtered_matrix"
+		],
+		"accession": "ENCFF112AAA",
+		"award": "CZI004LIV",
+		"uuid": "8ae541d4-541b-4a3d-99a4-98e97e3206f3",
+		"md5sum": "5883f0a7557865e980cefcba7701e558",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_2a_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_2a_R1.fastq",
+			"peter-sims:sequence_2a_R2.fastq",
+			"peter-sims:sequence_2a_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_2b_filtered_matrix"
+		],
+		"accession": "ENCFF113AAA",
+		"award": "CZI004LIV",
+		"uuid": "a4f7cbb1-9fec-471c-8daf-e475978fe0d3",
+		"md5sum": "5f21e1c7370fbee16bc2dad7850a8ebb",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_2b_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_2b_R1.fastq",
+			"peter-sims:sequence_2b_R2.fastq",
+			"peter-sims:sequence_2b_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_2c_filtered_matrix"
+		],
+		"accession": "ENCFF114AAA",
+		"award": "CZI004LIV",
+		"uuid": "08c6b1da-11b5-4cc9-a1d5-86105d162fd1",
+		"md5sum": "aa9f7a8c40ba6313dd2b561e8367e1cb",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_2c_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_2c_R1.fastq",
+			"peter-sims:sequence_2c_R2.fastq",
+			"peter-sims:sequence_2c_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_3a_filtered_matrix"
+		],
+		"accession": "ENCFF115AAA",
+		"award": "CZI004LIV",
+		"uuid": "117d7566-4586-4675-b359-73ee0351ac3b",
+		"md5sum": "325fadca0d4e07a4f5c4e33ce38b9175",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_3a_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_3a_R1.fastq",
+			"peter-sims:sequence_3a_R2.fastq",
+			"peter-sims:sequence_3a_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_3b_filtered_matrix"
+		],
+		"accession": "ENCFF116AAA",
+		"award": "CZI004LIV",
+		"uuid": "e363e2cf-2ab5-4e2c-91b4-4ac4a65e69e8",
+		"md5sum": "765cfb5596ad4fe2995c4fec2e3a29bf",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_3b_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_3b_R1.fastq",
+			"peter-sims:sequence_3b_R2.fastq",
+			"peter-sims:sequence_3b_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_3c_filtered_matrix"
+		],
+		"accession": "ENCFF117AAA",
+		"award": "CZI004LIV",
+		"uuid": "97c7a401-f6a8-4315-9d81-e12d84b79a80",
+		"md5sum": "b533cd31154325d50cbc6de5f1d4a99a",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_3c_filtered_matrix.mtx/",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:sequence_3c_R1.fastq",
+			"peter-sims:sequence_3c_R2.fastq",
+			"peter-sims:sequence_3c_I1.fastq",
+			"lattice:cellranger_2020-A"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:alignment-count-step",
+		"value_scale": "linear",
+		"value_units": "UMI",
+		"normalized": false
+	},
+	{
+		"aliases": [
+			"peter-sims:postnatal_merged_matrix"
+		],
+		"accession": "ENCFF118AAA",
+		"award": "CZI004LIV",
+		"uuid": "1b5f2d6d-8dd0-4463-abd9-722bb2bd11a7",
+		"md5sum": "631cbab06a3b4980f698767169d7e12f",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_merged_matrix.mtx",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:postnatal_1a_filtered_matrix",
+			"peter-sims:postnatal_1b_filtered_matrix",
+			"peter-sims:postnatal_1c_filtered_matrix"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:merge-analysis-step",
+		"value_scale": "natural log",
+		"value_units": "UMI",
+		"normalized": true,
+		"normalization_method": "LogNormalize",
+		"filtering_cutoffs": [
+			{"cutoff_value": 20000, "cutoff_units": "genes/cell", "cutoff_type": "maximum"},
+			{"cutoff_value": 1000, "cutoff_units": "genes/cell", "cutoff_type": "minimum"},
+			{"cutoff_value": 10, "cutoff_units": "percent mitochondrial/cell", "cutoff_type": "maximum"},
+			{"cutoff_value": 3, "cutoff_units": "cells/gene", "cutoff_type": "minimum"}
+		]
+	},
+	{
+		"aliases": [
+			"peter-sims:prenatal_merged_matrix"
+		],
+		"accession": "ENCFF119AAA",
+		"award": "CZI004LIV",
+		"uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
+		"md5sum": "47b366807b827b9b2c9283376a7a087f",
+		"no_file_available": false,
+		"status": "released",
+		"file_format": "mtx",
+		"file_size": 50000,
+		"lab": "j-michael-cherry",
+		"submitted_file_name": "prenatal_merged_matrix.mtx",
+		"output_type": "gene quantifications",
+		"dataset": "peter-sims:scRNAseq_test_dataset",
+		"derived_from": [
+			"peter-sims:prenatal_2a_filtered_matrix",
+			"peter-sims:prenatal_2b_filtered_matrix",
+			"peter-sims:prenatal_2c_filtered_matrix",
+			"peter-sims:prenatal_3a_filtered_matrix",
+			"peter-sims:prenatal_3b_filtered_matrix",
+			"peter-sims:prenatal_3c_filtered_matrix"
+		],
+		"assembly": "GRCh38",
+		"genome_annotation": "GENCODE 32",
+		"analysis_step": "peter-sims:merge-analysis-step",
+		"value_scale": "natural log",
+		"value_units": "UMI",
+		"normalized": true,
+		"normalization_method": "LogNormalize",
+				"filtering_cutoffs": [
+			{"cutoff_value": 20000, "cutoff_units": "genes/cell", "cutoff_type": "maximum"},
+			{"cutoff_value": 1000, "cutoff_units": "genes/cell", "cutoff_type": "minimum"},
+			{"cutoff_value": 10, "cutoff_units": "percent mitochondrial/cell", "cutoff_type": "maximum"},
+			{"cutoff_value": 3, "cutoff_units": "cells/gene", "cutoff_type": "minimum"}
+		]
+	}
+]
