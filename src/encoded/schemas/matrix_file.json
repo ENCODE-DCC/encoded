@@ -129,12 +129,17 @@
             "linkTo": "Dataset"
         },
         "derived_from": {
+            "title": "Derived from",
+            "description": "A file participating as input into software to produce this output file.",
+            "comment": "See file.json for a list of available identifiers.",
+            "type": "array",
             "items": {
-                "title": "Derived from",
-                "description": "A file participating as input into software to produce this output file.",
-                "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "SequenceAlignmentFile"
+                "linkTo": [
+                    "RawSequenceFile",
+                    "ReferenceFile",
+                    "MatrixFile"
+                ]
             }
         },
         "file_format": {
@@ -215,7 +220,11 @@
                             "genes/cell",
                             "genes/nuclei",
                             "umi/cell",
-                            "umi/nuclei"
+                            "umi/nuclei",
+                            "cells/gene",
+                            "nuclei/gene",
+                            "percent mitochondrial/cell",
+                            "percent mitochondrial/nuclei"
                         ]
                     },
                     "cutoff_type": {
