@@ -1,4 +1,26 @@
 [
+    {   
+        "aliases": [
+            "lattice:cellranger-aggr-4.0"
+        ],
+        "uuid": "451c9ce7-654c-4fc7-8b16-409502df6750",
+        "software": "lattice:cellranger-aggr",
+        "status": "released",
+        "version": "4.0",
+        "download_checksum": "f1ff99a0e536d1c8c311cafbc14359e8",
+        "downloaded_url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+    },
+    {   
+        "aliases": [
+            "lattice:cellranger-count-4.0"
+        ],
+        "uuid": "7363bf79-9573-4a24-9465-2570b72f40e8",
+        "software": "lattice:cellranger-count",
+        "status": "released",
+        "version": "4.0",
+        "download_checksum": "f31a81e91afdcf0b84dfee82ec2fb196",
+        "downloaded_url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+    },
     {
         "software": "tophat",
         "version": "2.0.8",
