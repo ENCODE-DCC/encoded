@@ -10,101 +10,10 @@ from encoded.batch_download import format_row
 from encoded.batch_download import _convert_camel_to_snake
 
 
-
 pytestmark = [
     pytest.mark.indexing,
     pytest.mark.usefixtures('index_workbook'),
 ]
-
-
-param_list_1 = {'files.file_type': 'fastq'}
-param_list_2 = {'files.title': 'ENCFF222JUK'}
-param_list_3 = {'files.assembly': 'GRCh38'}
-exp_file_1 = {'file_type': 'fastq',
-              'assembly': 'hg19',
-              'restricted': True}
-exp_file_2 = {'file_type': 'bam',
-              'restricted': False}
-exp_file_3 = {'file_type': 'gz',
-              'assembly': 'GRCh38'}
-
-
-def test_ELEMENT_CHUNK_SIZE_value():
-    target = 1000
-    expected = ELEMENT_CHUNK_SIZE
-    assert expected == target
-
-
-def test_get_biosample_accessions_finds_accession():
-    expected = {'test_accession'}
-    experiment_json = {
-        'files': [{
-            'uuid': '123',
-            'replicate': {
-                'library': {
-                    'biosample': {
-                        'accession': {
-                            'test_accession'
-                        }
-                    }
-                }
-            }
-        }]
-    }
-    file_json = {
-        'uuid': '123',
-        'replicate': {
-            'library': {
-                'biosample': {
-                    'accession': {
-                        'test_accession'
-                    }
-                }
-            }
-        }
-    }
-    target = get_biosample_accessions(file_json, experiment_json)
-    assert expected == target
-
-def test_get_biosample_accessions_finds_replicate_loop():
-    expected = 'test_replicates'
-    experiment_json = {
-        'replicates': [{
-            'library': {
-                'biosample': {
-                    'accession':
-                        'test_replicates'
-                }
-            }
-        }],
-        'files': [{
-            'uuid': '123',
-            'replicate': {
-                'library': {
-                    'biosample': {
-                        'accession': {
-                            'test_accession'
-                        }
-                    }
-                }
-            },
-        }]
-    }
-    file_json = {
-        'uuid': '1235',
-        'replicate': {
-            'library': {
-                'biosample': {
-                    'accession': {
-                        'test_accession'
-                    }
-                }
-            }
-        }
-    }
-    target = get_biosample_accessions(file_json, experiment_json)
-    assert expected == target
-
 
 def test_format_row():
     columns = ['col1', 'col2', 'col3']

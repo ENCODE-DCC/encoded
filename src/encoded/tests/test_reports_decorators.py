@@ -4,7 +4,11 @@ from encoded.tests.features.conftest import app, app_settings, index_workbook
 from pyramid.exceptions import HTTPBadRequest
 
 
-pytestmark = [pytest.mark.indexing]
+
+pytestmark = [
+    pytest.mark.indexing,
+    pytest.mark.usefixtures('index_workbook'),
+]
 
 
 def test_reports_decorators_allowed_types_decorator_raises_error():

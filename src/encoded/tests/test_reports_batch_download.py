@@ -3,10 +3,13 @@ import pytest
 from encoded.tests.features.conftest import app, app_settings, index_workbook
 
 
-pytestmark = [pytest.mark.indexing]
+pytestmark = [
+    pytest.mark.indexing,
+    pytest.mark.usefixtures('index_workbook'),
+]
 
 
-def test_reports_batch_download_view(testapp, index_workbook):
+def test_reports_batch_download_view(index_workbook, testapp):
     r = testapp.get('/batch_download/?type=Experiment&status=released')
     lines = r.text.split('\n')
     assert lines[0] == (
@@ -16,7 +19,7 @@ def test_reports_batch_download_view(testapp, index_workbook):
     assert 'http://localhost/files/ENCFF002MXF/@@download/ENCFF002MXF.fastq.gz' in lines
 
 
-def test_reports_batch_download_header_and_rows(testapp, index_workbook):
+def test_reports_batch_download_header_and_rows(index_workbook, testapp):
     results = testapp.get('/batch_download/?type=Experiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'
     assert results.headers['Content-Disposition'] == 'attachment; filename="files.txt"'
@@ -27,7 +30,7 @@ def test_reports_batch_download_header_and_rows(testapp, index_workbook):
         assert '@@download' in line, f'{line} not download'
 
 
-def test_reports_batch_download_view_file_plus(testapp, index_workbook):
+def test_reports_batch_download_view_file_plus(index_workbook, testapp):
     r = testapp.get(
         '/batch_download/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json'
     )
@@ -263,7 +266,7 @@ def test_reports_batch_download_get_column_to_field_mapping(dummy_request):
     ]
 
 
-def test_reports_batch_download__build_params(dummy_request):
+def test_reports_batch_download_build_params(dummy_request):
     from encoded.reports.batch_download import BatchDownload
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'

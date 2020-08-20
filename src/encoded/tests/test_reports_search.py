@@ -3,7 +3,10 @@ import pytest
 from encoded.tests.features.conftest import app, app_settings, index_workbook
 
 
-pytestmark = [pytest.mark.indexing]
+pytestmark = [
+    pytest.mark.indexing,
+    pytest.mark.usefixtures('index_workbook'),
+]
 
 
 def test_reports_search_batched_search_generator_init(dummy_request):
@@ -115,6 +118,7 @@ def test_reports_search_batched_search_generator_build_new_request(dummy_request
     assert request.registry
 
 
+@pytest.mark.indexing
 def test_reports_search_batched_search_generator_results(index_workbook, dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
