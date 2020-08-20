@@ -118,7 +118,6 @@ def test_reports_search_batched_search_generator_build_new_request(dummy_request
     assert request.registry
 
 
-@pytest.mark.indexing
 def test_reports_search_batched_search_generator_results(index_workbook, dummy_request):
     from encoded.reports.search import BatchedSearchGenerator
     dummy_request.environ['QUERY_STRING'] = (
