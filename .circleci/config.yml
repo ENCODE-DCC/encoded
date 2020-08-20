@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-    browser-tools: circleci/browser-tools@0.1.4
+    browser-tools: circleci/browser-tools@1.0.1
 
 executors:
   encoded-executor:
