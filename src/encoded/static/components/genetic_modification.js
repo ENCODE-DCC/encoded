@@ -682,9 +682,13 @@ const ListingComponent = (props, reactContext) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose} &mdash; {result.method || result.nucleic_acid_delivery_method}</a>
+                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose}</a>
                     <div className="result-item__data-row">
                         {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                        {result.method ? <div><strong>Method: </strong>{result.method}</div> : null}
+                        {result.nucleic_acid_delivery_method && result.nucleic_acid_delivery_method.length > 0 ?
+                            <div><strong>Nucleic acid delivery method: </strong>{result.nucleic_acid_delivery_method.join(', ')}</div>
+                        : null}
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                     </div>
                 </div>
