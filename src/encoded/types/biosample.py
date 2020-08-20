@@ -226,7 +226,7 @@ class Biosample(Item):
                         term_id
                     )
                     raise ValidationFailure('body', ['disease_term_id'], msg)
-            return ', '.join(map(str, term_name))
+            return term_name
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
@@ -740,7 +740,7 @@ def generate_summary_dictionary(
                 str(starting_amount_units)
 
     if disease_term_name is not None:
-        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
+        dict_of_phrases['disease_term_name'] = 'with ' + ', '.join(map(str, disease_term_name))
 
     if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
