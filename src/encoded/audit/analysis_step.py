@@ -22,8 +22,8 @@ def audit_analysis_steps_used_by_multiple_pipelines(value, system):
     pipelineAward = {}
     pipelineLab = {}
     for p in pipelines:
-     	pipelineAward[p['@id']] = (p.get('award')['rfa'])
-     	pipelineLab[p['@id']] = (p['lab'])
+        pipelineAward[p['@id']] = (p.get('award')['rfa'])
+        pipelineLab[p['@id']] = (p['lab'])
 
     flippedAwardDict = {}
     flippedLabDict = {}
@@ -44,8 +44,8 @@ def audit_analysis_steps_used_by_multiple_pipelines(value, system):
     	awardB = list(flippedAwardDict.keys())[1]
     	pipelineA = flippedAwardDict[awardA][0]
     	pipelineB = flippedAwardDict[awardB][0]
-    	detail = ('analysis step {} is associated with multiple pipelines for different '
-    		'RFAs, where the {} pipeline is associated with {} and the {} pipeline is associated with {}.'.format(
+    	detail = ('Analysis step {} is associated with multiple pipelines with different '
+    		'RFAs, where {} is associated with {} and {} is associated with {}.'.format(
     			audit_link(path_to_text(analysisStep), analysisStep),
 				audit_link(path_to_text(pipelineA), pipelineA),
 				awardA,
@@ -55,13 +55,14 @@ def audit_analysis_steps_used_by_multiple_pipelines(value, system):
     		)
     	yield AuditFailure('analysis step used by multiple pipelines', detail, level='INTERNAL_ACTION')
 
+
     if len(flippedLabDict.keys()) > 1:
-    	LabA = list(flippedLabDict.keys())[0]
-    	LabB = list(flippedLabDict.keys())[1]
-    	pipelineA = flippedLabDict[LabA][0]
-    	pipelineB = flippedLabDict[LabB][0]
-    	detail = ('analysis step {} is associated with multiple pipelines for different '
-    		'labs, where the {} pipeline is associated with {} and the {} pipeline is associated with {}.'.format(
+        LabA = list(flippedLabDict.keys())[0]
+        LabB = list(flippedLabDict.keys())[1]
+        pipelineA = flippedLabDict[LabA][0]
+        pipelineB = flippedLabDict[LabB][0]
+        detail = ('Analysis step {} is associated with multiple pipelines from different '
+    		'labs, where {} is associated with {} and {} is associated with {}.'.format(
     			audit_link(path_to_text(analysisStep), analysisStep),
 				audit_link(path_to_text(pipelineA), pipelineA),
 				audit_link(path_to_text(LabA), LabA),
@@ -69,4 +70,4 @@ def audit_analysis_steps_used_by_multiple_pipelines(value, system):
 				audit_link(path_to_text(LabB), LabB)
 				)
     		)
-    	yield AuditFailure('analysis step used by multiple pipelines', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('analysis step used by multiple pipelines', detail, level='INTERNAL_ACTION')
