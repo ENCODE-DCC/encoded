@@ -39,7 +39,8 @@
         ],
         "tissue_with_enhancer_activity": [
             "heart (UBERON:0000948)",
-            "neural tube (UBERON:0001049)"
+            "neural tube (UBERON:0001049)",
+            "unidentified tissue"
         ],
         "element_location": {
             "assembly": "GRCh38",

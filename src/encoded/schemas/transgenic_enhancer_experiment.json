@@ -200,7 +200,8 @@
                     "pancreas (UBERON:0001264)",
                     "somite (UBERON:0002329)",
                     "tail (UBERON:0002415)",
-                    "trigeminal V (ganglion, cranial) (UBERON:0001645)"
+                    "trigeminal V (ganglion, cranial) (UBERON:0001645)",
+                    "unidentified tissue"
                 ]
             }
         },

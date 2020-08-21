@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
+    CalculatedAssayTitle,
     CalculatedAssaySlims,
     CalculatedCategorySlims,
     CalculatedFileSetAssay,
@@ -204,6 +205,7 @@ class TransgenicEnhancerExperiment(
     Dataset,
     CalculatedAssaySynonyms,
     CalculatedAssayTermID,
+    CalculatedAssayTitle,
     CalculatedAssaySlims,
     CalculatedCategorySlims,
     CalculatedTypeSlims,
