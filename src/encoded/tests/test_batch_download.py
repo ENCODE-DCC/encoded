@@ -12,6 +12,12 @@ from encoded.batch_download import ELEMENT_CHUNK_SIZE
 from encoded.batch_download import get_biosample_accessions
 
 
+pytestmark = [
+    pytest.mark.indexing,
+    pytest.mark.usefixtures('index_workbook'),
+]
+
+
 param_list_1 = {'files.file_type': 'fastq'}
 param_list_2 = {'files.title': 'ENCFF222JUK'}
 param_list_3 = {'files.assembly': 'GRCh38'}
@@ -119,7 +125,7 @@ def test_convert_camel_to_snake_with_one_words():
     target = _convert_camel_to_snake('Camel')
     assert expected == target
 
-@pytest.mark.indexing
+
 def test_batch_download_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=Experiment&sort=accession')
     assert res.headers['content-type'] == 'text/tsv; charset=UTF-8'
@@ -138,7 +144,7 @@ def test_batch_download_report_download(testapp, index_workbook):
     ]
     assert len(lines) == 69
 
-@pytest.mark.indexing
+
 def test_batch_download_matched_set_report_download(testapp, index_workbook):
     res = testapp.get('/report.tsv?type=MatchedSet&sort=accession')
     disposition = res.headers['content-disposition']
@@ -147,7 +153,7 @@ def test_batch_download_matched_set_report_download(testapp, index_workbook):
     disposition = res.headers['content-disposition']
     assert disposition.startswith('attachment;filename="matched_set_report') and disposition.endswith('.tsv"')
 
-@pytest.mark.indexing
+
 def test_batch_download_restricted_files_present(testapp, index_workbook):
     results = testapp.get('/search/?limit=all&field=files.href&field=files.file_type&field=files&type=Experiment')
     results = results.body.decode("utf-8")
@@ -166,7 +172,7 @@ def test_batch_download_lookup_column_value(lookup_column_value_item, lookup_col
     for path in lookup_column_value_validate.keys():
         assert lookup_column_value_validate[path] == lookup_column_value(lookup_column_value_item, path)
 
-@pytest.mark.indexing
+
 def test_batch_download_view(testapp, index_workbook):
     r = testapp.get('/batch_download/?type=Experiment&status=released')
     lines = r.text.split('\n')
@@ -176,7 +182,7 @@ def test_batch_download_view(testapp, index_workbook):
     assert len(lines) >= 79
     assert 'http://localhost/files/ENCFF002MXF/@@download/ENCFF002MXF.fastq.gz' in lines
 
-@pytest.mark.indexing
+
 def test_batch_download_header_and_rows(testapp, index_workbook):
     results = testapp.get('/batch_download/?type=Experiment')
     assert results.headers['Content-Type'] == 'text/plain; charset=UTF-8'
@@ -187,7 +193,7 @@ def test_batch_download_header_and_rows(testapp, index_workbook):
     for line in lines[1:]:
         assert '@@download' in line
 
-@pytest.mark.indexing
+
 def test_batch_download_view_file_plus(testapp, index_workbook):
     r = testapp.get(
         '/batch_download/?type=Experiment&files.file_type=bigBed+bed3%2B&format=json'

@@ -4,6 +4,12 @@ from encoded.tests.features.conftest import app, app_settings, index_workbook
 from pyramid.exceptions import HTTPBadRequest
 
 
+pytestmark = [
+    pytest.mark.indexing,
+    pytest.mark.usefixtures('index_workbook'),
+]
+
+
 def experiment():
     return {
         "assay_term_name": "ChIP-seq",
