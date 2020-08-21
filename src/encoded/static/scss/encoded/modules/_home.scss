@@ -502,3 +502,80 @@
         }
     }
 }
+
+.text-side {
+    flex: 0 1 70%;
+    padding-top: 0px;
+}
+
+.img-side {
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #303030;
+
+    h1 {
+	font-weight: bold;
+	font-size: 48px;
+    }
+
+    img {
+	width: 120px;
+    }
+}
+
+.homepage {
+    @media screen and (min-width: $screen-md-min) {
+	padding: 30px 100px;
+    }
+}
+
+.quote {
+    text-align: center;
+}
+
+.main-content {
+    align-items: center;
+    text-align: justify;
+    margin-bottom: 35px;
+}
+
+.call-contact {
+    text-decoration: underline;
+    margin-top: 0;
+}
+
+.email-us {
+    font-weight: bold;
+    margin: 0;
+}
+
+.contacts {
+    display: flex;
+    justify-content: center;
+
+    p {
+	margin: 0;
+    }
+}
+
+.contact-group {
+    margin: 0 10px;
+}
+
+.credits {
+    font-size: 11pt;
+    margin-top: 35px;
+
+    p {
+	margin: 0;
+    }
+
+    .italic {
+	font-style: italic;
+    }
+}
