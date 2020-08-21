@@ -209,11 +209,18 @@ class Biosample(Item):
 
     @calculated_property(define=True,
                         schema={
-                            "title": "Disease term name",
-                            "description": "Ontology term describing the disease affecting the biosample.",
+                            "title": "Disease term names",
+                            "description": "Ontology term(s) describing the disease affecting the biosample.",
                             "comment": "Calculated from disease_term_id",
-                            "type": "string",
+                            "type": "array",
                             "notSubmittable": True,
+                            "uniqueItems": True,
+                            "minItems": 1,
+                            "items": {
+                                "title": "Disease term name",
+                                "description": "Ontology term describing the disease affecting the biosample.",
+                                "type": "string",
+                            },
                         })
     def disease_term_name(self, request, registry, disease_term_id=None):
         if disease_term_id is not None:

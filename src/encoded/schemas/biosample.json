@@ -886,6 +886,7 @@
             "description": "Ontology identifiers describing the disease(s) affecting the biosample.",
             "type": "array",
             "uniqueItems": true,
+            "minItems": 1,
             "items": {
                 "title": "Disease ontology ID",
                 "description": "Ontology identifier describing the disease affecting the biosample.",
