@@ -10,7 +10,7 @@ executors:
     working_directory: /mnt/ramdisk
     environment:
       - BASH_ENV: /home/circleci/.bashrc
-      - ES_JAVA_OPTS: -Xms4g -Xmx4g
+      - ES_JAVA_OPTS: -Xms2g -Xmx2g
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
 
 commands:
@@ -72,7 +72,7 @@ jobs:
       - run:
           name: Run bdd tests
           command: |
-            bin/test -s -vv -m "bdd" --tb=short \
+            bin/test --exitfirst -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait 10 \
               --splinter-webdriver chrome \
               --splinter-socket-timeout 300 \
@@ -86,7 +86,7 @@ jobs:
       - run:
           name: indexing tests
           command: |
-            bin/test -s -vv -m "indexing"
+            bin/test --exitfirst -s -vv -m "indexing"
           no_output_timeout: 5m
   indexer:
     executor: encoded-executor
@@ -96,7 +96,7 @@ jobs:
       - run:
           name: indexer tests
           command: |
-            bin/test -s -vv -m "indexer"
+            bin/test --exitfirst -s -vv -m "indexer"
           no_output_timeout: 5m
   not-bdd-non-indexing:
     executor: encoded-executor
@@ -106,7 +106,7 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            bin/test -s -vv -m "not bdd and not indexing and not indexer"
+            bin/test --exitfirst -s -vv -m "not bdd and not indexing and not indexer"
   npm:
     executor: encoded-executor
     resource_class: medium
