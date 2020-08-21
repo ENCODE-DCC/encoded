@@ -18,7 +18,7 @@
                 "Peaks",
                 "Replicated Peaks",
                 "Filtered Peaks",
-                "Pseudo-replicated Peaks",
+                "Pseudo-replicated peaks",
                 "Fold change over control",
                 "Signal p-value", "Signal"
             ],
@@ -97,7 +97,7 @@
                     "qValueFilter": "0",
                     "output_type": [ "filtered peaks" ]
                 },
-                "Pseudo-replicated Peaks": {
+                "Pseudo-replicated peaks": {
                     "tag": "hPRPKS",
                     "visibility": "hide",
                     "type": "bigBed",
