@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 30
 * Added *analysis_objects* property.
+* Added *SPRITE-IP* to *assay_term_name* enum
 
 ### Schema version 30
 
