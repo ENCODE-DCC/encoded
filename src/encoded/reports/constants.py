@@ -182,3 +182,10 @@ AT_IDS_AS_JSON_DATA_LINK = (
     '-H "Content-Type: application/json" '
     '--data \'{{"elements": [{}]}}\''
 )
+
+
+
+BOOLEAN_MAP = {
+    'true': True,
+    'false': False
+}

@@ -276,6 +276,19 @@ def file_():
     }
 
 
+def abstract_file():
+    return {
+        'nested': {
+            'boolean': True,
+            'list': ['a', 'b', 'c'],
+            'int': 2,
+            'str': 'xyz',
+            'empty_list': []
+        },
+        'empty_list': []
+    }
+
+
 def audits_():
     return {
         "WARNING": [
@@ -419,75 +432,101 @@ def test_metadata_file_matches_file_params():
     from encoded.reports.metadata import file_matches_file_params
     file_param_list = {}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'assembly': ['GRCh38']}
+    file_param_list = {'assembly': set(['GRCh38'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'assembly': ['hg19']}
+    file_param_list = {'assembly': set(['hg19'])}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'no_such_thing': ['abc']}
+    file_param_list = {'no_such_thing': set(['abc'])}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'missing_field': ['missing_value']}
+    file_param_list = {'missing_field': set(['missing_value'])}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'derived_from': ['/files/ENCFF089RYQ/']}
+    file_param_list = {'derived_from': set(['/files/ENCFF089RYQ/'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'derived_from': ['/files/ENCFF089RYQ/', '/files/ENCFFABC123/']}
+    file_param_list = {'derived_from': set(['/files/ENCFF089RYQ/', '/files/ENCFFABC123/'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/']}
+    file_param_list = {'derived_from': set(['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'technical_replicates': ['2_1']}
+    file_param_list = {'technical_replicates': set(['2_1'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'biological_replicates': ['2']}
+    file_param_list = {'biological_replicates': set([2])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'file_size': ['3356650']}
+    file_param_list = {'file_size': set([3356650])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'replicate.rbns_protein_concentration': ['20']}
+    file_param_list = {'replicate.rbns_protein_concentration': set([20])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'replicate.rbns_protein_concentration_units': ['nM']}
+    file_param_list = {'replicate.rbns_protein_concentration_units': set(['nM'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'preferred_default': ['true']}
+    file_param_list = {'preferred_default': set([True])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'no_file_available': ['false']}
+    file_param_list = {'no_file_available': set([False])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'restricted': ['true']}
+    file_param_list = {'restricted': set([True])}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'assembly': ['*']}
+    file_param_list = {'assembly': set(['*'])}
     assert file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'no_such_thing': ['*']}
+    file_param_list = {'no_such_thing': set(['*'])}
     assert not file_matches_file_params(file_(), file_param_list)
-    file_param_list = {'preferred_default': ['*']}
+    file_param_list = {'preferred_default': set(['*'])}
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {
-        'derived_from': ['*']
+        'derived_from': set(['*'])
     }
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {
-        'derived_from': ['*'],
-        'title': ['ENCFF244PJU']
+        'derived_from': set(['*']),
+        'title': set(['ENCFF244PJU'])
     }
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {
-        'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],
-        'title': ['ENCFF244PJU']
+        'derived_from': set(['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/']),
+        'title': set(['ENCFF244PJU'])
     }
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {
-        'preferred_default': ['*'],
-        'assembly': ['GRCh38'],
-        'replicate.rbns_protein_concentration': ['20'],
-        'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],
-        'file_size': ['3356650'],
-        'no_file_available': ['false']
+        'preferred_default': set(['*']),
+        'assembly': set(['GRCh38']),
+        'replicate.rbns_protein_concentration': set([20]),
+        'derived_from': set(['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/']),
+        'file_size': set([3356650]),
+        'no_file_available': set([False])
     }
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {
-        'preferred_default': ['*'],
-        'assembly': ['GRCh38'],
-        'replicate.rbns_protein_concentration': ['20'],
-        'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],
-        'file_size': ['3356650'],
-        'no_file_available': ['false'],
-        'restricted': ['true']
+        'preferred_default': set(['*']),
+        'assembly': set(['GRCh38']),
+        'replicate.rbns_protein_concentration': set([20]),
+        'derived_from': set(['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/']),
+        'file_size': set([3356650]),
+        'no_file_available': set([False]),
+        'restricted': set([True])
     }
     assert not file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'nested.empty_list': set(['*'])}
+    assert not file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.empty_list': set([])}
+    assert not file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.list': set(['a'])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.list': set(['a', 'b'])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'empty_list': set([])}
+    assert not file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.str': set(['xyz'])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.str': set(['zxyz'])}
+    assert not file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.int': set([2])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.int': set([2, 3])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.int': set([3])}
+    assert not file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.boolean': set([True])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.boolean': set([True, False])}
+    assert file_matches_file_params(abstract_file(), file_param_list)
+    file_param_list = {'nested.boolean': set([False])}
+    assert not file_matches_file_params(abstract_file(), file_param_list)
 
 
 def test_metadata_group_audits_by_files_and_type():
@@ -746,7 +785,7 @@ def test_metadata_metadata_report_split_column_and_fields_by_experiment_and_file
         assert tuple(expected_experiment_column_to_fields_mapping[k]) == tuple(v)
 
 
-def test_metadata_metadata_report_set_positive_file_param_list(dummy_request):
+def test_metadata_metadata_report_set_positive_file_param_set(dummy_request):
     from encoded.reports.metadata import MetadataReport
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
@@ -754,14 +793,14 @@ def test_metadata_metadata_report_set_positive_file_param_list(dummy_request):
         '&files.status!=archived&files.biological_replicates=2'
     )
     mr = MetadataReport(dummy_request)
-    mr._set_positive_file_param_list()
-    expected_positive_file_param_list = {
+    mr._set_positive_file_param_set()
+    expected_positive_file_param_set = {
         'file_type': ['bigWig', 'bam'],
         'replicate.library.size_range': ['50-100'],
         'biological_replicates': ['2']
     }
-    for k, v in mr.positive_file_param_list.items():
-        assert tuple(expected_positive_file_param_list[k]) == tuple(v)
+    for k, v in mr.positive_file_param_set.items():
+        assert tuple(expected_positive_file_param_set[k]) == tuple(v)
 
 
 def test_metadata_metadata_report_add_positive_file_filters_as_fields_to_param_list(dummy_request):

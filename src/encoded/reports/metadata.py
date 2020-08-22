@@ -10,6 +10,7 @@ from encoded.reports.decorators import allowed_types
 from encoded.reports.search import BatchedSearchGenerator
 from encoded.reports.serializers import make_experiment_cell
 from encoded.reports.serializers import make_file_cell
+from encoded.reports.serializers import map_strings_to_booleans_and_ints
 from encoded.search_views import search_generator
 from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
@@ -24,27 +25,20 @@ def includeme(config):
     config.scan(__name__)
 
 
-def file_matches_file_params(file_, positive_file_param_list):
-    # Expects file_param_list where 'files.' has been
+def file_matches_file_params(file_, positive_file_param_set):
+    # Expects file_param_set where 'files.' has been
     # stripped off of key (files.file_type -> file_type)
     # and params with field negation (i.e. file_type!=bigWig)
-    # have been filtered out.
-    for k, v in positive_file_param_list.items():
-        if '.' in k:
-            file_prop_value = list(simple_path_ids(file_, k))
-        else:
-            file_prop_value = file_.get(k)
-        if file_prop_value is None:
+    # have been filtered out. Param values should be
+    # coerced to ints ('2' -> 2) or booleans ('true' -> True)
+    # and put into a set for comparison with file values.
+    for field, set_of_param_values in positive_file_param_set.items():
+        file_value = list(simple_path_ids(file_, field))
+        if not file_value:
             return False
-        elif '*' in v:
+        if '*' in set_of_param_values:
             continue
-        elif isinstance(file_prop_value, list):
-            if not any([str(x) in v for x in file_prop_value]):
-                return False
-        elif isinstance(file_prop_value, bool):
-            if str(file_prop_value).lower() not in v:
-                return False
-        elif str(file_prop_value) not in v:
+        if not set_of_param_values.intersection(file_value):
             return False
     return True
 
@@ -87,7 +81,7 @@ class MetadataReport:
         self.request = request
         self.query_string = QueryString(request)
         self.param_list = self.query_string.group_values_by_key()
-        self.positive_file_param_list = {}
+        self.positive_file_param_set = {}
         self.header = []
         self.experiment_column_to_fields_mapping = OrderedDict()
         self.file_column_to_fields_mapping = OrderedDict()
@@ -115,9 +109,9 @@ class MetadataReport:
             else:
                 self.experiment_column_to_fields_mapping[column] = fields
 
-    def _set_positive_file_param_list(self):
-        self.positive_file_param_list = {
-            k.replace('files.', ''): v
+    def _set_positive_file_param_set(self):
+        self.positive_file_param_set = {
+            k.replace('files.', ''): set(map_strings_to_booleans_and_ints(v))
             for k, v in self.param_list.items()
             if k.startswith('files.') and '!' not in k
         }
@@ -206,7 +200,7 @@ class MetadataReport:
 
     def _should_not_report_file(self, file_):
         conditions = [
-            not file_matches_file_params(file_, self.positive_file_param_list),
+            not file_matches_file_params(file_, self.positive_file_param_set),
             self.visualizable_only and not is_file_visualizable(file_),
             self.raw_only and file_.get('assembly'),
             file_.get('restricted'),
@@ -279,7 +273,7 @@ class MetadataReport:
     def _initialize_report(self):
         self._build_header()
         self._split_column_and_fields_by_experiment_and_file()
-        self._set_positive_file_param_list()
+        self._set_positive_file_param_set()
 
     def _build_params(self):
         self._add_fields_to_param_list()

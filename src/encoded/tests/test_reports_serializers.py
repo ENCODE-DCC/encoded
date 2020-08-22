@@ -180,3 +180,38 @@ def test_reports_serializers_make_file_cell():
     assert make_file_cell(['status'], file_()) == 'released'
     assert make_file_cell(['lab.title'], file_()) == 'ENCODE Processing Pipeline'
     assert make_file_cell(['file_format', 'file_format_type'], file_()) == 'bed idr_ranked_peak'
+
+
+def test_reports_serializers_maybe_int():
+    from encoded.reports.serializers import maybe_int
+    assert maybe_int('2') == 2
+    assert maybe_int('2_1') == '2_1'
+    assert maybe_int('') == ''
+    assert maybe_int(None) == None
+    assert maybe_int('xyz') == 'xyz'
+    assert maybe_int(['a', 'b', 'c']) == ['a', 'b', 'c']
+    assert maybe_int('*') == '*'
+    assert maybe_int('3356650') == 3356650
+
+
+def test_map_strings_to_booleans_and_ints():
+    from encoded.reports.serializers import map_strings_to_booleans_and_ints
+    assert map_strings_to_booleans_and_ints(['true']) == [True]
+    assert map_strings_to_booleans_and_ints(['false']) == [False]
+    assert map_strings_to_booleans_and_ints(['false', 'true']) == [False, True]
+    assert map_strings_to_booleans_and_ints(['false', 'true', True]) == [False, True, True]
+    assert map_strings_to_booleans_and_ints(['false', 'GRCh38']) == [False, 'GRCh38']
+    assert map_strings_to_booleans_and_ints(['2', '2_1']) == [2, '2_1']
+    assert map_strings_to_booleans_and_ints(['missing_field']) == ['missing_field']
+    assert map_strings_to_booleans_and_ints([]) == []
+    assert map_strings_to_booleans_and_ints(
+        [
+            '/files/ENCFF089RYQ/',
+            '/files/ENCFFABC123/'
+        ]
+    ) == [
+        '/files/ENCFF089RYQ/',
+        '/files/ENCFFABC123/'
+    ]
+    assert map_strings_to_booleans_and_ints(['3356650', '*']) == [3356650, '*']
+    assert map_strings_to_booleans_and_ints(['20', 'nM']) == [20, 'nM']

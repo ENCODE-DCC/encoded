@@ -1,4 +1,5 @@
 from snovault.util import simple_path_ids
+from encoded.reports.constants import BOOLEAN_MAP
 
 
 def make_experiment_cell(paths, experiment):
@@ -39,3 +40,17 @@ def make_file_cell(paths, file_):
         else:
             last = cell_value
     return ', '.join(sorted(set(last)))
+
+
+def maybe_int(value):
+    try:
+        return int(value.replace('_', ' '))
+    except Exception:
+        return value
+
+
+def map_strings_to_booleans_and_ints(values):
+    return [
+        BOOLEAN_MAP.get(v, maybe_int(v))
+        for v in values
+    ]
