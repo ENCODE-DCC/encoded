@@ -265,7 +265,6 @@ def file_():
         'biological_replicates': [
             2
         ],
-        'no_file_available': 'false',
         'href': '/files/ENCFF244PJU/@@download/ENCFF244PJU.bed.gz',
         'file_format': 'bed',
         'status': 'released',
