@@ -460,7 +460,7 @@ def metadata_report_factory(context, request):
         return _get_metadata(context, request)
 
 
-@view_config(route_name='metadata', request_method='GET')
+@view_config(route_name='metadata', request_method=['GET', 'POST'])
 @allowed_types(METADATA_ALLOWED_TYPES)
 def metadata_tsv(context, request):
     return metadata_report_factory(context, request)

@@ -122,7 +122,7 @@ def batch_download_factory(context, request):
         return _get_batch_download(context, request)
 
 
-@view_config(route_name='batch_download', request_method='GET')
+@view_config(route_name='batch_download', request_method=['GET', 'POST'])
 @allowed_types(METADATA_ALLOWED_TYPES)
 def batch_download(context, request):
     return batch_download_factory(context, request)
