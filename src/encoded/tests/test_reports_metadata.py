@@ -1,12 +1,12 @@
 import pytest
 
-#from encoded.tests.features.conftest import app, app_settings, index_workbook
+from encoded.tests.features.conftest import app, app_settings, index_workbook
 from pyramid.exceptions import HTTPBadRequest
 
 
 pytestmark = [
     pytest.mark.indexing,
-   # pytest.mark.usefixtures('index_workbook'),
+   pytest.mark.usefixtures('index_workbook'),
 ]
 
 
@@ -449,6 +449,36 @@ def test_metadata_file_matches_file_params():
     file_param_list = {'no_file_available': ['false']}
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'restricted': ['true']}
+    assert not file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'assembly': ['*']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'no_such_thing': ['*']}
+    assert not file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'preferred_default': ['*']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {
+        'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],
+        'title': ['ENCFF244PJU']
+    }
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {
+        'preferred_default': ['*'],
+        'assembly': ['GRCh38'],
+        'replicate.rbns_protein_concentration': ['20'],
+        'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],
+        'file_size': ['3356650'],
+        'no_file_available': ['false']
+    }
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {
+        'preferred_default': ['*'],
+        'assembly': ['GRCh38'],
+        'replicate.rbns_protein_concentration': ['20'],
+        'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],
+        'file_size': ['3356650'],
+        'no_file_available': ['false'],
+        'restricted': ['true']
+    }
     assert not file_matches_file_params(file_(), file_param_list)
 
 
