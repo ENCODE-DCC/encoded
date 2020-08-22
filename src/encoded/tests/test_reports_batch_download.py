@@ -52,10 +52,21 @@ def test_reports_batch_download_contains_all_values(index_workbook, testapp):
     assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
 
 
+def test_reports_batch_download_contains_all_annotation_values(index_workbook, testapp):
+    from pkg_resources import resource_filename
+    r = testapp.get('/batch_download/?type=Annotation')
+    actual = r.text.strip().split('\n')
+    expected_path = resource_filename('encoded', 'tests/data/inserts/expected_annotation_batch_download.tsv')
+    # To write new expected_batch_download.tsv change 'r' to 'w' and f.write(r.text); return;
+    with open(expected_path, 'r') as f:
+        expected = [x.strip() for x in f.readlines()]
+    assert set(actual) == set(expected), f'{set(actual) - set(expected)} not expected'
+
+
 def test_reports_batch_download_contains_all_publication_data_values(index_workbook, testapp):
     from pkg_resources import resource_filename
     r = testapp.get('/batch_download/?type=PublicationData&@id=/publication-data/ENCSR727WCB/')
-    actual = r.text.split('\n')
+    actual = r.text.strip().split('\n')
     expected_path = resource_filename('encoded', 'tests/data/inserts/expected_publication_data_batch_download.tsv')
     # To write new expected_batch_download.tsv change 'r' to 'w' and f.write(r.text); return;
     with open(expected_path, 'r') as f:
@@ -94,6 +105,76 @@ def test_reports_batch_download_and_metadata_contain_same_number_of_results(inde
     assert len(metadata_results) == len(batch_download_results)
     batch_download_results = testapp.get('/batch_download/?type=Experiment&files.biological_replicates=2').text.strip().split('\n')
     metadata_results = testapp.get('/metadata/?type=Experiment&files.biological_replicates=2').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+
+
+def test_reports_annotation_batch_download_and_metadata_contain_same_number_of_results(index_workbook, testapp):
+    batch_download_results = testapp.get('/batch_download/?type=Annotation').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&files.file_format=bigWig').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&files.file_format=bigWig').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&files.file_format=bigWig&files.file_format=tsv').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&files.file_format=bigWig&files.file_format=tsv').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&files.status=released').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&files.status=released').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&files.file_type=bed+bed3%2B').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&files.file_type=bed+bed3%2B').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&files.file_type!=bed+bed3%2B').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&files.file_type!=bed+bed3%2B').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&annotation_type=candidate+Cis-Regulatory+Elements').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&annotation_type=candidate+Cis-Regulatory+Elements').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=Annotation&files.lab.title=John+Stamatoyannopoulos%2C+UW').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=Annotation&files.lab.title=John+Stamatoyannopoulos%2C+UW').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+
+
+def test_reports_publication_data_batch_download_and_metadata_contain_same_number_of_results(index_workbook, testapp):
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.file_format=tsv').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.file_format=tsv').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.file_format=hic&files.file_format=tsv').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.file_format=hic&files.file_format=tsv').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.status=released').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.status=released').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.file_type=bed+narrowPeak').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.file_type=bed+narrowPeak').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.file_type!=bed+narrowPeak').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.file_type!=bed+narrowPeak').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.assay_term_name=ChIP-seq').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.assay_term_name=ChIP-seq').text.strip().split('\n')
+    assert len(batch_download_results) > 1
+    assert len(metadata_results) == len(batch_download_results)
+    batch_download_results = testapp.get('/batch_download/?type=PublicationData&files.file_size=2433593').text.strip().split('\n')
+    metadata_results = testapp.get('/metadata/?type=PublicationData&files.file_size=2433593').text.strip().split('\n')
     assert len(batch_download_results) > 1
     assert len(metadata_results) == len(batch_download_results)
 

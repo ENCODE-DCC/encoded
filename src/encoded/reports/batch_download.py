@@ -2,6 +2,7 @@ from encoded.reports.constants import BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_LINK
 from encoded.reports.constants import AT_IDS_AS_JSON_DATA_LINK
 from encoded.reports.metadata import MetadataReport
+from encoded.reports.metadata import PublicationDataMetadataReport
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.decorators import allowed_types
 from pyramid.view import view_config
@@ -78,9 +79,36 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
                 )
 
 
+class PublicationDataBatchDownload(BatchDownloadMixin, PublicationDataMetadataReport):
+
+    DEFAULT_PARAMS = [
+        ('limit', 'all'),
+        ('field', 'files')
+    ]
+
+    def _generate_rows(self):
+        yield self._get_encoded_metadata_link_with_newline()
+        for experiment in self._get_search_results_generator()['@graph']:
+            self.file_at_ids = experiment.get('files', [])
+            if not self.file_at_ids:
+                continue
+            for file_ in self._get_file_search_results_generator():
+                if self._should_not_report_file(file_):
+                    continue
+                file_data = self._get_file_data(file_)
+                yield self.csv.writerow(
+                    self._output_sorted_row({}, file_data)
+                )
+
+
 def _get_batch_download(context, request):
     batch_download = BatchDownload(request)
     return batch_download.generate()
+
+
+def _get_publication_data_batch_download(context, request):
+    publication_data_batch_download = PublicationDataBatchDownload(request)
+    return publication_data_batch_download.generate()
 
 
 def batch_download_factory(context, request):
@@ -89,7 +117,7 @@ def batch_download_factory(context, request):
             params=qs.get_type_filters()
     )
     if specified_type == 'PublicationData':
-        return _batch_download_publicationdata(request)
+        return _get_publication_data_batch_download(context, request)
     else:
         return _get_batch_download(context, request)
 
