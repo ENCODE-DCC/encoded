@@ -265,13 +265,15 @@ def file_():
         'biological_replicates': [
             2
         ],
+        'no_file_available': 'false',
         'href': '/files/ENCFF244PJU/@@download/ENCFF244PJU.bed.gz',
         'file_format': 'bed',
         'status': 'released',
         'replicate': {
             'rbns_protein_concentration': 20,
             'rbns_protein_concentration_units': 'nM'
-        }
+        },
+        'preferred_default': True
     }
 
 
@@ -420,6 +422,8 @@ def test_metadata_file_matches_file_params():
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'assembly': ['hg19']}
     assert not file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'no_such_thing': ['abc']}
+    assert not file_matches_file_params(file_(), file_param_list)
     file_param_list = {'missing_field': ['missing_value']}
     assert not file_matches_file_params(file_(), file_param_list)
     file_param_list = {'derived_from': ['/files/ENCFF089RYQ/']}
@@ -438,6 +442,12 @@ def test_metadata_file_matches_file_params():
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'replicate.rbns_protein_concentration_units': ['nM']}
     assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'preferred_default': ['true']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'no_file_available': ['false']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {'restricted': ['true']}
+    assert not file_matches_file_params(file_(), file_param_list)
 
 
 def test_metadata_group_audits_by_files_and_type():

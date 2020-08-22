@@ -34,13 +34,13 @@ def file_matches_file_params(file_, positive_file_param_list):
             file_prop_value = list(simple_path_ids(file_, k))
         else:
             file_prop_value = file_.get(k)
-        if not file_prop_value:
+        if file_prop_value is None:
             return False
         if isinstance(file_prop_value, list):
             return any([str(x) in v for x in file_prop_value])
-        if str(file_prop_value) not in v:
-            return False
-    return True
+        if isinstance(file_prop_value, bool):
+            return str(file_prop_value).lower() in v
+        return str(file_prop_value) in v
 
 
 def group_audits_by_files_and_type(audits):
