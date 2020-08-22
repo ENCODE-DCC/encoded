@@ -6,7 +6,7 @@ from pyramid.exceptions import HTTPBadRequest
 
 pytestmark = [
     pytest.mark.indexing,
-   pytest.mark.usefixtures('index_workbook'),
+    pytest.mark.usefixtures('index_workbook'),
 ]
 
 
@@ -455,6 +455,15 @@ def test_metadata_file_matches_file_params():
     file_param_list = {'no_such_thing': ['*']}
     assert not file_matches_file_params(file_(), file_param_list)
     file_param_list = {'preferred_default': ['*']}
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {
+        'derived_from': ['*']
+    }
+    assert file_matches_file_params(file_(), file_param_list)
+    file_param_list = {
+        'derived_from': ['*'],
+        'title': ['ENCFF244PJU']
+    }
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {
         'derived_from': ['/files/ENCFF895UWM/', '/files/ENCFF089RYQ/'],

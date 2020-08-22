@@ -36,13 +36,15 @@ def file_matches_file_params(file_, positive_file_param_list):
             file_prop_value = file_.get(k)
         if file_prop_value is None:
             return False
+        elif '*' in v:
+            continue
         elif isinstance(file_prop_value, list):
             if not any([str(x) in v for x in file_prop_value]):
                 return False
         elif isinstance(file_prop_value, bool):
-            if str(file_prop_value).lower() not in v and '*' not in v:
+            if str(file_prop_value).lower() not in v:
                 return False
-        elif str(file_prop_value) not in v and '*' not in v:
+        elif str(file_prop_value) not in v:
             return False
     return True
 
