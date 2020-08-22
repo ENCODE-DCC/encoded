@@ -66,6 +66,12 @@ class MetadataReport:
     DEFAULT_PARAMS = [
         ('field', 'audit'),
         ('field', 'files.@id'),
+        ('field', 'files.restricted'),
+        ('field', 'files.no_file_available'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.status'),
+        ('field', 'files.assembly'),
         ('limit', 'all'),
     ]
     CONTENT_TYPE = 'text/tsv'
@@ -308,7 +314,14 @@ class PublicationDataMetadataReport(MetadataReport):
     DEFAULT_FILE_PARAMS = [
         ('type', 'File'),
         ('limit', 'all'),
-        ('field', '@id')
+        ('field', '@id'),
+        ('field', 'href'),
+        ('field', 'restricted'),
+        ('field', 'no_file_available'),
+        ('field', 'file_format'),
+        ('field', 'file_format_type'),
+        ('field', 'status'),
+        ('field', 'assembly'),
     ]
 
     def __init__(self, request):

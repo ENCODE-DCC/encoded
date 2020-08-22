@@ -1026,7 +1026,13 @@ def test_metadata_metadata_report_get_default_params(dummy_request):
     assert mr._get_default_params() == [
         ('field', 'audit'),
         ('field', 'files.@id'),
-        ('limit', 'all')
+        ('field', 'files.restricted'),
+        ('field', 'files.no_file_available'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.status'),
+        ('field', 'files.assembly'),
+        ('limit', 'all'),
     ]
 
 def test_metadata_metadata_report_build_query_string(dummy_request):
@@ -1042,7 +1048,10 @@ def test_metadata_metadata_report_build_query_string(dummy_request):
         'type=Experiment&files.file_type=bigWig'
         '&files.file_type=bam&files.replicate.library.size_range=50-100'
         '&files.status%21=archived&files.biological_replicates=2'
-        '&field=audit&field=files.%40id&limit=all'
+        '&field=audit&field=files.%40id&field=files.restricted'
+        '&field=files.no_file_available&field=files.file_format'
+        '&field=files.file_format_type&field=files.status'
+        '&field=files.assembly&limit=all'
     )
 
 
@@ -1128,9 +1137,11 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
     assert str(new_request.query_string) == (
         'type=Experiment&files.file_type=bigWig&files.file_type=bam'
         '&files.replicate.library.size_range=50-100&files.status%21=archived'
-        '&files.biological_replicates=2&field=audit&field=files.%40id&limit=all'
-        '&field=files.title&field=files.file_type&field=files.file_format'
-        '&field=files.file_format_type&field=files.output_type&field=files.assembly'
+        '&files.biological_replicates=2&field=audit&field=files.%40id'
+        '&field=files.restricted&field=files.no_file_available'
+        '&field=files.file_format&field=files.file_format_type'
+        '&field=files.status&field=files.assembly&limit=all'
+        '&field=files.title&field=files.file_type&field=files.output_type'
         '&field=accession&field=assay_title&field=biosample_ontology.term_id'
         '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
         '&field=replicates.library.biosample.organism.scientific_name'
@@ -1159,10 +1170,9 @@ def test_metadata_metadata_report_build_new_request(dummy_request):
         '&field=files.paired_with&field=files.index_of&field=files.derived_from&field=files.file_size'
         '&field=files.lab.title&field=files.md5sum&field=files.dbxrefs&field=files.href'
         '&field=files.genome_annotation&field=files.platform.title&field=files.controlled_by'
-        '&field=files.status&field=files.no_file_available&field=files.restricted'
         '&field=files.s3_uri&%40id=%2Fexperiments%2FENCSR123ABC%2F'
     )
-    new_request.effective_principals == ['system.Everyone']
+    assert new_request.effective_principals == ['system.Everyone']
 
 
 def test_metadata_metadata_report_should_not_report_file(dummy_request):
@@ -1683,7 +1693,14 @@ def test_metadata_publication_data_metadata_report_add_default_file_params_to_fi
     assert pdmr.file_params == [
         ('type', 'File'),
         ('limit', 'all'),
-        ('field', '@id')
+        ('field', '@id'),
+        ('field', 'href'),
+        ('field', 'restricted'),
+        ('field', 'no_file_available'),
+        ('field', 'file_format'),
+        ('field', 'file_format_type'),
+        ('field', 'status'),
+        ('field', 'assembly'),
     ]
 
 
@@ -1784,6 +1801,13 @@ def test_metadata_publication_data_metadata_report_build_file_params(dummy_reque
         ('type', 'File'),
         ('limit', 'all'),
         ('field', '@id'),
+        ('field', 'href'),
+        ('field', 'restricted'),
+        ('field', 'no_file_available'),
+        ('field', 'file_format'),
+        ('field', 'file_format_type'),
+        ('field', 'status'),
+        ('field', 'assembly'),
         ('field', 'title'),
         ('field', 'dataset'),
         ('field', 'file_format'),
@@ -1845,6 +1869,13 @@ def test_metadata_publication_data_metadata_report_build_params(dummy_request):
         ('type', 'File'),
         ('limit', 'all'),
         ('field', '@id'),
+        ('field', 'href'),
+        ('field', 'restricted'),
+        ('field', 'no_file_available'),
+        ('field', 'file_format'),
+        ('field', 'file_format_type'),
+        ('field', 'status'),
+        ('field', 'assembly'),
         ('field', 'title'),
         ('field', 'dataset'),
         ('field', 'file_format'),
@@ -1906,14 +1937,14 @@ def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_
     pdmr._initialize_report()
     pdmr._build_params()
     request = pdmr._build_new_file_request()
-    assert request.query_string == (
-        'type=File&limit=all&field=%40id&field=title&field=dataset'
-        '&field=file_format&field=file_type&field=output_type'
-        '&field=assay_term_name&field=biosample_ontology.term_id'
+    assert str(request.query_string) == (
+        'type=File&limit=all&field=%40id&field=href&field=restricted'
+        '&field=no_file_available&field=file_format&field=file_format_type'
+        '&field=status&field=assembly&field=title&field=dataset&field=file_type'
+        '&field=output_type&field=assay_term_name&field=biosample_ontology.term_id'
         '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
-        '&field=target.label&field=lab.title&field=md5sum&field=dbxrefs&field=href'
-        '&field=assembly&field=status&field=derived_from&field=cloud_metadata.url'
-        '&field=file_size&field=no_file_available&field=restricted'
+        '&field=target.label&field=lab.title&field=md5sum&field=dbxrefs'
+        '&field=derived_from&field=cloud_metadata.url&field=file_size'
         '&field=biological_replicates&field=replicates.library.size_range'
         '&file_type=bigWig&biological_replicates=2&file_type=bigBed+narrowPeak'
         '&replicates.library.size_range=200-500'
@@ -1923,13 +1954,13 @@ def test_metadata_publication_data_metadata_report_build_new_file_request(dummy_
     pdmr.file_at_ids = ['/files/ENCFFABC123/', '/files/ENCFFDEF345/']
     request = pdmr._build_new_file_request()
     assert str(request.query_string) == (
-        'type=File&limit=all&field=%40id&field=title&field=dataset'
-        '&field=file_format&field=file_type&field=output_type'
-        '&field=assay_term_name&field=biosample_ontology.term_id'
+        'type=File&limit=all&field=%40id&field=href&field=restricted'
+        '&field=no_file_available&field=file_format&field=file_format_type'
+        '&field=status&field=assembly&field=title&field=dataset&field=file_type'
+        '&field=output_type&field=assay_term_name&field=biosample_ontology.term_id'
         '&field=biosample_ontology.term_name&field=biosample_ontology.classification'
-        '&field=target.label&field=lab.title&field=md5sum&field=dbxrefs&field=href'
-        '&field=assembly&field=status&field=derived_from&field=cloud_metadata.url'
-        '&field=file_size&field=no_file_available&field=restricted'
+        '&field=target.label&field=lab.title&field=md5sum&field=dbxrefs'
+        '&field=derived_from&field=cloud_metadata.url&field=file_size'
         '&field=biological_replicates&field=replicates.library.size_range'
         '&file_type=bigWig&biological_replicates=2&file_type=bigBed+narrowPeak'
         '&replicates.library.size_range=200-500'
