@@ -40,7 +40,9 @@ def file_matches_file_params(file_, positive_file_param_list):
             return any([str(x) in v for x in file_prop_value])
         if isinstance(file_prop_value, bool):
             return str(file_prop_value).lower() in v
-        return str(file_prop_value) in v
+        if str(file_prop_value) not in v:
+            return False
+    return True
 
 
 def group_audits_by_files_and_type(audits):

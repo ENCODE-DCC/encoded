@@ -1,12 +1,12 @@
 import pytest
 
-from encoded.tests.features.conftest import app, app_settings, index_workbook
+#from encoded.tests.features.conftest import app, app_settings, index_workbook
 from pyramid.exceptions import HTTPBadRequest
 
 
 pytestmark = [
     pytest.mark.indexing,
-    pytest.mark.usefixtures('index_workbook'),
+   # pytest.mark.usefixtures('index_workbook'),
 ]
 
 
@@ -418,6 +418,8 @@ def audits_():
 
 def test_metadata_file_matches_file_params():
     from encoded.reports.metadata import file_matches_file_params
+    file_param_list = {}
+    assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'assembly': ['GRCh38']}
     assert file_matches_file_params(file_(), file_param_list)
     file_param_list = {'assembly': ['hg19']}
