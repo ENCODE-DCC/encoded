@@ -795,12 +795,12 @@ def test_metadata_metadata_report_set_positive_file_param_set(dummy_request):
     mr = MetadataReport(dummy_request)
     mr._set_positive_file_param_set()
     expected_positive_file_param_set = {
-        'file_type': ['bigWig', 'bam'],
-        'replicate.library.size_range': ['50-100'],
-        'biological_replicates': ['2']
+        'file_type': set(['bigWig', 'bam']),
+        'replicate.library.size_range': set(['50-100']),
+        'biological_replicates': set([2])
     }
     for k, v in mr.positive_file_param_set.items():
-        assert tuple(expected_positive_file_param_set[k]) == tuple(v)
+        assert tuple(sorted(expected_positive_file_param_set[k])) == tuple(sorted(v))
 
 
 def test_metadata_metadata_report_add_positive_file_filters_as_fields_to_param_list(dummy_request):

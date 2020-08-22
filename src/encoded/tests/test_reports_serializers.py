@@ -186,6 +186,7 @@ def test_reports_serializers_maybe_int():
     from encoded.reports.serializers import maybe_int
     assert maybe_int('2') == 2
     assert maybe_int('2_1') == '2_1'
+    assert maybe_int('50-100') == '50-100'
     assert maybe_int('') == ''
     assert maybe_int(None) == None
     assert maybe_int('xyz') == 'xyz'
@@ -203,6 +204,7 @@ def test_map_strings_to_booleans_and_ints():
     assert map_strings_to_booleans_and_ints(['false', 'GRCh38']) == [False, 'GRCh38']
     assert map_strings_to_booleans_and_ints(['2', '2_1']) == [2, '2_1']
     assert map_strings_to_booleans_and_ints(['missing_field']) == ['missing_field']
+    assert map_strings_to_booleans_and_ints(['50-100']) == ['50-100']
     assert map_strings_to_booleans_and_ints([]) == []
     assert map_strings_to_booleans_and_ints(
         [
