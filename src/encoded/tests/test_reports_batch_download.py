@@ -196,6 +196,37 @@ def test_reports_batch_download_init_batch_download(dummy_request):
     assert isinstance(bd, BatchDownload)
 
 
+def test_reports_batch_download_should_add_json_elements_to_metadata_link(dummy_request):
+    from encoded.reports.batch_download import BatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+    )
+    bd = BatchDownload(dummy_request)
+    assert not bd._should_add_json_elements_to_metadata_link()
+    dummy_request.json = {'elements': ['/experiments/ENCSR123ABC/']}
+    bd = BatchDownload(dummy_request)
+    assert bd._should_add_json_elements_to_metadata_link()
+    dummy_request.json = {'elements': []}
+    bd = BatchDownload(dummy_request)
+    assert not bd._should_add_json_elements_to_metadata_link()
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&cart=xyz123'
+    )
+    dummy_request.json = {
+        'elements': [
+            '/experiments/ENCSR123ABC/',
+            '/experiments/ENCSRDEF567/'
+        ]
+    }
+    bd = BatchDownload(dummy_request)
+    assert not bd._should_add_json_elements_to_metadata_link()
+
+
 def test_reports_batch_download_maybe_add_json_elements_to_metadata_link(dummy_request):
     from encoded.reports.batch_download import BatchDownload
     dummy_request.environ['QUERY_STRING'] = (
@@ -231,6 +262,21 @@ def test_reports_batch_download_maybe_add_json_elements_to_metadata_link(dummy_r
         '"Content-Type: application/json" '
         '--data \'{"elements": ["/experiments/ENCSR123ABC/", "/experiments/ENCSRDEF567/"]}\''
     )
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment&files.file_type=bigWig&files.file_type=bam'
+        '&files.replicate.library.size_range=50-100'
+        '&files.status!=archived&files.biological_replicates=2'
+        '&cart=xyz123'
+    )
+    dummy_request.json = {
+        'elements': [
+            '/experiments/ENCSR123ABC/',
+            '/experiments/ENCSRDEF567/'
+        ]
+    }
+    bd = BatchDownload(dummy_request)
+    metadata_link = bd._maybe_add_json_elements_to_metadata_link('')
+    assert metadata_link == ''
 
 
 def test_reports_batch_download_get_metadata_link(dummy_request):

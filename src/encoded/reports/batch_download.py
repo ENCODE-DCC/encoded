@@ -39,14 +39,20 @@ class BatchDownloadMixin:
     def _get_column_to_fields_mapping(self):
         return BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING
 
+    def _should_add_json_elements_to_metadata_link(self):
+        conditions = [
+            self._get_json_elements_or_empty_list(),
+            not self.query_string.get_key_filters(key='cart')
+        ]
+        return all(conditions)
+
     def _maybe_add_json_elements_to_metadata_link(self, metadata_link):
-        at_ids = self._get_json_elements_or_empty_list()
-        if at_ids:
+        if self._should_add_json_elements_to_metadata_link():
             return metadata_link + AT_IDS_AS_JSON_DATA_LINK.format(
                 ', '.join(
                     (
                         f'"{at_id}"'
-                        for at_id in at_ids
+                        for at_id in self._get_json_elements_or_empty_list()
                     )
                 )
             )
