@@ -361,9 +361,9 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     const appliedModifications = [];
     if (isEnhancerExperiment) {
         if (context.biosamples) {
-            biosamples = (context.biosamples && context.biosamples.length > 0) ? context.biosamples : [];
+            biosamples = (context.biosamples.length > 0) ? context.biosamples : [];
         }
-        if (biosamples && biosamples.length > 0) {
+        if (biosamples.length > 0) {
             biosamples.forEach((biosample) => {
                 if (biosample.characterizations && biosample.characterizations.length > 0) {
                     biosampleCharacterizations.push(...biosample.characterizations);
@@ -472,7 +472,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         nameTip += (nameTip.length > 0 ? ' + ' : '') + organismName;
         if (isEnhancerExperiment) {
             nameQuery += `${nameQuery.length > 0 ? '&' : ''}biosamples.donor.organism.scientific_name=${organismName}`;
-        } else if (!isEnhancerExperiment) {
+        } else {
             nameQuery += `${nameQuery.length > 0 ? '&' : ''}replicates.library.biosample.donor.organism.scientific_name=${organismName}`;
         }
         return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
@@ -587,7 +587,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {isEnhancerExperiment && biosamples && biosamples.length > 0 ?
+                            {isEnhancerExperiment && biosamples.length > 0 ?
                                 <div data-test="biosamples">
                                     <dt>Biosample</dt>
                                     <dd>
@@ -716,7 +716,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {appliedModifications && appliedModifications.length > 0 ?
+                            {appliedModifications.length > 0 ?
                                 <div data-test="applied-modifications">
                                     <dt>Genetic modification</dt>
                                     <dd>
