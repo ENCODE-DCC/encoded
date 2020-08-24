@@ -447,6 +447,7 @@ export class Graph extends React.Component {
                 // QC subnode.
                 node = this.props.graph.getSubnode(nodeId);
                 node.schemas = this.props.schemas;
+                this.props.nodeClickHandler(node, openInfoModal);
             } else if (nodeId.indexOf('coalesced:') >= 0) {
                 // Coalesced contributing files.
                 const coalescedNode = this.props.graph.getNode(nodeId);
