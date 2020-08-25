@@ -179,6 +179,378 @@ def test_reports_publication_data_batch_download_and_metadata_contain_same_numbe
     assert len(metadata_results) == len(batch_download_results)
 
 
+def get_batch_download_and_metadata_results(testapp, query_string):
+    batch_download_results = testapp.get(
+        '/batch_download/' + query_string
+    ).text.strip().split('\n')
+    metadata_results = testapp.get(
+        '/metadata/' + query_string
+    ).text.strip().split('\n')
+    return batch_download_results, metadata_results
+
+
+def test_reports_batch_download_and_metadata_specific_filters(index_workbook, testapp):
+    query_string = (
+        '?type=Experiment&status=released'
+        '&perturbed=false&assay_title=DNase-seq'
+        '&files.run_type=single-ended&files.file_type=fastq'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    # Two results plus header.
+    assert len(batch_download_results) == len(metadata_results) == 3
+
+    query_string = (
+        '?type=Experiment&status=released'
+        '&perturbed=false&assay_title=DNase-seq'
+        '&files.run_type=single-ended'
+        '&files.file_type=fastq&assembly=GRCh38'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Experiment&status=released'
+        '&perturbed=false&assay_title=DNase-seq'
+        '&files.run_type=single-ended'
+        '&files.file_type=fastq&files.assembly=GRCh38'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    # Header only, zero files.
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=true'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Experiment&files.restricted=true'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=*&target.label=H3K4me3&perturbed=true'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=*&target.label=H3K4me3&assembly=mm10'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 8
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=*&target.label=H3K4me3&files.assembly=mm10'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=false'
+        '&target.label=H3K4me3&assembly!=mm10'
+        '&target.label=TCF4&files.read_length=50'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 3
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=false'
+        '&target.label=H3K4me3&assembly!=mm10'
+        '&target.label=TCF4&files.file_type=bam'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 5
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=false'
+        '&target.label=H3K4me3&assembly!=mm10'
+        '&target.label=TCF4&files.file_type=bam'
+        '&lab.title=Sherman+Weissman%2C+Yale'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Experiment&files.no_file_available=false'
+        '&target.label=H3K4me3&assembly!=mm10'
+        '&target.label=TCF4&files.file_type=bam'
+        '&lab.title=Sherman+Weissman%2C+Yale&status!=released'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 5
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=bigWig'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 3
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=bigWig&option=visualizable'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 3
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=bigWig&option=raw'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=fastq&files.read_length=50'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=fastq&files.read_length=50&option=raw'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+
+    query_string = (
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=fastq&files.read_length=50&option=visualizable'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        'type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '&files.file_type=fastq&files.read_length=50&option=visualizable'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Experiment&files.derived_from=*&files.file_type=bam'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 10
+
+    query_string = (
+        '?type=Experiment&files.derived_from=*&files.file_type=bam&files.file_type=fastq'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 19
+
+    query_string = (
+        '?type=Experiment&files.derived_from=*&files.file_type=bam'
+        '&files.file_type=fastq&files.file_type=bigWig'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 24
+
+    query_string = (
+        '?type=Experiment&files.derived_from=*&files.file_type=bam'
+        '&files.file_type=fastq&files.file_type=bigWig&files.read_length=25'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        'type=Experiment&files.derived_from=*&files.file_type=bam'
+        '&files.file_type=fastq&files.file_type=bigWig&files.read_length=25'
+        '&audit.NOT_COMPLIANT.category=missing+documents'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+
+def test_reports_annotation_batch_download_and_metadata_specific_filters(index_workbook, testapp):
+    query_string = (
+        '?type=Annotation&files.file_type=bed+enhancer+predictions'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Annotation&files.file_type=bed+enhancer+predictions&files.assembly=mm10'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Annotation&files.file_type=bed+enhancer+predictions&files.assembly!=mm10'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Annotation&files.file_type=bed+enhancer+predictions&files.biosample_ontology=*'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Annotation&files.file_type=bed+enhancer+predictions'
+        '&files.biosample_ontology=/biosample-types/tissue_UBERON_0000948/'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Annotation&files.file_type=bed+enhancer+predictions'
+        '&files.biosample_ontology!=/biosample-types/tissue_UBERON_0000948/'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Annotation&files.file_size=1544154147'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=Annotation&files.file_size=1544154147&files.assembly!=mm10'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+    query_string = (
+        '?type=Annotation&files.file_size=1544154147&files.assembly=mm10'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+
+def test_reports_publication_data_batch_download_and_metadata_specific_filters(index_workbook, testapp):
+    query_string = (
+        '?type=PublicationData&files.dataset=/experiments/ENCSR000ADH/'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=PublicationData&files.dataset!=/experiments/ENCSR000ADH/'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 6
+
+    query_string = (
+        '?type=PublicationData&files.file_type=tsv'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 3
+
+    query_string = (
+        '?type=PublicationData&files.file_type=tsv&files.md5sum=69031443b66578d55b5c4a039d55cceb'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=PublicationData&files.file_type=tsv&files.md5sum=69031443b66578d55b5c4a039d55cceb'
+        '&files.file_size=984865'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 2
+
+    query_string = (
+        '?type=PublicationData&files.file_type=tsv&files.md5sum=69031443b66578d55b5c4a039d55cceb'
+        '&files.file_size=3838'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 1
+
+
 def test_reports_batch_download_init_batch_download_mixin(dummy_request):
     from encoded.reports.batch_download import BatchDownloadMixin
     bdm = BatchDownloadMixin()
