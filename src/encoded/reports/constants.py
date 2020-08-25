@@ -62,12 +62,12 @@ METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Project', ['award.project']),
         (
             'RBNS protein concentration', [
-                'files.replicate.rbns_protein_concentration',
-                'files.replicate.rbns_protein_concentration_units'
+                'replicates.rbns_protein_concentration',
+                'replicates.rbns_protein_concentration_units'
             ]
         ),
-        ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
-        ('Library size range', ['files.replicate.library.size_range']),
+        ('Library fragmentation method', ['replicates.library.fragmentation_method']),
+        ('Library size range', ['replicates.library.size_range']),
         ('Biological replicate(s)', ['files.biological_replicates']),
         ('Technical replicate(s)', ['files.technical_replicates']),
         ('Read length', ['files.read_length']),
