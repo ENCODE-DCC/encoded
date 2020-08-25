@@ -227,6 +227,7 @@ def main(global_config, **local_config):
     config.include('.reports.batch_download')
     config.include('.reports.metadata')
     config.include('.visualization')
+    config.include('.glossary')
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
