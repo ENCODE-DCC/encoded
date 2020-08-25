@@ -520,13 +520,12 @@
 
     h1 {
 	font-weight: bold;
-	font-size: 65px;
-	margin-left: 15px;
+	font-size: 100px;
     }
 
     img {
 	width: 170px;
-	height: 170px
+	height: 170px;
     }
 
     @media screen and (min-width: $screen-md-min) {
@@ -541,13 +540,13 @@
 }
 
 .quote {
-    text-align: center;
+    text-align: justify;
 }
 
 .main-content {
     align-items: center;
     text-align: justify;
-    margin-bottom: 35px;
+    margin-bottom: 5px;
 }
 
 .call-contact {
@@ -558,6 +557,7 @@
 .email-us {
     font-weight: bold;
     margin: 0;
+    font-size: 24pt;
 }
 
 .contacts {
@@ -572,10 +572,11 @@
 
 .contact-group {
     margin: 0 10px;
+    font-size: 18pt;
 }
 
 .credits {
-    font-size: 11pt;
+    font-size: 12pt;
     margin-top: 35px;
 
     p {

@@ -139,8 +139,8 @@ class HomeContent extends React.Component {
             <div>
                 <div className="overall-classic homepage">
                     <div className="header">
-                        <img src="static/img/lattice-cells.png" alt="Lattice DB" className="logo" />
                         <h1>Lattice</h1>
+                        <img src="static/img/lattice-cells.png" alt="Lattice DB" className="logo" />
 		    </div>
 
                     <div className="site-banner__intro main-content">
@@ -160,8 +160,8 @@ class HomeContent extends React.Component {
                     </div>
 
                     <div className="site-banner__intro contacts">
-                       <p className="email-us">Contact the Lattice team at <a href="mailto:lattice-info@lists.stanford.edu"> lattice-info@lists.stanford.edu</a>.</p>
-		    </div>
+                       <p className="email-us">Contact the Lattice team at <a href="mailto:lattice-info@lists.stanford.edu"> lattice-info@lists.stanford.edu</a></p>
+                    </div>
                     <div className="site-banner__intro contacts">
                        <div className="contact-group">
                           <p className="call-contact">Seed Network researchers</p>
