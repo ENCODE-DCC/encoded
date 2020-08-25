@@ -43,47 +43,6 @@
                 }
             }
         },
-        "read_type": {
-            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require sequencing_run_type to be specified as paired-ended",
-            "oneOf": [
-                {
-                   "required": ["paired_with", "sequencing_run_type"],
-                    "properties": {
-                        "read_type": {
-                            "enum": ["Read 2"]
-                        },
-                        "sequencing_run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                },
-                {
-                    "required": ["sequencing_run_type"],
-                    "properties": {
-                        "read_type": {
-                            "enum": ["Read 1"]
-                        },
-                        "sequencing_run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                },
-                {
-                    "required": ["sequencing_run_type"],
-                    "properties": {
-                        "file_format": {
-                            "enum": ["sra"]
-                        },
-                        "read_type": {
-                            "enum": ["Reads 1,2"]
-                        },
-                        "sequencing_run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                }
-            ]
-        },
         "content_error_detail":{
             "comment": "Specification of status of content error is required if content_error_detail is specified",
             "required": ["status"],
