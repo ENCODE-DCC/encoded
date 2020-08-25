@@ -12,6 +12,7 @@ pytestmark = [
     pytest.mark.usefixtures('indexer_testapp'),
 ]
 
+
 def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
@@ -23,7 +24,7 @@ def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
     settings['indexer'] = True
-    settings['indexer.processes'] = 1
+    settings['indexer.processes'] = 2
     settings['queue_type'] = 'Simple'
     settings['queue_server'] = True
     settings['queue_worker'] = True
@@ -99,12 +100,6 @@ def listening_conn(dbapi_conn):
     cursor.execute("""LISTEN "snovault.transaction";""")
     yield dbapi_conn
     cursor.close()
-
-
-pytestmark = [
-    pytest.mark.indexer,
-    pytest.mark.usefixtures('indexer_testapp'),
-]
 
 
 def test_indexing_simple(testapp, indexer_testapp):
