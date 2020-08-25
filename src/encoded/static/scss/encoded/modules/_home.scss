@@ -520,11 +520,17 @@
 
     h1 {
 	font-weight: bold;
-	font-size: 48px;
+	font-size: 65px;
+	margin-left: 15px;
     }
 
     img {
-	width: 120px;
+	width: 170px;
+	height: 170px
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+	margin-bottom: 20px;
     }
 }
 
@@ -557,6 +563,7 @@
 .contacts {
     display: flex;
     justify-content: center;
+    font-size: 18px;
 
     p {
 	margin: 0;

@@ -146,7 +146,7 @@ class HomeContent extends React.Component {
                     <div className="site-banner__intro main-content">
                        <p>Lattice is the acting Data Coordination Center for the CZI Seed Networks.</p>
                        <div className="quote">
-                          <i>"The Seed Networks for the Human Cell Atlas projects bring together experimental scientists, computational biologists, software engineers, and physicians to support the continued development of the Human Cell Atlas (HCA), an international effort to map all cells in the human body as a resource for better understanding health and disease." - <a href="https://chanzuckerberg.com/science/programs-resources/humancellatlas/seednetworks/" target="_blank">Human Cell Atlas Seed Networks</a></i>
+                          <i>"The Seed Networks for the Human Cell Atlas projects bring together experimental scientists, computational biologists, software engineers, and physicians to support the continued development of the Human Cell Atlas (HCA), an international effort to map all cells in the human body as a resource for better understanding health and disease." <br />- <a href="https://chanzuckerberg.com/science/programs-resources/humancellatlas/seednetworks/" target="_blank">Human Cell Atlas Seed Networks</a></i>
                         </div>
                      </div>
                      <div className="site-banner main-content">
@@ -177,7 +177,7 @@ class HomeContent extends React.Component {
                     <div className="site-banner__intro credits">
                         <p>The Lattice team consists of data wranglers & software developers within the Cherry Lab at the Stanford University Department of Genetics. <a href="https://cherrylab.stanford.edu/people/human-cell-atlas/grid" target="_bank">Meet the team</a></p>
                         <p className="italic">Lattice is funded by the Chan Zuckerberg Initiative (CZI).</p>
-                        <p className="italic">Lattice logo created by Idan Gabdank, Ph.D.</p>
+                        <p className="italic">Lattice logo adapted from the <a href="https://www.humancellatlas.org/" target="_blank">Human Cell Atlas</a> by Idan Gabdank, Ph.D.</p>
                     </div>
                 </div>
             </div>
