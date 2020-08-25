@@ -194,9 +194,9 @@ class MetadataReport:
         return request
 
     def _get_search_results_generator(self):
-        return search_generator(
+        return BatchedSearchGenerator(
             self._build_new_request()
-        )
+        ).results()
 
     def _should_not_report_file(self, file_):
         conditions = [
@@ -244,7 +244,7 @@ class MetadataReport:
 
     def _generate_rows(self):
         yield self.csv.writerow(self.header)
-        for experiment in self._get_search_results_generator()['@graph']:
+        for experiment in self._get_search_results_generator():
             if not experiment.get('files', []):
                 continue
             grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
@@ -418,7 +418,7 @@ class PublicationDataMetadataReport(MetadataReport):
     # Overrides parent.
     def _generate_rows(self):
         yield self.csv.writerow(self.header)
-        for experiment in self._get_search_results_generator()['@graph']:
+        for experiment in self._get_search_results_generator():
             self.file_at_ids = experiment.get('files', [])
             if not self.file_at_ids:
                 continue

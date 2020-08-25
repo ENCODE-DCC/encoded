@@ -1540,8 +1540,8 @@ def test_metadata_metadata_report_get_search_results_generator(index_workbook, d
     mr = MetadataReport(dummy_request)
     mr._build_params()
     search_results = mr._get_search_results_generator()
-    assert isinstance(search_results['@graph'], GeneratorType)
-    assert len(list(search_results['@graph'])) >= 63
+    assert isinstance(search_results, GeneratorType)
+    assert len(list(search_results)) >= 63
 
 
 def test_metadata_metadata_report_generate_row(index_workbook, dummy_request):

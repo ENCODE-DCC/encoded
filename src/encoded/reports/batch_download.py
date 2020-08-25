@@ -75,7 +75,7 @@ class BatchDownload(BatchDownloadMixin, MetadataReport):
 
     def _generate_rows(self):
         yield self._get_encoded_metadata_link_with_newline()
-        for experiment in self._get_search_results_generator()['@graph']:
+        for experiment in self._get_search_results_generator():
             for file_ in experiment.get('files', []):
                 if self._should_not_report_file(file_):
                     continue
@@ -94,7 +94,7 @@ class PublicationDataBatchDownload(BatchDownloadMixin, PublicationDataMetadataRe
 
     def _generate_rows(self):
         yield self._get_encoded_metadata_link_with_newline()
-        for experiment in self._get_search_results_generator()['@graph']:
+        for experiment in self._get_search_results_generator():
             self.file_at_ids = experiment.get('files', [])
             if not self.file_at_ids:
                 continue
