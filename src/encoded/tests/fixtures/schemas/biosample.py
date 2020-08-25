@@ -432,3 +432,13 @@ def biosample_pooled_from_characterized_biosamples(
         {'characterizes': biosample_2['@id']}
     )
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def biosample_with_disease(biosample_0):
+    item = biosample_0.copy()
+    item.update({
+        'schema_version': '24',
+        'disease_term_id': 'DOID:0080600'
+    })
+    return item

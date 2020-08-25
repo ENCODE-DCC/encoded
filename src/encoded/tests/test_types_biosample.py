@@ -115,7 +115,7 @@ def test_biosample_summary(testapp,
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             "biosample_ontology": liver['uuid'],
-                                            'disease_term_id': 'DOID:0080600',
+                                            'disease_term_id': ['DOID:0080600'],
                                             "preservation_method": "cryopreservation",
                                             "post_nucleic_acid_delivery_time": 3,
                                             "post_nucleic_acid_delivery_time_units": "week",
@@ -164,11 +164,11 @@ def test_biosample_summary_construct_2(
         'donor': human_donor_1['@id'],
         'biosample_ontology': liver['uuid'],
         'organism': human['@id'],
-        'disease_term_id': 'DOID:0080600'
+        'disease_term_id': ['DOID:0080600', 'DOID:9351']
         })
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens female adult (31 years) liver tissue with COVID-19')
+        'Homo sapiens female adult (31 years) liver tissue with COVID-19, diabetes mellitus')
 
 
 def test_biosample_summary_construct_3(

@@ -209,21 +209,31 @@ class Biosample(Item):
 
     @calculated_property(define=True,
                         schema={
-                            "title": "Disease term name",
-                            "description": "Ontology term describing the disease affecting the biosample.",
+                            "title": "Disease term names",
+                            "description": "Ontology term(s) describing the disease affecting the biosample.",
                             "comment": "Calculated from disease_term_id",
-                            "type": "string",
+                            "type": "array",
                             "notSubmittable": True,
+                            "uniqueItems": True,
+                            "minItems": 1,
+                            "items": {
+                                "title": "Disease term name",
+                                "description": "Ontology term describing the disease affecting the biosample.",
+                                "type": "string",
+                            },
                         })
     def disease_term_name(self, request, registry, disease_term_id=None):
         if disease_term_id is not None:
-            if disease_term_id in registry['ontology']:
-                return registry['ontology'][disease_term_id]['name']
-            else:
-                msg = 'Disease term ID {} is not a valid ID'.format(
-                    disease_term_id
-                )
-                raise ValidationFailure('body', ['disease_term_id'], msg)
+            term_name = list()
+            for term_id in disease_term_id:
+                if term_id in registry['ontology']:
+                    term_name.append(registry['ontology'][term_id]['name'])
+                else:
+                    msg = 'Disease term ID {} is not a valid ID'.format(
+                        term_id
+                    )
+                    raise ValidationFailure('body', ['disease_term_id'], msg)
+            return term_name
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
@@ -737,7 +747,7 @@ def generate_summary_dictionary(
                 str(starting_amount_units)
 
     if disease_term_name is not None:
-        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
+        dict_of_phrases['disease_term_name'] = 'with ' + ', '.join(map(str, disease_term_name))
 
     if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
