@@ -1,11 +1,7 @@
 # Use fixtures from features, indexing workbook
-import json
 import pytest
-import mock
-from collections import OrderedDict
 from encoded.tests.features.conftest import app, app_settings, index_workbook
 from encoded.batch_download import lookup_column_value
-from encoded.batch_download import restricted_files_present
 from encoded.batch_download import format_row
 from encoded.batch_download import _convert_camel_to_snake
 

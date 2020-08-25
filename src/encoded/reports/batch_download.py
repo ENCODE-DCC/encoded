@@ -8,8 +8,6 @@ from encoded.reports.decorators import allowed_types
 from pyramid.view import view_config
 from snovault.elasticsearch.searches.parsers import QueryString
 
-from encoded.batch_download import _batch_download_publicationdata
-
 
 def includeme(config):
     config.add_route('batch_download', '/batch_download{slash:/?}')

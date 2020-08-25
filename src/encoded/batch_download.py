@@ -19,32 +19,12 @@ import json
 import datetime
 import re
 
-# Maximum number of cart files to retrieve in a single request.
-ELEMENT_CHUNK_SIZE = 1000
-currenttime = datetime.datetime.now()
-
 
 def includeme(config):
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
-
-_excluded_columns = ('Restricted', 'No File Available')
-
-# For extracting accession from @id paths
-accession_re = re.compile(r'^/[a-z-]+/([A-Z0-9]+)/$')
-# For extracting object type from @id paths
-type_re = re.compile(r'^/([a-z-]+)/[A-Z0-9]+/$')
-
-
-# Lowercased type={object type} query-string values allowed for download/metadata.
-_allowed_types = [
-    'experiment',
-    'annotation',
-    'functionalcharacterizationexperiment',
-    'publicationdata',
-]
 
 def get_file_uuids(result_dict):
     file_uuids = []
@@ -80,61 +60,6 @@ def get_peak_metadata_links(request):
         search_params=quote(search_params)
     )
     return [peak_metadata_tsv_link, peak_metadata_json_link]
-
-
-def _batch_download_publicationdata(request):
-    """
-    Generate PublicationData files.txt.
-
-        :param request: Pyramid request
-    """
-
-    # Parse the batch_download request query string.
-    qs = QueryString(request)
-    param_list = qs.group_values_by_key()
-
-    # Get the required "dataset={path}" parameter.
-    dataset_path = param_list.get('@id', [''])[0]
-
-    # Retrieve the files property of the requested PublicationData object.
-    object = request.embed(dataset_path, as_user=True)
-    file_ids = object.get('files', [])
-
-    # Generate the metadata link that heads the file.
-    metadata_link = '"{host_url}/metadata/?{search_params}"'.format(
-        host_url=request.host_url,
-        search_params=qs._get_original_query_string()
-    )
-
-    # Generate the content of files.txt starting with the metadata.tsv download line and then each
-    # file's download URL.
-    files = [metadata_link]
-    dataset_type = ''
-    if file_ids:
-        for file_id in file_ids:
-            # Request individual file object from its path.
-            file = request.embed(file_id, as_user=True)
-
-            # Other disqualifying conditions.
-            if restricted_files_present(file):
-                continue
-            if is_no_file_available(file):
-                continue
-
-            # Finally append file to files.txt.
-            files.append(
-                '{host_url}{href}'.format(
-                    host_url=request.host_url,
-                    href=file['href']
-                )
-            )
-
-    # Initiate the files.txt download.
-    return Response(
-        content_type='text/plain',
-        body='\n'.join(files),
-        content_disposition='attachment; filename="%s"' % 'files.txt'
-    )
 
 
 @view_config(route_name='peak_metadata', request_method='GET')
@@ -188,17 +113,6 @@ def peak_metadata(context, request):
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
     )
 
-
-
-def restricted_files_present(exp_file):
-    if exp_file.get('restricted', False) is True:
-        return True
-    return False
-
-
-def is_no_file_available(exp_file):
-    return exp_file.get('no_file_available', False)
-    
 
 def lookup_column_value(value, path):
     nodes = [value]
