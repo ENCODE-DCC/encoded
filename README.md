@@ -41,14 +41,13 @@ For issues see [Snovault OSX App Installation][] first.
 1. Browse to the interface at http://localhost:6543
 
 1. Run Tests
-    * no argument runs indexing and non-indexing non bdd tests
     ```
     # Make sure you are in the encoded-venv
     $ ./circle-tests.sh bdd
-    $ ./circle-tests.sh not-bdd-indexing
+    $ ./circle-tests.sh indexing
+    $ ./circle-tests.sh indexer
     $ ./circle-tests.sh not-bdd-non-indexing
     $ ./circle-tests.sh npm
-    $ ./circle-tests.sh
     ```
 
 
