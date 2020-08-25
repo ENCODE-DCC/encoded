@@ -1,6 +1,19 @@
 [
     {
         "aliases": [
+            "jimmie-ye:alignment-count-step"
+        ],
+        "step_label": "alignment-count-step",
+        "analysis_step_types": [
+            "alignment", "quantification", "cell calling"
+        ],
+        "software_versions": [
+            "lattice:cellranger-atac-1.2"
+        ],
+        "uuid": "a60b75a1-1998-46aa-a2d7-faa9f2ff79af"
+    },
+    {
+        "aliases": [
             "peter-sims:merge-analysis-step"
         ],
         "step_label": "merge-analysis-step",
