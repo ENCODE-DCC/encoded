@@ -153,7 +153,8 @@
             "enum": [
                 "gene quantifications",
                 "transcript quantifications",
-                "peaks"
+                "peaks",
+                "transcription factors"
             ]
         },
         "value_scale": {
@@ -180,7 +181,8 @@
                 "TPM",
                 "TMM",
                 "UMI",
-                "expected count"
+                "expected count",
+                "fragment ends"
             ]
         },
         "normalized": {
@@ -195,7 +197,8 @@
             "enum": [
                 "LogNormalize",
                 "scTransform",
-                "cellranger aggr read depth normalization"
+                "cellranger aggr read depth normalization",
+                "TF-IDF"
             ]
         },
         "filtering_cutoffs": {
@@ -224,7 +227,12 @@
                             "cells/gene",
                             "nuclei/gene",
                             "percent mitochondrial/cell",
-                            "percent mitochondrial/nuclei"
+                            "percent mitochondrial/nuclei",
+                            "fragments in peaks/nuclei",
+                            "percent reads in peaks/nuclei",
+                            "TSS enrichment score/nuclei",
+                            "blacklist ratio/nuclei",
+                            "doublet score/nuclei"
                         ]
                     },
                     "cutoff_type": {
