@@ -184,10 +184,19 @@ const ModificationMethod = (props) => {
         <div className="gm-summary-subsection">
             <h4>Modification method</h4>
             <dl className={itemClass}>
-                <div data-test="technique">
-                    <dt>Technique</dt>
-                    <dd>{geneticModification.method}</dd>
-                </div>
+                {geneticModification.method ?
+                    <div data-test="method">
+                        <dt>Method</dt>
+                        <dd>{geneticModification.method}</dd>
+                    </div>
+                : null}
+
+                {geneticModification.nucleic_acid_delivery_method && geneticModification.nucleic_acid_delivery_method.length > 0 ?
+                    <div data-test="nucleic-acid-delivery-method">
+                        <dt>Nucleic acid delivery method</dt>
+                        <dd>{geneticModification.nucleic_acid_delivery_method.join(', ')}</dd>
+                    </div>
+                : null}
 
                 {treatments.length > 0 ?
                     <div data-test="treatments">
@@ -673,9 +682,13 @@ const ListingComponent = (props, reactContext) => {
         <li className={resultItemClass(result)}>
             <div className="result-item">
                 <div className="result-item__data">
-                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose} &mdash; {result.method}</a>
+                    <a href={result['@id']} className="result-item__link">{result.category} &mdash; {result.purpose}</a>
                     <div className="result-item__data-row">
                         {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                        {result.method ? <div><strong>Method: </strong>{result.method}</div> : null}
+                        {result.nucleic_acid_delivery_method && result.nucleic_acid_delivery_method.length > 0 ?
+                            <div><strong>Nucleic acid delivery method: </strong>{result.nucleic_acid_delivery_method.join(', ')}</div>
+                        : null}
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                     </div>
                 </div>
@@ -735,6 +748,10 @@ GeneticModificationSummary.columns = {
     category: { title: 'Category' },
     purpose: { title: 'Purpose' },
     method: { title: 'Method' },
+    nucleic_acid_delivery_method: {
+        title: 'Nucleic acid delivery method',
+        display: item => (item.nucleic_acid_delivery_method && item.nucleic_acid_delivery_method.length > 0 ? item.nucleic_acid_delivery_method.join(', ') : null),
+    },
     site: {
         title: 'Site',
         display: item => (hasModificationSiteProps(item) ? <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} /> : null),
