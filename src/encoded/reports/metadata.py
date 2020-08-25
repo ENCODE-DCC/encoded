@@ -122,7 +122,7 @@ class MetadataReport:
             (
                 k
                 for k, v in self.query_string._get_original_params()
-                if k.startswith('files') and '!' not in k
+                if k.startswith('files.') and '!' not in k
             )
         )
 
