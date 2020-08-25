@@ -66,7 +66,7 @@ METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
                 'replicates.rbns_protein_concentration_units'
             ]
         ),
-        ('Library fragmentation method', ['replicates.library.fragmentation_method']),
+        ('Library fragmentation method', ['replicates.library.fragmentation_methods']),
         ('Library size range', ['replicates.library.size_range']),
         ('Biological replicate(s)', ['files.biological_replicates']),
         ('Technical replicate(s)', ['files.technical_replicates']),
