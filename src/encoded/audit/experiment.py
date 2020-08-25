@@ -3021,60 +3021,144 @@ def is_tagging_genetic_modification(modification):
 
 
 def audit_experiment_biosample_characterization(value, system, excluded_types):
-    detail_list = []
-    no_characterizations = False
-    if 'replicates' in value:
+    missing_characterizations = []
+    characterization_status = {}
+    needs_characterization_flags = []
+    # First check and collect necessary biosample characterizations
+    for rep in value.get('replicates', []):
+        if rep['status'] in excluded_types:
+            continue
+        if 'library' not in rep or rep['library']['status'] in excluded_types:
+            continue
+        if (
+            'biosample' not in rep['library']
+            or rep['library']['biosample']['status'] in excluded_types
+        ):
+            continue
+        biosample = rep['library']['biosample']
         needs_characterization_flag = False
-        for rep in value['replicates']:
-            if (rep['status'] not in excluded_types and
-                'library' in rep and
-                rep['library']['status'] not in excluded_types and
-                'biosample' in rep['library'] and
-                rep['library']['biosample']['status'] not in excluded_types):
-                
-                biosample = rep['library']['biosample']
-                modifications = biosample.get('applied_modifications')
-                if not modifications:
-                    continue
-                biosample_characterizations = biosample.get('characterizations')
-                if biosample_characterizations:
-                    return
-                if not biosample.get('pooled_from'):
-                    no_characterizations = True
-                else:
-                    for parent in biosample['pooled_from']:
-                        if not system.get('request').embed(
-                            parent,
-                            '@@object_with_select_calculated_properties?field=characterizations'
-                        ).get('characterizations'):
-                            no_characterizations = True
-                            break
-                if not no_characterizations:
-                    return
-                for mod in modifications:
-                    if is_tagging_genetic_modification(mod):
-                        needs_characterization_flag = True
-                mods = []
-                for mod in modifications:
-                    mods.append(mod['@id'])
-                mods_link = [audit_link(path_to_text(mod), mod) for mod in mods]
-                detail_list.append('Biosample {} which has been modified by genetic modification {} '
-                    'is missing characterization validating the modification.'.format(
-                        audit_link(path_to_text(biosample['@id']), biosample['@id']),
-                        ', '.join(mods_link)
+        modifications = biosample.get('applied_modifications')
+        if not modifications:
+            needs_characterization_flags.append(needs_characterization_flag)
+            continue
+        mods = []
+        for mod in modifications:
+            mods.append(mod['@id'])
+            if is_tagging_genetic_modification(mod):
+                needs_characterization_flag = True
+        needs_characterization_flags.append(needs_characterization_flag)
+        sample_characterization_status = {}
+        for characterization in biosample.get('characterizations', []):
+            status = characterization.get('review', {}).get('status')
+            sample_characterization_status.setdefault(status, [])
+            sample_characterization_status[status].append(biosample['@id'])
+        # Need to have all parents characterized if relying on pool parents
+        if (
+            not sample_characterization_status
+            and biosample.get('pooled_from')
+            and all(
+                parent.get('characterizations')
+                for parent in biosample['pooled_from']
+            )
+        ):
+            # Summarize pool parent characterization and give one status
+            parent_characterization_status = {
+                c.get('review', {}).get('status')
+                for parent in biosample.get('pooled_from', [])
+                for c in parent['characterizations']
+            }
+            if 'not compliant' in parent_characterization_status:
+                sample_characterization_status['not compliant'] = [
+                    biosample['@id']
+                ]
+            elif None in parent_characterization_status:
+                sample_characterization_status[None] = [
+                    biosample['@id']
+                ]
+            elif 'requires secondary opinion' in parent_characterization_status:
+                sample_characterization_status['requires secondary opinion'] = [
+                    biosample['@id']
+                ]
+            elif 'exempt from standards' in parent_characterization_status:
+                sample_characterization_status['exempt from standards'] = [
+                    biosample['@id']
+                ]
+            elif 'compliant' in parent_characterization_status:
+                sample_characterization_status['compliant'] = [
+                    biosample['@id']
+                ]
+        if sample_characterization_status:
+            for status in sample_characterization_status:
+                characterization_status.setdefault(status, [])
+                characterization_status[status].extend(
+                    sample_characterization_status[status]
+                )
+            continue
+        missing_characterizations.append((biosample['@id'], mods))
+
+    # Build audits
+    level = 'WARNING'
+    if (
+        value.get('assay_term_name') == 'ChIP-seq'
+        and any(needs_characterization_flags)
+        and check_award_condition(value, ["ENCODE4"])
+    ):
+        level = 'ERROR'
+    # There are no characterizations at all for the whole experiment
+    # Build missing characterizations audit if needed and return anyway
+    if not characterization_status:
+        for biosample_id, mods in missing_characterizations:
+            detail = (
+                'Biosample {} which has been modified by genetic modification '
+                '{} is missing characterization validating the '
+                'modification.'.format(
+                    audit_link(path_to_text(biosample_id), biosample_id),
+                    ', '.join(
+                        audit_link(path_to_text(mod), mod) for mod in mods
+                    ),
+                )
+            )
+            yield AuditFailure(
+                'missing biosample characterization', detail, level
+            )
+        return
+
+    # Has characterizations and check their review status
+    if 'not compliant' in characterization_status:
+        multi_characterizations = len(
+            characterization_status['not compliant']
+        ) > 1
+        detail = 'Biosample {} {} not compliant characterization'.format(
+            ', '.join(
+                audit_link(path_to_text(biosample_id), biosample_id)
+                for biosample_id in characterization_status['not compliant']
+            ),
+            'have' if multi_characterizations else 'has',
+        )
+        yield AuditFailure(
+            'not compliant biosample characterization', detail, level
+        )
+    if (
+        'compliant' not in characterization_status
+        and 'exempt from standards' not in characterization_status
+    ):
+        biosample_ids = set(
+            characterization_status.get(None, [])
+            + characterization_status.get('requires secondary opinion', [])
+        )
+        if biosample_ids:
+            detail = (
+                'Characterization for biosample {} has not finished '
+                'review'.format(
+                    ', '.join(
+                        audit_link(path_to_text(biosample_id), biosample_id)
+                        for biosample_id in biosample_ids
                     )
                 )
-        if check_award_condition(value, ["ENCODE4"]) and needs_characterization_flag and value.get('assay_term_name') == 'ChIP-seq':
-            level = 'ERROR'
-        else:
-            level = 'WARNING'
-        if no_characterizations:
-            for detail in detail_list:
-                yield AuditFailure(
-                    'missing biosample characterization',
-                    detail,
-                    level
-                )
+            )
+            yield AuditFailure(
+                'missing compliant biosample characterization', detail, level
+            )
 
 
 def audit_experiment_replicates_biosample(value, system, excluded_types):
@@ -5139,6 +5223,8 @@ function_dispatcher_with_files = {
         'replicates.library.biosample.biosample_ontology',
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
+        'replicates.library.biosample.characterizations',
+        'replicates.library.biosample.pooled_from.characterizations',
         'replicates.library.biosample.donor',
         'replicates.libraries',
         'replicates.libraries.spikeins_used',
