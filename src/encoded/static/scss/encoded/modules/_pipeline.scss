@@ -245,6 +245,10 @@ g.pipeline-node-qc-metric {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 33.33%;
         }
+
+        hr {
+            margin-right: 10px;
+        }
     }
 
     @at-root #{&}__attachments {

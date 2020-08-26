@@ -24,11 +24,13 @@
         "subsampled_reads": {
             "title": "Number of subsampled reads",
             "type": "integer",
+            "category": "Cross-correlation",
             "minimum": 0
         },
         "estimated_fragment_len": {
             "title": "Estimated fragment length",
             "type": "number",
+            "category": "Cross-correlation",
             "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand shift cross-correlation analysis",
             "minimum": 0
         },
@@ -36,45 +38,53 @@
             "title": "Correlation at estimated fragment length",
             "description": "Value of correlation function at estimated fragment length.",
             "type": "number",
+            "category": "Cross-correlation",
             "minimum": 0,
             "maximum": 1
         },
         "phantom_peak": {
             "title": "Phantom peak strand shift",
-            "type": "integer"
+            "type": "integer",
+            "category": "Cross-correlation"
         },
         "corr_phantom_peak": {
             "title": "Correlation at phantom peak",
             "type": "number",
+            "category": "Cross-correlation",
             "minimum": 0,
             "maximum": 1
         },
         "argmin_corr": {
             "title": "Strand shift with minimum correlation",
-            "type": "integer"
+            "type": "integer",
+            "category": "Cross-correlation"
         },
         "min_corr": {
             "title": "Correlation minimum",
             "description": "Minimum cross-correlation over a sufficiently wide range of strand shifts (typically -100 bp to ~3 times the expected size of DNA fragments based on sonication and size selection protocols).",
             "type": "number",
+            "category": "Cross-correlation",
             "minimum": 0,
             "maximum": 1
         },
         "NSC": {
             "title": "Normalized strand cross-correlation",
             "type": "number",
+            "category": "Cross-correlation",
             "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts.",
             "minimum": 0
         },
         "RSC": {
             "title": "Relative strand cross-correlation coefficient",
             "type": "number",
+            "category": "Cross-correlation",
             "description": "Relative cross-correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length",
             "minimum": 0
         },
         "cross_correlation_plot": {
             "title": "Cross-correlation plot",
             "type": "object",
+            "category": "Cross-correlation",
             "additionalProperties": false,
             "attachment": true,
             "formInput": "file",
@@ -121,6 +131,7 @@
             "title": "AUC of the plot",
             "description": "The “area under the curve”, with a maximum value of 0.5. Lower values generally indicate higher and more focal enrichment.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 0.5
         },
@@ -128,6 +139,7 @@
             "title": "Synthetic AUC",
             "description": "The expected area under the curve of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed AUC into perspective.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -135,6 +147,7 @@
             "title": "X-intercept",
             "description": "The point (on the X-axis) at which the curve is 0. This is approximately the percentage of the genome that was not sequenced in a particular sample.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -142,6 +155,7 @@
             "title": "Synthetic X-intercept",
             "description": "The expected X-intercept of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed X-intercept into perspective.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -149,6 +163,7 @@
             "title": "Elbow point",
             "description": "The elbow point attempts to measure the position at which the line turns upward. In practice, this is the point at which the plotted line is furthest from the line from the lower-left to the upper-right corner of the graph (equivalent to a perfect input sample with infinite coverage). The point returned is the position on the X-axis of this elbow point and higher values indicate more enrichment.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -156,6 +171,7 @@
             "title": "Synthetic elbow point",
             "description": "The expected elbow point of a perfectly behaved input sample having the same mean sequencing depth of a given sample. This is useful to put the observed elbow point into perspective.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -163,6 +179,7 @@
             "title": "JS distance",
             "description": "The Jensen-Shannon distance between the replicate and the control.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -170,6 +187,7 @@
             "title": "Synthetic JS distance",
             "description": "The Jensen-Shannon distance between a given sample and a perfect input sample with the same coverage depth (i.e., the plot generated from the Poisson probability mass function with lambda equal to the mean coverage in the sample).",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 1
         },
@@ -177,6 +195,7 @@
             "title": "Percentage of genome enriched",
             "description": "The approximate percentage of the genome enriched in signal (e.g., bound by a transcription factor or having a certain histone modification).",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0,
             "maximum": 100.0
         },
@@ -184,17 +203,20 @@
             "title": "Differential enrichment",
             "description": "The differential enrichment between a given sample and that indicated by --JSDsample at the elbow point.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0
         },
         "ch_div": {
             "title": "CHANCE divergence",
             "description": "The CHANCE divergence between the replicate and the control.",
             "type": "number",
+            "category": "DeepTools enrichment",
             "minimum": 0
         },
         "jsd_plot": {
             "title": "Jensen-Shannon distance plot",
             "type": "object",
+            "category": "DeepTools enrichment",
             "additionalProperties": false,
             "attachment": true,
             "formInput": "file",

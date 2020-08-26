@@ -278,22 +278,38 @@ const QCDataDisplay = (props) => {
     // Make a list of QC metric object keys to display. Filter to only display strings and
     // numbers -- not objects which are usually attachments that we only display in the modals.
     // Also filter out anything in the generic QC schema, as those properties (@id, uuid, etc.)
-    // aren't interesting for the QC panel. Also sort the keys case insensitively.
-    const displayKeys = Object.keys(qcMetric).filter(key => (
-        !genericQCSchema.properties[key] && isRenderableProp(key, qcMetric, qcSchema)
-    )).sort((a, b) => {
-        const aUp = a.toUpperCase();
-        const bUp = b.toUpperCase();
-        return aUp < bUp ? -1 : (aUp > bUp ? 1 : 0);
+    // aren't interesting for the QC panel.
+    // Key order will stay the same as how they are defined in schema
+    const categories = {};
+    Object.keys(qcSchema.properties).forEach((prop) => {
+        if (
+            genericQCSchema.properties[prop]
+            || !isRenderableProp(prop, qcMetric, qcSchema)
+        ) {
+            return;
+        }
+        const category = qcSchema.properties[prop].category || 'unknown';
+        if (!categories[category]) {
+            categories[category] = [];
+        }
+        categories[category].push(prop);
     });
 
     return (
         <div className="quality-metrics-modal__data">
             <dl className="key-value">
-                {displayKeys.map(key =>
-                    <div key={key} data-test={key}>
-                        <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
-                        <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
+                {Object.keys(categories).map((category, i) =>
+                    <div key={category}>
+                        {category !== 'unknown' ?
+                            <h4>{category}</h4>
+                        : null}
+                        {categories[category].map(key =>
+                            <div key={key} data-test={key}>
+                                <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
+                                <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
+                            </div>
+                        )}
+                        {i !== Object.keys(categories).length - 1 ? <hr /> : null}
                     </div>
                 )}
             </dl>
