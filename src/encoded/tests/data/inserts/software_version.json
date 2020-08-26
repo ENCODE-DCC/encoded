@@ -1,6 +1,17 @@
 [
     {   
         "aliases": [
+            "lattice:cellranger-atac-1.2"
+        ],
+        "uuid": "597ef80a-ae46-4230-b6ff-b97285dac57f",
+        "software": "lattice:cellranger-atac",
+        "status": "released",
+        "version": "1.2",
+        "download_checksum": "30b35f04b68779b87d439fbfadac874e",
+        "downloaded_url": "https://support.10xgenomics.com/single-cell-atac/software/pipelines/latest/algorithms/overview"
+    },
+    {   
+        "aliases": [
             "lattice:cellranger-aggr-4.0"
         ],
         "uuid": "451c9ce7-654c-4fc7-8b16-409502df6750",

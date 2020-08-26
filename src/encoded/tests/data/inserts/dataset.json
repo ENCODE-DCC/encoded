@@ -1,6 +1,31 @@
 [
     {
         "aliases": [
+            "jimmie-ye:snATACseq_atac_dataset"
+        ],
+        "accession": "ENCSR600ABA",
+        "uuid": "3cc751d2-e330-11ea-87d0-0242ac130003",
+        "description": "A scATACseq test dataset with cell culture and organoids.",
+        "award": "CZI021IMM",
+        "dbxrefs": [
+            "SRA:SRP123457", "GEO:GSE126031"
+        ],
+        "submitted_by": "jychien@stanford.edu",
+        "date_released": "2020-08-07",
+        "status": "released",
+        "references": [
+            "lattice:Ye_Chen_2018_atac"
+        ],
+        "corresponding_contributor": "felis.senectus@hymenaeos.nibh",
+        "internal_contact": "ipsum.mi@torquent.eleifend",
+        "urls": [
+            "https://data.humancellatlas.org/explore/projects/4a95101c-9ffc-4f30-a809-f04518a23803"
+        ],
+        "submitter_comment": "Test submitter_comment",
+        "notes": "Test notes"
+    },
+    {
+        "aliases": [
             "peter-sims:scRNAseq_test_dataset"
         ],
         "accession": "ENCSR654AAA",
@@ -13,13 +38,10 @@
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
         "status": "released",
-        "references": [
-            "52e85c70-fe2d-11e3-9191-0800200c9a66"
-        ],
         "corresponding_contributor": "felis.senectus@hymenaeos.nibh",
         "internal_contact": "ipsum.mi@torquent.eleifend",
         "supersedes": [
-            "8f8085dd-8e9c-4b75-a187-21dbafe46de1"
+            "8fdf11b4-4f00-453d-94cd-ab6a2bedd804"
         ],
         "references": [
             "baf202c2-b7af-4c43-b135-15104394daac",

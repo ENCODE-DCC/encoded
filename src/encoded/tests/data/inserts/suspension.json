@@ -1,5 +1,212 @@
 [
     {
+        "accession": "ENCBS870AAA",
+        "uuid": "77e628c7-af1f-4df8-8a0b-3ae1bad64268",
+        "aliases": [
+            "jimmie-ye:suspension_1a"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension1a",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid1"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS871AAA",
+        "uuid": "3eb05531-08fc-4647-a2b8-b68cccf99ac6",
+        "aliases": [
+            "jimmie-ye:suspension_1b"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension1b",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid1"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS872AAA",
+        "uuid": "c1347d60-4743-47c3-b5e5-76da43c52825",
+        "aliases": [
+            "jimmie-ye:suspension_1c"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension1c",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid1"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS873AAA",
+        "uuid": "dc6af8b5-2dc2-46b0-8601-e4a38b3c6777",
+        "aliases": [
+            "jimmie-ye:suspension_2a"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension2a",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid2"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS874AAA",
+        "uuid": "676869fb-5e88-44c4-ae45-4d4a134084bb",
+        "aliases": [
+            "jimmie-ye:suspension_2b"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension2b",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid2"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS875AAA",
+        "uuid": "7e2fef8f-6b08-4b05-b6d6-f6d808ce2d94",
+        "aliases": [
+            "jimmie-ye:suspension_2c"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension2c",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid2"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS876AAA",
+        "uuid": "8a486f1f-d9cf-41e9-b2bb-15cf15ff7136",
+        "aliases": [
+            "jimmie-ye:suspension_3a"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension3a",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid3"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS877AAA",
+        "uuid": "68528b1f-03d1-46ae-b916-3a49192617ae",
+        "aliases": [
+            "jimmie-ye:suspension_3b"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension3b",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid3"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
+        "accession": "ENCBS878AAA",
+        "uuid": "6630178a-6d7a-47d6-94e5-5b4e6347e527",
+        "aliases": [
+            "jimmie-ye:suspension_3c"
+        ],
+        "biosample_ontology": "UBERON_0001876",
+        "description": "suspension3c",
+        "derived_from": [
+            "jimmie-ye:prenatal_organoid3"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "nucleus",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 95,
+        "cell_concentration": 1100,
+        "cell_concentration_units": "nuclei/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "enrichment_factors": "ATF3"
+    },
+    {
         "accession": "ENCBS600AAA",
         "uuid": "dbe1211e-dc2b-11ea-87d0-0242ac130003",
         "aliases": [
@@ -83,7 +290,7 @@
         "aliases": [
             "peter-sims:suspension2a"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "description": "suspension2a",
         "derived_from": [
             "peter-sims:tissue_2"
@@ -109,7 +316,7 @@
         "aliases": [
             "peter-sims:suspension2b"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "description": "suspension2b",
         "derived_from": [
             "peter-sims:tissue_2"
@@ -135,7 +342,7 @@
         "aliases": [
             "peter-sims:suspension2c"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "description": "suspension2c",
         "derived_from": [
             "peter-sims:tissue_2"
@@ -161,7 +368,7 @@
         "aliases": [
             "peter-sims:suspension3a"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "description": "suspension3a",
         "derived_from": [
             "peter-sims:tissue_3"
@@ -187,7 +394,7 @@
         "aliases": [
             "peter-sims:suspension3b"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "description": "suspension3b",
         "derived_from": [
             "peter-sims:tissue_3"
@@ -213,7 +420,7 @@
         "aliases": [
             "peter-sims:suspension3c"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "description": "suspension3c",
         "derived_from": [
             "peter-sims:tissue_3"

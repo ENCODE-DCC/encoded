@@ -1,6 +1,267 @@
 [
     {
         "aliases": [
+            "jimmie-ye:prenatal_1a_bam"
+        ],
+        "uuid": "47002127-00c1-43f1-837d-14bd2ec468e9",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_1a_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_1a_R1.fastq", 
+            "jimmie-ye:prenatal_1a_R2.fastq", 
+            "jimmie-ye:prenatal_1a_R3.fastq",
+            "jimmie-ye:prenatal_1a_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_1b_bam"
+        ],
+        "uuid": "e1fcdf5c-bfb4-466b-bdf8-52c475f7c25f",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_1b_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_1b_R1.fastq", 
+            "jimmie-ye:prenatal_1b_R2.fastq", 
+            "jimmie-ye:prenatal_1b_R3.fastq",
+            "jimmie-ye:prenatal_1b_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_1c_bam"
+        ],
+        "uuid": "207f2d33-b9e6-49f2-aa03-efb8e9860ae6",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_1c_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_1c_R1.fastq", 
+            "jimmie-ye:prenatal_1c_R2.fastq", 
+            "jimmie-ye:prenatal_1c_R3.fastq",
+            "jimmie-ye:prenatal_1c_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_2a_bam"
+        ],
+        "uuid": "75e3f4e0-7c9f-4723-8f5d-417de1500380",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_2a_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_2a_R1.fastq", 
+            "jimmie-ye:prenatal_2a_R2.fastq", 
+            "jimmie-ye:prenatal_2a_R3.fastq",
+            "jimmie-ye:prenatal_2a_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_2b_bam"
+        ],
+        "uuid": "c2360f47-9ba5-42d5-925e-e83b86ea9f5e",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_2b_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_2b_R1.fastq", 
+            "jimmie-ye:prenatal_2b_R2.fastq", 
+            "jimmie-ye:prenatal_2b_R3.fastq",
+            "jimmie-ye:prenatal_2b_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_2c_bam"
+        ],
+        "uuid": "2d1bd1d6-78e4-4eb2-98c5-caa6a2eb57d1",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_2c_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_2c_R1.fastq", 
+            "jimmie-ye:prenatal_2c_R2.fastq", 
+            "jimmie-ye:prenatal_2c_R3.fastq",
+            "jimmie-ye:prenatal_2c_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_3a_bam"
+        ],
+        "uuid": "2840bf3a-296b-4f42-9433-4384e81a29a4",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_3a_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_3a_R1.fastq", 
+            "jimmie-ye:prenatal_3a_R2.fastq", 
+            "jimmie-ye:prenatal_3a_R3.fastq",
+            "jimmie-ye:prenatal_3a_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_3b_bam"
+        ],
+        "uuid": "408a2d0a-f098-4cf8-8cbe-3c186ff44f23",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_3b_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_3b_R1.fastq", 
+            "jimmie-ye:prenatal_3b_R2.fastq", 
+            "jimmie-ye:prenatal_3b_R3.fastq",
+            "jimmie-ye:prenatal_3b_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_3c_bam"
+        ],
+        "uuid": "6b9884e5-ab13-45df-8d3c-70ffc124f339",
+        "lab": "jimmie-ye",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "prenatal_3c_bam.gz",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_type": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "jimmie-ye:prenatal_3c_R1.fastq", 
+            "jimmie-ye:prenatal_3c_R2.fastq", 
+            "jimmie-ye:prenatal_3c_R3.fastq",
+            "jimmie-ye:prenatal_3c_I1.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "analysis_step": "jimmie-ye:alignment-count-step"
+    },
+    {
+        "aliases": [
             "peter-sims:alignment_3a.bam"
         ],
         "uuid": "37017a47-469f-47a5-ba86-9a675e3fac2b",

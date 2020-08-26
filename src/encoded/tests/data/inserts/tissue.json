@@ -1,5 +1,74 @@
 [
     {
+        "accession": "ENCBS550ABC",
+        "description": "prenatal_tissue1",
+        "aliases": [
+            "jimmie-ye:prenatal_tissue1"
+        ],
+        "uuid": "6c5dd743-2154-42e1-8702-c9bda6f61b05",
+        "submitted_by": "metus.donec@nisl.montes",
+        "derived_from": [
+            "jimmie-ye:prenatal_donor1"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_6000167",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour"
+    },
+    {
+        "accession": "ENCBS551ABC",
+        "description": "prenatal_tissue2",
+        "aliases": [
+            "jimmie-ye:prenatal_tissue2"
+        ],
+        "uuid": "f09edf48-e820-4d16-a9d4-6dfdec9f7dac",
+        "submitted_by": "metus.donec@nisl.montes",
+        "derived_from": [
+            "jimmie-ye:prenatal_donor1"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_6000167",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour"
+    },
+    {
+        "accession": "ENCBS552ABC",
+        "description": "prenatal_tissue3",
+        "aliases": [
+            "jimmie-ye:prenatal_tissue3"
+        ],
+        "uuid": "a929155b-69aa-4ee1-af9d-b57d94094079",
+        "submitted_by": "metus.donec@nisl.montes",
+        "derived_from": [
+            "jimmie-ye:prenatal_donor1"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_6000167",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour"
+    },
+    {
         "accession": "ENCBS543ABC",
         "description": "tissue_1",
         "aliases": [
@@ -41,7 +110,7 @@
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",
@@ -69,7 +138,7 @@
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_0000955",
+        "biosample_ontology": "UBERON_0008816",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",

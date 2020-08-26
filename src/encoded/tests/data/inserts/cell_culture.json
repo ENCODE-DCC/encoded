@@ -1,5 +1,74 @@
 [
     {
+        "aliases": [
+            "jimmie-ye:prenatal_cell_culture1"
+        ],
+        "accession": "ENCBS788AAA",
+        "uuid": "39be8f63-832c-4118-b5ef-6ea6e8ecfcb2",
+        "description": "prenatal cell culture 1",
+        "derived_from": [
+            "jimmie-ye:prenatal_tissue1"
+        ],
+        "derivation_process": [
+            "cell isolation", "expansion"
+        ],
+        "biosample_ontology": "CL_0000082",
+        "treatments": [
+            "jimmie-ye:FGF7_media"
+        ],
+        "growth_medium": "3F media",
+        "post_differentiation_time": 1,
+        "post_differentiation_time_units": "day",
+        "passage_number": 5,
+        "is_immortalized": false
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_cell_culture2"
+        ],
+        "accession": "ENCBS789AAA",
+        "uuid": "6a089ddd-6487-49aa-aa8e-cabee07ee436",
+        "description": "prenatal cell culture 2",
+        "derived_from": [
+            "jimmie-ye:prenatal_tissue1"
+        ],
+        "derivation_process": [
+            "cell isolation", "expansion"
+        ],
+        "biosample_ontology": "CL_0000082",
+        "treatments": [
+            "jimmie-ye:FGF7_media"
+        ],
+        "growth_medium": "3F media",
+        "post_differentiation_time": 1,
+        "post_differentiation_time_units": "day",
+        "passage_number": 5,
+        "is_immortalized": false
+    },
+    {
+        "aliases": [
+            "jimmie-ye:prenatal_cell_culture3"
+        ],
+        "accession": "ENCBS790AAA",
+        "uuid": "de2912d6-d43c-43e4-8e07-ea977983b972",
+        "description": "prenatal cell culture 3",
+        "derived_from": [
+            "jimmie-ye:prenatal_tissue1"
+        ],
+        "derivation_process": [
+            "cell isolation", "expansion"
+        ],
+        "biosample_ontology": "CL_0000082",
+        "treatments": [
+            "jimmie-ye:FGF7_media"
+        ],
+        "growth_medium": "3F media",
+        "post_differentiation_time": 1,
+        "post_differentiation_time_units": "day",
+        "passage_number": 5,
+        "is_immortalized": false
+    },
+    {
         "accession": "ENCBS000AAA",
         "aliases": [
             "anna-greka:MCF-7 rep 3",

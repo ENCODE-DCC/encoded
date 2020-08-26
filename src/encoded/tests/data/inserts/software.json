@@ -1,6 +1,19 @@
 [
     {
         "aliases": [
+            "lattice:cellranger-atac"
+        ],
+        "uuid": "444f3442-8d26-4f03-8ee0-3868687b1eea",
+        "title": "CellRanger ATAC",
+        "name": "cellranger-atac",
+        "description": "The computational pipeline for processing the data produced from the Chromium Single Cell ATAC Solution",
+        "software_type": [
+            "other"
+        ],
+        "status": "released"
+    },
+    {
+        "aliases": [
             "lattice:cellranger-aggr"
         ],
         "uuid": "08bb10e1-be8c-4de7-b494-8c9b5abb80be",

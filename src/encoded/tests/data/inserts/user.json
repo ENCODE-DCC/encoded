@@ -1,5 +1,19 @@
 [
     {
+        "email": "jimmie.ye@ucsf.ude",
+        "first_name": "Jimmie",
+        "job_title": "PI",
+        "lab": "Ye Lab, UCSF",
+        "last_name": "Ye",
+        "submits_for": [
+            "jimmie-ye"
+        ],
+        "viewing_groups": [
+            "community"
+        ],
+        "uuid": "d162af00-38d0-4b02-a319-fcaf76a479d2"
+    },
+    {
         "email": "netus.lorem@risus.lobortis",
         "first_name": "Ali",
         "job_title": "PI",

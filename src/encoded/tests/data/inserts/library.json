@@ -1,9 +1,199 @@
 [
     {
+        "accession": "ENCLB700ABA",
+        "aliases": [
+            "jimmie-ye:library_1a"
+        ],
+        "uuid": "0d4524c6-d1a4-4bbd-a6e4-da97300c7da5",
+        "description": "library 1a",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_1a"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_a",
+        "channel_id": "A",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB701ABA",
+        "aliases": [
+            "jimmie-ye:library_1b"
+        ],
+        "uuid": "be3b0f80-0e7f-4979-b7c1-b240218014d3",
+        "description": "library 1b",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_1b"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_a",
+        "channel_id": "B",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB702ABA",
+        "aliases": [
+            "jimmie-ye:library_1c"
+        ],
+        "uuid": "ee8f51fd-4a25-49d0-a508-1578c04826aa",
+        "description": "library 1c",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_1c"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_a",
+        "channel_id": "C",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB703ABA",
+        "aliases": [
+            "jimmie-ye:library_2a"
+        ],
+        "uuid": "696bb199-e78d-4f42-b2f1-912cb18963d0",
+        "description": "library 2a",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_2a"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_a",
+        "channel_id": "D",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB704ABA",
+        "aliases": [
+            "jimmie-ye:library_2b"
+        ],
+        "uuid": "e8466422-fa39-423b-b303-dbd5ad106e38",
+        "description": "library 2b",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_2b"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_a",
+        "channel_id": "E",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB705ABA",
+        "aliases": [
+            "jimmie-ye:library_2c"
+        ],
+        "uuid": "8c4a96bb-f1b4-4136-ad2e-df23bffa65a1",
+        "description": "library 2c",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_2c"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_a",
+        "channel_id": "F",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB706ABA",
+        "aliases": [
+            "jimmie-ye:library_3a"
+        ],
+        "uuid": "b6761ce6-4846-4a67-8127-44cbb319e2e8",
+        "description": "library 3a",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_3a"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_b",
+        "channel_id": "A",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB707ABA",
+        "aliases": [
+            "jimmie-ye:library_3b"
+        ],
+        "uuid": "3d20a688-c5d5-465e-8780-1071e00015f9",
+        "description": "library 3b",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_3b"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_b",
+        "channel_id": "B",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
+        "accession": "ENCLB708ABA",
+        "aliases": [
+            "jimmie-ye:library_3c"
+        ],
+        "uuid": "81e0d4dd-6344-4188-8473-53a087eedf85",
+        "description": "library 3c",
+        "lab": "jimmie-ye",
+        "dataset": "jimmie-ye:snATACseq_atac_dataset",
+        "award": "CZI021IMM",
+        "protocol": "ATAC-10x-v1",
+        "protocol_version": 1.1,
+        "derived_from": [
+            "jimmie-ye:suspension_3c"
+        ],
+        "date_constructed": "2020-07-10",
+        "chip_id": "chip_b",
+        "channel_id": "C",
+        "nucleic_acid_starting_quantity": 100,
+        "nucleic_acid_starting_quantity_units": "µg"
+    },
+    {
         "accession": "ENCLB600AAA",
         "aliases": [
             "peter-sims:library_1a"
         ],
+        "uuid": "89a054c8-732e-411a-9288-b8cb6949c266",
         "description": "library_1a",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -13,7 +203,7 @@
             "peter-sims:suspension1a"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
+        "chip_id": "chip1",
         "channel_id": "A"
     },
     {
@@ -21,6 +211,7 @@
         "aliases": [
             "peter-sims:library_1b"
         ],
+        "uuid": "07c9c835-8eb1-4e1a-bcb2-01405093321a",
         "description": "library_1b",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -30,14 +221,15 @@
             "peter-sims:suspension1b"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
-        "channel_id": "A"
+        "chip_id": "chip1",
+        "channel_id": "B"
     },
     {
         "accession": "ENCLB602AAA",
         "aliases": [
             "peter-sims:library_1c"
         ],
+        "uuid": "502489bb-1300-4a79-b70a-ffa5aeddd110",
         "description": "library_1c",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -47,14 +239,15 @@
             "peter-sims:suspension1c"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
-        "channel_id": "A"
+        "chip_id": "chip1",
+        "channel_id": "C"
     },
     {
         "accession": "ENCLB603AAA",
         "aliases": [
             "peter-sims:library_2a"
         ],
+        "uuid": "a6582844-e541-436b-9920-1caeb7f919cf",
         "description": "library_2a",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -64,7 +257,7 @@
             "peter-sims:suspension2a"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
+        "chip_id": "chip2",
         "channel_id": "A"
     },
     {
@@ -72,6 +265,7 @@
         "aliases": [
             "peter-sims:library_2b"
         ],
+        "uuid": "6715e46b-590e-4ac7-be51-e5dd27a1ec28",
         "description": "library_2b",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -81,14 +275,15 @@
             "peter-sims:suspension2b"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
-        "channel_id": "A"
+        "chip_id": "chip2",
+        "channel_id": "B"
     },
     {
         "accession": "ENCLB605AAA",
         "aliases": [
             "peter-sims:library_2c"
         ],
+        "uuid": "05937465-1ffc-48ce-9510-e0ca805a8415",
         "description": "library_2c",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -98,14 +293,15 @@
             "peter-sims:suspension2c"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
-        "channel_id": "A"
+        "chip_id": "chip2",
+        "channel_id": "C"
     },
     {
         "accession": "ENCLB606AAA",
         "aliases": [
             "peter-sims:library_3a"
         ],
+        "uuid": "835e5124-f8b7-4b0d-bc25-54ad1778f703",
         "description": "library_3a",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -115,7 +311,7 @@
             "peter-sims:suspension3a"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
+        "chip_id": "chip3",
         "channel_id": "A"
     },
     {
@@ -123,6 +319,7 @@
         "aliases": [
             "peter-sims:library_3b"
         ],
+        "uuid": "47a6787f-74af-4025-9d9d-989c21cc303d",
         "description": "library_3b",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -132,14 +329,15 @@
             "peter-sims:suspension3b"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
-        "channel_id": "A"
+        "chip_id": "chip3",
+        "channel_id": "B"
     },
     {
         "accession": "ENCLB608AAA",
         "aliases": [
             "peter-sims:library_3c"
         ],
+        "uuid": "13f01680-65a8-4eea-9d95-95dd7ee01b53",
         "description": "library_3c",
         "lab": "j-michael-cherry",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -149,8 +347,8 @@
             "peter-sims:suspension3c"
         ],
         "date_constructed": "2020-07-29",
-        "chip_id": "1",
-        "channel_id": "A"
+        "chip_id": "chip3",
+        "channel_id": "C"
     },
     {
         "accession": "ENCLB999MNO",

@@ -1,5 +1,21 @@
 [
     {
+        "address1": "513 Parnassus Ave HSE910",
+        "city": "San Francisco",
+        "country": "USA",
+        "institute_label": "UCSF",
+        "institute_name": "University California San Francisco",
+        "name": "jimmie-ye",
+        "phone": "000-000-0000",
+        "principal_investigators": [
+            "jimmie.ye@ucsf.ude"
+        ],
+        "postal_code": "94143",
+        "state": "CA",
+        "title": "Ye Lab, UCSF",
+        "uuid": "bb4f0357-7d4a-4cb0-8eed-c30cf95c2d3d"
+    },
+    {
         "address1": "School of Biological Sciences",
         "address2": "2218 Biological Sciences III",
         "city": "Irvine",

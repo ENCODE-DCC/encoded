@@ -1,5 +1,21 @@
 [
     {
+        "description": "This project seeks to establish the normal range of immune phenotypic variability — both within and across individuals — and assess contributions from genetics and environment, such as diurnal, seasonal, and reproductive cycles and life experience.",
+        "end_date": "2022-02-22",
+        "name": "CZI021IMM",
+        "principal_investigators": [
+            "netus.lorem@risus.lobortis"
+        ],
+        "project": "HCA Seed Networks",
+        "start_date": "2019-12-11",
+        "status": "current",
+        "title": "Human Immune Variation Across Genetic Backgrounds, Gender and Time",
+        "url": "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/human-immune-variation-across-genetic-backgrounds-gender-and-time/",
+        "viewing_groups": [
+            "CZI017IMM"
+        ]
+    },
+    {
         "description": "This team will analyze single cells and develop computational tools to build a single cell map of the human liver, combining transcriptomics, spatial organization, and cell-cell interactions across diverse individuals and developmental stages.",
         "end_date": "2022-02-22",
         "name": "CZI004LIV",

@@ -1,6 +1,21 @@
 [
     {
         "aliases" : [
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "uuid": "76704205-4dcd-48ae-b114-711fc98275b7",
+        "file_size": 3000000,
+        "accession": "ENCFF450MMM",
+        "dataset": "ENCSR500ELM",
+        "file_format": "tar",
+        "md5sum": "d2a989b0b13b6bca2c9f56fd9188db4b",
+        "output_type": "genome reference",
+        "reference_version": "GRCh38",
+        "submitted_file_name": "refdata-cellranger-atac-GRCh38-1.2.0.tar.gz",
+        "status": "released"
+    },
+    {
+        "aliases" : [
             "lattice:cellranger_2020-A"
         ],
         "uuid": "031ba486-de5a-11ea-87d0-0242ac130003",
