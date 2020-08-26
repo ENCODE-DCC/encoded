@@ -962,6 +962,11 @@ def test_metadata_metadata_report_maybe_add_cart_elements_to_param_list(dummy_re
         "/experiments/ENCSR483RKN/",
         "/experiments/ENCSR514NTD/"
     ]
+    dummy_request.embed.side_effect = KeyError
+    mr = MetadataReport(dummy_request)
+    mr._initialize_at_id_param()
+    with pytest.raises(HTTPBadRequest):
+        mr._maybe_add_cart_elements_to_param_list()
 
 
 def test_metadata_metadata_report_get_json_elements_or_empty_list(dummy_request):
