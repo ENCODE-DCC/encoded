@@ -130,7 +130,7 @@ ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Derived from', ['files.derived_from']),
         ('S3 URL', ['files.cloud_metadata.url']),
         ('Size', ['files.file_size']),
-        ('No File Available', ['file.no_file_available']),
+        ('No File Available', ['files.no_file_available']),
         ('Restricted', ['files.restricted'])
     ]
 )
