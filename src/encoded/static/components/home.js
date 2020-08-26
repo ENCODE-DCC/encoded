@@ -161,9 +161,6 @@ class HomeContent extends React.Component {
 
                     <div className="contacts">
                         <div className="site-banner__intro contact">
-                           <p className="email-us">Contact the Lattice team at <a href="mailto:lattice-info@lists.stanford.edu"> lattice-info@lists.stanford.edu</a></p>
-                        </div>
-                        <div className="site-banner__intro contact">
                            <div className="contact-group">
                               <p className="call-contact">Seed Network researchers</p>
                               <p>Do you have data to submit?</p>
@@ -174,6 +171,9 @@ class HomeContent extends React.Component {
                               <p>Interested in integrating Seed Network data?</p>
                               <p>Have questions about the Lattice data model & schema?</p>
                            </div>
+                        </div>
+                        <div className="site-banner__intro contact">
+                           <p className="email-us">Contact the Lattice team at <a href="mailto:lattice-info@lists.stanford.edu"> lattice-info@lists.stanford.edu</a></p>
                         </div>
                     </div>
                     <div className="site-banner__intro credits">
