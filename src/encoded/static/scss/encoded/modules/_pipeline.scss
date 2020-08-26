@@ -244,11 +244,11 @@ g.pipeline-node-qc-metric {
     @at-root #{&}__data {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 33.33%;
+            hr {
+                margin-right: 10px;
+            }
         }
 
-        hr {
-            margin-right: 10px;
-        }
     }
 
     @at-root #{&}__attachments {
