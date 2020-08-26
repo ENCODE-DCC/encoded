@@ -359,18 +359,17 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     )
     assert len(batch_download_results) == len(metadata_results) == 2
 
-
     query_string = (
         '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
         '&files.file_type=fastq&files.read_length=50&option=visualizable'
     )
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
-        testapp, query_string
+        testapp,query_string
     )
     assert len(batch_download_results) == len(metadata_results) == 1
 
     query_string = (
-        'type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
+        '?type=Experiment&files.replicate.library=/libraries/ENCLB058ZZZ/'
         '&files.file_type=fastq&files.read_length=50&option=visualizable'
     )
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
@@ -392,7 +391,15 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    assert len(batch_download_results) == len(metadata_results) == 19
+    assert len(batch_download_results) == len(metadata_results) == 11
+
+    query_string = (
+        '?type=Experiment&files.file_type=bam&files.file_type=fastq'
+    )
+    batch_download_results, metadata_results = get_batch_download_and_metadata_results(
+        testapp, query_string
+    )
+    assert len(batch_download_results) == len(metadata_results) == 63
 
     query_string = (
         '?type=Experiment&files.derived_from=*&files.file_type=bam'
@@ -401,11 +408,11 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    assert len(batch_download_results) == len(metadata_results) == 24
+    assert len(batch_download_results) == len(metadata_results) == 18
 
     query_string = (
         '?type=Experiment&files.derived_from=*&files.file_type=bam'
-        '&files.file_type=fastq&files.file_type=bigWig&files.read_length=25'
+        '&files.file_type=fastq&files.file_type=bigWig&files.read_length=76'
     )
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
@@ -413,8 +420,8 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     assert len(batch_download_results) == len(metadata_results) == 2
 
     query_string = (
-        'type=Experiment&files.derived_from=*&files.file_type=bam'
-        '&files.file_type=fastq&files.file_type=bigWig&files.read_length=25'
+        '?type=Experiment&files.derived_from=*&files.file_type=bam'
+        '&files.file_type=fastq&files.file_type=bigWig&files.read_length=76'
         '&audit.NOT_COMPLIANT.category=missing+documents'
     )
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
