@@ -967,7 +967,6 @@ def test_metadata_metadata_report_maybe_add_cart_elements_to_param_list(dummy_re
     mr._initialize_at_id_param()
     with pytest.raises(HTTPBadRequest):
         mr._maybe_add_cart_elements_to_param_list()
-    assert True
 
 
 def test_metadata_metadata_report_get_json_elements_or_empty_list(dummy_request):
@@ -1186,7 +1185,6 @@ def test_metadata_metadata_report_validate_request(dummy_request):
     mr = MetadataReport(dummy_request)
     with pytest.raises(HTTPBadRequest):
         mr._validate_request()
-    assert True
 
 
 def test_metadata_metadata_report_initialize_report(dummy_request):
