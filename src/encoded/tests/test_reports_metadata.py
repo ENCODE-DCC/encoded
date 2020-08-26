@@ -967,6 +967,7 @@ def test_metadata_metadata_report_maybe_add_cart_elements_to_param_list(dummy_re
     mr._initialize_at_id_param()
     with pytest.raises(HTTPBadRequest):
         mr._maybe_add_cart_elements_to_param_list()
+    assert True
 
 
 def test_metadata_metadata_report_get_json_elements_or_empty_list(dummy_request):
@@ -1185,6 +1186,7 @@ def test_metadata_metadata_report_validate_request(dummy_request):
     mr = MetadataReport(dummy_request)
     with pytest.raises(HTTPBadRequest):
         mr._validate_request()
+    assert True
 
 
 def test_metadata_metadata_report_initialize_report(dummy_request):
@@ -1547,7 +1549,7 @@ def test_metadata_metadata_report_get_search_results_generator(index_workbook, d
     assert len(list(search_results)) >= 63
 
 
-def test_metadata_metadata_report_generate_row(index_workbook, dummy_request):
+def test_metadata_metadata_report_generate_rows(index_workbook, dummy_request):
     from types import GeneratorType
     from encoded.reports.metadata import MetadataReport
     dummy_request.environ['QUERY_STRING'] = (
@@ -1559,6 +1561,26 @@ def test_metadata_metadata_report_generate_row(index_workbook, dummy_request):
     row_generator = mr._generate_rows()
     assert isinstance(row_generator, GeneratorType)
     assert len(list(row_generator)) >= 100
+
+
+def test_metadata_metadata_report_generate_rows_no_files_in_experiment(dummy_request, mocker):
+    from types import GeneratorType
+    from encoded.reports.metadata import MetadataReport
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=Experiment'
+    )
+    modified_experiment = experiment()
+    modified_experiment['files'] = []
+    mr = MetadataReport(dummy_request)
+    mr._initialize_report()
+    mr._build_params()
+    mocker.patch.object(mr, '_get_search_results_generator')
+    mr._get_search_results_generator.return_value = (
+        x for x in [modified_experiment]
+    )
+    row_generator = mr._generate_rows()
+    assert isinstance(row_generator, GeneratorType)
+    assert len(list(row_generator)) == 1
 
 
 def test_metadata_metadata_report_generate(index_workbook, dummy_request):

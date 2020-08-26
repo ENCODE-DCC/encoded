@@ -838,3 +838,36 @@ def test_reports_batch_download_generate(index_workbook, dummy_request):
     assert response.content_type == 'text/plain'
     assert response.content_disposition == 'attachment; filename="files.txt"'
     assert len(list(response.body)) >= 100
+
+
+def test_reports_publication_data_batch_download_generate_rows(index_workbook, dummy_request):
+    from encoded.reports.batch_download import PublicationDataBatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicationData'
+        '&@id=/publication-data/ENCSR727WCB/'
+        '&files.file_type=tsv'
+    )
+    pdbd = PublicationDataBatchDownload(dummy_request)
+    pdbd._initialize_report()
+    pdbd._build_params()
+    results = list(pdbd._generate_rows())
+    # One metadata link, two TSV.
+    assert len(results) == 3
+
+
+def test_reports_publication_data_batch_download_generate_rows_no_files_in_publication_data(dummy_request, mocker):
+    from types import GeneratorType
+    from encoded.reports.batch_download import PublicationDataBatchDownload
+    dummy_request.environ['QUERY_STRING'] = (
+        'type=PublicationData'
+    )
+    pdbd = PublicationDataBatchDownload(dummy_request)
+    pdbd._initialize_report()
+    pdbd._build_params()
+    mocker.patch.object(pdbd, '_get_search_results_generator')
+    pdbd._get_search_results_generator.return_value = (
+        x for x in [{'files': []}]
+    )
+    row_generator = pdbd._generate_rows()
+    assert isinstance(row_generator, GeneratorType)
+    assert len(list(row_generator)) == 1
