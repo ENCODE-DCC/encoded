@@ -3955,6 +3955,12 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'insufficient number of reproducible peaks' and \
                'replicate(s) [2, 3]' in error['detail'] for error in collect_audit_errors(res2))
 
+    # Multiple AtacReplicationQualityMetric objects on the same file is flagged
+    testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],
+                       {'quality_metric_of': [file_bed_IDR_peaks_2_atac['@id']]})
+    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
+    assert any(error['category'] == 'duplicate QC metrics' for error in collect_audit_errors(res2))
+
 
 def test_audit_experiment_analysis_files(
     testapp,
