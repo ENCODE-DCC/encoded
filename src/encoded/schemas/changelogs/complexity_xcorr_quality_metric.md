@@ -3,6 +3,7 @@
 ### Minor changes since schema version 8
 
 * *quality_metric_of* was added as a required field
+* Added *SPRITE-IP* to *assay_term_name* enum
 
 ### Schema version 8
 

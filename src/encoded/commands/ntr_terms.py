@@ -260,6 +260,19 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
+    "NTR:0000562": {
+        "assay": ['3D chromatin structure'],
+        "category": [],
+        "developmental": [],
+        "name": "split-pool recognition of interactions by tag extension with immunoprecipitation",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "SPRITE-IP",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
 }
 
 ntr_biosamples = {

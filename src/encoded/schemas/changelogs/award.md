@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 8
 * Added *CUT&RUN* to *milestones.assay_term_name* enum
+* Added *SPRITE-IP* to *milestones.assay_term_name* enum
 
 ### Schema version 8
 

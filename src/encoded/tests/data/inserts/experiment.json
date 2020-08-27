@@ -1063,5 +1063,18 @@
         "date_released": "2015-08-31",
         "biosample_ontology": "tissue_UBERON_0001891",
         "assay_term_name": "CUT&RUN"
+    },
+    {
+        "_test": "SPRITE-IP test",
+        "uuid": "76cb8278-6ee8-9776-a686-f7057720e34e",
+        "accession": "ENCSR000SPI",
+        "assay_term_name": "SPRITE-IP",
+        "award": "U54HG006991",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "michael-snyder",
+        "status": "released",
+        "date_submitted": "2019-12-01",
+        "date_released": "2020-07-20",
+        "submitted_by": "elementum.mus@dictumst.nostra"
     }
 ]

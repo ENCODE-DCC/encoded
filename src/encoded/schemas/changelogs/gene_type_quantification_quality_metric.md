@@ -1,5 +1,8 @@
 ## Changelog for gene_type_quantification_quality_metric.json
 
+### Minor changes since schema version 2
+* Added *SPRITE-IP* to *assay_term_name* enum
+
 ### Schema version 2
 
 * The following properties were removed from the schema and will be reported in an attachment:

@@ -67,6 +67,7 @@ assay_terms = {
       'PRO-cap': 'NTR:0000536',
       'icLASER': 'NTR:0000538',
       'SPRITE': 'NTR:0000544',
+      'SPRITE-IP': 'NTR:0000562',
       'transgenic enhancer assay': 'NTR:0000551',
       'polyA plus RNA-seq': 'OBI:0002571',
       'polyA minus RNA-seq': 'OBI:0002572',

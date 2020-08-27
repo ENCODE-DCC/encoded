@@ -1,5 +1,8 @@
 ## Changelog for hotspot_quality_metric.json
 
+### Minor changes since schema version 9
+* Added *SPRITE-IP* to *assay_term_name* enum
+
 ### Schema version 9
 * Standardized property names to remove spaces and capital letters.
 * Added the following new properties: *five_percent_allcalls_count*, *five_percent_hotspots_count*, *five_percent_narrowpeaks_count*, and *tenth_of_one_percent_narrowpeaks_count*.

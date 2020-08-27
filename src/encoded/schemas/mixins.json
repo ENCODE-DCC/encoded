@@ -469,6 +469,7 @@
                 "siRNA knockdown followed by RNA-seq",
                 "small RNA-seq",
                 "SPRITE",
+                "SPRITE-IP",
                 "Switchgear",
                 "TAB-seq",
                 "transcription profiling by array assay",
