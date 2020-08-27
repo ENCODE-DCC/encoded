@@ -4,7 +4,7 @@
     "id": "/profiles/matrix_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_type", "md5sum", "derived_from", "normalized", "value_scale", "value_units"],
+    "required": ["dataset", "file_format", "output_types", "md5sum", "derived_from", "normalized", "value_scale", "value_units"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -129,11 +129,10 @@
             "linkTo": "Dataset"
         },
         "derived_from": {
-            "title": "Derived from",
-            "description": "A file participating as input into software to produce this output file.",
-            "comment": "See file.json for a list of available identifiers.",
-            "type": "array",
             "items": {
+                "title": "Derived from",
+                "description": "A file participating as input into software to produce this output file.",
+                "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": [
                     "RawSequenceFile",
@@ -149,13 +148,16 @@
                 "loom"
             ]
         },
-        "output_type": {
-            "enum": [
-                "gene quantifications",
-                "transcript quantifications",
-                "peaks",
-                "transcription factors"
-            ]
+        "output_types": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "gene quantifications",
+                    "transcript quantifications",
+                    "peaks",
+                    "transcription factors"
+                ]
+            }
         },
         "value_scale": {
             "title": "Value scale",
@@ -229,7 +231,7 @@
                             "percent mitochondrial/cell",
                             "percent mitochondrial/nuclei",
                             "fragments in peaks/nuclei",
-                            "percent reads in peaks/nuclei",
+                            "percent in peaks/nuclei",
                             "TSS enrichment score/nuclei",
                             "blacklist ratio/nuclei",
                             "doublet score/nuclei"

@@ -23,7 +23,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -57,7 +59,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "41b2de312095ae62775cfbea21771207",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -92,7 +96,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "a6a30246603f26acf1581fc592cba9bb",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -126,7 +132,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "9e23fe4a6a143a3f3bf349b6b22332d4",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -163,7 +171,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "35ad03143ff14f1124efefc7af93c4bd",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -197,7 +207,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "ca76daf4faf7a0d3cc7d491932385824",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -231,7 +243,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "cd81b2686158ce81f1e2b8b0aae8c97a",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -265,7 +279,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "63d69e70fdae3aa247be486c09732b71",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -298,7 +314,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "fc403ed7d6eeb7d2129868a5de351523",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -332,7 +350,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "bb7e86a265b79851af8b3ea1d1eb3e8d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -366,7 +386,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "d80d656ff2a5d303fda0430753cbb5fd",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -400,7 +422,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "b55d27f2cfad063f4d70aacb5fef6ba3",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -433,7 +457,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "fd3fa4da80fe90d5a70c9653df46e47c",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -467,7 +493,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "039bf37f67dc2e9809a7aaa81dd3c900",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -501,7 +529,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "67c4a35bd59923d26b2107d07da4b691",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -535,7 +565,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "8e5b1e60003016186febd322331a9a13",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -568,7 +600,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "a955f87c1cd82324072b029a46ed9377",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -602,7 +636,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "57c14d36b7da0f4c85302a1da968fc6f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -636,7 +672,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "8fd12793e78d468416330436c7a18d3b",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -670,7 +708,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "6f42b2863ba68b3694a2a0e0f46d1a6f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -703,7 +743,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "95ec4a9e99d69844c53fae46c3eed843",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -737,7 +779,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "751606835d083bbef0458bd9c5da2787",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -771,7 +815,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "621447062eb0ed9256e1abb64b06e928",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -805,7 +851,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "7b6b1a8b3c7a55f097e80c300eb27369",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -838,7 +886,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "ecebbd264cbad105864d24aac349c5d8",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -872,7 +922,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "8063f70d8809ed6c3273be66e8033e34",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -906,7 +958,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "8102c0b46bc42d660f3138c84d689513",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -940,7 +994,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "5b32d209b72cb75e1d2e2ceed3b36db4",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -973,7 +1029,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "bf95863e13818106a07f3802bf2a2a46",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -1007,7 +1065,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "bc35487c6b5e0f07f00bf45e74a9c2c3",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -1041,7 +1101,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "dce25c5a2a9bc0a79bf736f0362f3c2a",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -1075,7 +1137,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "200ab0c03b9655d52ceebd5f17a34660",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -1109,7 +1173,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "7e1cb664af9509200271588106cac1f3",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
@@ -1143,7 +1209,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "a26edc2dff6192f41c68da5d260da3c1",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
@@ -1177,7 +1245,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "77782bb8d7a20ceb59c2a1b573ef00ad",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length":50,
         "read_count": 1000000,
@@ -1211,7 +1281,9 @@
         ],
         "lab": "jimmie-ye",
         "md5sum": "27b14b1648e741e1c53243c09684563f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
@@ -1245,7 +1317,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "be788716a6c61626ffda213dc7c9047f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -1291,7 +1365,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "15e856815c830b2daa32e8fb619988cb",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -1337,7 +1413,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "2653b300eb70899c93bf8dd1d30ba367",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -1386,7 +1464,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "518d42f603a49cde4339d7fd17865ab6",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -1432,7 +1512,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "0d70d0a3cc5793767420e41ced9cc87d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -1479,7 +1561,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "1bae6123b13b23508c9e50d8f67693ac",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -1528,7 +1612,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -1574,7 +1660,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "653e0e3a568b243b1638f79ea8788272",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -1621,7 +1709,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "c9b249ed3129f7697047e4e8da17fc7f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -1670,7 +1760,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "245cc29909585484ca2ab815e3e8eaf5",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -1716,7 +1808,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "ef7a40ca2bb26c2633b2cd6cd2ed867a",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -1763,7 +1857,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "1076e16f4dccbe987ed5aab7e01eea63",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -1812,7 +1908,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "618c241a9a3e16faf715224a2e3ece61",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -1858,7 +1956,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "542bd45d066265f8d7071e96015caaa2",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -1905,7 +2005,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "774f58f00718722ac90389ef39a02f6c",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -1954,7 +2056,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "1ecacdcde243c2e1cd0c229f4a3183f5",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -2000,7 +2104,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "02b28939887aab52732c1f165ae28582",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -2047,7 +2153,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "027befa8161421dd70a23a19559271d8",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -2096,7 +2204,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "68e11b5916db0de02b9a5d5d78c69533",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -2142,7 +2252,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "c28e111dccdff2d693308d77294ca89f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -2189,7 +2301,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "4c9b73df40205d72c258d53fb8193a7a",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -2238,7 +2352,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "12f020df2c0e31fbe2adad368a17453e",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -2284,7 +2400,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "e364d2a27620d82afa453096aef71efb",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -2331,7 +2449,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "66cc8851611451c0d781c7d9b6ace363",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -2380,7 +2500,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "c0fee18e9875b2e4479c057ced942fc7",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
@@ -2426,7 +2548,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "f522d5b0c4d9e9ce3d3a4074eaa34053",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
@@ -2473,7 +2597,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "8f0026c9f6bd75c28e3530ebb090df1a",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
@@ -2514,7 +2640,9 @@
         "lab": "j-michael-cherry",
         "md5sum": "95be74b6e11515393507f4ebfa66d78d",
         "content_md5sum": "96be74b6e11515393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 20,
         "read_length": 50,
         "platform": "Illumina NovaSeq 6000",
@@ -2540,7 +2668,9 @@
         "lab": "j-michael-cherry",
         "md5sum": "97be74b6e11515393507f4ebfa66d78d",
         "content_md5sum": "98be74b6e11515393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina NovaSeq 6000",
         "file_size": 20,
@@ -2566,7 +2696,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e24515393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "read_length": 36,
@@ -2591,7 +2723,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e25515393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
@@ -2616,7 +2750,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11615393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
@@ -2642,7 +2778,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11715393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina HiSeq 2500",
         "status": "in progress",
@@ -2668,7 +2806,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "3a35713488522b0ea8a4d9635b5afa41",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina HiSeq 2500",
         "status": "in progress",
@@ -2694,7 +2834,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "0e88b38c8d48806ee98929a5bad06fc4",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina HiSeq 2500",
         "status": "in progress",
@@ -2718,7 +2860,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "a8879e9e78f17c37fdcfe1a8b572ac1f",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
@@ -2745,7 +2889,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "97b452ae74c7d279706c88141155a00c",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
@@ -2772,7 +2918,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "3ced82e44cea82a4784493c2f640ba12",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
@@ -2793,7 +2941,9 @@
         "file_format": "fastq",
         "lab": "j-michael-cherry",
         "md5sum": "7ced82e74cea82a4787493c2f640ba82",
-        "output_type": "undetermined reads",
+        "output_types": [
+			"undetermined reads"
+		],
         "read_length": 58,
         "index_of": [
             "aab79812-71d8-41d1-bd72-1bf5dbcae381"
@@ -2836,7 +2986,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
@@ -2865,7 +3017,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "8cd1f9a1fbf709cb0a58e427b0448dbc",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina HiSeq 2500",
         "status": "in progress",
@@ -2890,7 +3044,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "689e73dd026e24ed347378b6ec578521",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "read_type": "Read 1",
         "sequencing_run_type": "paired-ended",
@@ -2918,7 +3074,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "10dfc1816893a76a48c645c5294ad74c",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
@@ -2947,7 +3105,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "f73b8010630a28fe9ac1f93155a46e8b",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "sequencing_run_type": "paired-ended",
         "read_length": 50,
         "read_type": "Read 1",
@@ -2977,7 +3137,9 @@
         "lab": "j-michael-cherry",
         "platform": "Illumina NovaSeq 6000",
         "md5sum": "8c46ce8ffd6a281a10672352ba9c9514",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "status": "deleted",
         "submitted_by": "risus.fermentum@vel.at",
@@ -3002,7 +3164,9 @@
         ],
         "lab": "j-michael-cherry",
         "md5sum": "de9e05ad88fea5664f1c5d90815df360",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina HiSeq 2500",
         "status": "in progress",
@@ -3023,9 +3187,13 @@
         "file_format": "fastq",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "richard-myers",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "platform": "Illumina NovaSeq 6000",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_name_structure": {
             "read_number_location": 2,
             "flowcell_id_location": 3,
@@ -3051,7 +3219,9 @@
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "platform": "Illumina NovaSeq 6000",
         "md5sum": "85c68b36bb91ef2fa361cdbc8663b4f6",
@@ -3074,7 +3244,9 @@
         "platform": "Illumina NovaSeq 6000",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "md5sum": "5f3232d8937b53c296507f6516f0db8f",
         "derived_from": "ENCLB742NWU"
@@ -3095,7 +3267,9 @@
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 50,
         "md5sum": "ef3a148b24fde7501a8a229f3de603f9",
         "date_created": "2014-09-30T17:38:48.091343+00:00",
@@ -3103,7 +3277,9 @@
     },
     {
         "_test": "raw file for matched set 1",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "sequencing_run_type": "single-ended",
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -3126,7 +3302,9 @@
         "read_length": 36,
         "file_format": "fastq",
         "status": "released",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR003SER/",
         "content_md5sum": "7dad2371f43128103106312c795de447",
         "accession": "ENCFF477MLC",
@@ -3145,7 +3323,9 @@
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR001EPI/",
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF001EPI",
@@ -3167,7 +3347,9 @@
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR002EPI/",
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF003EPI",
@@ -3189,7 +3371,9 @@
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR003EPI/",
         "content_md5sum": "91ce74b6e11c15393507f4ebfa66d78c",
         "accession": "ENCFF005EPI",
@@ -3211,7 +3395,9 @@
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR004EPI/",
         "content_md5sum": "91be74b651151a393507f5ebfa66d78c",
         "accession": "ENCFF006EPI",
@@ -3233,7 +3419,9 @@
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR005EPI/",
         "content_md5sum": "91be74b6e115a5393507f4ebfa66da7a",
         "accession": "ENCFF007EPI",
@@ -3255,7 +3443,9 @@
         "read_length": 150,
         "file_format": "fastq",
         "status": "in progress",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR003CON/",
         "content_md5sum": "92be74b6e11215393507f4ebfa22d77a",
         "accession": "ENCFF004CON",
@@ -3277,7 +3467,9 @@
         "read_length": 150,
         "file_format": "fastq",
         "status": "in progress",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dataset": "ENCSR003REP/",
         "content_md5sum": "91be74b6e1151539f5073febfa66d77a",
         "accession": "ENCFF004REP",
@@ -3301,7 +3493,9 @@
         "platform": "Illumina HiSeq 2500",
         "uuid": "f91de412-e397-44f5-ae2b-8195db8b2a8f",
         "accession": "ENCFF000LBA",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "schema_version": "9",
         "submitted_file_name": "hg19/wgEncodeGisDnaPet/wgEncodeGisDnaPetK56210kFasta5p.fastq.gz",
         "file_size": 2307361344,
@@ -3312,7 +3506,9 @@
         "derived_from": "ENCLB033CJI"
     },
     {
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_type": "Read 2",
         "read_length": 25,
         "content_md5sum": "69de5eb9cb7d09c799fa958f0dc3edfa",
@@ -3333,7 +3529,9 @@
     },
     {
         "_test": "phantom file",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "read_length": 25,
         "content_md5sum": "69de5eb9cb7d09c799fa958f0dc3edfa",
         "file_size": 2314662239,
@@ -3360,7 +3558,9 @@
         "read_length": 36,
         "external_accession": "SRR1270627",
         "read_count": 42110808,
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "dbxrefs": [
             "SRA:SRR1270627"
         ],
@@ -3379,7 +3579,9 @@
         "file_format": "fastq",
         "lab": "j-michael-cherry",
         "md5sum": "12ce74b6e11515393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -3397,7 +3599,9 @@
         "file_format": "fastq",
         "lab": "j-michael-cherry",
         "md5sum": "93be74b6e11123493507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -3416,7 +3620,9 @@
         "file_format": "fastq",
         "lab": "j-michael-cherry",
         "md5sum": "12ce74b6e12215393507f4ebfa66d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -3434,7 +3640,9 @@
         "file_format": "fastq",
         "lab": "j-michael-cherry",
         "md5sum": "93be74b6e11123493511f4ebfa77d78d",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -3453,7 +3661,9 @@
         "uuid": "5b95c824-7abc-4423-becf-1c3d5729b32d",
         "accession": "ENCFF164JWT",
         "file_format": "fastq",
-        "output_type": "assigned reads",
+        "output_types": [
+			"assigned reads"
+		],
         "file_size": 1,
         "platform": "Illumina HiSeq 2500",
         "read_length": 50,
@@ -3470,7 +3680,9 @@
         "uuid": "3f150408-7371-7cdd-8028-6866ed2facba",
         "accession": "ENCFF333SBR",
         "file_format": "fastq",
-        "output_type": "undetermined reads",
+        "output_types": [
+			"undetermined reads"
+		],
         "file_size": 567890,
         "platform": "Illumina HiSeq 2500",
         "md5sum": "a61ba395c73713edf8b7cddd92dce969",

@@ -6,10 +6,10 @@
     "type": "object",
     "anyOf": [
         {
-            "required": ["dataset", "file_format", "output_type", "derived_from", "md5sum"]
+            "required": ["dataset", "file_format", "output_types", "derived_from", "md5sum"]
         },
         {
-            "required": ["dataset", "file_format", "output_type", "derived_from", "no_file_available"]
+            "required": ["dataset", "file_format", "output_types", "derived_from", "no_file_available"]
         }
     ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
@@ -224,11 +224,14 @@
                 "linkTo": "RawSequenceFile"
             }
         },
-        "output_type": {
-            "enum": [
-                "undetermined reads",
-                "assigned reads"
-            ]
+        "output_types": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "undetermined reads",
+                    "assigned reads"
+                ]
+            }
         },
         "read_type": {
             "title": "Read type",

@@ -13,7 +13,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_1a.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1a_R1.fastq", 
@@ -43,7 +45,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_1b.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1b_R1.fastq", 
@@ -73,7 +77,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_1c.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1c_R1.fastq", 
@@ -103,7 +109,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_2a.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2a_R1.fastq", 
@@ -133,7 +141,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_2b.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2b_R1.fastq", 
@@ -163,7 +173,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_2c.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2c_R1.fastq", 
@@ -193,7 +205,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_3a.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3a_R1.fastq", 
@@ -223,7 +237,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_3b.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3b_R1.fastq", 
@@ -253,7 +269,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_tf_matrix_3c.mtx/",
-		"output_type": "transcription factors",
+		"output_types": [
+			"transcription factors"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3c_R1.fastq", 
@@ -283,7 +301,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_1a.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1a_R1.fastq", 
@@ -313,7 +333,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_1b.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1b_R1.fastq", 
@@ -343,7 +365,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_1c.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1c_R1.fastq", 
@@ -373,7 +397,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_2a.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2a_R1.fastq", 
@@ -403,7 +429,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_2b.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2b_R1.fastq", 
@@ -433,7 +461,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_2c.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2c_R1.fastq", 
@@ -463,7 +493,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_3a.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3a_R1.fastq", 
@@ -493,7 +525,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_3b.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3b_R1.fastq", 
@@ -523,7 +557,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "filtered_peak_matrix_3c.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3c_R1.fastq", 
@@ -553,7 +589,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_1a.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1a_R1.fastq", 
@@ -583,7 +621,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_1b.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1b_R1.fastq", 
@@ -613,7 +653,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_1c.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_1c_R1.fastq", 
@@ -643,7 +685,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_2a.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2a_R1.fastq", 
@@ -673,7 +717,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_2b.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2b_R1.fastq", 
@@ -703,7 +749,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_2c.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_2c_R1.fastq", 
@@ -733,7 +781,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_3a.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3a_R1.fastq", 
@@ -763,7 +813,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_3b.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3b_R1.fastq", 
@@ -793,7 +845,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "raw_peak_matrix_3c.mtx/",
-		"output_type": "peaks",
+		"output_types": [
+			"peaks"
+		],
 		"dataset": "jimmie-ye:snATACseq_atac_dataset",
 		"derived_from": [
             "jimmie-ye:prenatal_3c_R1.fastq", 
@@ -823,7 +877,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "postnatal_1a_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_1a_R1.fastq",
@@ -852,7 +908,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "postnatal_1b_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_1b_R1.fastq",
@@ -881,7 +939,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "postnatal_1c_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_1c_R1.fastq",
@@ -910,7 +970,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_2a_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_2a_R1.fastq",
@@ -939,7 +1001,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_2b_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_2b_R1.fastq",
@@ -968,7 +1032,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_2c_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_2c_R1.fastq",
@@ -997,7 +1063,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_3a_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_3a_R1.fastq",
@@ -1026,7 +1094,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_3b_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_3b_R1.fastq",
@@ -1055,7 +1125,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_3c_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_3c_R1.fastq",
@@ -1084,7 +1156,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "postnatal_1a_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_1a_R1.fastq",
@@ -1113,7 +1187,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "postnatal_1b_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_1b_R1.fastq",
@@ -1142,7 +1218,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "postnatal_1c_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_1c_R1.fastq",
@@ -1171,7 +1249,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_2a_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_2a_R1.fastq",
@@ -1200,7 +1280,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_2b_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_2b_R1.fastq",
@@ -1229,7 +1311,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_2c_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_2c_R1.fastq",
@@ -1258,7 +1342,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_3a_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_3a_R1.fastq",
@@ -1287,7 +1373,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_3b_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_3b_R1.fastq",
@@ -1316,7 +1404,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_3c_filtered_matrix.mtx/",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:sequence_3c_R1.fastq",
@@ -1345,7 +1435,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_merged_matrix.mtx",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:postnatal_1a_filtered_matrix",
@@ -1380,7 +1472,9 @@
 		"file_size": 50000,
 		"lab": "j-michael-cherry",
 		"submitted_file_name": "prenatal_merged_matrix.mtx",
-		"output_type": "gene quantifications",
+		"output_types": [
+			"gene quantifications"
+		],
 		"dataset": "peter-sims:scRNAseq_test_dataset",
 		"derived_from": [
 			"peter-sims:prenatal_2a_filtered_matrix",

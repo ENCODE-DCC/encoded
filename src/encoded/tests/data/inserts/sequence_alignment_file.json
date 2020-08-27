@@ -11,7 +11,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_1a_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -40,7 +40,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_1b_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -69,7 +69,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_1c_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -98,7 +98,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_2a_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -127,7 +127,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_2b_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -156,7 +156,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_2c_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -185,7 +185,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_3a_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -214,7 +214,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_3b_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -243,7 +243,7 @@
         "file_size": 300000000,
         "submitted_file_name": "prenatal_3c_bam.gz",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -272,7 +272,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_3a.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -302,7 +302,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_3b.bam",
         "md5sum": "653e0e3a568b243b1638f79ea8788272",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -333,7 +333,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_3c.bam",
         "md5sum": "c9b249ed3129f7697047e4e8da17fc7f",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -364,7 +364,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_2a.bam",
         "md5sum": "518d42f603a49cde4339d7fd17865ab6",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -395,7 +395,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_2b.bam",
         "md5sum": "0d70d0a3cc5793767420e41ced9cc87d",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -426,7 +426,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_1c.bam",
         "md5sum": "1bae6123b13b23508c9e50d8f67693ac",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -457,7 +457,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_1a.bam",
         "md5sum": "be788716a6c61626ffda213dc7c9047f",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -488,7 +488,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_1b.bam",
         "md5sum": "15e856815c830b2daa32e8fb619988cb",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -519,7 +519,7 @@
         "file_size": 6000000000,
         "submitted_file_name": "alignment_1c.bam",
         "md5sum": "2653b300eb70899c93bf8dd1d30ba367",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments",
             "genomic alignments"
         ],
@@ -553,7 +553,7 @@
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "cdf6c42afc135f1f95971e415b8d5fdd",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "status": "released",
@@ -577,7 +577,7 @@
         "file_format": "bam",
         "lab": "j-michael-cherry",
         "md5sum": "ecff397bffc54f01319eb41c6194379b",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "status": "released",
@@ -599,7 +599,7 @@
         "alternate_accessions": [],
         "file_size": 64358869186,
         "lab": "/labs/richard-myers/",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "assembly": "hg19",
@@ -626,7 +626,7 @@
         "alternate_accessions": [],
         "file_size": 64358869186,
         "lab": "/labs/richard-myers/",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "assembly": "hg19",
@@ -657,7 +657,7 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515390000f4ebfa66d78d",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "status": "released",
@@ -679,7 +679,7 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515391212f4ebfa66d78d",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "status": "released",
@@ -701,7 +701,7 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "22be74b6e11555393507f4ebfa65d78c",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "status": "released",
@@ -723,7 +723,7 @@
         "genome_annotation": "GENCODE 24",
         "lab": "/labs/encode-processing-pipeline/",
         "md5sum": "94be74b6e11515393434f4ebfa66d78d",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "status": "released",
@@ -741,7 +741,7 @@
         "uuid": "3f150408-3e77-47c1-8028-6866ed2facba",
         "accession": "ENCFF032OJW",
         "file_format": "bam",
-        "output_type": [
+        "output_types": [
             "transcriptome alignments"
         ],
         "file_size": 1,
