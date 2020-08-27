@@ -10,7 +10,7 @@
         "status": "released",
         "date_submitted": "2015-01-20",
         "date_released": "2016-01-01",
-        "internal_tags":["DREAM", "ENCORE"],
+        "internal_tags": ["DREAM"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
     },
@@ -1098,5 +1098,54 @@
         "date_released": "2015-08-31",
         "biosample_ontology": "tissue_UBERON_0001891",
         "assay_term_name": "CUT&Tag"
+    },
+    {
+        "accession": "ENCSR611ZAL",
+        "aliases": ["brenton-graveley:TAF15-LV08"],
+        "assay_term_name": "shRNA knockdown followed by RNA-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "date_released": "2014-10-16",
+        "date_submitted": "2014-09-15",
+        "dbxrefs": ["GEO:GSE80910"],
+        "description": "shRNA knockdown against TAF15 in K562 cells followed by RNA-seq. (TAF15-LV08)",
+        "internal_tags": ["ENCORE"],
+        "lab": "brenton-graveley",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "target": "TAF15-human",
+        "uuid": "dffa753d-f35a-4df9-a5cb-86bea9862069"
+    },
+    {
+        "accession": "ENCSR696JWA",
+        "aliases": ["brenton-graveley:ZC3H8-BGHLV37-B"],
+        "assay_term_name": "shRNA knockdown followed by RNA-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "date_released": "2017-12-06",
+        "date_submitted": "2017-11-21",
+        "description": "RNA-seq on HepG2 cells treated with an shRNA knockdown against ZC3H8. (ZC3H8-BGHLV37-B)",
+        "internal_tags": ["ENCYCLOPEDIAv5", "ENCORE"],
+        "lab": "brenton-graveley",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "target": "ZC3H8-human",
+        "uuid": "f1e6498b-9eae-481a-8db1-b5c35e09e254"
+    },
+    {
+        "accession": "ENCSR813BDU",
+        "aliases": ["eric-lecuyer:HepG2-init-Insoluble"],
+        "assay_term_name": "RNA-seq",
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "date_released": "2016-04-21",
+        "date_submitted": "2015-02-21",
+        "description": "Initial insoluble cytoplasmic fractions on HepG2 Long Total from Lecuyer",
+        "internal_status": "unreviewed",
+        "internal_tags": ["ENCORE"],
+        "lab": "brenton-graveley",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "uuid": "ce726926-60ac-434d-a5d4-6bbf54e3ece4"
     }
 ]

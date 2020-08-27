@@ -1049,5 +1049,22 @@
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "60c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
+    },
+    {
+        "accession": "ENCLB414HBO",
+        "aliases": ["eric-lecuyer:L-HepG2-init-Insoluble_1"],
+        "award": "UM1HG009442",
+        "biosample": "ENCBS470XDJ",
+        "depleted_in_term_name": ["rRNA"],
+        "extraction_method": "Trizol",
+        "fragmentation_methods": ["chemical (Illumina TruSeq)"],
+        "lab": "brenton-graveley",
+        "library_size_selection_method": "SPRI beads",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": ">200",
+        "status": "released",
+        "strand_specificity": "strand-specific",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "uuid": "1de973bf-ebe1-4644-9333-6de525db0bd4"
     }
 ]

@@ -1247,5 +1247,22 @@
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra",
         "uuid": "3440ad39-bb3a-488f-8a88-525027b8e943"
+    },
+    {
+        "accession": "ENCBS470XDJ",
+        "aliases": ["eric-lecuyer:HepG2-init-Insoluble_1"],
+        "award": "UM1HG009442",
+        "biosample_ontology": "cell_line_EFO_0001187",
+        "description": "Initial insoluble fractions on HepG2 Long Total from Lecuyer",
+        "donor": "ENCDO017AAA",
+        "lab": "brenton-graveley",
+        "lot_id": "59635738",
+        "organism": "human",
+        "product_id": "HB-8065",
+        "source": "dana-levasseur",
+        "subcellular_fraction_term_name": "insoluble cytoplasmic fraction",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "uuid": "2ee9acb1-6a04-4226-ac62-afcf1e1f5db3"
     }
 ]

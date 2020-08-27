@@ -33,6 +33,7 @@ require('./matrix_experiment');
 require('./matrix_reference_epigenome');
 require('./matrix_sescc_stem_cell');
 require('./matrix_chip_seq');
+require('./matrix_encore');
 require('./target');
 require('./publication');
 require('./pipeline');

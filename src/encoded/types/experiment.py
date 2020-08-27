@@ -452,6 +452,28 @@ class Experiment(Dataset,
         },
     }
 
+    encore_matrix = {
+        'y': {
+            'group_by': ['target.label'],
+            'label': 'Target',
+        },
+        'x': {
+            'group_by': ['assay_title', 'biosample_ontology.term_name'],
+            'label': 'Assay',
+        },
+    }
+
+    encore_rna_seq_matrix = {
+        'y': {
+            'group_by': [('replicates.library.biosample.subcellular_fraction_term_name', 'no_term_name')],
+            'label': 'Subcellular localization',
+        },
+        'x': {
+            'group_by': ['assay_title', 'biosample_ontology.term_name'],
+            'label': 'Assay',
+        },
+    }
+
     audit = {
         'audit.ERROR.category': {
             'group_by': 'audit.ERROR.category',
