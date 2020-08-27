@@ -51,6 +51,7 @@ class Library(Item):
         "type": "array",
         "items": {
             "type": "string",
+            "linkTo": "Donor"
         },
     })
     def donor_accessions(self, request, registry, derived_from, status):

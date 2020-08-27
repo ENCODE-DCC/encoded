@@ -40,6 +40,7 @@ ORDER = [
     'software_version',
     'analysis_step',
     'reference_file',
+    'sequencing_run',
     'raw_sequence_file',
     'sequence_alignment_file',
     'matrix_file',

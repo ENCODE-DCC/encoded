@@ -254,11 +254,8 @@
         "read_length_units": {
             "title": "Read length units"
         },
-        "output_category": {
-            "title": "Output category"
-        },
-        "output_type": {
-            "title": "Output type"
+        "output_types": {
+            "title": "Output types"
         },
         "quality_metrics": {
             "title": "QC Metric"
@@ -281,18 +278,6 @@
         "status": {
             "title": "Status"
         }
-    },
-    "output_type_output_category": {
-        "alignments": "alignment",
-        "unfiltered alignments": "alignment",
-        "gene alignments": "alignment",
-        "redacted alignments": "alignment",
-        "redacted unfiltered alignments": "alignment",
-        "transcriptome alignments": "alignment",
-        "spike-in alignments": "alignment",
-        "maternal haplotype mapping": "alignment",
-        "paternal haplotype mapping": "alignment",
-        "phased mapping": "alignment"
     },
     "file_format_file_extension": {
         "bam": ".bam",
