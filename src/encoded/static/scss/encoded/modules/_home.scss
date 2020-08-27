@@ -520,12 +520,19 @@
 
     h1 {
 	font-weight: bold;
-	font-size: 100px;
+	font-size: 60px;
+	@media screen and (min-width: $screen-md-min) {
+	    font-size: 100px;
+	}
     }
 
     img {
-	width: 170px;
-	height: 170px;
+	width: 120px;
+	height: 120px;
+	@media screen and (min-width: $screen-md-min) {
+	    width: 170px;
+	    height: 170px;
+	}
     }
 
     @media screen and (min-width: $screen-md-min) {
