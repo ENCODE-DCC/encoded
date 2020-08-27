@@ -1,5 +1,45 @@
 [
     {
+        "aliases": [
+            "jimmie-ye:alignment-count-step"
+        ],
+        "step_label": "alignment-count-step",
+        "analysis_step_types": [
+            "alignment", "quantification", "cell calling"
+        ],
+        "software_versions": [
+            "lattice:cellranger-atac-1.2"
+        ],
+        "uuid": "a60b75a1-1998-46aa-a2d7-faa9f2ff79af"
+    },
+    {
+        "aliases": [
+            "peter-sims:merge-analysis-step"
+        ],
+        "step_label": "merge-analysis-step",
+        "analysis_step_types": [
+            "merging"
+        ],
+        "software_versions": [
+            "lattice:cellranger-aggr-4.0"
+        ],
+        "uuid": "8eaf52b1-0cb2-4f78-beb7-a5701630c654"
+    },
+    {
+        "aliases": [
+            "peter-sims:alignment-count-step"
+        ],
+        "step_label": "alignment-count-step",
+        "analysis_step_types": [
+            "alignment", "quantification", "cell calling"
+        ],
+        "parameters": "expected-cells=3000",
+        "software_versions": [
+            "lattice:cellranger-count-4.0"
+        ],
+        "uuid": "bc82ae8a-ddbd-11ea-87d0-0242ac130003"
+    },
+    {
         "step_label": "alignment-test-step",
         "analysis_step_types": [
             "alignment"

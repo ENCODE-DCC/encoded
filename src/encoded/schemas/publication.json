@@ -37,7 +37,7 @@
         "publication_year": {
             "title": "Publication year",
             "description": "The year of publication.",
-            "type": "string"
+            "type": "integer"
         },
         "issue": {
             "title": "Issue",

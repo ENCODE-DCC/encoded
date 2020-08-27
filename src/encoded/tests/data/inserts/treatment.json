@@ -1,4 +1,33 @@
 [
+    {
+        "aliases": [
+            "jimmie-ye:FGF7_media"
+        ],
+        "uuid": "cb39e0f6-67b3-4841-b824-15e1cc1acf1e",
+        "amount": 50,
+        "amount_units": "mg",
+        "treatment_type": "chemical",
+        "treatment_term_name": "EFO:0003316"
+    },
+    {
+        "aliases": [
+            "jimmie-ye:VEGF_stimulation"
+        ],
+        "uuid": "972668da-d0fd-4942-80dd-aba62c16f5a6",
+        "amount": 100,
+        "amount_units": "mg",
+        "treatment_type": "stimulation",
+        "treatment_term_name": "EFO:0003276"
+    },
+    {
+        "uuid": "89ab74fa-dc15-11ea-87d0-0242ac130003",
+        "aliases": [
+            "lattice:insulin"
+        ],
+        "treatment_term_id": "CHEBI:145810",
+        "treatment_term_name": "insulin",
+        "treatment_type": "chemical"
+     },
      {
         "amount": 5000000,
         "amount_units": "pfu",

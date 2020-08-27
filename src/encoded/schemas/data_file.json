@@ -78,10 +78,10 @@
             "type": "integer",
             "minimum": 0
         },
-        "output_type": {
-            "title": "Output type",
+        "output_types": {
+            "title": "Output types",
             "description": "A description of the file's purpose or contents.",
-            "type": "string"
+            "type": "array"
         },
         "supersedes": {
             "title": "Supersedes" ,

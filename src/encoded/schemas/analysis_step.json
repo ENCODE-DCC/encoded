@@ -70,7 +70,9 @@
                      "transcriptome annotation",
                      "transcriptome assembly",
                      "unreplicated IDR",
-                     "variant annotation"
+                     "variant annotation",
+                     "merging",
+                     "cell calling"
                  ]
              }
         },

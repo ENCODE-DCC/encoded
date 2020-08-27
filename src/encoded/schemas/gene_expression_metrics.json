@@ -46,6 +46,21 @@
             "description": "Percentage of reads with cell barcodes that match the whitelist.",
             "type": "number"
         },
+        "reads_mapped_to_genome":{
+            "title": "Reads mapped to the genome",
+            "description": "Percentage of reads that mapped to genome",
+            "type": "number"
+        },
+        "reads_mapped_confidently_to_genome": {
+            "title": "Reads mapped confidently to genome",
+            "description": "Percentage of reads that mapped confidently to genome",
+            "type": "number"
+        },
+        "reads_mapped_antisense_to_gene": {
+            "title": "Reads mapped antisense to a gene",
+            "description": "Percentage of reads that mapped antisense to a gene",
+            "type": "number"
+        },
         "reads_mapped_confidently_to_transcriptome": {
             "title": "Reads mapped confidently to the transcriptome",
             "description": "Percentage of reads mapped to a unique gene in the transcriptome with high mapping quality score.",

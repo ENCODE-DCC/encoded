@@ -4,7 +4,7 @@
     "id": "/profiles/reference_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_type", "md5sum", "reference_version"],
+    "required": ["dataset", "file_format", "output_types", "md5sum", "reference_version"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -146,13 +146,16 @@
                 "tar"
             ]
         },
-        "output_type": {
-            "enum": [
-                "genome reference",
-                "transcriptome reference",
-                "genome index",
-                "transcriptome index"
-            ]
+        "output_types": {
+            "items": {
+                "type": "string",
+                "enum": [
+                    "genome reference",
+                    "transcriptome reference",
+                    "genome index",
+                    "transcriptome index"
+                ]
+            }
         },
         "derived_from": {
             "items": {

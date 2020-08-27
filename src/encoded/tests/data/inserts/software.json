@@ -1,5 +1,44 @@
 [
     {
+        "aliases": [
+            "lattice:cellranger-atac"
+        ],
+        "uuid": "444f3442-8d26-4f03-8ee0-3868687b1eea",
+        "title": "CellRanger ATAC",
+        "name": "cellranger-atac",
+        "description": "The computational pipeline for processing the data produced from the Chromium Single Cell ATAC Solution",
+        "software_type": [
+            "other"
+        ],
+        "status": "released"
+    },
+    {
+        "aliases": [
+            "lattice:cellranger-aggr"
+        ],
+        "uuid": "08bb10e1-be8c-4de7-b494-8c9b5abb80be",
+        "title": "CellRanger Aggr",
+        "name": "cellranger-aggr",
+        "description": "Pool results of CellRanger Count into aggregated matrix.",
+        "software_type": [
+            "other"
+        ],
+        "status": "released"
+    },
+    {
+        "aliases": [
+            "lattice:cellranger-count"
+        ],
+        "uuid": "e5f8d582-5da0-4003-a8a0-7c53bf10f56c",
+        "title": "CellRanger Count",
+        "name": "cellranger-count",
+        "description": "CellRanger Count uses STAR to align sequences to genome, and subsequently alignes exonic sequences to the transcriptome. UMIs are corrected for sequencing errors and uniqued, and cell are called using EmptyDrops.",
+        "software_type": [
+            "aligner", "demultiplexing","quantification"
+        ],
+        "status": "released"
+    },
+    {
         "name": "star",
         "title": "STAR",
         "description": "STAR (Spliced Transcript Alignment to a Reference) aligns short and long RNA-seq reads to a reference genome using uncompressed suffix arrays.",

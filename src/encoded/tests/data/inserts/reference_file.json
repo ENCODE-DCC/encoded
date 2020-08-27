@@ -1,11 +1,52 @@
 [
     {
+        "aliases" : [
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "uuid": "76704205-4dcd-48ae-b114-711fc98275b7",
+        "file_size": 3000000,
+        "accession": "ENCFF450MMM",
+        "dataset": "ENCSR500ELM",
+        "file_format": "tar",
+        "md5sum": "d2a989b0b13b6bca2c9f56fd9188db4b",
+        "output_types": [
+			"genome reference"
+		],
+        "reference_version": "GRCh38",
+        "submitted_file_name": "refdata-cellranger-atac-GRCh38-1.2.0.tar.gz",
+        "status": "released"
+    },
+    {
+        "aliases" : [
+            "lattice:cellranger_2020-A"
+        ],
+        "uuid": "031ba486-de5a-11ea-87d0-0242ac130003",
+        "file_size": 3000000,
+        "accession": "ENCFF300MMM",
+        "dataset": "ENCSR500ELM",
+        "file_format": "tar",
+        "md5sum": "40fd559ccd398b358840b0ed3ebc745b",
+        "output_types": [
+			"genome reference"
+		],
+        "reference_version": "GRCh38",
+        "submitted_file_name": "refdata-gex-GRCh38-2020-A.tar.gz",
+        "status": "released",
+        "gene_biotypes_included": [
+            "protein_coding", "lincRNA", "antisense",
+            "IG_LV_gene", "IG_V_gene", "IG_D_gene",
+            "TR_V_gene", "TR_J_gene", "TR_C_gene"
+        ]
+    },
+    {
         "accession": "ENCFF814ELR",
         "dataset": "ENCSR500ELM",
         "date_created": "2019-04-18T16:46:18.670068+00:00",
         "file_format": "fasta",
         "md5sum": "2a7111b6ea473ea6f26869771fa96843",
-        "output_type": "transcriptome reference",
+        "output_types": [
+			"transcriptome reference"
+		],
         "status": "released",
         "file_size": 2941813,
         "submitted_by": "sit.duis@blandit.hendrerit",
@@ -24,7 +65,9 @@
         "dataset": "ENCSR001REF",
         "flowcell_details": [],
         "file_size": 8856340790,
-        "output_type": "genome reference",
+        "output_types": [
+			"genome reference"
+		],
         "reference_version": "hg19"
     },
     {
@@ -42,7 +85,9 @@
             "ENCFF021HBG"
         ],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -56,7 +101,9 @@
         "reference_version": "hg19",
         "dataset": "ENCSR001REF",
         "file_size": 583336340790,
-        "output_type": "transcriptome index"
+        "output_types": [
+			"transcriptome index"
+		]
     },
     {
         "status": "replaced",
@@ -70,7 +117,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -85,7 +134,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -100,7 +151,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -115,7 +168,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -130,7 +185,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -145,7 +202,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -160,7 +219,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -175,7 +236,9 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 5836340790,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     },
     {
@@ -189,7 +252,9 @@
         "file_format": "tar",
         "dataset": "ENCSR001REF",
         "file_size": 6252517704,
-        "output_type": "genome index",
+        "output_types": [
+			"genome index"
+		],
         "reference_version": "hg19"
     }
 ]

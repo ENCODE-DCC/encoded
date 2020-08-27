@@ -42,6 +42,9 @@ ORDER = [
     'reference_file',
     'raw_sequence_file',
     'sequence_alignment_file',
+    'matrix_file',
+    'gene_expression_metrics',
+    'aggregate_metrics',
     'image',
     'page',
     'access_key'

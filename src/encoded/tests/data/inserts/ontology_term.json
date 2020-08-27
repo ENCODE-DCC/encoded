@@ -1,5 +1,68 @@
 [
     {
+        "aliases": [
+            "lattice:ciliated_cell"
+        ],
+        "uuid": "ddcdc2d0-aa58-4dcb-94fb-a3c27e8fcc37",
+        "term_name": "ciliated cell",
+        "term_id": "CL:0000064",
+        "status": "released"
+    },
+    {
+        "uuid": "563767bc-5cc3-4260-8e1b-2e89ac551969",
+        "term_name": "lung",
+        "term_id": "UBERON:0002048",
+        "status": "released"
+    },
+    {
+        "uuid": "b6bf197c-0e54-451b-80d8-7cae1d7a36fa",
+        "term_name": "vascular endothelial growth factor growth factor",
+        "term_id": "EFO:0003276",
+        "status": "released"
+    },
+    {
+        "uuid": "fd528ec9-bcad-4945-89f5-1e3e06bc8999",
+        "term_name": "basic fibroblast growth factor",
+        "term_id": "EFO:0003316",
+        "status": "released"
+    },
+    {
+        "uuid": "962bd10b-a7d2-440c-8aa9-92afafe04900",
+        "term_name": "epithelial cell of lung",
+        "term_id": "CL:0000082",
+        "status": "released"
+    },
+    {
+        "uuid": "3b68fe9d-d63c-4f1a-a54c-78302b66374d",
+        "term_name": "embryonic thoracic segment",
+        "term_id": "UBERON:6000167",
+        "status": "released"
+    },
+    {
+        "uuid": "caada0f4-db84-11ea-87d0-0242ac130003",
+        "term_name": "amygdala",
+        "term_id": "UBERON:0001876",
+        "status": "released"
+    },
+    {
+        "uuid": "cee0e280-db84-11ea-87d0-0242ac130003",
+        "term_name": "embryonic head",
+        "term_id": "UBERON:0008816",
+        "status": "released"
+    },
+    {
+        "uuid": "f2896bfc-d914-11ea-87d0-0242ac130003",
+        "term_name": "Asian",
+        "term_id": "HANCESTRO:0008",
+        "status": "released"
+    },
+    {
+        "uuid": "2d745ae2-d915-11ea-87d0-0242ac130003",
+        "term_name": "type 2 diabetes mellitus",
+        "term_id": "MONDO:0005147",
+        "status": "released"
+    },
+    {
         "uuid": "979e8378-e5c3-41f3-8376-c6c7ad8a7812",
         "term_name": "liver",
         "term_id": "UBERON:0002107",
