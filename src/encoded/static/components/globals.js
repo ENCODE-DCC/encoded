@@ -143,7 +143,7 @@ export function zeroFill(n, digits) {
 export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
 
 
-export const productionHost = { 'www.lattice-data.org': 1 };
+export const productionHost = { 'www.lattice-data.org': 1, 'lattice-data.org': 1 };
 
 export const encodeVersionMap = {
     ENCODE2: '2',
