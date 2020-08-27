@@ -1,7 +1,7 @@
 {
     "title": "Sequencing run",
     "description": "Schema for submitting metadata for a sequencing run.",
-    "id": "/profiles/sequencing_run.json", 
+    "id": "/profiles/sequencing_run.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [],
@@ -12,7 +12,8 @@
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/uuid"}
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"}
     ],
     "properties": {
         "schema_version": {
@@ -61,46 +62,38 @@
                     }
                 }
             }
-        },
-        "read_1_file": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
-        },
-        "read_1N_file": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
-        },
-        "read_2_file": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
-        },
-        "read_2N_file": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
-        },
-        "i5_index_file": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
-        },
-        "i7_index_file": {
-            "title": "",
-            "description": "",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
         }
     },
-    "facets": {},
-    "columns": {},
-    "boost_values": {},
+    "facets": {        
+        "platform": {
+            "title": "Platform"
+        }
+    },
+    "columns": {
+        "derived_from": {
+            "title": "Library"
+        },
+        "platform": {
+            "title": "Platform"
+        },
+        "read_1_file": {
+            "title": "Read 1 file"
+        },
+        "read_2_file": {
+            "title": "Read 2 file"
+        },
+        "read_1N_file": {
+            "title": "Read 1N file"
+        },
+        "read_2N_file": {
+            "title": "Read 2N file"
+        },
+        "i5_index_file": {
+            "title": "i5 index file"
+        },
+        "i7_index_file": {
+            "title": "i7 index file"
+        }
+    },
     "changelog": "/profiles/changelogs/sequencing_run.md"
 }

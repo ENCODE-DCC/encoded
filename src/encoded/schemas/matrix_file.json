@@ -320,11 +320,8 @@
         "read_length_units": {
             "title": "Read length units"
         },
-        "output_category": {
-            "title": "Output category"
-        },
-        "output_type": {
-            "title": "Output type"
+        "output_types": {
+            "title": "Output types"
         },
         "quality_metrics": {
             "title": "QC Metric"

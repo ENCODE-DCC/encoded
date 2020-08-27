@@ -9,27 +9,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1a_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_1a",
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -45,27 +37,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1a_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_1a",
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "41b2de312095ae62775cfbea21771207",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -81,28 +65,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1a_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_1a",
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "a6a30246603f26acf1581fc592cba9bb",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -118,36 +93,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1a_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_1a",
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "9e23fe4a6a143a3f3bf349b6b22332d4",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
-        "index_of": [
-            "jimmie-ye:prenatal_1a_R1.fastq",
-            "jimmie-ye:prenatal_1a_R3.fastq"
-        ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_1b_R1.fastq"
         ],
@@ -157,27 +121,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1b_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_1b",
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "35ad03143ff14f1124efefc7af93c4bd",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -193,27 +149,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1b_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_1b",
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "ca76daf4faf7a0d3cc7d491932385824",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -229,27 +177,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1b_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_1b",
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "cd81b2686158ce81f1e2b8b0aae8c97a",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -265,32 +205,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1b_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_1a",
+        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "63d69e70fdae3aa247be486c09732b71",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_1c_R1.fastq"
         ],
@@ -300,27 +233,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1c_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_1c",
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "fc403ed7d6eeb7d2129868a5de351523",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -336,27 +261,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1c_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_1c",
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "bb7e86a265b79851af8b3ea1d1eb3e8d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -372,27 +289,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1c_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_1c",
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "d80d656ff2a5d303fda0430753cbb5fd",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -408,32 +317,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_1c_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_1c",
+        "derived_from": "78c30d8c-ae6b-4f1a-901b-f64024de7e83",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "1",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "b55d27f2cfad063f4d70aacb5fef6ba3",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_2a_R1.fastq"
         ],
@@ -443,27 +345,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2a_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_2a",
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "fd3fa4da80fe90d5a70c9653df46e47c",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -479,27 +373,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2a_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_2a",
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "039bf37f67dc2e9809a7aaa81dd3c900",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -515,27 +401,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2a_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_2a",
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "67c4a35bd59923d26b2107d07da4b691",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -551,32 +429,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2a_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_2a",
+        "derived_from": "ff73f9a8-2137-41db-9a5f-2711874c93ed",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "8e5b1e60003016186febd322331a9a13",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_2b_R1.fastq"
         ],
@@ -586,27 +457,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2b_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_2b",
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "a955f87c1cd82324072b029a46ed9377",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -622,27 +485,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2b_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_2b",
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "57c14d36b7da0f4c85302a1da968fc6f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -658,27 +513,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2b_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_2b",
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "8fd12793e78d468416330436c7a18d3b",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -694,32 +541,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2b_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_2b",
+        "derived_from": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "6f42b2863ba68b3694a2a0e0f46d1a6f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_2c_R1.fastq"
         ],
@@ -729,27 +569,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2c_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_2c",
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "95ec4a9e99d69844c53fae46c3eed843",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -765,27 +597,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2c_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_2c",
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "751606835d083bbef0458bd9c5da2787",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -801,27 +625,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2c_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_2c",
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "621447062eb0ed9256e1abb64b06e928",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -837,32 +653,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_2c_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_2c",
+        "derived_from": "d5830cc6-21f1-495d-a0a1-2187365db146",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "2",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "7b6b1a8b3c7a55f097e80c300eb27369",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_3a_R1.fastq"
         ],
@@ -872,27 +681,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3a_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_3a",
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "ecebbd264cbad105864d24aac349c5d8",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -908,27 +709,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3a_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_3a",
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "8063f70d8809ed6c3273be66e8033e34",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -944,27 +737,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3a_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_3a",
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "8102c0b46bc42d660f3138c84d689513",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -980,32 +765,25 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3a_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_3a",
+        "derived_from": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "5b32d209b72cb75e1d2e2ceed3b36db4",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
         "demultiplexed_type": "I1"
-    },{
+    },
+    {
         "aliases": [
             "jimmie-ye:prenatal_3b_R1.fastq"
         ],
@@ -1015,27 +793,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3b_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_3b",
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "bf95863e13818106a07f3802bf2a2a46",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -1051,27 +821,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3b_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_3b",
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "bc35487c6b5e0f07f00bf45e74a9c2c3",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -1087,27 +849,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3b_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_3b",
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "dce25c5a2a9bc0a79bf736f0362f3c2a",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -1123,27 +877,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3b_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_3b",
+        "derived_from": "31914fbd-df87-4a6e-8145-cc70504c9469",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "200ab0c03b9655d52ceebd5f17a34660",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
@@ -1159,27 +905,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3c_R1.fastq.gz",
-        "derived_from": "jimmie-ye:library_3c",
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 1N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "7e1cb664af9509200271588106cac1f3",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -1195,27 +933,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3c_R2.fastq.gz",
-        "derived_from": "jimmie-ye:library_3c",
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i5 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "a26edc2dff6192f41c68da5d260da3c1",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "cell barcode"
         ],
@@ -1231,27 +961,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3c_R3.fastq.gz",
-        "derived_from": "jimmie-ye:library_3c",
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "Read 2N",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "77782bb8d7a20ceb59c2a1b573ef00ad",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
-        "read_length":50,
+        "read_length": 50,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "fragment"
         ],
@@ -1267,27 +989,19 @@
         "award": "CZI021IMM",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "prenatal_3c_I1.fastq.gz",
-        "derived_from": "jimmie-ye:library_3c",
+        "derived_from": "f14a9538-c3e1-422e-a11c-d7d853512f4a",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HJJWFDSXX",
-                "lane": "3",
-                "machine": "A00555"
-            }
-        ],
         "lab": "jimmie-ye",
         "md5sum": "27b14b1648e741e1c53243c09684563f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "platform": "Illumina NovaSeq 6000",
         "sequence_elements": [
             "sample index"
         ],
@@ -1302,30 +1016,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1a_R1.fastq.gz",
-        "derived_from": "peter-sims:library_1a",
+        "derived_from": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "be788716a6c61626ffda213dc7c9047f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:4:1:TTATTCGA:", "HKYCWDSXX:4:1:TTGTCCTG:", "HKYCWDSXX:4:1:TTGTCCAA:", "HKYCWDSXX:4:1:TTGTCCGG:"
+            "HKYCWDSXX:4:1:TTATTCGA:",
+            "HKYCWDSXX:4:1:TTGTCCTG:",
+            "HKYCWDSXX:4:1:TTGTCCAA:",
+            "HKYCWDSXX:4:1:TTGTCCGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1334,7 +1042,8 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
@@ -1350,30 +1059,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1a_R2.fastq.gz",
-        "derived_from": "peter-sims:library_1a",
+        "derived_from": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "15e856815c830b2daa32e8fb619988cb",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:4:1:TTATTCGA:", "HKYCWDSXX:4:1:TTGTCCTG:", "HKYCWDSXX:4:1:TTGTCCAA:", "HKYCWDSXX:4:1:TTGTCCGG:"
+            "HKYCWDSXX:4:1:TTATTCGA:",
+            "HKYCWDSXX:4:1:TTGTCCTG:",
+            "HKYCWDSXX:4:1:TTGTCCAA:",
+            "HKYCWDSXX:4:1:TTGTCCGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1381,7 +1084,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_1a_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -1399,29 +1101,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1a_I1.fastq.gz",
-        "derived_from": "peter-sims:library_1a",
+        "derived_from": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "2653b300eb70899c93bf8dd1d30ba367",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:4:1:TTATTCGA:", "HKYCWDSXX:4:1:TTGTCCTG:", "HKYCWDSXX:4:1:TTGTCCAA:", "HKYCWDSXX:4:1:TTGTCCGG:"
+            "HKYCWDSXX:4:1:TTATTCGA:",
+            "HKYCWDSXX:4:1:TTGTCCTG:",
+            "HKYCWDSXX:4:1:TTGTCCAA:",
+            "HKYCWDSXX:4:1:TTGTCCGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1429,9 +1126,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_1a_R1.fastq", "peter-sims:sequence_1a_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -1449,30 +1143,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1b_R1.fastq.gz",
-        "derived_from": "peter-sims:library_1b",
+        "derived_from": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "518d42f603a49cde4339d7fd17865ab6",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:3:1:AAATTCGA:", "HKYCWDSXX:3:1:AAGTCCTG:", "HKYCWDSXX:3:1:AAGTCCAA:", "HKYCWDSXX:3:1:AAGTCCTT:"
+            "HKYCWDSXX:3:1:AAATTCGA:",
+            "HKYCWDSXX:3:1:AAGTCCTG:",
+            "HKYCWDSXX:3:1:AAGTCCAA:",
+            "HKYCWDSXX:3:1:AAGTCCTT:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1481,14 +1169,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191899"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_1b_R2.fastq"
         ],
@@ -1497,30 +1186,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1b_R2.fastq.gz",
-        "derived_from": "peter-sims:library_1b",
+        "derived_from": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "0d70d0a3cc5793767420e41ced9cc87d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:3:1:AAATTCGA:", "HKYCWDSXX:3:1:AAGTCCTG:", "HKYCWDSXX:3:1:AAGTCCAA:", "HKYCWDSXX:3:1:AAGTCCTT:"
+            "HKYCWDSXX:3:1:AAATTCGA:",
+            "HKYCWDSXX:3:1:AAGTCCTG:",
+            "HKYCWDSXX:3:1:AAGTCCAA:",
+            "HKYCWDSXX:3:1:AAGTCCTT:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1528,7 +1211,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_1b_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -1537,7 +1219,7 @@
             "SRA:SRR7191810"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_1b_I1.fastq"
         ],
@@ -1546,30 +1228,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1b_I1.fastq.gz",
-        "derived_from": "peter-sims:library_1b",
+        "derived_from": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "1bae6123b13b23508c9e50d8f67693ac",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:3:1:AAATTCGA:", "HKYCWDSXX:3:1:AAGTCCTG:", "HKYCWDSXX:3:1:AAGTCCAA:", "HKYCWDSXX:3:1:AAGTCCTT:"
+            "HKYCWDSXX:3:1:AAATTCGA:",
+            "HKYCWDSXX:3:1:AAGTCCTG:",
+            "HKYCWDSXX:3:1:AAGTCCAA:",
+            "HKYCWDSXX:3:1:AAGTCCTT:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1577,9 +1253,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_1b_R1.fastq", "peter-sims:sequence_1b_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -1597,30 +1270,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1c_R1.fastq.gz",
-        "derived_from": "peter-sims:library_1c",
+        "derived_from": "c6bac386-c37c-4d6d-8ffc-637de37d30a8",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:2:1:GGATTCGA:", "HKYCWDSXX:2:1:GGGTCCTG:", "HKYCWDSXX:2:1:GGGTCCAA:", "HKYCWDSXX:2:1:GGGTCCTT:"
+            "HKYCWDSXX:2:1:GGATTCGA:",
+            "HKYCWDSXX:2:1:GGGTCCTG:",
+            "HKYCWDSXX:2:1:GGGTCCAA:",
+            "HKYCWDSXX:2:1:GGGTCCTT:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1629,14 +1296,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191812"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_1c_R2.fastq"
         ],
@@ -1645,30 +1313,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1c_R2.fastq.gz",
-        "derived_from": "peter-sims:library_1c",
+        "derived_from": "c6bac386-c37c-4d6d-8ffc-637de37d30a8",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "653e0e3a568b243b1638f79ea8788272",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:2:1:GGATTCGA:", "HKYCWDSXX:2:1:GGGTCCTG:", "HKYCWDSXX:2:1:GGGTCCAA:", "HKYCWDSXX:2:1:GGGTCCTT:"
+            "HKYCWDSXX:2:1:GGATTCGA:",
+            "HKYCWDSXX:2:1:GGGTCCTG:",
+            "HKYCWDSXX:2:1:GGGTCCAA:",
+            "HKYCWDSXX:2:1:GGGTCCTT:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1676,7 +1338,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_1c_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -1685,7 +1346,7 @@
             "SRA:SRR7191813"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_1c_I1.fastq"
         ],
@@ -1694,30 +1355,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_1c_I1.fastq.gz",
-        "derived_from": "peter-sims:library_1c",
+        "derived_from": "c6bac386-c37c-4d6d-8ffc-637de37d30a8",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "c9b249ed3129f7697047e4e8da17fc7f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HKYCWDSXX:2:1:GGATTCGA:", "HKYCWDSXX:2:1:GGGTCCTG:", "HKYCWDSXX:2:1:GGGTCCAA:", "HKYCWDSXX:2:1:GGGTCCTT:"
+            "HKYCWDSXX:2:1:GGATTCGA:",
+            "HKYCWDSXX:2:1:GGGTCCTG:",
+            "HKYCWDSXX:2:1:GGGTCCAA:",
+            "HKYCWDSXX:2:1:GGGTCCTT:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1725,9 +1380,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_1c_R1.fastq", "peter-sims:sequence_1c_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -1745,30 +1397,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2a_R1.fastq.gz",
-        "derived_from": "peter-sims:library_2a",
+        "derived_from": "0c5b7e8c-375f-40cc-a18a-914e878b34fd",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "245cc29909585484ca2ab815e3e8eaf5",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:4:1:TAACAAGG:", "HGJWFDSXY:4:1:TAACAATT:", "HGJWFDSXY:4:1:TAACTTGG:", "HGJWFDSXY:4:1:TATTAAGG:"
+            "HGJWFDSXY:4:1:TAACAAGG:",
+            "HGJWFDSXY:4:1:TAACAATT:",
+            "HGJWFDSXY:4:1:TAACTTGG:",
+            "HGJWFDSXY:4:1:TATTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1777,14 +1423,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191815"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_2a_R2.fastq"
         ],
@@ -1793,30 +1440,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2a_R2.fastq.gz",
-        "derived_from": "peter-sims:library_2a",
+        "derived_from": "0c5b7e8c-375f-40cc-a18a-914e878b34fd",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "ef7a40ca2bb26c2633b2cd6cd2ed867a",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:4:1:TAACAAGG:", "HGJWFDSXY:4:1:TAACAATT:", "HGJWFDSXY:4:1:TAACTTGG:", "HGJWFDSXY:4:1:TATTAAGG:"
+            "HGJWFDSXY:4:1:TAACAAGG:",
+            "HGJWFDSXY:4:1:TAACAATT:",
+            "HGJWFDSXY:4:1:TAACTTGG:",
+            "HGJWFDSXY:4:1:TATTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1824,7 +1465,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_2a_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -1833,7 +1473,7 @@
             "SRA:SRR7191816"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_2a_I1.fastq"
         ],
@@ -1842,30 +1482,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2a_I1.fastq.gz",
-        "derived_from": "peter-sims:library_2a",
+        "derived_from": "0c5b7e8c-375f-40cc-a18a-914e878b34fd",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "1076e16f4dccbe987ed5aab7e01eea63",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:4:1:TAACAAGG:", "HGJWFDSXY:4:1:TAACAATT:", "HGJWFDSXY:4:1:TAACTTGG:", "HGJWFDSXY:4:1:TATTAAGG:"
+            "HGJWFDSXY:4:1:TAACAAGG:",
+            "HGJWFDSXY:4:1:TAACAATT:",
+            "HGJWFDSXY:4:1:TAACTTGG:",
+            "HGJWFDSXY:4:1:TATTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1873,9 +1507,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_2a_R1.fastq", "peter-sims:sequence_2a_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -1893,30 +1524,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2b_R1.fastq.gz",
-        "derived_from": "peter-sims:library_2b",
+        "derived_from": "9a55c381-72ff-4cc2-a68d-c21244651431",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "618c241a9a3e16faf715224a2e3ece61",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:3:1:GGACAAGG:", "HGJWFDSXY:3:1:GGACAATT:", "HGJWFDSXY:3:1:GGACTTGG:", "HGJWFDSXY:3:1:GGTTAAGG:"
+            "HGJWFDSXY:3:1:GGACAAGG:",
+            "HGJWFDSXY:3:1:GGACAATT:",
+            "HGJWFDSXY:3:1:GGACTTGG:",
+            "HGJWFDSXY:3:1:GGTTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1925,14 +1550,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191818"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_2b_R2.fastq"
         ],
@@ -1941,30 +1567,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2b_R2.fastq.gz",
-        "derived_from": "peter-sims:library_2b",
+        "derived_from": "9a55c381-72ff-4cc2-a68d-c21244651431",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "542bd45d066265f8d7071e96015caaa2",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:3:1:GGACAAGG:", "HGJWFDSXY:3:1:GGACAATT:", "HGJWFDSXY:3:1:GGACTTGG:", "HGJWFDSXY:3:1:GGTTAAGG:"
+            "HGJWFDSXY:3:1:GGACAAGG:",
+            "HGJWFDSXY:3:1:GGACAATT:",
+            "HGJWFDSXY:3:1:GGACTTGG:",
+            "HGJWFDSXY:3:1:GGTTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -1972,7 +1592,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_2b_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -1981,7 +1600,7 @@
             "SRA:SRR7191819"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_2b_I1.fastq"
         ],
@@ -1990,30 +1609,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2b_I1.fastq.gz",
-        "derived_from": "peter-sims:library_2b",
+        "derived_from": "9a55c381-72ff-4cc2-a68d-c21244651431",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "774f58f00718722ac90389ef39a02f6c",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:3:1:GGACAAGG:", "HGJWFDSXY:3:1:GGACAATT:", "HGJWFDSXY:3:1:GGACTTGG:", "HGJWFDSXY:3:1:GGTTAAGG:"
+            "HGJWFDSXY:3:1:GGACAAGG:",
+            "HGJWFDSXY:3:1:GGACAATT:",
+            "HGJWFDSXY:3:1:GGACTTGG:",
+            "HGJWFDSXY:3:1:GGTTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2021,9 +1634,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_2b_R1.fastq", "peter-sims:sequence_2b_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -2041,30 +1651,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2c_R1.fastq.gz",
-        "derived_from": "peter-sims:library_2c",
+        "derived_from": "9cd890e1-2e9e-4994-ad35-271a78553248",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "1ecacdcde243c2e1cd0c229f4a3183f5",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:2:1:TTACAAGG:", "HGJWFDSXY:2:1:TTACAATT:", "HGJWFDSXY:2:1:TTACTTGG:", "HGJWFDSXY:2:1:TTTTAAGG:"
+            "HGJWFDSXY:2:1:TTACAAGG:",
+            "HGJWFDSXY:2:1:TTACAATT:",
+            "HGJWFDSXY:2:1:TTACTTGG:",
+            "HGJWFDSXY:2:1:TTTTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2073,14 +1677,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191821"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_2c_R2.fastq"
         ],
@@ -2089,30 +1694,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2c_R2.fastq.gz",
-        "derived_from": "peter-sims:library_2c",
+        "derived_from": "9cd890e1-2e9e-4994-ad35-271a78553248",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "02b28939887aab52732c1f165ae28582",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:2:1:TTACAAGG:", "HGJWFDSXY:2:1:TTACAATT:", "HGJWFDSXY:2:1:TTACTTGG:", "HGJWFDSXY:2:1:TTTTAAGG:"
+            "HGJWFDSXY:2:1:TTACAAGG:",
+            "HGJWFDSXY:2:1:TTACAATT:",
+            "HGJWFDSXY:2:1:TTACTTGG:",
+            "HGJWFDSXY:2:1:TTTTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2120,7 +1719,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_2c_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -2129,7 +1727,7 @@
             "SRA:SRR7191822"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_2c_I1.fastq"
         ],
@@ -2138,30 +1736,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_2c_I1.fastq.gz",
-        "derived_from": "peter-sims:library_2c",
+        "derived_from": "9cd890e1-2e9e-4994-ad35-271a78553248",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "027befa8161421dd70a23a19559271d8",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "HGJWFDSXY:2:1:TTACAAGG:", "HGJWFDSXY:2:1:TTACAATT:", "HGJWFDSXY:2:1:TTACTTGG:", "HGJWFDSXY:2:1:TTTTAAGG:"
+            "HGJWFDSXY:2:1:TTACAAGG:",
+            "HGJWFDSXY:2:1:TTACAATT:",
+            "HGJWFDSXY:2:1:TTACTTGG:",
+            "HGJWFDSXY:2:1:TTTTAAGG:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2169,9 +1761,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_2c_R1.fastq", "peter-sims:sequence_2c_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -2189,30 +1778,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3a_R1.fastq.gz",
-        "derived_from": "peter-sims:library_3a",
+        "derived_from": "3dd59186-0407-4e29-9025-8443485fac53",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "68e11b5916db0de02b9a5d5d78c69533",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:4:1:AACTAACA:", "H7FM2DRXX:4:1:AAAGGACC:", "H7FM2DRXX:4:1:AACTAATT:", "H7FM2DRXX:4:1:AACTTTCA:"
+            "H7FM2DRXX:4:1:AACTAACA:",
+            "H7FM2DRXX:4:1:AAAGGACC:",
+            "H7FM2DRXX:4:1:AACTAATT:",
+            "H7FM2DRXX:4:1:AACTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2221,14 +1804,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191824"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_3a_R2.fastq"
         ],
@@ -2237,30 +1821,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3a_R2.fastq.gz",
-        "derived_from": "peter-sims:library_3a",
+        "derived_from": "3dd59186-0407-4e29-9025-8443485fac53",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "4",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "c28e111dccdff2d693308d77294ca89f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:4:1:AACTAACA:", "H7FM2DRXX:4:1:AAAGGACC:", "H7FM2DRXX:4:1:AACTAATT:", "H7FM2DRXX:4:1:AACTTTCA:"
+            "H7FM2DRXX:4:1:AACTAACA:",
+            "H7FM2DRXX:4:1:AAAGGACC:",
+            "H7FM2DRXX:4:1:AACTAATT:",
+            "H7FM2DRXX:4:1:AACTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2268,7 +1846,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_3a_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -2277,7 +1854,7 @@
             "SRA:SRR7191825"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_3a_I1.fastq"
         ],
@@ -2286,30 +1863,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3a_I1.fastq.gz",
-        "derived_from": "peter-sims:library_3a",
+        "derived_from": "3dd59186-0407-4e29-9025-8443485fac53",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "4c9b73df40205d72c258d53fb8193a7a",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:4:1:AACTAACA:", "H7FM2DRXX:4:1:AAAGGACC:", "H7FM2DRXX:4:1:AACTAATT:", "H7FM2DRXX:4:1:AACTTTCA:"
+            "H7FM2DRXX:4:1:AACTAACA:",
+            "H7FM2DRXX:4:1:AAAGGACC:",
+            "H7FM2DRXX:4:1:AACTAATT:",
+            "H7FM2DRXX:4:1:AACTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2317,9 +1888,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_3a_R1.fastq", "peter-sims:sequence_3a_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -2337,30 +1905,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3b_R1.fastq.gz",
-        "derived_from": "peter-sims:library_3b",
+        "derived_from": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "12f020df2c0e31fbe2adad368a17453e",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:3:1:TTCTAACA:", "H7FM2DRXX:3:1:TTAGGACC:", "H7FM2DRXX:3:1:TTCTAATT:", "H7FM2DRXX:3:1:TTCTTTCA:"
+            "H7FM2DRXX:3:1:TTCTAACA:",
+            "H7FM2DRXX:3:1:TTAGGACC:",
+            "H7FM2DRXX:3:1:TTCTAATT:",
+            "H7FM2DRXX:3:1:TTCTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2369,14 +1931,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191827"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_3b_R2.fastq"
         ],
@@ -2385,30 +1948,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3b_R2.fastq.gz",
-        "derived_from": "peter-sims:library_3b",
+        "derived_from": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "e364d2a27620d82afa453096aef71efb",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:3:1:TTCTAACA:", "H7FM2DRXX:3:1:TTAGGACC:", "H7FM2DRXX:3:1:TTCTAATT:", "H7FM2DRXX:3:1:TTCTTTCA:"
+            "H7FM2DRXX:3:1:TTCTAACA:",
+            "H7FM2DRXX:3:1:TTAGGACC:",
+            "H7FM2DRXX:3:1:TTCTAATT:",
+            "H7FM2DRXX:3:1:TTCTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2416,7 +1973,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_3b_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -2425,7 +1981,7 @@
             "SRA:SRR7191828"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_3b_I1.fastq"
         ],
@@ -2434,30 +1990,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3b_I1.fastq.gz",
-        "derived_from": "peter-sims:library_3b",
+        "derived_from": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "3",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "66cc8851611451c0d781c7d9b6ace363",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:3:1:TTCTAACA:", "H7FM2DRXX:3:1:TTAGGACC:", "H7FM2DRXX:3:1:TTCTAATT:", "H7FM2DRXX:3:1:TTCTTTCA:"
+            "H7FM2DRXX:3:1:TTCTAACA:",
+            "H7FM2DRXX:3:1:TTAGGACC:",
+            "H7FM2DRXX:3:1:TTCTAATT:",
+            "H7FM2DRXX:3:1:TTCTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2465,9 +2015,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_3b_R1.fastq", "peter-sims:sequence_3b_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -2485,30 +2032,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3c_R1.fastq.gz",
-        "derived_from": "peter-sims:library_3c",
+        "derived_from": "74ab76b9-0a74-4263-b1ef-75755938e939",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "c0fee18e9875b2e4479c057ced942fc7",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 28,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:2:1:GGCTAACA:", "H7FM2DRXX:2:1:GGAGGACC:", "H7FM2DRXX:2:1:GGCTAATT:", "H7FM2DRXX:2:1:GGCTTTCA:"
+            "H7FM2DRXX:2:1:GGCTAACA:",
+            "H7FM2DRXX:2:1:GGAGGACC:",
+            "H7FM2DRXX:2:1:GGCTAATT:",
+            "H7FM2DRXX:2:1:GGCTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2517,14 +2058,15 @@
             "barcode_location": 3
         },
         "sequence_elements": [
-            "cell barcode", "UMI"
+            "cell barcode",
+            "UMI"
         ],
         "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191830"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_3c_R2.fastq"
         ],
@@ -2533,30 +2075,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3c_R2.fastq.gz",
-        "derived_from": "peter-sims:library_3c",
+        "derived_from": "74ab76b9-0a74-4263-b1ef-75755938e939",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "f522d5b0c4d9e9ce3d3a4074eaa34053",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 98,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:2:1:GGCTAACA:", "H7FM2DRXX:2:1:GGAGGACC:", "H7FM2DRXX:2:1:GGCTAATT:", "H7FM2DRXX:2:1:GGCTTTCA:"
+            "H7FM2DRXX:2:1:GGCTAACA:",
+            "H7FM2DRXX:2:1:GGAGGACC:",
+            "H7FM2DRXX:2:1:GGCTAATT:",
+            "H7FM2DRXX:2:1:GGCTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2564,7 +2100,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "paired_with": "peter-sims:sequence_3c_R1.fastq",
         "sequence_elements": [
             "3' of molecule"
         ],
@@ -2573,7 +2108,7 @@
             "SRA:SRR7191831"
         ]
     },
-        {
+    {
         "aliases": [
             "peter-sims:sequence_3c_I1.fastq"
         ],
@@ -2582,30 +2117,24 @@
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "sequence_3c_I1.fastq.gz",
-        "derived_from": "peter-sims:library_3c",
+        "derived_from": "74ab76b9-0a74-4263-b1ef-75755938e939",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "paired-ended",
         "read_type": "i7 index",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "HGJWFDSXY",
-                "lane": "2",
-                "machine": "A00836"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "8f0026c9f6bd75c28e3530ebb090df1a",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 5000000000,
         "read_length": 8,
         "read_count": 1500000,
-        "platform": "Illumina NovaSeq 6000",
         "fastq_signature": [
-            "H7FM2DRXX:2:1:GGCTAACA:", "H7FM2DRXX:2:1:GGAGGACC:", "H7FM2DRXX:2:1:GGCTAATT:", "H7FM2DRXX:2:1:GGCTTTCA:"
+            "H7FM2DRXX:2:1:GGCTAACA:",
+            "H7FM2DRXX:2:1:GGAGGACC:",
+            "H7FM2DRXX:2:1:GGCTAATT:",
+            "H7FM2DRXX:2:1:GGCTTTCA:"
         ],
         "read_name_structure": {
             "read_number_location": 2,
@@ -2613,9 +2142,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "index_of": [
-            "peter-sims:sequence_3c_R1.fastq", "peter-sims:sequence_3c_R2.fastq"
-        ],
         "sequence_elements": [
             "sample index"
         ],
@@ -2628,138 +2154,93 @@
         "accession": "ENCFF001MYM",
         "dataset": "ENCSR003SER",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "95be74b6e11515393507f4ebfa66d78d",
         "content_md5sum": "96be74b6e11515393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 20,
         "read_length": 50,
-        "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleRawData.fastq.gz",
         "uuid": "dd11e1af-affd-47fe-9663-db7f2601c8c0",
-        "derived_from": "835e166d-0253-41ce-add2-de67429a3612"
+        "derived_from": "ce37118c-201d-48d6-abe0-4e9e5cf54239"
     },
     {
         "accession": "ENCFF002MYM",
         "dataset": "ENCSR003SER",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "97be74b6e11515393507f4ebfa66d78d",
         "content_md5sum": "98be74b6e11515393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina NovaSeq 6000",
         "file_size": 20,
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleRawData2.fastq.gz",
         "uuid": "93a923db-eacf-470b-b604-0222a273c288",
-        "derived_from": "835e166d-0253-41ce-add2-de67429a3612"
+        "derived_from": "ce37118c-201d-48d6-abe0-4e9e5cf54239"
     },
     {
         "accession": "ENCFF001MXF",
         "file_size": 20,
         "dataset": "ENCSR000AHF",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "sequencing_run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e24515393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
-        "platform": "Illumina NovaSeq 6000",
+            "assigned reads"
+        ],
         "status": "released",
         "read_length": 36,
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
         "uuid": "a3cbec37-f186-4ef7-aa14-6ad0e2022ebc",
-        "derived_from": "88760932-54b6-46fe-951d-fc80e89a0d77"
+        "derived_from": "95bad158-e418-4f83-9e58-fcd2377bda49"
     },
     {
         "accession": "ENCFF002MXF",
         "dataset": "ENCSR001ADI",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "sequencing_run_type": "single-ended",
         "file_size": 20,
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e25515393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
         "uuid": "82364e20-eea2-4007-928f-7717c46f4533",
-        "derived_from": "7126310d-93c5-40af-988c-edb532fe6e7f"
+        "derived_from": "82bdf2f7-b9ed-4c06-9669-d01cdffe0529"
     },
     {
         "accession": "ENCFF001MXH",
         "file_size": 20,
         "dataset": "ENCSR000AHF",
         "date_created": "2010-05-12T16:46:18.670068+00:00",
-        "sequencing_run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11615393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina NovaSeq 6000",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep2.fastq.gz",
         "uuid": "d46438ca-7c78-4bea-9bd9-1496a6cc5d97",
-        "derived_from": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
+        "derived_from": "61d73111-c7c3-4478-9b64-c2648d5e8422"
     },
     {
         "_project": "encode3",
@@ -2767,27 +2248,18 @@
         "dataset": "ENCSR000AHF",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_size": 20,
-        "sequencing_run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "91be74b6e11715393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
         "uuid": "1b18dab4-50be-4a1d-9b95-5e9fd840c8fb",
-        "derived_from": "7013e140-dc14-4893-b0b1-0d7bb293730c"
+        "derived_from": "b4eed775-b8b1-4648-95e7-2fea52091e83"
     },
     {
         "_project": "encode3",
@@ -2796,26 +2268,17 @@
         "file_size": 20,
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "sequencing_run_type": "single-ended",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "3a35713488522b0ea8a4d9635b5afa41",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
         "uuid": "56f0acd2-48a6-4d8f-a421-baf4a53e9e55",
-        "derived_from": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
+        "derived_from": "9a805c8f-6ce6-42db-a340-090928b68382"
     },
     {
         "_project": "encode3",
@@ -2823,27 +2286,18 @@
         "file_size": 20,
         "dataset": "ENCSR000AHF",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
-        "sequencing_run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "0e88b38c8d48806ee98929a5bad06fc4",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_1.txt.gz",
         "uuid": "c8877730-a530-4474-88a8-a5eee259b6c4",
-        "derived_from": "7013e140-dc14-4893-b0b1-0d7bb293730c"
+        "derived_from": "b4eed775-b8b1-4648-95e7-2fea52091e83"
     },
     {
         "accession": "ENCFF001RDB",
@@ -2851,27 +2305,18 @@
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_size": 20,
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "a8879e9e78f17c37fdcfe1a8b572ac1f",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
-        "platform": "Illumina HiSeq 2500",
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R1_001.fastq.gz",
         "uuid": "34b653f7-6777-49d9-8e06-d76a96a4d10b",
-        "derived_from": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
+        "derived_from": "430175d7-46f3-4805-9c7f-4a9fb01e271c"
     },
     {
         "_project": "encode3",
@@ -2880,27 +2325,18 @@
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
         "file_size": 20,
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "97b452ae74c7d279706c88141155a00c",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 1",
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
         "uuid": "8772d04a-dfa4-4d85-a81d-6bf5fe2abb8f",
-        "derived_from": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
+        "derived_from": "c45b8a77-0e64-4410-90d6-799a3f20522e"
     },
     {
         "_project": "encode3",
@@ -2909,28 +2345,18 @@
         "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "3ced82e44cea82a4784493c2f640ba12",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
-        "paired_with": "ENCFF001RDB",
-        "platform": "Illumina HiSeq 2500",
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R2_001.fastq.gz",
         "uuid": "aab79812-71d8-41d1-bd72-1bf5dbcae381",
-        "derived_from": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
+        "derived_from": "430175d7-46f3-4805-9c7f-4a9fb01e271c"
     },
     {
         "_project": "encode3",
@@ -2942,18 +2368,14 @@
         "lab": "j-michael-cherry",
         "md5sum": "7ced82e74cea82a4787493c2f640ba82",
         "output_types": [
-			"undetermined reads"
-		],
-        "read_length": 58,
-        "index_of": [
-            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
+            "undetermined reads"
         ],
-        "platform": "Illumina HiSeq 2500",
+        "read_length": 58,
         "status": "in progress",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R2_001.index.fastq.gz",
         "uuid": "a7b5397a-45df-4215-91e1-11cda037ceaa",
-        "derived_from": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
+        "derived_from": "430175d7-46f3-4805-9c7f-4a9fb01e271c"
     },
     {
         "_project": "encode3",
@@ -2962,43 +2384,18 @@
         "dataset": "ENCSR123ABC",
         "date_created": "2013-05-19T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            },
-            {
-                "flowcell": "C5WA6ACUU",
-                "lane": "8",
-                "machine": "HWI-ST382"
-            },
-            {
-                "flowcell": "C5WA6ACUA",
-                "lane": "1",
-                "machine": "HiSeq 4000"
-            },
-            {
-                "flowcell": "C5WA6ACUB",
-                "lane": "2",
-                "machine": "HiSeq 4000"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
-        "paired_with": "ENCFF001RDC",
-        "platform": "Illumina HiSeq 2500",
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R2_001.fastq.gz",
         "uuid": "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
-        "derived_from": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
+        "derived_from": "c45b8a77-0e64-4410-90d6-799a3f20522e"
     },
     {
         "_project": "encode3",
@@ -3007,26 +2404,17 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "sequencing_run_type": "single-ended",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "8cd1f9a1fbf709cb0a58e427b0448dbc",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38816_AC1UHYACXX_7_2.txt.gz",
         "uuid": "8a0c1537-136e-41a3-9369-8595a7d6a726",
-        "derived_from": "e4824882-0ad8-4009-a169-44d5955800af"
+        "derived_from": "deadc341-20c3-465a-8943-56592f8f5151"
     },
     {
         "_project": "encode3",
@@ -3035,27 +2423,18 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "689e73dd026e24ed347378b6ec578521",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
         "read_type": "Read 1",
-        "sequencing_run_type": "paired-ended",
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38816_AC1UHYACXX_7_1.txt.gz",
         "uuid": "bd67b71d-5a39-4f61-83d6-7390552ac2fd",
-        "derived_from": "e4824882-0ad8-4009-a169-44d5955800af"
+        "derived_from": "deadc341-20c3-465a-8943-56592f8f5151"
     },
     {
         "_test": "not in edw test",
@@ -3065,28 +2444,18 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "10dfc1816893a76a48c645c5294ad74c",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "sequencing_run_type": "paired-ended",
         "read_type": "Read 2",
-        "paired_with": "ENCFF001RDX",
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38815_AC1UHYACXX_7_2.txt.gz",
         "uuid": "a187b4d9-9d47-4c11-a8fe-425b0c6c20a8",
-        "derived_from": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
+        "derived_from": "5e13253e-793a-40e8-9f33-d90b25c38f20"
     },
     {
         "_test": "not in edw test",
@@ -3096,27 +2465,18 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "f73b8010630a28fe9ac1f93155a46e8b",
         "output_types": [
-			"assigned reads"
-		],
-        "sequencing_run_type": "paired-ended",
+            "assigned reads"
+        ],
         "read_length": 50,
         "read_type": "Read 1",
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38815_AC1UHYACXX_7_1.txt.gz",
         "uuid": "e9590242-7f15-4ccb-a177-e544c4dfa118",
-        "derived_from": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
+        "derived_from": "5e13253e-793a-40e8-9f33-d90b25c38f20"
     },
     {
         "_test": "not in edw test",
@@ -3126,26 +2486,17 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-14T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "sequencing_run_type": "single-ended",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
-        "platform": "Illumina NovaSeq 6000",
         "md5sum": "8c46ce8ffd6a281a10672352ba9c9514",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
         "status": "deleted",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38823_AC1HYAACXX_5.txt.gz",
         "uuid": "06205d4f-be79-4780-a604-60d1375f424b",
-        "derived_from": "ee512537-05f0-4ac4-a9e6-718aea48f565"
+        "derived_from": "a919dbc9-850d-4381-968e-953c61bd7349"
     },
     {
         "_project": "encode3",
@@ -3154,30 +2505,20 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-13T16:46:18.670068+00:00",
         "file_format": "fastq",
-        "sequencing_run_type": "single-ended",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "lab": "j-michael-cherry",
         "md5sum": "de9e05ad88fea5664f1c5d90815df360",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina HiSeq 2500",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38822_AC1HYAACXX_5.txt.gz",
         "uuid": "e984ec73-0db4-4d30-934d-4cfc49096236",
-        "derived_from": "2f631ab4-83ac-4bc6-9acb-81654eaba017"
+        "derived_from": "9f7a5be4-3c74-4531-8858-9a87c60302a1"
     },
     {
         "read_type": "Read 1",
-        "sequencing_run_type": "paired-ended",
         "accession": "ENCFF431TKZ",
         "dataset": "ENCSR765JPC",
         "date_created": "2013-03-23T16:46:18.670068+00:00",
@@ -3188,12 +2529,8 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "richard-myers",
         "output_types": [
-			"assigned reads"
-		],
-        "platform": "Illumina NovaSeq 6000",
-        "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_name_structure": {
             "read_number_location": 2,
             "flowcell_id_location": 3,
@@ -3203,11 +2540,10 @@
         "read_length": 50,
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
         "status": "in progress",
-        "derived_from": "ENCLB742NWU"
+        "derived_from": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
     },
     {
         "read_type": "Read 1",
-        "sequencing_run_type": "paired-ended",
         "accession": "ENCFF504RKH",
         "dataset": "ENCSR765JPC",
         "alternate_accessions": [],
@@ -3215,72 +2551,61 @@
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s2/7bp_Index_6/HAA2RADXX_s2_1_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "e394868c-5e63-48c6-bfda-8cbebe62e36d",
         "file_format": "fastq",
-        "flowcell_details": [],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
-        "platform": "Illumina NovaSeq 6000",
         "md5sum": "85c68b36bb91ef2fa361cdbc8663b4f6",
         "date_created": "2014-09-30T18:22:25.486325+00:00",
-        "derived_from": "ENCLB742NWU"
+        "derived_from": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
     },
     {
         "read_type": "Read 2",
-        "sequencing_run_type": "paired-ended",
         "accession": "ENCFF958GWJ",
         "dataset": "ENCSR765JPC",
-        "paired_with": "ENCFF504RKH",
         "alternate_accessions": [],
         "file_size": 15409926897,
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s2/7bp_Index_6/HAA2RADXX_s2_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "78a74a6e-8e89-4d51-aac1-73d7e6cf234d",
         "file_format": "fastq",
-        "flowcell_details": [],
         "status": "in progress",
-        "platform": "Illumina NovaSeq 6000",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
         "md5sum": "5f3232d8937b53c296507f6516f0db8f",
-        "derived_from": "ENCLB742NWU"
+        "derived_from": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
     },
     {
         "read_type": "Read 2",
         "accession": "ENCFF360FSI",
         "dataset": "ENCSR765JPC",
-        "paired_with": "ENCFF431TKZ/",
         "alternate_accessions": [],
         "file_size": 15031538605,
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "7acdc827-3806-448e-b0d4-2d463a42179f",
         "file_format": "fastq",
-        "platform": "Illumina NovaSeq 6000",
-        "sequencing_run_type": "paired-ended",
-        "flowcell_details": [],
         "status": "in progress",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 50,
         "md5sum": "ef3a148b24fde7501a8a229f3de603f9",
         "date_created": "2014-09-30T17:38:48.091343+00:00",
-        "derived_from": "ENCLB742NWU"
+        "derived_from": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
     },
     {
         "_test": "raw file for matched set 1",
         "output_types": [
-			"assigned reads"
-		],
-        "sequencing_run_type": "single-ended",
+            "assigned reads"
+        ],
         "status": "released",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "content_md5sum": "e91b58f3f55652a0490ced4608797a5b",
@@ -3289,12 +2614,11 @@
         "accession": "ENCFF959VGP",
         "file_size": 471059102,
         "uuid": "2e2acec4-b610-491e-9bc1-cc7083603a9c",
-        "platform": "Illumina HiSeq 2500",
         "lab": "john-stamatoyannopoulos",
         "submitted_file_name": "human/submission/fastq-combined/UwStam_Brain_Midbrain-DS23429-FCC1FB1-L001_R1.fastq.gz",
         "dataset": "ENCSR000AHF/",
         "file_format": "fastq",
-        "derived_from": "ENCLB376WDO"
+        "derived_from": "944caba0-b70d-4382-baa4-3596a8688a47"
     },
     {
         "_test": "raw file for matched set 2",
@@ -3303,19 +2627,17 @@
         "file_format": "fastq",
         "status": "released",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR003SER/",
         "content_md5sum": "7dad2371f43128103106312c795de447",
         "accession": "ENCFF477MLC",
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "99c57d24b11f839feea4824565f4ff1a",
         "lab": "john-stamatoyannopoulos",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 2130374031,
         "uuid": "97573a88-bd85-4649-9c82-04d80afcddc5",
-        "derived_from": "ENCLB033CJI"
+        "derived_from": "978bb703-be65-4d6b-89ef-ef8f9b7bface"
     },
     {
         "_test": "raw file for reference epigenome series RNA seq",
@@ -3324,22 +2646,20 @@
         "file_format": "fastq",
         "status": "released",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR001EPI/",
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF001EPI",
         "aliases": [
             "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0"
         ],
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "a321bb52bad46e43b5d196f6fed8ce76",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "fd039c7c-4e72-40dd-8ce0-1d045f55a959",
-        "derived_from": "ENCLB999MNO"
+        "derived_from": "84c67077-33bb-4657-92bd-bf564030875f"
     },
     {
         "_test": "raw file for reference epigenome series WGBS",
@@ -3348,22 +2668,20 @@
         "file_format": "fastq",
         "status": "released",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR002EPI/",
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF003EPI",
         "aliases": [
             "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
         ],
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "c321bb52bad46e43b5d196f6fed8ce76",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "596bc2e5-1b0f-485b-8b65-1b278810ba52",
-        "derived_from": "ENCLB999MNO"
+        "derived_from": "84c67077-33bb-4657-92bd-bf564030875f"
     },
     {
         "_test": "raw file for reference epigenome series H3K4me1",
@@ -3372,22 +2690,20 @@
         "file_format": "fastq",
         "status": "released",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR003EPI/",
         "content_md5sum": "91ce74b6e11c15393507f4ebfa66d78c",
         "accession": "ENCFF005EPI",
         "aliases": [
             "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
         ],
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "91be75b6e11515593507f4ebfa65d78c",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "2cfe2226-8d50-44eb-bc62-4f7802175be5",
-        "derived_from": "ENCLB999MNO"
+        "derived_from": "84c67077-33bb-4657-92bd-bf564030875f"
     },
     {
         "_test": "raw file for reference epigenome series H3K4me3",
@@ -3396,22 +2712,20 @@
         "file_format": "fastq",
         "status": "released",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR004EPI/",
         "content_md5sum": "91be74b651151a393507f5ebfa66d78c",
         "accession": "ENCFF006EPI",
         "aliases": [
             "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
         ],
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "91be74b6e11515393507f7ebfa66d77a",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "060c7ebc-6f31-49c0-93aa-cdbc02e68fc7",
-        "derived_from": "ENCLB999MNO"
+        "derived_from": "84c67077-33bb-4657-92bd-bf564030875f"
     },
     {
         "_test": "raw file for reference epigenome series H3K27ac",
@@ -3420,22 +2734,20 @@
         "file_format": "fastq",
         "status": "released",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR005EPI/",
         "content_md5sum": "91be74b6e115a5393507f4ebfa66da7a",
         "accession": "ENCFF007EPI",
         "aliases": [
             "jason-spence:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
         ],
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "91be74b6e66515393507f4ebfa66d77a",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 17262936,
         "uuid": "ca0eb75a-660e-40ab-be58-c017450ace0b",
-        "derived_from": "ENCLB999MNO"
+        "derived_from": "84c67077-33bb-4657-92bd-bf564030875f"
     },
     {
         "_test": "raw file for reatment concentration series 3",
@@ -3444,22 +2756,20 @@
         "file_format": "fastq",
         "status": "in progress",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR003CON/",
         "content_md5sum": "92be74b6e11215393507f4ebfa22d77a",
         "accession": "ENCFF004CON",
         "aliases": [
             "jason-spence:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
         ],
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "91be94a6e11515393507f4ebfa66d78c",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 1726244936,
         "uuid": "127931f7-864d-4d79-9d60-4a6e7cdf6bf9",
-        "derived_from": "ENCLB888MNO"
+        "derived_from": "0e827bd5-5993-4b1e-b670-2eb0cade993c"
     },
     {
         "_test": "raw file for replication timing series 3 1",
@@ -3468,34 +2778,30 @@
         "file_format": "fastq",
         "status": "in progress",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dataset": "ENCSR003REP/",
         "content_md5sum": "91be74b6e1151539f5073febfa66d77a",
         "accession": "ENCFF004REP",
-        "platform": "Illumina HiSeq 2500",
-        "sequencing_run_type": "single-ended",
         "md5sum": "91be74b6e11533393507f4ebfa66d78c",
         "lab": "/labs/robert-waterston/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "file_size": 1726244936,
         "uuid": "244436f5-aa0f-46a0-a97c-1ff6983b1740",
-        "derived_from": "ENCLB888MNO"
+        "derived_from": "0e827bd5-5993-4b1e-b670-2eb0cade993c"
     },
     {
         "content_md5sum": "4840832d88a1dc7ecb01d56e75104c66",
         "md5sum": "51046aaf12d18c9c314d524f4599c98f",
-        "sequencing_run_type": "paired-ended",
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
         "file_format": "fastq",
         "lab": "/labs/michael-snyder/",
         "fastq_signature": [],
-        "platform": "Illumina HiSeq 2500",
         "uuid": "f91de412-e397-44f5-ae2b-8195db8b2a8f",
         "accession": "ENCFF000LBA",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "schema_version": "9",
         "submitted_file_name": "hg19/wgEncodeGisDnaPet/wgEncodeGisDnaPetK56210kFasta5p.fastq.gz",
         "file_size": 2307361344,
@@ -3503,12 +2809,12 @@
         "status": "released",
         "dataset": "ENCSR003SER",
         "read_type": "Read 1",
-        "derived_from": "ENCLB033CJI"
+        "derived_from": "978bb703-be65-4d6b-89ef-ef8f9b7bface"
     },
     {
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_type": "Read 2",
         "read_length": 25,
         "content_md5sum": "69de5eb9cb7d09c799fa958f0dc3edfa",
@@ -3517,36 +2823,31 @@
         "uuid": "e3f3eedd-3bf7-48a8-a54f-d5019f157794",
         "status": "released",
         "accession": "ENCFF000LAZ",
-        "platform": "Illumina HiSeq 2500",
-        "paired_with": "ENCFF000LBA/",
         "dataset": "ENCSR003SER",
         "file_format": "fastq",
         "md5sum": "20125f316dafa4daed390afae59e7bb2",
         "lab": "/labs/michael-snyder/",
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
-        "sequencing_run_type": "paired-ended",
-        "derived_from": "ENCLB033CJI"
+        "derived_from": "978bb703-be65-4d6b-89ef-ef8f9b7bface"
     },
     {
         "_test": "phantom file",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "read_length": 25,
         "content_md5sum": "69de5eb9cb7d09c799fa958f0dc3edfa",
         "file_size": 2314662239,
         "submitted_file_name": "hg19/wgEncodeGisDnaPet/wgEncodeGisDnaPetK56210kFasta3p.fastq.gz",
         "status": "released",
         "accession": "ENCFF010LAO",
-        "platform": "Illumina HiSeq 2500",
         "dataset": "ENCSR003SER",
         "file_format": "fastq",
         "lab": "/labs/michael-snyder/",
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
-        "sequencing_run_type": "single-ended",
         "uuid": "d9277859-a3b7-44d2-bbd7-070071a753d5",
         "no_file_available": true,
-        "derived_from": "ENCLB033CJI"
+        "derived_from": "978bb703-be65-4d6b-89ef-ef8f9b7bface"
     },
     {
         "date_created": "2017-03-16T21:55:35.118926+00:00",
@@ -3559,17 +2860,15 @@
         "external_accession": "SRR1270627",
         "read_count": 42110808,
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "dbxrefs": [
             "SRA:SRR1270627"
         ],
-        "sequencing_run_type": "single-ended",
-        "platform": "Illumina NovaSeq 6000",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "file_format": "sra",
         "dataset": "ENCSR765JPC",
-        "derived_from": "ENCLB742NWU"
+        "derived_from": "c0e6438f-d86c-4283-bd4d-fbf04d3bab18"
     },
     {
         "accession": "ENCFF001MRN",
@@ -3580,16 +2879,14 @@
         "lab": "j-michael-cherry",
         "md5sum": "12ce74b6e11515393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
-        "platform": "Illumina NovaSeq 6000",
+            "assigned reads"
+        ],
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/Rep1.fastq",
         "uuid": "1234830f-154f-449f-814b-fd3435417edf",
-        "sequencing_run_type": "single-ended",
         "read_length": 76,
-        "derived_from": "ENCLB888MNO"
+        "derived_from": "ec576bb9-eaf1-439f-8c9c-4ec1e3d17383"
     },
     {
         "accession": "ENCFF002MRN",
@@ -3600,16 +2897,14 @@
         "lab": "j-michael-cherry",
         "md5sum": "93be74b6e11123493507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
-        "platform": "Illumina NovaSeq 6000",
+            "assigned reads"
+        ],
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "microRNA/Rep2.fastq",
         "uuid": "5678830f-154f-449f-814b-fd3435417edf",
-        "sequencing_run_type": "single-ended",
         "read_length": 76,
-        "derived_from": "ENCLB888MNO"
+        "derived_from": "ec576bb9-eaf1-439f-8c9c-4ec1e3d17383"
     },
     {
         "_test": "rep1 reads for long read RNA-seq experiment",
@@ -3621,16 +2916,14 @@
         "lab": "j-michael-cherry",
         "md5sum": "12ce74b6e12215393507f4ebfa66d78d",
         "output_types": [
-			"assigned reads"
-		],
-        "platform": "Illumina NovaSeq 6000",
+            "assigned reads"
+        ],
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "longreadRNA/Rep1.fastq",
         "uuid": "3412830f-154f-129f-814b-fd3435417edf",
-        "sequencing_run_type": "single-ended",
         "read_length": 76,
-        "derived_from": "ENCLB723GTS"
+        "derived_from": "61937d65-4de6-4f46-918c-364c36854c1a"
     },
     {
         "accession": "ENCFF002ISO",
@@ -3641,16 +2934,14 @@
         "lab": "j-michael-cherry",
         "md5sum": "93be74b6e11123493511f4ebfa77d78d",
         "output_types": [
-			"assigned reads"
-		],
-        "platform": "Illumina NovaSeq 6000",
+            "assigned reads"
+        ],
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "longreadRNA/Rep2.fastq",
         "uuid": "7856830f-154f-119f-814b-fd3435417edf",
-        "sequencing_run_type": "single-ended",
         "read_length": 76,
-        "derived_from": "ENCLB723GTS"
+        "derived_from": "61937d65-4de6-4f46-918c-364c36854c1a"
     },
     {
         "_test": "ATAC-seq rep1 reads",
@@ -3662,14 +2953,12 @@
         "accession": "ENCFF164JWT",
         "file_format": "fastq",
         "output_types": [
-			"assigned reads"
-		],
+            "assigned reads"
+        ],
         "file_size": 1,
-        "platform": "Illumina HiSeq 2500",
         "read_length": 50,
-        "sequencing_run_type": "single-ended",
         "md5sum": "17e7a02065ae1ee88c6eece4e9b8de84",
-        "derived_from": "ENCLB209APR"
+        "derived_from": "ce26918d-64e6-4d2c-84c2-c91c21a5a377"
     },
     {
         "_test": "PacBio subreads",
@@ -3681,11 +2970,10 @@
         "accession": "ENCFF333SBR",
         "file_format": "fastq",
         "output_types": [
-			"undetermined reads"
-		],
+            "undetermined reads"
+        ],
         "file_size": 567890,
-        "platform": "Illumina HiSeq 2500",
         "md5sum": "a61ba395c73713edf8b7cddd92dce969",
-        "derived_from": "ENCLB723GTS"
+        "derived_from": "2164140a-63c7-4c6e-bf68-4db4a4d9c62e"
     }
 ]

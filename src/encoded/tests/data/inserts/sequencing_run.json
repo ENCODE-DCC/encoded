@@ -1,0 +1,413 @@
+[
+    {
+        "derived_from": "jimmie-ye:library_1a",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "1",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
+    },
+    {
+        "derived_from": "jimmie-ye:library_1b",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "1",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "a460d195-735f-4776-963d-8e8bc18cdd24"
+    },
+    {
+        "derived_from": "jimmie-ye:library_1c",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "1",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
+    },
+    {
+        "derived_from": "jimmie-ye:library_2a",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "2",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "ff73f9a8-2137-41db-9a5f-2711874c93ed"
+    },
+    {
+        "derived_from": "jimmie-ye:library_2b",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "2",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
+    },
+    {
+        "derived_from": "jimmie-ye:library_2c",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "2",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "d5830cc6-21f1-495d-a0a1-2187365db146"
+    },
+    {
+        "derived_from": "jimmie-ye:library_3a",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "3",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
+    },
+    {
+        "derived_from": "jimmie-ye:library_3b",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "3",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "31914fbd-df87-4a6e-8145-cc70504c9469"
+    },
+    {
+        "derived_from": "jimmie-ye:library_3c",
+        "flowcell_details": [
+            {
+                "flowcell": "HJJWFDSXX",
+                "lane": "3",
+                "machine": "A00555"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "f14a9538-c3e1-422e-a11c-d7d853512f4a"
+    },
+    {
+        "derived_from": "peter-sims:library_1a",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
+    },
+    {
+        "derived_from": "peter-sims:library_1b",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
+    },
+    {
+        "derived_from": "peter-sims:library_1c",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
+    },
+    {
+        "derived_from": "peter-sims:library_2a",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
+    },
+    {
+        "derived_from": "peter-sims:library_2b",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "9a55c381-72ff-4cc2-a68d-c21244651431"
+    },
+    {
+        "derived_from": "peter-sims:library_2c",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "9cd890e1-2e9e-4994-ad35-271a78553248"
+    },
+    {
+        "derived_from": "peter-sims:library_3a",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "4",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "3dd59186-0407-4e29-9025-8443485fac53"
+    },
+    {
+        "derived_from": "peter-sims:library_3b",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "3",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
+    },
+    {
+        "derived_from": "peter-sims:library_3c",
+        "flowcell_details": [
+            {
+                "flowcell": "HGJWFDSXY",
+                "lane": "2",
+                "machine": "A00836"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "uuid": "74ab76b9-0a74-4263-b1ef-75755938e939"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "835e166d-0253-41ce-add2-de67429a3612",
+        "uuid": "ce37118c-201d-48d6-abe0-4e9e5cf54239"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "88760932-54b6-46fe-951d-fc80e89a0d77",
+        "uuid": "95bad158-e418-4f83-9e58-fcd2377bda49"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "7126310d-93c5-40af-988c-edb532fe6e7f",
+        "uuid": "82bdf2f7-b9ed-4c06-9669-d01cdffe0529"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
+        "uuid": "61d73111-c7c3-4478-9b64-c2648d5e8422"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "7013e140-dc14-4893-b0b1-0d7bb293730c",
+        "uuid": "b4eed775-b8b1-4648-95e7-2fea52091e83"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "35c0e686-00a2-4b24-8b8f-1bcf3379824b",
+        "uuid": "9a805c8f-6ce6-42db-a340-090928b68382"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
+        "uuid": "430175d7-46f3-4805-9c7f-4a9fb01e271c"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
+        "uuid": "c45b8a77-0e64-4410-90d6-799a3f20522e"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "e4824882-0ad8-4009-a169-44d5955800af",
+        "uuid": "deadc341-20c3-465a-8943-56592f8f5151"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "181a11eb-68b9-43b3-9430-a5253a75e8f5",
+        "uuid": "5e13253e-793a-40e8-9f33-d90b25c38f20"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "ee512537-05f0-4ac4-a9e6-718aea48f565",
+        "uuid": "a919dbc9-850d-4381-968e-953c61bd7349"
+    },
+    {
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
+        "uuid": "9f7a5be4-3c74-4531-8858-9a87c60302a1"
+    },
+    {
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "ENCLB742NWU",
+        "uuid": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
+    },
+    {
+        "flowcell_details": [],
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "ENCLB742NWU",
+        "uuid": "c0e6438f-d86c-4283-bd4d-fbf04d3bab18"
+    },
+    {
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "ENCLB376WDO",
+        "uuid": "944caba0-b70d-4382-baa4-3596a8688a47"
+    },
+    {
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "ENCLB033CJI",
+        "uuid": "978bb703-be65-4d6b-89ef-ef8f9b7bface"
+    },
+    {
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "ENCLB999MNO",
+        "uuid": "84c67077-33bb-4657-92bd-bf564030875f"
+    },
+    {
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "ENCLB888MNO",
+        "uuid": "0e827bd5-5993-4b1e-b670-2eb0cade993c"
+    },
+    {
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "ENCLB888MNO",
+        "uuid": "ec576bb9-eaf1-439f-8c9c-4ec1e3d17383"
+    },
+    {
+        "platform": "Illumina NovaSeq 6000",
+        "derived_from": "ENCLB723GTS",
+        "uuid": "61937d65-4de6-4f46-918c-364c36854c1a"
+    },
+    {
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "ENCLB209APR",
+        "uuid": "ce26918d-64e6-4d2c-84c2-c91c21a5a377"
+    },
+    {
+        "platform": "Illumina HiSeq 2500",
+        "derived_from": "ENCLB723GTS",
+        "uuid": "2164140a-63c7-4c6e-bf68-4db4a4d9c62e"
+    }
+]

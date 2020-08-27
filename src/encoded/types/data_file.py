@@ -92,7 +92,6 @@ class DataFile(Item):
     base_types = ['DataFile'] + Item.base_types
     name_key = 'accession'
     rev = {
-        'paired_with': ('DataFile', 'paired_with'),
         'superseded_by': ('DataFile', 'supersedes'),
     }
     embedded = []
@@ -144,9 +143,6 @@ class DataFile(Item):
                         keys.setdefault('alias', []).append(value)
                 else:
                     keys.setdefault('alias', []).append(value)
-            # Ensure no files have multiple reverse paired_with
-            if 'paired_with' in properties:
-                keys.setdefault('file:paired_with', []).append(properties['paired_with'])
             if 'external_accession' in properties:
                 keys.setdefault('external_accession', []).append(
                     properties['external_accession'])
@@ -160,17 +156,6 @@ class DataFile(Item):
     })
     def title(self, accession=None, external_accession=None):
         return accession or external_accession
-
-    # Don't specify schema as this just overwrites the existing value
-    @calculated_property(
-        condition=lambda paired_end=None: paired_end == '1')
-    def paired_with(self, root, request):
-        paired_with = self.get_rev_links('paired_with')
-        if not paired_with:
-            return None
-        item = root.get_by_uuid(paired_with[0])
-        return request.resource_path(item)
-
 
     @calculated_property(schema={
         "title": "Download URL",

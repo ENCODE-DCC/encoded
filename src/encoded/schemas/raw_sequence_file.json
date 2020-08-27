@@ -1,15 +1,15 @@
 {
     "title": "Raw Sequence file",
     "description": "Schema for submitting metadata for a data file.",
-    "id": "/profiles/raw_sequence_file.json", 
+    "id": "/profiles/raw_sequence_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "anyOf": [
         {
-            "required": ["dataset", "file_format", "output_types", "derived_from", "md5sum"]
+            "required": ["dataset", "file_format", "output_types", "md5sum"]
         },
         {
-            "required": ["dataset", "file_format", "output_types", "derived_from", "no_file_available"]
+            "required": ["dataset", "file_format", "output_types", "no_file_available"]
         }
     ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
@@ -42,15 +42,6 @@
                     "enum": ["revoked"]
                 }
             }
-        },
-        "content_error_detail":{
-            "comment": "Specification of status of content error is required if content_error_detail is specified",
-            "required": ["status"],
-            "properties": {
-                "status": {
-                    "enum": ["content error"]
-                }
-            }
         }
     },
     "properties": {
@@ -75,6 +66,13 @@
                 "linkTo": "RawSequenceFile"
             }
         },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The sequencing run designation for the file.",
+            "comment": "This field is required for sra and fastq files. See sequencing_run.json for available identifiers.",
+            "type": "string",
+            "linkTo": "SequencingRun"
+        },
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",
@@ -88,13 +86,6 @@
                 "fastq",
                 "sra"
             ]
-        },
-        "derived_from": {
-            "title": "Derived from",
-            "description": "The experimental library designation for the file.",
-            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Library"
         },
         "fastq_signature": {
             "title": "Fastq file flowcell based signature",
@@ -112,39 +103,12 @@
                 "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
             }
         },
-        "platform": {
-            "title": "Platform",
-            "description": "The device used to sequence data.",
-            "type": "string",
-            "enum": [
-                "Illumina NovaSeq 6000",
-                "Illumina HiSeq 4000",
-                "Illumina HiSeq 2500"
-            ]
-        },
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "comment": "This field is required for fastq and sra file formats containing sequencing reads.",
             "type": "integer",
             "minimum": 0
-        },
-        "sequencing_run_type": {
-            "title": "Run type",
-            "description": "Indicates if file is part of a single or paired end sequencing run",
-            "comment": "This field is required for sra and fastq files.",
-            "type": "string",
-            "enum": [
-                "single-ended",
-                "paired-ended"
-            ]
-        },
-        "paired_with": {
-            "title": "Paired with",
-            "description": "The paired end fastq that corresponds with this file.",
-            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
-            "type": "string",
-            "linkTo": "RawSequenceFile"
         },
         "read_name_structure": {
             "title": "Fastq read name details",
@@ -182,46 +146,6 @@
                     "type": "integer",
                     "minimum": 0
                 }
-            }
-        },
-        "flowcell_details": {
-            "title": "Flowcell details",
-            "description": "For each sequence file, the machine id, flowcell, and lane information for the sequencing run.",
-            "comment": "Enter values with their property labels, “machine: NNNNNN, flowcell: NNNNNNNNNN, lane: #”.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Flowcell details",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "machine": {
-                        "title": "Machine Name",
-                        "description": "The lab specific name of the machine used.",
-                        "type": "string"
-                    },
-                    "flowcell": {
-                        "title": "Flowcell ID",
-                        "type": "string"
-                    },
-                    "lane": {
-                        "title": "Lane",
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "index_of": {
-            "title": "Index of",
-            "description": "The files this index file is relevant for.",
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 2,
-            "uniqueItems": true,
-            "items": {
-                "comment": "See file.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "RawSequenceFile"
             }
         },
         "output_types": {
@@ -289,35 +213,17 @@
         "status": {
             "title": "Status"
         },
-        "output_category": {
-            "title": "Output category"
-        },
-        "output_type": {
+        "output_types": {
             "title": "Output type"
         },
         "file_format": {
             "title": "File format"
         },
-        "file_format_type": {
-            "title": "File format type"
-        },
         "file_type": {
             "title": "File type"
         },
-        "platform": {
-            "title": "Platform"
-        },
-        "lab.title": {
+        "lab": {
             "title": "Lab"
-        },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "typeahead"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name",
-            "type": "typeahead",
-            "length": "long"
         }
     },
     "columns": {
@@ -336,29 +242,14 @@
         "file_type": {
             "title": "File type"
         },
-        "file_format_type": {
-            "title": "File format type"
-        },
         "file_size": {
             "title": "File size"
-        },
-        "assay_term_name": {
-            "title": "Assay term name"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample name"
         },
         "href": {
             "title": "Download URL"
         },
-        "derived_from.accession": {
-            "title": "Library"
-        },
-        "paired_with": {
-            "title": "Paired with"
-        },
-        "sequencing_run_type": {
-            "title": "Run type"
+        "derived_from": {
+            "title": "Sequencing run"
         },
         "read_length": {
             "title": "Read length"
@@ -366,13 +257,10 @@
         "read_length_units": {
             "title": "Read length units"
         },
-        "output_category": {
-            "title": "Output category"
+        "output_types": {
+            "title": "Output types"
         },
-        "output_type": {
-            "title": "Output type"
-        },
-        "lab.title": {
+        "lab": {
             "title": "Lab"
         },
         "date_created": {
@@ -385,16 +273,9 @@
             "title": "Status"
         }
     },
-    "output_type_output_category": {
-        "reads": "raw data",
-        "index reads": "raw data",
-        "rejected reads": "raw data",
-        "subreads": "raw data"
-    },
     "file_format_file_extension": {
         "fastq": ".fastq.gz",
         "sra": ".sra"
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/raw_sequence_file.md"
 }
