@@ -74,7 +74,7 @@
 
 .site-banner {
     @at-root #{&}__intro {
-        padding: 10px 10px;
+        padding: 0px 10px;
         font-size: 1.2rem;
 
         @media screen and (min-width: $screen-sm-min) {
@@ -511,7 +511,10 @@
 .img-side {
     text-align: center;
     img {
-	max-width: 400px;
+	max-width: 330px;
+	@media screen and (min-width: $screen-sm-min) {
+	    max-width: 410px;
+	}
     }
 }
 
@@ -520,6 +523,7 @@
     justify-content: center;
     align-items: center;
     color: #303030;
+    margin-top: 15px;
 
     h1 {
 	font-weight: bold;
@@ -540,6 +544,7 @@
 
     @media screen and (min-width: $screen-md-min) {
 	margin-bottom: 20px;
+	margin-top: 0px;
     }
 }
 
