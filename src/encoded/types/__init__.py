@@ -223,7 +223,7 @@ class SequencingRun(Item):
         conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
-            read_type = file_obj['read_type']
+            read_type = file_obj.get('read_type')
             if read_type == 'Read 1':
                 return file_obj['accession']
 
@@ -237,7 +237,7 @@ class SequencingRun(Item):
         conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
-            read_type = file_obj['read_type']
+            read_type = file_obj.get('read_type')
             if read_type == 'Read 2':
                 return file_obj['accession']
 
@@ -251,7 +251,7 @@ class SequencingRun(Item):
         conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
-            read_type = file_obj['read_type']
+            read_type = file_obj.get('read_type')
             if read_type == 'Read 1N':
                 return file_obj['accession']
 
@@ -265,7 +265,7 @@ class SequencingRun(Item):
         conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
-            read_type = file_obj['read_type']
+            read_type = file_obj.get('read_type')
             if read_type == 'Read 2N':
                 return file_obj['accession']
 
@@ -279,7 +279,7 @@ class SequencingRun(Item):
         conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
-            read_type = file_obj['read_type']
+            read_type = file_obj.get('read_type')
             if read_type == 'i5 index':
                 return file_obj['accession']
 
@@ -293,6 +293,6 @@ class SequencingRun(Item):
         conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
-            read_type = file_obj['read_type']
+            read_type = file_obj.get('read_type')
             if read_type == 'i7 index':
                 return file_obj['accession']

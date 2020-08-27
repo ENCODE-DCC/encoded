@@ -2518,7 +2518,7 @@
         "derived_from": "9f7a5be4-3c74-4531-8858-9a87c60302a1"
     },
     {
-        "read_type": "Read 1",
+        "read_type": "i7 index",
         "accession": "ENCFF431TKZ",
         "dataset": "ENCSR765JPC",
         "date_created": "2013-03-23T16:46:18.670068+00:00",
@@ -2579,26 +2579,6 @@
         ],
         "read_length": 50,
         "md5sum": "5f3232d8937b53c296507f6516f0db8f",
-        "derived_from": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
-    },
-    {
-        "read_type": "Read 2",
-        "accession": "ENCFF360FSI",
-        "dataset": "ENCSR765JPC",
-        "alternate_accessions": [],
-        "file_size": 15031538605,
-        "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_2_7bp_Index_6_SL65973.fastq.gz",
-        "uuid": "7acdc827-3806-448e-b0d4-2d463a42179f",
-        "file_format": "fastq",
-        "status": "in progress",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "lab": "/labs/richard-myers/",
-        "output_types": [
-            "assigned reads"
-        ],
-        "read_length": 50,
-        "md5sum": "ef3a148b24fde7501a8a229f3de603f9",
-        "date_created": "2014-09-30T17:38:48.091343+00:00",
         "derived_from": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"
     },
     {
