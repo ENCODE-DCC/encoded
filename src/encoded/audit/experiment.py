@@ -4285,7 +4285,9 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # https://encodedcc.atlassian.net/browse/ENCD-5255
     # https://encodedcc.atlassian.net/browse/ENCD-5350
     alignment_files = files_structure.get('alignments').values()
-    stable_peaks_files = files_structure.get('stable_peaks_files').values()
+    pseudo_replicated_peaks_files = files_structure.get(
+        'pseudo_replicated_peaks_files'
+    ).values()
     atac_peaks_files = []
     assay_term_name = experiment['assay_term_name']
     if assay_term_name != 'ATAC-seq':
@@ -4297,15 +4299,18 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     if pipeline_title is False:
         return
 
-    # Replicated experiments should use the stable peaks from partition concordance step
+    # Replicated experiments should use the pseudo-replicated peaks from
+    # partition concordance step
     if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-        for file in stable_peaks_files:
+        for file in pseudo_replicated_peaks_files:
             if 'biological_replicates' in file:
                 reps = file['biological_replicates']
                 if len(reps) > 1:
                     atac_peaks_files.append(file)
     else:
-        atac_peaks_files = files_structure.get('stable_peaks_files').values()
+        atac_peaks_files = files_structure.get(
+            'pseudo_replicated_peaks_files'
+        ).values()
     alignment_metrics = get_metrics(alignment_files, 'AtacAlignmentQualityMetric')
     align_enrich_metrics = get_metrics(alignment_files, 'AtacAlignmentEnrichmentQualityMetric')
     library_metrics = get_metrics(alignment_files, 'AtacLibraryQualityMetric')
@@ -4473,7 +4478,9 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # Checks in AtacPeakEnrichmentQualityMetric
     if peak_enrich_metrics is not None and len(peak_enrich_metrics) > 0:
         for metric in peak_enrich_metrics:
-            atac_peaks_file = files_structure.get('stable_peaks_files')[metric['quality_metric_of'][0]]
+            atac_peaks_file = files_structure.get(
+                'pseudo_replicated_peaks_files'
+            )[metric['quality_metric_of'][0]]
             if 'frip' in metric and 'quality_metric_of' in metric:
                 frip = float(metric['frip'])
                 detail = (
@@ -4491,7 +4498,9 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # Checks in AtacReplicationQualityMetric
     if replication_metrics is not None and len(replication_metrics) > 0:
         for metric in replication_metrics:
-            atac_peaks_file = files_structure.get('stable_peaks_files')[metric['quality_metric_of'][0]]
+            atac_peaks_file = files_structure.get(
+                'pseudo_replicated_peaks_files'
+            )[metric['quality_metric_of'][0]]
             if 'rescue_ratio' in metric and 'self_consistency_ratio' in metric:
                 rescue = metric['rescue_ratio']
                 self_consistency = metric['self_consistency_ratio']
@@ -4875,7 +4884,7 @@ def create_files_mapping(files_list, excluded):
                  'contributing_files': {},
                  'raw_data': {},
                  'processed_data': {},
-                 'stable_peaks_files': {},
+                 'pseudo_replicated_peaks_files': {},
                  'excluded_types': excluded}
     if files_list:
         for file_object in files_list:
@@ -4939,9 +4948,15 @@ def create_files_mapping(files_list, excluded):
                 if file_output and file_output == 'methylation state at CpG':
                     to_return['cpg_quantifications'][file_object['@id']
                                                      ] = file_object
-                if file_format and file_format == 'bed' and \
-                        file_output and file_output == 'stable peaks':
-                    to_return['stable_peaks_files'][file_object['@id']] = file_object
+                if (
+                    file_format
+                    and file_format == 'bed'
+                    and file_output
+                    and file_output == 'pseudo-replicated peaks'
+                ):
+                    to_return['pseudo_replicated_peaks_files'][
+                        file_object['@id']
+                    ] = file_object
                 if file_output_category == 'raw data':
                     to_return['raw_data'][file_object['@id']] = file_object
                 else:

@@ -166,3 +166,11 @@ def test_file_upgrade_22_to_23(upgrader, file_22):
     value = upgrader.upgrade('file', file_22, current_version='22', target_version='23')
     assert value['schema_version'] == '23'
     assert value['output_type'] == 'spike-ins'
+
+
+def test_file_upgrade_23_to_24(root, testapp, upgrader, registry, file_23):
+    value = upgrader.upgrade(
+        'file', file_23, current_version='23', target_version='24'
+    )
+    assert value['schema_version'] == '24'
+    assert value['output_type'] == 'pseudo-replicated peaks'

@@ -236,3 +236,15 @@ def analysis_step_9_10(value, system):
         input_file_types.remove('spike-in sequence')
         input_file_types.append('spike-ins')
     return
+
+
+@upgrade_step('analysis_step', '10', '11')
+def analysis_step_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5480
+
+    if 'stable peaks' in value.get('input_file_types', []):
+        value['input_file_types'].remove('stable peaks')
+        value['input_file_types'].append('pseudo-replicated peaks')
+    if 'stable peaks' in value.get('output_file_types', []):
+        value['output_file_types'].remove('stable peaks')
+        value['output_file_types'].append('pseudo-replicated peaks')

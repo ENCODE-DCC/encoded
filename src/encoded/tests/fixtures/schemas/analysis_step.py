@@ -122,6 +122,21 @@ def analysis_step_8(testapp):
     }
     return item
 
+
+@pytest.fixture
+def analysis_step_10(testapp):
+    item = {
+        'schema_version': '10',
+        'step_label': 'rdhs-step',
+        'title': 'rdhs step',
+        'major_version': 1,
+        'analysis_step_types': ['QA calculation'],
+        'input_file_types': ['stable peaks'],
+        'output_file_types': ['stable peaks']
+    }
+    return item
+
+
 @pytest.fixture
 def analysis_step_chip_encode4(testapp):
     item = {
@@ -153,7 +168,7 @@ def analysis_step_atac_encode4_pseudoreplicate_concordance(testapp):
         'step_label': 'atac-seq-unreplicated-overlap-step',
         'title': 'ATAC seq unreplicated overlap step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['stable peaks'],
+        'output_file_types': ['pseudo-replicated peaks'],
         'analysis_step_types': ['peak calling', 'partition concordance'],
         'major_version': 1
     }
@@ -166,7 +181,7 @@ def analysis_step_atac_encode4_partition_concordance(testapp):
         'step_label': 'atac-seq-partition-concordance-step',
         'title': 'ATAC seq partition concordance step',
         'input_file_types': ['alignments'],
-        'output_file_types': ['stable peaks'],
+        'output_file_types': ['pseudo-replicated peaks'],
         'analysis_step_types': ['peak calling', 'partition concordance'],
         'major_version': 1
     }

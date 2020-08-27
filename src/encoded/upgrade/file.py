@@ -704,3 +704,10 @@ def file_22_23(value, system):
     if output_type == 'spike-in sequence':
         value['output_type'] = 'spike-ins'
     return
+
+
+@upgrade_step('file', '23', '24')
+def file_23_24(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5480
+    if value.get('output_type', '') == 'stable peaks':
+        value['output_type'] = 'pseudo-replicated peaks'

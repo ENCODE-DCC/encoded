@@ -3872,7 +3872,7 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
         atac_align_enrich_quality_metric_med,
         atac_peak_enrichment_quality_metric_2, file_fastq_1_atac,
         analysis_step_atac_encode4_pseudoreplicate_concordance,
-        file_bed_stable_peaks_atac, ATAC_experiment_replicated,
+        file_bed_pseudo_replicated_peaks_atac, ATAC_experiment_replicated,
         file_bed_replicated_peaks_atac, replicate_ATAC_seq,
         atac_replication_quality_metric_borderline_replicate_concordance,
         library_1, biosample_human_1, library_2, biosample_human_2
@@ -3885,8 +3885,10 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
                         {'quality_metric_of': [ATAC_bam['@id']]})
     testapp.patch_json(atac_align_enrich_quality_metric_med['@id'],
                         {'quality_metric_of': [ATAC_bam['@id']]})
-    testapp.patch_json(atac_peak_enrichment_quality_metric_2['@id'],
-                        {'quality_metric_of': [file_bed_stable_peaks_atac['@id']]})
+    testapp.patch_json(
+        atac_peak_enrichment_quality_metric_2['@id'],
+        {'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']]}
+    )
     res = testapp.get(ATAC_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'low alignment rate' for error in collect_audit_errors(res))
     assert any(error['category'] == 'poor library complexity' for error in collect_audit_errors(res))

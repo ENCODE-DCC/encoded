@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 24
+* *output_type: stable peaks* was updated to *output_type: pseudo-replicated peaks*
+
 ### Minor changes since schema version 23
 
 * Added *bias model* to the enum list for *output_type*.

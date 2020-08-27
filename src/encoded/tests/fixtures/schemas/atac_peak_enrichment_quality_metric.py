@@ -14,7 +14,7 @@ def atac_peak_enrichment_quality_metric_1():
 @pytest.fixture
 def atac_peak_enrichment_quality_metric_2(
         testapp, encode_lab, award,
-        file_bed_stable_peaks_atac,
+        file_bed_pseudo_replicated_peaks_atac,
         analysis_step_run_atac_encode4_pseudoreplicate_concordance
         ):
     item = {
@@ -29,6 +29,6 @@ def atac_peak_enrichment_quality_metric_2(
         '75_pct': 1190,
         'max_size': 3963,
         'mean': 849.2865957832648,
-        'quality_metric_of': [file_bed_stable_peaks_atac['@id']],
+        'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']],
     }
     return testapp.post_json('/atac_peak_enrichment_quality_metric', item).json['@graph'][0]
