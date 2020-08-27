@@ -3904,7 +3904,7 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
         atac_replication_quality_metric_borderline_replicate_concordance,
         library_1, biosample_human_1, library_2, biosample_human_2,
         atac_replication_quality_metric_high_peaks, file_bed_IDR_peaks_atac,
-        atac_rep_metric_low_qual, file_bed_IDR_peaks_2_atac
+        atac_rep_metric_peaks_only, file_bed_IDR_peaks_2_atac
         ):
     # https://encodedcc.atlassian.net/browse/ENCD-5255
     # https://encodedcc.atlassian.net/browse/ENCD-5350
@@ -3945,18 +3945,17 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'borderline replicate concordance' for error in collect_audit_errors(res2))
     assert any(error['category'] == 'insufficient number of reproducible peaks' for error in collect_audit_errors(res2))
 
+    # Reproducible peaks only checked in QC metrics when rescue_ratio/self_consistency_ratio appear
+    testapp.patch_json(atac_rep_metric_peaks_only['@id'],
+                       {'quality_metric_of': [file_bed_IDR_peaks_2_atac['@id']]})
+    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
+    assert any(error['category'] == 'insufficient number of reproducible peaks' for error in collect_audit_errors(res2))
+
     # When reproducible peaks are checked in multiple files, the better value is reported
     testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],
                        {'quality_metric_of': [file_bed_IDR_peaks_atac['@id']]})
     res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
     assert 'insufficient number of reproducible peaks' not in (error['category'] for error in collect_audit_errors(res2))
-
-    # Reproducible peaks are checked for each pairwise comparison of replicates
-    testapp.patch_json(atac_rep_metric_low_qual['@id'],
-                       {'quality_metric_of': [file_bed_IDR_peaks_2_atac['@id']]})
-    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
-    assert any(error['category'] == 'insufficient number of reproducible peaks' and \
-               'replicate(s) [2, 3]' in error['detail'] for error in collect_audit_errors(res2))
 
     # Multiple AtacReplicationQualityMetric objects on the same file is flagged
     testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],

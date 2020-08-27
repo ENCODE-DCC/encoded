@@ -4309,7 +4309,6 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     ).values()
     idr_thresholded_peaks_files = files_structure.get('idr_thresholded_peaks').values()
     all_peaks_files = files_structure.get('overlap_and_idr_peaks').values()
-    idr_thresholded_peaks_files_to_audit = []
     overlap_peaks_files = []
 
     assay_term_name = experiment['assay_term_name']
@@ -4322,26 +4321,16 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     if pipeline_title is False:
         return
 
-    # For FRiP and number of reproducible peaks audits in replicated experiments: use the pseudo-
-    # replicated peaks and IDR thresholded peaks with multiple biological replicates as input
+    # For FRiP: use the pseudo-replicated peaks with multiple biological replicates as input
     if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
         for file in pseudo_replicated_peaks_files:
             if 'biological_replicates' in file:
                 reps = file['biological_replicates']
                 if len(reps) > 1:
                     overlap_peaks_files.append(file)
-        for file in idr_thresholded_peaks_files:
-            if 'biological_replicates' in file:
-                reps = file['biological_replicates']
-                if len(reps) > 1:
-                    idr_thresholded_peaks_files_to_audit.append(file)
     else:
-        overlap_peaks_files_temp = files_structure.get('pseudo_replicated_peaks_files').values()
-        for each in overlap_peaks_files_temp:
+        for each in pseudo_replicated_peaks_files:
             overlap_peaks_files.append(each)
-        idr_thresholded_peaks_files_to_audit_temp = files_structure.get('idr_thresholded_peaks').values()
-        for each in idr_thresholded_peaks_files_to_audit_temp:
-            idr_thresholded_peaks_files_to_audit.append(each)
 
     alignment_metrics = get_metrics(alignment_files, 'AtacAlignmentQualityMetric')
     align_enrich_metrics = get_metrics(alignment_files, 'AtacAlignmentEnrichmentQualityMetric')
@@ -4526,44 +4515,14 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                     yield AuditFailure('moderate FRiP score', detail, level='WARNING')
 
     # Checks in AtacReplicationQualityMetric
-    # Replicate concordance, only for replicated experiments
-    if 'replication_type' in experiment and experiment['replication_type'] != 'unreplicated':
-        replication_metrics = get_metrics(all_peaks_files, 'AtacReplicationQualityMetric')
-        if replication_metrics is not None and len(replication_metrics) > 0:
-            for metric in replication_metrics:
-                peaks_file = files_structure.get('overlap_and_idr_peaks')[metric['quality_metric_of'][0]]
-                if 'rescue_ratio' in metric and 'self_consistency_ratio' in metric:
-                    rescue = metric['rescue_ratio']
-                    self_consistency = metric['self_consistency_ratio']
-                    detail = (
-                        f'According to ENCODE4 standards, peaks files in replicated ATAC-seq assays processed '
-                        f'by the uniform processing pipeline should have a rescue ratio and '
-                        f'self-consistency ratio < 2. Having only one of these ratios < 2 is acceptable. '
-                        f'{audit_link(path_to_text(peaks_file["@id"]),peaks_file["@id"])} '
-                        f' has a rescue ratio of {rescue:.2f} and self-consistency ratio of '
-                        f'{self_consistency:.2f}.'
-                        )
-                    if rescue >= 2 and self_consistency >= 2:
-                        yield AuditFailure('insufficient replicate concordance', detail, level='NOT_COMPLIANT')
-                    elif rescue >= 2 or self_consistency >= 2:
-                        yield AuditFailure('borderline replicate concordance', detail, level='WARNING')
-
-    # The better reproducible peaks value in overlap or IDR thresholded peaks is used in audit
-    reproducible_peaks_files = overlap_peaks_files + idr_thresholded_peaks_files_to_audit
     peaks_report = {}
-    for f in reproducible_peaks_files:
+    for f in all_peaks_files:
         output_type = f['output_type']
-        if 'biological_replicates' in f:
-            replicates = f.get('biological_replicates')
-            replicates = str(sorted(replicates))
-        if replicates not in peaks_report.keys():
-            peaks_report[replicates] = {}
-
         file_list = []
         file_list.append(f)
         f_replication_metrics = get_metrics(file_list, 'AtacReplicationQualityMetric')
         if f_replication_metrics is not None and len(f_replication_metrics) > 0:
-            if len(f_replication_metrics) > 1:
+            if len(f_replication_metrics) != 1:
                 detail = (
                     f'Multiple AtacReplicationQualityMetric objects are posted on '
                     f'{audit_link(path_to_text(f["@id"]),f["@id"])}. Values in these metrics may '
@@ -4571,48 +4530,67 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                 yield AuditFailure('duplicate QC metrics', detail, level='ERROR')
             else:
                 for metric in f_replication_metrics:
-                    if 'reproducible_peaks' in metric:
-                        if output_type == 'pseudo-replicated peaks':
-                            peaks_report[replicates]['rep_peaks'] = metric['reproducible_peaks']
-                            peaks_report[replicates]['rep_peaks_file'] = f['@id']
-                            if metric['reproducible_peaks'] > 150000:
-                                peaks_report[replicates]['rep_peaks_qual'] = 'pass'
-                            if metric['reproducible_peaks'] <= 150000 and metric['reproducible_peaks'] >= 100000:
-                                peaks_report[replicates]['rep_peaks_qual'] = 'warning'
-                            if metric['reproducible_peaks'] < 100000:
-                                peaks_report[replicates]['rep_peaks_qual'] = 'not_compliant'
+                    if 'rescue_ratio' in metric and 'self_consistency_ratio' in metric:
+                        rescue = metric['rescue_ratio']
+                        self_consistency = metric['self_consistency_ratio']
+                        if 'reproducible_peaks' in metric:
+                            if output_type in ['pseudo-replicated peaks', 'replicated peaks']:
+                                peaks_report['overlap_rep_peaks'] = metric['reproducible_peaks']
+                                peaks_report['overlap_rep_peaks_file'] = f['@id']
+                                if metric['reproducible_peaks'] > 150000:
+                                    peaks_report['overlap_rep_peaks_qual'] = 'pass'
+                                if metric['reproducible_peaks'] <= 150000 and metric['reproducible_peaks'] >= 100000:
+                                    peaks_report['overlap_rep_peaks_qual'] = 'warning'
+                                if metric['reproducible_peaks'] < 100000:
+                                    peaks_report['overlap_rep_peaks_qual'] = 'not_compliant'
 
-                        if output_type == 'IDR thresholded peaks':
-                            peaks_report[replicates]['idr_rep_peaks'] = metric['reproducible_peaks']
-                            peaks_report[replicates]['idr_rep_peaks_file'] = f['@id']
-                            if metric['reproducible_peaks'] > 70000:
-                                peaks_report[replicates]['idr_rep_peaks_qual'] = 'pass'
-                            if metric['reproducible_peaks'] <= 70000 and metric['reproducible_peaks'] >= 50000:
-                                peaks_report[replicates]['idr_rep_peaks_qual'] = 'warning'
-                            if metric['reproducible_peaks'] < 50000:
-                                peaks_report[replicates]['idr_rep_peaks_qual'] = 'not_compliant'
+                            if output_type in ['IDR thresholded peaks', 'conservative IDR thresholded peaks']:
+                                peaks_report['idr_rep_peaks'] = metric['reproducible_peaks']
+                                peaks_report['idr_rep_peaks_file'] = f['@id']
+                                if metric['reproducible_peaks'] > 70000:
+                                    peaks_report['idr_rep_peaks_qual'] = 'pass'
+                                if metric['reproducible_peaks'] <= 70000 and metric['reproducible_peaks'] >= 50000:
+                                    peaks_report['idr_rep_peaks_qual'] = 'warning'
+                                if metric['reproducible_peaks'] < 50000:
+                                    peaks_report['idr_rep_peaks_qual'] = 'not_compliant'
 
-    for replicates in peaks_report:
-        report = peaks_report[replicates]
-        detail_items = []
-        if 'rep_peaks' in report:
-            detail_items.append(tuple((str(report['rep_peaks']), report['rep_peaks_file'])))
-        if 'idr_rep_peaks' in report:
-            detail_items.append(tuple((str(report['idr_rep_peaks']), report['idr_rep_peaks_file'])))
-        audit_peaks = ' and '.join(m[0] for m in detail_items)
-        file_links = ', '.join(audit_link(path_to_text(m[1]), m[1]) for m in detail_items)
-        detail = (
-            f'According to ENCODE4 standards, ATAC-seq assays processed by the uniform processing '
-            f'pipeline should have either >150k reproducible peaks in an overlap peaks file, or '
-            f'>70k in an IDR thresholded peaks file. 100-150k or 50-70k peaks respectively is '
-            f'acceptable, and <100k or <50k respectively is not compliant. '
-            f'File(s) {file_links} for replicate(s) {replicates} have {audit_peaks} peaks.')
-        if 'pass' in report.values():
-            continue
-        elif 'warning' in report.values():
-            yield AuditFailure('moderate number of reproducible peaks', detail, level='WARNING')
-        elif 'not_compliant' in report.values():
-            yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
+                        # Replicate concordance is only reported for replicated experiments
+                        if 'replication_type' in experiment and \
+                                experiment['replication_type'] != 'unreplicated':
+                            detail = (
+                                f'According to ENCODE4 standards, peaks files in replicated '
+                                f'ATAC-seq assays processed by the uniform processing pipeline '
+                                f'should have a rescue ratio and self-consistency ratio < 2. '
+                                f'Having only one of these ratios < 2 is acceptable. '
+                                f'{audit_link(path_to_text(f["@id"]),f["@id"])} '
+                                f' has a rescue ratio of {rescue:.2f} and self-consistency ratio '
+                                f'of {self_consistency:.2f}.'
+                                )
+                            if rescue >= 2 and self_consistency >= 2:
+                                yield AuditFailure('insufficient replicate concordance', detail, level='NOT_COMPLIANT')
+                            elif rescue >= 2 or self_consistency >= 2:
+                                yield AuditFailure('borderline replicate concordance', detail, level='WARNING')
+
+    # The better reproducible peaks value in overlap or IDR thresholded peaks is reported
+    detail_items = []
+    if 'overlap_rep_peaks' in peaks_report.keys():
+        detail_items.append(tuple((str(peaks_report['overlap_rep_peaks']), peaks_report.get('overlap_rep_peaks_file'))))
+    if 'idr_rep_peaks' in peaks_report.keys():
+        detail_items.append(tuple((str(peaks_report['idr_rep_peaks']), peaks_report.get('idr_rep_peaks_file'))))
+    audit_peaks = ' and '.join(m[0] for m in detail_items)
+    file_links = ', '.join(audit_link(path_to_text(m[1]), m[1]) for m in detail_items)
+    detail = (
+        f'According to ENCODE4 standards, ATAC-seq assays processed by the uniform processing '
+        f'pipeline should have either >150k reproducible peaks in an overlap peaks file, or '
+        f'>70k in an IDR thresholded peaks file. 100-150k or 50-70k peaks respectively is '
+        f'acceptable, and <100k or <50k respectively is not compliant. '
+        f'File(s) {file_links} have {audit_peaks} peaks.')
+    if 'pass' in peaks_report.values():
+        return
+    elif 'warning' in peaks_report.values():
+        yield AuditFailure('moderate number of reproducible peaks', detail, level='WARNING')
+    elif 'not_compliant' in peaks_report.values():
+        yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
 
 
 def audit_analysis_files(value, system, files_structure):

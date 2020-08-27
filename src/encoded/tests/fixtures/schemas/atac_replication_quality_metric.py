@@ -38,8 +38,15 @@ def atac_replication_quality_metric_high_peaks(testapp, award, encode_lab,
 
 
 @pytest.fixture
-def atac_rep_metric_low_qual(atac_replication_quality_metric_borderline_replicate_concordance,
-                             ATAC_bam2, testapp):
-    item = atac_replication_quality_metric_borderline_replicate_concordance.copy()
-    item.update({'quality_metric_of': [ATAC_bam2['@id']]})
-    return item
+def atac_rep_metric_peaks_only(testapp, award, encode_lab, ATAC_bam2,
+                               analysis_step_run_atac_encode4_partition_concordance):
+    item = {
+        'step_run': analysis_step_run_atac_encode4_partition_concordance['@id'],
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'assay_term_name': 'ATAC-seq',
+        'quality_metric_of': [ATAC_bam2['@id']],
+        'reproducible_peaks': 10000000,
+    }
+
+    return testapp.post_json('/atac_replication_quality_metric', item).json['@graph'][0]
