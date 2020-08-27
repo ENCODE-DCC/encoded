@@ -1034,7 +1034,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
 SearchControls.propTypes = {
     /** Search results object that generates this page */
     context: PropTypes.object.isRequired,
-    /** True to disable Visualize button */
+    /** Text to display with disabled Visualize button */
     visualizeDisabledTitle: PropTypes.string,
     /** True to show View All/View 25 control */
     showResultsToggle: (props, propName, componentName) => {

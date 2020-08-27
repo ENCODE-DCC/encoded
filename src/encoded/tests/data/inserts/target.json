@@ -266,5 +266,20 @@
         ],
         "label": "eGFP-ab",
         "status": "released"
+    },
+    {
+        "genes": ["8148"],
+        "investigated_as": ["RNA binding protein"],
+        "label": "TAF15",
+        "status": "released",
+        "uuid": "837ed39c-1bd1-4b92-9d04-b011dc9bdc39"
+    },
+    {
+        "dbxrefs": ["FactorBook:ZC3H8"],
+        "genes": ["84524"],
+        "investigated_as": ["transcription factor"],
+        "label": "ZC3H8",
+        "status": "released",
+        "uuid": "05666fd7-2881-4560-b28f-918c4ebf9a26"
     }
 ]

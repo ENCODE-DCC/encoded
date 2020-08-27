@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import _ from 'underscore';
 import url from 'url';
 import QueryString from '../../libs/query_string';
+import { sanitizedString } from '../globals';
 import FacetRegistry from './registry';
 
 
@@ -13,12 +14,6 @@ import FacetRegistry from './registry';
  * components can use them. Default facet components get exported so that custom components that
  * simply alter the appearance of default components can call the default components.
  */
-
-
-// Sanitize user input and facet terms for comparison: convert to lowercase, remove white space and asterisks (which cause regular expression error)
-const sanitizedString = inputString => inputString.toLowerCase()
-    .replace(/ /g, '') // remove spaces (to allow multiple word searches)
-    .replace(/[*?()+[\]\\/]/g, ''); // remove certain special characters (these cause console errors)
 
 
 /**

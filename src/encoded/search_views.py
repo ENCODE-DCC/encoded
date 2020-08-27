@@ -45,6 +45,8 @@ def includeme(config):
     config.add_route('sescc-stem-cell-matrix', '/sescc-stem-cell-matrix{slash:/?}')
     config.add_route('chip-seq-matrix', '/chip-seq-matrix{slash:/?}')
     config.add_route('mouse-development-matrix', '/mouse-development-matrix{slash:/?}')
+    config.add_route('encore-matrix', '/encore-matrix{slash:/?}')
+    config.add_route('encore-rna-seq-matrix', '/encore-rna-seq-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
     config.scan(__name__)
@@ -357,6 +359,64 @@ def mouse_development(context, request):
             BasicMatrixWithFacetsResponseField(
                 default_item_types=DEFAULT_ITEM_TYPES,
                 matrix_definition_name='mouse_development'
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='encore-matrix', request_method='GET', permission='search')
+def encore_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='ENCORE Matrix'
+            ),
+            TypeResponseField(
+                at_type=['EncoreMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            BasicMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='encore_matrix'
+            ),
+            NotificationResponseField(),
+            FiltersResponseField(),
+            TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='encore-rna-seq-matrix', request_method='GET', permission='search')
+def encore_rna_seq_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='ENCORE RNA-seq Matrix'
+            ),
+            TypeResponseField(
+                at_type=['EncoreRnaSeqMatrix']
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(),
+            ContextResponseField(),
+            MissingMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                matrix_definition_name='encore_rna_seq_matrix'
             ),
             NotificationResponseField(),
             FiltersResponseField(),

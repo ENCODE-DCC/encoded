@@ -863,5 +863,15 @@
         "submitted_by": "elementum.mus@dictumst.nostra",
         "technical_replicate_number": 1,
         "uuid": "9287fe0e-59a4-45ef-87fb-4b3b285a64c8"
+    },
+    {
+        "aliases": ["eric-lecuyer:R-HepG2-init-Insoluble_1"],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR813BDU",
+        "library": "ENCLB414HBO",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "technical_replicate_number": 1,
+        "uuid": "6c430a38-35b9-4a67-8506-1c8c1871a9a9"
     }
 ]
