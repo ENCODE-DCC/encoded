@@ -1,0 +1,106 @@
+{
+    "title": "Sequencing run",
+    "description": "Schema for submitting metadata for a sequencing run.",
+    "id": "/profiles/sequencing_run.json", 
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "identifyingProperties": ["uuid", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/uuid"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The experimental library designation for the file.",
+            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Library"
+        },
+        "platform": {
+            "title": "Platform",
+            "description": "The device used to sequence data.",
+            "type": "string",
+            "enum": [
+                "Illumina NovaSeq 6000",
+                "Illumina HiSeq 4000",
+                "Illumina HiSeq 2500"
+            ]
+        },
+        "flowcell_details": {
+            "title": "Flowcell details",
+            "description": "For each sequence file, the machine id, flowcell, and lane information for the sequencing run.",
+            "comment": "Enter values with their property labels, “machine: NNNNNN, flowcell: NNNNNNNNNN, lane: #”.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "read_1_file": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "read_1N_file": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "read_2_file": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "read_2N_file": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "i5_index_file": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        },
+        "i7_index_file": {
+            "title": "",
+            "description": "",
+            "type": "string",
+            "linkTo": "RawSequenceFile"
+        }
+    },
+    "facets": {},
+    "columns": {},
+    "boost_values": {},
+    "changelog": "/profiles/changelogs/sequencing_run.md"
+}
