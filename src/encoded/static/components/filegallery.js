@@ -1630,7 +1630,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
             if (allMissingFiles.indexOf(fileId) === -1) {
                 const fileNodeId = `file:${fileId}`;
                 const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
-                const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''} ${highlightToggle ? ' highlight' : ''}`;
+                const fileCssClass = `pipeline-node-file contributing${infoNode && infoNode.id === fileNodeId ? ' active' : ''} ${highlightToggle ? ' highlight' : ''}`;
 
                 jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                     cssClass: fileCssClass,
@@ -1639,6 +1639,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                     cornerRadius: 16,
                     contributing: fileId,
                     ref: {},
+                    decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
                 });
             }
         } else {
@@ -1674,6 +1675,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 cornerRadius: 16,
                 parentNode: replicateNode,
                 ref: fileRef,
+                decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
             }, metricsInfo);
 
             // Figure out the analysis step we need to render between the node we just rendered and its
@@ -1715,11 +1717,14 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                         fileId: file['@id'],
                         fileAccession: file.title,
                         stepVersion: file.analysis_step_version,
+                        decorationClass: infoNode && infoNode.id === stepId ? 'decoration--active' : '',
                     });
                 }
 
                 // Connect the file to the step, and the step to the derived_from files
-                jsonGraph.addEdge(stepId, fileNodeId);
+                const infoNodeId = infoNode && infoNode.id;
+                const fileNodeHighlighted = (infoNodeId === fileNodeId) || (infoNodeId === stepId);
+                jsonGraph.addEdge(stepId, fileNodeId, { class: fileNodeHighlighted ? 'highlighted' : '' });
                 file.derived_from.forEach((derivedFromAtId) => {
                     if (!allDerivedFroms[derivedFromAtId]) {
                         return;
@@ -1728,8 +1733,9 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                     if (derivedFromFile) {
                         // Not derived from a contributing file; just add edges normally.
                         const derivedFileId = `file:${derivedFromAtId}`;
+                        const derivedFileNodeHighlighted = (infoNodeId === derivedFileId) || (infoNodeId === stepId);
                         if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                            jsonGraph.addEdge(derivedFileId, stepId);
+                            jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'highlighted' : '' });
                         }
                     } else {
                         // File derived from a contributing file; add edges to a coalesced node
@@ -1738,13 +1744,15 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                         if (coalescedContributing) {
                             // Rendering a coalesced contributing file.
                             const derivedFileId = `coalesced:${coalescedContributing}`;
+                            const derivedFileNodeHighlighted = (infoNodeId === derivedFileId) || (infoNodeId === stepId);
                             if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId);
+                                jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'highlighted' : '' });
                             }
                         } else if (usedContributingFiles[derivedFromAtId]) {
                             const derivedFileId = `file:${derivedFromAtId}`;
+                            const derivedFileNodeHighlighted = (infoNodeId === derivedFileId) || (infoNodeId === stepId);
                             if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                                jsonGraph.addEdge(derivedFileId, stepId);
+                                jsonGraph.addEdge(derivedFileId, stepId, { class: derivedFileNodeHighlighted ? 'highlighted' : '' });
                             }
                         }
                     }
@@ -1758,7 +1766,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         const coalescingGroup = coalescingGroups[groupHash];
         if (coalescingGroup.length > 0) {
             const fileNodeId = `coalesced:${groupHash}`;
-            const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
+            const fileCssClass = `pipeline-node-file contributing${infoNode && infoNode.id === fileNodeId ? ' active' : ''}`;
             jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
                 cssClass: fileCssClass,
                 type: 'Coalesced',
@@ -1766,6 +1774,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 cornerRadius: 16,
                 contributing: groupHash,
                 ref: coalescingGroup,
+                decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
             });
         }
     });
@@ -2674,9 +2683,18 @@ class FileGalleryRendererComponent extends React.Component {
 
     // Handle a click in a graph node. This also handles clicks on the info button of files in the
     // file table.
-    handleNodeClick(meta) {
-        this.setInfoNodeId(meta);
-        this.setInfoNodeVisible(true);
+    handleNodeClick(meta, openInfoModal) {
+        if (openInfoModal) {
+            // Select the node and open the modal when the user clicks the node.
+            this.setInfoNodeVisible(true);
+            this.setInfoNodeId(meta);
+        } else if (this.state.infoNode && (meta.id === this.state.infoNode.id)) {
+            // If the user had already selected the node, deselect it.
+            this.setInfoNodeId(null);
+        } else {
+            // Select the node without opening the modal when the user clicks the decoration.
+            this.setInfoNodeId(meta);
+        }
     }
 
     closeModal() {

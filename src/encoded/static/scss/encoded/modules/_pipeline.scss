@@ -75,6 +75,7 @@ g.label {
     font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
     font-weight: bold;
     fill: #000;
+    pointer-events: none;
 }
 
 g.node {
@@ -90,11 +91,41 @@ g.node {
             stroke: #a0a0a0;
             stroke-width: 1.5px;
         }
+
+        .decoration {
+            stroke-dasharray: none;
+        }
     }
 
     line {
         stroke: #a0a0a0;
         stroke-width: .5px;
+    }
+
+    .decoration {
+        rect {
+            fill: #e0e0e0;
+        }
+
+        &__border {
+            fill: none;
+            stroke-width: 1px;
+            stroke: #a0a0a0;
+        }
+
+        &__icon {
+            fill: #606060;
+        }
+
+        &.decoration--active {
+            rect {
+                fill: #606060;
+            }
+
+            .decoration__icon {
+                fill: #e0e0e0;
+            }
+        }
     }
 }
 
@@ -118,9 +149,23 @@ g.cluster {
 }
 
 g.edgePath {
-    path {
+    path.path {
         stroke: #c0c0c0;
-        stroke-width: 1.5px;
+        stroke-width: 2px;
+    }
+
+    defs > marker > path {
+        fill: #c0c0c0;
+    }
+
+    &.highlighted {
+        path.path {
+            stroke: #00f;
+        }
+
+        defs > marker > path {
+            fill: #00f;
+        }
     }
 }
 

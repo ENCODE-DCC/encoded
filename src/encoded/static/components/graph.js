@@ -64,11 +64,14 @@ export class JsonGraph {
     // Add edge to the graph architecture
     // source: ID of node for the edge to originate; corresponds to 'id' parm of addNode
     // target: ID of node for the edge to terminate
-    addEdge(source, target) {
+    // options: Object containing options to save in the edge that can be used later when displayed
+    addEdge(source, target, options) {
         const newEdge = {};
         newEdge.id = '';
         newEdge.source = source;
         newEdge.target = target;
+        newEdge.class = options ? options.class : '';
+        newEdge.metadata = _.clone(options);
         this.edges.push(newEdge);
     }
 
@@ -212,6 +215,12 @@ export class Graph extends React.Component {
                     paddingTop: '10',
                     paddingBottom: '10',
                     subnodes: node.subnodes,
+                    decoration: {
+                        id: `${node.id}-highlight`,
+                        position: 'top',
+                        icon: 'arrow-right',
+                        class: node.metadata.decorationClass,
+                    },
                 });
                 if (!parent.root) {
                     subgraph.setParent(node.id, parent.id);
@@ -227,7 +236,7 @@ export class Graph extends React.Component {
 
         // Convert the edges
         jsonGraph.edges.forEach((edge) => {
-            graph.setEdge(edge.source, edge.target, { lineInterpolate: 'basis' });
+            graph.setEdge(edge.source, edge.target, { lineInterpolate: 'basis', class: edge.class });
         });
     }
 
@@ -429,7 +438,7 @@ export class Graph extends React.Component {
         return { viewBoxWidth, viewBoxHeight };
     }
 
-    nodeIdClick(nodeId) {
+    nodeIdClick(nodeId, openInfoModal) {
         let node;
 
         // Find data matching selected node, if any
@@ -438,6 +447,7 @@ export class Graph extends React.Component {
                 // QC subnode.
                 node = this.props.graph.getSubnode(nodeId);
                 node.schemas = this.props.schemas;
+                this.props.nodeClickHandler(node, openInfoModal);
             } else if (nodeId.indexOf('coalesced:') >= 0) {
                 // Coalesced contributing files.
                 const coalescedNode = this.props.graph.getNode(nodeId);
@@ -447,7 +457,7 @@ export class Graph extends React.Component {
                         // We have the requested coalesced files in the cache, so just display
                         // them.
                         coalescedNode.metadata.coalescedFiles = currCoalescedFiles[coalescedNode.metadata.contributing];
-                        node = coalescedNode;
+                        this.props.nodeClickHandler(coalescedNode, openInfoModal);
                     } else if (!this.contributingRequestOutstanding) {
                         // We don't have the requested coalesced files in the cache, so we have to
                         // request them from the DB.
@@ -456,8 +466,7 @@ export class Graph extends React.Component {
                             this.contributingRequestOutstanding = false;
                             currCoalescedFiles[coalescedNode.metadata.contributing] = contributingFiles;
                             coalescedNode.metadata.coalescedFiles = contributingFiles;
-                            this.props.nodeClickHandler(coalescedNode);
-                            node = null;
+                            this.props.nodeClickHandler(coalescedNode, openInfoModal);
                         }).catch(() => {
                             this.contributingRequestOutstanding = false;
                             currCoalescedFiles[coalescedNode.metadata.contributing] = [];
@@ -477,6 +486,7 @@ export class Graph extends React.Component {
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
                             node.metadata.ref = currContributing[node.metadata.contributing];
+                            this.props.nodeClickHandler(node, openInfoModal);
                         } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
                             // the DB.
@@ -485,37 +495,42 @@ export class Graph extends React.Component {
                                 this.contributingRequestOutstanding = false;
                                 currContributing[node.metadata.contributing] = contributingFile[0];
                                 node.metadata.ref = contributingFile[0];
-                                this.props.nodeClickHandler(node);
-                                node = null;
+                                this.props.nodeClickHandler(node, openInfoModal);
                             }).catch(() => {
                                 this.contributingRequestOutstanding = false;
                                 currContributing[node.metadata.contributing] = {};
-                                node = null;
                             });
                         }
+                    } else {
+                        this.props.nodeClickHandler(node, openInfoModal);
                     }
                 }
             }
         }
-
-        // Tell the upper-level rendering component to render the node information.
-        if (node) {
-            this.props.nodeClickHandler(node);
-        }
     }
 
     bindClickHandlers(d3, el) {
-        // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+        // Add click event listeners to each node. The `nodeId` parameters contain the IDs kept in
+        // our JSON graph structure, and attached to each node by d3.
         const svg = d3.select(el);
-        const nodes = svg.selectAll('g.node');
+        const nodes = svg.selectAll('g.node > rect, g.node > g.stack');
         const subnodes = svg.selectAll('g.subnode circle');
+        const highlights = svg.selectAll('g.node > g.decoration');
 
-        nodes.on('click', (nodeId) => {
-            this.nodeIdClick(nodeId);
+        // Attach click handler to arrow-highlighting toggle decorations.
+        highlights.on('click', (nodeId) => {
+            this.nodeIdClick(nodeId, false);
         });
+
+        // Attach click handler to file and step nodes.
+        nodes.on('click', (nodeId) => {
+            this.nodeIdClick(nodeId, true);
+        });
+
+        // Attach click handler to QC bubbles.
         subnodes.on('click', (subnode) => {
             d3.event.stopPropagation();
-            this.nodeIdClick(subnode.id);
+            this.nodeIdClick(subnode.id, true);
         });
     }
 
