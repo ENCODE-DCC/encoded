@@ -5047,11 +5047,13 @@ def create_files_mapping(files_list, excluded):
                     to_return['pseudo_replicated_peaks_files'][
                         file_object['@id']
                     ] = file_object
+
                 if file_format and file_format == 'bed' and file_output and \
                         file_output in ['replicated peaks', 'stable peaks',
                                         'conservative IDR thresholded peaks',
                                         'IDR thresholded peaks']:
                     to_return['overlap_and_idr_peaks'][file_object['@id']] = file_object
+                    
                 if file_output_category == 'raw data':
                     to_return['raw_data'][file_object['@id']] = file_object
                 else:

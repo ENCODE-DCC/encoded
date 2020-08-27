@@ -3918,7 +3918,9 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     testapp.patch_json(
         atac_peak_enrichment_quality_metric_2['@id'],
         {'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']]}
-    )
+        )
+    testapp.patch_json(atac_replication_quality_metric_borderline_replicate_concordance['@id'],
+                       {'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']]})
     res = testapp.get(ATAC_experiment['@id'] + '@@index-data')
     audit_errors = collect_audit_errors(res)
     assert any(error['category'] == 'low alignment rate' for error in audit_errors)
@@ -3931,6 +3933,7 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'low FRiP score' for error in audit_errors)
     assert any(error['category'] == 'negative RSC' for error in audit_errors)
     assert any(error['category'] == 'negative NSC' for error in audit_errors)
+    assert 'borderline replicate concordance' not in (error['category'] for error in collect_audit_errors(res))
 
     testapp.patch_json(atac_replication_quality_metric_borderline_replicate_concordance['@id'],
                        {'quality_metric_of': [file_bed_replicated_peaks_atac['@id']]})
