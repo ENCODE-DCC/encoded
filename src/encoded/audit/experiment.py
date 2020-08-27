@@ -4572,7 +4572,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
             else:
                 for metric in f_replication_metrics:
                     if 'reproducible_peaks' in metric:
-                        if output_type == 'stable peaks':
+                        if output_type == 'pseudo-replicated peaks':
                             peaks_report[replicates]['rep_peaks'] = metric['reproducible_peaks']
                             peaks_report[replicates]['rep_peaks_file'] = f['@id']
                             if metric['reproducible_peaks'] > 150000:
@@ -4613,7 +4613,6 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
             yield AuditFailure('moderate number of reproducible peaks', detail, level='WARNING')
         elif 'not_compliant' in report.values():
             yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
-
 
 
 def audit_analysis_files(value, system, files_structure):
@@ -5049,7 +5048,7 @@ def create_files_mapping(files_list, excluded):
                     ] = file_object
 
                 if file_format and file_format == 'bed' and file_output and \
-                        file_output in ['replicated peaks', 'stable peaks',
+                        file_output in ['replicated peaks', 'pseudo-replicated peaks',
                                         'conservative IDR thresholded peaks',
                                         'IDR thresholded peaks']:
                     to_return['overlap_and_idr_peaks'][file_object['@id']] = file_object
