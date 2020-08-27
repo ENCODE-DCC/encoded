@@ -48,11 +48,6 @@ Feature: Cart
         When I press "raw"
         Then I should see "Download raw data files"
 
-    Scenario: Dirty cart
-        When I visit "/search/?type=Experiment"
-        And I dismiss the alert
-        Then the browser's URL should be "/cart-view/"
-
     Scenario: Clearing the cart 
         When I press "clear-cart-actuator"
         Then I should see an element with the css selector ".modal"
