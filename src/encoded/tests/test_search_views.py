@@ -206,15 +206,11 @@ def test_search_views_search_quick_view_specify_field(index_workbook, testapp):
     assert len(r.json['@graph'][0].keys()) == 2
 
 
-def test_search_generator(index_workbook, threadlocals, dummy_request):
-    from snovault.elasticsearch.searches.parsers import ParamsParser
-    from snovault.elasticsearch import ELASTIC_SEARCH
-    from elasticsearch import Elasticsearch
+def test_search_views_search_generator(index_workbook, dummy_request):
     from types import GeneratorType
     dummy_request.environ['QUERY_STRING'] = (
         'type=*&limit=all'
     )
-    dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch(port=9201)
     from encoded.search_views import search_generator
     r = search_generator(dummy_request)
     assert '@graph' in r
@@ -225,15 +221,11 @@ def test_search_generator(index_workbook, threadlocals, dummy_request):
     assert '@id' in hits[0]
 
 
-def test_search_generator_field_specified(index_workbook, threadlocals, dummy_request):
-    from snovault.elasticsearch.searches.parsers import ParamsParser
-    from snovault.elasticsearch import ELASTIC_SEARCH
-    from elasticsearch import Elasticsearch
+def test_search_views_search_generator_field_specified(index_workbook, dummy_request):
     from types import GeneratorType
     dummy_request.environ['QUERY_STRING'] = (
         'type=Experiment&field=@id&limit=5'
     )
-    dummy_request.registry[ELASTIC_SEARCH] = Elasticsearch(port=9201)
     from encoded.search_views import search_generator
     r = search_generator(dummy_request)
     assert '@graph' in r

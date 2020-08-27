@@ -85,7 +85,7 @@ const MARKER_FOR_NEWLY_LOADED_FACET_PREFIX = 'MARKER_FOR_NEWLY_LOADED_FACETS_';
 /**
  * Maximum  downloadable result count
  */
-const MAX_DOWNLOADABLE_RESULT = 500;
+const MAX_DOWNLOADABLE_RESULT = 5000000;
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:

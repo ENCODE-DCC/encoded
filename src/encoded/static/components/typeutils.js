@@ -10,7 +10,7 @@ import { BatchDownloadControls } from './view_controls';
 
 
 // Maximum number of files before the user can't download them.
-const MAX_DOWNLOADABLE_FILES = 1000;
+const MAX_DOWNLOADABLE_FILES = 5000000;
 
 
 // BIOSAMPLE UTILITIES

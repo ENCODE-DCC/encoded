@@ -66,8 +66,8 @@ METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
                 'files.replicate.rbns_protein_concentration_units'
             ]
         ),
-        ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
-        ('Library size range', ['files.replicate.library.size_range']),
+        ('Library fragmentation method', ['replicates.library.fragmentation_methods']),
+        ('Library size range', ['replicates.library.size_range']),
         ('Biological replicate(s)', ['files.biological_replicates']),
         ('Technical replicate(s)', ['files.technical_replicates']),
         ('Read length', ['files.read_length']),
@@ -130,7 +130,7 @@ ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Derived from', ['files.derived_from']),
         ('S3 URL', ['files.cloud_metadata.url']),
         ('Size', ['files.file_size']),
-        ('No File Available', ['file.no_file_available']),
+        ('No File Available', ['files.no_file_available']),
         ('Restricted', ['files.restricted'])
     ]
 )
@@ -164,3 +164,28 @@ PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
         ('Restricted', ['files.restricted'])
     ]
 )
+
+
+BATCH_DOWNLOAD_COLUMN_TO_FIELDS_MAPPING = OrderedDict(
+    [
+        ('File download URL', ['files.href']),
+    ]
+)
+
+
+METADATA_LINK = '"{}/metadata/?{}"'
+
+
+AT_IDS_AS_JSON_DATA_LINK = (
+    ' -X GET '
+    '-H "Accept: text/tsv" '
+    '-H "Content-Type: application/json" '
+    '--data \'{{"elements": [{}]}}\''
+)
+
+
+
+BOOLEAN_MAP = {
+    'true': True,
+    'false': False
+}

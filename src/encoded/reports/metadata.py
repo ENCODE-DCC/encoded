@@ -1,13 +1,16 @@
-import csv
-
 from collections import defaultdict
 from collections import OrderedDict
-from functools import wraps
 from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_AUDIT_TO_AUDIT_COLUMN_MAPPING
 from encoded.reports.constants import PUBLICATION_DATA_METADATA_COLUMN_TO_FIELDS_MAPPING
+from encoded.reports.csv import CSVGenerator
+from encoded.reports.decorators import allowed_types
+from encoded.reports.search import BatchedSearchGenerator
+from encoded.reports.serializers import make_experiment_cell
+from encoded.reports.serializers import make_file_cell
+from encoded.reports.serializers import map_strings_to_booleans_and_ints
 from encoded.search_views import search_generator
 from encoded.vis_defines import is_file_visualizable
 from pyramid.httpexceptions import HTTPBadRequest
@@ -22,80 +25,20 @@ def includeme(config):
     config.scan(__name__)
 
 
-def allowed_types(types):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(context, request):
-            qs = QueryString(request)
-            type_filters = qs.get_type_filters()
-            if len(type_filters) != 1:
-                raise HTTPBadRequest(
-                    explanation='URL requires one type parameter.'
-                )
-            if type_filters[0][1] not in types:
-                raise HTTPBadRequest(
-                    explanation=f'{type_filters[0][1]} not a valid type for endpoint.'
-                )
-            return func(context, request)
-        return wrapper
-    return decorator
-
-
-def make_experiment_cell(paths, experiment):
-    last = []
-    for path in paths:
-        cell_value = []
-        for value in simple_path_ids(experiment, path):
-            if str(value) not in cell_value:
-                cell_value.append(str(value))
-        if last and cell_value:
-            last = [
-                v + ' ' + cell_value[0]
-                for v in last
-            ]
-        else:
-            last = cell_value
-    return ', '.join(set(last))
-
-
-def make_file_cell(paths, file_):
-    # Quick return if one level deep.
-    if len(paths) == 1 and '.' not in paths[0]:
-        value = file_.get(paths[0], '')
-        if isinstance(value, list):
-            return ', '.join([str(v) for v in value])
-        return value
-    # Else crawl nested objects.
-    last = []
-    for path in paths:
-        cell_value = []
-        for value in simple_path_ids(file_, path):
-            cell_value.append(str(value))
-        if last and cell_value:
-            last = [
-                v + ' ' + cell_value[0]
-                for v in last
-            ]
-        else:
-            last = cell_value
-    return ', '.join(sorted(set(last)))
-
-
-def file_matches_file_params(file_, positive_file_param_list):
-    # Expects file_param_list where 'files.' has been
+def file_matches_file_params(file_, positive_file_param_set):
+    # Expects file_param_set where 'files.' has been
     # stripped off of key (files.file_type -> file_type)
     # and params with field negation (i.e. file_type!=bigWig)
-    # have been filtered out.
-    for k, v in positive_file_param_list.items():
-        if '.' in k:
-            file_prop_value = list(simple_path_ids(file_, k))
-        else:
-            file_prop_value = file_.get(k)
-        if not file_prop_value:
+    # have been filtered out. Param values should be
+    # coerced to ints ('2' -> 2) or booleans ('true' -> True)
+    # and put into a set for comparison with file values.
+    for field, set_of_param_values in positive_file_param_set.items():
+        file_value = list(simple_path_ids(file_, field))
+        if not file_value:
             return False
-        if isinstance(file_prop_value, list):
-            return any([str(x) in v for x in file_prop_value])
-        if str(file_prop_value) not in v:
+        if '*' in set_of_param_values:
+            continue
+        if not set_of_param_values.intersection(file_value):
             return False
     return True
 
@@ -123,14 +66,22 @@ class MetadataReport:
     DEFAULT_PARAMS = [
         ('field', 'audit'),
         ('field', 'files.@id'),
+        ('field', 'files.restricted'),
+        ('field', 'files.no_file_available'),
+        ('field', 'files.file_format'),
+        ('field', 'files.file_format_type'),
+        ('field', 'files.status'),
+        ('field', 'files.assembly'),
         ('limit', 'all'),
     ]
+    CONTENT_TYPE = 'text/tsv'
+    CONTENT_DISPOSITION = 'attachment; filename="metadata.tsv"'
 
     def __init__(self, request):
         self.request = request
         self.query_string = QueryString(request)
         self.param_list = self.query_string.group_values_by_key()
-        self.positive_file_param_list = {}
+        self.positive_file_param_set = {}
         self.header = []
         self.experiment_column_to_fields_mapping = OrderedDict()
         self.file_column_to_fields_mapping = OrderedDict()
@@ -158,17 +109,28 @@ class MetadataReport:
             else:
                 self.experiment_column_to_fields_mapping[column] = fields
 
-    def _set_positive_file_param_list(self):
-        self.positive_file_param_list = {
-            k.replace('files.', ''): v
+    def _set_positive_file_param_set(self):
+        self.positive_file_param_set = {
+            k.replace('files.', ''): set(map_strings_to_booleans_and_ints(v))
             for k, v in self.param_list.items()
             if k.startswith('files.') and '!' not in k
         }
 
+    def _add_positive_file_filters_as_fields_to_param_list(self):
+        self.param_list['field'] = self.param_list.get('field', [])
+        self.param_list['field'].extend(
+            (
+                k
+                for k, v in self.query_string._get_original_params()
+                if k.startswith('files.') and '!' not in k
+            )
+        )
+
     def _add_fields_to_param_list(self):
-        self.param_list['field'] = []
+        self.param_list['field'] = self.param_list.get('field', [])
         for column, fields in self._get_column_to_fields_mapping().items():
             self.param_list['field'].extend(fields)
+        self._add_positive_file_filters_as_fields_to_param_list()
 
     def _initialize_at_id_param(self):
         self.param_list['@id'] = self.param_list.get('@id', [])
@@ -186,13 +148,16 @@ class MetadataReport:
                     cart.get('elements', [])
                 )
 
-    def _maybe_add_json_elements_to_param_list(self):
+    def _get_json_elements_or_empty_list(self):
         try:
-            self.param_list['@id'].extend(
-                self.request.json.get('elements', [])
-            )
+            return self.request.json.get('elements', [])
         except ValueError:
-            pass
+            return []
+
+    def _maybe_add_json_elements_to_param_list(self):
+        self.param_list['@id'].extend(
+            self._get_json_elements_or_empty_list()
+        )
 
     def _get_field_params(self):
         return [
@@ -221,23 +186,6 @@ class MetadataReport:
     def _get_search_path(self):
         return self.SEARCH_PATH
 
-    def _validate_request(self):
-        type_params = self.param_list.get('type', [])
-        if len(type_params) != 1:
-            raise HTTPBadRequest(explanation='URL requires one "type" parameter.')
-        return True
-
-    def _initialize_report(self):
-        self._build_header()
-        self._split_column_and_fields_by_experiment_and_file()
-        self._set_positive_file_param_list()
-
-    def _build_params(self):
-        self._add_fields_to_param_list()
-        self._initialize_at_id_param()
-        self._maybe_add_cart_elements_to_param_list()
-        self._maybe_add_json_elements_to_param_list()
-
     def _build_new_request(self):
         self._build_query_string()
         request = self.query_string.get_request_with_new_query_string()
@@ -246,13 +194,13 @@ class MetadataReport:
         return request
 
     def _get_search_results_generator(self):
-        return search_generator(
+        return BatchedSearchGenerator(
             self._build_new_request()
-        )
+        ).results()
 
     def _should_not_report_file(self, file_):
         conditions = [
-            not file_matches_file_params(file_, self.positive_file_param_list),
+            not file_matches_file_params(file_, self.positive_file_param_set),
             self.visualizable_only and not is_file_visualizable(file_),
             self.raw_only and file_.get('assembly'),
             file_.get('restricted'),
@@ -296,7 +244,7 @@ class MetadataReport:
 
     def _generate_rows(self):
         yield self.csv.writerow(self.header)
-        for experiment in self._get_search_results_generator()['@graph']:
+        for experiment in self._get_search_results_generator():
             if not experiment.get('files', []):
                 continue
             grouped_file_audits, grouped_other_audits = group_audits_by_files_and_type(
@@ -316,14 +264,31 @@ class MetadataReport:
                     self._output_sorted_row(experiment_data, file_data)
                 )
 
+    def _validate_request(self):
+        type_params = self.param_list.get('type', [])
+        if len(type_params) != 1:
+            raise HTTPBadRequest(explanation='URL requires one "type" parameter.')
+        return True
+
+    def _initialize_report(self):
+        self._build_header()
+        self._split_column_and_fields_by_experiment_and_file()
+        self._set_positive_file_param_set()
+
+    def _build_params(self):
+        self._add_fields_to_param_list()
+        self._initialize_at_id_param()
+        self._maybe_add_cart_elements_to_param_list()
+        self._maybe_add_json_elements_to_param_list()
+
     def generate(self):
         self._validate_request()
         self._initialize_report()
         self._build_params()
         return Response(
-             content_type='text/tsv',
+             content_type=self.CONTENT_TYPE,
              app_iter=self._generate_rows(),
-             content_disposition='attachment;filename=metadata.tsv'
+             content_disposition=self.CONTENT_DISPOSITION,
         )
 
 
@@ -349,7 +314,14 @@ class PublicationDataMetadataReport(MetadataReport):
     DEFAULT_FILE_PARAMS = [
         ('type', 'File'),
         ('limit', 'all'),
-        ('field', '@id')
+        ('field', '@id'),
+        ('field', 'href'),
+        ('field', 'restricted'),
+        ('field', 'no_file_available'),
+        ('field', 'file_format'),
+        ('field', 'file_format_type'),
+        ('field', 'status'),
+        ('field', 'assembly'),
     ]
 
     def __init__(self, request):
@@ -446,7 +418,7 @@ class PublicationDataMetadataReport(MetadataReport):
     # Overrides parent.
     def _generate_rows(self):
         yield self.csv.writerow(self.header)
-        for experiment in self._get_search_results_generator()['@graph']:
+        for experiment in self._get_search_results_generator():
             self.file_at_ids = experiment.get('files', [])
             if not self.file_at_ids:
                 continue
@@ -458,69 +430,6 @@ class PublicationDataMetadataReport(MetadataReport):
                 yield self.csv.writerow(
                     self._output_sorted_row(experiment_data, file_data)
                 )
-
-
-class CSVGenerator:
-
-    def __init__(self, delimiter='\t', lineterminator='\n'):
-        self.writer = csv.writer(
-            self,
-            delimiter=delimiter,
-            lineterminator=lineterminator
-        )
-
-    def writerow(self, row):
-        self.writer.writerow(row)
-        return self.row
-
-    def write(self, row):
-        self.row = row.encode('utf-8')
-
-
-class BatchedSearchGenerator:
-
-    SEARCH_PATH = '/search/'
-    DEFAULT_PARAMS = [
-        ('limit', 'all')
-    ]
-
-    def __init__(self, request, batch_field='@id', batch_size=5000):
-        self.request = request
-        self.batch_field = batch_field
-        self.batch_size = batch_size
-        self.query_string = QueryString(request)
-        self.param_list = self.query_string.group_values_by_key()
-        self.batch_param_values = self.param_list.get(batch_field, []).copy()
-
-    def _make_batched_values_from_batch_param_values(self):
-        end = len(self.batch_param_values)
-        for start in range(0, end, self.batch_size):
-            yield self.batch_param_values[start:min(start + self.batch_size, end)]
-
-    def _make_batched_params_from_batched_values(self, batched_values):
-        return [
-            (self.batch_field, batched_value)
-            for batched_value in batched_values
-        ]
-
-    def _build_new_request(self, batched_params):
-        self.query_string.drop('limit')
-        self.query_string.drop(self.batch_field)
-        self.query_string.extend(
-            batched_params + self.DEFAULT_PARAMS
-        )
-        request = self.query_string.get_request_with_new_query_string()
-        request.path_info = self.SEARCH_PATH
-        request.registry = self.request.registry
-        return request
-
-    def results(self):
-        if not self.batch_param_values:
-            yield from search_generator(self._build_new_request([]))['@graph']
-        for batched_values in self._make_batched_values_from_batch_param_values():
-            batched_params = self._make_batched_params_from_batched_values(batched_values)
-            request = self._build_new_request(batched_params)
-            yield from search_generator(request)['@graph']
 
 
 def _get_metadata(context, request):
@@ -551,7 +460,7 @@ def metadata_report_factory(context, request):
         return _get_metadata(context, request)
 
 
-@view_config(route_name='metadata', request_method='GET')
+@view_config(route_name='metadata', request_method=['GET', 'POST'])
 @allowed_types(METADATA_ALLOWED_TYPES)
 def metadata_tsv(context, request):
     return metadata_report_factory(context, request)

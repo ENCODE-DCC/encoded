@@ -12,6 +12,7 @@ pytestmark = [
     pytest.mark.usefixtures('indexer_testapp'),
 ]
 
+
 def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
