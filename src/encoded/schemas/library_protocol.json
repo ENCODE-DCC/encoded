@@ -287,6 +287,9 @@
         "construction_platform_version": {
             "title": "Platform version"
         },
+        "end_bias": {
+            "title": "End bias"
+        },
         "library_type": {
             "title": "Library type"
         }

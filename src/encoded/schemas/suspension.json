@@ -1,12 +1,12 @@
 {
     "title": "Suspension",
     "description": "Schema for submitting a cell or nucleus suspension.",
-    "comment": "",
     "id": "/profiles/suspension.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["biosample_ontology", "derived_from", "derivation_process", "suspension_type"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],    "additionalProperties": false,
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},

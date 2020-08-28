@@ -1,22 +1,18 @@
 {
     "title": "Human donor",
     "description": "Schema for submitting a human donor.",
-    "comment":"This object is meant to be one to one with an individual human.",
+    "comment": "This object type is abstract. These properties are inherited by other object types",
     "id": "/profiles/human_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [
         {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/dbxrefs" },
         {"$ref": "donor.json#/properties"}
     ],
     "properties": {
-        "schema_version": {
-            "default": "1"
-        },
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]

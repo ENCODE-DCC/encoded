@@ -1,7 +1,6 @@
 {
     "title": "Human postnatal donor",
     "description": "Schema for submitting a postnatal human donor.",
-    "comment":"This object is meant to be one to one with an individual human.",
     "id": "/profiles/human_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -152,7 +151,7 @@
         "sex": {
             "title": "Sex"
         },
-        "ethnicity": {
+        "ethnicity.term_name": {
             "title": "Ethnicity"
         },
         "status": {
@@ -175,23 +174,11 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "ethnicity": {
+        "ethnicity.term_name": {
             "title": "Ethnicity"
         },
         "body_mass_index": {
             "title": "BMI"
-        },
-        "times_pregnant": {
-            "title": "Number of times pregnant"
-        },
-        "family_history_breast_cancer": {
-            "title": "Family history of breast cancer"
-        },
-        "smoking_history": {
-            "title": "Smoking history"
-        },
-        "alochol_history": {
-            "title": "Alcohol history"
         },
         "status": {
             "title": "Status"

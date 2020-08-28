@@ -1,5 +1,6 @@
 {
     "title": "Treatment",
+    "description": "Schema for describing a treatment applied at a point in the experimental protocol.",
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -175,6 +176,28 @@
             "title": "Status"
         }
     },
+    "columns": {
+        "treatment_term_name": {
+            "title": "Treatment name"
+        },
+        "treatment_type": {
+            "title": "Treatment type"
+        },
+        "purpose": {
+            "title": "Purpose"
+        },
+        "duration": {
+            "title": "Duration"
+        },
+        "duration_units": {
+            "title": "Duration units"
+        },
+        "amount": {
+            "title": "Amount"
+        },
+        "amount_units": {
+            "title": "Amount units"
+        }
+    },
     "changelog": "/profiles/changelogs/treatment.md"
-
 }

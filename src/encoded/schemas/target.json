@@ -251,7 +251,5 @@
             "title": "Gene symbol"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/target.md"
-
 }

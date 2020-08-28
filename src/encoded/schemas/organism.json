@@ -1,5 +1,6 @@
 {
     "title": "Organism",
+    "description": "Schema for information describing a species",
     "id": "/profiles/organism.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -40,6 +41,16 @@
             "title": "Status"
         }
     },
-    "boost_values": {},
+    "columns": {
+        "name": {
+            "title": "Name"
+        },
+        "scientific_name": {
+            "title": "Scientific name"
+        },
+        "ncbi_taxon_id": {
+            "title": "NCBI taxon ID"
+        }
+    },
     "changelog": "/profiles/changelogs/organism.md"
 }

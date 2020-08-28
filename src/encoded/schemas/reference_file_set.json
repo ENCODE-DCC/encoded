@@ -69,23 +69,8 @@
         "status": {
             "title": "Status"
         },
-        "assembly": {
-            "title": "Genome assembly"
-        },
         "files.file_type": {
             "title": "Available file types"
-        },
-        "files.run_type": {
-            "title": "Run type"
-        },
-        "files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "lab.title": {
-            "title": "Lab"
         }
     },
     "columns": {
@@ -97,16 +82,10 @@
             "title": "Description",
             "type": "string"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
-        },
         "status": {
             "title": "Status",
             "type": "string"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/reference_file_set.md"
-
 }

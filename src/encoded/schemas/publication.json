@@ -119,7 +119,6 @@
             "title": "Identifiers"
         }
     },
-    "boost_values": {},
     "sort_by": {
         "publication_year": {
             "unmapped_type": "keyword",

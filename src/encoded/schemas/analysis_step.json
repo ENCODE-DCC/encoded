@@ -5,8 +5,8 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_label", "analysis_step_types"],
-    "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases"],
+    "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/schema_version" },
@@ -96,6 +96,26 @@
     "facets": {
         "status": {
             "title": "Status"
+        },
+        "analysis_step_types": {
+            "title": "Analysis step types"
+        },
+        "software_versions": {
+            "title": "Software versions"
+        }
+    },
+    "columns": {
+        "step_label": {
+            "title": "Step label"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "analysis_step_types": {
+            "title": "Analysis step types"
+        },
+        "software_versions": {
+            "title": "Software versions"
         }
     },
     "changelog": "/profiles/changelogs/analysis_step.md"

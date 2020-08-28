@@ -1,7 +1,6 @@
 {
     "title": "Tissue",
     "description": "Schema for submitting a tissue sample.",
-    "comment": "",
     "id": "/profiles/tissue.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",

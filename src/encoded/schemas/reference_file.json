@@ -231,32 +231,23 @@
         "status": {
             "title": "Status"
         },
-        "output_category": {
-            "title": "Output category"
+        "organism.name": {
+            "title": "Organism"
         },
-        "output_type": {
+        "reference_version": {
+            "title": "Reference version"
+        },
+        "gene_biotypes_included": {
+            "title": "Gene biotypes included"
+        },
+        "output_types": {
             "title": "Output type"
         },
         "file_format": {
             "title": "File format"
         },
-        "file_format_type": {
-            "title": "File format type"
-        },
         "file_type": {
             "title": "File type"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "typeahead"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample term name",
-            "type": "typeahead",
-            "length": "long"
         }
     },
     "columns": {
@@ -269,53 +260,26 @@
         "dataset": {
             "title": "Dataset"
         },
+        "organism.name": {
+            "title": "Organism"
+        },
+        "reference_version": {
+            "title": "Reference version"
+        },
+        "gene_biotypes_included": {
+            "title": "Gene biotypes included"
+        },
         "file_format": {
             "title": "File Format"
         },
         "file_type": {
             "title": "File type"
         },
-        "file_format_type": {
-            "title": "File format type"
-        },
         "file_size": {
             "title": "File size"
         },
-        "assay_term_name": {
-            "title": "Assay term name"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample name"
-        },
         "href": {
             "title": "Download URL"
-        },
-        "library.accession": {
-            "title": "Library"
-        },
-        "paired_end": {
-            "title": "Paired end identifier"
-        },
-        "paired_with": {
-            "title": "Paired with"
-        },
-        "run_type": {
-            "title": "Run type"
-        },
-        "read_length": {
-            "title": "Read length"
-        },
-        "read_length_units": {
-            "title": "Read length units"
-        },
-        "output_category": {
-            "title": "Output category"
-        },
-        "output_type": {
-            "title": "Output type"
-        },
-        "lab.title": {
-            "title": "Lab"
         },
         "date_created": {
             "title": "Date created"
@@ -327,12 +291,6 @@
             "title": "Status"
         }
     },
-    "output_type_output_category": {
-        "reads": "raw data",
-        "index reads": "raw data",
-        "rejected reads": "raw data",
-        "subreads": "raw data"
-    },
     "file_format_file_extension": {
         "fasta": ".fasta.gz",
         "gtf": ".gtf",
@@ -340,6 +298,5 @@
         "tar": ".tgz",
         "idx": ".idx"
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/reference_file.md"
 }

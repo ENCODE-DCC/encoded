@@ -51,5 +51,16 @@
             "title": "Status"
         }
     },
+    "columns": {
+        "software": {
+            "title": "Software"
+        },
+        "version": {
+            "title": "Version"
+        },
+        "downloaded_url": {
+            "title": "URL"
+        }
+    },
     "changelog": "/profiles/changelogs/software_version.md"
 }

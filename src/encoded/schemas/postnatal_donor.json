@@ -1,21 +1,17 @@
 {
     "title": "Postnatal donor",
     "description": "Base schema for donors or strains.",
-    "comment": "Human donors and model organism strains derive from this base object.",
+    "comment": "This object type is abstract. These properties are inherited by other object types",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [
         {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "donor.json#/properties"}
     ],
     "properties": {
-        "schema_version": {
-            "hidden comment": "Bump the default in the subclasses."
-        },
         "age": {
             "title": "Age",
             "description": "The age or age range of the donor when biological material was sampled.",

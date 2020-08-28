@@ -249,7 +249,26 @@
             }
         }
     },
-    "facets": {},
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "output_types": {
+            "title": "Output type"
+        },
+        "file_format": {
+            "title": "File format"
+        },
+        "file_type": {
+            "title": "File type"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
+        }
+    },
     "columns": {
         "title": {
             "title": "Title"
@@ -263,33 +282,15 @@
         "assembly": {
             "title": "Genome assembly"
         },
-        "technical_replicates": {
-            "title": "Technical replicates"
-        },
-        "biological_replicates": {
-            "title": "Biological replicates"
-        },
         "file_format": {
             "title": "File Format"
         },
         "file_type": {
             "title": "File type"
         },
-        "file_format_type": {
-            "title": "File format type"
-        },
         "file_size": {
             "title": "File size"
         },
-        "assay_term_name": {
-            "title": "Assay term name"
-        },
-        "biosample_ontology.term_name": {
-            "title": "Biosample name"
-        },
-        "target.label": {
-            "title": "Target label"
-        },    
         "href": {
             "title": "Download URL"
         },
@@ -299,47 +300,17 @@
         "genome_annotation": {
             "title": "Genome annotation"
         },
-        "replicate.library.accession": {
-            "title": "Library"
-        },
-        "paired_end": {
-            "title": "Paired end identifier"
-        },
-        "paired_with": {
-            "title": "Paired with"
-        },
-        "run_type": {
-            "title": "Run type"
-        },
-        "read_length": {
-            "title": "Read length"
-        },
-        "mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "read_length_units": {
-            "title": "Read length units"
-        },
         "output_types": {
             "title": "Output types"
-        },
-        "quality_metrics": {
-            "title": "QC Metric"
         },
         "lab.title": {
             "title": "Lab"
         },
-        "step_run": {
-            "title": "Analysis step run"
+        "award.name": {
+            "title": "Award"
         },
-        "date_created": {
-            "title": "Date created"
-        },
-        "analysis_step_version": {
-            "title": "Analysis step version"
-        },
-        "restricted": {
-            "title": "Restricted file"
+        "analysis_step": {
+            "title": "Analysis step"
         },
         "submitter_comment": {
             "title": "Submitter comment"
@@ -353,6 +324,5 @@
         "csv": ".csv.gz",
         "loom": ".loom"
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/matrix_file.md"
 }

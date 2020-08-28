@@ -1,7 +1,6 @@
 {
     "title": "Cell Culture",
     "description": "Schema for submitting a sample of cultured cells.",
-    "comment": "",
     "id": "/profiles/cell_culture.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",

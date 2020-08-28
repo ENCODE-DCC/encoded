@@ -1,7 +1,6 @@
 {
     "title": "Mouse postnatal donor",
     "description": "Schema for submitting a postnatal mouse donor.",
-    "comment":"This object is meant to be one to one with an individual mouse.",
     "id": "/profiles/mouse_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
