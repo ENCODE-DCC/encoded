@@ -1,9 +1,30 @@
 [
     {
         "uuid": "0abbd123-b456-433c-b360-93996f679dae",
-        "user": "/users/3787a0ac-f13a-40fc-a524-69628b04cd59/",
+        "user": "/users/332d0e03-a907-4f53-8358-bb00118277c8/",
         "description": "Unencrypted secret key is 'bazqux', hashed using edw_hash. To use with cURL to make admin requests, pass -u foobar:bazqux",
         "access_key_id": "foobar",
         "secret_access_key_hash": "45c9H91zyXXZr4KFADhZzr2QFLgnbDT3OPFZOVFRiNhbYB9OujH5ceZIJn9mEYAe"
+    },
+    {
+        "uuid": "27022ed4-27df-4550-a966-a1360eda1476",
+        "user": "/users/71c7b6d6-f6dd-4ed4-826c-6b3003a8ad9b/",
+        "description": "Unencrypted secret key is 'bridge', hashed using edw_hash. To use with cURL to make admin requests, pass -u famous:bridge",
+        "access_key_id": "famous",
+        "secret_access_key_hash": "aA0LAQ63r7RnXMcvjrOfon7Z6oHi90/3wqm1vdRPvYEvk51x5iKNMdo6vuo9f9aL"
+    },
+    {
+        "uuid": "8c803f40-772d-426e-b8fb-4c1b3d90ee2b",
+        "user": "/users/454435fe-702d-4657-a955-641e5631982c/",
+        "description": "Unencrypted secret key is 'berlin', hashed using edw_hash. To use with cURL to make admin requests, pass -u fourth:berlin",
+        "access_key_id": "fourth",
+        "secret_access_key_hash": "pT2r4FtrFG8i0Ows/W8+9eL5XDOTazFrYtrHbcRGncntyU8pa8MCJkuDlMBapJNW"
+    },
+    {
+        "uuid": "3b970fa2-f7a8-4ae4-81b2-7ca5c8d38512",
+        "user": "d162af00-38d0-4b02-a319-fcaf76a479d2",
+        "description": "Unencrypted secret key is 'button', hashed using edw_hash. To use with cURL to make admin requests, pass -u fabric:button",
+        "access_key_id": "fabric",
+        "secret_access_key_hash": "Je940ivdr0JZS1HL5xjSESq4pCE/YPVSNDaT+0hMxsANHk31mhcXQAuHkjZFr9OQ"
     }
 ]
