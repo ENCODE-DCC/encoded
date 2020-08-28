@@ -284,12 +284,16 @@ g.pipeline-node-qc-metric {
 .quality-metrics-modal {
     @media screen and (min-width: $screen-md-min) {
         display: flex;
+        hr {
+          margin-right: 10px;
+        }
     }
 
     @at-root #{&}__data {
         @media screen and (min-width: $screen-md-min) {
             flex: 0 1 33.33%;
         }
+
     }
 
     @at-root #{&}__attachments {
