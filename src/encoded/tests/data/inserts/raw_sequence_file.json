@@ -2479,45 +2479,6 @@
         "derived_from": "5e13253e-793a-40e8-9f33-d90b25c38f20"
     },
     {
-        "_test": "not in edw test",
-        "_project": "encode3",
-        "accession": "ENCFF001REL",
-        "file_size": 20,
-        "dataset": "ENCSR000AES",
-        "date_created": "2013-06-14T16:46:18.670068+00:00",
-        "file_format": "fastq",
-        "lab": "j-michael-cherry",
-        "md5sum": "8c46ce8ffd6a281a10672352ba9c9514",
-        "output_types": [
-            "assigned reads"
-        ],
-        "read_length": 50,
-        "status": "deleted",
-        "submitted_by": "risus.fermentum@vel.at",
-        "submitted_file_name": "SID38823_AC1HYAACXX_5.txt.gz",
-        "uuid": "06205d4f-be79-4780-a604-60d1375f424b",
-        "derived_from": "a919dbc9-850d-4381-968e-953c61bd7349"
-    },
-    {
-        "_project": "encode3",
-        "accession": "ENCFF001REQ",
-        "file_size": 20,
-        "dataset": "ENCSR000AES",
-        "date_created": "2013-06-13T16:46:18.670068+00:00",
-        "file_format": "fastq",
-        "lab": "j-michael-cherry",
-        "md5sum": "de9e05ad88fea5664f1c5d90815df360",
-        "output_types": [
-            "assigned reads"
-        ],
-        "read_length": 50,
-        "status": "in progress",
-        "submitted_by": "risus.fermentum@vel.at",
-        "submitted_file_name": "SID38822_AC1HYAACXX_5.txt.gz",
-        "uuid": "e984ec73-0db4-4d30-934d-4cfc49096236",
-        "derived_from": "9f7a5be4-3c74-4531-8858-9a87c60302a1"
-    },
-    {
         "read_type": "i7 index",
         "accession": "ENCFF431TKZ",
         "dataset": "ENCSR765JPC",

@@ -135,6 +135,7 @@ class Dataset(Item):
                 exclude=('revoked', 'deleted', 'replaced'),
             )
 
+
     @calculated_property(schema={
         "title": "Files",
         "type": "array",

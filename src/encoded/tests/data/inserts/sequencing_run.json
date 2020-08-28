@@ -336,30 +336,6 @@
         "uuid": "5e13253e-793a-40e8-9f33-d90b25c38f20"
     },
     {
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
-        "platform": "Illumina NovaSeq 6000",
-        "derived_from": "ee512537-05f0-4ac4-a9e6-718aea48f565",
-        "uuid": "a919dbc9-850d-4381-968e-953c61bd7349"
-    },
-    {
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
-        "platform": "Illumina HiSeq 2500",
-        "derived_from": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
-        "uuid": "9f7a5be4-3c74-4531-8858-9a87c60302a1"
-    },
-    {
         "platform": "Illumina NovaSeq 6000",
         "derived_from": "ENCLB742NWU",
         "uuid": "5e359904-f3cd-4760-a1b4-3ca6a6c50563"

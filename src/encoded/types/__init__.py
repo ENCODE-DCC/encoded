@@ -222,7 +222,6 @@ class SequencingRun(Item):
             "notSubmittable": True,
     })
     def read_1_file(self, request, registry, files):
-        conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
             read_type = file_obj.get('read_type')
@@ -236,7 +235,6 @@ class SequencingRun(Item):
             "notSubmittable": True,
     })
     def read_2_file(self, request, registry, files):
-        conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
             read_type = file_obj.get('read_type')
@@ -250,7 +248,6 @@ class SequencingRun(Item):
             "notSubmittable": True,
     })
     def read_1N_file(self, request, registry, files):
-        conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
             read_type = file_obj.get('read_type')
@@ -264,7 +261,6 @@ class SequencingRun(Item):
             "notSubmittable": True,
     })
     def read_2N_file(self, request, registry, files):
-        conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
             read_type = file_obj.get('read_type')
@@ -278,7 +274,6 @@ class SequencingRun(Item):
             "notSubmittable": True,
     })
     def i5_index_file(self, request, registry, files):
-        conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
             read_type = file_obj.get('read_type')
@@ -292,7 +287,6 @@ class SequencingRun(Item):
             "notSubmittable": True,
     })
     def i7_index_file(self, request, registry, files):
-        conn = registry[CONNECTION]
         for file_id in files:
             file_obj = request.embed(file_id, '@@object')
             read_type = file_obj.get('read_type')
