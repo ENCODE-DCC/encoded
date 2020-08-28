@@ -84,7 +84,8 @@
                 "released",
                 "deleted",
                 "replaced",
-                "revoked"
+                "revoked",
+                "archived"
             ]
         }
     },

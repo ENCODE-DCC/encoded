@@ -4,7 +4,7 @@
             "lattice:cellranger-atac-1.2"
         ],
         "uuid": "597ef80a-ae46-4230-b6ff-b97285dac57f",
-        "software": "lattice:cellranger-atac",
+        "software": "cellranger-atac",
         "status": "released",
         "version": "1.2",
         "download_checksum": "30b35f04b68779b87d439fbfadac874e",
@@ -15,7 +15,7 @@
             "lattice:cellranger-aggr-4.0"
         ],
         "uuid": "451c9ce7-654c-4fc7-8b16-409502df6750",
-        "software": "lattice:cellranger-aggr",
+        "software": "cellranger-aggr",
         "status": "released",
         "version": "4.0",
         "download_checksum": "f1ff99a0e536d1c8c311cafbc14359e8",
@@ -26,7 +26,7 @@
             "lattice:cellranger-count-4.0"
         ],
         "uuid": "7363bf79-9573-4a24-9465-2570b72f40e8",
-        "software": "lattice:cellranger-count",
+        "software": "cellranger-count",
         "status": "released",
         "version": "4.0",
         "download_checksum": "f31a81e91afdcf0b84dfee82ec2fb196",

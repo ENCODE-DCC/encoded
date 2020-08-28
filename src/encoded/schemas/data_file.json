@@ -113,25 +113,6 @@
             "type": "string",
             "linkTo": "AnalysisStep"
         },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "permission": "import_items",
-            "default": "uploading",
-            "description": "The status of the file object.",
-            "comment": "Do not submit.  This is set by admins along the process of file submission.",
-            "enum" : [
-                "uploading",
-                "upload failed",
-                "in progress",
-                "released",
-                "archived",
-                "deleted",
-                "replaced",
-                "revoked",
-                "content error"
-            ]
-        },
         "content_error_detail": {
             "title": "Content error detail",
             "description": "Explanation of why the file failed the automated content checks.",

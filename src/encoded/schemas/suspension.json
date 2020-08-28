@@ -48,6 +48,7 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "detergent solubilization",
                     "enzymatic dissociation",
                     "mechanical dissociation",
                     "fluorescence-activated cell sorting",
@@ -88,7 +89,8 @@
                 "trypan blue staining",
                 "calcein-AM green/ethidium homodimer-1 red staining",
                 "free amine staining",
-                "visual inspection"
+                "visual inspection",
+                "SYTOX dead cell stain"
             ]
         },
         "percent_cell_viability": {
@@ -192,13 +194,18 @@
         },
         "dissociation_time_units": {
             "title": "Dissociation time units",
-            "description": "The units of time the tissue was incubated with the dissociation reagent",
+            "description": "The units of time the tissue was incubated with the dissociation reagent.",
             "type": "string",
             "enum": [
                 "second",
                 "minute",
                 "hour"
             ]
+        },
+        "red_blood_cell_lysis": {
+            "title": "Red blood cell lysis",
+            "description": "If true, a red blood cell lysis step was included in the preparation protocol.",
+            "type": "boolean"
         }
     },
     "facets": {

@@ -26,6 +26,7 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/url"},
         {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "data_file.json#/properties"}
     ],
     "dependencies": {

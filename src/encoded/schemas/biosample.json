@@ -134,7 +134,8 @@
             "enum": [
                 "cryopreservation",
                 "flash-freezing",
-                "n/a (fresh)"
+                "n/a (fresh)",
+                "paraffin embedding"
             ]
         },
         "preservation_time": {
@@ -153,6 +154,11 @@
                 "week",
                 "month"
             ]
+        },
+        "fixed": {
+            "title": "Fixed",
+            "description": "If true, the sample underwent a fixation process at some point.",
+            "type": "boolean"
         }
     }
 }

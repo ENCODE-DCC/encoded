@@ -31,9 +31,9 @@
         ],
         "smoking_history": "2 packs a week, 1 year since cessation",
         "alochol_history": "3 drinks a week",
-        "test_results": [
-           {"HIV-1/HBV/HCV": "negative"}
-       ],
+        "test_results": {
+            "HIV-1/HBV/HCV": "negative"
+        },
         "url":"https://virtualtissuebank.iu.edu/data/barcode/K108949/",
         "submitter_comment": "Some comments",
         "notes": "Some notes"
@@ -51,11 +51,11 @@
         "diseases": [
             "MONDO_0003687"
         ],
-        "test_results": [
-            {"Bac/Fung/Myc": "negative"},
-            {"HIV-1/HBV/HCV": "negative"},
-            {"IFTA": "1-10%"}
-        ],
+        "test_results": {
+            "Bac/Fung/Myc": "negative",
+            "HIV-1/HBV/HCV": "negative",
+            "IFTA": "1-10%"
+        },
         "life_stage": "adult",
         "organism": "human",
         "sex": "male",

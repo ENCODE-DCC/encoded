@@ -1,8 +1,5 @@
 [
     {
-        "aliases": [
-            "lattice:cellranger-atac"
-        ],
         "uuid": "444f3442-8d26-4f03-8ee0-3868687b1eea",
         "title": "CellRanger ATAC",
         "name": "cellranger-atac",
@@ -13,9 +10,6 @@
         "status": "released"
     },
     {
-        "aliases": [
-            "lattice:cellranger-aggr"
-        ],
         "uuid": "08bb10e1-be8c-4de7-b494-8c9b5abb80be",
         "title": "CellRanger Aggr",
         "name": "cellranger-aggr",
@@ -26,9 +20,6 @@
         "status": "released"
     },
     {
-        "aliases": [
-            "lattice:cellranger-count"
-        ],
         "uuid": "e5f8d582-5da0-4003-a8a0-7c53bf10f56c",
         "title": "CellRanger Count",
         "name": "cellranger-count",

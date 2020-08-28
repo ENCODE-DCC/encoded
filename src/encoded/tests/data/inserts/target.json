@@ -408,7 +408,6 @@
     },
     {
         "uuid": "670a9892-e1b6-4c31-a79f-7db1919b07f9",
-        "aliases": [],
         "genes": ["34560"],
         "modifications": [{
             "modification": "eGFP",

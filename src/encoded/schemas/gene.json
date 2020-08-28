@@ -128,7 +128,7 @@
             "format": "gene_name",
             "permission": "import_items"
         },
-        "name": {
+        "full_name": {
             "title": "Name",
             "description": "The full gene name preferably approved by the official nomenclature.",
             "type": "string",

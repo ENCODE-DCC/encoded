@@ -15,7 +15,8 @@
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/description" },
-        { "$ref": "mixins.json#/documents"}
+        { "$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accessioned_status"}
     ],
     "dependencies": {},
     "properties": {
@@ -34,22 +35,6 @@
                 "format": "accession",
                 "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
-        },
-        "status": {
-            "title": "Status",
-            "description": "Status of the file set.",
-            "type": "string",
-            "permission": "import_items",
-            "default": "in progress",
-            "enum" : [
-                "in progress",
-                "submitted",
-                "released",
-                "archived",
-                "deleted",
-                "replaced",
-                "revoked"
-            ]
         },
         "description": {
             "elasticsearch_mapping_index_type": {
