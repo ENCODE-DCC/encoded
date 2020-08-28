@@ -14,10 +14,9 @@
     "properties": {
         "gestational_age": {
             "title": "Gestational age",
-            "description": "The age or age range of the donor when biological material was sampled.",
-            "comment": "This is gestational time for fetal and embryonic samples",
+            "description": "The gestational age of the donor when biological material was sampled.",
             "type": "string",
-            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d))$"
         },
         "gestational_age_units": {
             "title": "Gestational age units",
