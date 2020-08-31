@@ -1,5 +1,6 @@
 {
     "title": "Lab",
+    "description": "Schema for submitting an object representing a cohesive research group.",
     "id": "/profiles/lab.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -105,14 +106,23 @@
         }
     },
     "facets": {
-        "awards.rfa": {
-            "title": "RFA"
-        },
         "status": {
             "title": "Status"
         }
     },
-    "boost_values": {},
+    "columns": {
+        "name": {
+            "title": "Name"
+        },
+        "title": {
+            "title": "Title"
+        },
+        "institute_name": {
+            "title": "Insitute"
+        },
+        "url": {
+            "title": "URL"
+        }
+    },
     "changelog": "/profiles/changelogs/lab.md"
-
 }

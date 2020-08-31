@@ -6,9 +6,8 @@
     "type": "object",
     "required": ["name", "title"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "alias", "title", "name"],
+    "identifyingProperties": ["uuid", "title", "name"],
     "mixinProperties": [
-        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/standard_status" },
@@ -104,7 +103,5 @@
             "title": "Software type"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/software.md"
-
 }

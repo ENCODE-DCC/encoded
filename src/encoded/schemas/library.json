@@ -210,9 +210,6 @@
         }
     },
     "columns": {
-        "accession": {
-            "title": "Accession"
-        },
         "dataset.accession": {
             "title": "Dataset"
         },
@@ -235,6 +232,5 @@
             "title": "Library protocol"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/library.md"
 }

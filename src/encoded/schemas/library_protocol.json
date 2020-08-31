@@ -14,7 +14,7 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/url"},
         {"$ref": "mixins.json#/uuid"},
-        {"$ref": "mixins.json#/shared_status"}
+        {"$ref": "mixins.json#/standard_status"}
     ],
     "properties": {
         "schema_version": {
@@ -286,6 +286,9 @@
         },
         "construction_platform_version": {
             "title": "Platform version"
+        },
+        "end_bias": {
+            "title": "End bias"
         },
         "library_type": {
             "title": "Library type"

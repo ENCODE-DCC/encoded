@@ -19,17 +19,6 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/urls" }
     ],
-    "facets": {
-        "lab.title": {
-            "title": "Lab"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "document_type": {
-            "title": "Document type"
-        }
-    },
     "properties": {
         "schema_version": {
             "default": "1"
@@ -53,6 +42,7 @@
                 "nuclei dissociation protocol",
                 "nuclei isolation protocol",
                 "pipeline protocol",
+                "preservation protocol",
                 "sequencing protocol",
                 "spike-in concentrations",
                 "tissue collection protocol",
@@ -72,6 +62,14 @@
                     "no"
                 ]
             }
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "document_type": {
+            "title": "Document type"
         }
     },
     "columns": {
@@ -97,13 +95,9 @@
         "attachment.download": {
             "title": "File Name"
         },
-        "lab.title": {
-            "title": "Lab"
-        },
         "submitted_by.title": {
             "title": "Submitted by"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/document.md"
 }

@@ -521,40 +521,6 @@
         "protocol": "10x-3'-v2"
     },
     {
-        "accession": "ENCLB067ZZZ",
-        "aliases": [
-            "anna-greka:SID38822"
-        ],
-        "documents": [
-            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
-        ],
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
-        "dataset": "ENCSR000AES",
-        "derived_from": [
-            "ENCBS128ENC"
-        ],
-        "protocol": "10x-3'-v2"
-    },
-    {
-        "accession": "ENCLB068ZZZ",
-        "aliases": [
-            "anna-greka:SID38823"
-        ],
-        "documents": [
-            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
-        ],
-        "lab": "thomas-gingeras",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565",
-        "dataset": "ENCSR000AES",
-        "derived_from": [
-            "ENCBS175ENC"
-        ],
-        "protocol": "10x-3'-v2"
-    },
-    {
         "accession": "ENCLB057ZZZ",
         "documents": [
             "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations",

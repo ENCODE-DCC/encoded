@@ -15,7 +15,8 @@
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/description" },
-        { "$ref": "mixins.json#/documents"}
+        { "$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/accessioned_status"}
     ],
     "dependencies": {},
     "properties": {
@@ -35,22 +36,6 @@
                 "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
         },
-        "status": {
-            "title": "Status",
-            "description": "Status of the file set.",
-            "type": "string",
-            "permission": "import_items",
-            "default": "in progress",
-            "enum" : [
-                "in progress",
-                "submitted",
-                "released",
-                "archived",
-                "deleted",
-                "replaced",
-                "revoked"
-            ]
-        },
         "description": {
             "elasticsearch_mapping_index_type": {
                 "title": "Field mapping index type",
@@ -69,23 +54,8 @@
         "status": {
             "title": "Status"
         },
-        "assembly": {
-            "title": "Genome assembly"
-        },
         "files.file_type": {
             "title": "Available file types"
-        },
-        "files.run_type": {
-            "title": "Run type"
-        },
-        "files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "lab.title": {
-            "title": "Lab"
         }
     },
     "columns": {
@@ -97,16 +67,10 @@
             "title": "Description",
             "type": "string"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
-        },
         "status": {
             "title": "Status",
             "type": "string"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/reference_file_set.md"
-
 }

@@ -1,16 +1,12 @@
 {
     "title": "Analysis file",
     "description": "Schema for submitting metadata for a data file that is produced from other data files.",
+    "comment": "This object type is abstract. These properties are inherited by other object types",
     "id": "/profiles/analysis_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "mixinProperties": [
-        {"$ref": "mixins.json#/schema_version"}
-    ],
+    "mixinProperties": [],
     "properties": {
-        "schema_version": {
-            "default": "1"
-        },
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",

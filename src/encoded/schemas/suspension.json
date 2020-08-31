@@ -1,12 +1,12 @@
 {
     "title": "Suspension",
     "description": "Schema for submitting a cell or nucleus suspension.",
-    "comment": "",
     "id": "/profiles/suspension.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["biosample_ontology", "derived_from", "derivation_process", "suspension_type"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],    "additionalProperties": false,
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
@@ -48,6 +48,7 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "detergent solubilization",
                     "enzymatic dissociation",
                     "mechanical dissociation",
                     "fluorescence-activated cell sorting",
@@ -88,7 +89,8 @@
                 "trypan blue staining",
                 "calcein-AM green/ethidium homodimer-1 red staining",
                 "free amine staining",
-                "visual inspection"
+                "visual inspection",
+                "SYTOX dead cell stain"
             ]
         },
         "percent_cell_viability": {
@@ -168,11 +170,26 @@
         "collection_to_dissociation_interval": {
             "title": "Collection-to-dissociation interval",
             "description": "The amount of time elapsed between tissue collection and cell dissociation.",
-            "type": "integer"
+            "type": "number"
         },
         "collection_to_dissociation_interval_units": {
             "title": "Collection-to-dissociation interval units",
             "description": "The unit in which the collection-to-dissociation time was reported.",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour"
+            ]
+        },
+        "death_to_dissociation_interval": {
+            "title": "Death-to-dissociation interval",
+            "description": "The amount of time elapsed between donor death and cell dissociation.",
+            "type": "number"
+        },
+        "death_to_dissociation_interval_units": {
+            "title": "Death-to-dissociation interval units",
+            "description": "The unit in which the death-to-dissociation time was reported.",
             "type": "string",
             "enum": [
                 "second",
@@ -192,13 +209,18 @@
         },
         "dissociation_time_units": {
             "title": "Dissociation time units",
-            "description": "The units of time the tissue was incubated with the dissociation reagent",
+            "description": "The units of time the tissue was incubated with the dissociation reagent.",
             "type": "string",
             "enum": [
                 "second",
                 "minute",
                 "hour"
             ]
+        },
+        "red_blood_cell_lysis": {
+            "title": "Red blood cell lysis",
+            "description": "If true, a red blood cell lysis step was included in the preparation protocol.",
+            "type": "boolean"
         }
     },
     "facets": {

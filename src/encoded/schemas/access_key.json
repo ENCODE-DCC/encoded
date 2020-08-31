@@ -1,15 +1,16 @@
 {
     "title": "Admin access key",
+    "description": "Access keys given to users for programmatic access.",
     "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [],
+    "type": "object",
+    "required": ["user", "access_key_id", "secret_access_key_hash"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/description" },
-        { "$ref": "mixins.json#/uuid" }
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/description"},
+        {"$ref": "mixins.json#/uuid"}
     ],
-    "type": "object",
     "properties": {
         "schema_version": {
             "default": "1"

@@ -26,6 +26,7 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/url"},
         {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "data_file.json#/properties"}
     ],
     "dependencies": {
@@ -213,6 +214,12 @@
         "status": {
             "title": "Status"
         },
+        "read_type": {
+            "title": "Read type"
+        },
+        "sequence_elements": {
+            "title": "Sequence elements"
+        },
         "output_types": {
             "title": "Output type"
         },
@@ -222,19 +229,25 @@
         "file_type": {
             "title": "File type"
         },
-        "lab": {
+        "lab.title": {
             "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
         }
     },
     "columns": {
         "title": {
             "title": "Title"
         },
-        "accession": {
-            "title": "Accession"
-        },
         "dataset": {
             "title": "Dataset"
+        },
+        "read_type": {
+            "title": "Read type"
+        },
+        "sequence_elements": {
+            "title": "Sequence elements"
         },
         "file_format": {
             "title": "File Format"
@@ -260,8 +273,11 @@
         "output_types": {
             "title": "Output types"
         },
-        "lab": {
+        "lab.title": {
             "title": "Lab"
+        },
+        "award.name": {
+            "title": "Award"
         },
         "date_created": {
             "title": "Date created"

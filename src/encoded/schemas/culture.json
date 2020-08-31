@@ -1,17 +1,12 @@
 {
     "title": "Culture",
     "description": "Schema for submitting a cultured sample.",
-    "comment": "",
+    "comment": "This object type is abstract. These properties are inherited by other object types",
     "id": "/profiles/culture.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "mixinProperties": [
-        {"$ref": "mixins.json#/schema_version"}
-    ],
+    "mixinProperties": [],
     "properties": {
-        "schema_version": {
-            "default": "1"
-        },
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",

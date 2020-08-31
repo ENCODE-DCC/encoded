@@ -1,11 +1,10 @@
 {
     "title": "Human prenatal donor",
     "description": "Schema for submitting a prenatal human donor.",
-    "comment":"This object is meant to be one to one with an individual human.",
     "id": "/profiles/human_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["organism", "life_stage", "sex"],
+    "required": ["life_stage", "sex"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -41,6 +40,9 @@
         "twin_type": {
             "comment": "Twin type could be specified only if twin sibling is specified.",
             "required": ["twin"]
+        },
+        "carnegie_stage_basis": {
+            "required":["carnegie_stage"]
         }
     },
     "properties": {
@@ -55,7 +57,7 @@
         "sex": {
             "title": "Sex"
         },
-        "ethnicity": {
+        "ethnicity.term_name": {
             "title": "Ethnicity"
         },
         "status": {
@@ -78,7 +80,7 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "ethnicity": {
+        "ethnicity.term_name": {
             "title": "Ethnicity"
         },
         "status": {

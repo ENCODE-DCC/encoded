@@ -1,7 +1,6 @@
 {
     "title": "Organoid",
     "description": "Schema for submitting an organoid sample.",
-    "comment": "",
     "id": "/profiles/organoid.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",

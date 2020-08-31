@@ -1,12 +1,11 @@
 {
     "title": "Human postnatal donor",
     "description": "Schema for submitting a postnatal human donor.",
-    "comment":"This object is meant to be one to one with an individual human.",
     "id": "/profiles/human_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["organism", "life_stage"],
-    "identifyingProperties": ["uuid", "accession", "aliases", "sex"],
+    "required": ["life_stage", "sex"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
@@ -137,12 +136,9 @@
         "test_results": {
             "title": "Test results",
             "description": "The results from any test to measure the donor's health in the format of key (test name):value (test results)",
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": true
-            }
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true
         }
     },
     "facets": {
@@ -152,7 +148,7 @@
         "sex": {
             "title": "Sex"
         },
-        "ethnicity": {
+        "ethnicity.term_name": {
             "title": "Ethnicity"
         },
         "status": {
@@ -175,23 +171,11 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "ethnicity": {
+        "ethnicity.term_name": {
             "title": "Ethnicity"
         },
         "body_mass_index": {
             "title": "BMI"
-        },
-        "times_pregnant": {
-            "title": "Number of times pregnant"
-        },
-        "family_history_breast_cancer": {
-            "title": "Family history of breast cancer"
-        },
-        "smoking_history": {
-            "title": "Smoking history"
-        },
-        "alochol_history": {
-            "title": "Alcohol history"
         },
         "status": {
             "title": "Status"

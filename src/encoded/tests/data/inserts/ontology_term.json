@@ -1,8 +1,5 @@
 [
     {
-        "aliases": [
-            "lattice:ciliated_cell"
-        ],
         "uuid": "ddcdc2d0-aa58-4dcb-94fb-a3c27e8fcc37",
         "term_name": "ciliated cell",
         "term_id": "CL:0000064",

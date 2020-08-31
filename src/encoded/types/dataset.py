@@ -50,6 +50,7 @@ class Dataset(Item):
         'original_files': ('DataFile','dataset')
     }
 
+
     @calculated_property(schema={
             "title": "Superseded by",
             "type": "array",
@@ -61,6 +62,7 @@ class Dataset(Item):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
 
     @calculated_property(schema={
         "title": "Libraries",
@@ -74,27 +76,6 @@ class Dataset(Item):
     def libraries(self, request, libraries):
         return paths_filtered_by_status(request, libraries)
 
-    # Don't specify schema as this just overwrites the existing value
-    @calculated_property(condition='analyses')
-    def analyses(self, request, analyses):
-        updated_analyses = []
-        for analysis in analyses:
-            assemblies = set()
-            genome_annotations = set()
-            for f in analysis.get('files', []):
-                file_object = request.embed(
-                    f,
-                    '@@object_with_select_calculated_properties?field=analysis_step'
-                )
-                if 'assembly' in file_object:
-                    assemblies.add(file_object['assembly'])
-                if 'genome_annotation' in file_object:
-                    genome_annotations.add(file_object['genome_annotation'])
-            analysis['assemblies'] = sorted(assemblies)
-            analysis['genome_annotations'] = sorted(genome_annotations)
-            updated_analyses.append(analysis)
-        return analyses
-
 
     @calculated_property(schema={
         "title": "Original files",
@@ -107,6 +88,7 @@ class Dataset(Item):
     })
     def original_files(self, request, original_files):
         return paths_filtered_by_status(request, original_files)
+
 
     @calculated_property(schema={
         "title": "Contributing files",
@@ -134,6 +116,7 @@ class Dataset(Item):
                 request, outside_files,
                 exclude=('revoked', 'deleted', 'replaced'),
             )
+
 
     @calculated_property(schema={
         "title": "Files",
@@ -169,6 +152,7 @@ class Dataset(Item):
             if item_is_revoked(request, path)
         ]
 
+
     @calculated_property(define=True, schema={
         "title": "Genome assembly",
         "type": "array",
@@ -179,12 +163,14 @@ class Dataset(Item):
     def assembly(self, request, original_files, status):
         return calculate_assembly(request, original_files, status)
 
+
     @calculated_property(condition='assembly', schema={
         "title": "Hub",
         "type": "string",
     })
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
+
 
     matrix = {
         'y': {

@@ -98,16 +98,6 @@
         "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
     },
     {
-        "_test": "shared biosample",
-        "accession": "ENCSR000AES",
-        "award": "U54HG007004",
-        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
-        "status": "archived",
-        "date_released": "2016-01-01",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
-    },
-    {
         "_test": "anisogenic experiemnt",
         "accession": "ENCSR001ADI",
         "award": "ENCODE2-Mouse",

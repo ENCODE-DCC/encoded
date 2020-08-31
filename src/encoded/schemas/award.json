@@ -1,7 +1,9 @@
 {
     "title": "Grant",
+    "description": "Schema for sumbitting a funding award.",
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
     "required": [ "name", "project", "title"],
     "identifyingProperties": ["uuid", "name", "title"],
     "additionalProperties": false,
@@ -13,7 +15,6 @@
         { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/viewing_groups" }
     ],
-    "type": "object",
     "properties": {
         "schema_version": {
             "default": "1"
@@ -34,26 +35,6 @@
        },
         "description": {
             "rdfs:subPropertyOf": "dc:description"
-        },
-        "start_date": {
-            "title": "Start date",
-            "description": "The start date of the award.",
-            "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
-            "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
-        },
-        "end_date": {
-            "title": "End date",
-            "description": "The end date of the award.",
-            "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
-            "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
         },
         "principal_investigators": {
             "title": "Principal Investigators",
@@ -140,6 +121,9 @@
         "name": {
             "title": "Name"
         },
+        "focus": {
+            "title": "Focus"
+        },
         "project": {
             "title": "Project"
         },
@@ -147,6 +131,5 @@
             "title": "Status"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/award.md"
 }

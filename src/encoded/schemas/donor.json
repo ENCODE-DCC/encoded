@@ -1,20 +1,16 @@
 {
     "title": "Donor",
     "description": "Base schema for donors.",
-    "comment": "Human and model organism donors derive from this base object.",
+    "comment": "This object type is abstract. These properties are inherited by other object types",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [
         {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"}
     ],
     "properties": {
-        "schema_version": {
-            "hidden comment": "Bump the default in the subclasses."
-        },
         "accession": {
             "accessionType": "DO"
         },
@@ -27,14 +23,6 @@
                 "format": "accession",
                 "pattern": "^(ENCDO\\d{3}[A-Z]{3})$|^(TSTDO\\d{6})$"
             }
-        },
-        "organism": {
-            "title": "Organism",
-            "description": "Common name of donor organism.",
-            "comment": "Do not submit, value is assigned by the object.",
-            "permission": "import_items",
-            "type": "string",
-            "linkTo": "Organism"
         },
         "treatments": {
             "description": "A list of treatments applied to the donor.",

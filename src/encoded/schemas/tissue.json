@@ -1,7 +1,6 @@
 {
     "title": "Tissue",
     "description": "Schema for submitting a tissue sample.",
-    "comment": "",
     "id": "/profiles/tissue.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -27,13 +26,11 @@
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
-        "postmortem_interval":{
-            "required": ["postmortem_interval_units"],
-            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified."
+        "death_to_preservation_interval":{
+            "required": ["death_to_preservation_interval_units"]
         },
-        "postmortem_interval_units": {
-            "required":["postmortem_interval"],
-            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified."
+        "death_to_preservation_interval_units": {
+            "required":["death_to_preservation_interval"]
         }
     },
     "properties": {
@@ -63,21 +60,38 @@
                     "blood draw",
                     "percutaneous biopsy",
                     "open biopsy",
-                    "aspiration"
+                    "aspiration",
+                    "density centrifugation",
+                    "enzymatic digestion"
                 ]
             }
         },
-        "postmortem_interval": {
-            "title": "Post-mortem interval",
-            "description": "The amount of time elapsed since death.",
-            "comment": "Post-mortem interval for tissues should be reported, if known. Using for biosamples other than tissue is currently not allowed.",
-            "type": "integer",
+        "death_to_preservation_interval": {
+            "title": "Death to preservation interval",
+            "description": "The amount of time elapsed since death until the tissue was preserved.",
+            "type": "number",
             "minimum": 1
         },
-        "postmortem_interval_units": {
-            "title": "Post-mortem interval units",
-            "description": "The unit in which the PMI time was reported.",
-            "comment": "Post-mortem interval units for tissues should be reported with PMI value, if known. Using for biosamples other than tissue is currently not allowed.",
+        "death_to_preservation_interval_units": {
+            "title": "Death to preservation interval units",
+            "description": "The unit in which the death to preservation interval was reported.",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour",
+                "day",
+                "week"
+            ]
+        },
+        "collection_to_preservation_interval": {
+            "title": "Collection to preservation interval",
+            "description": "The amount of time elapsed from tissue collection from a donor to preservation.",
+            "type": "number"
+        },
+        "collection_to_preservation_interval_units": {
+            "title": "Collection to preservation interval units",
+            "description": "The unit in which the amount of time elapsed from tissue collection from a donor to preservation was reported.",
             "type": "string",
             "enum": [
                 "second",

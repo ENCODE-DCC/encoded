@@ -1,5 +1,6 @@
  {
     "title": "Mixin properties",
+    "description": "Schema for properties that are shared across multiple object types.",
     "award": {
         "award": {
             "title": "Award",
@@ -83,7 +84,8 @@
                 "released",
                 "deleted",
                 "replaced",
-                "revoked"
+                "revoked",
+                "archived"
             ]
         }
     },

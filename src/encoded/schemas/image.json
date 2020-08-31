@@ -4,7 +4,7 @@
     "id": "/profiles/image.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "attachment" ],
+    "required": ["attachment"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -28,6 +28,5 @@
             "type": "string"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/image.md"
 }

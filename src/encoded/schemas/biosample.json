@@ -1,12 +1,11 @@
 {
     "title": "Biosample",
     "description": "Schema for submitting a biosample.",
-    "comment": "For cultured samples this object represents unique growths or culture harvests.",
+    "comment": "This object type is abstract. These properties are inherited by other object types",
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [
-        {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/description"},
         {"$ref": "mixins.json#/accession"},
@@ -14,9 +13,6 @@
         {"$ref": "mixins.json#/diseases"}
     ],
     "properties": {
-        "schema_version": {
-            "default": "1"
-        },
         "accession": {
             "accessionType": "BS"
         },
@@ -138,7 +134,8 @@
             "enum": [
                 "cryopreservation",
                 "flash-freezing",
-                "n/a (fresh)"
+                "n/a (fresh)",
+                "paraffin embedding"
             ]
         },
         "preservation_time": {
@@ -157,6 +154,11 @@
                 "week",
                 "month"
             ]
+        },
+        "fixed": {
+            "title": "Fixed",
+            "description": "If true, the sample underwent a fixation process at some point.",
+            "type": "boolean"
         }
     }
 }

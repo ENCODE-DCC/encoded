@@ -39,12 +39,17 @@ class Donor(Item):
                         schema={
                         "title": "Age display",
                         "type": "string"})
-    def age_display(self, request, age=None, age_units=None):
+    def age_display(self, request, age=None, age_units=None, gestational_age=None, gestational_age_units=None):
         if age != None and age_units !=None:
             if age == 'unknown':
                 return 'unknown'
             else:
                 return u'{}'.format(pluralize(age, age_units))
+        elif gestational_age != None and gestational_age_units !=None:
+            if gestational_age == 'unknown':
+                return 'unknown'
+            else:
+                return u'{}'.format(pluralize(gestational_age, gestational_age_units))
         else:
             return None
 
@@ -81,6 +86,18 @@ class MouseDonor(Donor):
         return term_id
 
 
+    @calculated_property(schema={
+        "title": "Organism",
+        "description": "Common name of donor organism.",
+        "comment": "Do not submit, value is assigned by the object.",
+        "permission": "import_items",
+        "type": "string",
+        "linkTo": "Organism"
+    })
+    def organism(self):
+        return "/organism/mouse"
+
+
 @abstract_collection(
     name='human-donors',
     unique_key='accession',
@@ -92,7 +109,7 @@ class HumanDonor(Donor):
     item_type = 'human_donor'
     base_types = ['HumanDonor'] + Donor.base_types
     schema = load_schema('encoded:schemas/human_donor.json')
-    embedded = Donor.embedded + []
+    embedded = Donor.embedded + ['ethnicity']
 
 
     @calculated_property(condition='life_stage', schema={
@@ -115,6 +132,18 @@ class HumanDonor(Donor):
         return term_id
 
 
+    @calculated_property(schema={
+        "title": "Organism",
+        "description": "Common name of donor organism.",
+        "comment": "Do not submit, value is assigned by the object.",
+        "permission": "import_items",
+        "type": "string",
+        "linkTo": "Organism"
+    })
+    def organism(self):
+        return "/organism/human"
+
+
 @collection(
     name='mouse-prenatal-donors',
     unique_key='accession',
@@ -125,7 +154,7 @@ class HumanDonor(Donor):
 class MousePrenatalDonor(MouseDonor):
     item_type = 'mouse_prenatal_donor'
     schema = load_schema('encoded:schemas/mouse_prenatal_donor.json')
-    embedded = Donor.embedded + []
+    embedded = MouseDonor.embedded + []
 
 
 @collection(
@@ -138,7 +167,7 @@ class MousePrenatalDonor(MouseDonor):
 class MousePostnatalDonor(MouseDonor):
     item_type = 'mouse_postnatal_donor'
     schema = load_schema('encoded:schemas/mouse_postnatal_donor.json')
-    embedded = Donor.embedded + []
+    embedded = MouseDonor.embedded + []
 
 
 @collection(
@@ -151,7 +180,7 @@ class MousePostnatalDonor(MouseDonor):
 class HumanPrenatalDonor(HumanDonor):
     item_type = 'human_prenatal_donor'
     schema = load_schema('encoded:schemas/human_prenatal_donor.json')
-    embedded = Donor.embedded + []
+    embedded = HumanDonor.embedded + []
 
 
 @collection(
@@ -164,7 +193,7 @@ class HumanPrenatalDonor(HumanDonor):
 class HumanPostnatalDonor(HumanDonor):
     item_type = 'human_postnatal_donor'
     schema = load_schema('encoded:schemas/human_postnatal_donor.json')
-    embedded = Donor.embedded + []
+    embedded = HumanDonor.embedded + []
     rev = {
         'children': ('HumanDonor', 'parents')
     }

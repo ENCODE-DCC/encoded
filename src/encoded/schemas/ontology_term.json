@@ -5,10 +5,9 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["term_id", "term_name"],
-    "identifyingProperties": ["aliases", "uuid"],
+    "identifyingProperties": ["uuid", "name"],
     "additionalProperties": false,
     "mixinProperties": [
-        {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/notes"},
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/schema_version"},
@@ -57,6 +56,9 @@
         "organ_slims": {
             "title": "Organ"
         },
+        "system_slims": {
+            "title": "System"
+        },
         "cell_slims": {
             "title": "Cell"
         }
@@ -74,6 +76,9 @@
         "organ_slims": {
             "title": "Organ"
         },
+        "system_slims": {
+            "title": "System"
+        },
         "cell_slims": {
             "title": "Cell"
         },
@@ -81,6 +86,5 @@
             "title": "Status"
         }
     },
-    "boost_values": {},
     "changelog": "/profiles/changelogs/ontology_term.md"
 }

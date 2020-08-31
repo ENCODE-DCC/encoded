@@ -4,7 +4,7 @@
     "id": "/profiles/aggregate_metrics.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [],
+    "required": ["quality_metric_of"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -76,9 +76,6 @@
             }
         }
     },
-    "facets": {},
-    "columns": {},
-    "boost_values": {},
     "changelog": "/profiles/changelogs/aggregate_metrics.md"
 }
 

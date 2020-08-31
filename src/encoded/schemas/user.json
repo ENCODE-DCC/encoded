@@ -1,10 +1,11 @@
 {
     "title": "User",
+    "description": "Schema for desribing an individual for log-in and attribution purposes.",
     "id": "/profiles/user.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "email", "first_name", "last_name"],
-    "identifyingProperties": ["uuid", "email"],
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/aliases" },
@@ -84,6 +85,13 @@
             "title": "Lab"
         }
     },
-    "boost_values": {},
+    "columns": {
+        "title": {
+            "title": "Title"
+        },
+        "lab.title": {
+            "title": "Lab"
+        }
+    },
     "changelog": "/profiles/changelogs/user.md"
 }
