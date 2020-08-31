@@ -3,6 +3,7 @@
         "description": "This project seeks to establish the normal range of immune phenotypic variability — both within and across individuals — and assess contributions from genetics and environment, such as diurnal, seasonal, and reproductive cycles and life experience.",
         "end_date": "2022-02-22",
         "name": "CZI021IMM",
+        "uuid": "139522ee-4116-43cc-9b04-6d0900aa41d5",
         "principal_investigators": [
             "netus.lorem@risus.lobortis"
         ],
@@ -13,12 +14,14 @@
         "url": "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/human-immune-variation-across-genetic-backgrounds-gender-and-time/",
         "viewing_groups": [
             "CZI017IMM"
-        ]
+        ],
+        "CZI_project_identifier": "CZF2019-002440"
     },
     {
         "description": "This team will analyze single cells and develop computational tools to build a single cell map of the human liver, combining transcriptomics, spatial organization, and cell-cell interactions across diverse individuals and developmental stages.",
         "end_date": "2022-02-22",
         "name": "CZI004LIV",
+        "uuid": "8925c21d-78e2-47a1-970b-269a5ae76d41",
         "principal_investigators": [
             "blandit.orci@conubia.magna"
         ],
@@ -29,7 +32,8 @@
         "url": "https://chanzuckerberg.com/science/programs-resources/humancellatlas/seednetworks/a-reference-cell-atlas-of-human-liver-diversity-over-a-lifespan/",
         "viewing_groups": [
             "CZI003CNS"
-        ]
+        ],
+        "CZI_project_identifier": "HCA-A-1704-01668"
     },
     {
         "name": "ENCODE2",

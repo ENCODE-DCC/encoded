@@ -122,7 +122,8 @@
         "CZI_project_identifier": {
             "title": "CZI project identifier",
             "description": "The CZI identifier for this award.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(CZF2019-[0-9]{6})|(HCA-[A-Z]-[0-9\\-]{10})$"
        }
     },
     "facets": {

@@ -160,7 +160,8 @@
         "oligo_sequence": {
             "title": "Oligo sequence",
             "description": "The sequence of oligonucleotide that is conjugated to the antibody. ",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[AGCT]{12,15}$"
         }
     },
     "changelog": "/profiles/changelogs/antibody_lot.md"
