@@ -8,7 +8,6 @@
         "age": "30",
         "age_units": "year",
         "life_stage": "adult",
-        "organism": "human",
         "sex": "female",
         "ethnicity": "HANCESTRO_0008",
         "diseases": [
@@ -57,7 +56,6 @@
             "IFTA": "1-10%"
         },
         "life_stage": "adult",
-        "organism": "human",
         "sex": "male",
         "uuid": "807d50f9-3554-426c-a851-b952099e91f0"
     },
@@ -69,7 +67,6 @@
             "jimmie-ye:STL003"
         ],
         "life_stage": "adult",
-        "organism": "human",
         "sex": "male",
         "ancestry": [
             {"ancestry_group": "HANCESTRO_0014", "percentage": 65},
@@ -86,7 +83,6 @@
             "lattice:PanIsletD_Crawford_protocol"
         ],
         "life_stage": "unknown",
-        "organism": "human",
         "parents": [
             "ENCDO058AAA",
             "ENCDO000AAK"
@@ -97,21 +93,18 @@
     {
         "accession": "ENCDO106AAA",
         "life_stage": "unknown",
-        "organism": "human",
         "sex": "unknown",
         "uuid": "7c4cb5ff-4b21-4f9c-a31f-4a9d00cafb5a"
     },
     {
         "accession": "ENCDO275AAA",
         "life_stage": "unknown",
-        "organism": "human",
         "sex": "unknown",
         "uuid": "2b9fa2c8-5db9-49c9-9c06-000a16e39d11"
     },
     {
         "accession": "ENCDO276AAA",
         "life_stage": "unknown",
-        "organism": "human",
         "sex": "unknown",
         "uuid": "61ef59a0-222e-4008-9f84-c9200358ebe3"
     },
@@ -124,7 +117,6 @@
             "lattice:donor of GM12878"
         ],
         "life_stage": "adult",
-        "organism": "human",
         "sex": "female",
         "status": "released",
         "uuid": "44d24e3f-bc5b-469a-8500-7ebd728f8ed5"
@@ -133,7 +125,6 @@
         "accession": "ENCDO003HUM",
         "sex": "unknown",
         "life_stage": "unknown",
-        "organism": "human",
         "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
     },
     {
@@ -147,7 +138,6 @@
             "jimmie-ye:Donor GTEX-1LVAN"
         ],
         "life_stage": "adult",
-        "organism": "human",
         "sex": "female",
         "status": "released",
         "uuid": "ed01347d-b5cc-4a63-bf4c-40aebdab5cd1"
@@ -163,7 +153,6 @@
             "jimmie-ye:Donor GTEX-1LGRB"
         ],
         "life_stage": "adult",
-        "organism": "human",
         "sex": "female",
         "status": "released",
         "uuid": "28e5135a-6529-4f7a-8dad-41e0a216f46e"
@@ -179,7 +168,6 @@
             "jimmie-ye:Donor GTEX-1K2DA"
         ],
         "life_stage": "adult",
-        "organism": "human",
         "sex": "male",
         "status": "released",
         "uuid": "d370683e-81e7-473f-8475-7716d027849b"
@@ -195,7 +183,6 @@
             "jimmie-ye:Donor GTEX-1JKYN"
         ],
         "life_stage": "adult",
-        "organism": "human",
         "sex": "male",
         "status": "released",
         "uuid": "845eda3c-7503-43e8-a65b-0d08e8d4674d"

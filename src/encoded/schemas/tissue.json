@@ -26,13 +26,11 @@
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
-        "postmortem_interval":{
-            "required": ["postmortem_interval_units"],
-            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified."
+        "death_to_preservation_interval":{
+            "required": ["death_to_preservation_interval_units"]
         },
-        "postmortem_interval_units": {
-            "required":["postmortem_interval"],
-            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified."
+        "death_to_preservation_interval_units": {
+            "required":["death_to_preservation_interval"]
         }
     },
     "properties": {
@@ -68,13 +66,13 @@
                 ]
             }
         },
-        "postmortem_interval": {
+        "death_to_preservation_interval": {
             "title": "Post-mortem interval",
             "description": "The amount of time elapsed since death.",
-            "type": "integer",
+            "type": "number",
             "minimum": 1
         },
-        "postmortem_interval_units": {
+        "death_to_preservation_interval_units": {
             "title": "Post-mortem interval units",
             "description": "The unit in which the PMI time was reported.",
             "type": "string",
@@ -86,14 +84,14 @@
                 "week"
             ]
         },
-        "live_collection_to_preservation_interval": {
-            "title": "Live collelction to preservation interval",
-            "description": "The amount of time elapsed from collection from a live donor to preservation.",
+        "collection_to_preservation_interval": {
+            "title": "Collection to preservation interval",
+            "description": "The amount of time elapsed from tissue collection from a donor to preservation.",
             "type": "number"
         },
-        "live_collection_to_preservation_interval_units": {
-            "title": "Live collelction to preservation interval units",
-            "description": "The unit in which the amount of time elapsed from collection from a live donor to preservation was reported.",
+        "collection_to_preservation_interval_units": {
+            "title": "Collection to preservation interval units",
+            "description": "The unit in which the amount of time elapsed from tissue collection from a donor to preservation was reported.",
             "type": "string",
             "enum": [
                 "second",

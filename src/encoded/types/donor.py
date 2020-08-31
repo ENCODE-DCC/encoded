@@ -86,6 +86,18 @@ class MouseDonor(Donor):
         return term_id
 
 
+    @calculated_property(schema={
+        "title": "Organism",
+        "description": "Common name of donor organism.",
+        "comment": "Do not submit, value is assigned by the object.",
+        "permission": "import_items",
+        "type": "string",
+        "linkTo": "Organism"
+    })
+    def organism(self):
+        return "/organism/mouse"
+
+
 @abstract_collection(
     name='human-donors',
     unique_key='accession',
@@ -118,6 +130,18 @@ class HumanDonor(Donor):
         if life_stage in term_lookup:
             term_id = term_lookup.get(life_stage)
         return term_id
+
+
+    @calculated_property(schema={
+        "title": "Organism",
+        "description": "Common name of donor organism.",
+        "comment": "Do not submit, value is assigned by the object.",
+        "permission": "import_items",
+        "type": "string",
+        "linkTo": "Organism"
+    })
+    def organism(self):
+        return "/organism/human"
 
 
 @collection(

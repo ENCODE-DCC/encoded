@@ -6,7 +6,6 @@
         ],
         "description": "Prenatal donor1",
         "uuid": "c1ff41b6-e335-11ea-87d0-0242ac130003",
-        "organism": "human",
         "life_stage": "embryonic",
         "gestational_age": "50",
         "gestational_age_units": "day",
@@ -26,7 +25,6 @@
         ],
         "description": "Prenatal donor2",
         "uuid": "cb0dd3d0-e335-11ea-87d0-0242ac130003",
-        "organism": "human",
         "life_stage": "embryonic",
         "gestational_age": "51",
         "gestational_age_units": "day",
@@ -46,7 +44,6 @@
         ],
         "description": "Prenatal donor3",
         "uuid": "2ad358f1-8a94-49b1-8c95-8534680ad0a4",
-        "organism": "human",
         "life_stage": "embryonic",
         "gestational_age": "49",
         "gestational_age_units": "day",
@@ -66,7 +63,6 @@
     	],
     	"description": "Prenatal donor2",
     	"uuid":"9037d8f8-db7b-11ea-87d0-0242ac130003",
-    	"organism": "human",
     	"life_stage": "fetal",
     	"gestational_age": "85",
     	"gestational_age_units": "day",
@@ -93,7 +89,6 @@
     	],
     	"description": "Prenatal donor3",
     	"uuid": "944ba348-db7b-11ea-87d0-0242ac130003",
-    	"organism": "human",
     	"life_stage": "fetal",
     	"gestational_age": "85",
     	"gestational_age_units": "day",
@@ -121,7 +116,6 @@
     {
         "accession": "ENCDO568ESC",
         "life_stage": "embryonic",
-        "organism": "human",
         "sex": "unknown",
         "uuid": "f585f150-e6b2-11e3-ac10-0800200c9a66"
     }
