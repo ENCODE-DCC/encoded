@@ -142,7 +142,6 @@
             "title": "Treatment type",
             "description": "The classification of the treatment.",
             "type": "string",
-            "default": "chemical",
             "enum": [
                 "antibody",
                 "chemical",
@@ -152,7 +151,8 @@
                 "irradiation",
                 "protein",
                 "stimulation",
-                "transplantation"
+                "transplantation",
+                "fasting"
             ]
         },
         "treatment_term_id": {

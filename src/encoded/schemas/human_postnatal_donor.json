@@ -4,8 +4,8 @@
     "id": "/profiles/human_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["organism", "life_stage"],
-    "identifyingProperties": ["uuid", "accession", "aliases", "sex"],
+    "required": ["organism", "life_stage", "sex"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
