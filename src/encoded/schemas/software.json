@@ -50,7 +50,7 @@
             "title": "Name",
             "description": "Unique name of the software package, lower cased version of title.",
             "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+",
+            "pattern": "^[a-z0-9\\-\\_\\.]+$",
             "uniqueKey": "software:name"
         },
         "title": {

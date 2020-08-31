@@ -180,7 +180,8 @@
             "items": {
                 "title": "Sample barcode",
                 "description": "A sample index barcode associated with the sequences in the alignment file.",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[AGCT]{8}$"
             }
         }
     },

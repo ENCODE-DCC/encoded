@@ -163,7 +163,8 @@
             "ENCDO058AAA"
         ],
         "derivation_process": ["dissection"],
-        "source": "barbara-wold"
+        "source": "barbara-wold",
+        "ischemic_temperature": "warm"
     },
     {
         "accession": "ENCBS200XYZ",

@@ -104,7 +104,8 @@
         "ischemic_temperature": {
             "title": "Ischemic temperature",
             "description": "Temperature during ischemia",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(warm|cold|[0-9]+)$"
         },
         "ischemic_temperature_units": {
             "title": "Ischemic temperature units",

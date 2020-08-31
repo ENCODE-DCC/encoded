@@ -55,6 +55,9 @@
     },
     {
         "accession": "ENCSR123ABC",
+        "aliases": [
+            "kerstin-meyer:hübner_dataset"
+        ],
         "award": "CZI004LIV",
         "description": "Some liver scRNA & scATAC data",
         "status": "released",
