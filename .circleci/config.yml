@@ -73,7 +73,7 @@ jobs:
           name: Run bdd tests
           command: |
             bin/test --exitfirst -s -vv -m "bdd" --tb=short \
-              --splinter-implicit-wait=10 \
+              --splinter-implicit-wait=2 \
               --splinter-webdriver=chrome \
               --splinter-socket-timeout=300 \
               --splinter-session-scoped-browser=false \

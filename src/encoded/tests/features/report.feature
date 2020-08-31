@@ -11,6 +11,7 @@ Feature: Report
     Background:
         When I visit "/report/?type=Experiment"
         And I wait for the content to load
+        And I wait for 15 seconds
 
 
     Scenario: Report
