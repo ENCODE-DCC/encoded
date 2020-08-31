@@ -67,14 +67,14 @@
             }
         },
         "death_to_preservation_interval": {
-            "title": "Post-mortem interval",
-            "description": "The amount of time elapsed since death.",
+            "title": "Death to preservation interval",
+            "description": "The amount of time elapsed since death until the tissue was preserved.",
             "type": "number",
             "minimum": 1
         },
         "death_to_preservation_interval_units": {
-            "title": "Post-mortem interval units",
-            "description": "The unit in which the PMI time was reported.",
+            "title": "Death to preservation interval units",
+            "description": "The unit in which the death to preservation interval was reported.",
             "type": "string",
             "enum": [
                 "second",
