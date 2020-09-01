@@ -3952,12 +3952,15 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'insufficient number of reproducible peaks' for error in collect_audit_errors(res2))
 
     # When reproducible peaks are checked in multiple files, the better value is reported
+    # Unlike replicate concordance, which is reported per file
     testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],
                        {'quality_metric_of': [file_bed_IDR_peaks_atac['@id']]})
     res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
     assert 'insufficient number of reproducible peaks' not in (error['category'] for error in collect_audit_errors(res2))
+    assert any(error['category'] == 'borderline replicate concordance' for error in collect_audit_errors(res2))
 
     # Multiple AtacReplicationQualityMetric objects on the same file is flagged
+    # And reproducible peaks/replicate concordance audits are not reported
     testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],
                        {'quality_metric_of': [file_bed_IDR_peaks_2_atac['@id']]})
     res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')

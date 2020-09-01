@@ -4516,6 +4516,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
 
     # Checks in AtacReplicationQualityMetric
     peaks_report = {}
+    problematic_files = 0
     for f in all_peaks_files:
         output_type = f['output_type']
         file_list = []
@@ -4523,12 +4524,13 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
         f_replication_metrics = get_metrics(file_list, 'AtacReplicationQualityMetric')
         if f_replication_metrics is not None and len(f_replication_metrics) > 0:
             if len(f_replication_metrics) != 1:
+                problematic_files += 1
                 detail = (
                     f'Multiple AtacReplicationQualityMetric objects are posted on '
                     f'{audit_link(path_to_text(f["@id"]),f["@id"])}. Values in these metrics may '
                     f'not be assessed for QC until this is resolved.')
                 yield AuditFailure('duplicate QC metrics', detail, level='ERROR')
-            else:
+            elif len(f_replication_metrics) == 1:
                 for metric in f_replication_metrics:
                     if 'rescue_ratio' in metric and 'self_consistency_ratio' in metric:
                         rescue = metric['rescue_ratio']
@@ -4572,25 +4574,29 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
                                 yield AuditFailure('borderline replicate concordance', detail, level='WARNING')
 
     # The better reproducible peaks value in overlap or IDR thresholded peaks is reported
-    detail_items = []
-    if 'overlap_rep_peaks' in peaks_report.keys():
-        detail_items.append(tuple((str(peaks_report['overlap_rep_peaks']), peaks_report.get('overlap_rep_peaks_file'))))
-    if 'idr_rep_peaks' in peaks_report.keys():
-        detail_items.append(tuple((str(peaks_report['idr_rep_peaks']), peaks_report.get('idr_rep_peaks_file'))))
-    audit_peaks = ' and '.join(m[0] for m in detail_items)
-    file_links = ', '.join(audit_link(path_to_text(m[1]), m[1]) for m in detail_items)
-    detail = (
-        f'According to ENCODE4 standards, ATAC-seq assays processed by the uniform processing '
-        f'pipeline should have either >150k reproducible peaks in an overlap peaks file, or '
-        f'>70k in an IDR thresholded peaks file. 100-150k or 50-70k peaks respectively is '
-        f'acceptable, and <100k or <50k respectively is not compliant. '
-        f'File(s) {file_links} have {audit_peaks} peaks.')
-    if 'pass' in peaks_report.values():
-        return
-    elif 'warning' in peaks_report.values():
-        yield AuditFailure('moderate number of reproducible peaks', detail, level='WARNING')
-    elif 'not_compliant' in peaks_report.values():
-        yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
+    # This should not be reported if any peaks file has multiple Replication metrics
+    if problematic_files == 0:
+        detail_items = []
+        if 'overlap_rep_peaks' in peaks_report.keys():
+            detail_items.append(tuple((str(peaks_report['overlap_rep_peaks']),
+                                peaks_report.get('overlap_rep_peaks_file'), ' (overlap peaks)')))
+        if 'idr_rep_peaks' in peaks_report.keys():
+            detail_items.append(tuple((str(peaks_report['idr_rep_peaks']),
+                                peaks_report.get('idr_rep_peaks_file'), ' (IDR thresholded peaks)')))
+        audit_peaks = ' and '.join(m[0] for m in detail_items)
+        file_links = ' and '.join((audit_link(path_to_text(m[1]), m[1])) + m[2] for m in detail_items)
+        detail = (
+            f'According to ENCODE4 standards, ATAC-seq assays processed by the uniform processing '
+            f'pipeline should have either >150k reproducible peaks in an overlap peaks file, or '
+            f'>70k in an IDR thresholded peaks file. 100-150k or 50-70k peaks respectively is '
+            f'acceptable, and <100k or <50k respectively is not compliant. '
+            f'File(s) {file_links} have {audit_peaks} peaks.')
+        if 'pass' in peaks_report.values():
+            return
+        elif 'warning' in peaks_report.values():
+            yield AuditFailure('moderate number of reproducible peaks', detail, level='WARNING')
+        elif 'not_compliant' in peaks_report.values():
+            yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
 
 
 def audit_analysis_files(value, system, files_structure):
