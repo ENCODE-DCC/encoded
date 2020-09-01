@@ -92,7 +92,8 @@
             "enum": [
                 "activation",
                 "deactivation",
-                "differentiation"
+                "differentiation",
+                "medication"
             ]
         },
         "temperature": {
