@@ -61,21 +61,5 @@
                 "end": 28
             }
         ]
-    },
-    {
-        "name": "10x-3'-v2",
-        "construction_platform": "10x",
-        "construction_platform_version": 2,
-        "library_type": "RNA-seq",
-        "end_bias": "3'",
-        "title": "10x 3' v2",
-        "biological_macromolecule": "RNA"
-    },
-    {
-        "name": "10x-ATAC",
-        "construction_platform": "10x",
-        "library_type": "ATAC-seq",
-        "title": "10x ATAC",
-        "biological_macromolecule": "DNA"
     }
 ]
