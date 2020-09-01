@@ -13,10 +13,6 @@
         {"$ref": "donor.json#/properties"}
     ],
     "properties": {
-        "organism": {
-            "default": "3413218c-3d86-498b-a0a2-9a406638e786",
-            "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
-        },
         "dbxrefs": {
             "items": {
                 "title": "Database external identifier",
