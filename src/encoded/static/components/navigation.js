@@ -171,7 +171,7 @@ export default class Navigation extends React.Component {
                     navClasses="navbar-main"
                 >
                     <GlobalSections />
-                    <SecondarySections isHomePage={this.props.isHomePage} />
+                    <SecondarySections isHomePage={this.props.isHomePage} authenticated={this.props.authenticated} />
                 </Navbar>
                 {this.state.testWarning ?
                     <div className="test-warning">
@@ -191,10 +191,12 @@ export default class Navigation extends React.Component {
 
 Navigation.propTypes = {
     isHomePage: PropTypes.bool, // True if current page is home page
+    authenticated: PropTypes.bool
 };
 
 Navigation.defaultProps = {
     isHomePage: false,
+    authenticated: false
 };
 
 Navigation.contextTypes = {
@@ -271,9 +273,9 @@ GlobalSections.contextTypes = {
 };
 
 
-const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }) => (
+const SecondarySections = ({ isHomePage, openDropdown, dropdownClick, authenticated }) => (
     <Nav>
-        <Search />
+        {authenticated ? <Search /> : null}
         {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
         <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
     </Nav>

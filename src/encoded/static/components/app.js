@@ -1110,6 +1110,7 @@ class App extends React.Component {
         // Every component is remounted when a new search is executed because 'key' is the full url
         const key = context['@id'];
         const currentAction = this.currentAction();
+        const authenticated = this.state.session_properties && (this.state.session_properties['auth.userid'] != null);
         const isHomePage = context.default_page && context.default_page.name === 'homepage' && (!hrefUrl.hash || hrefUrl.hash === '#logged-out');
         if (isHomePage) {
             context = context.default_page;
@@ -1197,7 +1198,7 @@ class App extends React.Component {
                             <div className="loading-spinner" />
                             <Provider store={cartStore}>
                                 <div id="layout">
-                                    <Navigation isHomePage={isHomePage} />
+                                    <Navigation isHomePage={isHomePage} authenticated={authenticated} />
                                     <div id="content" className={context['@type'] ? `container ${context['@type'].join(' ')}` : 'container'} key={key}>
                                         {content}
                                     </div>
