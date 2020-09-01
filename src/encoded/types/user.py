@@ -30,14 +30,6 @@ ONLY_ADMIN_VIEW_DETAILS = [
     (Deny, Everyone, ['view', 'view_details', 'edit']),
 ]
 
-USER_ALLOW_CURRENT = [
-    (Allow, Everyone, 'view'),
-] + ONLY_ADMIN_VIEW_DETAILS
-
-USER_DELETED = [
-    (Deny, Everyone, 'visible_for_edit')
-] + ONLY_ADMIN_VIEW_DETAILS
-
 
 @collection(
     name='users',
@@ -55,8 +47,8 @@ class User(Item):
         'lab',
     ]
     STATUS_ACL = {
-        'current': [(Allow, 'role.owner', ['edit', 'view_details'])] + USER_ALLOW_CURRENT,
-        'deleted': USER_DELETED,
+        'current': ONLY_ADMIN_VIEW_DETAILS + [(Allow, 'role.owner', ['edit', 'view_details'])],
+        'deleted': ONLY_ADMIN_VIEW_DETAILS + [(Deny, Everyone, 'visible_for_edit')],
         'disabled': ONLY_ADMIN_VIEW_DETAILS,
     }
 
