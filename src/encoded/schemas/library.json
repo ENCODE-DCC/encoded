@@ -24,8 +24,8 @@
         {"$ref": "mixins.json#/lab"}
     ],
     "dependencies": {
-        "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
-        "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+        "starting_quantity_units": ["starting_quantity"],
+        "starting_quantity": ["starting_quantity_units"],
         "product_id": ["source"],
         "lot_id": ["source", "product_id"]
     },
@@ -124,14 +124,14 @@
                 "pattern": "^(GEO:GSM\\d+|GEO-obsolete:GSM\\d+|SRA:SRX\\d+|ENA:ERX\\d+)$"
             }
         },
-        "nucleic_acid_starting_quantity": {
-            "title": "Nucleic acid starting quantity",
-            "description": "The starting amount of nucleic acid before selection and purification.",
+        "starting_quantity": {
+            "title": "Starting quantity",
+            "description": "The starting amount or concentration before selection and purification.",
             "type": "number"
         },
-        "nucleic_acid_starting_quantity_units": {
-            "title": "Nucleic acid starting quantity units",
-            "description": "The units used for starting amount of nucleic acid.",
+        "starting_quantity_units": {
+            "title": "Starting quantity units",
+            "description": "The units used to measure amount or concentration of input to the library preparation.",
             "type": "string",
             "enum": [
                 "cell-equivalent",
