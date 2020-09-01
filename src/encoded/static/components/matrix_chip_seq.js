@@ -45,6 +45,7 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
     }
 
     const subTabSource = 'biosample_ontology.classification';
+
     const subTabs = context.matrix.x[subTabSource].buckets.map(x => x.key);
     const chIPSeqData = {};
 
@@ -106,9 +107,15 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
         chIPSeqData[subTab] = { headerRow, dataRow, assayTitle, organismName };
     });
 
+    const subTabsSorted = subTabs.sort();
+
+    // whole organisms should be moved to the front
     return {
         chIPSeqData,
-        subTabs: subTabs.sort(),
+        subTabs: [
+            subTabsSorted.find(item => item === 'whole organisms'),
+            ...subTabsSorted.filter(tab => tab !== 'whole organisms'),
+        ].filter(tab => tab !== undefined),
     };
 };
 
@@ -147,10 +154,10 @@ const isMatrixUpdateLarge = (currentChIPSeqData, newChIPSeqData) => {
  * Transform chIP Seq data to a form DataTable-object can understand.
  *
  * @param {chIPSeqData} chIPSeqData
- * @param {string} selectedSubTab - Sub tab to use
+ * @param {string} selectedTabLevel3 - Sub tab to use
  * @returns {object} DataTable-ready structure.
  */
-const convertTargetDataToDataTable = (chIPSeqData, selectedSubTab) => {
+const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
     if (!chIPSeqData || !chIPSeqData.headerRow || !chIPSeqData.dataRow) {
         return {
             rows: [],
@@ -178,7 +185,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedSubTab) => {
             if (yIndex === 0) {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
                 content = {
-                    header: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedSubTab}`} title={y}>{y}</a>,
+                    header: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
                     style: { borderLeft },
                 };
             } else {
@@ -186,7 +193,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedSubTab) => {
                 const backgroundColor = y === 0 ? '#FFF' : '#688878'; // determined if box is colored or not
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
                 content = {
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedSubTab}`} title={y}>&nbsp;</a>,
+                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
                     style: { backgroundColor, borderTop, borderRight },
                 };
             }
@@ -207,35 +214,64 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedSubTab) => {
     return matrixConfig;
 };
 
-
 /**
- * Tab data
- *
- * Note: The server does not return all of this data. So it is hard-coded to make it ever-available.
- */
-const tabs = [
+* First row of Tab- Organism
+*
+* id: Server name
+* header: Name shown to user
+* headerImage: Image shown beside header
+* url: hyperlink (set by array's consumer)
+*/
+const tabLevel1 = [
     {
-        organismName: 'Homo sapiens',
-        assayTitle: 'Histone ChIP-seq',
-        title: 'Homo sapiens | Histone',
-        url: 'replicates.library.biosample.donor.organism.scientific_name=Homo sapiens&assay_title=Histone ChIP-seq',
-    }, {
-        organismName: 'Homo sapiens',
-        assayTitle: 'TF ChIP-seq',
-        title: 'Homo sapiens | TF',
-        url: 'replicates.library.biosample.donor.organism.scientific_name=Homo sapiens&assay_title=TF ChIP-seq',
-    }, {
-        organismName: 'Mus musculus',
-        assayTitle: 'Histone ChIP-seq',
-        title: 'Mus musculus | Histone',
-        url: 'replicates.library.biosample.donor.organism.scientific_name=Mus musculus&assay_title=Histone ChIP-seq',
-    }, {
-        organismName: 'Mus musculus',
-        assayTitle: 'TF ChIP-seq',
-        title: 'Mus musculus | TF',
-        url: 'replicates.library.biosample.donor.organism.scientific_name=Mus musculus&assay_title=TF ChIP-seq',
+        id: 'Homo sapiens',
+        header: 'Homo sapiens',
+        headerImage: '/static/img/bodyMap/organisms/Homo-sapiens.png',
+        url: '',
+    },
+    {
+        id: 'Mus musculus',
+        header: 'Mus musculus',
+        headerImage: '/static/img/bodyMap/organisms/Mus-musculus.png',
+        url: '',
+    },
+    {
+        id: 'Caenorhabditis elegans',
+        header: 'Caenorhabditis elegans',
+        headerImage: '/static/img/bodyMap/organisms/Caenorhabditis-elegans.png',
+        url: '',
+    },
+    {
+        id: 'Drosophila melanogaster',
+        header: 'Drosophila melanogaster',
+        headerImage: '/static/img/bodyMap/organisms/Drosophila-melanogaster.png',
+        url: '',
     },
 ];
+
+/**
+ * Second tab- Assay title
+ *
+ * id: Server name
+ * header: Name shown to user
+ * url: hyperlink (set by array's consumer)
+ */
+const tabLevel2 = [
+    {
+        id: 'Histone ChIP-seq',
+        header: 'Histone',
+        url: '',
+    },
+    {
+        id: 'TF ChIP-seq',
+        header: 'Transcription Factor',
+        url: '',
+    },
+];
+
+
+const assayTitlesOptions = tabLevel2.map(tab => tab.id);
+
 
 const Spinner = ({ isActive }) => (
     <>
@@ -363,7 +399,6 @@ class ChIPSeqMatrixSearch extends SearchFilter {
     }
 }
 
-
 /**
  * Render the area above the matrix itself, including the page title.
  *
@@ -473,9 +508,10 @@ class ChIPSeqTabPanel extends React.Component {
                 <div className="tab-nav">
                     <ul className={`nav-tabs${navCss ? ` ${navCss}` : ''}`} role="tablist">
                         {tabList.map((tab, index) => (
-                            <li key={index} role="presentation" aria-controls={tab.title} className={selectedTab === tab.title ? 'active' : ''}>
+                            <li key={index} role="presentation" aria-controls={tab.id} className={selectedTab === tab.id ? 'active' : ''} title={tab.header}>
                                 <a href={tab.url ? `${baseUrl}&${tab.url}&status=released` : ''} data-key={index} onClick={handleTabClick} style={{ color: fontColors ? fontColors[index] : 'black' }}>
-                                    {tab.title}
+                                    {tab.headerImage ? <img src={tab.headerImage} alt={tab.header} /> : '' }
+                                    {tab.header}
                                 </a>
                             </li>
                         ))}
@@ -495,7 +531,7 @@ class ChIPSeqTabPanel extends React.Component {
 ChIPSeqTabPanel.propTypes = {
     /** Object with tab=>pane specifications */
     tabList: PropTypes.array.isRequired,
-    /** key of tab to select (must provide handleTabClick) too; null for no selection */
+    /** key of tab to select; it's null for no-selection */
     selectedTab: PropTypes.string,
     /** Classes to add to navigation <ul> */
     navCss: PropTypes.string,
@@ -512,6 +548,7 @@ ChIPSeqTabPanel.propTypes = {
     /** If selectedTab is provided, then parent must keep track of it */
     handleTabClick: PropTypes.func,
     children: PropTypes.node,
+    /** Colors of the fonts */
     fontColors: PropTypes.array,
 };
 
@@ -546,8 +583,8 @@ const SelectOrganismModal = () => (
         <ModalBody addCss="chip_seq_matrix__organism-selector">
             <div>Organism to view in matrix:</div>
             <div className="selectors">
-                {['Homo sapiens', 'Mus musculus'].map((organism, index) =>
-                    <a key={index} className={`btn btn-info btn__selector--${organism.replace(/ /g, '-')}`} href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${organism}&assay_title=Histone%20ChIP-seq&status=released`}>{organism}</a>
+                {tabLevel1.map((tab, index) =>
+                    <a key={index} className={`btn btn-info btn__selector--${tab.id.replace(/ /g, '-')}`} href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${tab.id}&assay_title=Histone%20ChIP-seq&status=released`}>{tab.header}</a>
                 )}
             </div>
         </ModalBody>
@@ -572,20 +609,22 @@ class ChIPSeqMatrixPresentation extends React.Component {
         const { context } = this.props;
         const link = context['@id'];
         const query = new QueryString(link);
-        const assayTitle = query.getKeyValues('assay_title')[0];
+        const assayTitle = assayTitlesOptions.filter(tab => query.getKeyValues('assay_title').includes(tab))[0];
         const organismName = query.getKeyValues('replicates.library.biosample.donor.organism.scientific_name')[0];
-        const selectedTab = (tabs.find(tab => tab.assayTitle === assayTitle && tab.organismName === organismName) || tabs[0]).title;
+        const selectedTabLevel1 = (tabLevel1.find(tab => tab.id === organismName) || tabLevel1[0]).id;
+        const selectedTabLevel2 = (tabLevel2.find(tab => tab.id === assayTitle) || tabLevel2[0]).id;
 
         this.subTabs = [];
         this.ChIPSeqMatrixData = [];
 
         this.state = {
             chIPSeqData: [],
-            selectedTab,
-            selectedSubTab: null,
             scrolledRight: false,
             showOrganismRequest: false,
             spinnerActive: true,
+            organismName,
+            selectedTabLevel1,
+            selectedTabLevel2,
         };
     }
 
@@ -607,16 +646,16 @@ class ChIPSeqMatrixPresentation extends React.Component {
         this.subTabs = this.ChIPSeqMatrixData ? this.ChIPSeqMatrixData.subTabs : [];
 
         // subtab may be in the url #, get it if it is there or default to first subtabs list value
-        const storedSelectedSubTab = window.sessionStorage.getItem('encodeSelectedSubTab');
-        const selectedSubTab = storedSelectedSubTab && this.subTabs.includes(storedSelectedSubTab) ?
-            storedSelectedSubTab :
+        const storedSelectedTabLevel3 = window.sessionStorage.getItem('encodeSelectedTabLevel3');
+        const selectedTabLevel3 = storedSelectedTabLevel3 && this.subTabs.includes(storedSelectedTabLevel3) ?
+            storedSelectedTabLevel3 :
             this.subTabs.length > 0 ? this.ChIPSeqMatrixData.subTabs[0] : null;
 
         // sub chIP Seq data to display
-        const chIPSeqData = this.ChIPSeqMatrixData ? this.ChIPSeqMatrixData.chIPSeqData[selectedSubTab] : {};
+        const chIPSeqData = this.ChIPSeqMatrixData ? this.ChIPSeqMatrixData.chIPSeqData[selectedTabLevel3] : {};
         const matrixUpdate = {
             chIPSeqData,
-            selectedSubTab,
+            selectedTabLevel3,
             showOrganismRequest, // determines if organism modal shows
         };
 
@@ -668,9 +707,9 @@ class ChIPSeqMatrixPresentation extends React.Component {
     subTabClicked(e) {
         PubSub.publish(CLEAR_SEARCH_BOX_PUBSUB, {});
         const index = Number(e.target.dataset.key);
-        const selectedSubTab = this.subTabs[isNaN(index) ? 0 : index];
-        window.sessionStorage.setItem('encodeSelectedSubTab', selectedSubTab);
-        const chIPSeqData = this.ChIPSeqMatrixData.chIPSeqData[selectedSubTab];
+        const selectedTabLevel3 = this.subTabs[isNaN(index) ? 0 : index];
+        window.sessionStorage.setItem('encodeSelectedTabLevel3', selectedTabLevel3);
+        const chIPSeqData = this.ChIPSeqMatrixData.chIPSeqData[selectedTabLevel3];
         const count = getSearchResultCount(chIPSeqData);
         PubSub.publish(SEARCH_RESULT_COUNT_PUBSUB, count);
 
@@ -679,7 +718,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
         this.setState({ spinnerActive: true }, () => {
             if (!isMatrixLarge) {
                 this.setState({ chIPSeqData: null }, () => { // chIPSeqData set to null to prevent react from doing a diff
-                    this.setState({ selectedSubTab, chIPSeqData }, () => {
+                    this.setState({ selectedTabLevel3, chIPSeqData }, () => {
                         this.setState({ spinnerActive: false });
                     });
                 });
@@ -687,7 +726,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                 // defer is used to allow ending of spinner most likely aferr painting of matrix DOM is complete. It is hacky.
                 _.defer(() => {
                     this.setState({ chIPSeqData: null }, () => { // chIPSeqData set to null to prevent react from doing a diff
-                        this.setState({ selectedSubTab, chIPSeqData }, () => {
+                        this.setState({ selectedTabLevel3, chIPSeqData }, () => {
                             _.defer(() => {
                                 this.setState({ spinnerActive: false });
                             });
@@ -709,7 +748,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
      */
     performSearch(message, searchData) {
         const searchText = searchData.text.toLocaleLowerCase().trim();
-        const chIPSeqData = Object.assign({}, this.ChIPSeqMatrixData.chIPSeqData[this.state.selectedSubTab]);
+        const chIPSeqData = Object.assign({}, this.ChIPSeqMatrixData.chIPSeqData[this.state.selectedTabLevel3]);
         let dataRow = [];
         let headerRow = [];
 
@@ -824,9 +863,23 @@ class ChIPSeqMatrixPresentation extends React.Component {
 
     render() {
         const { context } = this.props;
-        const { scrolledRight, chIPSeqData, showOrganismRequest, selectedSubTab, spinnerActive } = this.state;
-        const fontColors = globals.biosampleTypeColors.colorList(this.subTabs, { merryGoRoundColors: true });
-        const subTabsHeaders = this.subTabs.map(subTab => ({ title: subTab })); // subtabs formatted to for displaying
+        const { scrolledRight, chIPSeqData, showOrganismRequest, selectedTabLevel1, selectedTabLevel2, selectedTabLevel3, spinnerActive, organismName } = this.state;
+        const fontColors = globals.biosampleTypeColors.colorList(this.subTabs);
+        const subTabsHeaders = this.subTabs.map((subTab, index) => ({ // subtabs formatted to for displaying
+            id: (subTab || index.toString()).trim(' '),
+            header: subTab,
+        }));
+
+
+        for (let i = 0; i < tabLevel1.length; i += 1) {
+            const tab1 = tabLevel1[i];
+            tab1.url = `replicates.library.biosample.donor.organism.scientific_name=${tab1.id}&assay_title=${selectedTabLevel2}${selectedTabLevel2 === 'Histone ChIP-seq' ? '&assay_title=Mint-ChIP-seq' : ''}`;
+        }
+
+        for (let i = 0; i < tabLevel2.length; i += 1) {
+            const assay = tabLevel2[i].id;
+            tabLevel2[i].url = `replicates.library.biosample.donor.organism.scientific_name=${organismName}&assay_title=${assay}${assay === 'Histone ChIP-seq' ? '&assay_title=Mint-ChIP-seq' : ''}`;
+        }
 
         return (
             <div className="matrix__presentation">
@@ -838,17 +891,19 @@ class ChIPSeqMatrixPresentation extends React.Component {
                 <div className="matrix__presentation-content">
                     <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
                     {showOrganismRequest ? <SelectOrganismModal /> : null }
-                    <ChIPSeqTabPanel tabList={tabs} selectedTab={this.state.selectedTab} tabPanelCss="matrix__data-wrapper">
-                        <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedSubTab} tabPanelCss="matrix__data-wrapper" handleTabClick={this.subTabClicked} fontColors={fontColors}>
-                            {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
-                                  <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
-                                      <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedSubTab)} />
-                                  </div>
-                              :
-                                  <div className="chip_seq_matrix__warning">
-                                      { chIPSeqData && Object.keys(chIPSeqData).length === 0 ? 'Select an organism to view data.' : 'No data to display.' }
-                                  </div>
-                            }
+                    <ChIPSeqTabPanel tabList={tabLevel1} selectedTab={selectedTabLevel1} tabPanelCss="matrix__data-wrapper">
+                        <ChIPSeqTabPanel tabList={tabLevel2} selectedTab={selectedTabLevel2} tabPanelCss="matrix__data-wrapper">
+                            <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} tabPanelCss="matrix__data-wrapper" handleTabClick={this.subTabClicked} fontColors={fontColors}>
+                                {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
+                                      <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
+                                          <DataTable tableData={convertTargetDataToDataTable(chIPSeqData, selectedTabLevel3)} />
+                                      </div>
+                                  :
+                                      <div className="chip_seq_matrix__warning">
+                                          { chIPSeqData && Object.keys(chIPSeqData).length === 0 ? 'Select an organism to view data.' : 'No data to display.' }
+                                      </div>
+                                }
+                            </ChIPSeqTabPanel>
                         </ChIPSeqTabPanel>
                     </ChIPSeqTabPanel>
                 </div>

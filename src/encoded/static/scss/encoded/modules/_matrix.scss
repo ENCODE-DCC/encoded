@@ -973,6 +973,16 @@ table.matrix th.group-all-groups-cell {
             a::after {
                 content: none !important;
             }
+
+            a {
+                padding: 5px 10px;
+            }
+
+            img {
+                vertical-align: middle;
+                width: 30px;
+                margin-right: 5px;
+            }
         }
     }
 }
