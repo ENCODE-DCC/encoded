@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from pyramid.security import Authenticated
 
 from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
 from snovault.elasticsearch.searches.interfaces import SEARCH_TITLE
@@ -47,7 +48,7 @@ DEFAULT_ITEM_TYPES = [
 ]
 
 
-@view_config(route_name='search', request_method='GET', permission='search')
+@view_config(route_name='search', request_method='GET', permission=Authenticated)
 def search(context, request):
     # Note the order of rendering matters for some fields, e.g. AllResponseField and
     # NotificationResponseField depend on results from BasicSearchWithFacetsResponseField.
@@ -79,7 +80,7 @@ def search(context, request):
     return fr.render()
 
 
-@view_config(route_name='searchv2_raw', request_method='GET', permission='search')
+@view_config(route_name='searchv2_raw', request_method='GET', permission=Authenticated)
 def searchv2_raw(context, request):
     fr = FieldedResponse(
         _meta={
@@ -94,7 +95,7 @@ def searchv2_raw(context, request):
     return fr.render()
 
 
-@view_config(route_name='searchv2_quick', request_method='GET', permission='search')
+@view_config(route_name='searchv2_quick', request_method='GET', permission=Authenticated)
 def searchv2_quick(context, request):
     fr = FieldedResponse(
         _meta={
@@ -127,7 +128,7 @@ def search_generator(request):
     return fgr.render()
 
 
-@view_config(route_name='report', request_method='GET', permission='search')
+@view_config(route_name='report', request_method='GET', permission=Authenticated)
 def report(context, request):
     fr = FieldedResponse(
         _meta={
