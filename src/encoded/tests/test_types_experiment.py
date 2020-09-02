@@ -113,8 +113,8 @@ def test_experiment_biosample_summary(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'S2R+ nuclear fraction and ' + \
-        'liver male child (1 day), treated with ethanol'
+        'S2R+ cell line nuclear fraction and ' + \
+        'liver tissue male child (1 day), treated with ethanol'
 
 
 def test_experiment_biosample_summary_2(testapp,
@@ -148,7 +148,7 @@ def test_experiment_biosample_summary_2(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'liver male child (10 days) not treated and treated with ethanol'
+        'liver tissue male child (10 days) not treated and treated with ethanol'
 
 
 def test_experiment_biosample_summary_3(testapp,
@@ -212,7 +212,7 @@ def test_experiment_biosample_summary_4(testapp,
                                                                replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id']+'@@index-data')
     assert res.json['object']['biosample_summary'] == \
-        'skin epidermis male child (10 days) with basal cell carcinoma and without disease'
+        'skin epidermis tissue male child (10 days) with basal cell carcinoma and without disease'
 
 
 def test_experiment_protein_tags(testapp, base_experiment, donor_1, donor_2, biosample_1, biosample_2, construct_genetic_modification, construct_genetic_modification_N, library_1, library_2, replicate_1_1, replicate_2_1):
