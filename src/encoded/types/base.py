@@ -64,7 +64,7 @@ ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
 ] + ONLY_ADMIN_VIEW
 
 ALLOW_CURRENT = [
-    (Allow, Everyone, 'view'),
+    (Allow, Authenticated, 'view')
 ] + ONLY_ADMIN_VIEW
 
 DELETED = [
