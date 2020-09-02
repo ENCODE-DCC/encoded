@@ -47,8 +47,8 @@ class User(Item):
         'lab',
     ]
     STATUS_ACL = {
-        'current': ONLY_ADMIN_VIEW_DETAILS + [(Allow, 'role.owner', ['edit', 'view_details'])],
-        'deleted': ONLY_ADMIN_VIEW_DETAILS + [(Deny, Everyone, 'visible_for_edit')],
+        'current': [(Allow, 'role.owner', ['view', 'edit', 'view_details'])] + ONLY_ADMIN_VIEW_DETAILS,
+        'deleted': [(Deny, Everyone, 'visible_for_edit')] + ONLY_ADMIN_VIEW_DETAILS,
         'disabled': ONLY_ADMIN_VIEW_DETAILS,
     }
 
