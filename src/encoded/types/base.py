@@ -48,7 +48,6 @@ ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
 ] + ONLY_ADMIN_VIEW
 
-
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
 ] + ONLY_ADMIN_VIEW
@@ -63,9 +62,7 @@ ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
     (Allow, 'role.lab_submitter', 'edit'),
 ] + ONLY_ADMIN_VIEW
 
-ALLOW_CURRENT = [
-    (Allow, Everyone, 'view'),
-] + ONLY_ADMIN_VIEW
+ALLOW_CURRENT = ONLY_ADMIN_VIEW
 
 DELETED = [
     (Deny, Everyone, 'visible_for_edit')
