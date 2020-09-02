@@ -40,6 +40,12 @@ class Page(SharedItem):
         'layout.blocks.image'
     ]
 
+    STATUS_ACL = {
+        'released': ALLOW_EVERYONE_VIEW,
+        'in progress': ONLY_ADMIN_VIEW,
+        'deleted': ONLY_ADMIN_VIEW
+    }
+
     def unique_keys(self, properties):
         keys = super(Page, self).unique_keys(properties)
         parent = properties.get('parent')

@@ -30,9 +30,9 @@ from snovault import (
 
 
 @lru_cache()
-def _award_viewing_group(award_uuid, root):
+def _award_viewing_groups(award_uuid, root):
     award = root.get_by_uuid(award_uuid)
-    return award.upgrade_properties().get('viewing_group')
+    return award.upgrade_properties().get('viewing_groups')
 
 
 # Item acls
@@ -47,7 +47,6 @@ ONLY_ADMIN_VIEW = [
 ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
 ] + ONLY_ADMIN_VIEW
-
 
 ALLOW_VIEWING_GROUP_VIEW = [
     (Allow, 'role.viewing_group_member', 'view'),
@@ -208,10 +207,11 @@ class Item(snovault.Item):
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'
         if 'award' in properties:
-            viewing_group = _award_viewing_group(properties['award'], find_root(self))
-            if viewing_group is not None:
-                viewing_group_members = 'viewing_group.%s' % viewing_group
-                roles[viewing_group_members] = 'role.viewing_group_member'
+            viewing_groups = _award_viewing_groups(properties['award'], find_root(self))
+            if viewing_groups is not None:
+                for group in viewing_groups:
+                    viewing_group_members = 'viewing_group.%s' % group
+                    roles[viewing_group_members] = 'role.viewing_group_member'
         return roles
 
     def unique_keys(self, properties):
