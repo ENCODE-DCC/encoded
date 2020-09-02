@@ -49,7 +49,7 @@ class HTTPForbidden extends React.Component {
             <div className={itemClass}>
                 <h1>Not available</h1>
                 {loggedIn ? <p>Your account is not allowed to view this page.</p> : <p>Please sign in to view this page.</p>}
-                {loggedIn ? null : <p>Or <a href="mailto:encode-help@lists.stanford.edu">Request an account.</a></p>}
+                {loggedIn ? null : <p>Or <a href="mailto: lattice-info@lists.stanford.edu">Request an account.</a></p>}
             </div>
         );
     }
