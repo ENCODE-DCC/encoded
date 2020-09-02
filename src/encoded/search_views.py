@@ -127,7 +127,7 @@ def search_generator(request):
     return fgr.render()
 
 
-@view_config(route_name='report', request_method='GET', permission="search")
+@view_config(route_name='report', request_method='GET', permission='search')
 def report(context, request):
     fr = FieldedResponse(
         _meta={
