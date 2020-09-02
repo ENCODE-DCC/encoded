@@ -2,10 +2,13 @@ from .biosample import generate_summary_dictionary
 
 def biosample_summary_information(request, biosampleObject):
     drop_age_sex_flag = False
+    add_classification_flag = False
 
     biosampleTypeObject = request.embed(biosampleObject['biosample_ontology'], '@@object')
     if biosampleTypeObject.get('classification') in ['in vitro differentiated cells']:
         drop_age_sex_flag = True
+    if biosampleTypeObject.get('classification') in ['tissue', 'organoid']:
+        add_classification_flag = True
 
     organismObject = None
     if 'organism' in biosampleObject:
@@ -83,4 +86,4 @@ def biosample_summary_information(request, biosampleObject):
         modifications_list,
         True)
 
-    return (dictionary_to_add, drop_age_sex_flag)
+    return (dictionary_to_add, drop_age_sex_flag, add_classification_flag)
