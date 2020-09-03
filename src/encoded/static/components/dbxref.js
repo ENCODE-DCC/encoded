@@ -260,6 +260,18 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
+    SCREEN: {
+        pattern: 'https://screen.encodeproject.org/search?q={0}',
+        preprocessor: (context) => {
+            if (context['@type'][0] === 'Experiment' && context.replicates.library.biosample.organism && context.replicates.library.biosample.organism.scientific_name === 'Homo sapiens') {
+                return { altUrlPattern: 'https://screen.encodeproject.org/search?q={0}&assembly=GRCh38' };
+            }
+            if (context['@type'][0] === 'Experiment' && context.replicates.library.biosample.organism && context.replicates.library.biosample.organism.scientific_name === 'Mus musculus') {
+                return { altUrlPattern: 'https://screen.encodeproject.org/search?q={0}&assembly=mm10' };
+            }
+            return {};
+        },
+    },
 };
 
 
