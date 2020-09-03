@@ -131,10 +131,10 @@ class Dataset(Item):
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
         outside_files = list(derived_from.difference(original_files))
-        if status in ('released'):
+        if status in ('released',):
             return paths_filtered_by_status(
                 request, outside_files,
-                include=('released', 'archived'),
+                include=('released', 'archived', 'in progress'),
             )
         else:
             return paths_filtered_by_status(
