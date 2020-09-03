@@ -1054,7 +1054,7 @@ def _parse_args():
     )
     parser.add_argument('--es-wait', action='store_true', help="Create es nodes and head node.")
     parser.add_argument('--cluster-name', default=None, type=hostname, help="Name of the cluster")
-    parser.add_argument('--cluster-size', default=5, help="Elasticsearch cluster size")
+    parser.add_argument('--cluster-size', type=int, default=5, help="Elasticsearch cluster size")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
     parser.add_argument(
