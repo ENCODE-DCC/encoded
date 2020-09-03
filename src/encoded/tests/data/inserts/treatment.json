@@ -1,13 +1,31 @@
 [
     {
         "aliases": [
+            "anna-greka:organoid_treatment"
+        ],
+        "uuid": "e3f51e3e-a521-4c7e-bbcb-c090f8b233da",
+        "amount": 100,
+        "amount_units": "mg",
+        "duration": 5,
+        "duration_units": "day",
+        "purpose": "differentiation",
+        "temperature": 27,
+        "temperature_units": "C",
+        "treatment_type": "chemical",
+        "treatment_term_name": "EFO:0000727"
+    },
+    {
+        "aliases": [
             "jimmie-ye:FGF7_media"
         ],
         "uuid": "cb39e0f6-67b3-4841-b824-15e1cc1acf1e",
         "amount": 50,
         "amount_units": "mg",
         "treatment_type": "chemical",
-        "treatment_term_name": "EFO:0003316"
+        "treatment_term_name": "EFO:0003316",
+        "purpose": "activation",
+        "duration": 1,
+        "duration_units": "day"
     },
     {
         "aliases": [
@@ -17,7 +35,10 @@
         "amount": 100,
         "amount_units": "mg",
         "treatment_type": "stimulation",
-        "treatment_term_name": "EFO:0003276"
+        "treatment_term_name": "EFO:0003276",
+        "purpose": "differentiation",
+        "duration": 12,
+        "duration_units": "hour"
     },
     {
         "uuid": "89ab74fa-dc15-11ea-87d0-0242ac130003",
@@ -26,6 +47,7 @@
         ],
         "treatment_term_id": "CHEBI:145810",
         "treatment_term_name": "insulin",
-        "treatment_type": "chemical"
+        "treatment_type": "chemical",
+        "purpose": "medication"
     }
 ]

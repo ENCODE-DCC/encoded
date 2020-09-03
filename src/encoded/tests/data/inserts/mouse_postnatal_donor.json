@@ -1,29 +1,48 @@
 [
     {
-        "accession": "ENCDO012AAA",
-        "strain_background": "CD-1",
-        "documents": [
-            "lattice:PanIsletD_Crawford_protocol"
+        "accession": "ENCDO060DDD",
+        "aliases": [
+            "anna-greka:adult_mouse_donorE"
         ],
-        "uuid": "a67605ad-45d9-4ec3-8470-18be07a676f0",
+        "uuid": "2a45dbaf-bdd0-48bb-9b40-03284a254c6b",
         "life_stage": "adult",
-        "sex": "male",
-        "strain_term_name": "C57BL/6"
-    },
-    {
-        "accession": "ENCDO015AAA",
-        "strain_background": "129/Ola",
-        "uuid": "1a8dd515-63da-40d8-a166-351858c77fd7",
-        "life_stage": "adult",
+        "mating_status": "mated",
         "sex": "female",
-        "strain_term_name": "C57BL/6"
+        "age": "1",
+        "age_units": "year",
+        "weight": 1.5,
+        "weight_unit": "lb",
+        "strain_background": "BALB/c",
+        "strain_term_name": "BALB/c",
+        "strain_term_id": "EFO:0000602",
+        "documents": [
+            "anna-greka:mouse.wgEncodeSydhHist"
+        ],
+        "dbxrefs": [
+            "GEO:SAMN043324"
+        ]
     },
-    {
-        "accession": "ENCDO001MUS",
-        "strain_background": "unknown",
-        "uuid": "f08acb61-5af6-4b7d-a7c8-f08be52d8012",
+        {
+        "accession": "ENCDO065DDD",
+        "aliases": [
+            "anna-greka:adult_mouse_donorF"
+        ],
+        "uuid": "104f035e-98c7-434f-8638-8cdd7de59c3a",
         "life_stage": "adult",
-        "sex": "mixed",
-        "strain_term_name": "C57BL/6"
+        "mating_status": "sterile",
+        "sex": "male",
+        "age": "1",
+        "age_units": "year",
+        "weight": 1.4,
+        "weight_unit": "lb",
+        "strain_background": "BALB/c",
+        "strain_term_name": "BALB/c",
+        "strain_term_id": "EFO:0000602",
+        "documents": [
+            "anna-greka:mouse.wgEncodeSydhHist"
+        ],
+        "dbxrefs": [
+            "GEO:SAMN043323"
+        ]
     }
 ]

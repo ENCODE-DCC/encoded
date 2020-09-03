@@ -1,5 +1,21 @@
 [
     {
+        "name": "anna-greka",
+        "uuid": "772b57b2-ea20-4a0c-ad77-231e290ff9ff",
+        "address1": "415 Main St",
+        "city": "Cambridge",
+        "state": "MA",
+        "country": "USA",
+        "postal_code": "02142",
+        "phone": "617-555-7000",
+        "institute_label": "Broad",
+        "institute_name": "Broad Institute of MIT and Harvard",
+        "principal_investigators": [
+            "agreka@bwh.harvard.ude"
+        ],
+        "title": "Anna Greka, Broad"
+    },
+    {
         "name": "jimmie-ye",
         "uuid": "bb4f0357-7d4a-4cb0-8eed-c30cf95c2d3d",
         "address1": "513 Parnassus Ave HSE910",
@@ -13,7 +29,7 @@
         "principal_investigators": [
             "jimmie.ye@ucsf.ude"
         ],
-        "title": "Ye Lab, UCSF"
+        "title": "Jimmie Ye, UCSF"
     },
     {
         "name": "peter-sims",
@@ -29,7 +45,7 @@
         ],
         "institute_label": "Columbia",
         "institute_name": "Columbia University",
-        "title": "Sims Lab, Columbia"
+        "title": "Peter Sims, Columbia"
     },
     {
         "address1": "School of Biological Sciences",

@@ -1,5 +1,53 @@
 [
     {
+        "uuid": "03322386-af14-4d83-9063-855d0bef1876",
+        "term_name": "epithelial cell of distal tubule",
+        "term_id": "CL:0002305",
+        "status": "released"
+    },
+    {
+        "uuid": "5d0a236f-7128-49a2-a46b-64b1e2ad7219",
+        "term_name": "induced pluripotent stem cell",
+        "term_id": "CL:0004905",
+        "status": "released"
+    },
+    {
+        "uuid": "27df96b4-46c1-4d1a-97cb-42d4216edacb",
+        "term_name": "cortex of kidney",
+        "term_id": "UBERON:0001225",
+        "status": "released"
+    },
+    {
+        "uuid": "1b4b480c-2267-4101-8703-26fe09c7a6e9",
+        "term_name": "kidney",
+        "term_id": "UBERON:0002113",
+        "status": "released"
+    },
+    {
+        "uuid": "ba4bd27f-fe66-49d5-b56c-c99693d77e74",
+        "term_name": "Taiwanese",
+        "term_id": "HANCESTRO:0020",
+        "status": "released"
+    },
+    {
+        "uuid": "d61c53bc-5a6a-4cb5-a07a-8eefc1c0dbde",
+        "term_name": "Korean",
+        "term_id": "HANCESTRO:0022",
+        "status": "released"
+    },
+    {
+        "uuid": "2802237f-d5c4-4838-ae83-b0b7ddb10360",
+        "term_name": "Hispanic or Latin American",
+        "term_id": "HANCESTRO:0014",
+        "status": "released"
+    },
+    {
+        "uuid": "e04d9d87-b9aa-4fe1-988a-e24630265fee",
+        "term_name": "European",
+        "term_id": "HANCESTRO:0005",
+        "status": "released"
+    },
+    {
         "uuid": "ddcdc2d0-aa58-4dcb-94fb-a3c27e8fcc37",
         "term_name": "ciliated cell",
         "term_id": "CL:0000064",

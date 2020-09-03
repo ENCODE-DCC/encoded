@@ -1,5 +1,213 @@
 [
     {
+        "accession": "ENCBS850DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorA"
+        ],
+        "description": "adult human tissue donorA",
+        "uuid": "ea0959f5-efec-422d-bbdf-c8ca77faabc1",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_human_donorA"
+        ],
+        "derivation_process": [
+            "percutaneous biopsy"
+        ],
+        "biosample_ontology": "UBERON_0001225",
+        "collection_to_preservation_interval": 5,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "spatial_information": "3cm from top edge",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "fixed": false,
+        "starting_amount": 50,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS855DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorB"
+        ],
+        "description": "adult human tissue donorB",
+        "uuid": "3e4cdffe-2c6c-48b7-bc71-ae15d8b69c38",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_human_donorB"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0001225",
+        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "spatial_information": "2cm from top edge",
+        "preservation_method": "cryopreservation",
+        "fixed": false,
+        "starting_amount": 100,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS860DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorC"
+        ],
+        "description": "adult human tissue donorC",
+        "uuid": "e5f2540c-3cc7-4f0c-ab9c-d6b6b6a27d16",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:fetal_human_donorC"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "cryopreservation",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS865DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorD"
+        ],
+        "description": "adult human tissue donorD",
+        "uuid": "e5a95c5b-eb32-4bdd-95a6-54fdb66cc794",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:fetal_human_donorD"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "cryopreservation",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS870DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorE"
+        ],
+        "description": "adult mouse tissue donorD",
+        "uuid": "fac3e4d3-058a-474a-97df-43de594f827e",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_mouse_donorE"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
+        "accession": "ENCBS875DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorF"
+        ],
+        "description": "adult mouse tissue donorF",
+        "uuid": "887840af-d67a-4f71-bb2c-b33a2fa20c07",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_mouse_donorF"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
+        "accession": "ENCBS880DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorG"
+        ],
+        "description": "adult mouse tissue donorD",
+        "uuid": "9162f685-d46c-4e03-b21a-24d00b68f0cd",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:embryonic_mouse_donorG"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
+        "accession": "ENCBS885DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorH"
+        ],
+        "description": "adult mouse tissue donorF",
+        "uuid": "b13bed91-6566-4c21-91a0-c02d87fed2da",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:embryonic_mouse_donorH"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
         "accession": "ENCBS550ABC",
         "description": "prenatal_tissue1",
         "aliases": [
@@ -20,7 +228,10 @@
         "ischemic_temperature": "4",
         "ischemic_temperature_units": "C",
         "ischemic_time": 48,
-        "ischemic_time_units": "hour"
+        "ischemic_time_units": "hour",
+        "documents": [
+            "jimmie-ye:SAEC_Stam_protocol"
+        ]
     },
     {
         "accession": "ENCBS551ABC",
@@ -31,7 +242,7 @@
         "uuid": "f09edf48-e820-4d16-a9d4-6dfdec9f7dac",
         "submitted_by": "metus.donec@nisl.montes",
         "derived_from": [
-            "jimmie-ye:prenatal_donor1"
+            "jimmie-ye:prenatal_donor2"
         ],
         "derivation_process": [
             "dissection"
@@ -43,7 +254,10 @@
         "ischemic_temperature": "4",
         "ischemic_temperature_units": "C",
         "ischemic_time": 48,
-        "ischemic_time_units": "hour"
+        "ischemic_time_units": "hour",
+        "documents": [
+            "jimmie-ye:SAEC_Stam_protocol"
+        ]
     },
     {
         "accession": "ENCBS552ABC",
@@ -54,7 +268,7 @@
         "uuid": "a929155b-69aa-4ee1-af9d-b57d94094079",
         "submitted_by": "metus.donec@nisl.montes",
         "derived_from": [
-            "jimmie-ye:prenatal_donor1"
+            "jimmie-ye:prenatal_donor3"
         ],
         "derivation_process": [
             "dissection"
@@ -66,7 +280,10 @@
         "ischemic_temperature": "4",
         "ischemic_temperature_units": "C",
         "ischemic_time": 48,
-        "ischemic_time_units": "hour"
+        "ischemic_time_units": "hour",
+        "documents": [
+            "jimmie-ye:SAEC_Stam_protocol"
+        ]
     },
     {
         "accession": "ENCBS543ABC",

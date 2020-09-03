@@ -1,5 +1,105 @@
 [
     {
+        "aliases": [
+            "anna-greka:organoid_donorC1"
+        ],
+        "accession": "ENCBS400DDD",
+        "uuid": "840d1bba-0005-4935-901a-41bc754103b4",
+        "description": "organoid from cell culture of prenatal donorC",
+        "derived_from": [
+            "anna-greka:cell_culture_donorC"
+        ],
+        "derivation_process": [
+            "growth", "stimulation"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "growth_medium": "STEMdiff",
+        "treatments": [
+            "anna-greka:organoid_treatment"
+        ],
+        "post_treatment_time": "10",
+        "post_treatment_time_units": "day",
+        "embedded_in_matrigel": true,
+        "documents": [
+            "anna-greka:C2C12_Wold_protocol"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:organoid_donorC2"
+        ],
+        "accession": "ENCBS405DDD",
+        "uuid": "5bda2505-a8bd-40b9-bee2-d56eed19c7b8",
+        "description": "organoid from cell culture of prenatal donorC",
+        "derived_from": [
+            "anna-greka:cell_culture_donorC"
+        ],
+        "derivation_process": [
+            "growth", "stimulation"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "growth_medium": "STEMdiff",
+        "treatments": [
+            "anna-greka:organoid_treatment"
+        ],
+        "post_treatment_time": "10",
+        "post_treatment_time_units": "day",
+        "embedded_in_matrigel": true,
+        "documents": [
+            "anna-greka:C2C12_Wold_protocol"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:organoid_donorD1"
+        ],
+        "accession": "ENCBS410DDD",
+        "uuid": "57672176-ce03-45b3-a3b5-2cc0bc477988",
+        "description": "organoid from cell culture of prenatal donorD",
+        "derived_from": [
+            "anna-greka:cell_culture_donorD"
+        ],
+        "derivation_process": [
+            "growth", "stimulation"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "growth_medium": "STEMdiff",
+        "treatments": [
+            "anna-greka:organoid_treatment"
+        ],
+        "post_treatment_time": "8",
+        "post_treatment_time_units": "day",
+        "embedded_in_matrigel": true,
+        "documents": [
+            "anna-greka:C2C12_Wold_protocol"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:organoid_donorD2"
+        ],
+        "accession": "ENCBS415DDD",
+        "uuid": "ada165d6-05df-482f-98fb-ababb55ed31b",
+        "description": "organoid from cell culture of prenatal donorD",
+        "derived_from": [
+            "anna-greka:cell_culture_donorD"
+        ],
+        "derivation_process": [
+            "growth", "stimulation"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "growth_medium": "STEMdiff",
+        "treatments": [
+            "anna-greka:organoid_treatment"
+        ],
+        "post_treatment_time": "8",
+        "post_treatment_time_units": "day",
+        "embedded_in_matrigel": true,
+        "documents": [
+            "anna-greka:C2C12_Wold_protocol"
+        ]
+    },
+    {
         "aliases":[
             "jimmie-ye:prenatal_organoid1"
         ],
@@ -28,7 +128,7 @@
             "jimmie-ye:VEGF_stimulation"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_cell_culture1"
+            "jimmie-ye:prenatal_cell_culture2"
         ],
         "derivation_process": [
             "stimuation"
@@ -39,14 +139,14 @@
         "aliases":[
             "jimmie-ye:prenatal_organoid3"
         ],
-        "accession": "ENCBS12SCS",
+        "accession": "ENCBS102SCS",
         "uuid": "20e7a828-f0a5-4f3c-a122-f6385c98a1d5",
         "description": "prenatal cell organoid 3",
         "treatments": [
             "jimmie-ye:VEGF_stimulation"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_cell_culture1"
+            "jimmie-ye:prenatal_cell_culture3"
         ],
         "derivation_process": [
             "stimuation"

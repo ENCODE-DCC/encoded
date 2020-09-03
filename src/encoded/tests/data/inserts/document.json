@@ -1,50 +1,72 @@
 [
     {
         "aliases": [
-            "jimmie-ye:pLKO1"
+            "jimmie-ye:SAEC_Stam_protocol"
         ],
-        "attachment": "pLKO1_vector.png",
-        "document_type": "other",
-        "submitted_by": "netus.lorem@risus.lobortis",
-        "uuid": "33d51ad0-62ba-11e3-949a-0800200c9a66"
-    },
-    {
-        "aliases": [
-            "jimmie-ye:Graveley_Group_RNA-Seq_Pipeline_02042013"
-        ],
-        "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
-        "document_type": "pipeline protocol",
+        "attachment": "SAEC_Stam_protocol.pdf",
+        "document_type": "extraction protocol",
         "status": "released",
         "submitted_by": "r.gate@ucsf.ude",
         "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
     },
     {
         "aliases": [
-            "lattice:PanIsletD_Crawford_protocol"
+            "anna-greka:LID48879"
         ],
-        "attachment": "PanIsletD_Crawford_protocol.pdf",
+        "attachment": "LID48879.pdf",
         "document_type": "other",
-        "submitted_by": "massa.porta@varius.mauris",
-        "uuid": "87a97c62-08b7-43a8-a277-7aa51eb33bce"
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "fb30fe97-1589-4ad7-8802-6ac4c7ab77a3"
     },
     {
         "aliases": [
-            "jimmie-ye:GeneQuantificationPipeline"
+            "anna-greka:mouse.wgEncodeSydhHist"
         ],
-        "attachment": "GeneQuantificationPipeline.pdf",
-        "document_type": "pipeline protocol",
-        "status": "released",
-        "submitted_by": "r.gate@ucsf.ude",
-        "uuid": "d64ef6a0-5ae4-11e4-8ed6-0800200c9a66"
+        "attachment": "mouse.wgEncodeSydhHist.txt",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "other",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "18e0fef9-89f0-4a70-89ea-74eddbe90d38"
     },
     {
         "aliases": [
-            "jimmie-ye:iCLIP_pipeline_ENCODE.pdf"
+            "anna-greka:SAEC_Stam_protocol"
         ],
-        "attachment": "iCLIP_pipeline_ENCODE.pdf",
-        "document_type": "pipeline protocol",
-        "status": "released",
-        "submitted_by": "jimmie.ye@ucsf.ude",
-        "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
+        "attachment": "SAEC_Stam_protocol.pdf",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "other",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "84db112a-3d7f-463d-8125-b60cf86e127f"
+    },
+    {
+        "aliases": [
+            "anna-greka:diffProtB_6hr_protocol"
+        ],
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "differentiation protocol",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "9f1af8d8-2ca0-424c-985b-997020c20685"
+    },
+    {
+        "aliases": [
+            "anna-greka:C2C12_Wold_protocol"
+        ],
+        "attachment": "C2C12_Wold_protocol.pdf",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "differentiation protocol",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "45e9058d-3a18-4fe3-ae8d-b76a3c1d03b7"
     }
 ]

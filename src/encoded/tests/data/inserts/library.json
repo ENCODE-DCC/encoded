@@ -12,7 +12,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_1a"
+            "jimmie-ye:suspension_1"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_a",
@@ -33,7 +33,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_1b"
+            "jimmie-ye:suspension_1"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_a",
@@ -54,7 +54,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_1c"
+            "jimmie-ye:suspension_1"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_a",
@@ -75,7 +75,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_2a"
+            "jimmie-ye:suspension_2"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_a",
@@ -96,7 +96,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_2b"
+            "jimmie-ye:suspension_2"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_a",
@@ -117,7 +117,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_2c"
+            "jimmie-ye:suspension_2"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_a",
@@ -138,7 +138,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_3a"
+            "jimmie-ye:suspension_3"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_b",
@@ -159,7 +159,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_3b"
+            "jimmie-ye:suspension_3"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_b",
@@ -180,7 +180,7 @@
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
-            "jimmie-ye:suspension_3c"
+            "jimmie-ye:suspension_3"
         ],
         "date_constructed": "2020-07-10",
         "chip_id": "chip_b",
@@ -195,12 +195,12 @@
         ],
         "uuid": "89a054c8-732e-411a-9288-b8cb6949c266",
         "description": "library_1a",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension1a"
+            "peter-sims:suspension1"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip1",
@@ -213,12 +213,12 @@
         ],
         "uuid": "07c9c835-8eb1-4e1a-bcb2-01405093321a",
         "description": "library_1b",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension1b"
+            "peter-sims:suspension1"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip1",
@@ -231,12 +231,12 @@
         ],
         "uuid": "502489bb-1300-4a79-b70a-ffa5aeddd110",
         "description": "library_1c",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension1c"
+            "peter-sims:suspension1"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip1",
@@ -249,12 +249,12 @@
         ],
         "uuid": "a6582844-e541-436b-9920-1caeb7f919cf",
         "description": "library_2a",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension2a"
+            "peter-sims:suspension2"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip2",
@@ -267,12 +267,12 @@
         ],
         "uuid": "6715e46b-590e-4ac7-be51-e5dd27a1ec28",
         "description": "library_2b",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension2b"
+            "peter-sims:suspension2"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip2",
@@ -285,12 +285,12 @@
         ],
         "uuid": "05937465-1ffc-48ce-9510-e0ca805a8415",
         "description": "library_2c",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension2c"
+            "peter-sims:suspension2"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip2",
@@ -303,12 +303,12 @@
         ],
         "uuid": "835e5124-f8b7-4b0d-bc25-54ad1778f703",
         "description": "library_3a",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension3a"
+            "peter-sims:suspension3"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",
@@ -321,12 +321,12 @@
         ],
         "uuid": "47a6787f-74af-4025-9d9d-989c21cc303d",
         "description": "library_3b",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension3b"
+            "peter-sims:suspension3"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",
@@ -339,12 +339,12 @@
         ],
         "uuid": "13f01680-65a8-4eea-9d95-95dd7ee01b53",
         "description": "library_3c",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
-            "peter-sims:suspension3c"
+            "peter-sims:suspension3"
         ],
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",

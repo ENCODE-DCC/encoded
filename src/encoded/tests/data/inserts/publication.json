@@ -1,6 +1,23 @@
 [
     {
         "aliases": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "title": "A comprehensive dataset with human, mouse, and CITEseq",
+        "abstract": "A comprehensive dataset of kidney with human, mouse, and CITEseq",
+        "authors": "Anna Greka, Abbe Clark",
+        "journal": "BMC Bioinformatics",
+        "publication_year": 2019,
+        "identifiers": [
+            "PMID:2314242"
+        ],
+        "volume": "88",
+        "page": "55-57",
+        "status": "released",
+        "uuid": "2c993c94-897a-4c2c-961f-e6edc877f449"
+    },
+    {
+        "aliases": [
             "lattice:Ye_Chen_2018_atac"
         ],
         "title": "An ATACseq publication",

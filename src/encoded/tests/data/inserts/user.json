@@ -1,9 +1,39 @@
 [
     {
+        "email": "abbeclarke@broadinstitute.org",
+        "first_name": "Abbe",
+        "last_name": "Clark",
+        "job_title": "Computational Biologist",
+        "lab": "Anna Greka, Broad",
+        "submits_for": [
+            "anna-greka"
+        ],
+        "viewing_groups": [
+            "community",
+            "CZI001KID"
+        ],
+        "uuid": "58b5c2f0-d147-4c17-bf38-a142e2234488"
+    },
+    {
+        "email": "agreka@bwh.harvard.ude",
+        "first_name": "Anna",
+        "last_name": "Greka",
+        "job_title": "PI",
+        "lab": "Anna Greka, Broad",
+        "submits_for": [
+            "anna-greka"
+        ],
+        "viewing_groups": [
+            "community",
+            "CZI001KID"
+        ],
+        "uuid": "bcee0c61-2216-45a0-b839-1dd832ec220c"
+    },
+    {
         "email": "jimmie.ye@ucsf.ude",
         "first_name": "Jimmie",
         "job_title": "PI",
-        "lab": "Ye Lab, UCSF",
+        "lab": "Jimmie Ye, UCSF",
         "last_name": "Ye",
         "submits_for": [
             "jimmie-ye"
@@ -18,7 +48,7 @@
         "first_name": "Rachel",
         "last_name": "Gate",
         "job_title": "PI",
-        "lab": "Ye Lab, UCSF",
+        "lab": "Jimmie Ye, UCSF",
         "submits_for": [
             "jimmie-ye"
         ],
@@ -32,7 +62,7 @@
         "first_name": "Peter",
         "last_name": "Sims",
         "job_title": "PI",
-        "lab": "Sims Lab, Columbia",
+        "lab": "Peter Sims, Columbia",
         "submits_for": [
             "peter-sims"
         ],
@@ -46,7 +76,7 @@
         "first_name": "David",
         "last_name": "Chen",
         "job_title": "PI",
-        "lab": "Sims Lab, Columbia",
+        "lab": "Peter Sims, Columbia",
         "submits_for": [
             "peter-sims"
         ],
@@ -185,10 +215,10 @@
         "email": "metus.donec@nisl.montes",
         "first_name": "Gregory",
         "job_title": "Data Wrangler",
-        "lab": "Sims Lab, Columbia",
+        "lab": "Peter Sims, Columbia",
         "last_name": "Crawford",
         "submits_for": [
-            "Sims Lab, Columbia"
+            "Peter Sims, Columbia"
         ],
         "uuid": "e74547f3-1676-43de-bcfc-9b946f0024c9"
     }

@@ -1,6 +1,28 @@
 [
     {
         "aliases": [
+            "anna-greka:large_test_dataset"
+        ],
+        "description": "Human, mouse, and CITEseq large dataset",
+        "accession": "ENCSR700BBB",
+        "uuid": "062a566c-89f9-4d23-b0a5-aa38026fb37e",
+        "award": "CZI001KID",
+        "submitted_by": "jlz@stanford.edu",
+        "date_released": "2019-10-07",
+        "status": "released",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "corresponding_contributor": "abbeclarke@broadinstitute.org",
+        "dbxrefs": [
+            "SRA:SRP492949"
+        ],
+        "documents": [
+            "anna-greka:LID48879"
+        ]
+    },
+    {
+        "aliases": [
             "jimmie-ye:snATACseq_atac_dataset"
         ],
         "accession": "ENCSR600ABA",

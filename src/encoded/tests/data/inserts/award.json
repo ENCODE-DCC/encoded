@@ -1,5 +1,24 @@
 [
     {
+        "description": "This network will develop a comprehensive, validated atlas of the human kidney at single cell resolution open to the entire scientific and clinical community.",
+        "name": "CZI001KID",
+        "uuid": "f425399a-68ca-4e33-9169-6284038ba9c8",
+        "principal_investigators": [
+            "agreka@bwh.harvard.ude"
+        ],
+        "project": "HCA Seed Networks",
+        "status": "current",
+        "title": "A Comprehensive Single Cell Atlas of the Human Kidney",
+        "url": "https://chanzuckerberg.com/science/programs-resources/single-cell-biology/seednetworks/a-comprehensive-single-cell-atlas-of-the-human-kidney/",
+        "viewing_groups": [
+            "CZI001KID"
+        ],
+        "focus": "kidney",
+        "collaborators": [
+            "jimmie.ye@ucsf.ude"
+        ]
+    },
+    {
         "description": "This project seeks to establish the normal range of immune phenotypic variability — both within and across individuals — and assess contributions from genetics and environment, such as diurnal, seasonal, and reproductive cycles and life experience.",
         "name": "CZI021IMM",
         "uuid": "139522ee-4116-43cc-9b04-6d0900aa41d5",
@@ -14,7 +33,8 @@
         "viewing_groups": [
             "CZI017IMM"
         ],
-        "CZI_project_identifier": "CZF2019-002440"
+        "CZI_project_identifier": "CZF2019-002440",
+        "focus": "liver"
     },
     {
         "description": "This team will analyze single cells and develop computational tools to build a single cell map of the human liver, combining transcriptomics, spatial organization, and cell-cell interactions across diverse individuals and developmental stages.",
@@ -31,6 +51,7 @@
         "viewing_groups": [
             "CZI003CNS"
         ],
-        "CZI_project_identifier": "HCA-A-1704-01668"
+        "CZI_project_identifier": "HCA-A-1704-01668",
+        "focus": "multi-organ"
     }
 ]

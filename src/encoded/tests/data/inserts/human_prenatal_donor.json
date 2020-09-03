@@ -1,5 +1,63 @@
 [
     {
+        "accession": "ENCDO070DDD",
+        "aliases": [
+            "anna-greka:fetal_human_donorC"
+        ],
+        "uuid": "10425743-5139-4045-ab9c-94c2b41c78ce",
+        "ethnicity": "HANCESTRO_0014",
+        "sex": "female",
+        "description": "Healthy fetal donorA",
+        "life_stage": "fetal",
+        "foot_length": 12,
+        "foot_length_units": "mm",
+        "weight": 1.5,
+        "weight_unit": "oz",
+        "knee_heel_length": 16,
+        "knee_heel_length_units": "mm",
+        "ancestry": [
+            {
+                "ancestry_group":  "HANCESTRO_0005", "percentage": 30  
+            },
+            {
+                "ancestry_group":  "HANCESTRO_0014", "percentage": 60 
+            }
+        ],
+        "gestational_age": "15",
+        "gestational_age_units": "week",
+        "crown_rump_length": 105,
+        "crown_rump_length_units": "mm"
+    },
+    {
+        "accession": "ENCDO075DDD",
+        "aliases": [
+            "anna-greka:fetal_human_donorD"
+        ],
+        "uuid": "2dbf248e-aea9-4092-bbb7-940d85ac7695",
+        "ethnicity": "HANCESTRO_0014",
+        "sex": "male",
+        "description": "Healthy fetal donorA",
+        "life_stage": "fetal",
+        "foot_length": 11,
+        "foot_length_units": "mm",
+        "weight": 14,
+        "weight_unit": "oz",
+        "knee_heel_length": 15,
+        "knee_heel_length_units": "mm",
+        "ancestry": [
+            {
+                "ancestry_group":  "HANCESTRO_0005", "percentage": 35  
+            },
+            {
+                "ancestry_group":  "HANCESTRO_0014", "percentage": 55 
+            }
+        ],
+        "gestational_age": "16-17",
+        "gestational_age_units": "week",
+        "crown_rump_length": 108,
+        "crown_rump_length_units": "mm"
+    },
+    {
         "accession": "ENCDO130ABC",
         "aliases": [
             "jimmie-ye:prenatal_donor1"
@@ -112,11 +170,5 @@
     	"twin_type": "monozygotic",
     	"notes": "Test notes",
     	"submitter_comment": "Test comment"
-    },
-    {
-        "accession": "ENCDO568ESC",
-        "life_stage": "embryonic",
-        "sex": "unknown",
-        "uuid": "f585f150-e6b2-11e3-ac10-0800200c9a66"
     }
 ]

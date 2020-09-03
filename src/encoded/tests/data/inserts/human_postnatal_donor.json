@@ -1,5 +1,80 @@
 [
     {
+        "accession": "ENCDO085DDD",
+        "uuid": "54fd414d-6da2-4ab2-b164-403d77b988e3",
+        "aliases": [
+            "anna-greka:adult_human_donorB"
+        ],
+        "description": "Healthy kidney donorB",
+        "ethnicity": "HANCESTRO_0014",
+        "sex": "male",
+        "age": "65-70",
+        "age_units": "year",
+        "life_stage": "adult",
+        "living_at_sample_collection": false,
+        "body_mass_index": 26,
+        "weight": 185,
+        "weight_unit": "lb",
+        "height": 71,
+        "height_unit": "in",
+        "test_results": {
+            "HIV-1/HBV/HCV": "negative",
+            "GFFR": "105"
+        },
+        "smoking_history": "1 pack a week for 10 years",
+        "alcohol_history": "3 drinks a week",
+        "cause_of_death": "car accident",
+        "ancestry": [
+            {
+                "ancestry_group":  "HANCESTRO_0005", "percentage": 30  
+            },
+            {
+                "ancestry_group":  "HANCESTRO_0014", "percentage": 60 
+            }
+        ],
+        "dbxrefs": [
+            "GEO:SAMN141155"
+        ]
+    },
+    {
+        "accession": "ENCDO080DDD",
+        "uuid": "80588b81-eba0-4f83-9c24-549a4fa43ec0",
+        "aliases": [
+            "anna-greka:adult_human_donorA"
+        ],
+        "description": "Healthy kidney donorA",
+        "ethnicity": "HANCESTRO_0022",
+        "sex": "female",
+        "age": "45-50",
+        "age_units": "year",
+        "life_stage": "adult",
+        "times_pregnant": 2,
+        "living_at_sample_collection": true,
+        "family_history_breast_cancer": [
+            "mother", "maternal grandmother"
+        ],
+        "body_mass_index": 25,
+        "weight": 145,
+        "weight_unit": "lb",
+        "height": 68,
+        "height_unit": "in",
+        "test_results": {
+            "HIV-1/HBV/HCV": "negative",
+            "GFFR": "115"
+        },
+        "ancestry": [
+            {
+                "ancestry_group":  "HANCESTRO_0020", "percentage": 45  
+            },
+            {
+                "ancestry_group":  "HANCESTRO_0022", "percentage": 50 
+            }
+        ],
+        "dbxrefs": [
+            "GTEx:1117F"
+        ]
+    },
+    {
         "accession": "ENCDO654AAA",
         "aliases": [
             "peter-sims:postnatal_donor1"
@@ -29,7 +104,7 @@
             "sister","paternal grandmother"
         ],
         "smoking_history": "2 packs a week, 1 year since cessation",
-        "alochol_history": "3 drinks a week",
+        "alcohol_history": "3 drinks a week",
         "test_results": {
             "HIV-1/HBV/HCV": "negative"
         },
