@@ -342,9 +342,10 @@
     },
     "viewing_groups": {
         "viewing_groups": {
-            "title": "Vieiwing access groups",
+            "title": "Viewing access groups",
             "description": "The groups that determines which set of data the user has permission to view.",
             "type": "array",
+            "permission": "import-items",
             "items": {
                 "title": "View access group",
                 "description": "The group that determines which set of data the user has permission to view.",
