@@ -1,5 +1,32 @@
 Changes
 =======
+106.0 (released) snovault 1.0.49
+--------------------------------------------------------------------
+1. ENCD-5510-set-file-permissions-nagios (#3513)
+2. ENCD-5512 Set type for cluster size in deploy (#3513)
+3. update-snovault 1.0.49 (#3509)
+4. ENCD-5462-qc-grouping (#3503)
+5. SNO-166-update-query-string (#3475) 
+6. ENCD-5414 Update FCC menus (#3504) 
+7. ENCD-5469-switch-batch-download-mechanism (#3500)  
+8. ENCD-5495-cart-test (#3505)
+9. ENCD-5464-sprite-ip (#3490) 
+10. ENCD-5437 Highlight file graph arrows (#3492) 
+11. ENCD-5451-add-nagios-monitor-deploy (#3498) 
+12. ENCD-5480-replace-stable-peaks-with-pseudo-replicated-peaks (#3485)
+13. ENCD-5407-trans-enhancerpage (#3477)
+14. ENCD-5473-update-biosample-characterization-audit (#3486) 
+15. ENCD-5334-add-analysis-step-audit (#3494) 
+16. ENCD-5467 Update Genetic Modification UI for new property (#3481) 
+17. ENCD-5463-make-target-import_items (#3480) 
+18. ENCD-5466-make-disease-term-id-name-list (#3482)
+19. ENCD-5489-use-ramdisk-on-circleci (#3495)
+20. ENCD-5459-transgenic-enhancer-expt-schema-changes (#3488) 
+21. ENCD-5481 Fix wrong audit detail (#3484)
+22. ENCD-5471-lower-default-chunksize (#3476) 
+23. ENCD-5476-fix-indexing-tests (#3489)
+24. ENCD-5472-as-file-form-submission (#3483)
+
 105.0 (released) snovault 1.0.48
 --------------------------------------------------------------------
 1.	update-snovault-1.0.48 (#3474)
