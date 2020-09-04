@@ -205,7 +205,7 @@
         "award": "CZI021IMM",
         "submitted_by": "r.gate@ucsf.ude",
         "submitted_file_name": "prenatal_1b_I1.fastq.gz",
-        "derived_from": "d6cbc5f9-d546-4917-9268-7b48b40a93ca",
+        "derived_from": "a460d195-735f-4776-963d-8e8bc18cdd24",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "date_created": "2013-04-18T16:46:18.670068+00:00",
         "read_type": "i7 index",

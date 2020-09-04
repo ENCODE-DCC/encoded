@@ -73,14 +73,14 @@
     },
     {
         "uuid": "962bd10b-a7d2-440c-8aa9-92afafe04900",
-        "term_name": "epithelial cell of lung",
-        "term_id": "CL:0000082",
+        "term_name": "fetal liver hematopoietic progenitor cell",
+        "term_id": "CL:0002353",
         "status": "released"
     },
     {
-        "uuid": "3b68fe9d-d63c-4f1a-a54c-78302b66374d",
-        "term_name": "embryonic thoracic segment",
-        "term_id": "UBERON:6000167",
+        "uuid": "1b85f88c-8b52-4deb-8144-30d25bdb01a5",
+        "term_name": "liver dendritic cell",
+        "term_id": "CL:2000055",
         "status": "released"
     },
     {
@@ -109,8 +109,8 @@
     },
     {
         "uuid": "979e8378-e5c3-41f3-8376-c6c7ad8a7812",
-        "term_name": "liver",
-        "term_id": "UBERON:0002107",
+        "term_name": "right lobe of liver",
+        "term_id": "UBERON:0001114",
         "status": "released"
     }
 ]

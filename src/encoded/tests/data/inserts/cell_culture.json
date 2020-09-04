@@ -64,7 +64,7 @@
         "derivation_process": [
             "cell isolation", "expansion"
         ],
-        "biosample_ontology": "CL_0000082",
+        "biosample_ontology": "CL_0002353",
         "treatments": [
             "jimmie-ye:FGF7_media"
         ],
@@ -87,7 +87,7 @@
         "derivation_process": [
             "cell isolation", "expansion"
         ],
-        "biosample_ontology": "CL_0000082",
+        "biosample_ontology": "CL_0002353",
         "treatments": [
             "jimmie-ye:FGF7_media"
         ],
@@ -110,7 +110,7 @@
         "derivation_process": [
             "cell isolation", "expansion"
         ],
-        "biosample_ontology": "CL_0000082",
+        "biosample_ontology": "CL_0002353",
         "treatments": [
             "jimmie-ye:FGF7_media"
         ],

@@ -115,7 +115,7 @@
         "derivation_process": [
             "stimuation"
         ],
-        "biosample_ontology": "UBERON_0002048"
+        "biosample_ontology": "UBERON_0001114"
     },
     {
         "aliases":[
@@ -133,7 +133,7 @@
         "derivation_process": [
             "stimuation"
         ],
-        "biosample_ontology": "UBERON_0002048"
+        "biosample_ontology": "UBERON_0001114"
     },
     {
         "aliases":[
@@ -151,6 +151,6 @@
         "derivation_process": [
             "stimuation"
         ],
-        "biosample_ontology": "UBERON_0002048"
+        "biosample_ontology": "UBERON_0001114"
     }
 ]

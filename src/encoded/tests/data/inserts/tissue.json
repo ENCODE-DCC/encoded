@@ -221,7 +221,7 @@
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_6000167",
+        "biosample_ontology": "UBERON_0001114",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",
@@ -247,7 +247,7 @@
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_6000167",
+        "biosample_ontology": "UBERON_0001114",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",
@@ -273,7 +273,7 @@
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_6000167",
+        "biosample_ontology": "UBERON_0001114",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",

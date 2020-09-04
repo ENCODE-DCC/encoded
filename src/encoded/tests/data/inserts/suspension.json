@@ -167,7 +167,7 @@
             "mechanical dissociation",
             "negative magnetic affinity cell sorting"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -205,7 +205,7 @@
             "mechanical dissociation",
             "negative magnetic affinity cell sorting"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -374,7 +374,7 @@
             "enzymatic dissociation", 
             "mechanical dissociation"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -407,7 +407,7 @@
             "enzymatic dissociation", 
             "mechanical dissociation"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -440,7 +440,7 @@
             "enzymatic dissociation", 
             "mechanical dissociation"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -473,7 +473,7 @@
             "enzymatic dissociation", 
             "mechanical dissociation"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -850,7 +850,7 @@
             "mechanical dissociation",
             "negative magnetic affinity cell sorting"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -888,7 +888,7 @@
             "mechanical dissociation",
             "negative magnetic affinity cell sorting"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -926,7 +926,7 @@
             "mechanical dissociation",
             "negative magnetic affinity cell sorting"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -964,7 +964,7 @@
             "mechanical dissociation",
             "negative magnetic affinity cell sorting"
         ],
-        "suspension_type": "cell",
+        "suspension_type": "nucleus",
         "cell_concentration": 1000,
         "cell_concentration_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
@@ -992,7 +992,7 @@
         "aliases": [
             "jimmie-ye:suspension_1"
         ],
-        "biosample_ontology": "UBERON_0001876",
+        "biosample_ontology": "UBERON_0001114",
         "description": "jimmie ye suspension1",
         "derived_from": [
             "jimmie-ye:prenatal_organoid1"
@@ -1008,7 +1008,7 @@
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "enriched_cell_types": [
-            "CL_0000082"
+            "CL_2000055"
         ],
         "enrichment_factors": "ATF3"
     },
@@ -1018,7 +1018,7 @@
         "aliases": [
             "jimmie-ye:suspension_2"
         ],
-        "biosample_ontology": "UBERON_0001876",
+        "biosample_ontology": "UBERON_0001114",
         "description": "jimmie ye suspension2",
         "derived_from": [
             "jimmie-ye:prenatal_organoid2"
@@ -1034,7 +1034,7 @@
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "enriched_cell_types": [
-            "CL_0000082"
+            "CL_2000055"
         ],
         "enrichment_factors": "ATF3"
     },
@@ -1044,7 +1044,7 @@
         "aliases": [
             "jimmie-ye:suspension_3"
         ],
-        "biosample_ontology": "UBERON_0001876",
+        "biosample_ontology": "UBERON_0001114",
         "description": "jimmie ye suspension3",
         "derived_from": [
             "jimmie-ye:prenatal_organoid3"
@@ -1060,7 +1060,7 @@
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "enriched_cell_types": [
-            "CL_0000082"
+            "CL_2000055"
         ],
         "enrichment_factors": "ATF3"
     },
