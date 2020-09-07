@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Cache from '../libs/cache';
-import Pager from '../libs/ui/pager';
+import * as Pager from '../libs/ui/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { CartAddAllElements, CartToggle, cartGetAllowedTypes } from './cart';
 import { auditDecor } from './audit';
@@ -105,7 +105,7 @@ const DatasetTableHeader = ({ title, elements, currentPage, totalPageCount, upda
         <h4>{title}</h4>
         <div className="header-paged-sorttable__controls">
             <CartAddAllElements elements={elements} />
-            {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
+            {totalPageCount > 1 ? <Pager.Simple total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
         </div>
     </div>
 );

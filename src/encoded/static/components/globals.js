@@ -107,7 +107,7 @@ export function atIdToAccession(atId) {
     if (matched && matched.length === 2) {
         return matched[1];
     }
-    return '';
+    return atId;
 }
 
 
@@ -359,4 +359,51 @@ export const viewToSvg = {
     table: 'table',
     summary: 'summary',
     th: 'matrix',
+};
+
+
+// Media query breakpoints to match those in style.scss.
+const SCREEN_XS = 480;
+const SCREEN_SM = 768;
+const SCREEN_MD = 960;
+const SCREEN_LG = 1160;
+const SCREEN_XL = 1716;
+
+
+/**
+ * Determine whether the current browser-window width activates the given Bootstrap-based media
+ * query code. The component this function gets called from must have mounted.
+ * @param min {string} Bootstrap-based code for each breakpoint
+ *
+ * @return {bool} True if specified breakpoint is active
+ */
+export const isMediaQueryBreakpointActive = (min) => {
+    if (window.matchMedia) {
+        let breakpoint;
+        switch (min) {
+        case 'XS':
+            breakpoint = SCREEN_XS;
+            break;
+        case 'SM':
+            breakpoint = SCREEN_SM;
+            break;
+        case 'MD':
+            breakpoint = SCREEN_MD;
+            break;
+        case 'LG':
+            breakpoint = SCREEN_LG;
+            break;
+        case 'XL':
+            breakpoint = SCREEN_XL;
+            break;
+        default:
+            // Undefined code; default to mobile.
+            breakpoint = 0;
+        }
+        const mql = window.matchMedia(`(min-width: ${breakpoint}px)`);
+        return mql.matches;
+    }
+
+    // Browser doesn't support matchMedia, so default to mobile.
+    return false;
 };

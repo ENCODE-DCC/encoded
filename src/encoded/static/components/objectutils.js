@@ -493,13 +493,11 @@ export const DownloadableAccession = (props) => {
 
 DownloadableAccession.propTypes = {
     file: PropTypes.object.isRequired, // File whose accession to render
-    buttonEnabled: PropTypes.bool, // Check if button is enabled
     clickHandler: PropTypes.func, // Function to call when button is clicked
     loggedIn: PropTypes.bool, // True if current user is logged in
 };
 
 DownloadableAccession.defaultProps = {
-    buttonEnabled: true,
     clickHandler: null,
     loggedIn: false,
 };
@@ -899,3 +897,15 @@ export const isFileVisualizable = file => (
 export function filterForVisualizableFiles(fileList) {
     return fileList.filter(file => isFileVisualizable(file));
 }
+
+
+/**
+ * Displays an item count intended for the tops of table, normally reflecting a search result count.
+ */
+export const TableItemCount = ({ count }) => (
+    <div className="table-item-count">{count}</div>
+);
+
+TableItemCount.propTypes = {
+    count: PropTypes.string.isRequired,
+};

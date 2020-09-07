@@ -106,6 +106,19 @@ const lockClosed = style => (
     </svg>
 );
 
+const chevronLeft = () => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="7.359" height="12" viewBox="0 0 7.281 12">
+        <path d="M0.192,5.534l5.341-5.341c0.258-0.258,0.676-0.258,0.931,0l0.624,0.624c0.258,0.258,0.258,0.673,0,0.931l-4.231,4.25 l4.231,4.253c0.255,0.258,0.255,0.673,0,0.931l-0.624,0.624c-0.258,0.258-0.676,0.258-0.931,0L0.192,6.466 C-0.064,6.207-0.064,5.79,0.192,5.534z" />
+    </svg>
+);
+
+const chevronRight = () => (
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="7.359" height="12" viewBox="0 0 7.359 12">
+        <path d="M7.165,6.466l-5.341,5.341c-0.258,0.258-0.676,0.258-0.931,0L0.27,11.183c-0.258-0.258-0.258-0.673,0-0.931L4.5,6.001 L0.27,1.749c-0.255-0.258-0.255-0.673,0-0.931l0.624-0.624c0.258-0.258,0.676-0.258,0.931,0l5.341,5.341 C7.423,5.79,7.423,6.207,7.165,6.466z" />
+    </svg>
+);
+
+
 const icons = {
     disclosure: style => <svg id="Disclosure" data-name="Disclosure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style={style} className="svg-icon svg-icon-disclosure"><circle cx="240" cy="240" r="240" /><polyline points="401.79 175.66 240 304.34 78.21 175.66" /></svg>,
     table,
@@ -117,6 +130,8 @@ const icons = {
     asterisk: style => <svg id="Asterisk" data-name="Asterisk" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" style={style}><polygon points="15.68 5.3 14.18 2.7 8.94 6.38 9.5 0 6.5 0 7.06 6.38 1.82 2.7 0.32 5.3 6.13 8 0.32 10.7 1.82 13.3 7.06 9.62 6.5 16 9.5 16 8.94 9.62 14.18 13.3 15.68 10.7 9.87 8 15.68 5.3" /></svg>,
     chevronDown: style => <svg id="Chevron Down" data-name="Chevron Down" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 124" style={style}><polygon points="249,57 124.5,124 0,57 0,0 124.5,67 249,0" /></svg>,
     chevronUp: style => <svg id="Chevron Up" data-name="Chevron Up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 249 124" style={style}><polygon points="249,67 124.5,0 0,67 0,124 124.5,57 249,124" /></svg>,
+    chevronLeft,
+    chevronRight,
     spinner,
     largeArrow,
     genomeBrowser,

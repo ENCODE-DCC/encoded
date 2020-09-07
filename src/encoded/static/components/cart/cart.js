@@ -8,7 +8,7 @@ import _ from 'underscore';
 import { encodedURIComponent } from '../../libs/query_encoding';
 import { svgIcon } from '../../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
-import Pager from '../../libs/ui/pager';
+import * as Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
 import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
@@ -1020,7 +1020,7 @@ const CartPager = ({ currentPage, totalPageCount, updateCurrentPage }) => (
     <React.Fragment>
         {totalPageCount > 1 ?
             <div className="cart-pager-area">
-                <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} />
+                <Pager.Simple total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} />
             </div>
         : null}
     </React.Fragment>
