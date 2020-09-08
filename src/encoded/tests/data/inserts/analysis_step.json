@@ -129,7 +129,7 @@
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
         "parents": ["mott-trim-align-bismark-step-v-1"],
-        "analysis_step_types": ["signal generation"],
+        "analysis_step_types": ["signal generation", "methylation estimation"],
         "qa_stats_generated":  [
             "Sequences analysed in total",
             "Mapping efficiency",
@@ -270,7 +270,7 @@
             "lambda C methylated in CHG context",
             "lambda C methylated in CHH context"
         ],
-        "analysis_step_types": ["signal generation", "QA calculation"],
+        "analysis_step_types": ["signal generation", "smoothing", "QA calculation"],
         "uuid": "5bb1f4b4-c739-449d-8cb9-f851ad79f5fe"
     },
     {
@@ -285,7 +285,7 @@
             "variant calls"
         ],
         "analysis_step_types": [
-            "variant annotation"
+            "variant annotation", "genotyping"
         ],
         "uuid": "cd873058-423b-472e-b612-f2df2ffc1e62"
     },
