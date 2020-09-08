@@ -1,7 +1,6 @@
 // Require all components to ensure javascript load ordering
 require('./lib');
 require('./view_controls.js');
-require('./antibody');
 require('./app');
 require('./award');
 require('./image');
@@ -12,7 +11,6 @@ require('./datacolors');
 require('./dataset');
 require('./dbxref');
 require('./errors');
-require('./experiment');
 require('./genetic_modification');
 require('./footer');
 require('./globals');
@@ -22,21 +20,11 @@ require('./donor');
 require('./data_file');
 require('./item');
 require('./page');
-require('./platform');
 require('./facets');
 require('./search');
 require('./report');
-require('./matrix_audit');
-require('./matrix_entex');
-require('./matrix_mouse_development');
-require('./matrix_experiment');
-require('./matrix_reference_epigenome');
-require('./matrix_sescc_stem_cell');
-require('./matrix_chip_seq');
 require('./target');
 require('./publication');
-require('./pipeline');
-require('./software');
 require('./testing');
 require('./edit');
 require('./inputs');
@@ -47,7 +35,6 @@ require('./summary');
 require('./region_search');
 require('./gene');
 require('./ontology_term');
-require('./experiment_series');
 
 
 module.exports = require('./app');

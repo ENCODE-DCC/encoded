@@ -13,7 +13,6 @@ import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
 import { requestFiles, DownloadableAccession, computeAssemblyAnnotationValue, filterForVisualizableFiles } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
-import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
@@ -3066,13 +3065,6 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         <div data-test="datecreated">
                             <dt>Date added</dt>
                             <dd>{dateString}</dd>
-                        </div>
-                    : null}
-
-                    {selectedFile.analysis_step_version && selectedFile.analysis_step_version.software_versions && selectedFile.analysis_step_version.software_versions.length > 0 ?
-                        <div data-test="software">
-                            <dt>Software</dt>
-                            <dd>{softwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
                         </div>
                     : null}
 
