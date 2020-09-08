@@ -4,7 +4,7 @@
     "id": "/profiles/matrix_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_types", "md5sum", "derived_from", "normalized", "value_scale", "value_units"],
+    "required": ["dataset", "file_format", "output_types", "md5sum", "derived_from", "normalized", "value_scale", "value_units", "derivation_process"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

@@ -124,7 +124,6 @@
         "derived_from": "3f5c30e4-f5de-48d2-847f-959f3824931f",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
         "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
@@ -2462,7 +2461,7 @@
             "fragment"
         ],
         "demultiplexed_type": "R3"
-    },    
+    },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq"
