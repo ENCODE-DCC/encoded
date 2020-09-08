@@ -71,8 +71,12 @@
             "title": "Derived from",
             "description": "The sequencing run designation for the file.",
             "comment": "This field is required for sra and fastq files. See sequencing_run.json for available identifiers.",
-            "type": "string",
-            "linkTo": "SequencingRun"
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "linkTo": "SequencingRun"
+            }
         },
         "read_count": {
             "title": "Read count",
@@ -190,12 +194,6 @@
                     "fragment"
                 ]
             }
-        },
-        "software_version": {
-            "title": "Software version",
-            "description": "The software version used to generate the raw data file from the BCL.",
-            "type": "string",
-            "linkTo": "SoftwareVersion"
         },
         "demultiplexed_type": {
             "title": "Demultiplexed type",

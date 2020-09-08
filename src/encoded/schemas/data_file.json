@@ -106,12 +106,63 @@
             "type": "array",
             "uniqueItems": true
         },
-        "analysis_step": {
-            "title": "Analysis step run",
-            "description": "The run instance of the step used to generate the file.",
+        "software": {
+            "title": "Software",
+            "description": "The software used to generate the file.",
             "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
-            "type": "string",
-            "linkTo": "AnalysisStep"
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "derivation_process": {
+            "title": "Derivation process",
+            "description": "The method(s) by which this object was derived.",
+            "type": "array",
+            "items": {
+                "title": "Derivation process",
+                "description": "A method by which this object was derived.",
+                "type":  "string",
+                "enum": [
+                     "alignment",
+                     "barcodes mapping generation",
+                     "chromatin loop identification",
+                     "classification",
+                     "depth normalization",
+                     "enrichment",
+                     "fastq concatenation",
+                     "file format conversion",
+                     "filtering",
+                     "genome indexing",
+                     "genome segmentation",
+                     "IDR",
+                     "interaction calling",
+                     "long-read sequencing error correction",
+                     "open chromatin region identification",
+                     "partition concordance",
+                     "personalized genome assembly",
+                     "pseudoreplicated IDR",
+                     "peak calling",
+                     "pooling",
+                     "QA calculation",
+                     "quantification",
+                     "ranking",
+                     "read trimming",
+                     "replicate concordance",
+                     "signal generation",
+                     "signal normalization",
+                     "splice junction extraction",
+                     "subsampling",
+                     "topologically associated domain identification",
+                     "transcript identification",
+                     "transcriptome annotation",
+                     "transcriptome assembly",
+                     "unreplicated IDR",
+                     "variant annotation",
+                     "merging",
+                     "cell calling"
+                 ]
+            }
         },
         "content_error_detail": {
             "title": "Content error detail",
