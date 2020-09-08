@@ -1,5 +1,787 @@
 [
     {
+        "aliases": [
+            "anna-greka:citeseq_run_donorA1"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorA1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorA2"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorA2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "3f5c30e4-f5de-48d2-847f-959f3824931f"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorB1"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorB1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "6ca560bd-5278-441d-8256-06f3e3c16e35"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorB2"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorB2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
+    
+
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorA1_2"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorA1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "6a0ee005-4d3e-418b-bf47-498547ba3c53"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorA2_2"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorA2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorB1_2"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorB1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorB2_2"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorB2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorA1"
+        ],
+        "derived_from": "anna-greka:sc_library_donorA1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "aecf582a-3fb4-4262-9cfb-76b92847119c"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorA2"
+        ],
+        "derived_from": "anna-greka:sc_library_donorA2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorB1"
+        ],
+        "derived_from": "anna-greka:sc_library_donorB1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "0629dab5-2389-4153-a010-165fc8414344"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorB2"
+        ],
+        "derived_from": "anna-greka:sc_library_donorB2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "7083435b-9c6d-4296-be7d-768d71584320"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorA1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorA1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "908a258c-d674-4311-84c0-ad5e15717c19"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorA2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorA2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorB1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorB1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "b244ad71-1ae3-45b8-b87c-67e244e03dda"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorB2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorB2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorC1a"
+        ],
+        "derived_from": "anna-greka:sc_library_donorC1a",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorC1b"
+        ],
+        "derived_from": "anna-greka:sc_library_donorC1b",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorC2a"
+        ],
+        "derived_from": "anna-greka:sc_library_donorC2a",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorC2b"
+        ],
+        "derived_from": "anna-greka:sc_library_donorC2b",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "e99de6aa-4ffe-4380-95aa-43077129b3c0"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorD1a"
+        ],
+        "derived_from": "anna-greka:sc_library_donorD1a",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorD1b"
+        ],
+        "derived_from": "anna-greka:sc_library_donorD1b",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "089da0b8-d3de-4437-b9af-9ba9f888fda4"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorD2a"
+        ],
+        "derived_from": "anna-greka:sc_library_donorD2a",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "44574a0a-e41c-4100-a666-3f60882bc23b"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorD2b"
+        ],
+        "derived_from": "anna-greka:sc_library_donorD2b",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGDMX",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorC1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorC1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "213bf1b5-796d-4825-b7fd-c399fac7fffe"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorC2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorC2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "748bf468-5b46-4012-b842-671442460650"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorD1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorD1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_runs_donorD2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorD2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "e99740a7-59c6-46ac-b284-d3137af5cc18"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_pooled_run_donorCD1"
+        ],
+        "derived_from": "anna-greka:sc_pooled_library_donorCD1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBB",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_pooled_run_donorCD2"
+        ],
+        "derived_from": "anna-greka:sc_pooled_library_donorCD2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBB",
+                "lane": "1",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "a074eba7-31cf-41db-9675-d81d869345a9"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_pooled_run_donorCD1_2"
+        ],
+        "derived_from": "anna-greka:sc_pooled_library_donorCD1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBB",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "f2342e08-61e6-4b4a-923f-db5c0507136f"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_pooled_run_donorCD2_2"
+        ],
+        "derived_from": "anna-greka:sc_pooled_library_donorCD2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGBBB",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorE"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorE",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorF"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorF",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "caa2e548-8160-4758-a58b-46aaffe4373b"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorG"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorG",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
+    },
+    {
+        "aliases": [
+            "anna-greka:citeseq_run_donorH"
+        ],
+        "derived_from": "anna-greka:citeseq_library_donorH",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "2",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "fd4b7148-7209-48e5-944e-2613c50e00d7"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorE1"
+        ],
+        "derived_from": "anna-greka:sc_library_donorE1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "38eecbc9-d0db-4a78-aa8c-292010afefb9"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorE2"
+        ],
+        "derived_from": "anna-greka:sc_library_donorE2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "e66145dc-f7ad-449c-8a56-67680ab183b2"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorF1"
+        ],
+        "derived_from": "anna-greka:sc_library_donorF1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorF2"
+        ],
+        "derived_from": "anna-greka:sc_library_donorF2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "5dcfa043-6de5-41f5-87f5-fce27c1fbbe4"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorG1"
+        ],
+        "derived_from": "anna-greka:sc_library_donorG1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorG2"
+        ],
+        "derived_from": "anna-greka:sc_library_donorG2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "acffa741-4a65-4fdf-b271-7cf8d6da4772"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorH1"
+        ],
+        "derived_from": "anna-greka:sc_library_donorH1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_run_donorH2"
+        ],
+        "derived_from": "anna-greka:sc_library_donorH2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "3",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "ecec6be8-ff1f-4fd9-b65a-913b85302cd6"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorE1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorE1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorE2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorE2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "10e7e579-1921-488d-9de3-9bc5fe5b6009"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorF1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorF1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "2651c433-d313-44fe-9fca-fe460d7a226c"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorF2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorF2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorG1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorG1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "f36014ab-40c7-400b-9b48-3090ab545f6f"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorG2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorG2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorH1"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorH1",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_run_donorH2"
+        ],
+        "derived_from": "anna-greka:snATAC_library_donorH2",
+        "flowcell_details": [
+            {
+                "flowcell": "HKCKGMMM",
+                "lane": "4",
+                "machine": "A00419"
+            }
+        ],
+        "platform": "Illumina HiSeq 4000",
+        "uuid": "31c3f789-5355-494d-9028-08258437fb2c"
+    },
+    {
         "derived_from": "jimmie-ye:library_1a",
         "flowcell_details": [
             {
