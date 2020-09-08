@@ -46,6 +46,7 @@
         "cross_correlation_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
         "jsd_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
         "gc_bias_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
-        "tss_enrichment": 6.0606275018
+        "tss_enrichment": 6.0606275018,
+        "NSC": -1.9
     }
 ]

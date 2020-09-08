@@ -7,7 +7,6 @@
         "uuid": "c91bd49f-c9ef-4df0-9110-b5f9ae5e1dce",
         "assay_term_name": "ChIP-seq",
         "quality_metric_of": [ "ENCFF000VUQ" ],
-
         "subsampled_reads": 22429,
         "estimated_fragment_len": 230,
         "corr_estimated_fragment_len": 0.122400083983026,
@@ -16,7 +15,7 @@
         "argmin_corr": 1500,
         "min_corr": 0.01408428,
         "NSC": 8.690548,
-        "RSC": 2.324059,
+        "RSC": -2.324059,
         "auc": 0.0262304647759,
         "syn_auc": 0.477398342042,
         "x_intercept": 0.863667746879,
