@@ -60,6 +60,7 @@ seq_assays = [
     'PLAC-seq',
     'microRNA-seq',
     'long read RNA-seq',
+    'small RNA-seq',
     'ATAC-seq',
     'CUT&RUN',
 ]
@@ -571,6 +572,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
         'genetic modification followed by DNase-seq',
         'microRNA-seq',
         'long read RNA-seq',
+        'small RNA-seq',
         'icSHAPE',
         'ATAC-seq'
     ]:
@@ -617,7 +619,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single-cell RNA sequencing assay',
-                                    'microRNA-seq',
+                                    'microRNA-seq', 'small RNA-seq',
                                     'icSHAPE', 'long read RNA-seq']:
         yield from check_experiment_rna_seq_standards(
             value,
@@ -1672,8 +1674,15 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
         if lib is None:
             continue
 
-        size_range = lib.get('size_range')
-        if size_range != '>200':
+        if 'size_range' in lib:
+            size_range = lib.get('size_range')
+            if size_range != '>200':
+                continue
+        elif 'average_fragment_size' in lib:
+            size_range = lib.get('average_fragment_size')
+            if size_range <= 200:
+                continue
+        else:
             continue
 
         ercc_flag = False
@@ -3615,20 +3624,27 @@ def audit_experiment_spikeins(value, system, excluded_types):
         if lib is None:
             continue
 
-        size_range = lib.get('size_range')
-        if size_range != '>200':
+        if 'size_range' in lib:
+            size_range = lib.get('size_range')
+            if size_range != '>200':
+                continue
+        elif 'average_fragment_size' in lib:
+            size_range = lib.get('average_fragment_size')
+            if size_range <= 200:
+                continue
+        else:
             continue
 
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
             detail = ('Library {} is in '
-                'an RNA-seq experiment and has size_range >200. '
+                'an RNA-seq experiment and has an average fragment size or size_range >200. '
                 'It requires a value for spikeins_used'.format(
                     audit_link(path_to_text(lib['@id']), lib['@id'])
                 )
             )
             yield AuditFailure('missing spikeins', detail, level='NOT_COMPLIANT')
-            # Informattional if ENCODE2 and release error if ENCODE3
+            # Informational if ENCODE2 and release error if ENCODE3
     return
 
 
@@ -3947,9 +3963,10 @@ def audit_library_RNA_size_range(value, system, excluded_types):
         if 'library' not in rep:
             continue
         lib = rep['library']
-        if (lib['nucleic_acid_term_name'] in RNAs) and ('size_range' not in lib):
+        if ((lib['nucleic_acid_term_name'] in RNAs) and ('size_range' not in lib)) and \
+                ((lib['nucleic_acid_term_name'] in RNAs) and ('average_fragment_size' not in lib)):
             detail = ('Metadata of RNA library {} lacks information on '
-                'the size range of fragments used to construct the library.'.format(
+                'the size range or average size of fragments used to construct the library.'.format(
                     audit_link(path_to_text(rep['library']['@id']), rep['library']['@id'])
                 )
             )
@@ -3971,7 +3988,8 @@ def audit_RNA_library_RIN(value, system, excluded_types):
                  'OBI:0001864', # RAMPAGE
                  'OBI:0001463', # RNA microarray
                  'OBI:0001850', # RNA-PET
-                 'OBI:0001271', # RNA-seq (small and total)
+                 'OBI:0001271', # RNA-seq (total)
+                 'OBI:0001271', # small RNA-seq
                  'OBI:0002571', # polyA plus RNA-seq
                  'OBI:0002572', # polyA minus RNA-seq
                  'NTR:0000762', # shRNA RNA-seq

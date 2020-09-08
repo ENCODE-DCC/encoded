@@ -312,23 +312,7 @@ class CalculatedAssayTitle:
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
-            if preferred_name == 'RNA-seq' and replicates is not None:
-                for rep in replicates:
-                    replicate_object = request.embed(rep, '@@object')
-                    if replicate_object['status'] == 'deleted':
-                        continue
-                    if 'libraries' in replicate_object:
-                        preferred_name = 'total RNA-seq'
-                        for lib in replicate_object['libraries']:
-                            library_object = request.embed(lib, '@@object')
-                            if 'size_range' in library_object and \
-                            library_object['size_range'] == '<200':
-                                preferred_name = 'small RNA-seq'
-                                break
-                        else:
-                            continue
-                        break
-            elif preferred_name == 'ChIP-seq':
+            if preferred_name == 'ChIP-seq':
                 preferred_name = 'Control ChIP-seq'
                 if not control_type and target is not None:
                     target_object = request.embed(target,'@@object')

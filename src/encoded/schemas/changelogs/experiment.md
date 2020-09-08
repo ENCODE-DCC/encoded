@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 31
+
+* Small RNA-seq experiments (with libraries of fragments <200 nucleotides long) may be submitted with *assay_term_name* enum: *small RNA-seq*.
+
 ### Minor changes since schema version 30
 * Added *analysis_objects* property.
 * Added *SPRITE-IP* to *assay_term_name* enum

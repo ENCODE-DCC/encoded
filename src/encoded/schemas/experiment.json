@@ -89,7 +89,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "30"
+            "default": "31"
         },
         "date_submitted": {
             "title": "Date submitted" ,

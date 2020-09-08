@@ -766,3 +766,15 @@ def ATAC_experiment_replicated(testapp, lab, award, heart):
         'biosample_ontology': heart['uuid']
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
+
+
+@pytest.fixture
+def experiment_30(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '30',
+        'assay_term_name': 'RNA-seq',
+        'assay_title': 'small RNA-seq'
+    })
+    return properties
