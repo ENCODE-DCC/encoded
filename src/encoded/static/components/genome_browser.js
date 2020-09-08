@@ -542,6 +542,7 @@ class GenomeBrowser extends React.Component {
             trackObj.displayLabels = false;
             trackObj.heightPx = labelLength > 0 ? (defaultHeight + (extraLineHeight * labelLength)) : defaultHeight;
             trackObj.expandedHeightPx = 140;
+            trackObj.fileVariantType = file.file_format_type;
             // bigBed bedRNAElements, bigBed peptideMapping, bigBed bedExonScore, bed12, and bed9 have two tracks and need extra height
             // Convert to lower case in case of inconsistency in the capitalization of the file format in the data
             if (file.file_format_type &&
