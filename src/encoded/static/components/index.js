@@ -19,7 +19,7 @@ require('./globals');
 require('./graph');
 require('./doc');
 require('./donor');
-require('./file');
+require('./data_file');
 require('./item');
 require('./page');
 require('./platform');
