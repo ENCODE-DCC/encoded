@@ -1683,7 +1683,8 @@ def test_audit_experiment_missing_control_alignment_chip_encode4(testapp,
                                                 'derived_from': [file_fastq_1_chip['@id']]})
     testapp.patch_json(file_bam_control_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id'],
                                                 'dataset': experiment_chip_control['@id'],
-                                                'derived_from': [file_fastq_control_chip['@id']]})
+                                                'derived_from': [file_fastq_control_chip['@id']],
+                                                'status': 'revoked'})
     testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_control_chip['@id'], file_bam_1_chip['@id']],
                                              'dataset': experiment_chip_H3K27me3['@id'],
                                              'file_format_type': 'narrowPeak',
