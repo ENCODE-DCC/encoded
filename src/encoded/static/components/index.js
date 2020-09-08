@@ -46,7 +46,7 @@ require('./schema');
 require('./summary');
 require('./region_search');
 require('./gene');
-require('./biosample_type');
+require('./ontology_term');
 require('./experiment_series');
 
 

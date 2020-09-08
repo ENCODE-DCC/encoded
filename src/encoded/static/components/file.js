@@ -110,7 +110,7 @@ const DerivedFiles = ({ file }) => {
     const [fileIds, setFileIds] = React.useState([]);
 
     React.useEffect(() => {
-        requestSearch(`type=File&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&derived_from=${file['@id']}`).then((result) => {
+        requestSearch(`type=DataFile&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&derived_from=${file['@id']}`).then((result) => {
             // The server has returned file search results. Generate an array of file @ids.
             if (Object.keys(result).length > 0 && result['@graph'] && result['@graph'].length > 0) {
                 // Sort the files. We still get an array of search results from the server, just

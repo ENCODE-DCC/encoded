@@ -37,11 +37,6 @@ function fileAccessionSort(a, b) {
     return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
 
-// Calculate a string representation of the given replication_type.
-const replicationDisplay = replicationType => (
-    `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
-);
-
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -77,7 +72,7 @@ export class FileTable extends React.Component {
         const { setInfoNodeId, setInfoNodeVisible } = this.props;
         if (setInfoNodeId && setInfoNodeVisible) {
             const node = {
-                '@type': ['File'],
+                '@type': ['DataFile'],
                 metadata: {
                     ref: file,
                 },
@@ -119,7 +114,6 @@ export class FileTable extends React.Component {
             browserOptions,
             session,
             adminUser,
-            showReplicateNumber,
         } = this.props;
         const sessionProperties = this.context.session_properties;
         const loggedIn = !!(session && session['auth.userid']);
@@ -169,7 +163,6 @@ export class FileTable extends React.Component {
             // be NOT (!)-ed to match with hide-functionality
             // TODO: (1)Move .hide to FileTable.procTableColumns declaration
             // (2) move showReplicateNumber to meta
-            FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
             FileTable.procTableColumns.visualize.hide = () => browserOptions.browserFileSelectHandler === null;
 
             return (
@@ -179,10 +172,8 @@ export class FileTable extends React.Component {
                         <RawSequencingTable
                             files={files.raw}
                             indexFiles={files.index}
-                            showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
-                                replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 session,
@@ -193,10 +184,8 @@ export class FileTable extends React.Component {
                         />
                         <RawFileTable
                             files={files.rawArray}
-                            showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
-                                replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 session,
@@ -217,10 +206,8 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={FileTable.procTableColumns}
-                            sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
                             meta={{
                                 encodevers,
-                                replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
@@ -245,7 +232,6 @@ export class FileTable extends React.Component {
                             columns={FileTable.refTableColumns}
                             meta={{
                                 encodevers,
-                                replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
@@ -296,8 +282,6 @@ FileTable.propTypes = {
     schemas: PropTypes.object,
     /** True to strip SortTable panel of default CSS classes */
     noDefaultClasses: PropTypes.bool,
-    /** True to show replicate number */
-    showReplicateNumber: PropTypes.bool,
 };
 
 FileTable.defaultProps = {
@@ -316,7 +300,6 @@ FileTable.defaultProps = {
     adminUser: false,
     schemas: null,
     noDefaultClasses: false,
-    showReplicateNumber: true,
 };
 
 FileTable.contextTypes = {
@@ -351,14 +334,6 @@ FileTable.procTableColumns = {
     },
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
-    biological_replicates: {
-        title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
-        getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
-    },
-    mapped_read_length: {
-        title: 'Mapped read length',
-        hide: list => _(list).all(file => file.mapped_read_length === undefined),
-    },
     assembly: { title: 'Mapping assembly' },
     genome_annotation: {
         title: 'Genome annotation',
@@ -444,41 +419,6 @@ FileTable.refTableColumns = {
     },
 };
 
-const sortBioReps = (a, b) => {
-    if ((!a || !b) || (!a.biological_replicates && !b.biological_replicates)) {
-        return 0;
-    }
-
-    // Sorting function for biological replicates of the given files.
-    let result; // Ends sorting loop once it has a value
-    let i = 0;
-    let repA = (a.biological_replicates && a.biological_replicates.length > 0) ? a.biological_replicates[i] : undefined;
-    let repB = (b.biological_replicates && b.biological_replicates.length > 0) ? b.biological_replicates[i] : undefined;
-
-    while (result === undefined) {
-        if (repA !== undefined && repB !== undefined) {
-            // Both biological replicates have a value
-            if (repA !== repB) {
-                // We got a real sorting result
-                result = repA - repB;
-            } else {
-                // They both have values, but they're equal; go to next
-                // biosample replicate array elements
-                i += 1;
-                repA = a.biological_replicates[i];
-                repB = b.biological_replicates[i];
-            }
-        } else if (repA !== undefined || repB !== undefined) {
-            // One and only one replicate empty; sort empty one after
-            result = repA ? 1 : -1;
-        } else {
-            // Both empty; sorting result same
-            result = 0;
-        }
-    }
-    return result;
-};
-
 class RawSequencingTable extends React.Component {
     constructor() {
         super();
@@ -512,7 +452,7 @@ class RawSequencingTable extends React.Component {
     }
 
     render() {
-        const { files, indexFiles, meta, showReplicateNumber } = this.props;
+        const { files, indexFiles, meta } = this.props;
         const { loggedIn, adminUser, isAuthorized } = meta;
 
         if (files && files.length > 0) {
@@ -570,10 +510,6 @@ class RawSequencingTable extends React.Component {
                 nonpairedFiles.push(Object.assign({}, file));
                 return false;
             });
-
-            // Sort the non-paired files by biological replicate, but corresponding index reads
-            // files still need weaving into this array.
-            nonpairedFiles = nonpairedFiles.sort(sortBioReps);
 
             // Weave index files after each corresponding single-ended raw sequencing file.
             const nonPairedFilesWithIndex = [];
@@ -986,11 +922,11 @@ DatasetFiles.defaultProps = {
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault, showReplicateNumber }, reactContext) => (
+export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault }, reactContext) => (
     <FetchedData>
-        <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
+        <Param name="data" url={`/search/?limit=all&type=DataFile&dataset=${context['@id']}`} />
         <Param name="schemas" url="/profiles/" />
-        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} showReplicateNumber={showReplicateNumber} />
+        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
     </FetchedData>
 );
 
@@ -999,14 +935,12 @@ FileGallery.propTypes = {
     encodevers: PropTypes.string, // ENCODE version number
     hideGraph: PropTypes.bool, // T to hide graph display
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
-    showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
 FileGallery.defaultProps = {
     encodevers: '',
     hideGraph: false,
     altFilterDefault: false,
-    showReplicateNumber: true,
 };
 
 FileGallery.contextTypes = {
@@ -1189,43 +1123,10 @@ FilterControls.defaultProps = {
 function qcAbbr(qc) {
     // As we add more QC object types, add to this object.
     const qcAbbrMap = {
-        AtacAlignmentQualityMetric: 'AL',
-        AtacAlignmentEnrichmentQualityMetric: 'AE',
-        AtacLibraryQualityMetric: 'LB',
-        AtacPeakEnrichmentQualityMetric: 'PE',
-        AtacReplicationQualityMetric: 'RP',
-        BigwigcorrelateQualityMetric: 'BC',
-        BismarkQualityMetric: 'BK',
-        ChipAlignmentQualityMetric: 'AL',
-        ChipAlignmentEnrichmentQualityMetric: 'AE',
-        ChipLibraryQualityMetric: 'LB',
-        ChipPeakEnrichmentQualityMetric: 'PE',
-        ChipReplicationQualityMetric: 'RP',
-        ChipSeqFilterQualityMetric: 'CF',
-        ComplexityXcorrQualityMetric: 'CX',
-        CorrelationQualityMetric: 'CN',
-        CpgCorrelationQualityMetric: 'CC',
-        DuplicatesQualityMetric: 'DS',
-        EdwbamstatsQualityMetric: 'EB',
-        FilteringQualityMetric: 'FG',
-        GeneQuantificationQualityMetric: 'GQ',
-        GenericQualityMetric: 'GN',
-        GeneTypeQuantificationQualityMetric: 'GT',
-        HistoneChipSeqQualityMetric: 'HC',
-        HotspotQualityMetric: 'HS',
-        IDRQualityMetric: 'ID',
-        IdrSummaryQualityMetric: 'IS',
-        MadQualityMetric: 'MD',
-        SamtoolsFlagstatsQualityMetric: 'SF',
-        SamtoolsStatsQualityMetric: 'SS',
-        StarQualityMetric: 'SR',
-        TrimmingQualityMetric: 'TG',
-        MicroRnaMappingQualityMetric: 'MM',
-        MicroRnaQuantificationQualityMetric: 'MQ',
-        LongReadRnaMappingQualityMetric: 'LM',
-        LongReadRnaQuantificationQualityMetric: 'LQ',
-        GembsAlignmentQualityMetric: 'AL',
-        DnaseFootprintingQualityMetric: 'DF',
+        AggregateMeterics: 'AG',
+        AntibodyCaptureMetrics: 'AC',
+        ClusterMetrics: 'CL',
+        GeneExpressMetrics: 'GE',
     };
 
     let abbr = qcAbbrMap[qc['@type'][0]];
@@ -1392,7 +1293,6 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     function rGenQcId(metric, file) {
         return `qc:${metric['@id'] + file['@id']}`;
     }
-
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
@@ -1402,8 +1302,6 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     const allFiles = {}; // All searched files, keyed by file @id
     let matchingFiles = {}; // All files that match the current assembly/annotation, keyed by file @id
     const fileQcMetrics = {}; // List of all file QC metrics indexed by file @id
-    const allPipelines = {}; // List of all pipelines indexed by step @id
-    const allowNoAssembly = dataset.assay_term_name === 'RNA Bind-n-Seq';
     files.forEach((file) => {
         // allFiles gets all files from search regardless of filtering.
         allFiles[file['@id']] = file;
@@ -1411,9 +1309,9 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
         // matchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
-        if (allowNoAssembly || ((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation)))) {
+        if (((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation)))) {
             // Note whether any files have an analysis step
-            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            const fileAnalysisStep = file.analysis_step;
             if (!fileAnalysisStep || (file.derived_from && file.derived_from.length > 0)) {
                 // File has no analysis step or derives from other files, so it can be included in
                 // the graph.
@@ -1424,15 +1322,9 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 if (file.quality_metrics && file.quality_metrics.length > 0) {
                     fileQcMetrics[file['@id']] = file.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
                 }
-
-                // Save the pipeline array used for each step used by the file.
-                if (fileAnalysisStep) {
-                    allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
-                }
             } // else file has analysis step but no derived from -- can't include in graph.
         }
     });
-
     // For each matching file (file belonging to this dataset with an assembly/annotation matching
     // the selected one), build an object describing the derived_from chains leading to this file.
     // A detailed description is in the comments for collectDerivedFroms. Place the result in
@@ -1516,22 +1408,8 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     if (Object.keys(matchingFiles).length === 0) {
         throw new GraphException('No graph: no file relationships for the selected assembly/annotation');
     }
-    // At this stage, any files in matchingFiles will be rendered.
 
-    const allReplicates = {}; // All file's replicates as keys; each key references an array of files
-    Object.keys(matchingFiles).forEach((matchingFileId) => {
-        // If the file is part of a single biological replicate, add it to an array of files, where
-        // the arrays are in an object keyed by their relevant biological replicate number.
-        const matchingFile = matchingFiles[matchingFileId];
-        const replicateNum = (matchingFile && matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
-        if (replicateNum) {
-            if (allReplicates[replicateNum]) {
-                allReplicates[replicateNum].push(matchingFile);
-            } else {
-                allReplicates[replicateNum] = [matchingFile];
-            }
-        }
-    });
+    // At this stage, any files in matchingFiles will be rendered.
 
     // Make a list of contributing files that matchingFiles files derive from.
     const usedContributingFiles = {};
@@ -1605,18 +1483,6 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(dataset.accession);
 
-    // Create nodes for the replicates.
-    Object.keys(allReplicates).forEach((replicateNum) => {
-        if (allReplicates[replicateNum] && allReplicates[replicateNum].length > 0) {
-            jsonGraph.addNode(`rep:${replicateNum}`, `Replicate ${replicateNum}`, {
-                cssClass: 'pipeline-replicate',
-                type: 'Rep',
-                shape: 'rect',
-                cornerRadius: 0,
-            });
-        }
-    });
-
     // Go through each file matching the currently selected assembly/annotation and add it to our
     // graph.
     Object.keys(matchingFiles).forEach((fileId) => {
@@ -1633,7 +1499,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
 
                 jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                     cssClass: fileCssClass,
-                    type: 'File',
+                    type: 'DataFile',
                     shape: 'rect',
                     cornerRadius: 16,
                     contributing: fileId,
@@ -1642,10 +1508,9 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
             }
         } else {
             const fileNodeId = `file:${file['@id']}`;
-            const fileNodeLabel = `${file.title} (${file.output_type})`;
+            const fileNodeLabel = `${file.title} (${file.output_types})`;
             const fileCssClass = fileCssClassGen(file, !!(infoNode && infoNode.id === fileNodeId), highlightToggle, colorize);
             const fileRef = file;
-            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
             let metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later.
@@ -1668,10 +1533,9 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
             // Add a node for a regular searched file.
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
-                type: 'File',
+                type: 'DataFile',
                 shape: 'rect',
                 cornerRadius: 16,
-                parentNode: replicateNode,
                 ref: fileRef,
             }, metricsInfo);
 
@@ -1679,20 +1543,15 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
             // derived_from.
             let stepId;
             let label;
-            let pipelineInfo;
             let error;
-            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-            if (fileAnalysisStep) {
-                // Make an ID and label for the step
-                stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-                label = fileAnalysisStep.analysis_step_types;
-                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-                error = false;
-            } else if (derivedFileIds(file)) {
+            if (derivedFileIds(file)) {
                 // File derives from others, but no analysis step; make dummy step.
                 stepId = `error:${derivedFileIds(file)}`;
-                label = 'Software unknown';
-                pipelineInfo = null;
+                if (file.derivation_process) {
+                    label = file.derivation_process;
+                } else {
+                    label = 'undefined process';
+                }
                 error = true;
             } else {
                 // No analysis step and no derived_from; don't add a step.
@@ -1708,12 +1567,8 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                         type: 'Step',
                         shape: 'rect',
                         cornerRadius: 4,
-                        parentNode: replicateNode,
-                        ref: fileAnalysisStep,
-                        pipelines: pipelineInfo,
                         fileId: file['@id'],
                         fileAccession: file.title,
-                        stepVersion: file.analysis_step_version,
                     });
                 }
 
@@ -1778,7 +1633,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
 
         jsonGraph.addNode(fileNodeId, fileNodeLabel, {
             cssClass: fileCssClass,
-            type: 'File',
+            type: 'DataFile',
             shape: 'rect',
             cornerRadius: 16,
         });
@@ -2218,7 +2073,7 @@ const TabPanelFacets = (props) => {
 
     // Create objects for non-Assembly facets
     const fileType = createFacetObject('file_type', fileList, filters);
-    const outputType = createFacetObject('output_type', fileList, filters);
+    const outputType = createFacetObject('output_types', fileList, filters);
     let replicate;
     if (experimentType !== 'Annotation') {
         replicate = createFacetObject('biological_replicates', fileList, filters);
@@ -2245,7 +2100,7 @@ const TabPanelFacets = (props) => {
                 </button>
             : null }
             <FileFacet facetTitle={'File format'} facetObject={fileType} filterFiles={filterFiles} facetKey={'file_type'} selectedFilters={filters} currentTab={currentTab} />
-            <FileFacet facetTitle={'Output type'} facetObject={outputType} filterFiles={filterFiles} facetKey={'output_type'} selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle={'Output type'} facetObject={outputType} filterFiles={filterFiles} facetKey={'output_types'} selectedFilters={filters} currentTab={currentTab} />
             {replicate ?
                 <FileFacet facetTitle={'Replicates'} facetObject={replicate} filterFiles={filterFiles} facetKey={'biological_replicates'} selectedFilters={filters} currentTab={currentTab} />
             : null}
@@ -2779,7 +2634,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     render() {
-        const { context, schemas, hideGraph, showReplicateNumber } = this.props;
+        const { context, schemas, hideGraph } = this.props;
         let allGraphedFiles;
         let meta;
         // If filters other than assembly are chosen, we want to highlight the filtered files
@@ -2853,7 +2708,6 @@ class FileGalleryRendererComponent extends React.Component {
                 showFileCount
                 noDefaultClasses
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
-                showReplicateNumber={showReplicateNumber}
             />
         );
 
@@ -2869,7 +2723,7 @@ class FileGalleryRendererComponent extends React.Component {
         };
         const modalClass = meta ? `graph-modal--${modalTypeMap[meta.type]}` : '';
         const browsers = this.getAvailableBrowsers();
-        const tabs = { browser: 'Genome browser', graph: 'Association graph', tables: 'File details' };
+        const tabs = { graph: 'Association graph', tables: 'File details' };
 
         return (
             <Panel>
@@ -2915,7 +2769,7 @@ class FileGalleryRendererComponent extends React.Component {
                                     highlightedFiles={highlightedFiles}
                                     infoNode={this.state.infoNode}
                                     selectedAssembly={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[0] : undefined}
-                                    selectedAnnotation={this.state.selectedAssembly ? this.state.selectedAssembly.split(' ')[1] : undefined}
+                                    selectedAnnotation={this.state.selectedAssembly ? (this.state.selectedAssembly.split(' ')[1] + ' ' + this.state.selectedAssembly.split(' ')[2]) : undefined}
                                     schemas={schemas}
                                     colorize={this.state.inclusionOn}
                                     handleNodeClick={this.handleNodeClick}
@@ -3001,8 +2855,6 @@ FileGalleryRendererComponent.propTypes = {
     auditIndicators: PropTypes.func.isRequired,
     /** Inherited from auditDecor HOC */
     auditDetail: PropTypes.func.isRequired,
-    /** True to show replicate number */
-    showReplicateNumber: PropTypes.bool,
     /** ENCODE session object from <App> */
     session: PropTypes.object.isRequired,
 };
@@ -3012,7 +2864,6 @@ FileGalleryRendererComponent.defaultProps = {
     schemas: null,
     hideGraph: false,
     altFilterDefault: false,
-    showReplicateNumber: true,
 };
 
 FileGalleryRendererComponent.contextTypes = {
@@ -3141,10 +2992,10 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         <dd><Status item={selectedFile} inline /></dd>
                     </div>
 
-                    {selectedFile.output_type ?
+                    {selectedFile.output_types ?
                         <div data-test="output">
                             <dt>Output</dt>
-                            <dd>{selectedFile.output_type}</dd>
+                            <dd>{selectedFile.output_types}</dd>
                         </div>
                     : null}
 
@@ -3297,10 +3148,10 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
         );
         body = <p className="browser-error">No information available</p>;
     }
-    return { header, body, type: 'File' };
+    return { header, body, type: 'DataFile' };
 };
 
-globals.graphDetail.register(FileDetailView, 'File');
+globals.graphDetail.register(FileDetailView, 'DataFile');
 
 
 export const CoalescedDetailsView = function CoalescedDetailsView(node) {
@@ -3318,7 +3169,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
                     </span>,
             },
             file_type: { title: 'File type' },
-            output_type: { title: 'Output type' },
+            output_types: { title: 'Output type' },
             assembly: { title: 'Mapping assembly' },
             genome_annotation: {
                 title: 'Genome annotation',
@@ -3367,7 +3218,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
         );
         body = <p className="browser-error">No information available</p>;
     }
-    return { header, body, type: 'File' };
+    return { header, body, type: 'DataFile' };
 };
 
 globals.graphDetail.register(CoalescedDetailsView, 'Coalesced');
