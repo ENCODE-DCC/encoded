@@ -1,364 +1,72 @@
 [
     {
-        "attachment": "PathologyImage_CMU-1.svs",
-        "description": "Example of high resolution pathology image in SVS format",
-        "document_type": "other",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "2d306180-915d-43b8-a87e-a94c4fa86d7e"
-    },
-    {
         "aliases": [
-            "ido-amit:HAoSMC_PC_8121902.2P_certificate_of_analysis"
-        ],
-        "attachment": "8121902.2P.pdf",
-        "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
-        "document_type": "other",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
-    },
-    {
-        "aliases": [
-            "ido-amit:K562_BAC_transfection_White_protocol"
-        ],
-        "attachment": "BACTransfectionProtocolK562Cells.pdf",
-        "description": "UChicago IGSB ENCODE K562 Transfection Protocol March 5, 2013",
-        "document_type": "other",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "uuid": "048d1185-2502-4f0e-a043-bbc75b9dd915"
-    },
-    {
-        "aliases": [
-            "lattice:bedMethyl.as"
-        ],
-        "attachment": "bedMethyl.txt",
-        "document_type": "other",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8"
-    },
-    {
-        "aliases": [
-            "lattice:C2C12_Wold_differentiation_protocol"
-        ],
-        "attachment": "C2C12_Wold_protocol.pdf",
-        "document_type": "differentiation protocol",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "a5f5c35a-cdda-4a45-9742-22e69ff50c9c"
-    },
-    {
-        "aliases": [
-            "lattice:C2C12_Wold_growth_protocol"
-        ],
-        "attachment": "C2C12_Wold_protocol.pdf",
-        "document_type": "growth protocol",
-        "submitted_by": "vitae.quis@mauris.aptent",
-        "uuid": "b42974fd-1490-4d51-bdcf-7db97a3e8fe0"
-    },
-    {
-        "aliases": [
-            "ido-amit:pBACGK1.1_BAC_vector"
-        ],
-        "attachment": "CH17_pBACGK1.1n.png",
-        "description": "Vector pBACGK1.1 information and map retrieved from http://bacpac.chori.org/pbacgk11.htm on May 23, 2013.",
-        "document_type": "other",
-        "submitted_by": "eni.lectus@nullam.sed",
-        "urls": [
-            "http://bacpac.chori.org/library.php?id=231",
-            "http://bacpac.chori.org/pbacgk11.htm"
-        ],
-        "uuid": "dcf15d5e-40aa-43bc-b81c-32c70c9afb01",
-        "status": "released"
-    },
-    {
-        "aliases": [
-            "lattice:diffProtB_6hr_protocol"
-        ],
-        "attachment": "diffProtB_6hr_protocol.txt",
-        "document_type": "treatment protocol",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e95b8f25-7b5b-4ce3-a351-b09d0c1eda8d"
-    },
-    {
-        "aliases": [
-            "lattice:EPC_Stam_protocol"
-        ],
-        "attachment": "EPC_Stam_protocol.pdf",
-        "description": "Isolation of mouse fetal liver cell subsets",
-        "document_type": "cell isolation protocol",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "cd9aab06-e0cb-42fb-b47d-2a7dd8116e99"
-    },
-    {
-        "aliases": [
-            "lattice:Heart_STL003_excision_protocol"
-        ],
-        "attachment": "Heart_STL003_excision_protocol.txt",
-        "description": "Heart_STL003 excision protocol",
-        "document_type": "excision protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "0b7105ae-a3f8-476c-a163-3821eb3da3da"
-    },
-    {
-        "aliases": [
-            "lattice:Myers_Methyl450_protocol"
-        ],
-        "attachment": "human.wgEncodeHaibMethyl450.txt",
-        "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2. Isolation of mouse fetal liver cell subsets. Heart_STL003 general protocol.",
-        "document_type": "general protocol",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "71da87e2-92d0-418b-960b-0a30800172a0"
-    },
-    {
-        "aliases": [
-            "lattice:K562_protocol"
-        ],
-        "attachment": "K562_protocol.pdf",
-        "document_type": "growth protocol",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "40792158-1613-47f4-ae3f-dc3400c097d3"
-    },
-    {
-        "aliases": [
-            "lattice:Heart_STL003_general_protocol"
-        ],
-        "attachment": "LID48879.pdf",
-        "description": "Heart_STL003 general protocol",
-        "document_type": "general protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "bc505a2d-4afb-48f0-b8dd-77af9006c675"
-    },
-    {
-        "aliases": [
-            "lattice:MCF-7_Crawford_growth_protocol"
-        ],
-        "attachment": "MCF-7_Crawford_protocol.pdf",
-        "description": "MCF-7 Cell Culture and +/- estrogen treatment",
-        "document_type": "growth protocol",
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "8f1a6855-0312-4027-8869-330e42a0b04a"
-    },
-    {
-        "aliases": [
-            "lattice:MCF-7_Farnham_growth_protocol"
-        ],
-        "attachment": "MCF-7_Farnham_protocol.pdf",
-        "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
-        "document_type": "growth protocol",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "uuid": "984071d4-9149-476a-b353-93592c6f48f3"
-    },
-    {
-        "aliases": [
-            "lattice:MCF-7_Farnham_treatment_protocol"
-        ],
-        "attachment": "MCF-7_Farnham_protocol.pdf",
-        "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
-        "document_type": "treatment protocol",
-        "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "uuid": "2897e1e0-a322-4579-86dd-d5e8cf4e6c24"
-    },
-    {
-        "aliases": [
-            "lattice:Snyder_Histone_Mouse_protocol"
-        ],
-        "attachment": "mouse.wgEncodeSydhHist.txt",
-        "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
-        "document_type": "general protocol",
-        "references": [
-            "72a4a030-bdfb-11e4-bb52-0800200c9a66",
-            "341bf550-be0c-11e4-bb52-0800200c9a66",
-            "cf890830-bdfc-11e4-bb52-0800200c9a66",
-            "4be68100-be0c-11e4-bb52-0800200c9a66",
-            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
-        ],
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
-    },
-    {
-        "aliases": [
-            "lattice:Myers_Lab_ChIP-seq_Protocol_v042211"
-        ],
-        "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
-        "document_type": "general protocol",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "df9dd0ec-c1cf-4391-a745-a933ab1af7a7"
-    },
-    {
-        "aliases": [
-            "lattice:PanIsletD_Crawford_protocol"
-        ],
-        "attachment": "PanIsletD_Crawford_protocol.pdf",
-        "document_type": "other",
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "87a97c62-08b7-43a8-a277-7aa51eb33bce"
-    },
-    {
-        "aliases": [
-            "lattice:SAEC_Stam_protocol"
+            "jimmie-ye:SAEC_Stam_protocol"
         ],
         "attachment": "SAEC_Stam_protocol.pdf",
-        "document_type": "growth protocol",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "19d5277e-b6b0-49dd-9349-146783bd0082"
-    },
-    {
-        "aliases": [
-            "lattice:HAoSMC_PC_8121902.2P_general_protocol"
-        ],
-        "attachment": "SID38242.pdf",
-        "description": "PromoCell Normal Human Aortic Smooth Muscle Cells general protocol",
-        "document_type": "general protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "7aa32299-cc11-4f07-bdaa-a55de6f51a99"
-    },
-    {
-        "aliases": [
-            "anna-greka:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
-        ],
-        "attachment": "SID38806.pdf",
-        "document_type": "general protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "e23a0ea7-a490-4d00-9e4f-876bea90b1f7"
-    },
-    {
-        "aliases": [
-            "anna-greka:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
-        ],
-        "attachment": "SID38807.pdf",
-        "document_type": "general protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "197f27b2-76b8-4bc2-928f-0b33c3dfb7c7"
-    },
-    {
-        "aliases": [
-            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
-        ],
-        "attachment": "SID38822.pdf",
-        "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS087RNA",
-        "document_type": "general protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "4fdeaa98-a4c7-4f44-9414-c55977f8369b"
-    },
-    {
-        "aliases": [
-            "anna-greka:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
-        ],
-        "attachment": "SID38823.pdf",
-        "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS088RNA",
-        "document_type": "general protocol",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "f39f4b6e-cc13-45cf-993b-8d74781ba6d0"
-    },
-    {
-        "aliases": [
-            "anna-greka:Ambion-NIST_Spikes_Corrected"
-        ],
-        "attachment": "Spikes.fixed.fasta.txt",
-        "document_type": "other",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "f4974402-65a6-47fd-862e-9b226659d041"
-    },
-    {
-        "aliases": [
-            "lattice:Stam_15_protocols"
-        ],
-        "attachment": "Stam_15_protocols.pdf",
-        "document_type": "growth protocol",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "f704939d-1784-4856-9abd-434ca9336feb"
-    },
-    {
-        "aliases": [
-            "anna-greka:Ambion-NIST_Spikes_Sequences_Concentrations"
-        ],
-        "attachment": "wgEncodeCshlSpikeinsConcentrations.txt",
-        "document_type": "other",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "34e684ee-8e9a-4b4e-9708-4a0bc5ae9811"
-    },
-    {
-        "aliases": [
-            "lattice:ZhBTc4_Stam_protocol"
-        ],
-        "attachment": "ZhBTc4_Stam_protocol.pdf",
-        "document_type": "growth protocol",
-        "submitted_by": "blandit.orci@conubia.magna",
-        "uuid": "113719b2-929f-4fb9-b073-e6483b2edd40"
-    },
-    {
-        "aliases": [
-            "jimmie-ye:pLKO1"
-        ],
-        "attachment": "pLKO1_vector.png",
-        "document_type": "other",
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "33d51ad0-62ba-11e3-949a-0800200c9a66"
-    },
-    {
-        "aliases": [
-            "lattice:Antibody_characterization_standards_February_2014"
-        ],
-        "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
-        "document_type": "other",
-        "submitted_by": "duis.pede@nonummy.scelerisque",
-        "uuid": "bcb5f3c8-d5e9-40d2-805f-4274f940c36d"
-    },
-    {
-        "aliases": [
-            "lattice:sample_strain_generation_protocol"
-        ],
-        "attachment": "sample_strain_generation_protocol.pdf",
-        "document_type": "other",
-        "submitted_by": "uskuf.shyec@doton.danona",
-        "uuid": "30705939-d234-4aca-8379-cd355686fd48"
-    },
-    {
-        "aliases": [
-            "jimmie-ye:Graveley_Group_RNA-Seq_Pipeline_02042013"
-        ],
-        "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
-        "document_type": "pipeline protocol",
+        "document_type": "extraction protocol",
         "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_by": "r.gate@ucsf.ude",
         "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
     },
     {
         "aliases": [
-            "jimmie-ye:GeneQuantificationPipeline"
+            "anna-greka:LID48879"
         ],
-        "attachment": "GeneQuantificationPipeline.pdf",
-        "document_type": "pipeline protocol",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "d64ef6a0-5ae4-11e4-8ed6-0800200c9a66"
+        "attachment": "LID48879.pdf",
+        "document_type": "other",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "fb30fe97-1589-4ad7-8802-6ac4c7ab77a3"
     },
     {
         "aliases": [
-            "lattice:ENCODE2_ChIP_seq_pipeline_diagram"
+            "anna-greka:mouse.wgEncodeSydhHist"
         ],
-        "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
-        "document_type": "pipeline protocol",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "c256d912-be84-4463-8e95-cef789e8d6ba"
+        "attachment": "mouse.wgEncodeSydhHist.txt",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "other",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "18e0fef9-89f0-4a70-89ea-74eddbe90d38"
     },
     {
         "aliases": [
-            "lattice:ENCODE2ChIP-seqpipelinespecifications"
+            "anna-greka:SAEC_Stam_protocol"
         ],
-        "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
-        "document_type": "pipeline protocol",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "0f2f78fc-4675-4534-af7a-1c77e03c0cd3"
+        "attachment": "SAEC_Stam_protocol.pdf",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "other",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "84db112a-3d7f-463d-8125-b60cf86e127f"
     },
     {
         "aliases": [
-            "jimmie-ye:iCLIP_pipeline_ENCODE.pdf"
+            "anna-greka:diffProtB_6hr_protocol"
         ],
-        "attachment": "iCLIP_pipeline_ENCODE.pdf",
-        "document_type": "pipeline protocol",
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "differentiation protocol",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "9f1af8d8-2ca0-424c-985b-997020c20685"
+    },
+    {
+        "aliases": [
+            "anna-greka:C2C12_Wold_protocol"
+        ],
+        "attachment": "C2C12_Wold_protocol.pdf",
+        "references": [
+            "lattice:Greka_Clark_2019_large_dataset"
+        ],
+        "document_type": "differentiation protocol",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "uuid": "45e9058d-3a18-4fe3-ae8d-b76a3c1d03b7"
     }
 ]

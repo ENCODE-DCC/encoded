@@ -1,5 +1,213 @@
 [
     {
+        "accession": "ENCBS850DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorA"
+        ],
+        "description": "adult human tissue donorA",
+        "uuid": "ea0959f5-efec-422d-bbdf-c8ca77faabc1",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_human_donorA"
+        ],
+        "derivation_process": [
+            "percutaneous biopsy"
+        ],
+        "biosample_ontology": "UBERON_0001225",
+        "collection_to_preservation_interval": 5,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "spatial_information": "3cm from top edge",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "fixed": false,
+        "starting_amount": 50,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS855DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorB"
+        ],
+        "description": "adult human tissue donorB",
+        "uuid": "3e4cdffe-2c6c-48b7-bc71-ae15d8b69c38",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_human_donorB"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0001225",
+        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "spatial_information": "2cm from top edge",
+        "preservation_method": "cryopreservation",
+        "fixed": false,
+        "starting_amount": 100,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS860DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorC"
+        ],
+        "description": "adult human tissue donorC",
+        "uuid": "e5f2540c-3cc7-4f0c-ab9c-d6b6b6a27d16",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:fetal_human_donorC"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "cryopreservation",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS865DDD",
+        "aliases": [
+            "anna-greka:human_tissue_donorD"
+        ],
+        "description": "adult human tissue donorD",
+        "uuid": "e5a95c5b-eb32-4bdd-95a6-54fdb66cc794",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:fetal_human_donorD"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval_units": "hour",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "cryopreservation",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g"
+    },
+    {
+        "accession": "ENCBS870DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorE"
+        ],
+        "description": "adult mouse tissue donorD",
+        "uuid": "fac3e4d3-058a-474a-97df-43de594f827e",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_mouse_donorE"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
+        "accession": "ENCBS875DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorF"
+        ],
+        "description": "adult mouse tissue donorF",
+        "uuid": "887840af-d67a-4f71-bb2c-b33a2fa20c07",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:adult_mouse_donorF"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
+        "accession": "ENCBS880DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorG"
+        ],
+        "description": "adult mouse tissue donorD",
+        "uuid": "9162f685-d46c-4e03-b21a-24d00b68f0cd",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:embryonic_mouse_donorG"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
+        "accession": "ENCBS885DDD",
+        "aliases": [
+            "anna-greka:mouse_tissue_donorH"
+        ],
+        "description": "adult mouse tissue donorF",
+        "uuid": "b13bed91-6566-4c21-91a0-c02d87fed2da",
+        "submitted_by": "abbeclarke@broadinstitute.org",
+        "derived_from": [
+            "anna-greka:embryonic_mouse_donorH"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0002113",
+        "ischemic_temperature": "cold",
+        "ischemic_time": 5,
+        "ischemic_time_units": "hour",
+        "preservation_method": "n/a (fresh)",
+        "fixed": false,
+        "starting_amount": 45,
+        "starting_amount_units": "g",
+        "documents": [
+            "anna-greka:SAEC_Stam_protocol"
+        ]
+    },
+    {
         "accession": "ENCBS550ABC",
         "description": "prenatal_tissue1",
         "aliases": [
@@ -13,14 +221,17 @@
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_6000167",
+        "biosample_ontology": "UBERON_0001114",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",
         "ischemic_temperature": "4",
         "ischemic_temperature_units": "C",
         "ischemic_time": 48,
-        "ischemic_time_units": "hour"
+        "ischemic_time_units": "hour",
+        "documents": [
+            "jimmie-ye:SAEC_Stam_protocol"
+        ]
     },
     {
         "accession": "ENCBS551ABC",
@@ -31,19 +242,22 @@
         "uuid": "f09edf48-e820-4d16-a9d4-6dfdec9f7dac",
         "submitted_by": "metus.donec@nisl.montes",
         "derived_from": [
-            "jimmie-ye:prenatal_donor1"
+            "jimmie-ye:prenatal_donor2"
         ],
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_6000167",
+        "biosample_ontology": "UBERON_0001114",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",
         "ischemic_temperature": "4",
         "ischemic_temperature_units": "C",
         "ischemic_time": 48,
-        "ischemic_time_units": "hour"
+        "ischemic_time_units": "hour",
+        "documents": [
+            "jimmie-ye:SAEC_Stam_protocol"
+        ]
     },
     {
         "accession": "ENCBS552ABC",
@@ -54,19 +268,22 @@
         "uuid": "a929155b-69aa-4ee1-af9d-b57d94094079",
         "submitted_by": "metus.donec@nisl.montes",
         "derived_from": [
-            "jimmie-ye:prenatal_donor1"
+            "jimmie-ye:prenatal_donor3"
         ],
         "derivation_process": [
             "dissection"
         ],
-        "biosample_ontology": "UBERON_6000167",
+        "biosample_ontology": "UBERON_0001114",
         "preservation_method": "cryopreservation",
         "preservation_time": 2,
         "preservation_time_units": "week",
         "ischemic_temperature": "4",
         "ischemic_temperature_units": "C",
         "ischemic_time": 48,
-        "ischemic_time_units": "hour"
+        "ischemic_time_units": "hour",
+        "documents": [
+            "jimmie-ye:SAEC_Stam_protocol"
+        ]
     },
     {
         "accession": "ENCBS543ABC",
@@ -92,8 +309,7 @@
         "ischemic_time_units": "hour",
         "source": "original lab",
         "references": [
-            "baf202c2-b7af-4c43-b135-15104394daac",
-            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+            "52e85c70-fe2d-11e3-9191-0800200c9a66"
         ]
     },
     {
@@ -120,8 +336,7 @@
         "ischemic_time_units": "hour",
         "source": "original lab",
         "references": [
-            "baf202c2-b7af-4c43-b135-15104394daac",
-            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+            "52e85c70-fe2d-11e3-9191-0800200c9a66"
         ]
     },
     {
@@ -148,255 +363,7 @@
         "ischemic_time_units": "hour",
         "source": "original lab",
         "references": [
-            "baf202c2-b7af-4c43-b135-15104394daac",
-            "a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2"
+            "52e85c70-fe2d-11e3-9191-0800200c9a66"
         ]
-    },
-    {
-        "accession": "ENCBS100XYZ",
-        "biosample_ontology": "UBERON_0002107",
-        "description": "liver from a 34 year old male",
-        "documents": [],
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "a94c6e56-4c7a-4e98-8f3d-34e8f448f31d",
-        "derived_from": [
-            "ENCDO058AAA"
-        ],
-        "derivation_process": ["dissection"],
-        "source": "barbara-wold",
-        "ischemic_temperature": "warm"
-    },
-    {
-        "accession": "ENCBS200XYZ",
-        "biosample_ontology": "UBERON_0002107",
-        "description": "liver from a 21 year old male",
-        "documents": [],
-        "submitted_by": "metus.donec@nisl.montes",
-        "uuid": "bc5c3a0b-c771-4e24-a6ff-96dc94fce89e",
-        "derived_from": [
-            "ENCDO017AAA"
-        ],
-        "derivation_process": ["dissection"],
-        "source": "barbara-wold"
-    },
-    {
-        "accession": "ENCBS356AAA",
-        "biosample_ontology": "UBERON_0000006",
-        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
-        "documents": [
-            "lattice:PanIsletD_Crawford_protocol"
-        ],
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "467c7505-5039-4935-8da1-6ad22d813310",
-        "derived_from": [
-            "ENCDO017AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS492ENC",
-        "biosample_ontology": "UBERON_0000006",
-        "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "e62102b0-7452-4fb7-9932-d799366e1f5a",
-        "derived_from": [
-            "ENCDO058AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS493ENC",
-        "biosample_ontology": "UBERON_0000006",
-        "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "718d142d-7677-4c09-bfb5-39214a9f85a9",
-        "derived_from": [
-            "ENCDO000HUM"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS044RNA",
-        "aliases": [
-            "anna-greka:097WC"
-        ],
-        "biosample_ontology": "UBERON_0000948",
-        "date_obtained": "2012-12-01",
-        "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
-        "documents": [
-            "lattice:Heart_STL003_excision_protocol",
-            "lattice:Heart_STL003_general_protocol"
-        ],
-        "source": "michael-snyder",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe",
-        "derived_from": [
-            "ENCDO106AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "status": "released",
-        "aliases": [
-            "jimmie-ye:23429"
-        ],
-        "accession": "ENCBS278TPS",
-        "source": "peggy-farnham",
-        "biosample_ontology": "UBERON_0001891",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "31db042c-9844-467d-a725-ba3a4d007039",
-        "derived_from": [
-            "ENCDO275AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "status": "released",
-        "aliases": [
-            "jimmie-ye:29043C"
-        ],
-        "accession": "ENCBS804RUL",
-        "source": "peggy-farnham",
-        "biosample_ontology": "UBERON_0001891",
-        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
-        "uuid": "9213cd74-b065-4f36-8346-800fe10f56ff",
-        "derived_from": [
-            "ENCDO276AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS376EJL",
-        "aliases": [
-            "lattice:ENC-1LVAN-061-SM-IP2F3"
-        ],
-        "biosample_ontology": "UBERON_0001891",
-        "source": "michael-snyder",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "e6440a82-d112-43a3-b892-a9763bdce7cf",
-        "derived_from": [
-            "ENCDO568ESC"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS009WOO",
-        "aliases": [
-            "jimmie-ye:TC9599",
-            "lattice:ENC-1LGRB-010-CR89G"
-        ],
-        "biosample_ontology": "UBERON_0001891",
-        "source": "michael-snyder",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "0e6c7ee8-9400-4bb8-ae2e-966ca5bb09fb",
-        "derived_from": [
-            "ENCDO000AAK"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS061XGD",
-        "aliases": [
-            "lattice:ENC-1JKYN-031-SM-9JLPD-1"
-        ],
-        "biosample_ontology": "UBERON_0001891",
-        "description": "RNA Evaluation human tissue adrenal gland 1-2 microRNA-seq from Mortazavi",
-        "source": "michael-snyder",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "49b698f0-02ed-4e83-b04b-15642053c78d",
-        "derived_from": [
-            "ENCDO003HUM"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS204NZH",
-        "aliases": [
-            "jimmie-ye:TC9581",
-            "lattice:ENC-1K2DA-026-IP2FC"
-        ],
-        "biosample_ontology": "UBERON_0001891",
-        "source": "michael-snyder",
-        "status": "released",
-        "submitted_by": "elementum.mus@dictumst.nostra",
-        "uuid": "17790c53-a3f4-4e9e-86a6-227689f757cb",
-        "derived_from": [
-            "ENCDO793LXB"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS123AAA",
-        "biosample_ontology": "UBERON_0000948",
-        "date_obtained": "2013-01-31",
-        "description": "mouse dev matrix biosample_1",
-        "source": "len-pennacchio",
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "bc5b62f7-ce28-4a1e-b6b3-93c9c5a86d7a",
-        "derived_from": [
-            "ENCDO012AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS123AAB",
-        "biosample_ontology": "UBERON_0000948",
-        "date_obtained": "2013-01-31",
-        "description": "mouse dev matrix biosample_2",
-        "source": "len-pennacchio",
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "b8d504af-5af8-4f6e-b250-9980085bee80",
-        "derived_from": [
-            "ENCDO075AAA"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS123AAC",
-        "biosample_ontology": "UBERON_0000948",
-        "date_obtained": "2013-01-31",
-        "description": "mouse dev matrix biosample_3",
-        "source": "len-pennacchio",
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9d",
-        "derived_from": [
-            "ENCDO001MUS"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS123AAD",
-        "biosample_ontology": "UBERON_0001891",
-        "date_obtained": "2013-01-31",
-        "description": "mouse dev matrix biosample_4",
-        "source": "len-pennacchio",
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9e",
-        "derived_from": [
-            "ENCDO000MUS"
-        ],
-        "derivation_process": ["dissection"]
-    },
-    {
-        "accession": "ENCBS123AAE",
-        "biosample_ontology": "UBERON_0001891",
-        "date_obtained": "2013-01-31",
-        "description": "mouse dev matrix biosample_5",
-        "source": "len-pennacchio",
-        "submitted_by": "ipsum.mi@torquent.eleifend",
-        "uuid": "3c61acf1-982d-48b2-bb64-5972fb082a9f",
-        "derived_from": [
-            "ENCDO003MUS"
-        ],
-        "derivation_process": ["dissection"]
     }
 ]

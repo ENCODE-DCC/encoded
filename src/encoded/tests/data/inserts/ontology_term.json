@@ -1,5 +1,53 @@
 [
     {
+        "uuid": "03322386-af14-4d83-9063-855d0bef1876",
+        "term_name": "epithelial cell of distal tubule",
+        "term_id": "CL:0002305",
+        "status": "released"
+    },
+    {
+        "uuid": "5d0a236f-7128-49a2-a46b-64b1e2ad7219",
+        "term_name": "induced pluripotent stem cell",
+        "term_id": "CL:0004905",
+        "status": "released"
+    },
+    {
+        "uuid": "27df96b4-46c1-4d1a-97cb-42d4216edacb",
+        "term_name": "cortex of kidney",
+        "term_id": "UBERON:0001225",
+        "status": "released"
+    },
+    {
+        "uuid": "1b4b480c-2267-4101-8703-26fe09c7a6e9",
+        "term_name": "kidney",
+        "term_id": "UBERON:0002113",
+        "status": "released"
+    },
+    {
+        "uuid": "ba4bd27f-fe66-49d5-b56c-c99693d77e74",
+        "term_name": "Taiwanese",
+        "term_id": "HANCESTRO:0020",
+        "status": "released"
+    },
+    {
+        "uuid": "d61c53bc-5a6a-4cb5-a07a-8eefc1c0dbde",
+        "term_name": "Korean",
+        "term_id": "HANCESTRO:0022",
+        "status": "released"
+    },
+    {
+        "uuid": "2802237f-d5c4-4838-ae83-b0b7ddb10360",
+        "term_name": "Hispanic or Latin American",
+        "term_id": "HANCESTRO:0014",
+        "status": "released"
+    },
+    {
+        "uuid": "e04d9d87-b9aa-4fe1-988a-e24630265fee",
+        "term_name": "European",
+        "term_id": "HANCESTRO:0005",
+        "status": "released"
+    },
+    {
         "uuid": "ddcdc2d0-aa58-4dcb-94fb-a3c27e8fcc37",
         "term_name": "ciliated cell",
         "term_id": "CL:0000064",
@@ -25,14 +73,14 @@
     },
     {
         "uuid": "962bd10b-a7d2-440c-8aa9-92afafe04900",
-        "term_name": "epithelial cell of lung",
-        "term_id": "CL:0000082",
+        "term_name": "fetal liver hematopoietic progenitor cell",
+        "term_id": "CL:0002353",
         "status": "released"
     },
     {
-        "uuid": "3b68fe9d-d63c-4f1a-a54c-78302b66374d",
-        "term_name": "embryonic thoracic segment",
-        "term_id": "UBERON:6000167",
+        "uuid": "1b85f88c-8b52-4deb-8144-30d25bdb01a5",
+        "term_name": "liver dendritic cell",
+        "term_id": "CL:2000055",
         "status": "released"
     },
     {
@@ -61,219 +109,8 @@
     },
     {
         "uuid": "979e8378-e5c3-41f3-8376-c6c7ad8a7812",
-        "term_name": "liver",
-        "term_id": "UBERON:0002107",
-        "status": "released"
-    },
-    {
-        "uuid": "530d3486-b2b6-4026-9ef2-4149b5d1ca60",
-        "term_name": "A549",
-        "term_id": "EFO:0001086",
-        "status": "released"
-    },
-    {
-        "uuid": "4847449a-3e1e-4d56-8c7d-dbc1638d057b",
-        "term_name": "AVA",
-        "term_id": "NTR:0005842",
-        "status": "released"
-    },
-    {
-        "uuid": "16e3ae2b-ebc1-4dd4-a655-814eb76b9bf5",
-        "term_name": "C2C12",
-        "term_id": "EFO:0001098",
-        "status": "released"
-    },
-    {
-        "uuid": "d1d53fcd-9497-4b0f-b94f-57cc5a570d97",
-        "term_name": "CH12.LX cell",
-        "term_id": "EFO:0005233",
-        "status": "released"
-    },
-    {
-        "uuid": "c4445d05-a05a-46bc-8330-2e0c1644fdae",
-        "term_name": "GM06990",
-        "term_id": "EFO:0002783",
-        "status": "released"
-    },
-    {
-        "uuid": "58f3d100-c166-4638-afdb-e941d7c77747",
-        "term_name": "GM12878",
-        "term_id": "EFO:0002784",
-        "status": "released"
-    },
-    {
-        "uuid": "eedcfc42-d5a1-4a7e-a420-659f0054ce24",
-        "term_name": "H9-hESC",
-        "term_id": "NTR:0000838",
-        "status": "released"
-    },
-    {
-        "uuid": "df2054b1-3484-4d06-b64c-d3fdb450df9f",
-        "term_name": "K562",
-        "term_id": "EFO:0002067",
-        "status": "released"
-    },
-    {
-        "dbxrefs": ["Cellosaurus:CVCL_0395"],
-        "uuid": "401ed6f4-918f-4407-be71-71a4c3693d7d",
-        "term_name": "LNCAP",
-        "term_id": "EFO:0002071",
-        "status": "released"
-    },
-    {
-        "uuid": "24db2124-07e3-4ad8-b74a-e142a2e08748",
-        "term_name": "MCF-7",
-        "term_id": "EFO:0001203",
-        "status": "released"
-    },
-    {
-        "uuid": "8cf9e560-36e9-444e-8855-20e535c0cc5f",
-        "term_name": "SK-N-SH",
-        "term_id": "EFO:0003072",
-        "status": "released"
-    },
-    {
-        "uuid": "055c77f2-2a91-4cf1-82dc-4ac6328d123e",
-        "term_name": "aortic smooth muscle cell",
-        "term_id": "CL:0002539",
-        "status": "released"
-    },
-    {
-        "uuid": "2b56c868-0e0e-4bb7-a6f8-48a575645307",
-        "term_name": "basal cell of epithelium of terminal bronchiole",
-        "term_id": "CL:1000350",
-        "status": "released"
-    },
-    {
-        "uuid": "c4803eea-e154-4c99-b572-719308a1a0bd",
-        "term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
-        "term_id": "NTR:0000031",
-        "status": "released"
-    },
-    {
-        "uuid": "eea050cd-9e8c-4420-967f-3581b20536ab",
-        "term_name": "embryonic facial prominence",
-        "term_id": "UBERON:0012314",
-        "status": "released"
-    },
-    {
-        "uuid": "3fc75da8-8f87-4749-939e-cee38f5c7ab0",
-        "term_name": "embryonic stem cell",
-        "term_id": "CL:0002322",
-        "status": "released"
-    },
-    {
-        "uuid": "6d82d15f-9a89-4120-904d-c14530ed83db",
-        "term_name": "heart",
-        "term_id": "UBERON:0000948",
-        "status": "released"
-    },
-    {
-        "uuid": "328f8d39-e658-480b-b3ac-2bf92a094606",
-        "term_name": "islet of Langerhans",
-        "term_id": "UBERON:0000006",
-        "status": "released"
-    },
-    {
-        "uuid": "98c9e16f-1440-48e1-9bae-a5dcc33d0aa5",
-        "term_name": "midbrain",
-        "term_id": "UBERON:0001891",
-        "status": "released"
-    },
-    {
-        "uuid": "2c89df50-29f4-4876-974c-40c9733f9f86",
-        "term_name": "multi-cellular organism",
-        "term_id": "UBERON:0000468",
-        "status": "released"
-    },
-    {
-        "uuid": "822bf683-7e94-4aa4-afbd-8e5f3293621a",
-        "term_name": "myocyte",
-        "term_id": "NTR:0000022",
-        "status": "released"
-    },
-    {
-        "uuid": "23f48440-6770-4011-8eb0-9a7eb16f2ef0",
-        "term_name": "cell-free sample",
-        "term_id": "NTR:0000471",
-        "status": "released"
-    },
-    {
-        "uuid": "302585be-4afc-4712-b158-0e613a8e0aa7",
-        "term_name": "IMR-90",
-        "term_id": "EFO:0001196",
-        "status": "released"
-    },
-    {
-        "uuid": "2ca8e02c-2c6e-4bcd-b361-668819050b93",
-        "term_name": "HeLa-S3",
-        "term_id": "EFO:0002791",
-        "status": "released"
-    },
-    {
-        "uuid": "6d281bc4-8581-49e6-a9d4-066be68df5cd",
-        "term_name": "MEL cell line",
-        "term_id": "EFO:0003971",
-        "status": "released"
-    },
-    {
-        "uuid": "c38a56fd-40bf-4db1-bf8f-cd2e6af0bde3",
-        "term_name": "HepG2",
-        "term_id": "EFO:0001187",
-        "status": "released"
-    },
-    {
-        "uuid": "e5ee35e6-a904-43d1-af5d-4893312cc544",
-        "term_name": "neural cell",
-        "term_id": "CL:0002319",
-        "status": "released"
-    },
-    {
-        "uuid": "d5ee35e6-a904-43d1-af5d-4893312cc545",
-        "term_name": "brain organoid",
-        "term_id": "NTR:0002319",
-        "status": "released"
-    },
-    {
-        "uuid": "80adb97c-70f4-11e9-a923-1681be663d3e",
-        "term_name": "WTC-11",
-        "term_id": "EFO:0009747",
-        "status": "released"
-    },
-    {
-        "uuid": "8e4fab48-e5a6-450b-8c5c-07512c845df8",
-        "term_name": "DNA cloning sample",
-        "term_id": "NTR:0000545",
-        "status": "released"
-    },
-    {
-        "uuid": "f271c29e-6145-434c-8c37-f38bd1a891de",
-        "term_name": "endocardium cancer",
-        "term_id": "MONDO:0003687",
-        "status": "released"
-    },
-    {
-        "uuid": "403c82d8-c0da-4c8d-a0fa-23d30fa23246",
-        "term_name": "African",
-        "term_id": "HANCESTRO:0010",
-        "status": "released"
-    },
-    {
-        "uuid": "71bcb5eb-234d-4325-8a34-00729e3a67b8",
-        "term_name": "Hispanic or Latin American",
-        "term_id": "HANCESTRO:0014",
-        "status": "released"
-    },
-    {
-        "uuid": "55d718dc-ee34-4bf5-8a6e-ec97ddadc26d",
-        "term_name": "European",
-        "term_id": "HANCESTRO:0005",
-        "status": "released"
-    },
-    {
-        "uuid": "760a1f6c-078c-491c-b95f-f467eb652d09",
-        "term_name": "Oceanian",
-        "term_id": "HANCESTRO:0017",
+        "term_name": "right lobe of liver",
+        "term_id": "UBERON:0001114",
         "status": "released"
     }
 ]

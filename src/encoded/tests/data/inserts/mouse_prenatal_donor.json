@@ -1,27 +1,48 @@
 [
     {
-        "accession": "ENCDO075AAA",
-        "strain_background": "B6NTac;B6NCrl/Lap",
-        "submitter_comment": "Not sure about the origin of this strain.",
-        "uuid": "3cfe2618-368f-45a0-9aa9-a5277f1a56a9",
+        "accession": "ENCDO050DDD",
+        "aliases": [
+            "anna-greka:embryonic_mouse_donorG"
+        ],
+        "uuid": "dbd270ca-fbf0-4d03-9e22-babf92165142",
         "life_stage": "embryonic",
-        "sex": "unknown",
-        "strain_term_name": "C57BL/6"
+        "sex": "female",
+        "strain_background": "C57BL/6J",
+        "strain_term_name": "C57BL/6J",
+        "strain_term_id": "EFO:0000606",
+        "gestational_age": "14",
+        "gestational_age_units": "day",
+        "carnegie_stage": 19,
+        "weight": 50,
+        "weight_unit": "g",
+        "documents": [
+            "anna-greka:mouse.wgEncodeSydhHist"
+        ],
+        "dbxrefs": [
+            "GEO:SAMN043325"
+        ]
     },
     {
-        "accession": "ENCDO000MUS",
-        "strain_background": "unknown",
-        "uuid": "b432527c-0f19-4bc3-a810-e1bf583cfb38",
+        "accession": "ENCDO055DDD",
+        "aliases": [
+            "anna-greka:embryonic_mouse_donorH"
+        ],
+        "uuid": "444440cb-3402-4074-bc1b-aa3b01bd27fb",
         "life_stage": "embryonic",
-        "sex": "unknown",
-        "strain_term_name": "C57BL/6"
-    },
-    {
-        "accession": "ENCDO003MUS",
-        "strain_background": "unknown",
-        "uuid": "caf5635e-0f6d-4e24-a0cf-99263a37d22e",
-        "life_stage": "embryonic",
-        "sex": "unknown",
-        "strain_term_name": "C57BL/6"
+        "sex": "male",
+        "strain_background": "C57BL/6J",
+        "strain_term_name": "C57BL/6J",
+        "strain_term_id": "EFO:0000606",
+        "gestational_age": "13",
+        "gestational_age_units": "day",
+        "carnegie_stage": 18,
+        "weight": 45,
+        "weight_unit": "g",
+        "documents": [
+            "anna-greka:mouse.wgEncodeSydhHist"
+        ],
+        "dbxrefs": [
+            "GEO:SAMN043326"
+        ]
     }
 ]

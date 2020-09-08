@@ -265,7 +265,7 @@
             "peter-sims:alignment_3a.bam"
         ],
         "uuid": "37017a47-469f-47a5-ba86-9a675e3fac2b",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -296,7 +296,7 @@
             "peter-sims:alignment_3b.bam"
         ],
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -327,7 +327,7 @@
         ],
         "uuid": "73e99d2f-fc83-4ed5-9acb-1240bebb9478",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -358,7 +358,7 @@
         ],
         "uuid": "81dd0691-8940-4037-ba1b-33788f216126",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -389,7 +389,7 @@
         ],
         "uuid": "30e741ac-5a5b-457a-a21e-e8bd6ddd11a1",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -420,7 +420,7 @@
         ],
         "uuid": "4ecb050d-0505-46aa-84d1-f03323a0926e",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -451,7 +451,7 @@
         ],
         "uuid": "a8e5d8db-196e-4e67-bce2-63194a2d0073",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -482,7 +482,7 @@
         ],
         "uuid": "5ff64249-5aa4-4069-9e21-330a47b1213f",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -513,7 +513,7 @@
         ],
         "uuid": "1d30ed0d-700c-4fa9-b797-12ba5d2f000f",
         "dataset":"peter-sims:scRNAseq_test_dataset",
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "status": "released",
         "file_format": "bam",
         "file_size": 6000000000,
@@ -537,216 +537,5 @@
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
         "analysis_step": "peter-sims:alignment-count-step"
-    },
-    {
-        "_project": "encode3",
-        "accession": "ENCFF001RCV",
-        "file_size": 20,
-        "dataset": "ENCSR123ABC",
-        "assembly": "hg19",
-        "genome_annotation": "GENCODE 19",
-        "date_created": "2013-05-19T16:46:18.670068+00:00",
-        "derived_from": [
-            "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
-            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
-        ],
-        "file_format": "bam",
-        "lab": "j-michael-cherry",
-        "md5sum": "cdf6c42afc135f1f95971e415b8d5fdd",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "submitted_file_name": "replicate1.bam",
-        "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66",
-        "analysis_step": "6d4eb13a-144d-43b0-ad80-e627aa07d09c"
-    },
-    {
-        "_project": "encode3",
-        "accession": "ENCFF001RCW",
-        "file_size": 20,
-        "dataset": "ENCSR123ABC",
-        "assembly": "hg19",
-        "genome_annotation": "GENCODE 19",
-        "date_created": "2013-05-19T16:46:18.670068+00:00",
-        "derived_from": [
-            "34b653f7-6777-49d9-8e06-d76a96a4d10b",
-            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
-        ],
-        "file_format": "bam",
-        "lab": "j-michael-cherry",
-        "md5sum": "ecff397bffc54f01319eb41c6194379b",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "status": "released",
-        "submitted_by": "platea.a@volutpat.viverra",
-        "submitted_file_name": "replicate2.bam",
-        "uuid": "895fef10-52ed-11e4-916c-0800200c9a66",
-        "analysis_step": "6d4eb13a-144d-43b0-ad80-e627aa07d09c"
-    },
-    {
-        "status": "in progress",
-        "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ.fq_bismark.bam",
-        "uuid": "630bc094-a4cc-4d46-8777-3786d4a6b69e",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "md5sum": "1555c19cce3d261f487fdd29f8c6274c",
-        "accession": "ENCFF434GXF",
-        "file_format": "bam",
-        "dataset": "ENCSR765JPC",
-        "flowcell_details": [],
-        "alternate_accessions": [],
-        "file_size": 64358869186,
-        "lab": "/labs/richard-myers/",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "assembly": "hg19",
-        "derived_from": [
-            "ENCFF431TKZ",
-            "ENCFF504RKH",
-            "ENCFF958GWJ",
-            "ENCFF019HBG",
-            "ENCFF022HBG"
-        ],
-        "analysis_step": "9641117d-b5b8-469a-a335-a1769606a63d"
-    },
-    {
-        "status": "in progress",
-        "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ.fq_bismark.bam",
-        "uuid": "8f5646aa-cfd5-4f8e-8aa5-198bbc3a6359",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "md5sum": "1455c19cce3d261f487fdd29f8c6274c",
-        "accession": "ENCFF444GXF",
-        "file_format": "bam",
-        "dataset": "ENCSR765JPC",
-        "flowcell_details": [],
-        "alternate_accessions": [],
-        "file_size": 64358869186,
-        "lab": "/labs/richard-myers/",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "assembly": "hg19",
-        "derived_from": [
-            "ENCFF431TKZ",
-            "ENCFF504RKH",
-            "ENCFF958GWJ",
-            "ENCFF021HBG",
-            "ENCFF022HBG",
-            "ENCFF023HBG",
-            "ENCFF024HBG",
-            "ENCFF025HBG",
-            "ENCFF026HBG",
-            "ENCFF027HBG"
-        ],
-        "analysis_step": "9641117d-b5b8-469a-a335-a1769606a63d"
-    },
-    {
-        "accession": "ENCFF003MRN",
-        "assembly": "GRCh38",
-        "dataset": "ENCSR123MRN",
-        "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "derived_from": [
-            "1234830f-154f-449f-814b-fd3435417edf"
-        ],
-        "file_format": "bam",
-        "genome_annotation": "GENCODE 24",
-        "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "94be74b6e11515390000f4ebfa66d78d",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "status": "released",
-        "file_size": 20,
-        "submitted_by": "sit.duis@blandit.hendrerit",
-        "submitted_file_name": "microRNA/rep1_mc_bammer.bam",
-        "uuid": "12abfcc1-9f85-415a-8eb5-e0f12346f053",
-        "analysis_step": "4f7d9e81-2b51-42a8-bc6d-c8c1831bf478"
-    },
-    {
-        "accession": "ENCFF004MRN",
-        "assembly": "GRCh38",
-        "dataset": "ENCSR123MRN",
-        "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "derived_from": [
-            "5678830f-154f-449f-814b-fd3435417edf"
-        ],
-        "file_format": "bam",
-        "genome_annotation": "GENCODE 24",
-        "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "94be74b6e11515391212f4ebfa66d78d",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "status": "released",
-        "file_size": 20,
-        "submitted_by": "sit.duis@blandit.hendrerit",
-        "submitted_file_name": "microRNA/rep2_mc_bammer.bam",
-        "uuid": "95befcc1-9f85-415a-8eb5-e0f12346f053"
-    },
-    {
-        "_test": "rep1 bam file for long read RNA-seq experiment",
-        "accession": "ENCFF003ISO",
-        "assembly": "GRCh38",
-        "dataset": "ENCSR751ISO",
-        "derived_from": [
-            "ENCFF001ISO/"
-        ],
-        "file_format": "bam",
-        "file_size": 398856,
-        "genome_annotation": "GENCODE 24",
-        "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "22be74b6e11555393507f4ebfa65d78c",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "submitted_file_name": "alabama.bam",
-        "uuid": "3d668412-fb5c-4cf1-8d66-5ab02ac12c12",
-        "analysis_step": "fcc70ac1-3cde-4c50-9d09-67c94eb92f47"
-    },
-    {
-        "_test": "rep2 bam file for long read RNA-seq experiment",
-        "accession": "ENCFF004ISO",
-        "assembly": "GRCh38",
-        "dataset": "ENCSR751ISO",
-        "date_created": "2013-04-18T16:46:18.670068+00:00",
-        "derived_from": [
-            "ENCFF002ISO/"
-        ],
-        "file_format": "bam",
-        "genome_annotation": "GENCODE 24",
-        "lab": "/labs/encode-processing-pipeline/",
-        "md5sum": "94be74b6e11515393434f4ebfa66d78d",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "status": "released",
-        "file_size": 20,
-        "submitted_by": "sit.duis@blandit.hendrerit",
-        "submitted_file_name": "longreadRNA/rep2_mc_bammer.bam",
-        "uuid": "57befcc1-9f85-225a-8eb5-e0f12346f123"
-    },
-    {
-        "_test": "ATAC-seq rep1 alignment file",
-        "lab": "/labs/michael-snyder/",
-        "dataset": "ENCSR808QCJ",
-        "status": "released",
-        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
-        "uuid": "3f150408-3e77-47c1-8028-6866ed2facba",
-        "accession": "ENCFF032OJW",
-        "file_format": "bam",
-        "output_types": [
-            "transcriptome alignments"
-        ],
-        "file_size": 1,
-        "assembly": "GRCh38",
-        "md5sum": "f310dcda5400928744b1ca967c9e4ea5",
-        "derived_from": [
-            "ENCFF164JWT"
-        ]
     }
 ]

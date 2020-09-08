@@ -102,7 +102,7 @@
             "description": "Assessment of smoking history in the form # unit per time frame over length of time in years smoked and since cessation. E.g. 1 pack a day for 10 years. 2 years since cessation.",
             "type": "string"
         },
-        "alochol_history": {
+        "alcohol_history": {
             "title": "Alcohol history",
             "description": "Assessment of alcohol use in the form # unit per time frame. E.g. 2 drinks a day.",
             "type": "string"
