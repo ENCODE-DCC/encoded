@@ -100,15 +100,13 @@
             "title": "Normalized strand cross-correlation",
             "type": "number",
             "category": "Cross-correlation",
-            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts.",
-            "minimum": 0
+            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
             "title": "Relative strand cross-correlation coefficient",
             "type": "number",
             "category": "Cross-correlation",
-            "description": "Relative cross-correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length",
-            "minimum": 0
+            "description": "Relative cross-correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
         },
         "cross_correlation_plot": {
             "title": "Cross-correlation plot",
