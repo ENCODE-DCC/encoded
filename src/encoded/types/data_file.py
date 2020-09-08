@@ -93,6 +93,7 @@ class DataFile(Item):
     name_key = 'accession'
     rev = {
         'superseded_by': ('DataFile', 'supersedes'),
+        'quality_metrics': ('Metrics', 'quality_metric_of'),
     }
     embedded = []
     public_s3_statuses = ['released', 'archived']
@@ -165,6 +166,22 @@ class DataFile(Item):
         file_extension = self.schema['file_format_file_extension'][file_format]
         filename = '{}{}'.format(accession, file_extension)
         return request.resource_path(self, '@@download', filename)
+
+
+    @calculated_property(schema={
+        "title": "QualityMetric",
+        "description": "The list of QC metric objects associated with this file.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Metrics.quality_metric_of",
+        },
+        "notSubmittable": True,
+    })
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
+
 
     @calculated_property(condition=show_upload_credentials, schema={
         "title": "Upload Credentials",
