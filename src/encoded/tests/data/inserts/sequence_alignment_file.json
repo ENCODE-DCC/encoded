@@ -16,8 +16,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_1a_R1.fastq", 
-            "jimmie-ye:prenatal_1a_R2.fastq", 
+            "jimmie-ye:prenatal_1a_R1.fastq",
+            "jimmie-ye:prenatal_1a_R2.fastq",
             "jimmie-ye:prenatal_1a_R3.fastq",
             "jimmie-ye:prenatal_1a_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -26,7 +26,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -45,8 +52,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_1b_R1.fastq", 
-            "jimmie-ye:prenatal_1b_R2.fastq", 
+            "jimmie-ye:prenatal_1b_R1.fastq",
+            "jimmie-ye:prenatal_1b_R2.fastq",
             "jimmie-ye:prenatal_1b_R3.fastq",
             "jimmie-ye:prenatal_1b_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -55,7 +62,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -74,8 +88,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_1c_R1.fastq", 
-            "jimmie-ye:prenatal_1c_R2.fastq", 
+            "jimmie-ye:prenatal_1c_R1.fastq",
+            "jimmie-ye:prenatal_1c_R2.fastq",
             "jimmie-ye:prenatal_1c_R3.fastq",
             "jimmie-ye:prenatal_1c_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -84,7 +98,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -103,8 +124,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_2a_R1.fastq", 
-            "jimmie-ye:prenatal_2a_R2.fastq", 
+            "jimmie-ye:prenatal_2a_R1.fastq",
+            "jimmie-ye:prenatal_2a_R2.fastq",
             "jimmie-ye:prenatal_2a_R3.fastq",
             "jimmie-ye:prenatal_2a_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -113,7 +134,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -132,8 +160,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_2b_R1.fastq", 
-            "jimmie-ye:prenatal_2b_R2.fastq", 
+            "jimmie-ye:prenatal_2b_R1.fastq",
+            "jimmie-ye:prenatal_2b_R2.fastq",
             "jimmie-ye:prenatal_2b_R3.fastq",
             "jimmie-ye:prenatal_2b_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -142,7 +170,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -161,8 +196,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_2c_R1.fastq", 
-            "jimmie-ye:prenatal_2c_R2.fastq", 
+            "jimmie-ye:prenatal_2c_R1.fastq",
+            "jimmie-ye:prenatal_2c_R2.fastq",
             "jimmie-ye:prenatal_2c_R3.fastq",
             "jimmie-ye:prenatal_2c_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -171,7 +206,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -190,8 +232,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_3a_R1.fastq", 
-            "jimmie-ye:prenatal_3a_R2.fastq", 
+            "jimmie-ye:prenatal_3a_R1.fastq",
+            "jimmie-ye:prenatal_3a_R2.fastq",
             "jimmie-ye:prenatal_3a_R3.fastq",
             "jimmie-ye:prenatal_3a_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -200,7 +242,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -219,8 +268,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_3b_R1.fastq", 
-            "jimmie-ye:prenatal_3b_R2.fastq", 
+            "jimmie-ye:prenatal_3b_R1.fastq",
+            "jimmie-ye:prenatal_3b_R2.fastq",
             "jimmie-ye:prenatal_3b_R3.fastq",
             "jimmie-ye:prenatal_3b_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -229,7 +278,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -248,8 +304,8 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "jimmie-ye:prenatal_3c_R1.fastq", 
-            "jimmie-ye:prenatal_3c_R2.fastq", 
+            "jimmie-ye:prenatal_3c_R1.fastq",
+            "jimmie-ye:prenatal_3c_R2.fastq",
             "jimmie-ye:prenatal_3c_R3.fastq",
             "jimmie-ye:prenatal_3c_I1.fastq",
             "lattice:cellranger_atac_grch38_1.2.0"
@@ -258,7 +314,14 @@
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 45,
-        "analysis_step": "jimmie-ye:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac 1.2"
+        ]
     },
     {
         "aliases": [
@@ -277,19 +340,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_3a_R1.fastq", 
-            "peter-sims:sequence_3a_R2.fastq", 
+            "peter-sims:sequence_3a_R1.fastq",
+            "peter-sims:sequence_3a_R2.fastq",
             "peter-sims:sequence_3a_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "AACTAACA", "AAAGGACC", "AACTAATT", "AACTTTCA"
+            "AACTAACA",
+            "AAAGGACC",
+            "AACTAATT",
+            "AACTTTCA"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -307,19 +380,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_3b_R1.fastq", 
-            "peter-sims:sequence_3b_R2.fastq", 
-            "peter-sims:sequence_3b_I1.fastq", 
+            "peter-sims:sequence_3b_R1.fastq",
+            "peter-sims:sequence_3b_R2.fastq",
+            "peter-sims:sequence_3b_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "TTCTAACA", "TTAGGACC", "TTCTAATT", "TTCTTTCA"
+            "TTCTAACA",
+            "TTAGGACC",
+            "TTCTAATT",
+            "TTCTTTCA"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -338,19 +421,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_3c_R1.fastq", 
-            "peter-sims:sequence_3c_R2.fastq", 
+            "peter-sims:sequence_3c_R1.fastq",
+            "peter-sims:sequence_3c_R2.fastq",
             "peter-sims:sequence_3c_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "GGCTAACA", "GGAGGACC", "GGCTAATT", "GGCTTTCA"
+            "GGCTAACA",
+            "GGAGGACC",
+            "GGCTAATT",
+            "GGCTTTCA"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -369,19 +462,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_2a_R1.fastq", 
-            "peter-sims:sequence_2a_R2.fastq", 
+            "peter-sims:sequence_2a_R1.fastq",
+            "peter-sims:sequence_2a_R2.fastq",
             "peter-sims:sequence_2a_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "TAACAAGC", "TAACAATT", "TAACTTGG", "TATTAAGG"
+            "TAACAAGC",
+            "TAACAATT",
+            "TAACTTGG",
+            "TATTAAGG"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -400,19 +503,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_2b_R1.fastq", 
-            "peter-sims:sequence_2b_R2.fastq", 
+            "peter-sims:sequence_2b_R1.fastq",
+            "peter-sims:sequence_2b_R2.fastq",
             "peter-sims:sequence_2b_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "GGACAAGG", "GGACAATT", "GGACTTGG", "GGTTAAGG"
+            "GGACAAGG",
+            "GGACAATT",
+            "GGACTTGG",
+            "GGTTAAGG"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -431,19 +544,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_2c_R1.fastq", 
-            "peter-sims:sequence_2c_R2.fastq", 
+            "peter-sims:sequence_2c_R1.fastq",
+            "peter-sims:sequence_2c_R2.fastq",
             "peter-sims:sequence_2c_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "TTACAAGG", "TTACAATT", "TTACTTGG", "TTTTAAGG"
+            "TTACAAGG",
+            "TTACAATT",
+            "TTACTTGG",
+            "TTTTAAGG"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -462,19 +585,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_1a_R1.fastq", 
-            "peter-sims:sequence_1a_R2.fastq", 
+            "peter-sims:sequence_1a_R1.fastq",
+            "peter-sims:sequence_1a_R2.fastq",
             "peter-sims:sequence_1a_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "TTATTCGA", "TTGTCCTG", "TTGTCCAA", "TTGTCCGG"
+            "TTATTCGA",
+            "TTGTCCTG",
+            "TTGTCCAA",
+            "TTGTCCGG"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -493,19 +626,29 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_1b_R1.fastq", 
-            "peter-sims:sequence_1b_R2.fastq", 
+            "peter-sims:sequence_1b_R1.fastq",
+            "peter-sims:sequence_1b_R2.fastq",
             "peter-sims:sequence_1b_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "AAATTCGA", "AAGTCCTG", "AAGTCCAA", "AAGTCCTT"
+            "AAATTCGA",
+            "AAGTCCTG",
+            "AAGTCCAA",
+            "AAGTCCTT"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     },
     {
         "aliases": [
@@ -524,18 +667,28 @@
             "genomic alignments"
         ],
         "derived_from": [
-            "peter-sims:sequence_1c_R1.fastq", 
-            "peter-sims:sequence_1c_R2.fastq", 
+            "peter-sims:sequence_1c_R1.fastq",
+            "peter-sims:sequence_1c_R2.fastq",
             "peter-sims:sequence_1c_I1.fastq",
             "lattice:cellranger_2020-A"
         ],
         "mapped_run_type": "single-ended",
         "sample_barcodes": [
-            "GGATTCGA", "GGGTCCTG", "GGGTCCAA", "GGGTCCTT"
+            "GGATTCGA",
+            "GGGTCCTG",
+            "GGGTCCAA",
+            "GGGTCCTT"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
         "mapped_read_length": 98,
-        "analysis_step": "peter-sims:alignment-count-step"
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-count 4.0"
+        ]
     }
 ]

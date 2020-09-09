@@ -97,18 +97,6 @@ class Treatment(Item):
 
 
 @collection(
-    name='analysis_step',
-    properties={
-        'title': 'Analysis Steps',
-        'description': 'Listing of Analysis Steps',
-    })
-class AnalysisStep(Item):
-    item_type = 'analysis_step'
-    schema = load_schema('encoded:schemas/analysis_step.json')
-    embedded = []
-
-
-@collection(
     name='documents',
     properties={
         'title': 'Documents',
@@ -139,53 +127,3 @@ class Publication(Item):
         if properties.get('identifiers'):
             keys.setdefault('alias', []).extend(properties['identifiers'])
         return keys
-
-
-@collection(
-    name='software',
-    unique_key='software:name',
-    properties={
-        'title': 'Software',
-        'description': 'Software pages',
-    })
-class Software(Item):
-    item_type = 'software'
-    schema = load_schema('encoded:schemas/software.json')
-    name_key = 'name'
-    embedded = [
-        'references',
-        'versions'
-    ]
-    rev = {
-        'versions': ('SoftwareVersion', 'software')
-    }
-
-    @calculated_property(schema={
-        "title": "Versions",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "SoftwareVersion",
-        },
-    })
-    def versions(self, request, versions):
-        return paths_filtered_by_status(request, versions)
-
-
-@collection(
-    name='software-versions',
-    properties={
-        'title': 'Software version',
-        'description': 'Software version pages',
-    })
-class SoftwareVersion(Item):
-    item_type = 'software_version'
-    schema = load_schema('encoded:schemas/software_version.json')
-    embedded = ['software', 'software.references']
-
-    def __ac_local_roles__(self):
-        # Use lab/award from parent software object for access control.
-        properties = self.upgrade_properties()
-        root = find_root(self)
-        software = root.get_by_uuid(properties['software'])
-        return software.__ac_local_roles__()
