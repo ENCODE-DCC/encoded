@@ -263,6 +263,45 @@ class Experiment(Dataset,
         if len(protein_tags) > 0:
             return protein_tags
 
+    @calculated_property(schema={
+        "title": "Life stage and age summary",
+        "description": "Life stage and age display summary to be used for the mouse development matrix.",
+        "type": "string",
+        "notSubmittable": True,
+    })
+    def life_stage_age(self, request, replicates=None):
+        biosample_accessions = set()
+        all_life_stage = set()
+        all_age_display = set()
+        life_stage_age = ''
+        if replicates is not None:
+            for rep in replicates:
+                replicateObject = request.embed(rep, '@@object?skip_calculated=true')
+                if replicateObject['status'] == 'deleted':
+                    continue
+                if 'library' in replicateObject:
+                    libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                    if libraryObject['status'] == 'deleted':
+                        continue
+                    if 'biosample' in libraryObject:
+                        biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                        if biosampleObject['status'] == 'deleted':
+                            continue
+                        if biosampleObject['accession'] not in biosample_accessions:
+                            biosample_accessions.add(biosampleObject['accession'])
+
+                            life_stage = biosampleObject.get('life_stage')
+                            if life_stage:
+                                all_life_stage.add(life_stage)
+
+                            age_display = biosampleObject.get('age_display')
+                            if age_display:
+                                all_age_display.add(age_display)
+
+        if len(all_life_stage) == 1 and len(all_age_display) == 1:
+            life_stage_age = ''.join(all_life_stage) + ' ' + ''.join(all_age_display)
+            return life_stage_age
+
     # Don't specify schema as this just overwrites the existing value
     @calculated_property(condition='analyses')
     def analyses(self, request, analyses):
