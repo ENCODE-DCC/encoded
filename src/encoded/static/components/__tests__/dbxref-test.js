@@ -761,40 +761,39 @@ describe('Test individual dbxref types', () => {
         });
     });
 
-    describe('Test SCREEN', () => {
-        let dbxLinksHumanExperiment;
-        let dbxLinksMouseExperiment;
+    describe('Test SCREEN-GRCh38', () => {
+        let dbxLinks;
 
         beforeAll(() => {
-            const contextHumanExperiment = { '@type': ['Experiment'], organism: { scientific_name: 'Homo sapiens' } };
-            const contextMouseExperiment = { '@type': ['Experiment'], organism: { scientific_name: 'Mus musculus' } };
-            const wrapperHumanExperiment = mount(
-                <DbxrefList
-                    context={contextHumanExperiment}
-                    dbxrefs={['SCREEN:T-cell_donor_ENCDO685OXD', 'SCREEN:iPS_DF_4.7_male_newborn']}
-                />
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['SCREEN-GRCh38:T-cell_donor_ENCDO685OXD', 'SCREEN-GRCh38:iPS_DF_4.7_male_newborn']}/>
             );
-            const wrapperMouseExperiment = mount(
-                <DbxrefList
-                    context={contextMouseExperiment}
-                    dbxrefs={['SCREEN:C57BL/6_liver_embryo_16.5_days', 'SCREEN:M.spretus_x_C57BL/6J_Patski']}
-                />
-            );
-
-            dbxLinksHumanExperiment = wrapperHumanExperiment.find('a');
-            dbxLinksMouseExperiment = wrapperMouseExperiment.find('a');
+            dbxLinks = wrapper.find('a');
         });
 
         it('has the correct links for Human experiments', () => {
-            expect(dbxLinksHumanExperiment.length).toBe(2);
-            expect(dbxLinksHumanExperiment.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=T-cell_donor_ENCDO685OXD&assembly=GRCh38');
-            expect(dbxLinksHumanExperiment.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=iPS_DF_4.7_male_newborn&assembly=GRCh38');
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=T-cell_donor_ENCDO685OXD&assembly=GRCh38');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=iPS_DF_4.7_male_newborn&assembly=GRCh38');
+        });
+    });
+
+    describe('Test SCREEN-mm10', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['SCREEN-mm10:C57BL/6_liver_embryo_16.5_days', 'SCREEN-mm10:M.spretus_x_C57BL/6J_Patski']}/>
+            );
+            dbxLinks = wrapper.find('a');
         });
 
         it('has the correct links for Mouse experiments', () => {
-            expect(dbxLinksMouseExperiment.length).toBe(2);
-            expect(dbxLinksMouseExperiment.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=C57BL/6_liver_embryo_16.5_days&assembly=mm10');
-            expect(dbxLinksMouseExperiment.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=M.spretus_x_C57BL/6J_Patski&assembly=mm10');
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=C57BL/6_liver_embryo_16.5_days&assembly=mm10');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=M.spretus_x_C57BL/6J_Patski&assembly=mm10');
         });
     });
 });

@@ -26,6 +26,5 @@
     "WBbt": "http://purl.obolibrary.org/obo/WBbt_",
     "NTR": "https://www.encodeproject.org/NTR:",
     "GO": "http://purl.obolibrary.org/obo/GO_",
-    "SO": "http://purl.obolibrary.org/obo/SO_",
-    "SCREEN": "https://screen.encodeproject.org/search?q="
+    "SO": "http://purl.obolibrary.org/obo/SO_"
 }

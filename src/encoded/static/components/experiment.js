@@ -349,6 +349,25 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         }
     }
 
+    // Collect all dbxrefs. Filter out SCREEN and Factorbook in separate arrays. Only the first SCREEN and Factorbook dbxref will be displayed.
+    const dbxrefs = context.dbxrefs && context.dbxrefs.length > 0 ? context.dbxrefs : [];
+    let dbxrefsDifference = [];
+    const dbxrefsScreenDisplay = [];
+    const dbxrefsFactorbookDisplay = [];
+    const dbxrefsScreen = dbxrefs.filter(screen => screen.startsWith('SCREEN'));
+    const dbxrefsFactorbook = dbxrefs.filter(factorbook => factorbook.startsWith('FactorBook'));
+    if (dbxrefsScreen.length > 0) {
+        dbxrefsScreenDisplay.push(dbxrefsScreen[0]);
+    }
+    if (dbxrefsFactorbook.length > 0) {
+        dbxrefsFactorbookDisplay.push(dbxrefsFactorbook[0]);
+    }
+    const dbxrefsCombined = [...dbxrefsScreen, ...dbxrefsFactorbook];
+    if (dbxrefsCombined.length > 0) {
+        dbxrefsDifference = dbxrefs.filter(x => !dbxrefsCombined.includes(x));
+    }
+
+
     // Collect all documents from the experiment itself.
     const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
 
@@ -775,10 +794,17 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <dd>{context.award.project}</dd>
                             </div>
 
-                            {context.dbxrefs.length > 0 ?
+                            {dbxrefsCombined.length === 0 && dbxrefs.length > 0 ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                                    <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
+                                </div>
+                            : null}
+
+                            {dbxrefsDifference.length > 0 ?
+                                <div data-test="external-resources-filtered">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList context={context} dbxrefs={dbxrefsDifference} /></dd>
                                 </div>
                             : null}
 
@@ -834,6 +860,26 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div className="tag-badges" data-test="tags">
                                     <dt>Tags</dt>
                                     <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
+                                </div>
+                            : null}
+
+                            {dbxrefsCombined.length > 0 ?
+                                <div className="panel__split-heading panel__split-heading--experiment">
+                                    <h4>Encyclopedia Integration</h4>
+                                </div>
+                            : null}
+
+                            {dbxrefsScreen.length > 0 ?
+                                <div data-test="external-resources-screen">
+                                    <dt>Registry of cCREs</dt>
+                                    <dd><DbxrefList context={context} dbxrefs={dbxrefsScreenDisplay} title={'view regulatory elements in this cell type on SCREEN'} /></dd>
+                                </div>
+                            : null}
+
+                            {dbxrefsFactorbook.length > 0 ?
+                                <div data-test="external-resources-factorbook">
+                                    <dt>Factorbook</dt>
+                                    <dd><DbxrefList context={context} dbxrefs={dbxrefsFactorbookDisplay} title={'view motifs and integrative analysis'} /></dd>
                                 </div>
                             : null}
                         </dl>
