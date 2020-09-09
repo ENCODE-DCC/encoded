@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 10
 
-* A combination of method *CRISPR* with the category of *mutagenesis* and purpose *characterization* may be submitted to describe a genetic modificaiton.
+* A combination of method *CRISPR* with the category of *mutagenesis* and purpose *characterization* may be submitted to describe a genetic modification.
 
 ### Schema version 10
 
