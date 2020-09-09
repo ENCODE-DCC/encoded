@@ -310,8 +310,8 @@
         "award.name": {
             "title": "Award"
         },
-        "analysis_step": {
-            "title": "Analysis step"
+        "software": {
+            "title": "Software"
         },
         "submitter_comment": {
             "title": "Submitter comment"
