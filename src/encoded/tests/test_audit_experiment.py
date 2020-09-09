@@ -3890,14 +3890,17 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
         {'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']]}
     )
     res = testapp.get(ATAC_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'low alignment rate' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'poor library complexity' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'mild to moderate bottlenecking' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'severe bottlenecking' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'moderate TSS enrichment' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'extremely low read depth' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'no peaks in nucleosome-free regions' for error in collect_audit_errors(res))
-    assert any(error['category'] == 'low FRiP score' for error in collect_audit_errors(res))
+    audit_errors = collect_audit_errors(res)
+    assert any(error['category'] == 'low alignment rate' for error in audit_errors)
+    assert any(error['category'] == 'poor library complexity' for error in audit_errors)
+    assert any(error['category'] == 'mild to moderate bottlenecking' for error in audit_errors)
+    assert any(error['category'] == 'severe bottlenecking' for error in audit_errors)
+    assert any(error['category'] == 'moderate TSS enrichment' for error in audit_errors)
+    assert any(error['category'] == 'extremely low read depth' for error in audit_errors)
+    assert any(error['category'] == 'no peaks in nucleosome-free regions' for error in audit_errors)
+    assert any(error['category'] == 'low FRiP score' for error in audit_errors)
+    assert any(error['category'] == 'negative RSC' for error in audit_errors)
+    assert any(error['category'] == 'negative NSC' for error in audit_errors)
 
     testapp.patch_json(atac_replication_quality_metric_borderline_replicate_concordance['@id'],
                         {'quality_metric_of': [file_bed_replicated_peaks_atac['@id']]})
@@ -3906,8 +3909,9 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     testapp.patch_json(replicate_ATAC_seq['@id'], {'experiment': ATAC_experiment_replicated['@id']})
     testapp.patch_json(file_fastq_1_atac['@id'], {'dataset': ATAC_experiment_replicated['@id']})
     res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
-    assert any(error['category'] == 'borderline replicate concordance' for error in collect_audit_errors(res2))
-    assert 'moderate number of reproducible peaks' not in collect_audit_errors(res2)
+    audit_errors2 = collect_audit_errors(res2)
+    assert any(error['category'] == 'borderline replicate concordance' for error in audit_errors2)
+    assert 'moderate number of reproducible peaks' not in audit_errors2
 
 
 def test_audit_experiment_analysis_files(

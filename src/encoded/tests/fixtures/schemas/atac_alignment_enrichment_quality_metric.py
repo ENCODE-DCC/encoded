@@ -11,7 +11,9 @@ def atac_align_enrich_quality_metric_med(testapp, award, encode_lab,
         "lab": encode_lab["uuid"],
         "assay_term_name": 'ATAC-seq',
         "quality_metric_of": [ATAC_bam['@id']],
-        "tss_enrichment": 6
+        "tss_enrichment": 6,
+        "RSC": -1.2,
+        "NSC": -0.2
     }
 
     return testapp.post_json('/atac_alignment_enrichment_quality_metric', item).json['@graph'][0]
