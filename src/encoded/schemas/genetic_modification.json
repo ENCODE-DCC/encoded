@@ -63,35 +63,69 @@
                     }
                 },
                 {
-                    "oneOf": [
+                    "anyOf": [
                         {
-                            "required": ["modified_site_by_target_id"]
-                        },
-                        {
-                            "required": ["modified_site_by_gene_id"]
-                        },
-                        {
-                            "required": ["modified_site_by_coordinates"]
-                        },
-                        {
-                            "required": ["modified_site_by_sequence"]
-                        },
-                        {
-                            "required": ["modified_site_nonspecific"]
-                        },
-                        {
+                            "oneOf": [
+                                {
+                                    "required": ["modified_site_by_target_id"]
+                                },
+                                {
+                                    "required": ["modified_site_by_gene_id"]
+                                },
+                                {
+                                    "required": ["modified_site_by_coordinates"]
+                                },
+                                {
+                                    "required": ["modified_site_by_sequence"]
+                                },
+                                {
+                                    "required": ["modified_site_nonspecific"]
+                                },
+                                {
+                                    "properties": {
+                                        "category": {
+                                            "enum": ["episome"]
+                                        }
+                                    }
+                                }
+                            ],
                             "properties": {
+                                "purpose": {
+                                        "enum": ["repression", "characterization"]
+                                }
+                            }
+                        },
+                        {
+                            "oneOf": [
+                                {
+                                    "required": ["modified_site_by_target_id"]
+                                },
+                                {
+                                    "required": ["modified_site_by_gene_id"]
+                                },
+                                {
+                                    "required": ["modified_site_by_coordinates"]
+                                },
+                                {
+                                    "required": ["modified_site_by_sequence"]
+                                },
+                                {
+                                    "required": ["modified_site_nonspecific"]
+                                }
+                            ],
+                            "properties": {
+                                "purpose": {
+                                    "enum": ["characterization"]
+                                },
                                 "category": {
-                                    "enum": ["episome"]
+                                    "enum": ["mutagenesis"]
+                                },
+                                "method": {
+                                    "enum": ["CRISPR"]
                                 }
                             }
                         }
-                    ],
-                    "properties": {
-                        "purpose": {
-                                "enum": ["repression", "characterization"]
-                        }
-                    }
+                    ]
                 },
                 {
                     "properties": {
@@ -353,12 +387,46 @@
                     }
                 },
                 {
-                    "required": ["treatments"],
-                    "properties": {
-                        "category": {
-                            "enum": ["mutagenesis"]
+                    "oneOf": [
+                        {
+                            "required": ["treatments"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["mutagenesis"]
+                                }
+                            }
+                        },
+                        {
+                            "oneOf": [
+                                {
+                                    "required": ["modified_site_by_target_id"]
+                                },
+                                {
+                                    "required": ["modified_site_by_gene_id"]
+                                },
+                                {
+                                    "required": ["modified_site_by_coordinates"]
+                                },
+                                {
+                                    "required": ["modified_site_by_sequence"]
+                                },
+                                {
+                                    "required": ["modified_site_nonspecific"]
+                                }
+                            ],
+                            "properties": {
+                                "category": {
+                                    "enum": ["mutagenesis"]
+                                },
+                                "purpose": {
+                                    "enum": ["characterization"]
+                                },
+                                "method": {
+                                    "enum": ["CRISPR"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
                     "properties": {

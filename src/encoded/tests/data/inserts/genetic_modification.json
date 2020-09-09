@@ -283,7 +283,6 @@
         "method": "CRISPR",
         "purpose": "characterization",
         "status": "released",
-        "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/",
         "uuid": "4d842fe1-7ae2-4d2c-a721-b9b934c16c3b",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
     },
@@ -363,5 +362,17 @@
         "purpose": "characterization",
         "status": "released",
         "submitted_by": "/users/85c75ed3-269b-4273-b4ba-e269ee350dd6/"
+    },
+    {
+        "accession": "ENCGM098CMC",
+        "uuid": "305e1d00-2a9d-432a-ab83-05339836ffc0",
+        "status": "released",
+        "lab": "/labs/kevin-white/",
+        "award": "/awards/U41HG007355/",
+        "category": "mutagenesis",
+        "purpose": "characterization",
+        "method": "CRISPR",
+        "modified_site_by_target_id": "/targets/CTCF-human/",
+        "submitted_by": "dignissim.euismod@amet.habitant"
     }
 ]
