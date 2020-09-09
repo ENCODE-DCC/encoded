@@ -32,6 +32,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
 def includeme(config):
+    config.include('.vis_igv')
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.scan(__name__)

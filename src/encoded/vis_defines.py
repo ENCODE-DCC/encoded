@@ -13,6 +13,7 @@ from urllib.parse import (
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
 from pkg_resources import resource_filename
+from .vis_igv import file_igv_viewable
 
 import logging
 
@@ -1689,7 +1690,7 @@ def browsers_available(
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
     browsers = set()
-    full_set = {'ucsc', 'ensembl', 'hic'}
+    full_set = {'ucsc', 'ensembl', 'hic', 'igv'}
     file_assemblies = None
     file_types = None
     if request is not None:
@@ -1711,6 +1712,8 @@ def browsers_available(
             file_assemblies = visualizable_assemblies(assemblies, files)
         if file_types is None:
             continue
+        if any(file_igv_viewable(obj) for obj in (files or []) if obj.get('assembly') == assembly):
+            browsers.add('IGV')
         if ('ucsc' not in browsers
                 and 'ucsc_assembly' in mapped_assembly.keys()
                 and not BROWSER_FILE_TYPES['ucsc'].isdisjoint(file_types)):

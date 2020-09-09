@@ -81,6 +81,7 @@ const ASSEMBLY_DETAILS = {
  * File types allowed for each browser.
  */
 const browserFileTypes = {
+    IGV: [],
     UCSC: [],
     Ensembl: ['bigWig', 'bigBed'],
     hic: ['hic'],
@@ -100,6 +101,12 @@ const browserFileTypes = {
 export const visOpenBrowser = (dataset, browser, assembly, files, datasetUrl) => {
     let href;
     switch (browser) {
+    case 'IGV': {
+        const ucscAssembly = (ASSEMBLY_DETAILS[assembly] || {}).ucsc_assembly || assembly;
+        const sessionURL = `${datasetUrl}@@igv.json?assembly=${encodeURIComponent(ucscAssembly)}`;
+        href=`https://igv.org/app/?sessionURL=${encodeURIComponent(sessionURL)}`;
+        break;
+    }
     case 'UCSC': {
         // UCSC does not use `files` under any circumstances.
         const ucscAssembly = ASSEMBLY_DETAILS[assembly].ucsc_assembly;
@@ -192,6 +199,7 @@ const browserOrder = [
     'UCSC',
     'hic',
     'Ensembl',
+    'IGV',
 ];
 
 
