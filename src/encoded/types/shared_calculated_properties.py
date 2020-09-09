@@ -312,7 +312,9 @@ class CalculatedAssayTitle:
         if assay_term_id in registry['ontology']:
             preferred_name = registry['ontology'][assay_term_id].get('preferred_name',
                                                                      assay_term_name)
-            if preferred_name == 'ChIP-seq':
+            if preferred_name == 'RNA-seq':
+                preferred_name = 'total RNA-seq'
+            elif preferred_name == 'ChIP-seq':
                 preferred_name = 'Control ChIP-seq'
                 if not control_type and target is not None:
                     target_object = request.embed(target,'@@object')

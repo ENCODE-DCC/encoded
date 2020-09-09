@@ -3989,7 +3989,7 @@ def audit_RNA_library_RIN(value, system, excluded_types):
                  'OBI:0001463', # RNA microarray
                  'OBI:0001850', # RNA-PET
                  'OBI:0001271', # RNA-seq (total)
-                 'OBI:0001271', # small RNA-seq
+                 'OBI:0002112', # small RNA-seq
                  'OBI:0002571', # polyA plus RNA-seq
                  'OBI:0002572', # polyA minus RNA-seq
                  'NTR:0000762', # shRNA RNA-seq
