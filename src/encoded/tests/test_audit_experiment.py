@@ -1518,6 +1518,33 @@ def test_audit_experiment_chip_seq_standards_library_complexity_encode4_wcontrol
                'poor library complexity' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_chip_seq_standards_rsc_nsc(testapp,
+                                                   experiment_chip_H3K27me3,
+                                                   experiment_mint_chip,
+                                                   file_bam_1_chip,
+                                                   chip_align_enrich_quality_metric,
+                                                   analysis_step_run_chip_encode4,
+                                                   analysis_step_version_chip_encode4,
+                                                   analysis_step_chip_encode4,
+                                                   pipeline_chip_encode4,
+                                                   replicate_1_mint_chip):
+    testapp.patch_json(file_bam_1_chip['@id'], {'step_run': analysis_step_run_chip_encode4['@id']})
+    res = testapp.get(experiment_chip_H3K27me3['@id'] + '@@index-data')
+    audit_errors = collect_audit_errors(res)
+    assert any(error['category'] ==
+               'negative NSC' for error in audit_errors)
+    assert all(error['category'] !=
+               'negative RSC' for error in audit_errors)
+
+    testapp.patch_json(file_bam_1_chip['@id'], {'dataset': experiment_mint_chip['@id']})
+    res = testapp.get(experiment_mint_chip['@id'] + '@@index-data')
+    audit_errors = collect_audit_errors(res)
+    assert any(error['category'] ==
+               'negative NSC' for error in audit_errors)
+    assert all(error['category'] !=
+               'negative RSC' for error in audit_errors)
+
+
 def test_audit_experiment_chip_seq_standards_idr_encode4_wcontrol(testapp,
                                                    experiment_chip_H3K27me3,
                                                    experiment_mint_chip,
