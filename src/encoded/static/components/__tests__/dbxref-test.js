@@ -785,15 +785,15 @@ describe('Test individual dbxref types', () => {
         beforeAll(() => {
             const context = { '@type': ['Experiment'] };
             const wrapper = mount(
-                <DbxrefList context={context} dbxrefs={['SCREEN-mm10:C57BL/6_liver_embryo_16.5_days', 'SCREEN-mm10:M.spretus_x_C57BL/6J_Patski']}/>
+                <DbxrefList context={context} dbxrefs={['SCREEN-mm10:C3H_C2C12', 'SCREEN-mm10:CD-1_c-Kit-negative_CD71-positive_TER-119-positive_erythroid_progenitor_cells_male_embryo_14.5_days']} />
             );
             dbxLinks = wrapper.find('a');
         });
 
         it('has the correct links for Mouse experiments', () => {
             expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=C57BL/6_liver_embryo_16.5_days&assembly=mm10');
-            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=M.spretus_x_C57BL/6J_Patski&assembly=mm10');
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=C3H_C2C12&assembly=mm10');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=CD-1_c-Kit-negative_CD71-positive_TER-119-positive_erythroid_progenitor_cells_male_embryo_14.5_days&assembly=mm10');
         });
     });
 });
