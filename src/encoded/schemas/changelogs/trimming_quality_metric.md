@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 8
 
+* Added *total_read_pairs_processed*, *read_1_with_adapter*, *read_2_with_adapter* as properties 
 * *quality_metric_of* was set to have a minimum of 1.
 * Added *SPRITE-IP* to *assay_term_name* enum
 
