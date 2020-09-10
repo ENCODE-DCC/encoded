@@ -289,15 +289,13 @@ class Experiment(Dataset,
                             continue
                         if biosampleObject['accession'] not in biosample_accessions:
                             biosample_accessions.add(biosampleObject['accession'])
-
                             life_stage = biosampleObject.get('life_stage')
                             if life_stage:
                                 all_life_stage.add(life_stage)
-
                             age_display = biosampleObject.get('age_display')
                             if age_display:
                                 all_age_display.add(age_display)
-
+        # Only return life_stage_age if all biosamples have the same life_stage and age_display
         if len(all_life_stage) == 1 and len(all_age_display) == 1:
             life_stage_age = ''.join(all_life_stage) + ' ' + ''.join(all_age_display)
             return life_stage_age
