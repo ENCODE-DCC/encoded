@@ -1673,16 +1673,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
         lib = rep.get('library')
         if lib is None:
             continue
-
-        if 'size_range' in lib:
-            size_range = lib.get('size_range')
-            if size_range != '>200':
-                continue
-        elif 'average_fragment_size' in lib:
-            size_range = lib.get('average_fragment_size')
-            if size_range <= 200:
-                continue
-        else:
+        if check_library_for_long_fragments(lib) is False:
             continue
 
         ercc_flag = False
@@ -3624,17 +3615,8 @@ def audit_experiment_spikeins(value, system, excluded_types):
         if lib is None:
             continue
 
-        if 'size_range' in lib:
-            size_range = lib.get('size_range')
-            if size_range != '>200':
-                continue
-        elif 'average_fragment_size' in lib:
-            size_range = lib.get('average_fragment_size')
-            if size_range <= 200:
-                continue
-        else:
+        if check_library_for_long_fragments(lib) is False:
             continue
-
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
             detail = ('Library {} is in '
@@ -3646,6 +3628,23 @@ def audit_experiment_spikeins(value, system, excluded_types):
             yield AuditFailure('missing spikeins', detail, level='NOT_COMPLIANT')
             # Informational if ENCODE2 and release error if ENCODE3
     return
+
+
+def check_library_for_long_fragments(library):
+    if 'size_range' in library:
+        size_range = library.get('size_range')
+        if size_range != '>200':
+            return False
+        else:
+            return True
+    elif 'average_fragment_size' in library:
+        size_range = library.get('average_fragment_size')
+        if size_range <= 200:
+            return False
+        else:
+            return True
+    else:
+        return False
 
 
 def audit_experiment_biosample_term(value, system, excluded_types):

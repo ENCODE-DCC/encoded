@@ -4009,6 +4009,7 @@ def test_audit_experiment_average_fragment_size(testapp, base_experiment, base_r
     testapp.patch_json(base_library['@id'], {'average_fragment_size': 220})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
+    res_errors = collect_audit_errors(res)
     assert any(error['category'] == 'missing spikeins'
-               for error in collect_audit_errors(res))
-    assert 'missing RNA fragment size' not in collect_audit_errors(res)
+               for error in res_errors)
+    assert 'missing RNA fragment size' not in res_errors
