@@ -210,7 +210,6 @@ Navigation.childContextTypes = {
 
 // Main navigation menus
 const GlobalSections = (props, context) => {
-    const glossary = require('./glossary/glossary.json');
     const actions = context.listActionsFor('global_sections').map(action =>
         <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} >
             {action.children ?
@@ -219,28 +218,6 @@ const GlobalSections = (props, context) => {
                         // Render any separators in the dropdown
                         if (childAction.id.substring(0, 4) === 'sep-') {
                             return <DropdownMenuSep key={childAction.id} />;
-                        }
-                        const glossaryMatch = glossary.find(def => def.term === childAction.title);
-                        if (glossaryMatch) {
-                            return (
-                                <div
-                                    key={childAction.id}
-                                    className={`${childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'} ${childAction.url ? 'hoverable' : ''}`}
-                                >
-                                    <a href={childAction.url || ''}>
-                                        {childAction.title}
-                                    </a>
-                                    <Tooltip
-                                        trigger={<i className="icon icon-question-circle" />}
-                                        tooltipId={childAction.id}
-                                        timerFlag={false}
-                                        innerCss={`menu-tooltip ${childAction.tag ? 'sub-menu' : ''}`}
-                                        relativeTooltipFlag
-                                    >
-                                        {glossaryMatch.definition}
-                                    </Tooltip>
-                                </div>
-                            );
                         }
                         // Render any regular linked items in the dropdown
                         return (
