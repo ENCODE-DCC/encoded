@@ -15,12 +15,12 @@ Feature: Portal pages
         When I visit "/pages/"
         And I wait for the content to load
         And I press "Add"
-        And I wait for 20 seconds
+        And I wait for 10 seconds
         And I wait for the form to fully load
         And I fill in "name" with "test"
         And I fill in "title" with "Test"
         And I press "Save"
-        And I wait for 30 seconds
+        And I wait for 10 seconds
         And I wait for the content to load
         Then the browser's URL should contain "/test/"
         And the title should contain the text "Test"

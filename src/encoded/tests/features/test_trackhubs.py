@@ -3,6 +3,7 @@ import pytest
 
 pytestmark = [
     pytest.mark.bdd,
+    pytest.mark.usefixtures('index_workbook'),
 ]
 
 

@@ -6,13 +6,12 @@ Feature: Edit forms
         And I wait for the content to load
         And I click the element with the css selector ".icon-gear"
         And I click the link to "/antibodies/ENCAB728YTO/#!edit"
-        And I wait for the content to load
         And I wait for 20 seconds
         And I wait for an element with the css selector "form.rf-Form" to load
         Then I should see an element with the css selector "form.rf-Form"
         When I fill in "antigen_description" with "It's not a very nice antigen"
         And I press "save"
-        And I wait for 30 seconds
+        And I wait for 10 seconds
         And I wait for the content to load
         Then I should see "It's not a very nice antigen"
 
@@ -27,7 +26,7 @@ Feature: Edit forms
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
         When I press "ENCODE"
         And I accept the alert
-        And I wait for 20 seconds
+        And I wait for 10 seconds
 
     Scenario: Validation errors are shown in context
         When I visit "/antibodies/ENCAB728YTO/#!edit"
