@@ -14,6 +14,7 @@ import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
+import urlList from './url';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingDatasets, DatasetTable } from './typeutils';
@@ -464,6 +465,9 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
 
+    // Make a list of url links, if any.
+    const urls = urlList(context.urls);
+
     return (
         <div className={itemClass}>
             <header>
@@ -526,6 +530,13 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <div data-test="references">
                                     <dt>References</dt>
                                     <dd>{references}</dd>
+                                </div>
+                            : null}
+
+                            {urls ?
+                                <div data-test="urls">
+                                    <dt>URLs</dt>
+                                    <dd>{urls}</dd>
                                 </div>
                             : null}
 
