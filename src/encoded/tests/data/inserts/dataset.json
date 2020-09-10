@@ -34,7 +34,7 @@
         ],
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
-        "status": "released",
+        "status": "in progress",
         "references": [
             "lattice:Ye_Chen_2018_atac"
         ],
@@ -67,6 +67,31 @@
         ],
         "urls": [
             "https://data.humancellatlas.org/explore/projects/4a95101c-9ffc-4f30-a809-f04518a23803"
+        ],
+        "submitter_comment": "Test submitter_comment",
+        "notes": "Test notes"
+    },
+    {
+        "aliases": [
+            "anindita-basu:scRNAseq_test_dataset_deleted"
+        ],
+        "accession": "ENCSR800DDD",
+        "uuid": "dc46b067-d401-40d8-bce5-1f76e56f13e2",
+        "description": "A deleted test dataset",
+        "award": "CZI025LYN",
+        "dbxrefs": [
+            "SRA:SRP1232525", "GEO:GSE1278080"
+        ],
+        "submitted_by": "jychien@stanford.edu",
+        "date_released": "2020-08-07",
+        "status": "deleted",
+        "corresponding_contributor": "netus.lorem@risus.lobortis",
+        "internal_contact": "netus.lorem@risus.lobortis",
+        "references": [
+            "474461bd-943e-4514-92a7-e268390eef53"
+        ],
+        "urls": [
+            "https://data.humancellatlas.org/explore/projects/a29952d9-925e-40f4-8a1c-274f118f1f51"
         ],
         "submitter_comment": "Test submitter_comment",
         "notes": "Test notes"

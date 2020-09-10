@@ -3,6 +3,7 @@
         "aliases": [
             "anna-greka:organoid_treatment"
         ],
+        "status": "released",
         "uuid": "e3f51e3e-a521-4c7e-bbcb-c090f8b233da",
         "amount": 100,
         "amount_units": "mg",
@@ -18,6 +19,7 @@
         "aliases": [
             "jimmie-ye:FGF7_media"
         ],
+        "status": "in progress",
         "uuid": "cb39e0f6-67b3-4841-b824-15e1cc1acf1e",
         "amount": 50,
         "amount_units": "mg",
@@ -31,6 +33,7 @@
         "aliases": [
             "jimmie-ye:VEGF_stimulation"
         ],
+        "status": "in progress",
         "uuid": "972668da-d0fd-4942-80dd-aba62c16f5a6",
         "amount": 100,
         "amount_units": "mg",
@@ -45,6 +48,7 @@
         "aliases": [
             "lattice:insulin"
         ],
+        "status": "released",
         "treatment_term_id": "CHEBI:145810",
         "treatment_term_name": "insulin",
         "treatment_type": "chemical",

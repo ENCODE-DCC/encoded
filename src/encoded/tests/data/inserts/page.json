@@ -2,7 +2,7 @@
     {
         "name": "homepage",
         "title": "The ENCODE Project",
-        "status": "released",
+        "status": "deleted",
         "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
         "layout": {
             "rows": [
@@ -57,6 +57,108 @@
                     "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
                     "body": "<h2>Chromatin Structure</h2>",
                     "href": "/about/chromatin-structure"
+                }
+            ]
+        }
+    },
+    {
+        "name": "lattice_data",
+        "title": "Lattice Data Coordination Center",
+        "status": "released",
+        "uuid": "665af04c-c5eb-47d2-a00d-da5b8377d642",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block2"
+                            ]
+                        },
+                        {
+                            "blocks": [
+                                "#block3"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<div class=\"project-info site-title\">\n    <h1>Lattice: Data Coordination Center</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n \n</div>"
+                },
+                {
+                    "@id": "#block2",
+                    "@type": "richtextblock",
+                    "body": "<h2>scRNAseq</h2>\n<p>10x and SS2 scRNAseq data</p>"
+                },
+                {
+                    "@id": "#block3",
+                    "@type": "teaserblock",
+                    "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
+                    "body": "<h2>scATACseq</h2>",
+                    "href": "/about/chromatin-structure"
+                }
+            ]
+        }
+    },
+    {
+        "name": "lattice_release",
+        "title": "Lattice Data Release",
+        "status": "in progress",
+        "uuid": "d3bf2abf-8fc4-4266-8454-df962879b8de",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block2"
+                            ]
+                        },
+                        {
+                            "blocks": [
+                                "#block3"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<div class=\"project-info site-title\">\n    <h1>Lattice: Data Release</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n \n</div>"
+                },
+                {
+                    "@id": "#block2",
+                    "@type": "richtextblock",
+                    "body": "<h2>scRNAseq</h2>\n<p>10 datasets</p>"
+                },
+                {
+                    "@id": "#block3",
+                    "@type": "richtextblock",
+                    "body": "<h2>scATACseq</h2>\n<p>5 datasets</p>"
                 }
             ]
         }

@@ -23,7 +23,6 @@
         "name": "CZI021IMM",
         "uuid": "139522ee-4116-43cc-9b04-6d0900aa41d5",
         "principal_investigators": [
-            "netus.lorem@risus.lobortis",
             "jimmie.ye@ucsf.ude"
         ],
         "project": "HCA Seed Networks",
@@ -45,13 +44,30 @@
             "pas2182@columbia.ude"
         ],
         "project": "HCA Seed Networks",
-        "status": "current",
+        "status": "disabled",
         "title": "A Reference Cell Atlas of Human Liver Diversity Over a Lifespan",
         "url": "https://chanzuckerberg.com/science/programs-resources/humancellatlas/seednetworks/a-reference-cell-atlas-of-human-liver-diversity-over-a-lifespan/",
         "viewing_groups": [
-            "CZI003CNS"
+            "CZI004LIV"
         ],
         "CZI_project_identifier": "HCA-A-1704-01668",
         "focus": "multi-organ"
+    },
+    {
+        "description": "To identify methods of cell and nuclei isolation that are robust across three tissue storage conditions and a number of tissues, with expression changes between storage conditions and processing for single-cells versus single-nuclei.",
+        "name": "CZI025LYN",
+        "uuid": "86e0216c-76a6-40f0-8050-be3a9eba6b30",
+        "principal_investigators": [
+            "netus.lorem@risus.lobortis"
+        ],
+        "project": "HCA Seed Networks",
+        "status": "deleted",
+        "title": "Developing Robust Methods to Process Solid Tissues for Single-Cell RNA-sequencing",
+        "url": "https://chanzuckerberg.com/human-cell-atlas/developing-robust-methods-to-process-solid-tissues-for-single-cell-rna-sequencing/",
+        "viewing_groups": [
+            "CZI025LYN"
+        ],
+        "CZI_project_identifier": "CZF2019-002445",
+        "focus": "skin" 
     }
 ]

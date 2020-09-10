@@ -3,6 +3,7 @@
         "aliases": [
             "jimmie-ye:SAEC_Stam_protocol"
         ],
+        "status": "in progress",
         "attachment": "SAEC_Stam_protocol.pdf",
         "document_type": "extraction protocol",
         "status": "released",
@@ -13,6 +14,7 @@
         "aliases": [
             "anna-greka:LID48879"
         ],
+        "status": "released",
         "attachment": "LID48879.pdf",
         "document_type": "other",
         "references": [
@@ -25,6 +27,7 @@
         "aliases": [
             "anna-greka:mouse.wgEncodeSydhHist"
         ],
+        "status": "released",
         "attachment": "mouse.wgEncodeSydhHist.txt",
         "references": [
             "lattice:Greka_Clark_2019_large_dataset"
@@ -37,6 +40,7 @@
         "aliases": [
             "anna-greka:SAEC_Stam_protocol"
         ],
+        "status": "released",
         "attachment": "SAEC_Stam_protocol.pdf",
         "references": [
             "lattice:Greka_Clark_2019_large_dataset"
@@ -49,6 +53,7 @@
         "aliases": [
             "anna-greka:diffProtB_6hr_protocol"
         ],
+        "status": "released",
         "attachment": "diffProtB_6hr_protocol.txt",
         "references": [
             "lattice:Greka_Clark_2019_large_dataset"
@@ -61,6 +66,7 @@
         "aliases": [
             "anna-greka:C2C12_Wold_protocol"
         ],
+        "status": "released",
         "attachment": "C2C12_Wold_protocol.pdf",
         "references": [
             "lattice:Greka_Clark_2019_large_dataset"

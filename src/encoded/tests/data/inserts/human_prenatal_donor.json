@@ -4,6 +4,7 @@
         "aliases": [
             "anna-greka:fetal_human_donorC"
         ],
+        "status": "released",
         "uuid": "10425743-5139-4045-ab9c-94c2b41c78ce",
         "ethnicity": "HANCESTRO_0014",
         "sex": "female",
@@ -33,6 +34,7 @@
         "aliases": [
             "anna-greka:fetal_human_donorD"
         ],
+        "status": "released",
         "uuid": "2dbf248e-aea9-4092-bbb7-940d85ac7695",
         "ethnicity": "HANCESTRO_0014",
         "sex": "male",
@@ -62,6 +64,7 @@
         "aliases": [
             "jimmie-ye:prenatal_donor1"
         ],
+        "status": "in progress",
         "description": "Prenatal donor1",
         "uuid": "c1ff41b6-e335-11ea-87d0-0242ac130003",
         "life_stage": "embryonic",
@@ -81,6 +84,7 @@
         "aliases": [
             "jimmie-ye:prenatal_donor2"
         ],
+        "status": "in progress",
         "description": "Prenatal donor2",
         "uuid": "cb0dd3d0-e335-11ea-87d0-0242ac130003",
         "life_stage": "embryonic",
@@ -119,6 +123,7 @@
     	"aliases": [
     		"peter-sims:prenatal_donor2"
     	],
+        "status": "released",
     	"description": "Prenatal donor2",
     	"uuid":"9037d8f8-db7b-11ea-87d0-0242ac130003",
     	"life_stage": "fetal",
@@ -145,6 +150,7 @@
     	"aliases": [
     		"peter-sims:prenatal_donor3"
     	],
+        "status": "released",
     	"description": "Prenatal donor3",
     	"uuid": "944ba348-db7b-11ea-87d0-0242ac130003",
     	"life_stage": "fetal",

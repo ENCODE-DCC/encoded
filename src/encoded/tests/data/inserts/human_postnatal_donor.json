@@ -5,6 +5,7 @@
         "aliases": [
             "anna-greka:adult_human_donorB"
         ],
+        "status": "released",
         "description": "Healthy kidney donorB",
         "ethnicity": "HANCESTRO_0014",
         "sex": "male",
@@ -42,6 +43,7 @@
         "aliases": [
             "anna-greka:adult_human_donorA"
         ],
+        "status": "released",
         "description": "Healthy kidney donorA",
         "ethnicity": "HANCESTRO_0022",
         "sex": "female",
@@ -79,6 +81,7 @@
         "aliases": [
             "peter-sims:postnatal_donor1"
         ],
+        "status": "released",
         "description":"Heart failure female",
         "age": "30",
         "age_units": "year",

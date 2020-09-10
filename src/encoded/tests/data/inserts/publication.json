@@ -11,6 +11,7 @@
         "identifiers": [
             "PMID:2314242"
         ],
+        "award": "CZI001KID",
         "volume": "88",
         "page": "55-57",
         "status": "released",
@@ -29,6 +30,7 @@
             "PMID:22955622",
             "PMCID:PMC3439133"
         ],
+        "award": "CZI021IMM",
         "volume": "234",
         "issue": "454",
         "page": "100-103",
@@ -40,6 +42,7 @@
         "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
         "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
         "journal": "Nature",
+        "award": "CZI004LIV",
         "publication_year": 2012,
         "identifiers": [
             "PMID:22955616",
@@ -64,6 +67,23 @@
         "identifiers": [
             "PMID:20150147"
         ],
+        "award": "CZI001KID",
         "authors": "Crawford GE"
+    },
+    {
+        "status": "deleted",
+        "abstract": "Tissue homeostasis relies on orchestrated multicellular circuits, where interactions between different cell types dynamically balance tissue function. While single-cell genomics identifies tissues’ cellular components, deciphering their coordinated action remains a major challenge. ",
+        "uuid": "474461bd-943e-4514-92a7-e268390eef53",
+        "title": "Mapping multicellular programs from single-cell profiles ",
+        "issue": "2",
+        "journal": "Biorxiv",
+        "page": "pdb.prot5384",
+        "volume": "2010",
+        "publication_year": 2020,
+        "identifiers": [
+            "PMID:20150888"
+        ],
+        "award": "CZI025LYN",
+        "authors": "Livnat Jerby-Arnon, Aviv Regev"
     }
 ]

@@ -4,6 +4,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorA1"
         ],
+		"status": "released",
         "uuid": "eb2ddc67-1d04-40f0-8a90-95668dbe1155",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -30,6 +31,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorA2"
         ],
+		"status": "released",
         "uuid": "c102572d-0739-452e-8a39-87f471e6bcbf",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -56,6 +58,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorB1"
         ],
+		"status": "released",
         "uuid": "bced415e-5044-40dc-8060-7635a3eed60d",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -82,6 +85,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorB2"
         ],
+		"status": "released",
         "uuid": "f6a4d2e9-ed8f-43f9-b8b9-9be0d45f5336",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -108,6 +112,7 @@
         "aliases": [
             "anna-greka:sc_library_donorA1"
         ],
+		"status": "released",
         "uuid": "e62e9215-929c-4943-b884-26aa98c25466",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -134,6 +139,7 @@
         "aliases": [
             "anna-greka:sc_library_donorA2"
         ],
+		"status": "released",
         "uuid": "776de032-0cd6-48e8-833e-8b4b554c792a",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -160,6 +166,7 @@
         "aliases": [
             "anna-greka:sc_library_donorB1"
         ],
+		"status": "released",
         "uuid": "d1a342a4-b024-4eca-bc7d-30e19c0f7504",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -186,6 +193,7 @@
         "aliases": [
             "anna-greka:sc_library_donorB2"
         ],
+		"status": "released",
         "uuid": "3044bcb5-c6cf-49d0-bce8-9b6f1734d421",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -212,6 +220,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorA1"
         ],
+		"status": "released",
         "uuid": "1e97aaeb-7c34-4b55-90cf-803501022fae",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -238,6 +247,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorA2"
         ],
+		"status": "released",
         "uuid": "2e68237b-f77d-4aa3-bb2f-4778aa2ac889",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -264,6 +274,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorB1"
         ],
+		"status": "released",
         "uuid": "d999d03e-2586-428e-8470-b4a5cb17ee66",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -290,6 +301,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorB2"
         ],
+		"status": "released",
         "uuid": "815c4081-7ed7-4a37-a8f0-bdd2cf7ab0d7",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -316,6 +328,7 @@
         "aliases": [
             "anna-greka:sc_library_donorC1a"
         ],
+		"status": "released",
         "uuid": "422976da-69b9-421a-9b80-995db49ddf00",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -342,6 +355,7 @@
         "aliases": [
             "anna-greka:sc_library_donorC1b"
         ],
+		"status": "released",
         "uuid": "419f9332-4003-4823-9446-fbd32e5653b7",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -368,6 +382,7 @@
         "aliases": [
             "anna-greka:sc_library_donorC2a"
         ],
+		"status": "released",
         "uuid": "1ccbbd68-8649-4ef0-bd51-fa7d57b9a7e0",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -394,6 +409,7 @@
         "aliases": [
             "anna-greka:sc_library_donorC2b"
         ],
+		"status": "released",
         "uuid": "731c5484-95ef-4d08-bfea-3291f5a5b384",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -420,6 +436,7 @@
         "aliases": [
             "anna-greka:sc_library_donorD1a"
         ],
+		"status": "released",
         "uuid": "4c83834e-0133-4f20-9325-95a600e23cd3",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -446,6 +463,7 @@
         "aliases": [
             "anna-greka:sc_library_donorD1b"
         ],
+		"status": "released",
         "uuid": "ceefe475-51da-455a-8abb-04315df534de",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -472,6 +490,7 @@
         "aliases": [
             "anna-greka:sc_library_donorD2a"
         ],
+		"status": "released",
         "uuid": "3d9f8e90-4263-48e2-b0d7-c599cd9eb2f0",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -498,6 +517,7 @@
         "aliases": [
             "anna-greka:sc_library_donorD2b"
         ],
+		"status": "released",
         "uuid": "c8442e96-d211-4f4b-90a1-efcab015f4df",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -524,6 +544,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorC1"
         ],
+		"status": "released",
         "uuid": "1dd8a415-a80c-475e-aef4-8faaa2822d2a",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -550,6 +571,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorC2"
         ],
+		"status": "released",
         "uuid": "c7ce9033-4415-4f65-8516-3492c6739717",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -576,6 +598,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorD1"
         ],
+		"status": "released",
         "uuid": "33e60e83-b756-471c-82b2-183d23539706",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -602,6 +625,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorD2"
         ],
+		"status": "released",
         "uuid": "ec96204f-6388-44ee-a938-8aaeb229e813",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -628,6 +652,7 @@
         "aliases": [
             "anna-greka:sc_pooled_library_donorCD1"
         ],
+		"status": "released",
         "uuid": "06d64ce5-0f41-49ec-842d-bebb1bff4b12",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -654,6 +679,7 @@
         "aliases": [
             "anna-greka:sc_pooled_library_donorCD2"
         ],
+		"status": "released",
         "uuid": "1b241c69-55ec-4e44-a2ea-3f9976a2ae77",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -680,6 +706,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorE"
         ],
+		"status": "released",
         "uuid": "d9aad96c-a916-46d6-9391-8b7317b1175f",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -706,6 +733,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorF"
         ],
+		"status": "released",
         "uuid": "ee6f838c-713a-4d15-acbc-accdb72b70c6",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -732,6 +760,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorG"
         ],
+		"status": "released",
         "uuid": "973565b0-a994-4f31-926e-1f0ff15733c7",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -758,6 +787,7 @@
         "aliases": [
             "anna-greka:citeseq_library_donorH"
         ],
+		"status": "released",
         "uuid": "f310fd98-a582-49f6-996d-46572ca9b413",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "CITE-10x-5'-v1",
@@ -784,6 +814,7 @@
         "aliases": [
             "anna-greka:sc_library_donorE1"
         ],
+		"status": "released",
         "uuid": "b6776d80-fc1b-4fe4-b3f4-c979a5dd62ec",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -810,6 +841,7 @@
         "aliases": [
             "anna-greka:sc_library_donorE2"
         ],
+		"status": "released",
         "uuid": "34349edb-ea30-491e-a288-5b808faa9034",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -836,6 +868,7 @@
         "aliases": [
             "anna-greka:sc_library_donorF1"
         ],
+		"status": "released",
         "uuid": "6db2f1cc-0681-4a9a-ac7f-61f2320840ba",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -862,6 +895,7 @@
         "aliases": [
             "anna-greka:sc_library_donorF2"
         ],
+		"status": "released",
         "uuid": "f2b6a7c1-49d6-4080-95cb-e6dbf6c924e5",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -888,6 +922,7 @@
         "aliases": [
             "anna-greka:sc_library_donorG1"
         ],
+		"status": "released",
         "uuid": "87c7fc03-4471-45ec-99c1-b3266c9d4239",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -914,6 +949,7 @@
         "aliases": [
             "anna-greka:sc_library_donorG2"
         ],
+		"status": "released",
         "uuid": "a30fd39e-35b4-46d9-9fea-1322d10596fe",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -940,6 +976,7 @@
         "aliases": [
             "anna-greka:sc_library_donorH1"
         ],
+		"status": "released",
         "uuid": "3f029f71-4823-473b-a80a-81b1ec158979",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -966,6 +1003,7 @@
         "aliases": [
             "anna-greka:sc_library_donorH2"
         ],
+		"status": "released",
         "uuid": "20dae3ce-efc0-47ae-ad35-4f84c018cbe7",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "10x-5'-v1",
@@ -992,6 +1030,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorE1"
         ],
+		"status": "released",
         "uuid": "b8ce9199-52c1-48ae-a9f6-1ed1a5da3c8c",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1018,6 +1057,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorE2"
         ],
+		"status": "released",
         "uuid": "4068f99b-b1a9-4dd6-8ebf-19c20ad94ce7",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1044,6 +1084,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorF1"
         ],
+		"status": "released",
         "uuid": "b811c5a8-831b-4b5b-a249-b256366bcf99",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1070,6 +1111,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorF2"
         ],
+		"status": "released",
         "uuid": "a66bd263-88e1-484f-a370-48f228c04ff4",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1096,6 +1138,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorG1"
         ],
+		"status": "released",
         "uuid": "56ebd19c-5dfd-4a89-89cc-5e000c102d29",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1122,6 +1165,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorG2"
         ],
+		"status": "released",
         "uuid": "f0563d0f-8758-4a43-adc5-7f9d12982b73",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1148,6 +1192,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorH1"
         ],
+		"status": "released",
         "uuid": "f93827b0-94ac-4feb-8306-14492e0f1b4f",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1174,6 +1219,7 @@
         "aliases": [
             "anna-greka:snATAC_library_donorH2"
         ],
+		"status": "released",
         "uuid": "74e39c9e-3c3b-4efa-884f-63f264d3cb04",
         "dataset": "anna-greka:large_test_dataset",
         "protocol": "ATAC-10x-v1",
@@ -1200,6 +1246,7 @@
         "aliases": [
             "jimmie-ye:library_1a"
         ],
+		"status": "in progress",
         "uuid": "0d4524c6-d1a4-4bbd-a6e4-da97300c7da5",
         "description": "library 1a",
         "lab": "jimmie-ye",
@@ -1221,6 +1268,7 @@
         "aliases": [
             "jimmie-ye:library_1b"
         ],
+		"status": "in progress",
         "uuid": "be3b0f80-0e7f-4979-b7c1-b240218014d3",
         "description": "library 1b",
         "lab": "jimmie-ye",
@@ -1242,6 +1290,7 @@
         "aliases": [
             "jimmie-ye:library_1c"
         ],
+		"status": "in progress",
         "uuid": "ee8f51fd-4a25-49d0-a508-1578c04826aa",
         "description": "library 1c",
         "lab": "jimmie-ye",
@@ -1263,6 +1312,7 @@
         "aliases": [
             "jimmie-ye:library_2a"
         ],
+		"status": "in progress",
         "uuid": "696bb199-e78d-4f42-b2f1-912cb18963d0",
         "description": "library 2a",
         "lab": "jimmie-ye",
@@ -1284,6 +1334,7 @@
         "aliases": [
             "jimmie-ye:library_2b"
         ],
+		"status": "in progress",
         "uuid": "e8466422-fa39-423b-b303-dbd5ad106e38",
         "description": "library 2b",
         "lab": "jimmie-ye",
@@ -1305,6 +1356,7 @@
         "aliases": [
             "jimmie-ye:library_2c"
         ],
+		"status": "in progress",
         "uuid": "8c4a96bb-f1b4-4136-ad2e-df23bffa65a1",
         "description": "library 2c",
         "lab": "jimmie-ye",
@@ -1326,6 +1378,7 @@
         "aliases": [
             "jimmie-ye:library_3a"
         ],
+		"status": "in progress",
         "uuid": "b6761ce6-4846-4a67-8127-44cbb319e2e8",
         "description": "library 3a",
         "lab": "jimmie-ye",
@@ -1347,6 +1400,7 @@
         "aliases": [
             "jimmie-ye:library_3b"
         ],
+		"status": "in progress",
         "uuid": "3d20a688-c5d5-465e-8780-1071e00015f9",
         "description": "library 3b",
         "lab": "jimmie-ye",
@@ -1368,6 +1422,7 @@
         "aliases": [
             "jimmie-ye:library_3c"
         ],
+		"status": "in progress",
         "uuid": "81e0d4dd-6344-4188-8473-53a087eedf85",
         "description": "library 3c",
         "lab": "jimmie-ye",
@@ -1389,6 +1444,7 @@
         "aliases": [
             "peter-sims:library_1a"
         ],
+		"status": "released",
         "uuid": "89a054c8-732e-411a-9288-b8cb6949c266",
         "description": "library_1a",
         "lab": "peter-sims",
@@ -1407,6 +1463,7 @@
         "aliases": [
             "peter-sims:library_1b"
         ],
+		"status": "released",
         "uuid": "07c9c835-8eb1-4e1a-bcb2-01405093321a",
         "description": "library_1b",
         "lab": "peter-sims",
@@ -1425,6 +1482,7 @@
         "aliases": [
             "peter-sims:library_1c"
         ],
+		"status": "released",
         "uuid": "502489bb-1300-4a79-b70a-ffa5aeddd110",
         "description": "library_1c",
         "lab": "peter-sims",
@@ -1443,6 +1501,7 @@
         "aliases": [
             "peter-sims:library_2a"
         ],
+		"status": "released",
         "uuid": "a6582844-e541-436b-9920-1caeb7f919cf",
         "description": "library_2a",
         "lab": "peter-sims",
@@ -1461,6 +1520,7 @@
         "aliases": [
             "peter-sims:library_2b"
         ],
+		"status": "released",
         "uuid": "6715e46b-590e-4ac7-be51-e5dd27a1ec28",
         "description": "library_2b",
         "lab": "peter-sims",
@@ -1479,6 +1539,7 @@
         "aliases": [
             "peter-sims:library_2c"
         ],
+		"status": "released",
         "uuid": "05937465-1ffc-48ce-9510-e0ca805a8415",
         "description": "library_2c",
         "lab": "peter-sims",
@@ -1497,6 +1558,7 @@
         "aliases": [
             "peter-sims:library_3a"
         ],
+		"status": "released",
         "uuid": "835e5124-f8b7-4b0d-bc25-54ad1778f703",
         "description": "library_3a",
         "lab": "peter-sims",
@@ -1515,6 +1577,7 @@
         "aliases": [
             "peter-sims:library_3b"
         ],
+		"status": "released",
         "uuid": "47a6787f-74af-4025-9d9d-989c21cc303d",
         "description": "library_3b",
         "lab": "peter-sims",
@@ -1533,6 +1596,7 @@
         "aliases": [
             "peter-sims:library_3c"
         ],
+		"status": "released",
         "uuid": "13f01680-65a8-4eea-9d95-95dd7ee01b53",
         "description": "library_3c",
         "lab": "peter-sims",

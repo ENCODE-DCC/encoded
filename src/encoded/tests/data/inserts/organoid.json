@@ -3,6 +3,7 @@
         "aliases": [
             "anna-greka:organoid_donorC1"
         ],
+        "status": "released",
         "accession": "ENCBS400DDD",
         "uuid": "840d1bba-0005-4935-901a-41bc754103b4",
         "description": "organoid from cell culture of prenatal donorC",
@@ -28,6 +29,7 @@
         "aliases": [
             "anna-greka:organoid_donorC2"
         ],
+        "status": "released",
         "accession": "ENCBS405DDD",
         "uuid": "5bda2505-a8bd-40b9-bee2-d56eed19c7b8",
         "description": "organoid from cell culture of prenatal donorC",
@@ -53,6 +55,7 @@
         "aliases": [
             "anna-greka:organoid_donorD1"
         ],
+        "status": "released",
         "accession": "ENCBS410DDD",
         "uuid": "57672176-ce03-45b3-a3b5-2cc0bc477988",
         "description": "organoid from cell culture of prenatal donorD",
@@ -78,6 +81,7 @@
         "aliases": [
             "anna-greka:organoid_donorD2"
         ],
+        "status": "released",
         "accession": "ENCBS415DDD",
         "uuid": "ada165d6-05df-482f-98fb-ababb55ed31b",
         "description": "organoid from cell culture of prenatal donorD",
@@ -103,6 +107,7 @@
         "aliases":[
             "jimmie-ye:prenatal_organoid1"
         ],
+        "status": "in progress",
         "accession": "ENCBS100SCS",
         "uuid": "164042c5-ce91-4ca6-8a96-2d8ea58143c8",
         "description": "prenatal cell organoid 1",
@@ -121,6 +126,7 @@
         "aliases":[
             "jimmie-ye:prenatal_organoid2"
         ],
+        "status": "in progress",
         "accession": "ENCBS101SCS",
         "uuid": "7a0c1810-4d95-430b-9916-ab640a3cfe5d",
         "description": "prenatal cell organoid 2",
@@ -139,6 +145,7 @@
         "aliases":[
             "jimmie-ye:prenatal_organoid3"
         ],
+        "status": "in progress",
         "accession": "ENCBS102SCS",
         "uuid": "20e7a828-f0a5-4f3c-a122-f6385c98a1d5",
         "description": "prenatal cell organoid 3",

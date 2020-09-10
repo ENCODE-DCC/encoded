@@ -5,6 +5,7 @@
         "aliases": [
             "anna-greka:citeseq_suspension_donorA"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:human_tissue_donorA"
         ],
@@ -43,6 +44,7 @@
         "aliases": [
             "anna-greka:citeseq_suspension_donorB"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:human_tissue_donorB"
         ],
@@ -81,6 +83,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorA"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:human_tissue_donorA"
         ],
@@ -119,6 +122,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorB"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:human_tissue_donorB"
         ],
@@ -157,6 +161,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorA"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:human_tissue_donorA"
         ],
@@ -195,6 +200,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorB"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:human_tissue_donorB"
         ],
@@ -233,6 +239,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorC1"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorC1"
         ],
@@ -266,6 +273,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorC2"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorC2"
         ],
@@ -299,6 +307,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorD1"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorD1"
         ],
@@ -332,6 +341,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorD2"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorD2"
         ],
@@ -365,6 +375,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorC1"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorC1"
         ],
@@ -398,6 +409,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorC2"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorC2"
         ],
@@ -431,6 +443,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorD1"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorD1"
         ],
@@ -464,6 +477,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorD2"
         ],
+        "status": "released",
         "derived_from": [
             "anna-greka:organoid_donorD2"
         ],
@@ -497,6 +511,7 @@
         "aliases": [
             "anna-greka:sc_pooled_suspension_donorCD"
         ],
+		"status": "released",
         "description": "scRNAseq human suspension from pooled organoids",
         "derived_from": [
             "anna-greka:organoid_donorC1", 
@@ -536,6 +551,7 @@
         "aliases": [
             "anna-greka:citeseq_suspension_donorE"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorE"
         ],
@@ -574,6 +590,7 @@
         "aliases": [
             "anna-greka:citeseq_suspension_donorF"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorF"
         ],
@@ -612,6 +629,7 @@
         "aliases": [
             "anna-greka:citeseq_suspension_donorG"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorG"
         ],
@@ -650,6 +668,7 @@
         "aliases": [
             "anna-greka:citeseq_suspension_donorH"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorH"
         ],
@@ -688,6 +707,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorE"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorE"
         ],
@@ -726,6 +746,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorF"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorF"
         ],
@@ -764,6 +785,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorG"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorG"
         ],
@@ -802,6 +824,7 @@
         "aliases": [
             "anna-greka:sc_suspension_donorH"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorH"
         ],
@@ -840,6 +863,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorE"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorE"
         ],
@@ -878,6 +902,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorF"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorF"
         ],
@@ -916,6 +941,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorG"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorG"
         ],
@@ -954,6 +980,7 @@
         "aliases": [
             "anna-greka:snATAC_suspension_donorH"
         ],
+		"status": "released",
         "derived_from": [
             "anna-greka:mouse_tissue_donorH"
         ],
@@ -992,6 +1019,7 @@
         "aliases": [
             "jimmie-ye:suspension_1"
         ],
+		"status": "in progress",
         "biosample_ontology": "UBERON_0001114",
         "description": "jimmie ye suspension1",
         "derived_from": [
@@ -1018,6 +1046,7 @@
         "aliases": [
             "jimmie-ye:suspension_2"
         ],
+		"status": "in progress",
         "biosample_ontology": "UBERON_0001114",
         "description": "jimmie ye suspension2",
         "derived_from": [
@@ -1044,6 +1073,7 @@
         "aliases": [
             "jimmie-ye:suspension_3"
         ],
+		"status": "in progress",
         "biosample_ontology": "UBERON_0001114",
         "description": "jimmie ye suspension3",
         "derived_from": [
@@ -1069,7 +1099,8 @@
         "uuid": "dbe1211e-dc2b-11ea-87d0-0242ac130003",
         "aliases": [
             "peter-sims:suspension1"
-        ],
+        ],		
+        "status": "released",
         "biosample_ontology": "UBERON_0001876",
         "description": "peter sims suspension1",
         "derived_from": [
@@ -1095,7 +1126,8 @@
         "uuid": "8f62dfe8-dc40-11ea-87d0-0242ac130003",
         "aliases": [
             "peter-sims:suspension2"
-        ],
+        ],		
+        "status": "released",
         "biosample_ontology": "UBERON_0008816",
         "description": "peter sims suspension2",
         "derived_from": [
@@ -1121,7 +1153,8 @@
         "uuid": "7973f6f4-5e51-4d3b-9a5a-758f2b09c44c",
         "aliases": [
             "peter-sims:suspension3"
-        ],
+        ],		
+        "status": "released",
         "biosample_ontology": "UBERON_0008816",
         "description": "peter sims suspension3",
         "derived_from": [

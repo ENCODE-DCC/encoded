@@ -3,6 +3,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorA1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorA1",
         "flowcell_details": [
             {
@@ -18,6 +19,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorA2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorA2",
         "flowcell_details": [
             {
@@ -33,6 +35,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorB1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorB1",
         "flowcell_details": [
             {
@@ -48,6 +51,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorB2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorB2",
         "flowcell_details": [
             {
@@ -65,6 +69,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorA1_2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorA1",
         "flowcell_details": [
             {
@@ -80,6 +85,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorA2_2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorA2",
         "flowcell_details": [
             {
@@ -95,6 +101,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorB1_2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorB1",
         "flowcell_details": [
             {
@@ -110,6 +117,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorB2_2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorB2",
         "flowcell_details": [
             {
@@ -125,6 +133,7 @@
         "aliases": [
             "anna-greka:sc_run_donorA1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorA1",
         "flowcell_details": [
             {
@@ -140,6 +149,7 @@
         "aliases": [
             "anna-greka:sc_run_donorA2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorA2",
         "flowcell_details": [
             {
@@ -155,6 +165,7 @@
         "aliases": [
             "anna-greka:sc_run_donorB1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorB1",
         "flowcell_details": [
             {
@@ -170,6 +181,7 @@
         "aliases": [
             "anna-greka:sc_run_donorB2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorB2",
         "flowcell_details": [
             {
@@ -185,6 +197,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorA1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorA1",
         "flowcell_details": [
             {
@@ -200,6 +213,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorA2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorA2",
         "flowcell_details": [
             {
@@ -215,6 +229,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorB1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorB1",
         "flowcell_details": [
             {
@@ -230,6 +245,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorB2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorB2",
         "flowcell_details": [
             {
@@ -245,6 +261,7 @@
         "aliases": [
             "anna-greka:sc_run_donorC1a"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorC1a",
         "flowcell_details": [
             {
@@ -260,6 +277,7 @@
         "aliases": [
             "anna-greka:sc_run_donorC1b"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorC1b",
         "flowcell_details": [
             {
@@ -275,6 +293,7 @@
         "aliases": [
             "anna-greka:sc_run_donorC2a"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorC2a",
         "flowcell_details": [
             {
@@ -290,6 +309,7 @@
         "aliases": [
             "anna-greka:sc_run_donorC2b"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorC2b",
         "flowcell_details": [
             {
@@ -305,6 +325,7 @@
         "aliases": [
             "anna-greka:sc_run_donorD1a"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorD1a",
         "flowcell_details": [
             {
@@ -320,6 +341,7 @@
         "aliases": [
             "anna-greka:sc_run_donorD1b"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorD1b",
         "flowcell_details": [
             {
@@ -335,6 +357,7 @@
         "aliases": [
             "anna-greka:sc_run_donorD2a"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorD2a",
         "flowcell_details": [
             {
@@ -350,6 +373,7 @@
         "aliases": [
             "anna-greka:sc_run_donorD2b"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorD2b",
         "flowcell_details": [
             {
@@ -365,6 +389,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorC1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorC1",
         "flowcell_details": [
             {
@@ -380,6 +405,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorC2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorC2",
         "flowcell_details": [
             {
@@ -395,6 +421,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorD1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorD1",
         "flowcell_details": [
             {
@@ -410,6 +437,7 @@
         "aliases": [
             "anna-greka:snATAC_runs_donorD2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorD2",
         "flowcell_details": [
             {
@@ -425,6 +453,7 @@
         "aliases": [
             "anna-greka:sc_pooled_run_donorCD1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_pooled_library_donorCD1",
         "flowcell_details": [
             {
@@ -440,6 +469,7 @@
         "aliases": [
             "anna-greka:sc_pooled_run_donorCD2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_pooled_library_donorCD2",
         "flowcell_details": [
             {
@@ -455,6 +485,7 @@
         "aliases": [
             "anna-greka:sc_pooled_run_donorCD1_2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_pooled_library_donorCD1",
         "flowcell_details": [
             {
@@ -470,6 +501,7 @@
         "aliases": [
             "anna-greka:sc_pooled_run_donorCD2_2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_pooled_library_donorCD2",
         "flowcell_details": [
             {
@@ -485,6 +517,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorE"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorE",
         "flowcell_details": [
             {
@@ -500,6 +533,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorF"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorF",
         "flowcell_details": [
             {
@@ -515,6 +549,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorG"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorG",
         "flowcell_details": [
             {
@@ -530,6 +565,7 @@
         "aliases": [
             "anna-greka:citeseq_run_donorH"
         ],
+		"status": "released",
         "derived_from": "anna-greka:citeseq_library_donorH",
         "flowcell_details": [
             {
@@ -545,6 +581,7 @@
         "aliases": [
             "anna-greka:sc_run_donorE1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorE1",
         "flowcell_details": [
             {
@@ -560,6 +597,7 @@
         "aliases": [
             "anna-greka:sc_run_donorE2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorE2",
         "flowcell_details": [
             {
@@ -575,6 +613,7 @@
         "aliases": [
             "anna-greka:sc_run_donorF1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorF1",
         "flowcell_details": [
             {
@@ -590,6 +629,7 @@
         "aliases": [
             "anna-greka:sc_run_donorF2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorF2",
         "flowcell_details": [
             {
@@ -605,6 +645,7 @@
         "aliases": [
             "anna-greka:sc_run_donorG1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorG1",
         "flowcell_details": [
             {
@@ -620,6 +661,7 @@
         "aliases": [
             "anna-greka:sc_run_donorG2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorG2",
         "flowcell_details": [
             {
@@ -635,6 +677,7 @@
         "aliases": [
             "anna-greka:sc_run_donorH1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorH1",
         "flowcell_details": [
             {
@@ -650,6 +693,7 @@
         "aliases": [
             "anna-greka:sc_run_donorH2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:sc_library_donorH2",
         "flowcell_details": [
             {
@@ -665,6 +709,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorE1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorE1",
         "flowcell_details": [
             {
@@ -680,6 +725,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorE2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorE2",
         "flowcell_details": [
             {
@@ -695,6 +741,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorF1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorF1",
         "flowcell_details": [
             {
@@ -710,6 +757,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorF2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorF2",
         "flowcell_details": [
             {
@@ -725,6 +773,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorG1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorG1",
         "flowcell_details": [
             {
@@ -740,6 +789,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorG2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorG2",
         "flowcell_details": [
             {
@@ -755,6 +805,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorH1"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorH1",
         "flowcell_details": [
             {
@@ -770,6 +821,7 @@
         "aliases": [
             "anna-greka:snATAC_run_donorH2"
         ],
+		"status": "released",
         "derived_from": "anna-greka:snATAC_library_donorH2",
         "flowcell_details": [
             {
@@ -783,6 +835,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_1a",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -795,6 +848,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_1b",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -807,6 +861,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_1c",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -819,6 +874,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_2a",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -831,6 +887,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_2b",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -843,6 +900,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_2c",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -855,6 +913,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_3a",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -867,6 +926,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_3b",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -879,6 +939,7 @@
     },
     {
         "derived_from": "jimmie-ye:library_3c",
+        "status": "in progress",
         "flowcell_details": [
             {
                 "flowcell": "HJJWFDSXX",
@@ -891,6 +952,7 @@
     },
     {
         "derived_from": "peter-sims:library_1a",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -903,6 +965,7 @@
     },
     {
         "derived_from": "peter-sims:library_1b",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -915,6 +978,7 @@
     },
     {
         "derived_from": "peter-sims:library_1c",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -927,6 +991,7 @@
     },
     {
         "derived_from": "peter-sims:library_2a",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -939,6 +1004,7 @@
     },
     {
         "derived_from": "peter-sims:library_2b",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -951,6 +1017,7 @@
     },
     {
         "derived_from": "peter-sims:library_2c",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -963,6 +1030,7 @@
     },
     {
         "derived_from": "peter-sims:library_3a",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -975,6 +1043,7 @@
     },
     {
         "derived_from": "peter-sims:library_3b",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",
@@ -987,6 +1056,7 @@
     },
     {
         "derived_from": "peter-sims:library_3c",
+        "status": "released",
         "flowcell_details": [
             {
                 "flowcell": "HGJWFDSXY",

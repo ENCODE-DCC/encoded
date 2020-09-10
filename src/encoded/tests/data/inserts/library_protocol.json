@@ -2,6 +2,7 @@
     {
         "name": "10x-5'-v1",
         "title": "10x 5' v1",
+        "status": "released",
         "construction_platform": "10x",
         "construction_platform_version": 1,
         "library_type": "RNA-seq",
@@ -38,6 +39,7 @@
     {
         "name": "CITE-10x-5'-v1",
         "title": "CITE 10x 5' v1",
+        "status": "released",
         "construction_platform": "10x",
         "construction_platform_version": 1,
         "library_type": "CITE-seq",
@@ -73,6 +75,7 @@
     {
         "name": "ATAC-10x-v1",
         "title": "ATAC 10x v1",
+        "status": "released",
         "construction_platform": "10x",
         "construction_platform_version": 1,
         "library_type": "ATAC-seq",
@@ -100,6 +103,7 @@
     {
         "name": "10x-3'-v3",
         "title": "10x 3' v3",
+        "status": "released",
         "construction_platform": "10x",
         "construction_platform_version": 3,
         "library_type": "RNA-seq",
