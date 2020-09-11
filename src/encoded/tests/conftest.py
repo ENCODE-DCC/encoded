@@ -40,6 +40,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.biosample',
     'encoded.tests.fixtures.schemas.cart',
     'encoded.tests.fixtures.schemas.characterization',
+    'encoded.tests.fixtures.schemas.chip_alignment_enrichment_quality_metric',
     'encoded.tests.fixtures.schemas.chip_peak_enrichment_quality_metric',
     'encoded.tests.fixtures.schemas.chip_replication_quality_metric',
     'encoded.tests.fixtures.schemas.chip_alignment_samstat_quality_metric',

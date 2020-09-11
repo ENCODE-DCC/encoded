@@ -1142,6 +1142,12 @@ def check_experiment_chip_seq_standards(
     if target is False and not experiment.get('control_type'):
         return
 
+    align_enrich_metrics = get_metrics(alignment_files, 'ChipAlignmentEnrichmentQualityMetric')
+    # Checks in ChIPAlignmentEnrichmentQualityMetric
+    if align_enrich_metrics is not None and len(align_enrich_metrics) > 0:
+        for metric in align_enrich_metrics:
+            yield from negative_coefficients(metric, ['NSC', 'RSC'], files_structure)
+
     # Handles library_complexity for all cases and read_depth for all but H3K9me3
     for f in alignment_files:
 
@@ -4281,6 +4287,18 @@ def audit_biosample_perturbed_mixed(value, system, excluded_types):
         yield AuditFailure('mixed biosample perturbations', detail, level='ERROR')
 
 
+def negative_coefficients(metric, coefficients, files_structure):
+    for coefficient in coefficients:
+        if coefficient in metric and metric[coefficient] < 0 and 'quality_metric_of' in metric:
+            alignment_file = files_structure.get(
+                'alignments')[metric['quality_metric_of'][0]]
+            detail = (
+                f'Alignment file {audit_link(path_to_text(alignment_file["@id"]),alignment_file["@id"])} '
+                f'has a negative {coefficient} value of {metric[coefficient]}. The {coefficient} value is expected to be a positive number.'
+            )
+            yield AuditFailure('negative ' + coefficient, detail, level='ERROR')
+
+    
 def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # https://encodedcc.atlassian.net/browse/ENCD-5255
     # https://encodedcc.atlassian.net/browse/ENCD-5350
@@ -4378,6 +4396,7 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
     # Checks in AtacAlignmentEnrichmentQualityMetric
     if align_enrich_metrics is not None and len(align_enrich_metrics) > 0:
         for metric in align_enrich_metrics:
+            yield from negative_coefficients(metric, ['NSC', 'RSC'], files_structure)
             if 'tss_enrichment' in metric and 'quality_metric_of' in metric:
                 alignment_file = files_structure.get(
                     'alignments')[metric['quality_metric_of'][0]]
