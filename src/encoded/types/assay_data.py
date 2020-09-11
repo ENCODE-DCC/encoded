@@ -72,4 +72,5 @@ assay_terms = {
       'polyA plus RNA-seq': 'OBI:0002571',
       'polyA minus RNA-seq': 'OBI:0002572',
       'CUT&RUN': 'NTR:0000557',
+      'CUT&Tag': 'NTR:0000564',
 }

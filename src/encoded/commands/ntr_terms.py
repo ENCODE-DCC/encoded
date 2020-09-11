@@ -260,6 +260,19 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
+    "NTR:0000564": {
+        "assay": ['DNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "Cleavage Under Targets and Tagmentation",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CUT&Tag",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
     "NTR:0000562": {
         "assay": ['3D chromatin structure'],
         "category": [],

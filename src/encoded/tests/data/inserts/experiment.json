@@ -1087,5 +1087,16 @@
         "lab": "barbara-wold",
         "status": "in progress",
         "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "_test": "CUT&Tag test",
+        "uuid": "6600481e-b667-46ff-acd8-7de7026c2fdf",
+        "accession": "ENCSR830QHT",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "award": "U54HG007010",
+        "status": "released",
+        "date_released": "2015-08-31",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "assay_term_name": "CUT&Tag"
     }
 ]

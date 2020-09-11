@@ -26,6 +26,7 @@ targetBasedAssayList = [
     'CRISPRi followed by RNA-seq',
     'PLAC-seq',
     'CUT&RUN',
+    'CUT&Tag',
 ]
 
 controlRequiredAssayList = [
@@ -63,6 +64,7 @@ seq_assays = [
     'small RNA-seq',
     'ATAC-seq',
     'CUT&RUN',
+    'CUT&Tag',
 ]
 
 
