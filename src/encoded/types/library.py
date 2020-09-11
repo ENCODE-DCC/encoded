@@ -48,6 +48,25 @@ class Library(Item):
 
 
     @calculated_property(condition='derived_from', schema={
+        "title": "Assay",
+        "type": "string"
+    })
+    def assay(self, request, derived_from, protocol):
+        protocolObject = request.embed(protocol, '@@object')
+        if protocolObject.get('library_type') in ['CITE-seq']:
+            return protocolObject.get('library_type')
+        else:
+            derfrObject = request.embed(derived_from[0], '@@object')
+            if derfrObject.get('suspension_type') == 'cell':
+                mat_type = 'sc'
+            elif derfrObject.get('suspension_type') == 'nucleus':
+                mat_type = 'sn'
+            else:
+                mat_type = 'bulk '
+            return mat_type + protocolObject.get('library_type')
+
+
+    @calculated_property(condition='derived_from', schema={
         "title": "Donor accessions",
         "type": "array",
         "items": {
