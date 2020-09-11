@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 10
+
+* A combination of method *CRISPR* with the category of *mutagenesis* and purpose *characterization* may be submitted to describe a genetic modification.
+
 ### Schema version 10
 
 * Moved the following enum values from *method* to a new property, *nucleic_acid_delivery_method*. Genetic modifications must specify at least one of *method* or *nucleic_acid_delivery_method*.
