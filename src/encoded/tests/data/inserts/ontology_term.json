@@ -1,5 +1,11 @@
 [
     {
+        "uuid": "9a69c3a9-f88c-49db-8b6b-fc69ec3623a5",
+        "term_name": "epithelium of left lung",
+        "term_id": "UBERON:0003365",
+        "status": "released"
+    },
+    {
         "uuid": "03322386-af14-4d83-9063-855d0bef1876",
         "term_name": "epithelial cell of distal tubule",
         "term_id": "CL:0002305",
