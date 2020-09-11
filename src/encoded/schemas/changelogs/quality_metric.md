@@ -7,3 +7,4 @@
 * *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
 * *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
 * Added *SPRITE-IP* to *assay_term_name* enum
+* Added *CUT&Tag* to *assay_term_name* enum

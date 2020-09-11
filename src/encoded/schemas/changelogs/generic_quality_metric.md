@@ -5,6 +5,7 @@
 * *application/json* enum added to *MIME type* in *attachment*
 * *quality_metric_of* was added as a required field
 * Added *SPRITE-IP* to *assay_term_name* enum
+* Added *CUT&Tag* to *assay_term_name* enum
 
 ### Schema version 8
 

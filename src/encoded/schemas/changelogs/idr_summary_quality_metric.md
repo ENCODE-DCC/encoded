@@ -4,6 +4,7 @@
 
 * *quality_metric_of* was set to have a minimum of 1.
 * Added *SPRITE-IP* to *assay_term_name* enum
+* Added *CUT&Tag* to *assay_term_name* enum
 
 ### Schema version 8
 
