@@ -848,7 +848,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
             {!isEnhancerExperiment ?
-                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+                <FileGallery context={fileGraphContext} encodevers={encodevers} anisogenic={anisogenic} />
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
