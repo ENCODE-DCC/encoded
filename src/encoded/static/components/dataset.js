@@ -468,6 +468,49 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
     // Make a list of url links, if any.
     const urls = urlList(context.urls);
 
+    // Make a list of library types, if any.
+    function libTypeList(values) {
+    // Render each of the links, with null for each value without an identifier property
+        if (values && values.length > 0) {
+            const links = values.map((value) => {
+                return (
+                    <li>
+                        {value.protocol.library_type}
+                    </li>
+                );
+            });
+
+            // Render any links into a ul. Just return null if no links to render.
+            return (
+                <ul>{links}</ul>
+            );
+        }
+        return null;
+    }
+    const library_types = libTypeList(context.libraries);
+
+    // Make a list of library titles, if any.
+    function libTitleList(values) {
+    // Render each of the links, with null for each value without an identifier property
+        if (values && values.length > 0) {
+            const links = values.map((value) => {
+                return (
+                    <li>
+                        {value.protocol.title}
+                    </li>
+                );
+            });
+
+            // Render any links into a ul. Just return null if no links to render.
+            return (
+                <ul>{links}</ul>
+            );
+        }
+        return null;
+    }
+    const library_titles = libTitleList(context.libraries);
+
+
     return (
         <div className={itemClass}>
             <header>
@@ -495,6 +538,20 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <div data-test="description">
                                     <dt>Description</dt>
                                     <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {library_types ?
+                                <div data-test="library_types">
+                                    <dt>Library types</dt>
+                                    <dd>{library_types}</dd>
+                                </div>
+                            : null}
+
+                            {library_titles ?
+                                <div data-test="library_titles">
+                                    <dt>Protocols</dt>
+                                    <dd>{library_titles}</dd>
                                 </div>
                             : null}
                         </dl>
