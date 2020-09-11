@@ -1,14 +1,10 @@
 from snovault.attachment import ItemWithAttachment
 from snovault import (
-    CONNECTION,
-    calculated_property,
     collection,
     load_schema,
 )
-from pyramid.traversal import find_root
 from .base import (
     Item,
-    paths_filtered_by_status,
     ALLOW_CURRENT,
     DELETED,
 )
