@@ -277,15 +277,15 @@ class Experiment(Dataset,
         if replicates is not None:
             for rep in replicates:
                 replicateObject = request.embed(rep, '@@object?skip_calculated=true')
-                if replicateObject['status'] == 'deleted':
+                if replicateObject['status'] in ('deleted', 'revoked'):
                     continue
                 if 'library' in replicateObject:
                     libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                    if libraryObject['status'] == 'deleted':
+                    if libraryObject['status'] in ('deleted', 'revoked'):
                         continue
                     if 'biosample' in libraryObject:
                         biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                        if biosampleObject['status'] == 'deleted':
+                        if biosampleObject['status'] in ('deleted', 'revoked'):
                             continue
                         if biosampleObject['accession'] not in biosample_accessions:
                             biosample_accessions.add(biosampleObject['accession'])
