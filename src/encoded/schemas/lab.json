@@ -105,21 +105,21 @@
             "description":"A fax number for the lab (with country code).",
             "type": "string",
             "default": "",
-            "format": "phone"
+            "pattern": "^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$|^$"
         },
         "phone1": {
             "title": "Primary phone number",
             "description": "The lab's primary phone number (with country code).",
             "type": "string",
             "default": "",
-            "format": "phone"
+            "pattern": "^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$|^$"
         },
         "phone2": {
             "title": "Alternate phone number",
             "description": "The lab's alternative phone number (with country code).",
             "type": "string",
             "default": "",
-            "format": "phone"
+            "pattern": "^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$|^$"
         }
     },
     "facets": {
