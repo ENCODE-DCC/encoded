@@ -182,7 +182,7 @@ class Biosample(Item):
 
 
     @calculated_property(define=True,
-                         schema={"title": "Health status",
+                         schema={"title": "Donor diseases",
                                  "type": "array",
                                  "items": {
                                     "type": "string"
