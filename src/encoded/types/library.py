@@ -67,14 +67,14 @@ class Library(Item):
 
 
     @calculated_property(condition='derived_from', schema={
-        "title": "Donor accessions",
+        "title": "Donors",
         "type": "array",
         "items": {
             "type": "string",
             "linkTo": "Donor"
         },
     })
-    def donor_accessions(self, request, registry, derived_from, status):
+    def donors(self, request, registry, derived_from, status):
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
         obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
@@ -82,6 +82,6 @@ class Library(Item):
         donor_accs = {
             props['accession']
             for props in obj_props
-            if 'organism' in props
+            if 'life_stage' in props
         }
         return donor_accs
