@@ -1,10 +1,8 @@
 from snovault import (
-    calculated_property,
     collection,
     abstract_collection,
     load_schema,
 )
-from pyramid.traversal import find_root
 from .base import (
     Item
 )
