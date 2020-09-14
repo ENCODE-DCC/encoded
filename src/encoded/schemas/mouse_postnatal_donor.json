@@ -92,7 +92,7 @@
             "title": "Sex"
         },
         "organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism species"
         },
         "strain_term_name": {
             "title": "Strain"
