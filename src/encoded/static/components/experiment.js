@@ -363,12 +363,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     : {};
     // Result -- if nothing exists in any of these three categories, then
     // that category’s key doesn't exist.
-    {
-        normal: [array of normal dbxrefs]
-        SCREEN: [array of SCREEN dbxrefs]
-        FactorBook: [array of FactorBook dbxrefs]
-    }
-
 
     // Collect all documents from the experiment itself.
     const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
