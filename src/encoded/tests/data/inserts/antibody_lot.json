@@ -1,40 +1,212 @@
 [
     {
-        "_test": "untagged target and unknown lot",
-        "accession": "ENCAB000AFU",
-        "antigen_description": "E2F1(KH20 and KH95) Epitope for KH20 has been mapped to amino acids 1-89; KH95 to amino acids 342-386.",
+        "aliases": [
+            "lattice:totalseq_C0051_CD14"
+        ],
+        "status": "released",
+        "uuid": "0c9a9fe2-f5a4-4be3-8fa3-456579989327",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "367137",
         "clonality": "monoclonal",
         "host_organism": "mouse",
-        "lot_id": "unknown",
-        "product_id": "05-379",
-        "source": "millipore",
-        "oligo_sequence": "AACAAGACCCTT",
-        "submitted_by": "massa.porta@varius.mauris",
-        "url": "http://www.millipore.com/catalogue/item/05-379#",
-        "uuid": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
-        "targets": [
-            "/targets/E2F1-human"
+        "isotype": "IgG1",
+        "purification_methods": [
+            "chromatography"
         ],
-        "status": "in progress"
+        "target": "CD14",
+        "oligo_sequence": "CAATCAGACCTATGA",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0051-anti-human-cd14-antibody-17583",
+        "target_organism": "human",
+        "clone_id": "63D3"
     },
     {
-        "_test": "several variations of different lots, aliases, alternate accessions",
-        "accession": "ENCAB000ASG",
-        "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
-        "clonality": "polyclonal",
-        "host_organism": "rabbit",
-        "lot_id": "R0903B0054",
-        "product_id": "07-473",
+        "aliases": [
+            "lattice:totalseq_C0034_CD3"
+        ],
+        "status": "released",
+        "uuid": "05f8236a-6c4d-4e4d-9614-9bd63ec7a33c",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "300479",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG1",
         "purification_methods": [
-            "affinity"
+            "chromatography"
         ],
-        "source": "millipore",
-        "submitted_by": "quisque.consequat@venenatis.magna",
-        "url": "http://www.millipore.com/catalogue/item/07-473",
-        "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9",
-        "targets": [
-            "/targets/H3K4me3-human"
+        "target": "CD3E",
+        "oligo_sequence": "CTCATTGTAACTCCT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0034-anti-human-cd3-antibody-16819",
+        "target_organism": "human",
+        "clone_id": "UCHT1"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0050_CD19"
         ],
-        "status": "in progress"
+        "status": "released",
+        "uuid": "773430e9-a92b-4a71-af3e-ab998839da11",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "302265",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG1",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "CD19",
+        "oligo_sequence": "CTGGGCAATTACTCG",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0050-anti-human-cd19-antibody-16832",
+        "target_organism": "human",
+        "clone_id": "HIB19"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0161_CD11b"
+        ],
+        "status": "released",
+        "uuid": "e090e806-b352-4147-b5f1-7c791d415e3f",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "301359",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG1",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "ITGAM",
+        "oligo_sequence": "GACAAGTGATCTGCA",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0161-anti-human-cd11b-antibody-16826",
+        "target_organism": "human",
+        "clone_id": "ICRF44"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0046_CD8"
+        ],
+        "status": "released",
+        "uuid": "21036e16-175e-470b-aceb-42ffa5f850a7",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "344753",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG1",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "CD8A",
+        "oligo_sequence": "GCGCAACTTGATGAT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0046-anti-human-cd8-antibody-17318",
+        "target_organism": "human",
+        "clone_id": "SK1"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0002_CD8a"
+        ],
+        "status": "released",
+        "uuid": "7f42aa06-ead9-4966-8810-68448c5ac218",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "100785",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG2a",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "cd8a",
+        "oligo_sequence": "TACCCGTAATAGCGT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0002-anti-mouse-cd8a-antibody-18641",
+        "target_organism": "mouse",
+        "clone_id": "53-6.7"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0424_CD14"
+        ],
+        "status": "released",
+        "uuid": "d1a9f01c-51bb-48fd-902c-e76c94e16120",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "123339",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG2a",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "cd14",
+        "oligo_sequence": "AACCAACAGTCACGT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0424-anti-mouse-cd14-antibody-18868",
+        "target_organism": "mouse",
+        "clone_id": "Sa14-2"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0182_CD3"
+        ],
+        "status": "released",
+        "uuid": "5cd9774c-839d-41dd-9672-20982a8b7a06",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "100263",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG2b",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "cd3g",
+        "oligo_sequence": "GTATGTCCGCTCGAT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0182-anti-mouse-cd3-antibody-18764",
+        "target_organism": "mouse",
+        "clone_id": "17A2"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0092_CD19"
+        ],
+        "status": "released",
+        "uuid": "87567776-a10d-4110-a812-25defd4d45ae",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "115571",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG2a",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "cd19",
+        "oligo_sequence": "ATCAGCCATGTCAGT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0093-anti-mouse-cd19-antibody-18761",
+        "target_organism": "mouse",
+        "clone_id": "6D5"
+    },
+    {
+        "aliases": [
+            "lattice:totalseq_C0014_CD11b"
+        ],
+        "status": "released",
+        "uuid": "74a81d27-d4b3-49a2-b4c1-aea82e2e5a68",
+        "source": "Biolegend",
+        "format": "TotalSeq-C",
+        "product_id": "101275",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG2b",
+        "purification_methods": [
+            "chromatography"
+        ],
+        "target": "itgam",
+        "oligo_sequence": "TGAAGGCTCATTTGT",
+        "url": "https://www.biolegend.com/en-us/products/totalseq-c0014-anti-mouse-human-cd11b-antibody-18762",
+        "target_organism": "mouse",
+        "clone_id": "M1/70"
     }
 ]

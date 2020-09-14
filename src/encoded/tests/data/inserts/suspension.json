@@ -36,6 +36,14 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144225"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0051_CD14",
+            "lattice:totalseq_C0034_CD3",
+            "lattice:totalseq_C0050_CD19",
+            "lattice:totalseq_C0161_CD11b",
+            "lattice:totalseq_C0046_CD8"
+
         ]
     },
     {
@@ -75,6 +83,14 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM14426"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0051_CD14",
+            "lattice:totalseq_C0034_CD3",
+            "lattice:totalseq_C0050_CD19",
+            "lattice:totalseq_C0161_CD11b",
+            "lattice:totalseq_C0046_CD8"
+
         ]
     },
     {
@@ -504,6 +520,13 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144242"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
     {
@@ -543,6 +566,13 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144243"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
     {
@@ -582,6 +612,13 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144244"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
     {
@@ -621,6 +658,13 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144245"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
         {
