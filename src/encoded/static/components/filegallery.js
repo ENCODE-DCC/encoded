@@ -2929,6 +2929,7 @@ class FileGalleryRendererComponent extends React.Component {
                                     label={'file gallery'}
                                     expanded={this.state.facetsOpen}
                                     assembly={this.state.selectedAssembly}
+                                    displaySort
                                 />
                             </TabPanelPane>
                             <TabPanelPane key="graph">

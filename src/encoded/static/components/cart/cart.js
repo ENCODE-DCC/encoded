@@ -171,7 +171,8 @@ const CartBrowser = ({ files, assembly, pageNumber }) => {
             setPageFiles([]);
         }
     }, [files, assembly, pageNumber]);
-    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded />;
+    const sortParam = ['Assay term name', 'Biosample term name', 'Output type'];
+    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded sortParam={sortParam} />;
 };
 
 CartBrowser.propTypes = {
