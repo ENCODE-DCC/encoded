@@ -1,5 +1,8 @@
 ## Changelog for analysis_step.json
 
+### Minor changes since schema version 11
+* Added *genotyping*, *methylation estimation* and *smoothing* to the enum list for *analysis_step_types*
+
 ### Schema version 11
 * *input_file_types: stable peaks* was updated to *input_file_types: pseudo-replicated peaks*
 * *output_file_types: stable peaks* was updated to *output_file_types: pseudo-replicated peaks*
