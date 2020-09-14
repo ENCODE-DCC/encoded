@@ -163,21 +163,20 @@ function mapGenome(inputAssembly) {
 // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
 // Multiplication by 1000 orders the replicates with a single replicate at the end
 const sortLookUp = (obj, param) => {
-    if (param === 'Replicates') {
-        if (obj.biological_replicates.length > 1) {
-            return +obj.biological_replicates.join('');
-        }
-        return +obj.biological_replicates * 1000;
-    } else if (param === 'Output type') {
+    switch (param) {
+    case 'Replicates':
+        return obj.biological_replicates.length > 1 ? +obj.biological_replicates.join('') : +obj.biological_replicates * 1000;
+    case 'Output type':
         return obj.output_type.toLowerCase();
-    } else if (param === 'File type') {
+    case 'File type':
         return obj.file_type.toLowerCase();
-    } else if (param === 'Assay term name') {
+    case 'Assay term name':
         return obj.assay_term_name.toLowerCase();
-    } else if (param === 'Biosample term name') {
+    case 'Biosample term name':
         return obj.biosample_ontology.term_name.toLowerCase();
+    default:
+        return null;
     }
-    return null;
 };
 
 /**
@@ -524,7 +523,7 @@ class GenomeBrowser extends React.Component {
             tracks = this.filesToTracks(newFiles, this.props.label, domain);
         }
         this.setState({ trackList: tracks }, () => {
-            if (this.chartdisplay && tracks !== []) {
+            if (this.chartdisplay && tracks.length > 0) {
                 this.drawTracks(this.chartdisplay);
             }
         });
