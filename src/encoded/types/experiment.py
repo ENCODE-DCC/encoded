@@ -443,7 +443,7 @@ class Experiment(Dataset,
 
     mouse_development = {
         'y': {
-            'group_by': ['biosample_ontology.term_name', 'biosample_summary'],
+            'group_by': ['biosample_ontology.term_name', 'life_stage_age'],
             'label': 'Biosample',
         },
         'x': {
