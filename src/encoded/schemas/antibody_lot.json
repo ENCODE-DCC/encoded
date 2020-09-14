@@ -140,21 +140,31 @@
                     "Protein A",
                     "Protein A/G",
                     "Protein G",
-                    "tissue culture supernatant"
+                    "tissue culture supernatant",
+                    "chromatography"
                 ]
             }
         },
-        "targets": {
+        "target": {
             "title": "Target",
-            "description": "The name of the genes whose expression or product is the intended goal of the antibody.",
+            "description": "The name of the gene (official gene symbol) whose expression or product is the intended antigen of the antibody.",
+            "type": "string"
+        },
+        "target_modifications": {
+            "target": "Target modifications",
+            "description": "List of modifications made to the corresponding gene product of the target",
             "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
             "items": {
-                "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
-                "comment": "See target.json for available identifiers.",
                 "type": "string",
-                "linkTo": "Target"
+                "enum": [
+                    "Methylation",
+                    "Monomethylation",
+                    "Dimethylation",
+                    "Trimethylation",
+                    "Acetylation",
+                    "Ubiquitination",
+                    "Phosphorylation"
+                ]
             }
         },
         "oligo_sequence": {
@@ -162,6 +172,28 @@
             "description": "The sequence of oligonucleotide that is conjugated to the antibody. ",
             "type": "string",
             "pattern": "^[AGCT]{12,15}$"
+        },
+        "format": {
+            "title": "Format",
+            "description": "The categories used to distinguish the oligonucleotide conjugated to the antibody in regards to the barcode flanking sequences (capture sequence and PCR handle) used.",
+            "type": "string",
+            "enum": [
+                "TotalSeq-A",
+                "TotalSeq-B",
+                "TotalSeq-C"
+            ]
+        },
+        "target_organism": {
+            "title": "Target organism",
+            "description": "The organism bearing the target which the antibody was designed to detect.",
+            "comment": "See organism.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Organism"
+        },
+        "clone_id": {
+            "title": "Clone ID",
+            "description": "The clone identifier assigned by the vendor.",
+            "type": "string"
         }
     },
     "changelog": "/profiles/changelogs/antibody_lot.md"
