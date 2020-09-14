@@ -296,6 +296,7 @@ export function dbxrefHref(prefix, value) {
  * @prop {string} dbxref - String containing one dbxref string.
  * @prop {object} context - Object (Experiment, HumanDonor, etc.) containing the dbxref being
  *     displayed.
+ * @prop {title} title - String that is displayed instead of Dbxref string. Optional.
  */
 const DbxrefUrl = (props) => {
     const { dbxref, context, title } = props;
@@ -344,7 +345,7 @@ const DbxrefUrl = (props) => {
 DbxrefUrl.propTypes = {
     dbxref: PropTypes.string.isRequired, // dbxref string
     context: PropTypes.object.isRequired, // Object that contains the dbxref
-    title: PropTypes.string, // title string
+    title: PropTypes.string, // title string displayed instead of dbxref string
 };
 
 DbxrefUrl.defaultProps = {
@@ -363,6 +364,7 @@ DbxrefUrl.defaultProps = {
  *     this property is always required though probably rarely used.
  * @prop {string} addClasses - String with space-separated classes that gets added to the <ul> that
  *     contains the displayed list of dbxrefs. Optional.
+ * @prop {title} title - String that is displayed instead of Dbxref string. Optional.
  */
 export const DbxrefList = (props) => {
     const { dbxrefs, context, addClasses, title } = props;
@@ -380,7 +382,7 @@ DbxrefList.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
     context: PropTypes.object.isRequired, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
-    title: PropTypes.string,
+    title: PropTypes.string, // title string displayed instead of dbxref string
 };
 
 DbxrefList.defaultProps = {

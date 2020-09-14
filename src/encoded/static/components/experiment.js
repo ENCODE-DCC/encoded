@@ -350,21 +350,23 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     }
 
     // Collect all dbxrefs. Filter out SCREEN and Factorbook in separate arrays. Only the first SCREEN and Factorbook dbxref will be displayed.
-    const dbxrefs = context.dbxrefs && context.dbxrefs.length > 0 ? context.dbxrefs : [];
-    let dbxrefsDifference = [];
-    const dbxrefsScreenDisplay = [];
-    const dbxrefsFactorbookDisplay = [];
-    const dbxrefsScreen = dbxrefs.filter(screen => screen.startsWith('SCREEN'));
-    const dbxrefsFactorbook = dbxrefs.filter(factorbook => factorbook.startsWith('FactorBook'));
-    if (dbxrefsScreen.length > 0) {
-        dbxrefsScreenDisplay.push(dbxrefsScreen[0]);
-    }
-    if (dbxrefsFactorbook.length > 0) {
-        dbxrefsFactorbookDisplay.push(dbxrefsFactorbook[0]);
-    }
-    const dbxrefsCombined = [...dbxrefsScreen, ...dbxrefsFactorbook];
-    if (dbxrefsCombined.length > 0) {
-        dbxrefsDifference = dbxrefs.filter(x => !dbxrefsCombined.includes(x));
+    const groupedDbxrefs = context.dbxrefs && context.dbxrefs.length > 0 ?
+        _(context.dbxrefs).groupBy((dbxref) => {
+            if (dbxref.startsWith('SCREEN')) {
+                return 'SCREEN';
+            }
+            if (dbxref.startsWith('FactorBook')) {
+                return 'FactorBook';
+            }
+            return 'normal';
+        })
+    : {};
+    // Result -- if nothing exists in any of these three categories, then
+    // that category’s key doesn't exist.
+    {
+        normal: [array of normal dbxrefs]
+        SCREEN: [array of SCREEN dbxrefs]
+        FactorBook: [array of FactorBook dbxrefs]
     }
 
 
@@ -794,17 +796,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <dd>{context.award.project}</dd>
                             </div>
 
-                            {dbxrefsCombined.length === 0 && dbxrefs.length > 0 ?
+                            {groupedDbxrefs.normal ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
-                                </div>
-                            : null}
-
-                            {dbxrefsDifference.length > 0 ?
-                                <div data-test="external-resources-filtered">
-                                    <dt>External resources</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={dbxrefsDifference} /></dd>
+                                    <dd><DbxrefList context={context} dbxrefs={groupedDbxrefs.normal} /></dd>
                                 </div>
                             : null}
 
@@ -863,24 +858,26 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 </div>
                             : null}
 
-                            {dbxrefsCombined.length > 0 ?
-                                <div className="panel__split-heading panel__split-heading--experiment">
-                                    <h4>Encyclopedia Integration</h4>
-                                </div>
-                            : null}
+                            {groupedDbxrefs.SCREEN || groupedDbxrefs.FactorBook ?
+                                <React.Fragment>
+                                    <div className="panel__split-heading panel__split-heading--experiment">
+                                        <h4>Encyclopedia Integration</h4>
+                                    </div>
 
-                            {dbxrefsScreen.length > 0 ?
-                                <div data-test="external-resources-screen">
-                                    <dt>Registry of cCREs</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={dbxrefsScreenDisplay} title={'view regulatory elements in this cell type on SCREEN'} /></dd>
-                                </div>
-                            : null}
+                                    {groupedDbxrefs.SCREEN ?
+                                        <div data-test="external-resources-screen">
+                                            <dt>Registry of cCREs</dt>
+                                            <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.SCREEN[0]]} title="view regulatory elements in this cell type on SCREEN" /></dd>
+                                        </div>
+                                    : null}
 
-                            {dbxrefsFactorbook.length > 0 ?
-                                <div data-test="external-resources-factorbook">
-                                    <dt>Factorbook</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={dbxrefsFactorbookDisplay} title={'view motifs and integrative analysis'} /></dd>
-                                </div>
+                                    {groupedDbxrefs.FactorBook ?
+                                        <div data-test="external-resources-factorbook">
+                                            <dt>Factorbook</dt>
+                                            <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.FactorBook[0]]} title="view motifs and integrative analysis" /></dd>
+                                        </div>
+                                    : null}
+                                </React.Fragment>
                             : null}
                         </dl>
                     </div>
