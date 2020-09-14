@@ -246,9 +246,6 @@
         },
         "file_format": {
             "title": "File format"
-        },
-        "file_type": {
-            "title": "File type"
         }
     },
     "columns": {
@@ -272,9 +269,6 @@
         },
         "file_format": {
             "title": "File Format"
-        },
-        "file_type": {
-            "title": "File type"
         },
         "file_size": {
             "title": "File size"

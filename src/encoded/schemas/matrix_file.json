@@ -260,9 +260,6 @@
         "file_format": {
             "title": "File format"
         },
-        "file_type": {
-            "title": "File type"
-        },
         "lab.title": {
             "title": "Lab"
         },
@@ -285,9 +282,6 @@
         },
         "file_format": {
             "title": "File Format"
-        },
-        "file_type": {
-            "title": "File type"
         },
         "file_size": {
             "title": "File size"
