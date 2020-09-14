@@ -144,10 +144,3 @@ class ReferenceFileSet(Item):
     })
     def assembly(self, request, original_files, status):
         return calculate_assembly(request, original_files, status)
-
-    @calculated_property(condition='assembly', schema={
-        "title": "Hub",
-        "type": "string",
-    })
-    def hub(self, request):
-        return request.resource_path(self, '@@hub', 'hub.txt')
