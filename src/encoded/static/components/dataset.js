@@ -14,6 +14,7 @@ import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
+import urlList from './url';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingDatasets, DatasetTable } from './typeutils';
@@ -464,6 +465,19 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
 
+    // Make a list of url links, if any.
+    const urls = urlList(context.urls);
+
+    function libraryProtocolList(values, field) {
+        if (values && values.length > 0) {
+            return Array.from(new Set(values.map(function(value) { return value.protocol[field] }))).join(", ");
+        }
+        return null;
+    }
+
+    const library_types  = libraryProtocolList(context.libraries, 'library_type');
+    const library_titles = libraryProtocolList(context.libraries, 'name');
+
     return (
         <div className={itemClass}>
             <header>
@@ -491,6 +505,20 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <div data-test="description">
                                     <dt>Description</dt>
                                     <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {library_types ?
+                                <div data-test="library_types">
+                                    <dt>Library types</dt>
+                                    <dd>{library_types}</dd>
+                                </div>
+                            : null}
+
+                            {library_titles ?
+                                <div data-test="library_titles">
+                                    <dt>Protocols</dt>
+                                    <dd>{library_titles}</dd>
                                 </div>
                             : null}
                         </dl>
@@ -526,6 +554,13 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <div data-test="references">
                                     <dt>References</dt>
                                     <dd>{references}</dd>
+                                </div>
+                            : null}
+
+                            {urls ?
+                                <div data-test="urls">
+                                    <dt>URLs</dt>
+                                    <dd>{urls}</dd>
                                 </div>
                             : null}
 

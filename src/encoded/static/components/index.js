@@ -32,7 +32,6 @@ require('./blocks');
 require('./user');
 require('./schema');
 require('./summary');
-require('./region_search');
 require('./gene');
 require('./ontology_term');
 

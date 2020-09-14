@@ -15,9 +15,6 @@ const Footer = ({ version }, reactContext) => {
     }
     return (
         <footer>
-            <div className="container">
-                <div className="app-version">{version}</div>
-            </div>
             <div className="page-footer">
                 <div className="container">
                     <div className="footer-sections">
@@ -48,14 +45,6 @@ const Footer = ({ version }, reactContext) => {
 
 Footer.contextTypes = {
     session: PropTypes.object,
-};
-
-Footer.propTypes = {
-    version: PropTypes.string, // App version number
-};
-
-Footer.defaultProps = {
-    version: '',
 };
 
 export default Footer;

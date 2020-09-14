@@ -5,88 +5,6 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import Tooltip from '../libs/ui/tooltip';
 
 
-/**
- * Render a banner on the home page if a page with the name "/home-banner/" exists and isn't status
- * deleted. Otherwise render nothing.
- */
-class HomeBanner extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** ENCODE page object containing banner */
-            page: null,
-        };
-        this.bannerLoad = this.bannerLoad.bind(this);
-    }
-
-    componentDidMount() {
-        this.bannerLoad();
-    }
-
-    componentDidUpdate(prevProps) {
-        // If we transitioned to a logged-in admin user, try loading the banner page again in case
-        // it existed but was in progress.
-        if (!prevProps.adminUser && this.props.adminUser) {
-            this.bannerLoad();
-        }
-    }
-
-    bannerLoad() {
-        return this.context.fetch('/home-banner/', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.resolve(null);
-        }).then((responseJson) => {
-            // Don't show banner if /home-banner/ is deleted, or if it's in progress and the user
-            // isn't an admin.
-            if (responseJson && responseJson.status !== 'deleted' && (this.props.adminUser || responseJson.status === 'released')) {
-                this.setState({ page: responseJson });
-                return responseJson;
-            }
-            return null;
-        });
-    }
-
-    render() {
-        if (this.state.page) {
-            const mobileExists = this.state.page.layout.blocks.length > 1;
-            return (
-                <div className="home-banner">
-                    <div className={`home-banner${mobileExists ? '--desktop' : ''}`}>
-                        <div dangerouslySetInnerHTML={{ __html: this.state.page.layout.blocks[0].body }} />
-                    </div>
-                    {mobileExists ?
-                        <div className="home-banner--mobile">
-                            <div dangerouslySetInnerHTML={{ __html: this.state.page.layout.blocks[1].body }} />
-                        </div>
-                    : null}
-                </div>
-            );
-        }
-        return null;
-    }
-}
-
-HomeBanner.propTypes = {
-    /** True if current user is logged in as an admin */
-    adminUser: PropTypes.bool,
-};
-
-HomeBanner.defaultProps = {
-    adminUser: false,
-};
-
-HomeBanner.contextTypes = {
-    fetch: PropTypes.func,
-};
-
-
 // Main page component to render the home page
 export default class Home extends React.Component {
     constructor(props) {
@@ -117,7 +35,6 @@ export default class Home extends React.Component {
         return (
             <Panel>
                 <HomeContent />
-                <HomeBanner adminUser={adminUser} />
             </Panel>
         );
     }
