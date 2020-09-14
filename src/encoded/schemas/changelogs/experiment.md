@@ -3,6 +3,7 @@
 ### Minor changes since schema version 30
 * Added *analysis_objects* property.
 * Added *SPRITE-IP* to *assay_term_name* enum
+* Added *life_stage_age* calculated property that summarizes the life stage and age of the biosamples used in the experiment.
 
 ### Schema version 30
 
