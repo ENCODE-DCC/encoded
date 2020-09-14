@@ -468,48 +468,15 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
     // Make a list of url links, if any.
     const urls = urlList(context.urls);
 
-    // Make a list of library types, if any.
-    function libTypeList(values) {
-    // Render each of the links, with null for each value without an identifier property
+    function libraryProtocolList(values, field) {
         if (values && values.length > 0) {
-            const links = values.map((value) => {
-                return (
-                    <li>
-                        {value.protocol.library_type}
-                    </li>
-                );
-            });
-
-            // Render any links into a ul. Just return null if no links to render.
-            return (
-                <ul>{links}</ul>
-            );
+            return Array.from(new Set(values.map(function(value) { return value.protocol[field] }))).join(", ");
         }
         return null;
     }
-    const library_types = libTypeList(context.libraries);
 
-    // Make a list of library titles, if any.
-    function libTitleList(values) {
-    // Render each of the links, with null for each value without an identifier property
-        if (values && values.length > 0) {
-            const links = values.map((value) => {
-                return (
-                    <li>
-                        {value.protocol.title}
-                    </li>
-                );
-            });
-
-            // Render any links into a ul. Just return null if no links to render.
-            return (
-                <ul>{links}</ul>
-            );
-        }
-        return null;
-    }
-    const library_titles = libTitleList(context.libraries);
-
+    const library_types  = libraryProtocolList(context.libraries, 'library_type');
+    const library_titles = libraryProtocolList(context.libraries, 'name');
 
     return (
         <div className={itemClass}>
