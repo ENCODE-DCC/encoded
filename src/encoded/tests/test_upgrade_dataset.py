@@ -430,9 +430,3 @@ def test_upgrade_experiment_29_to_30(upgrader, experiment_29):
     value = upgrader.upgrade('experiment', experiment_29, current_version='29', target_version='30')
     assert value['schema_version'] == '30'
     assert value['assay_term_name'] == 'single-cell RNA sequencing assay'
-
-
-def test_upgrade_experiment_30_to_31(upgrader, experiment_30):
-    value = upgrader.upgrade('experiment', experiment_30, current_version='30', target_version='31')
-    assert value['schema_version'] == '31'
-    assert value['assay_term_name'] == 'small RNA-seq'

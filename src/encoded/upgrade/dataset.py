@@ -640,10 +640,3 @@ def experiment_29_30(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5304
     if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
         value['assay_term_name'] = 'single-cell RNA sequencing assay'
-
-
-@upgrade_step('experiment', '30', '31')
-def experiment_30_31(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-5498
-    if value.get('assay_title') == 'small RNA-seq':
-        value['assay_term_name'] = 'small RNA-seq'
