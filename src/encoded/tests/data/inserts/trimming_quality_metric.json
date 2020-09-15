@@ -10,7 +10,10 @@
         "award": "/awards/U41HG007355/",
         "PE read-pairs processed": 27705275,
         "PE read-pairs trimmed": 8909459,
+        "read_1_with_adapter": 100000,
+        "read_2_with_adapter": 100000,
         "SE reads processed": 0,
-        "SE reads trimmed": 0
+        "SE reads trimmed": 0,
+        "total_read_pairs_processed": 100000
     }
 ]
