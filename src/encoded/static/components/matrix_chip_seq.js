@@ -272,6 +272,11 @@ const tabLevel2 = [
 
 const assayTitlesOptions = tabLevel2.map(tab => tab.id);
 
+/**
+ *  Files (Drosophila melanogaster) and worms (Caenorhabditis elegans) exclude the Histone tab
+ */
+const organismsWithHiddenHistoneAssay = ['Drosophila melanogaster', 'Caenorhabditis elegans'];
+
 
 const Spinner = ({ isActive }) => (
     <>
@@ -651,6 +656,12 @@ class ChIPSeqMatrixPresentation extends React.Component {
             storedSelectedTabLevel3 :
             this.subTabs.length > 0 ? this.ChIPSeqMatrixData.subTabs[0] : null;
 
+        // Note: Hacky. If assay title is Histone and the organism is worm or fly, direct the user to TF assay title
+        if (assayTitle === 'Histone ChIP-seq' && organismsWithHiddenHistoneAssay.includes(organismName)) {
+            const tfUrl = link.replace('assay_title=Histone%20ChIP-seq', 'assay_title=TF ChIP-seq').replace('assay_title=Histone ChIP-seq', 'assay_title=TF ChIP-seq');
+            this.context.navigate(tfUrl);
+        }
+
         // sub chIP Seq data to display
         const chIPSeqData = this.ChIPSeqMatrixData ? this.ChIPSeqMatrixData.chIPSeqData[selectedTabLevel3] : {};
         const matrixUpdate = {
@@ -870,6 +881,11 @@ class ChIPSeqMatrixPresentation extends React.Component {
             header: subTab,
         }));
 
+        // NOTE: In fly (Drosophila melanogaster) and worm (Caenorhabditis elegans), Histone ChIP-seq are hidden
+        const hideAssayTitle = selectedTabLevel1 && organismsWithHiddenHistoneAssay.includes(selectedTabLevel1);
+        const filteredTabLevel2 = hideAssayTitle ?
+            tabLevel2.filter(tab => tab.id !== 'Histone ChIP-seq') :
+            tabLevel2;
 
         for (let i = 0; i < tabLevel1.length; i += 1) {
             const tab1 = tabLevel1[i];
@@ -892,7 +908,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                     <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
                     {showOrganismRequest ? <SelectOrganismModal /> : null }
                     <ChIPSeqTabPanel tabList={tabLevel1} selectedTab={selectedTabLevel1} tabPanelCss="matrix__data-wrapper">
-                        <ChIPSeqTabPanel tabList={tabLevel2} selectedTab={selectedTabLevel2} tabPanelCss="matrix__data-wrapper">
+                        <ChIPSeqTabPanel tabList={filteredTabLevel2} selectedTab={selectedTabLevel2} tabPanelCss="matrix__data-wrapper">
                             <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} tabPanelCss="matrix__data-wrapper" handleTabClick={this.subTabClicked} fontColors={fontColors}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?
                                       <div className="chip_seq_matrix__data" onScroll={this.handleOnScroll} ref={(element) => { this.scrollElement = element; }}>
