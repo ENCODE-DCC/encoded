@@ -3902,10 +3902,13 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
         file_bed_pseudo_replicated_peaks_atac, ATAC_experiment_replicated,
         file_bed_replicated_peaks_atac, replicate_ATAC_seq,
         atac_replication_quality_metric_borderline_replicate_concordance,
-        library_1, biosample_human_1, library_2, biosample_human_2
+        library_1, biosample_human_1, library_2, biosample_human_2,
+        atac_replication_quality_metric_high_peaks, file_bed_IDR_peaks_atac,
+        atac_rep_metric_peaks_only, file_bed_IDR_peaks_2_atac
         ):
     # https://encodedcc.atlassian.net/browse/ENCD-5255
     # https://encodedcc.atlassian.net/browse/ENCD-5350
+    # https://encodedcc.atlassian.net/browse/ENCD-5468
     testapp.patch_json(atac_alignment_quality_metric_low['@id'],
                         {'quality_metric_of': [ATAC_bam['@id']]})
     testapp.patch_json(atac_library_complexity_quality_metric_poor['@id'],
@@ -3915,7 +3918,9 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     testapp.patch_json(
         atac_peak_enrichment_quality_metric_2['@id'],
         {'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']]}
-    )
+        )
+    testapp.patch_json(atac_replication_quality_metric_borderline_replicate_concordance['@id'],
+                       {'quality_metric_of': [file_bed_pseudo_replicated_peaks_atac['@id']]})
     res = testapp.get(ATAC_experiment['@id'] + '@@index-data')
     audit_errors = collect_audit_errors(res)
     assert any(error['category'] == 'low alignment rate' for error in audit_errors)
@@ -3928,17 +3933,38 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'low FRiP score' for error in audit_errors)
     assert any(error['category'] == 'negative RSC' for error in audit_errors)
     assert any(error['category'] == 'negative NSC' for error in audit_errors)
+    assert 'borderline replicate concordance' not in (error['category'] for error in collect_audit_errors(res))
 
     testapp.patch_json(atac_replication_quality_metric_borderline_replicate_concordance['@id'],
-                        {'quality_metric_of': [file_bed_replicated_peaks_atac['@id']]})
+                       {'quality_metric_of': [file_bed_replicated_peaks_atac['@id']]})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_human_1['uuid']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_human_2['uuid']})
     testapp.patch_json(replicate_ATAC_seq['@id'], {'experiment': ATAC_experiment_replicated['@id']})
     testapp.patch_json(file_fastq_1_atac['@id'], {'dataset': ATAC_experiment_replicated['@id']})
     res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
-    audit_errors2 = collect_audit_errors(res2)
-    assert any(error['category'] == 'borderline replicate concordance' for error in audit_errors2)
-    assert 'moderate number of reproducible peaks' not in audit_errors2
+    assert any(error['category'] == 'borderline replicate concordance' for error in collect_audit_errors(res2))
+    assert any(error['category'] == 'insufficient number of reproducible peaks' for error in collect_audit_errors(res2))
+
+    # Reproducible peaks only checked in QC metrics when rescue_ratio/self_consistency_ratio appear
+    testapp.patch_json(atac_rep_metric_peaks_only['@id'],
+                       {'quality_metric_of': [file_bed_IDR_peaks_2_atac['@id']]})
+    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
+    assert any(error['category'] == 'insufficient number of reproducible peaks' for error in collect_audit_errors(res2))
+
+    # When reproducible peaks are checked in multiple files, the better value is reported
+    # Unlike replicate concordance, which is reported per file
+    testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],
+                       {'quality_metric_of': [file_bed_IDR_peaks_atac['@id']]})
+    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
+    assert 'insufficient number of reproducible peaks' not in (error['category'] for error in collect_audit_errors(res2))
+    assert any(error['category'] == 'borderline replicate concordance' for error in collect_audit_errors(res2))
+
+    # Multiple AtacReplicationQualityMetric objects on the same file is flagged
+    # And reproducible peaks/replicate concordance audits are not reported
+    testapp.patch_json(atac_replication_quality_metric_high_peaks['@id'],
+                       {'quality_metric_of': [file_bed_IDR_peaks_2_atac['@id']]})
+    res2 = testapp.get(ATAC_experiment_replicated['@id'] + '@@index-data')
+    assert any(error['category'] == 'duplicate QC metrics' for error in collect_audit_errors(res2))
 
 
 def test_audit_experiment_analysis_files(

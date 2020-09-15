@@ -364,3 +364,14 @@ def replicate_ATAC_seq_2(testapp, ATAC_experiment_replicated, library_2):
         'technical_replicate_number': 1,
     }
     return testapp.post_json('/replicate', item).json['@graph'][0]
+
+
+@pytest.fixture
+def replicate_ATAC_seq_3(testapp, ATAC_experiment_replicated, base_library):
+    item = {
+        'experiment': ATAC_experiment_replicated['@id'],
+        'library': base_library['@id'],
+        'biological_replicate_number': 3,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]
