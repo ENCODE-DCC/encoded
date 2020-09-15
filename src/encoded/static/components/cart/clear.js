@@ -122,12 +122,12 @@ class CartClearButtonComponent extends React.Component {
         const { elements, inProgress } = this.props;
         if (elements.length > 0 && !this.props.locked) {
             return (
-                <React.Fragment>
+                <div className="cart-tools-extras__button">
                     <button disabled={inProgress} onClick={this.handleClearCartClick} id="clear-cart-actuator" className="btn btn-danger btn-sm btn-inline">Clear cart</button>
                     {this.state.modalOpen ?
                         <CartClearModal closeClickHandler={this.handleCloseClick} />
                     : null}
-                </React.Fragment>
+                </div>
             );
         }
         return null;

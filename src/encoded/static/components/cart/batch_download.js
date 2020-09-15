@@ -22,7 +22,7 @@ const ELEMENT_WARNING_LENGTH_MIN = 500;
  * user has logged in, we additionally set a "cart" query string parameter with the @id of the
  * user's cart object, which is used in the metadata.tsv line of the resulting files.txt.
  */
-const batchDownload = (cartType, elements, selectedTerms, facets, savedCartObj, sharedCart, setInProgress, options, fetch) => {
+const batchDownload = (cartType, elements, selectedTerms, selectedType, facets, savedCartObj, sharedCart, setInProgress, options, fetch) => {
     let contentDisposition;
     let cartId;
     if (cartType === 'OBJECT') {
@@ -48,7 +48,7 @@ const batchDownload = (cartType, elements, selectedTerms, facets, savedCartObj, 
     setInProgress(true);
     const visualizableOption = `${options.visualizable ? '&option=visualizable' : ''}`;
     const rawOption = `${options.raw ? '&option=raw' : ''}`;
-    fetch(`/batch_download/?type=Experiment${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}`, {
+    fetch(`/batch_download/?type=${selectedType}${cartId ? `&cart=${encoding.encodedURIComponent(cartId)}` : ''}${fileFormatSelections.length > 0 ? `&${fileFormatSelections.join('&')}` : ''}${visualizableOption}${rawOption}`, {
         method: 'POST',
         headers: {
             Accept: 'text/plain',
@@ -118,6 +118,7 @@ const CartBatchDownloadComponent = (
         cartType,
         elements,
         selectedTerms,
+        selectedType,
         datasetFacets,
         savedCartObj,
         sharedCart,
@@ -125,6 +126,7 @@ const CartBatchDownloadComponent = (
         setInProgress,
         cartInProgress,
         visualizable,
+        disabledMessage,
         fetch,
     }
 ) => {
@@ -148,7 +150,7 @@ const CartBatchDownloadComponent = (
         } else if (downloadType === 'all') {
             options.all = true;
         }
-        batchDownload(cartType, elements, selectedTerms, datasetFacets, savedCartObj, sharedCart, setInProgress, options, fetch);
+        batchDownload(cartType, elements, selectedTerms, selectedType, datasetFacets, savedCartObj, sharedCart, setInProgress, options, fetch);
     };
 
     // Called when the user clicks the button to make the batch-download modal appear.
@@ -168,14 +170,15 @@ const CartBatchDownloadComponent = (
         <React.Fragment>
             <DropdownButton.Selected
                 labels={{
-                    processed: 'Download processed data files',
-                    raw: 'Download raw data files',
-                    all: 'Download all files',
+                    processed: disabledMessage || 'Download processed data files',
+                    raw: disabledMessage || 'Download raw data files',
+                    all: disabledMessage || 'Download all files',
                 }}
                 execute={handleExecute}
                 id="cart-download"
                 triggerVoice="Cart download options"
                 css="cart-download"
+                disabled={!!disabledMessage}
             >
                 <button id="processed" className="menu-item">
                     <div className="cart-download__option-title">Processed data files</div>
@@ -230,6 +233,8 @@ CartBatchDownloadComponent.propTypes = {
     elements: PropTypes.array,
     /** Selected facet terms */
     selectedTerms: PropTypes.object,
+    /** Selected object type */
+    selectedType: PropTypes.string.isRequired,
     /** Facet fields with data from dataset instead of file */
     datasetFacets: PropTypes.array,
     /** Cart as it exists in the database; use JSON payload method if none */
@@ -244,6 +249,8 @@ CartBatchDownloadComponent.propTypes = {
     cartInProgress: PropTypes.bool,
     /** True to download only visualizable files */
     visualizable: PropTypes.bool,
+    /** Message to display in browser tooltip when disabled */
+    disabledMessage: PropTypes.string,
     /** System fetch function */
     fetch: PropTypes.func.isRequired,
 };
@@ -257,6 +264,7 @@ CartBatchDownloadComponent.defaultProps = {
     fileCounts: {},
     cartInProgress: false,
     visualizable: false,
+    disabledMessage: '',
 };
 
 const mapStateToProps = (state, ownProps) => ({

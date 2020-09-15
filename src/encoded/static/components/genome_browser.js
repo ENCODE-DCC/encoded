@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from './fetched';
 import { BrowserFeat } from './browserfeat';
+import { truncateString } from './globals';
 import { filterForVisualizableFiles } from './objectutils';
 import AutocompleteBox from './region_search';
 
@@ -171,9 +172,9 @@ const sortLookUp = (obj, param) => {
     case 'File type':
         return obj.file_type.toLowerCase();
     case 'Assay term name':
-        return obj.assay_term_name.toLowerCase();
+        return obj.assay_term_name && obj.assay_term_name.toLowerCase();
     case 'Biosample term name':
-        return obj.biosample_ontology.term_name.toLowerCase();
+        return obj.biosample_ontology && obj.biosample_ontology.term_name.toLowerCase();
     default:
         return null;
     }
@@ -186,19 +187,29 @@ const TrackLabel = ({ file, label, long }) => {
     const biologicalReplicates = file.biological_replicates && file.biological_replicates.join(', ');
     const splitDataset = file.dataset.split('/');
     const datasetName = splitDataset[splitDataset.length - 2];
+
+    // For Valis in carts, build the short string.
+    let cartShortLabel;
+    if (label === 'cart') {
+        cartShortLabel = _.compact([
+            file.target && file.target.label,
+            file.assay_term_name,
+            file.biosample_ontology && file.biosample_ontology.term_name,
+            file.annotation_type,
+        ]).join(', ');
+    }
+
     return (
         <React.Fragment>
             {(label === 'cart') ?
                 <ul className="gb-info">
-                    {file.target ? <span>{file.target.label}, </span> : null}
-                    {file.assay_term_name ? <span>{file.assay_term_name}, </span> : null}
-                    {file.biosample_ontology && file.biosample_ontology.term_name ? <span>{file.biosample_ontology.term_name}</span> : null}
+                    {cartShortLabel}
                     {long ?
                         <React.Fragment>
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
-                            <li>{`rep ${biologicalReplicates}`}</li>
+                            {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
                         </React.Fragment>
                     : null}
                 </ul>
@@ -549,14 +560,15 @@ class GenomeBrowser extends React.Component {
             let labelLength = 0;
             const defaultHeight = 34;
             const extraLineHeight = 12;
-            const maxCharPerLine = 30;
+            const maxCharPerLine = 26;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
             if (label === 'cart') {
                 labelLength += file.target ? file.target.label.length + 2 : 0;
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
-                labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length : 0;
+                labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
+                labelLength += file.annotation_type ? file.annotation_type.length : 0;
                 labelLength = Math.floor(labelLength / maxCharPerLine);
             }
             if (file.name) {

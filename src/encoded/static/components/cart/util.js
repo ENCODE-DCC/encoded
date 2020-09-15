@@ -6,10 +6,25 @@ import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
 
-/** List of object @type and object path element allowed in the cart. */
-const allowedCartTypes = {
-    Experiment: 'experiments',
+/**
+ * List of dataset types allowed in carts. Maps from collection names to corresponding data:
+ *     title: Displayable title for the type
+ *     type: Object @type, i.e. RHS of "type=<dataset type>" in a query string
+ */
+export const allowedDatasetTypes = {
+    experiments: { title: 'Experiments', type: 'Experiment' },
+    annotations: { title: 'Annotations', type: 'Annotation' },
+    'functional-characterization-experiments': { title: 'Functional characterizations', type: 'FunctionalCharacterizationExperiment' },
 };
+
+/**
+ * The default dataset type for All Datasets. The object matches the real dataset types in
+ * `allowedDatasetTypes` but without a type.
+ */
+export const defaultDatasetType = {
+    all: { title: 'All dataset types' },
+};
+
 
 /** Maximum number of elements allowed in cart while not logged in */
 export const CART_MAXIMUM_ELEMENTS_LOGGEDOUT = 4000;
@@ -35,11 +50,12 @@ MaximumElementsLoggedoutModal.propTypes = {
 
 
 /**
- * Get a mutatable array of object types allowed in carts.
+ * Get a mutatable array of dataset types allowed in carts, i.e. an array of types on the right-
+ * hand side of "type=<dataset type>" in a query string.
  * @return {array} Copy of `allowedCartTypes` global
  */
 export const cartGetAllowedTypes = () => (
-    Object.keys(allowedCartTypes)
+    Object.keys(allowedDatasetTypes).map(datasetType => allowedDatasetTypes[datasetType].type)
 );
 
 
@@ -49,7 +65,7 @@ export const cartGetAllowedTypes = () => (
  * @return {array} Copy of `allowedCartTypes` global
  */
 export const cartGetAllowedObjectPathTypes = () => (
-    Object.keys(allowedCartTypes).map(type => allowedCartTypes[type])
+    Object.keys(allowedDatasetTypes)
 );
 
 

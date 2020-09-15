@@ -69,7 +69,7 @@ class CartMergeSharedComponent extends React.Component {
         if ((viewableDatasets && viewableDatasets.length > 0) && (sharedCartObj['@id'] !== savedCartObj['@id'])) {
             const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
             return (
-                <span>
+                <div className="cart-merge">
                     <button className="btn btn-info btn-sm" disabled={this.props.inProgress} onClick={this.handleMergeButtonClick}>Add to current cart</button>
                     {this.state.mergeCartDisplayed ?
                         <Modal labelId="merge-cart-label" descriptionId="merge-cart-description" focusId="merge-cart-close">
@@ -90,7 +90,7 @@ class CartMergeSharedComponent extends React.Component {
                     {this.state.overMaximumError ?
                         <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
                     : null}
-                </span>
+                </div>
             );
         }
 

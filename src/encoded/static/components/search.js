@@ -303,7 +303,7 @@ const ExperimentComponent = (props, reactContext) => {
 
     if (isEnhancerExperiment) {
         if (result.biosamples && result.biosamples.length > 0) {
-            biosamples = result.biosamples.map(sample => biosamples);
+            biosamples = result.biosamples;
         }
     } else {
         if (result.replicates && result.replicates.length > 0) {
@@ -319,9 +319,9 @@ const ExperimentComponent = (props, reactContext) => {
     // Collect synchronizations
     if (isEnhancerExperiment) {
         if (biosamples && biosamples.length > 0) {
-            synchronizations = _.uniq(biosamples.filter(biosample => biosample && biosample.synchronization).map((biosample) => {
-                return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
-            }));
+            synchronizations = _.uniq(biosamples.filter(biosample => biosample && biosample.synchronization).map(biosample => (
+                `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`
+            )));
         }
     } else if (result.replicates && result.replicates.length > 0) {
         synchronizations = _.uniq(result.replicates.filter(replicate =>
@@ -455,6 +455,68 @@ const Experiment = auditDecor(ExperimentComponent);
 globals.listingViews.register(Experiment, 'Experiment');
 globals.listingViews.register(Experiment, 'FunctionalCharacterizationExperiment');
 globals.listingViews.register(Experiment, 'TransgenicEnhancerExperiment');
+
+
+const AnnotationComponent = ({ context: result, cartControls, mode, auditIndicators, auditDetail }, reactContext) => (
+    <li className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">
+                    {datasetTypes[result['@type'][0]]}
+                    {result.description ? <span>{`: ${result.description}`}</span> : null}
+                </a>
+                <div className="result-item__data-row">
+                    <div><strong>Lab: </strong>{result.lab.title}</div>
+                    <div><strong>Project: </strong>{result.award.project}</div>
+                </div>
+            </div>
+            <div className="result-item__meta">
+                <div className="result-item__meta-title">Annotation</div>
+                <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                {mode !== 'cart-view' ?
+                    <React.Fragment>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+                    </React.Fragment>
+                : null}
+            </div>
+            {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                <div className="result-item__cart-control">
+                    <CartToggle element={result} />
+                </div>
+            : null}
+            <PickerActions context={result} />
+        </div>
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
+    </li>
+);
+
+AnnotationComponent.propTypes = {
+    /** Dataset search results */
+    context: PropTypes.object.isRequired,
+    /** True if displayed in active cart */
+    cartControls: PropTypes.bool,
+    /** Special search-result modes, e.g. "picker" */
+    mode: PropTypes.string,
+    /** Audit decorator function */
+    auditIndicators: PropTypes.func.isRequired,
+    /** Audit decorator function */
+    auditDetail: PropTypes.func.isRequired,
+};
+
+AnnotationComponent.defaultProps = {
+    cartControls: false,
+    mode: '',
+};
+
+AnnotationComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
+};
+
+const Annotation = auditDecor(AnnotationComponent);
+
+globals.listingViews.register(Annotation, 'Annotation');
 
 
 const DatasetComponent = (props, reactContext) => {

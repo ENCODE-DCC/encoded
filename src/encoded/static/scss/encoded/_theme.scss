@@ -6,6 +6,9 @@ select {
     border: 1px solid #428bca !important;
     color: #428bca !important;
     font-weight: bold;
+    font-family: $button-font;
+    font-weight: 700;
+    font-size: 1rem;
 
     &::-ms-expand {
         display: none;
