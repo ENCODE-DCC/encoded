@@ -33,10 +33,14 @@ def caclulate_donor_prop(self, request, donors, propname):
         for donor_id in donors:
             donorObject = request.embed(donor_id, '@@object')
             if propname in donorObject and donorObject[propname] not in collected_values:
-                collected_values.append(donorObject[propname])
+                if isinstance(donorObject[propname], str):
+                    collected_values.append(donorObject[propname])
+                elif isinstance(donorObject[propname], list):
+                    for i in donorObject[propname]:
+                        collected_values.append(i)
 
     if not collected_values:
-        return ['unknown']
+        return ['']
     else:
         return collected_values
 
@@ -75,160 +79,6 @@ class Biosample(Item):
         }
         return sorted(all_donors)
 
-    @calculated_property(define=True,
-                         schema={"title": "Organism",
-                                 "type": "string",
-                                 "linkTo": "Organism"
-                                })
-    def organism(self, request, registry, donors=None):
-        if donors is not None:
-            for donor_id in donors:
-                donorObject = request.embed(donor_id, '@@object')
-                if 'organism' in donorObject:
-                    return donorObject['organism']
-
-    @calculated_property(define=True,
-                         schema={"title": "Sex",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                    }
-                                 })
-    def sex(self, request, donors=None, model_organism_sex=None, organism=None):
-        humanFlag = False
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name'] == 'Homo sapiens':
-                humanFlag = True
-
-        if humanFlag is True:
-            if donors is not None:
-                return caclulate_donor_prop(self, request, donors, 'sex')
-            else:
-                return ['unknown']
-
-        else:
-            if model_organism_sex is not None:
-                return [model_organism_sex]
-            else:
-                return ['unknown']
-
-    @calculated_property(define=True,
-                         schema={"title": "Age",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                    }
-                                 })
-    def age(self, request, donors=None, model_organism_age=None, organism=None):
-        humanFlag = False
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name'] == 'Homo sapiens':
-                humanFlag = True
-
-        if humanFlag is True:
-            if donors is not None:
-                return caclulate_donor_prop(self, request, donors, 'age')
-            else:
-                return ['unknown']
-
-        else:
-            if model_organism_age is not None:
-                return [model_organism_age]
-            else:
-                return ['unknown']
-
-    @calculated_property(define=True,
-                         schema={"title": "Age units",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                    }
-                                 })
-    def age_units(self, request, donors=None, model_organism_age_units=None, organism=None):
-        humanFlag = False
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name'] == 'Homo sapiens':
-                humanFlag = True
-
-        if humanFlag is True:
-            if donors is not None:
-                return caclulate_donor_prop(self, request, donors, 'age_units')
-            else:
-                return ['unknown']
-
-        else:
-            if model_organism_age_units is not None:
-                return [model_organism_age_units]
-            else:
-                return ['unknown']
-
-
-    @calculated_property(define=True,
-                        schema={
-                        "title": "Age display",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                    }
-                                 })
-    def age_display(self, request, donors=None):
-        if donors is not None:
-            return caclulate_donor_prop(self, request, donors, 'age_display')
-        else:
-            return ['unknown']
-
-
-    @calculated_property(define=True,
-                         schema={"title": "Donor diseases",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                    }
-                                 })
-    def donor_diseases(self, request, donors=None, organism=None):
-        humanFlag = False
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name'] == 'Homo sapiens':
-                humanFlag = True
-
-        if humanFlag is True:
-            if donors is not None:
-                return caclulate_donor_prop(self, request, donors, 'diseases')
-            else:
-                return ['unknown']
-
-        else:
-            return ['unknown']
-
-    @calculated_property(define=True,
-                         schema={"title": "Life stage",
-                                 "type": "array",
-                                 "items": {
-                                    "type": "string"
-                                    }
-                                 })
-    def life_stage(self, request, donors=None, mouse_life_stage=None, organism=None):
-        humanFlag = False
-        if organism is not None:
-            organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name'] == 'Homo sapiens':
-                humanFlag = True
-
-        if humanFlag is True:
-            if donors is not None:
-                return caclulate_donor_prop(self, request, donors, 'life_stage')
-            else:
-                return ['unknown']
-
-        else:
-            if mouse_life_stage is not None:
-                return [mouse_life_stage]
-            else:
-                return ['unknown']
 
     @calculated_property(schema={
         "title": "Summary",
@@ -302,19 +152,6 @@ class Biosample(Item):
 
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
-
-    @calculated_property(schema={
-        "title": "Perturbed",
-        "description": "A flag to indicate whether the biosample has been perturbed with a treatment.",
-        "type": "boolean",
-        "notSubmittable": True,
-    })
-    def perturbed(
-        self,
-        request,
-        treatments=None,
-    ):
-        return bool(treatments)
 
 
 def generate_summary_dictionary(
@@ -620,19 +457,6 @@ class CellCulture(Culture):
 
 
 @collection(
-    name='suspensions',
-    unique_key='accession',
-    properties={
-        'title': 'Suspensions',
-        'description': 'Listing of Suspensions',
-    })
-class Suspension(Biosample):
-    item_type = 'suspension'
-    schema = load_schema('encoded:schemas/suspension.json')
-    embedded = Biosample.embedded + []
-
-
-@collection(
     name='organoids',
     unique_key='accession',
     properties={
@@ -656,3 +480,102 @@ class Tissue(Biosample):
     item_type = 'tissue'
     schema = load_schema('encoded:schemas/tissue.json')
     embedded = Biosample.embedded + []
+
+
+@collection(
+    name='suspensions',
+    unique_key='accession',
+    properties={
+        'title': 'Suspensions',
+        'description': 'Listing of Suspensions',
+    })
+class Suspension(Biosample):
+    item_type = 'suspension'
+    schema = load_schema('encoded:schemas/suspension.json')
+    embedded = Biosample.embedded + []
+
+
+    @calculated_property(define=True,
+                         schema={"title": "Organisms",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def organisms(self, request, registry, donors=None):
+        if donors is not None:
+            org_list = []
+            organisms = caclulate_donor_prop(self, request, donors, 'organism')
+            for organism in organisms:
+                organismObject = request.embed(organism, '@@object')
+                if organismObject.get('scientific_name') not in org_list:
+                    org_list.append(organismObject.get('scientific_name'))
+            return org_list
+
+
+    @calculated_property(define=True,
+                         schema={"title": "Sex",
+                                 "type": "string"
+                                 })
+    def sex(self, request, donors=None, organism=None):
+        if donors is not None:
+            donorsex = caclulate_donor_prop(self, request, donors, 'sex')
+            if len(donorsex) > 1:
+                return 'mixed'
+            else:
+                return donorsex[0]
+        else:
+            return 'unknown'
+
+
+    @calculated_property(define=True,
+                        schema={
+                        "title": "Age display",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def age_display(self, request, donors=None):
+        if donors is not None:
+            return caclulate_donor_prop(self, request, donors, 'age_display')
+        else:
+            return ['unknown']
+
+
+    @calculated_property(define=True,
+                         schema={"title": "Donor diseases",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def donor_diseases(self, request, donors=None):
+        if donors is not None:
+            conn = request.registry[CONNECTION]
+            disease_list = []
+            disease_ontologies = caclulate_donor_prop(self, request, donors, 'diseases')
+            if disease_ontologies != ['']:
+                for disease in disease_ontologies:
+                    disease_obj = conn.get_by_unique_key('ontology_term:name', disease.split('/')[-2]).__json__(request)
+                    if disease_obj.get('term_name') not in disease_list:
+                        disease_list.append(disease_obj.get('term_name'))
+                return disease_list
+            else:
+                return ['unknown']
+        else:
+            return ['unknown']
+
+
+    @calculated_property(define=True,
+                         schema={"title": "Life stage",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                 })
+    def life_stage(self, request, donors=None, mouse_life_stage=None, organism=None):
+        if donors is not None:
+            return caclulate_donor_prop(self, request, donors, 'life_stage')
+        else:
+            return ['unknown']
