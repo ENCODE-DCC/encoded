@@ -1639,6 +1639,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                     cornerRadius: 16,
                     contributing: fileId,
                     ref: {},
+                    displayDecoration: true,
                     decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
                 });
             }
@@ -1675,6 +1676,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 cornerRadius: 16,
                 parentNode: replicateNode,
                 ref: fileRef,
+                displayDecoration: true,
                 decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
             }, metricsInfo);
 
@@ -1717,6 +1719,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                         fileId: file['@id'],
                         fileAccession: file.title,
                         stepVersion: file.analysis_step_version,
+                        displayDecoration: true,
                         decorationClass: infoNode && infoNode.id === stepId ? 'decoration--active' : '',
                     });
                 }
@@ -1774,6 +1777,7 @@ export function assembleGraph(files, highlightedFiles, dataset, options, loggedI
                 cornerRadius: 16,
                 contributing: groupHash,
                 ref: coalescingGroup,
+                displayDecoration: true,
                 decorationClass: infoNode && infoNode.id === fileNodeId ? 'decoration--active' : '',
             });
         }
