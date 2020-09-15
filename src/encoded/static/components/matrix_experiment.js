@@ -306,7 +306,9 @@ const MatrixHeader = ({ context }) => {
                     <MatrixBadges context={context} type={type} />
                 </div>
                 {matrixDescription ?
-                    <div className="matrix-description">{matrixDescription}</div>
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">{matrixDescription}</div>
+                    </div>
                 : null}
             </div>
             <div className="matrix-header__controls">

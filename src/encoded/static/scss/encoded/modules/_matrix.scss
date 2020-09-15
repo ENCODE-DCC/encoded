@@ -822,7 +822,13 @@ $row-data-header-width: 200px;
 
 
 .matrix-description {
-    width: 60%;
+    display: flex;
+    justify-content: flex-end;
+
+    @at-root #{&}__text {
+        flex-basis: 40%;
+        text-align: right;
+    }
 }
 
 

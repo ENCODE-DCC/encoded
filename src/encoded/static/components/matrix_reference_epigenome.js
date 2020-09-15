@@ -387,7 +387,9 @@ const MatrixHeader = ({ context, showProjects, project }, reactContext) => {
                     {organism ? <MatrixBadges context={context} type={`ReferenceEpigenome-${organism}`} /> : null}
                 </div>
                 {matrixDescription ?
-                    <div className="matrix-description">{matrixDescription}</div>
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">{matrixDescription}</div>
+                    </div>
                 : null}
             </div>
             {showProjects ?

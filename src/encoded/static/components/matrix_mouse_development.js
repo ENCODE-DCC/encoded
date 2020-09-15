@@ -596,7 +596,9 @@ const MatrixHeader = ({ context }) => (
                 <MatrixBadges context={context} type="MouseDevelopment" />
             </div>
             <div className="matrix-description">
-                The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
+                <div className="matrix-description__text">
+                    The mouse development matrix displays embryonic to postnatal mouse developmental time course data across several tissues organized as reference epigenomes.
+                </div>
             </div>
         </div>
     </div>
