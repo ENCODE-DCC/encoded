@@ -20,16 +20,16 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
 
 
-def calculate_assembly(request, files_list, status):
-    assembly = set()
+def calculate_refver(request, files_list, status):
+    refver = set()
     viewable_file_status = ['released','in progress']
 
     for path in files_list:
         properties = request.embed(path, '@@object?skip_calculated=true')
         if properties['status'] in viewable_file_status:
-            if 'assembly' in properties:
-                assembly.add(properties['assembly'])
-    return list(assembly)
+            if 'reference_version' in properties:
+                refver.add(properties['reference_version'])
+    return list(refver)
 
 
 @collection(
@@ -74,32 +74,6 @@ class ReferenceFileSet(Item):
     def original_files(self, request, original_files):
         return paths_filtered_by_status(request, original_files)
 
-    @calculated_property(schema={
-        "title": "Contributing files",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "DataFile",
-        },
-    })
-    def contributing_files(self, request, original_files, status):
-        derived_from = set()
-        for path in original_files:
-            properties = request.embed(path, '@@object?skip_calculated=true')
-            derived_from.update(
-                paths_filtered_by_status(request, properties.get('derived_from', []))
-            )
-        outside_files = list(derived_from.difference(original_files))
-        if status in ('released'):
-            return paths_filtered_by_status(
-                request, outside_files,
-                include=('released',),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, outside_files,
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
 
     @calculated_property(schema={
         "title": "Files",
@@ -136,11 +110,11 @@ class ReferenceFileSet(Item):
         ]
 
     @calculated_property(define=True, schema={
-        "title": "Genome assembly",
+        "title": "Reference version",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, status):
-        return calculate_assembly(request, original_files, status)
+    def reference_version(self, request, original_files, status):
+        return calculate_refver(request, original_files, status)
