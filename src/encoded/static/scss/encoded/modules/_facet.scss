@@ -238,6 +238,10 @@ fieldset.facet {
         border-radius: 3px;
     }
 
+    &.negated-selected>.facet-term__item {
+        text-decoration: line-through;
+    }
+
     // Optional icon in status facets.
     @at-root #{&}__status {
         margin-right: 5px;

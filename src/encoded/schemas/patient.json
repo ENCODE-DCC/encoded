@@ -4,7 +4,7 @@
     "id": "/profiles/patient.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "identifyingProperties": ["uuid", "accession", "aliases"],
-    "required": ["gender", "race", "ethnicity"],
+    "required": ["sex", "race", "ethnicity"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -23,8 +23,8 @@
         "accession": {
             "accessionType": "PT"
         },
-        "gender": {
-            "title": "Gender",
+        "sex": {
+            "title": "Sex",
             "type": "string",
             "enum": [
                 "Female",
@@ -32,20 +32,7 @@
                 "Unknown"
             ]
         },
-        "age": {
-            "title": "Diagnosis age",
-            "description": "The age of diagnosis.",
-            "type": "string",
-            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
-        },
-        "age_units": {
-            "title": "Diagnosis age units",
-            "type": "string",
-            "default": "year",
-            "enum": [
-                "year"
-            ]
-        },
+
         "race": {
             "title": "Race",
             "type": "string",
@@ -76,7 +63,7 @@
             "permission": "import_items",
             "uniqueKey": true
         },
-        
+
         "death_date": {
             "title": "Death Date",
             "description": "Death date of patient.",
@@ -97,15 +84,30 @@
                 "Parkland Hospital",
                 "Tumor Registry"
             ]
+        },
+        "diagnosis_date_tumor_registry": {
+            "title": "Diagnosis Date from Tumor Registry",
+            "description": "Diagnosis date of patient from Tumor Registry.",
+            "comment": "Date can be submitted as YYYY-MM-DD.",
+            "type": "string",
+            "anyOf": [
+                {
+                    "format": "date"
+                }
+            ]
         }
 
     },
     "facets": {
-        "age_range": {
+        "diagnosis.age_range": {
             "title": "Age at Diagnosis"
         },
-        "gender": {
-            "title": "Gender"
+        "diagnosis.follow_up_duration_range": {
+            "title": "Follow Up Duration"
+        },
+        
+        "sex": {
+            "title": "Sex"
         },
         "ethnicity": {
             "title": "Ethnicity"
@@ -136,18 +138,15 @@
         "surgery.surgery_procedure.nephrectomy_details.approach": {
             "title": "Nephrectomy Approach"
         },
-
-        "sur_nephr_robotic_assist":{
+        "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "sur_path_tumor_size":{
+        "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
-
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
@@ -187,10 +186,10 @@
         "radiation_summary": {
             "title": "Radiation Treatment Status"
         },
-        "dose_range": {
+        "radiation.dose_range": {
             "title": "Radiation Dose per Fraction"
         },
-        "fractions_range": {
+        "radiation.fractions_range": {
             "title": "Radiation Fractions"
         },
         "radiation.site_general" : {
@@ -199,6 +198,19 @@
         "radiation.treatment_intention" : {
           "title": "Radiation Treatment Intention"
         },
+        "metastasis_status": {
+            "title": "Metastasis Status"
+        },
+        "metastasis.histology_proven": {
+            "title": "Metastasis Histology Proven"
+        },
+        "metastasis.site": {
+            "title": "Metastatic Site"
+        },
+        "metastasis.source": {
+            "title": "Metastasis Source"
+        },
+
         "biospecimen.sample_type": {
               "title": "Biospecimen Sample Type"
         },
@@ -223,14 +235,17 @@
         "accession": {
             "title": "Accession"
         },
-        "age": {
+        "diagnosis.age": {
             "title": "Diagnosis age"
         },
-        "age_units": {
+        "diagnosis.age_unit": {
             "title": "Diagnosis age units"
         },
-        "gender": {
-            "title": "Gender"
+        "diagnosis.follow_up_duration_range": {
+            "title": "Follow Up Duration"
+        },
+        "sex": {
+            "title": "Sex"
         },
         "ethnicity": {
             "title": "Ethnicity"
@@ -241,17 +256,15 @@
         "status": {
             "title": "Status"
         },
-        "sur_nephr_robotic_assist":{
+        "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "sur_path_tumor_size":{
+        "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
-
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "surgery.pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
@@ -282,7 +295,7 @@
     },
     "boost_values": {
         "accession": 1.0,
-        "gender": 1.0,
+        "sex": 1.0,
         "ethnicity": 1.0,
         "race": 1.0,
         "germline.target": 1.0,
@@ -301,4 +314,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-

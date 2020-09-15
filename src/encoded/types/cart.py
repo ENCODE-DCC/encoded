@@ -28,8 +28,8 @@ from encoded.cart_view import (
     name='carts',
     unique_key='cart:identifier',
     properties={
-        'title': 'Cart',
-        'description': 'Listing of cart contents',
+        'title': 'Cohort',
+        'description': 'Listing of cohort contents',
     },
     acl=[
         (Allow, Authenticated, 'save-carts'),

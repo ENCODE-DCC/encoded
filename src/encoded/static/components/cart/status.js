@@ -100,7 +100,7 @@ class CartStatusComponent extends React.Component {
             // Define the menu items for the Cart Status menu.
             const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
-            const viewCartItem = <a key="view" href="/cart-view/">View cohort</a>;
+            const viewCartItem = <a key="view" href="/cohort-view/">View cohort</a>;
             const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cohort</button>;
             const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
             if (loggedIn) {
@@ -120,7 +120,7 @@ class CartStatusComponent extends React.Component {
                         <DropdownMenuSep key="sep-2" />
                     );
                 }
-                menuItems.push(<a key="manage" href="/cart-manager/">Cohort manager</a>);
+                menuItems.push(<a key="manage" href="/cohort-manager/">Cohort manager</a>);
             } else {
                 menuItems.push(viewCartItem, clearCartItem);
             }
@@ -131,7 +131,7 @@ class CartStatusComponent extends React.Component {
                     dropdownTitle={<CartNavTitle elements={elements} locked={locked} inProgress={inProgress} />}
                     openDropdown={openDropdown}
                     dropdownClick={dropdownClick}
-                    label={`${locked ? 'locked' : ''} cart containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+                    label={`${locked ? 'locked' : ''} cohort containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
                     buttonCss="cart__nav-button"
                 >
                     <DropdownMenu label="cart-control">

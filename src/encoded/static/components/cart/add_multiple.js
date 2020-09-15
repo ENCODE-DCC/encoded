@@ -106,9 +106,9 @@ class CartAddAllSearchComponent extends React.Component {
                     disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
                     onClick={this.handleClick}
-                    title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
+                    title={`Add all patients in search results to cohort${cartName ? `: ${cartName}` : ''}`}
                 >
-                    Add all items to cart
+                    Add all items to cohort
                 </button>
                 {this.state.overMaximumError ?
                     <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
@@ -197,9 +197,9 @@ const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAl
                 disabled={inProgress || savedCartObj.locked}
                 className="btn btn-info btn-sm"
                 onClick={handleClick}
-                title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
+                title={`Add all related patients to cart${cartName ? `: ${cartName}` : ''}`}
             >
-                Add all items to cart
+                Add all items to cohort
             </button>
         </div>
     );

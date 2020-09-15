@@ -76,7 +76,7 @@ class EncodeSearch extends React.Component {
                             <input id="encode-search" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
                         </div>
                         <div className="site-search__submit">
-                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info btn-sm site-search__submit-element">KCE <i className="icon icon-search" /></button>
+                            <button type="submit" aria-label="KCE portal search" title="KCE portal search" disabled={this.state.disabledSearch} className="btn btn-info btn-sm site-search__submit-element">KCE <i className="icon icon-search" /></button>
                         </div>
                     </fieldset>
                 </form>
@@ -645,6 +645,7 @@ export default class Home extends React.Component {
         const currentQuery = generateQuery(this.state.organisms, this.state.assayCategory);
 
         return (
+<<<<<<< HEAD
             <Panel>
                 <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
                 <HomeBanner adminUser={adminUser} />
@@ -663,6 +664,25 @@ export default class Home extends React.Component {
                     </div>
                     <div className="social-twitter">
                         <TwitterWidget height={this.state.socialHeight} />
+=======
+            <div className="whole-page">
+                <div className="row">
+                    <div className="col-xs-12">
+                        <Panel>
+                        <img src="/static/img/banner-bg.jpg  " alt="UT Southwestern" id="su-logo" height="390"/>
+                            <div className="social">
+                                <div className="social-news">
+                                    <div className="news-header">
+                                        <h2>News <a href={newsUri} title="More KCP news" className="twitter-ref">More KCP news</a></h2>
+                                    </div>
+                                    <NewsLoader newsLoaded={this.newsLoaded} />
+                                </div>
+                                <div className="social-twitter">
+                                    <TwitterWidget height={this.state.socialHeight} />
+                                </div>
+                            </div>
+                        </Panel>
+>>>>>>> kce
                     </div>
                 </div>
             </Panel>

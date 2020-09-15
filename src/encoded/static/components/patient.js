@@ -20,6 +20,7 @@ import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 import SurgeryChart from './surgeryChart';
 import BiospecimenTable from "./biospecimenTable";
 import PatientPathTable from './patientPathTable';
+import Metastasis from "./metastasis";
 
 /* eslint-disable react/prefer-stateless-function */
 class Patient extends React.Component {
@@ -91,6 +92,8 @@ class Patient extends React.Component {
       { id: <i>{context.accession}</i> },
     ];
     const crumbsReleased = (context.status === 'released');
+    const ageUnit = (context.diagnosis.age_unit && context.diagnosis.age != "90 or above" && context.diagnosis.age != "Unknown") ? ` ${context.diagnosis.age_unit}` : '';
+
     let hasLabs = false;
     let hasVitals = false;
     let hasPath = false;
@@ -99,6 +102,7 @@ class Patient extends React.Component {
     let hasMedication = false;
     let hasRadiation = false;
     let hasBiospecimen = false;
+    let hasMetastasis = false;
     if (Object.keys(this.props.context.labs).length > 0) {
       hasLabs = true;
     }
@@ -123,6 +127,9 @@ class Patient extends React.Component {
     if (Object.keys(this.props.context.biospecimen).length > 0) {
       hasBiospecimen = true;
     }
+    if (Object.keys(this.props.context.metastasis).length > 0) {
+      hasMetastasis = true;
+    }
     const labsPanelBody = (
       <PatientChart chartId="labsChart" data={context.labs} ></PatientChart>
 
@@ -131,14 +138,17 @@ class Patient extends React.Component {
       <PatientChart chartId="vitalChart" data={context.vitals} ></PatientChart>
     );
     const surgeryPanelBody = (
-      <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time"></SurgeryChart>
+      <SurgeryChart chartId="surgery" data={context.surgery} chartTitle="Surgeries Results Over Time" last_follow_up_date={context.last_follow_up_date} first_treatment_date={context.diagnosis.first_treatment_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></SurgeryChart>
     );
 
     const medicationPanelBody = (
-      <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time"></MedicationChart>
+      <MedicationChart chartId="medication" data={context.medications} chartTitle="Medications Results Over Time" last_follow_up_date={context.last_follow_up_date} first_treatment_date={context.diagnosis.first_treatment_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></MedicationChart>
     );
     const radiationPanelBody = (
-      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History"></Radiation>
+      <Radiation chartId="radiation" data={context.radiation} chartTitle="Radiation History" last_follow_up_date={context.last_follow_up_date} first_treatment_date={context.diagnosis.first_treatment_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Radiation>
+    );
+    const metastasisPanelBody = (
+      <Metastasis chartId="metastasis" data={context.metastasis} chartTitle="Metastasis History" last_follow_up_date={context.last_follow_up_date} first_treatment_date={context.diagnosis.first_treatment_date} diagnosis_date={context.diagnosis.diagnosis_date} death_date={context.death_date}></Metastasis>
     );
     const pathPanelBody = (
       <dl className="key-value">{this.createPathPanel()}</dl>
@@ -148,13 +158,15 @@ class Patient extends React.Component {
     return (
       <div className={globals.itemClass(context, 'view-item')}>
         <header className="row">
-          <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script>
+          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
           <script src="https://unpkg.com/axios@0.18.0/dist/axios.min.js" ></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
           <div className="col-sm-12">
             <Breadcrumbs root="/search/?type=Patient" crumbs={crumbs} crumbsReleased={crumbsReleased} />
             <h2>{context.accession}</h2>
-
+            <div className="cart__toggle--header">
+                <CartToggle element={context} />
+            </div>
           </div>
         </header>
 
@@ -168,9 +180,9 @@ class Patient extends React.Component {
                 <dt>Status</dt>
                 <dd><Status item={context} inline /></dd>
               </div>
-              <div data-test="gender">
-                <dt>Gender</dt>
-                <dd>{context.gender}</dd>
+              <div data-test="sex">
+                <dt>Sex</dt>
+                <dd>{context.sex}</dd>
               </div>
 
               <div data-test="ethnicity">
@@ -185,14 +197,19 @@ class Patient extends React.Component {
 
               <div data-test="age">
                 <dt>Age at diagnosis</dt>
-                <dd className="sentence-case">
-                  {formatMeasurement(context.age, context.age_units)}
-                </dd>
+                <dd>{`${context.diagnosis.age}${ageUnit}`}</dd>
               </div>
-               <div data-test="last_follow_up_date">
-                <dt>Last Follow Up Date</dt>
-                <dd>{context.last_follow_up_date} </dd>
+
+              <div data-test="diagnosis_date">
+                <dt>Diagnosis Date</dt>
+                <dd>{`${context.diagnosis.diagnosis_date} ( Diagnosis Source: `}{`${context.diagnosis.diagnosis_source} )`}</dd>
               </div>
+
+              <div data-test="last_follow_up_date">
+               <dt>Last Follow Up Date</dt>
+               <dd>{context.last_follow_up_date} </dd>
+             </div>
+
               {context.death_date && <div data-test="death_date">
                 <dt>Death Date</dt>
                 <dd>{`${context.death_date} ( Death Source: `}{`${context.death_source} )`}</dd>
@@ -204,10 +221,11 @@ class Patient extends React.Component {
         {hasVitals && <CollapsiblePanel panelId="myPanelId2" title="Vital Results Over Time" content={vitalsPanelBody} />}
         {hasPath && <PatientPathTable data={context.surgery} tableTitle="Patient Diagnosis"></PatientPathTable>}
         {hasSurgery && <CollapsiblePanel panelId="myPanelId3" title="Surgical Results Over Time" content={surgeryPanelBody} />}
-        {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
-        {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
-        {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
         {hasRadiation && <CollapsiblePanel panelId="myPanelId5" title="Radiation History" content={radiationPanelBody} />}
+        {hasMetastasis && <CollapsiblePanel panelId="myPanelId6" title="Metastasis History" content={metastasisPanelBody} />}
+        {hasMedication && <CollapsiblePanel panelId="myPanelId4" title="Medications Results Over Time" content={medicationPanelBody} />}
+        {hasIHC && <IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
+        {<GermlineTable data={context.germline} tableTitle="Germline Mutation"></GermlineTable>}
         {hasBiospecimen && <BiospecimenTable data={context.biospecimen} tableTitle="Biospecimens from this patient"></BiospecimenTable>}
         <button onClick={this.topFunction} id="scrollUpButton" title="Go to top"><FontAwesomeIcon icon={faAngleDoubleUp} size="2x" /></button>
       </div>

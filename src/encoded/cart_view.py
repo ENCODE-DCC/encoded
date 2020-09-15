@@ -16,9 +16,8 @@ CART_ADMIN_MAX = 200  # Maximum per admin user
 
 def includeme(config):
     # config.scan()
-    config.add_route('cart-view', '/cart-view{slash:/?}')
-    config.add_route('cart-manager', '/cart-manager{slash:/?}')
-    config.add_route('search_elements', '/search_elements/{search_params}')
+    config.add_route('cart-view', '/cohort-view{slash:/?}')
+    config.add_route('cart-manager', '/cohort-manager{slash:/?}')
     config.scan(__name__)
 
 
@@ -45,7 +44,7 @@ def get_cart_objects_by_user(request, userid, blocked_statuses=[]):
 @view_config(route_name='cart-view', request_method='GET', permission='search')
 def cart_view(context, request):
     result = {
-        '@id': '/cart-view/',
+        '@id': '/cohort-view/',
         '@type': ['cart-view'],
         'title': 'Cohort',
         'facets': [],
@@ -70,7 +69,7 @@ def cart_manager(context, request):
         c['element_count'] = len(c['elements'])
         del c['elements']
     result = {
-        '@id': '/cart-manager/',
+        '@id': '/cohort-manager/',
         '@type': ['cart-manager'],
         'title': 'Cohort',
         'facets': [],

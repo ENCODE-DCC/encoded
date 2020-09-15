@@ -63,14 +63,17 @@ const assemblySorter = facetTerms => (
  * - sorter: Function to sort terms within the facet
  */
 const displayedFacetFields = [
+<<<<<<< HEAD
+
     { field: 'assembly', title: 'Genome assembly', radio: true, sorter: assemblySorter },
     { field: 'output_type', title: 'Output type' },
     { field: 'file_type', title: 'File type' },
     { field: 'file_format', title: 'File format' },
     { field: 'assay_term_name', title: 'Assay term name' },
-    { field: 'biosample_ontology.term_name', title: 'Biosample term name', dataset: true },
-    { field: 'target.label', title: 'Target of assay', dataset: true },
-    { field: 'lab.title', title: 'Lab' },
+    { field: 'sample_type', title: 'Sample Type'},
+    { field: 'tissue_derivatives', title: 'Tissue Derivatives'},
+    { field: 'tissue_type', title: 'Tissue Type'},
+    { field: 'anatomic_site', title: 'Anatomic Site'},
     { field: 'status', title: 'Status' },
 ];
 
@@ -112,14 +115,14 @@ class CartSearchResults extends React.Component {
     /**
      * Given the whole cart elements as a list of @ids as well as the currently displayed page
      * number, perform a search of a page of elements. If every element in the cart is an
-     * patient, add "?type=Patient" to the search query. For now, this condition is always
+     * experiment, add "?type=Experiment" to the search query. For now, this condition is always
      * true.
      */
     retrievePageElements() {
         const pageStartIndex = this.props.currentPage * PAGE_ELEMENT_COUNT;
         const currentPageElements = this.props.elements.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
-        const patientTypeQuery = this.props.elements.every(element => element.match(/^\/patients\/.*?\/$/) !== null);
-        const cartQueryString = `/search/?limit=all${patientTypeQuery ? '&type=Patient' : ''}`;
+        const experimentTypeQuery = this.props.elements.every(element => element.match(/^\/patients\/.*?\/$/) !== null);
+        const cartQueryString = `/search/?limit=all${experimentTypeQuery ? '&type=Patient' : ''}`;
         requestObjects(currentPageElements, cartQueryString).then((searchResults) => {
             this.setState({ elementsForDisplay: searchResults });
         });
@@ -127,7 +130,7 @@ class CartSearchResults extends React.Component {
 
     render() {
         if (this.state.elementsForDisplay && this.state.elementsForDisplay.length === 0) {
-            return <div className="nav result-table cart__empty-message">No visible patient on this page.</div>;
+            return <div className="nav result-table cart__empty-message">No visible datasets on this page.</div>;
         }
         return <ResultTableList results={this.state.elementsForDisplay || []} cartControls={this.props.cartControls} mode="cart-view" />;
     }
@@ -289,9 +292,9 @@ class FileCount extends React.Component {
                 <div className="cart__facet-file-count">
                     {this.state.triggerEnabled ? <div className="cart__facet-file-count-changer" onAnimationEnd={this.handleAnimationEnd} /> : null}
                     {fileCount > 0 ?
-                        <span>{fileCountFormatted} {fileCount === 1 ? 'file' : 'files'} selected</span>
+                        <span>{fileCountFormatted} {fileCount === 1 ? 'biospecimen or file' : 'biospecimens or files'} selected</span>
                     :
-                        <span>No files selected for download</span>
+                        <span>No biospecimen or files selected for download</span>
                     }
                 </div>
             );
@@ -481,12 +484,12 @@ const requestDatasets = (elements, fetch, session) => {
         sessionPromise = Promise.resolve(session._csrft);
     }
 
-    // We could have more patient @ids than the /search/ endpoint can handle in the query
+    // We could have more experiment @ids than the /search/ endpoint can handle in the query
     // string, so pass the @ids in a POST request payload instead to the /search_elements/
     // endpoint instead.
-    const fieldQuery = displayedFacetFields.reduce((query, field) => `${query}&field=files.${field}`, '');
+    const fieldQuery = displayedFacetFields.reduce((query, field) => `${query}&field=biospecimen.${field}`, '');
     return sessionPromise.then(csrfToken => (
-        fetch(`/search_elements/type=Patient{fieldQuery}&field=files.restricted&limit=all&filterresponse=off${queryString || ''}`, {
+        fetch(`/search_elements/type=Patient${fieldQuery}&limit=all&filterresponse=off${queryString || ''}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -689,11 +692,11 @@ VisualizableTermsToggle.defaultProps = {
 
 /**
  * Display the file facets. These display the number of files involved -- not the number of
- * patients with files matching a criteria. As the primary input to this component is currently
- * an array of patient IDs while these facets displays all the files involved with those
- * patients, this component begins by retrieving information about all relevant files from the
- * DB. Each time an patient is removed from the cart while viewing the cart page, this component
- * again retrieves all relevant files for the remaining patients.
+ * experiments with files matching a criteria. As the primary input to this component is currently
+ * an array of experiment IDs while these facets displays all the files involved with those
+ * experiments, this component begins by retrieving information about all relevant files from the
+ * DB. Each time an experiment is removed from the cart while viewing the cart page, this component
+ * again retrieves all relevant files for the remaining experiments.
  */
 class FileFacets extends React.Component {
     constructor() {
@@ -784,7 +787,7 @@ class FileFacets extends React.Component {
                     :
                         <React.Fragment>
                             {facetLoadProgress === -1 ?
-                                <div className="cart__empty-message">No files available</div>
+                                <div className="cart__empty-message">No biospecimens or files available</div>
                             : null}
                         </React.Fragment>
                     }
@@ -1593,7 +1596,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
                             </TabPanel>
                         </div>
                     :
-                        <p className="cart__empty-message">Empty cart</p>
+                        <p className="cart__empty-message">Empty cohort</p>
                     }
                 </PanelBody>
             </Panel>

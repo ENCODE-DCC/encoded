@@ -8,7 +8,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal'
 
 /** List of object @type and object path element allowed in the cart. */
 const allowedCartTypes = {
-    Experiment: 'experiments',
+    Patient: 'patients',
 };
 
 /** Maximum number of elements allowed in cart while not logged in */
@@ -20,9 +20,9 @@ export const CART_MAXIMUM_ELEMENTS_LOGGEDOUT = 4000;
  */
 export const MaximumElementsLoggedoutModal = ({ closeClickHandler }) => (
     <Modal>
-        <ModalHeader title="Too many experiments selected" closeModal={closeClickHandler} />
+        <ModalHeader title="Too many patients selected" closeModal={closeClickHandler} />
         <ModalBody>
-            <p>You can add a maximum of {CART_MAXIMUM_ELEMENTS_LOGGEDOUT} patients to a cart if you have not logged in.</p>
+            <p>You can add a maximum of {CART_MAXIMUM_ELEMENTS_LOGGEDOUT} patients to a cohort if you have not logged in.</p>
         </ModalBody>
         <ModalFooter closeModal={closeClickHandler} />
     </Modal>

@@ -578,9 +578,11 @@ globals.listingViews.register(Target, 'Target');
 /* eslint-disable react/prefer-stateless-function */
 class PatientComponent extends React.Component {
     render() {
+        const { cartControls } = this.props;
         const result = this.props.context;
-        const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
-        const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
+        let age = result.diagnosis.age;
+        const hasAge = (age != "Unknown") ? true : false;
+        const ageUnit = (result.diagnosis.age_unit && hasAge && age != "90 or above") ? ` ${result.diagnosis.age_unit}` : '';
 
         return (
             <li>
@@ -594,12 +596,12 @@ class PatientComponent extends React.Component {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {`${result.accession} (`}
-                            {`${age}${ageUnits} )`}
+                            {`${result.accession}`}
+                            {hasAge &&`(${age}${ageUnit})`}
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Gender: </strong>{result.gender}</div>
+                        <div><strong>Sex: </strong>{result.sex}</div>
                         <div><strong>Ethnicity: </strong>{result.ethnicity}</div>
                         <div><strong>Race: </strong>{result.race}</div>
                     </div>
@@ -613,6 +615,7 @@ class PatientComponent extends React.Component {
 
 PatientComponent.propTypes = {
     context: PropTypes.object.isRequired, // Target search results
+    cartControls: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
@@ -645,11 +648,11 @@ class PathologyComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-        <div><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>
-                        <div><strong>Laterality: </strong>{result.laterality}</div>
-                        <div><strong>Histology: </strong>{result.histology}</div>
-                        <div><strong>Pathological T stage: </strong>{result.ajcc_p_stage}</div>
-                        <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
+                    {result.tumor_size && result.tumor_size !== 'unknown'&&<div data-test="tumor_size"><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>}
+                    {result.laterality && <div><strong>Laterality: </strong>{result.laterality}</div>}
+                    {result.histology && <div><strong>Histology: </strong>{result.histology}</div>}
+                    {result.ajcc_p_stage && <div><strong>Pathological T stage: </strong>{result.ajcc_p_stage}</div>}
+                    {result.ajcc_tnm_stage && <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>}
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -795,9 +798,9 @@ class BiospecimenComponent extends React.Component {
                     </div>
                     <div className="data-row">
                         <div><strong>Sample type: </strong>{result.sample_type}</div>
-                        <div><strong>Tissue Derivatives: </strong>{result.tissue_derivatives}</div>
+                        <div><strong>Tissue derivatives: </strong>{result.tissue_derivatives}</div>
                         <div><strong>Tissue type: </strong>{result.tissue_type}</div>
-                        <div><strong>Anotomic type: </strong>{result.anatomic_site}</div>
+                        <div><strong>Anatomic site: </strong>{result.anatomic_site}</div>
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -1512,7 +1515,8 @@ class Facet extends React.Component {
                         <div className="filter-container">
                             <div className="filter-hed">Selected filters:</div>
                             {selectedTerms.map(filter =>
-                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link"><i className="icon icon-times-circle" /> {filter.term}</div></a>
+                                <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link">
+                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'}/> {filter.term}</div></a>
                             )}
                         </div>
                         : null}
