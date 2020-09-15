@@ -230,6 +230,15 @@
         "suspension_type": {
             "title": "Suspension type"
         },
+        "organisms": {
+            "title": "Organism"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "life_stage": {
+            "title": "Life stage"
+        },
         "biosample_ontology.system_slims": {
             "title": "System",
             "type": "typeahead"

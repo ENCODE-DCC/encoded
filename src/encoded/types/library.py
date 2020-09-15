@@ -78,7 +78,7 @@ class Library(Item):
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
         obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        # use organism as a proxy for donors because 'Donor in props['@type']' returned keyError
+        # use life_stage as a proxy for donors because 'Donor in props['@type']' returned keyError
         donor_accs = {
             props['accession']
             for props in obj_props
