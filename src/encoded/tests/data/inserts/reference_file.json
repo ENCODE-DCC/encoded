@@ -1,9 +1,10 @@
 [
     {
-        "aliases" : [
+        "aliases": [
             "lattice:cellranger_atac_grch38_1.2.0"
         ],
         "uuid": "76704205-4dcd-48ae-b114-711fc98275b7",
+        "organism": "human",
         "file_size": 3000000,
         "accession": "ENCFF450MMM",
         "dataset": "ENCSR500ELM",
@@ -14,13 +15,15 @@
 		],
         "reference_version": "GRCh38",
         "submitted_file_name": "refdata-cellranger-atac-GRCh38-1.2.0.tar.gz",
-        "status": "released"
+        "status": "released",
+        "url": "https://support.10xgenomics.com/single-cell-atac/software/downloads/latest"
     },
     {
-        "aliases" : [
+        "aliases": [
             "lattice:cellranger_2020-A"
         ],
         "uuid": "031ba486-de5a-11ea-87d0-0242ac130003",
+        "organism": "human",
         "file_size": 3000000,
         "accession": "ENCFF300MMM",
         "dataset": "ENCSR500ELM",
@@ -36,6 +39,48 @@
             "protein_coding", "lincRNA", "antisense",
             "IG_LV_gene", "IG_V_gene", "IG_D_gene",
             "TR_V_gene", "TR_J_gene", "TR_C_gene"
-        ]
+        ],
+        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+    },
+    {
+        "aliases": [
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "uuid": "5775db92-82f8-4a36-a683-cc5b1eb842f2",
+        "organism": "mouse",
+        "file_size": 5000000,
+        "file_format": "tar",
+        "dataset": "ENCSR500ELM",
+        "md5sum": "96ed7b046cdc23953befeda89479d763",
+        "output_types": [
+            "genome reference"
+        ],
+        "reference_version": "mm10",
+        "submitted_file_name": "refdata-cellranger-atac-mm10-1.2.0.tar.gz",
+        "status": "released",
+        "url": "https://support.10xgenomics.com/single-cell-atac/software/downloads/latest"
+    },
+    {
+        "aliases": [
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "uuid": "e877b293-e2c2-4aca-ab02-84a30f45bb42",
+        "organism": "human",
+        "file_size": 3000000,
+        "dataset": "ENCSR500ELM",
+        "file_format": "tar",
+        "md5sum": "abfac356cf55eec96dcfa9b3e436fbdb",
+        "output_types": [
+            "genome reference"
+        ],
+        "reference_version": "mm10",
+        "submitted_file_name": "refdata-gex-mm10-2020-A.tar.gz",
+        "status": "released",
+        "gene_biotypes_included": [
+            "protein_coding", "lincRNA", "IG_C_gene",
+            "IG_D_gene", "IG_V_gene", "IG_V_pseudogene",
+            "TR_V_gene", "TR_V_pseudogene", "TR_J_pseudogene"
+        ],
+        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
     }
 ]
