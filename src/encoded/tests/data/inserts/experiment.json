@@ -1076,5 +1076,16 @@
         "date_submitted": "2019-12-01",
         "date_released": "2020-07-20",
         "submitted_by": "elementum.mus@dictumst.nostra"
+    },
+    {
+        "_test": "scRNA 10x Wold test",
+        "uuid": "87dc9278-6ee8-9776-a686-f7057720e34e",
+        "accession": "ENCSR000SCR",
+        "assay_term_name": "single-cell RNA sequencing assay",
+        "award": "U54HG006991",
+        "biosample_ontology": "cell_line_EFO_0002067",
+        "lab": "barbara-wold",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra"
     }
 ]

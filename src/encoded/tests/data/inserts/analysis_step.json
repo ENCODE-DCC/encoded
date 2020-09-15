@@ -516,7 +516,10 @@
             "alignments"
         ],
         "output_file_types": [
-            "smoothed methylation stage at CpG"
+            "smoothed methylation stage at CpG",
+            "CpG sites coverage",
+            "plus strand methylation state at CpG",
+            "minus strand methylation state at CpG"
         ],
         "analysis_step_types": ["quantification"],
         "uuid": "51bea210-a877-4858-99bd-e5cd250ae386"
@@ -560,12 +563,14 @@
                 "alignments",
                 "merged transcription segment quantifications",
                 "transcribed region quantifications",
-                "transcription segment quantifications"
+                "transcription segment quantifications",
+                "UV enriched segment quantifications"
         ],
         "output_file_types": [
                 "merged transcription segment quantifications",
                 "transcribed region quantifications",
-                "transcription segment quantifications"
+                "transcription segment quantifications",
+                "UV enriched segment quantifications"
         ],
         "status": "released",
         "uuid": "71a92bc4-26f1-4b3c-8553-902817da4095"
@@ -583,5 +588,19 @@
         ],
         "status": "released",
         "uuid": "6acd1987-9464-4eba-bb23-b6b656f9e53a"
+    },
+    {
+        "step_label": "scrna-quantification-step",
+        "major_version": 1,
+        "title": "scRNA quantification step",
+        "analysis_step_types": ["quantification"],
+        "input_file_types": [
+                "alignments"
+        ],
+        "output_file_types": [
+                "sparse gene count matrix"
+        ],
+        "status": "released",
+        "uuid": "205078ce-1325-47c0-af2a-1cfff129798b"
     }
 ]
