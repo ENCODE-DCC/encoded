@@ -541,40 +541,47 @@ class VisDefines(object):
                      "CRISPR genome editing followed by RNA-seq", \
                      "CRISPRi followed by RNA-seq", \
                      "single-cell RNA sequencing assay", \
-                     "siRNA knockdown followed by RNA-seq"]:
+                     "siRNA knockdown followed by RNA-seq",
+                     "small RNA-seq"]:
             reps = self.dataset.get("replicates", [])  # NOTE: overly cautious
             if len(reps) < 1:
                 log.debug("Could not distinguish between long and short RNA for %s because there are "
                         "no replicates.  Defaulting to short." % (self.dataset.get("accession")))
                 vis_type = "SRNA"  # this will be more noticed if there is a mistake
             else:
-                size_range = reps[0].get("library", {}).get("size_range", "")
-                if size_range.startswith('>'):
-                    try:
-                        min_size = int(size_range[1:])
-                        max_size = min_size
-                    except:
-                        log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
-                        vis_type = "SRNA"  # this will be more noticed if there is a mistake
-                elif size_range.startswith('<'):
-                    try:
-                        max_size = int(size_range[1:]) - 1
-                        min_size = 0
-                    except:
-                        log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
-                        self.vis_type = "SRNA"  # this will be more noticed if there is a mistake
-                        return self.vis_type
+                average_fragment_size = reps[0].get("library", {}).get("average_fragment_size",)
+                if average_fragment_size <= 200:
+                    vis_type = "SRNA"
+                elif average_fragment_size > 200:
+                    vis_type = "LRNA"
                 else:
-                    try:
-                        sizes = size_range.split('-')
-                        min_size = int(sizes[0])
-                        max_size = int(sizes[1])
-                    except:
-                        log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
-                        vis_type = "SRNA"  # this will be more noticed if there is a mistake
+                    size_range = reps[0].get("library", {}).get("size_range", "")
+                    if size_range.startswith('>'):
+                        try:
+                            min_size = int(size_range[1:])
+                            max_size = min_size
+                        except:
+                            log.debug("Could not distinguish between long and short RNA for %s.  "
+                                    "Defaulting to short." % (self.dataset.get("accession")))
+                            vis_type = "SRNA"  # this will be more noticed if there is a mistake
+                    elif size_range.startswith('<'):
+                        try:
+                            max_size = int(size_range[1:]) - 1
+                            min_size = 0
+                        except:
+                            log.debug("Could not distinguish between long and short RNA for %s.  "
+                                    "Defaulting to short." % (self.dataset.get("accession")))
+                            self.vis_type = "SRNA"  # this will be more noticed if there is a mistake
+                            return self.vis_type
+                    else:
+                        try:
+                            sizes = size_range.split('-')
+                            min_size = int(sizes[0])
+                            max_size = int(sizes[1])
+                        except:
+                            log.debug("Could not distinguish between long and short RNA for %s.  "
+                                    "Defaulting to short." % (self.dataset.get("accession")))
+                            vis_type = "SRNA"  # this will be more noticed if there is a mistake
 
                 if vis_type is None:
                     if min_size == 120 and max_size == 200: # Another ugly exception!

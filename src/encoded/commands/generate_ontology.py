@@ -213,7 +213,8 @@ preferred_name = {
     "OBI:0002675": "MPRA",
     "OBI:0002571": "polyA plus RNA-seq",
     "OBI:0002572": "polyA minus RNA-seq",
-    "OBI:0002631": "scRNA-seq"
+    "OBI:0002631": "scRNA-seq",
+    "OBI:0002112": "small RNA-seq"
 }
 
 category_slims = {
