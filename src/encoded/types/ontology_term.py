@@ -18,7 +18,6 @@ from .base import (
 class OntologyTerm(SharedItem):
     item_type = 'ontology_term'
     schema = load_schema('encoded:schemas/ontology_term.json')
-    embedded = ['references']
 
     def unique_keys(self, properties):
         keys = super(OntologyTerm, self).unique_keys(properties)

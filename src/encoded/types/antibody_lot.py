@@ -24,9 +24,6 @@ class AntibodyLot(SharedItem):
     embedded = [
         'host_organism'
     ]
-    audit_inherit = [
-        'host_organism'
-    ]
 
     @calculated_property(schema={
         "title": "Title",

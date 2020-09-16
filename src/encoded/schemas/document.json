@@ -94,9 +94,6 @@
         },
         "attachment.download": {
             "title": "File Name"
-        },
-        "submitted_by.title": {
-            "title": "Submitted by"
         }
     },
     "changelog": "/profiles/changelogs/document.md"

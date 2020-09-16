@@ -25,7 +25,6 @@ class Image(ItemWithAttachment, Item):
         'image/jpeg',
         'image/gif',
     ]
-    embedded = ['submitted_by']
 
     STATUS_ACL = {
         'released': ALLOW_EVERYONE_VIEW,

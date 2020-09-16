@@ -43,20 +43,8 @@ class ReferenceFileSet(Item):
     item_type = 'reference_file_set'
     schema = load_schema('encoded:schemas/reference_file_set.json')
     embedded = [
-        'files',
-        'revoked_files',
-        'submitted_by'
+        'files'
     ]
-    audit_inherit = [
-        'original_files',
-        'revoked_files',
-        'contributing_files'
-        'submitted_by'
-    ]
-    set_status_up = [
-        'documents'
-    ]
-    set_status_down = []
     name_key = 'accession'
     rev = {
         'original_files': ('DataFile', 'dataset'),

@@ -54,7 +54,10 @@
         "status": {
             "title": "Status"
         },
-        "files.file_type": {
+        "reference_version": {
+            "title": "Reference version"
+        },
+        "files.file_format": {
             "title": "Available file types"
         }
     },
@@ -66,6 +69,9 @@
         "description": {
             "title": "Description",
             "type": "string"
+        },
+        "reference_version": {
+            "title": "Reference version"
         },
         "status": {
             "title": "Status",
