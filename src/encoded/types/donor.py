@@ -21,9 +21,7 @@ from .base import (
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
     embedded = [
-        'organism',
-        'documents',
-        'documents.submitted_by'
+        'organism'
     ]
     name_key = 'accession'
 

@@ -23,7 +23,6 @@ class Image(ItemWithAttachment, Item):
         'image/jpeg',
         'image/gif',
     ]
-    embedded = ['submitted_by']
 
     def unique_keys(self, properties):
         keys = super(Image, self).unique_keys(properties)

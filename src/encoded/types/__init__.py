@@ -53,7 +53,6 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
-    embedded = []
     STATUS_ACL = {
         'current': ALLOW_CURRENT,
         'deleted': DELETED,
@@ -84,12 +83,6 @@ class Organism(Item):
 class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('encoded:schemas/treatment.json')
-    embedded = []
-    set_status_up = [
-        'biosamples_used',
-        'antibodies_used',
-    ]
-    set_status_down = []
 
 
 @collection(
@@ -101,7 +94,6 @@ class Treatment(Item):
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
-    embedded = ['submitted_by']
 
 
 @collection(

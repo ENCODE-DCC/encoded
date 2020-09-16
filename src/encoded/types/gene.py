@@ -20,7 +20,6 @@ class Gene(SharedItem):
     item_type = 'gene'
     schema = load_schema('encoded:schemas/gene.json')
     name_key = "geneid"
-    embedded = ['organism']
     rev = {
         'targets': ('Target', 'genes')
     }

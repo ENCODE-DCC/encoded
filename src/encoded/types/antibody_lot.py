@@ -27,16 +27,7 @@ class AntibodyLot(SharedItem):
         'targets.genes',
         'targets.organism'
     ]
-    audit_inherit = [
-        'host_organism',
-        'targets',
-        'targets.organism'
-    ]
-    set_status_up = [
-        'targets',
-        'host_organism',
-    ]
-    set_status_down = []
+
 
     def unique_keys(self, properties):
         keys = super(AntibodyLot, self).unique_keys(properties)
