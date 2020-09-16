@@ -196,8 +196,8 @@
         "derived_from.biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
-        "protocol.library_type": {
-            "title": "Library type"
+        "assay": {
+            "title": "Assay type"
         },
         "protocol.name": {
             "title": "Library protocols"
