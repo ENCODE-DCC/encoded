@@ -1611,6 +1611,18 @@ $rnaseq-term-name-colors:
     }
 }
 
+.type-EncoreMatrix {
+    .matrix-header__target-filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 450px;
+        }
+
+        .general-search-entry {
+            padding-right: 0;
+        }
+    }
+}
+
 .encore-column-spacer {
     border-left: 1px solid $matrix-border-color;
     width: $encore-spacer-width;
