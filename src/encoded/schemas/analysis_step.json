@@ -119,6 +119,7 @@
                     "consensus DNase hypersensitivity sites (cDHSs)",
                     "conservative IDR thresholded peaks",
                     "control normalized signal",
+                    "CpG sites coverage",
                     "DHS peaks",
                     "DHS regions reference",
                     "differential expression quantifications",
@@ -163,6 +164,7 @@
                     "methylation state at CpG",
                     "merged transcription segment quantifications",
                     "microRNA quantifications",
+                    "minus strand methylation state at CpG",
                     "minus strand signal of all reads",
                     "minus strand signal of unique reads",
                     "miRNA annotations",
@@ -184,6 +186,7 @@
                     "personalized genome assembly",
                     "phased mapping",
                     "phased variant calls",
+                    "plus strand methylation state at CpG",
                     "plus strand signal of all reads",
                     "plus strand signal of unique reads",
                     "positive control regions",
@@ -223,6 +226,7 @@
                     "signal p-value",
                     "smoothed methylation stage at CpG",
                     "snRNA reference",
+                    "sparse gene count matrix",
                     "spike-ins",
                     "splice junctions",
                     "subreads",
@@ -238,6 +242,7 @@
                     "tRNA reference",
                     "TSS reference",
                     "unfiltered alignments",
+                    "UV enriched segment quantifications",
                     "variant calls"
                 ]
             }
@@ -266,6 +271,7 @@
                     "consensus DNase hypersensitivity sites (cDHSs)",
                     "conservative IDR thresholded peaks",
                     "control normalized signal",
+                    "CpG sites coverage",
                     "DHS peaks",
                     "DHS regions reference",
                     "differential expression quantifications",
@@ -310,6 +316,7 @@
                     "methylation state at CpG",
                     "merged transcription segment quantifications",
                     "microRNA quantifications",
+                    "minus strand methylation state at CpG",
                     "minus strand signal of all reads",
                     "minus strand signal of unique reads",
                     "miRNA annotations",
@@ -331,6 +338,7 @@
                     "personalized genome assembly",
                     "phased mapping",
                     "phased variant calls",
+                    "plus strand methylation state at CpG",
                     "plus strand signal of all reads",
                     "plus strand signal of unique reads",
                     "positive control regions",
@@ -369,6 +377,7 @@
                     "signal p-value",
                     "smoothed methylation stage at CpG",
                     "snRNA reference",
+                    "sparse gene count matrix",
                     "spike-ins",
                     "splice junctions",
                     "subreads",
@@ -384,6 +393,7 @@
                     "tRNA reference",
                     "TSS reference",
                     "unfiltered alignments",
+                    "UV enriched segment quantifications",
                     "variant calls"
                 ]
             }

@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 11
 * Added *genotyping*, *methylation estimation* and *smoothing* to the enum list for *analysis_step_types*
+* Added *UV enriched segment quantifications*, *plus strand methylation state at CpG*, *minus strand methylation state at CpG*, *CpG sites coverage*, and *sparse gene count matrix* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 11
 * *input_file_types: stable peaks* was updated to *input_file_types: pseudo-replicated peaks*
