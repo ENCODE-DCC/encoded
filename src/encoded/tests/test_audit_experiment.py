@@ -3836,28 +3836,28 @@ def test_audit_experiment_control(testapp, base_matched_set, ChIP_experiment, ex
     assert not any(error['category'] == 'inconsistent control' for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_inconsistent_analyses_files(testapp, experiment_with_analyses, experiment_with_analyses_2, file_bam_1_1, file_bam_2_1, bigWig_file):
+def test_audit_experiment_inconsistent_analysis_files(testapp, experiment_with_analysis, experiment_with_analysis_2, file_bam_1_1, file_bam_2_1, bigWig_file):
     testapp.patch_json(file_bam_1_1['@id'], {
-        'dataset': experiment_with_analyses['@id'],
+        'dataset': experiment_with_analysis['@id'],
         })
     testapp.patch_json(file_bam_2_1['@id'], {
-        'dataset': experiment_with_analyses['@id'],
+        'dataset': experiment_with_analysis['@id'],
         })
-    res = testapp.get(experiment_with_analyses['@id'] + '@@index-data')
-    assert not any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert not any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
     testapp.patch_json(bigWig_file['@id'], {
-        'dataset': experiment_with_analyses['@id'],
+        'dataset': experiment_with_analysis['@id'],
         })
-    res = testapp.get(experiment_with_analyses['@id'] + '@@index-data')
-    assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    res = testapp.get(experiment_with_analysis['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
     testapp.patch_json(file_bam_1_1['@id'], {
-        'dataset': experiment_with_analyses_2['@id'],
+        'dataset': experiment_with_analysis_2['@id'],
         })
     testapp.patch_json(file_bam_2_1['@id'], {
-        'dataset': experiment_with_analyses_2['@id'],
+        'dataset': experiment_with_analysis_2['@id'],
         })
-    res = testapp.get(experiment_with_analyses_2['@id'] + '@@index-data')
-    assert any(error['category'] == 'inconsistent analyses files' for error in collect_audit_errors(res))
+    res = testapp.get(experiment_with_analysis_2['@id'] + '@@index-data')
+    assert any(error['category'] == 'inconsistent analysis files' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_inconsistent_genetic_modifications(

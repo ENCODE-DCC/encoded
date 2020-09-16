@@ -664,35 +664,27 @@ def micro_rna_experiment(
 
 
 @pytest.fixture
-def experiment_with_analyses(testapp, lab, award, heart, file_bam_1_1, file_bam_2_1):
+def experiment_with_analysis(testapp, lab, award, heart, analysis_1):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'ChIP-seq',
         'status': 'in progress',
         'biosample_ontology': heart['uuid'],
-        'analyses': [
-            {
-                'files': [file_bam_1_1['@id'], file_bam_2_1['@id']]
-            }
-        ]
+        'analysis_objects': [analysis_1['@id']]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
-def experiment_with_analyses_2(testapp, lab, award, heart, file_bam_1_1, file_bam_2_1, bam_file):
+def experiment_with_analysis_2(testapp, lab, award, heart, analysis_2):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'ChIP-seq',
         'status': 'in progress',
         'biosample_ontology': heart['uuid'],
-        'analyses': [
-            {
-                'files': [file_bam_1_1['@id'], file_bam_2_1['@id'], bam_file['@id']]
-            }
-        ]
+        'analysis_objects': [analysis_2['@id']]
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -767,3 +759,21 @@ def ATAC_experiment_replicated(testapp, lab, award, heart):
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
+
+@pytest.fixture
+def experiment_30(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+            'schema_version': '30',
+            'analyses': [
+                {
+                    'files': ['/files/ENCFF881NAX/', '/files/ENCFF674HJF/']
+                },
+                {
+                    'files': ['/files/ENCFF282TIA/', '/files/ENCFF910JDS/']
+                },
+            ],
+            'notes': 'Previous notes.'
+    })
+    return properties

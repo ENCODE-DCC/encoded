@@ -544,8 +544,8 @@ class ExperimentSeriesComponent extends React.Component {
                         filesByDesiredAssembly.push(f['@id']);
                     }
                 });
-                const analyses = viewableDatasets[datasetAtId].analyses || [];
-                const selectedAnalysis = analyses.filter(
+                const analysisObjects = viewableDatasets[datasetAtId].analysis_objects || [];
+                const selectedAnalysis = analysisObjects.filter(
                     analysis => analysis.files.every(f => filesByDesiredAssembly.includes(f))
                 ).sort((a, b) => a.length - b.length)[0] || { files: [] };
                 viewableDatasets[datasetAtId].files = viewableDatasets[datasetAtId].files.filter(

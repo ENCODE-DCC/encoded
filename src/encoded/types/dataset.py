@@ -868,6 +868,7 @@ class ExperimentSeries(Series):
         'contributing_awards',
         'contributors',
         'organism',
+        'related_datasets.analysis_objects',
         'related_datasets.award',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',

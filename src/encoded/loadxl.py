@@ -607,7 +607,7 @@ PHASE1_PIPELINES = {
         remove_keys('spikeins_used', 'adapters'),
     ],
     'experiment': [
-        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses', 'analysis_objects'),
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analysis_objects'),
     ],
     'functional_characterization_experiment': [
         remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
@@ -705,7 +705,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('spikeins_used', 'adapters'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses', 'analysis_objects'),
+        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analysis_objects'),
     ],
     'functional_characterization_experiment': [
         skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),

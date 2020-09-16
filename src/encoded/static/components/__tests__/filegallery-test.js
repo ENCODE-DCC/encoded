@@ -6,18 +6,14 @@ import { compileAnalyses } from '../filegallery';
 
 
 const experiment0 = {
-    analyses: [
+    analysis_objects: [
         {
             files: [
                 '/files/ENCFF003MRN/',
                 '/files/ENCFF005MRN/',
             ],
-            assemblies: [
-                'GRCh38',
-            ],
-            genome_annotations: [
-                'V24',
-            ],
+            assembly: 'GRCh38',
+            genome_annotation: 'V24',
             pipelines: [
                 '/pipelines/ENCPL001MRN/',
                 '/pipelines/ENCPL003RNA/',
@@ -37,10 +33,7 @@ const experiment0 = {
                 '/files/ENCFF807TRA/',
                 '/files/ENCFF783YZT/',
             ],
-            assemblies: [
-                'hg19',
-            ],
-            genome_annotations: [],
+            assembly: 'hg19',
             pipelines: [
                 '/pipelines/ENCPL001MRN/',
                 '/pipelines/ENCPL003RNA/',
@@ -57,10 +50,7 @@ const experiment0 = {
                 '/files/ENCFF001RCY/',
                 '/files/ENCFF001RCV/',
             ],
-            assemblies: [
-                'GRCh38',
-            ],
-            genome_annotations: [],
+            assembly: 'GRCh38',
             pipelines: [
                 '/pipelines/ENCPL001GRV/',
             ],
@@ -76,10 +66,7 @@ const experiment0 = {
                 '/files/ENCFF807TRA/',
                 '/files/ENCFF783YZT/',
             ],
-            assemblies: [
-                'GRCh38',
-            ],
-            genome_annotations: [],
+            assembly: 'GRCh38',
             pipelines: [
                 '/pipelines/ENCPL001GRV/',
             ],
@@ -95,12 +82,8 @@ const experiment0 = {
                 '/files/ENCFF001RCZ/',
                 '/files/ENCFF001RCW/',
             ],
-            assemblies: [
-                'GRCh38',
-            ],
-            genome_annotations: [
-                'V24',
-            ],
+            assembly: 'GRCh38',
+            genome_annotation: 'V24',
             pipelines: [
                 '/pipelines/ENCPL001GRV/',
             ],
@@ -231,20 +214,20 @@ const files0 = [
 describe('createPipelineFacetObject', () => {
     describe('Both processed', () => {
         it('Has both ENCODE Uniform and Lab Custom facet terms and count', () => {
-            const analyses = compileAnalyses(experiment0, files0);
-            expect(analyses).toHaveLength(4);
-            expect(analyses[0].pipelineLab).toEqual('Mixed');
-            expect(analyses[0].assembly).toEqual('GRCh38 V24');
-            expect(analyses[0].files).toHaveLength(2);
-            expect(analyses[1].pipelineLab).toEqual('ENCODE4 uniform');
-            expect(analyses[1].assembly).toEqual('GRCh38 V24');
-            expect(analyses[1].files).toHaveLength(2);
-            expect(analyses[2].pipelineLab).toEqual('ENCODE3 uniform');
-            expect(analyses[2].assembly).toEqual('GRCh38');
-            expect(analyses[2].files).toHaveLength(4);
-            expect(analyses[3].pipelineLab).toEqual('ENCODE4 uniform');
-            expect(analyses[3].assembly).toEqual('hg19');
-            expect(analyses[3].files).toHaveLength(4);
+            const analysisObjects = compileAnalyses(experiment0, files0);
+            expect(analysisObjects).toHaveLength(4);
+            expect(analysisObjects[0].pipelineLab).toEqual('Mixed');
+            expect(analysisObjects[0].assembly).toEqual('GRCh38 V24');
+            expect(analysisObjects[0].files).toHaveLength(2);
+            expect(analysisObjects[1].pipelineLab).toEqual('ENCODE4 uniform');
+            expect(analysisObjects[1].assembly).toEqual('GRCh38 V24');
+            expect(analysisObjects[1].files).toHaveLength(2);
+            expect(analysisObjects[2].pipelineLab).toEqual('ENCODE3 uniform');
+            expect(analysisObjects[2].assembly).toEqual('GRCh38');
+            expect(analysisObjects[2].files).toHaveLength(4);
+            expect(analysisObjects[3].pipelineLab).toEqual('ENCODE4 uniform');
+            expect(analysisObjects[3].assembly).toEqual('hg19');
+            expect(analysisObjects[3].files).toHaveLength(4);
         });
     });
 });

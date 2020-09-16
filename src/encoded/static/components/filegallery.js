@@ -2081,7 +2081,7 @@ function createFacetObject(propertyKey, fileList, filters) {
 
 
 /**
- * Compile the usable experiment analyses objects into a form for rendering a dropdown of pipeline
+ * Compile the usable experiment analysis objects into a form for rendering a dropdown of pipeline
  * labs. Export for Jest test.
  * @param {object} experiment Contains the analyses to convert into an pipeline labs dropdown
  * @param {array} files Array of all files from search that gets included in file gallery
@@ -2098,37 +2098,36 @@ function createFacetObject(propertyKey, fileList, filters) {
 const UNIFORM_PIPELINE_LAB = '/labs/encode-processing-pipeline/';
 export const compileAnalyses = (experiment, files) => {
     let compiledAnalyses = [];
-    if (experiment.analyses && experiment.analyses.length > 0) {
-        // Get all the analyses objects that qualify for inclusion in the Pipeline facet.
-        const qualifyingAnalyses = experiment.analyses.filter((analyses) => {
-            const rfas = _.uniq(analyses.pipeline_award_rfas);
+    if (experiment.analysis_objects && experiment.analysis_objects.length > 0) {
+        // Get all the analysis objects that qualify for inclusion in the Pipeline facet.
+        const qualifyingAnalyses = experiment.analysis_objects.filter((analysis) => {
+            const rfas = _.uniq(analysis.pipeline_award_rfas);
 
             // More than one lab OK, as long as none of them is `UNIFORM_PIPELINE_LAB` --
             // `UNIFORM_PIPELINE_LAB` is only valid if alone.
             return (
-                analyses.assemblies.length === 1
-                && analyses.genome_annotations.length <= 1
-                && analyses.pipeline_award_rfas.length === 1
-                && analyses.pipeline_labs.length > 0
-                && !(analyses.pipeline_labs.length === 1 && analyses.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
+                analysis.assembly
+                && analysis.pipeline_award_rfas.length === 1
+                && analysis.pipeline_labs.length > 0
+                && !(analysis.pipeline_labs.length === 1 && analysis.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
             );
         });
 
         if (qualifyingAnalyses.length > 0) {
             // Group all the qualifying analyses' files by pipeline lab. Each pipeline lab title is
-            // an object key with the value of an array containing all analyses objects included in
+            // an object key with the value of an array containing all analysis objects included in
             // that lab. Also form the lab title here, prepending with the rfa (e.g. ENCODE3) for
             // `UNIFORM_PIPELINE_LAB`.
-            const analysesByLab = _(qualifyingAnalyses).groupBy((analyses) => {
-                if (analyses.pipeline_labs.length > 1) {
+            const analysesByLab = _(qualifyingAnalyses).groupBy((analysis) => {
+                if (analysis.pipeline_labs.length > 1) {
                     return 'Mixed';
                 }
 
-                // At this stage, we know analyses.pipeline_labs has one and only one element.
-                if (analyses.pipeline_labs[0] !== UNIFORM_PIPELINE_LAB) {
+                // At this stage, we know analysis.pipeline_labs has one and only one element.
+                if (analysis.pipeline_labs[0] !== UNIFORM_PIPELINE_LAB) {
                     return 'Lab custom';
                 }
-                return `${analyses.pipeline_award_rfas[0]} uniform`;
+                return `${analysis.pipeline_award_rfas[0]} uniform`;
             });
 
             // Fill in the compiled object with the labs that group the files.
@@ -2137,18 +2136,18 @@ export const compileAnalyses = (experiment, files) => {
             Object.keys(analysesByLab).forEach((pipelineLab) => {
                 // For one lab, group all analyses by their assembly/annotation, then combine all
                 // file arrays for those with matching pipeline lab, assembly/annotation, and RFA.
-                const analysesByAssembly = _(analysesByLab[pipelineLab]).groupBy(analyses => `${analyses.assemblies[0]}${analyses.genome_annotations.length === 1 ? ` ${analyses.genome_annotations[0]}` : ''}`);
+                const analysesByAssembly = _(analysesByLab[pipelineLab]).groupBy(analysis => `${analysis.assembly}${analysis.genome_annotation ? ` ${analysis.genome_annotation}` : ''}`);
                 Object.keys(analysesByAssembly).forEach((assembly) => {
                     // Combine all analyses files that share the same pipeline lab, assembly, and
                     // annotation and add each to the compiled list. Filter out any not included in
                     // the experiment's files.
-                    const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analyses) => accFiles.concat(analyses.files), []).filter(file => fileIds.includes(file)));
+                    const assemblyFiles = _.uniq(analysesByAssembly[assembly].reduce((accFiles, analysis) => accFiles.concat(analysis.files), []).filter(file => fileIds.includes(file)));
                     if (assemblyFiles.length > 0) {
                         compiledAnalyses.push({
                             title: `${pipelineLab} ${assembly}`,
                             pipelineLab,
                             assembly,
-                            assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assemblies[0], analysesByAssembly[assembly][0].genome_annotations[0]),
+                            assemblyAnnotationValue: computeAssemblyAnnotationValue(analysesByAssembly[assembly][0].assembly, analysesByAssembly[assembly][0].genome_annotation),
                             files: _.uniq(assemblyFiles),
                         });
                     }
@@ -2272,7 +2271,7 @@ TabPanelFacets.propTypes = {
     toggleFacets: PropTypes.func.isRequired,
     clearFileFilters: PropTypes.func.isRequired,
     experimentType: PropTypes.string.isRequired,
-    /** Compiled analyses objects from the currently viewed dataset */
+    /** Compiled analysis objects from the currently viewed dataset */
     analyses: PropTypes.array,
     /** Index of selected analysis */
     selectedAnalysesIndex: PropTypes.number.isRequired,
@@ -2324,7 +2323,7 @@ class FileGalleryRendererComponent extends React.Component {
             fileFilters: {},
             /** Current tab: 'browser', 'graph', or 'tables' */
             currentTab: 'tables',
-            /** Sorted compiled dataset analyses objects filtered by available assemblies */
+            /** Sorted compiled dataset analysis objects filtered by available assemblies */
             compiledAnalyses: compileAnalyses(props.context, datasetFiles),
             /** Index of currently/last selected `compiledAnalyses`. */
             selectedAnalysesIndex: 0,
@@ -2480,15 +2479,15 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     /**
-     * Find the compiled analyses object best matching the given assembly/annotation and the last
+     * Find the compiled analysis object best matching the given assembly/annotation and the last
      * selected pipeline lab and return its index into the compiled analyses array. Only pass in
      * `compiledAnalyses` if it has been newly determined and might not yet have propagated to
      * `this.state.compiledAnalyses`. If no appropriate compiled analyses can be found, return 0
-     * which selects the first compiled analyses object.
+     * which selects the first compiled analysis object.
      * @param {string} assembly Suggested assembly for matching an analysis
      * @param {array} compiledAnalyses Compiled analyses for the experiment if newly determined
      *
-     * @return {object} Array index of most appropriate compiled analyses object
+     * @return {object} Array index of most appropriate compiled analysis object
      */
     findCompiledAnalysesIndex(assembly, compiledAnalyses) {
         let compiledAnalysisIndex = 0;
@@ -2505,7 +2504,7 @@ class FileGalleryRendererComponent extends React.Component {
                 compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === matchingAnalysis);
             } else {
                 // An analysis matched just the assembly. Get the index of the first compiled
-                // analyses object with the matching assembly regardless of its pipeline lab.
+                // analysis object with the matching assembly regardless of its pipeline lab.
                 compiledAnalysisIndex = localCompiledAnalyses.findIndex(analysis => analysis === analysesWithMatchingAssembly[0]);
             }
         }
@@ -2606,7 +2605,7 @@ class FileGalleryRendererComponent extends React.Component {
                     // Determine available assemblies
                     const assemblyList = this.setAssemblyList(allFiles);
                     // Update compiled analyses filtered by available assemblies
-                    if (context.analyses && context.analyses.length > 0) {
+                    if (context.analysis_objects && context.analysis_objects.length > 0) {
                         const availableAssemblies = Object.keys(assemblyList);
                         availableCompiledAnalyses = compileAnalyses(context, allFiles).filter(analysis => availableAssemblies.includes(analysis.assembly));
                     }
@@ -2821,13 +2820,13 @@ class FileGalleryRendererComponent extends React.Component {
                 // list of files to include in the graph.
                 const assemblyAnnotation = this.state.selectedAssembly.split(' ');
                 const additionalFiles = [];
-                graphAnalysesFiles.forEach((analysesFile) => {
-                    // Get the chain of files that analysesFile derives from, then check
+                graphAnalysesFiles.forEach((analysisFile) => {
+                    // Get the chain of files that analysisFile derives from, then check
                     // whether it needs to be added to the graph.
-                    const derivedFiles = collectDerivedFroms(analysesFile, context, assemblyAnnotation[0], assemblyAnnotation[1], this.state.allFiles);
+                    const derivedFiles = collectDerivedFroms(analysisFile, context, assemblyAnnotation[0], assemblyAnnotation[1], this.state.allFiles);
                     Object.keys(derivedFiles).forEach((derivedFileId) => {
                         if (derivedFiles[derivedFileId]) {
-                            // See if the file is already included in the analyses' files.
+                            // See if the file is already included in the analysis' files.
                             const includedFile = graphAnalysesFiles.find(file => file['@id'] === derivedFileId);
                             if (!includedFile) {
                                 // The derived-from file isn't already included, so add it
@@ -2845,7 +2844,7 @@ class FileGalleryRendererComponent extends React.Component {
                 graphIncludedFiles = graphAnalysesFiles.concat(_.uniq(additionalFiles), graphIncludedFiles.filter(file => file.output_category === 'raw data'));
             } else {
                 // We know at this point there's nothing to graph nor browse for the selected
-                // analyses.
+                // analysis.
                 graphIncludedFiles = [];
             }
         }

@@ -89,7 +89,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "30"
+            "default": "31"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -203,93 +203,9 @@
                 "wild type"
             ]
         },
-        "analyses": {
-            "title": "Analyses",
-            "description": "A list of analyses.",
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
-            "permission": "import_items",
-            "items": {
-                "title": "Analysis",
-                "description": "One group of files which form a coherent analysis.",
-                "type": "object",
-                "required": ["files"],
-                "additionalProperties": false,
-                "properties": {
-                    "files": {
-                        "title": "Analysis files",
-                        "description": "A list of processed files belonging to this analsis",
-                        "type": "array",
-                        "minItems": 1,
-                        "uniqueItems": true,
-                        "permission": "import_items",
-                        "items": {
-                            "title": "Analysis file",
-                            "comment": "See file.json for available identifiers.",
-                            "type": "string",
-                            "linkTo": "File"
-                        }
-                    },
-                    "assemblies": {
-                        "title": "Assemblies",
-                        "description": "A list of genome assemblies on which this analysis is performed.",
-                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
-                        "type": "array",
-                        "notSubmittable": true,
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "genome_annotations": {
-                        "title": "Genome Annotations",
-                        "description": "A list of genome annotations on which this analysis is performed.",
-                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
-                        "type": "array",
-                        "notSubmittable": true,
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "pipelines": {
-                        "title": "Pipelines",
-                        "description": "A list of pipelines used to generate this analysis.",
-                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
-                        "type": "array",
-                        "notSubmittable": true,
-                        "items": {
-                            "type": "string",
-                            "linkTo": "Pipeline"
-                        }
-                    },
-                    "pipeline_award_rfas": {
-                        "title": "Pipeline awards",
-                        "description": "A list of award bioproject phases to which pipelines that used to generate this analysis belong to.",
-                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
-                        "type": "array",
-                        "notSubmittable": true,
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "pipeline_labs": {
-                        "title": "Pipeline labs",
-                        "description": "A list of labs whose pipelines are used to generate this analysis.",
-                        "comment": "[CALCULATED PROPERTY] Do not submit. This field is calculated from files in this analysis.",
-                        "type": "array",
-                        "notSubmittable": true,
-                        "items": {
-                            "type": "string",
-                            "linkTo": "Lab"
-                        }
-                    }
-                }
-            }
-        },
         "analysis_objects": {
             "title": "Analysis objects",
             "description": "A list of analysis objects.",
-            "comment": "Will transfer to analyses property in the future release.",
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,

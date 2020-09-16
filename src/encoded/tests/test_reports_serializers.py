@@ -32,49 +32,8 @@ def experiment():
         "supersedes": [],
         "related_files": [],
         "internal_status": "release ready",
-        "analyses": [
-            {
-                "files": [
-                    "/files/ENCFF304IDX/",
-                    "/files/ENCFF197UGS/",
-                    "/files/ENCFF335MIH/",
-                    "/files/ENCFF895UWM/",
-                    "/files/ENCFF688OGD/",
-                    "/files/ENCFF604DWO/",
-                    "/files/ENCFF211SCG/",
-                    "/files/ENCFF744MWW/",
-                    "/files/ENCFF683WMJ/",
-                    "/files/ENCFF032KSP/",
-                    "/files/ENCFF677HXK/",
-                    "/files/ENCFF507JEH/",
-                    "/files/ENCFF244PJU/",
-                    "/files/ENCFF028UYG/",
-                    "/files/ENCFF762SFI/",
-                    "/files/ENCFF921BXP/",
-                    "/files/ENCFF644IZV/",
-                    "/files/ENCFF282TIA/",
-                    "/files/ENCFF910JDS/",
-                    "/files/ENCFF415QDT/",
-                    "/files/ENCFF674HJF/",
-                    "/files/ENCFF881NAX/"
-                ],
-                "assemblies": [
-                    "GRCh38"
-                ],
-                "genome_annotations": [],
-                "pipelines": [
-                    "/pipelines/ENCPL367MAS/",
-                    "/pipelines/ENCPL481MLO/",
-                    "/pipelines/ENCPL612HIG/",
-                    "/pipelines/ENCPL809GEM/"
-                ],
-                "pipeline_award_rfas": [
-                    "ENCODE4"
-                ],
-                "pipeline_labs": [
-                    "/labs/encode-processing-pipeline/"
-                ]
-            }
+        "analysis_objects": [
+            "/analyses/ENCAN823NHJ/"
         ],
         "replication_type": "isogenic",
         "objective_slims": [],

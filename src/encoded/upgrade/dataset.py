@@ -640,3 +640,17 @@ def experiment_29_30(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5304
     if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
         value['assay_term_name'] = 'single-cell RNA sequencing assay'
+
+
+@upgrade_step('experiment', '30', '31')
+def experiment_30_31(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5354
+    if not value.get('analyses'):
+        return
+    analyses_files = ';'.join(
+        sorted(
+            ','.join(sorted(a['files'])) for a in value['analyses']
+        )
+    )
+    value['notes'] = f'{value.get("notes", "")}. [Experiment.analyses] {analyses_files}'
+    value.pop('analyses')
