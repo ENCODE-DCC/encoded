@@ -822,12 +822,14 @@ $row-data-header-width: 200px;
 
 
 .matrix-description {
-    display: flex;
-    justify-content: flex-end;
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        justify-content: flex-end;
 
-    @at-root #{&}__text {
-        flex-basis: 40%;
-        text-align: right;
+        @at-root #{&}__text {
+            flex-basis: 40%;
+            text-align: right;
+        }
     }
 }
 
