@@ -204,7 +204,7 @@ export class Graph extends React.Component {
         function convertGraphInner(subgraph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach((node) => {
-                subgraph.setNode(node.id, {
+                const nodeOptions = {
                     label: node.label.length > 1 ? node.label : node.label[0],
                     rx: node.metadata.cornerRadius,
                     ry: node.metadata.cornerRadius,
@@ -215,13 +215,16 @@ export class Graph extends React.Component {
                     paddingTop: '10',
                     paddingBottom: '10',
                     subnodes: node.subnodes,
-                    decoration: {
+                };
+                if (node.metadata.displayDecoration) {
+                    nodeOptions.decoration = {
                         id: `${node.id}-highlight`,
                         position: 'top',
                         icon: 'arrow-right',
                         class: node.metadata.decorationClass,
-                    },
-                });
+                    };
+                }
+                subgraph.setNode(node.id, nodeOptions);
                 if (!parent.root) {
                     subgraph.setParent(node.id, parent.id);
                 }
