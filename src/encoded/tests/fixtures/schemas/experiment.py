@@ -656,6 +656,8 @@ def micro_rna_experiment(
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(file_tsv_1_1['@id'], {'output_type': 'microRNA quantifications'})
+    testapp.patch_json(file_tsv_1_2['@id'], {'output_type': 'microRNA quantifications'})
     testapp.patch_json(
         base_experiment['@id'],
         {'status': 'released', 'date_released': '2016-01-01', 'assay_term_name': 'microRNA-seq'}

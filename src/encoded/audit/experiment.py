@@ -877,6 +877,8 @@ def check_experiment_rna_seq_standards(value,
         'gene_quantifications_files').values()
     transcript_quantifications = files_structure.get(
         'transcript_quantifications_files').values()
+    microRNA_quantifications = files_structure.get(
+        'microRNA_quantifications_files').values()
     assay_term_name = value['assay_term_name']
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
@@ -989,7 +991,7 @@ def check_experiment_rna_seq_standards(value,
             fastq_files,
             alignment_files,
             pipeline_title,
-            gene_quantifications,
+            microRNA_quantifications,
             desired_assembly,
             desired_annotation,
             standards_links[pipeline_title],
@@ -1381,7 +1383,7 @@ def check_experiment_micro_rna_standards(
     fastq_files,
     alignment_files,
     pipeline_title,
-    gene_quantifications,
+    microRNA_quantifications,
     desired_assembly,
     desired_annotation,
     standards_links,
@@ -1400,7 +1402,7 @@ def check_experiment_micro_rna_standards(
                                                   standards_links)
     # Gather metrics
     quantification_metrics = get_metrics(
-        gene_quantifications,
+        microRNA_quantifications,
         'MicroRnaQuantificationQualityMetric',
         desired_assembly,
         desired_annotation,
@@ -1412,7 +1414,7 @@ def check_experiment_micro_rna_standards(
         desired_assembly,
     )
     correlation_metrics = get_metrics(
-        gene_quantifications,
+        microRNA_quantifications,
         'CorrelationQualityMetric',
         desired_assembly,
         desired_annotation,
@@ -4963,6 +4965,7 @@ def create_files_mapping(files_list, excluded):
                  'peaks_files': {},
                  'gene_quantifications_files': {},
                  'transcript_quantifications_files': {},
+                 'microRNA_quantifications_files': {},
                  'signal_files': {},
                  'preferred_default_idr_peaks': {},
                  'idr_thresholded_peaks': {},
@@ -5015,6 +5018,10 @@ def create_files_mapping(files_list, excluded):
 
                 if file_output and file_output == 'transcript quantifications':
                     to_return['transcript_quantifications_files'][file_object['@id']
+                                                            ] = file_object
+
+                if file_output and file_output == 'microRNA quantifications':
+                    to_return['microRNA_quantifications_files'][file_object['@id']
                                                             ] = file_object
 
                 if file_output and file_output == 'signal of unique reads':
