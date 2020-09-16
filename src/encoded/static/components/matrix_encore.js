@@ -316,7 +316,6 @@ const MatrixHeader = ({ context, targetFilterText, textChangeHandler }) => (
                 <TargetFilter filterText={targetFilterText} textChangeHandler={textChangeHandler} />
             </div>
             <div className="matrix-header__search-controls">
-                <h4>Showing {context.total} results</h4>
                 <SearchControls context={context} hideBrowserSelector />
             </div>
         </div>
