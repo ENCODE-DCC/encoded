@@ -70,7 +70,7 @@ const doesRowDataExist = (context, colCategoryKey, colCategory, colSubCategory, 
             if (rowColCategoryItem.key === colCategoryKey) {
                 // See if row includes data for a displayed subcategory column.
                 return rowColCategoryItem[colSubCategory].buckets.find(rowColSubCategoryItem => (
-                    displayedTermNames.includes(rowColSubCategoryItem.key)
+                    noBiosampleAssays.includes(rowColCategoryItem.key) || displayedTermNames.includes(rowColSubCategoryItem.key)
                 ));
             }
             return false;
