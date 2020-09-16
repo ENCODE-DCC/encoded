@@ -103,8 +103,8 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
         rowData[columnCategory].buckets.forEach((value) => {
             if (stageFilter) {
                 stageFilter.forEach((singleFilter) => {
-                    const filterString = singleFilter.replace(/[()]/g, '');
-                    const keyString = rowData.key.replace(/[()]/g, '');
+                    const filterString = singleFilter.replace('embryo', 'embryonic');
+                    const keyString = rowData.key;
                     if (!filterString || keyString.includes(filterString)) {
                         subCategorySums = updateColumnCount(value, colMap, subCategorySums);
                     }
