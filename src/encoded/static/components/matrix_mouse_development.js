@@ -20,7 +20,7 @@ import { SearchControls } from './search';
  * @constant
  */
 const ROW_CATEGORY = 'biosample_ontology.term_name';
-const ROW_SUBCATEGORY = 'biosample_summary';
+const ROW_SUBCATEGORY = 'life_stage_age';
 const COL_CATEGORY = 'assay_title';
 const COL_SUBCATEGORY = 'target.label';
 
@@ -64,13 +64,6 @@ const mouseMatrixColors = {
 };
 
 /**
- * Parse string (longString) on potentially repeated substring (splitString)
- */
-function parseString(longString, splitString) {
-    return longString.substring(longString.indexOf(splitString) + splitString.length + 1);
-}
-
-/**
  * Increment subCategorySums value for bucket keys matching a column name
  */
 function updateColumnCount(value, colMap, subCategorySums) {
@@ -110,8 +103,8 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
         rowData[columnCategory].buckets.forEach((value) => {
             if (stageFilter) {
                 stageFilter.forEach((singleFilter) => {
-                    const filterString = singleFilter.replace(/[()]/g, '');
-                    const keyString = rowData.key.replace(/[()]/g, '');
+                    const filterString = singleFilter.replace('embryo', 'embryonic');
+                    const keyString = rowData.key;
                     if (!filterString || keyString.includes(filterString)) {
                         subCategorySums = updateColumnCount(value, colMap, subCategorySums);
                     }
@@ -129,8 +122,10 @@ const analyzeSubCategoryData = (subCategoryData, columnCategory, colMap, colCoun
 // In the future there are likely to be additions to the data which will require updates to this function
 // For instance, ages measured by months will likely be added
 function sortMouseArray(a, b) {
-    const aStage = a.split(' (')[0];
-    const bStage = b.split(' (')[0];
+    const aStage = a.split(/ (.+)/)[0].replace('embryonic', 'embryo');
+    const bStage = b.split(/ (.+)/)[0].replace('embryonic', 'embryo');
+    const aAge = a.split(/ (.+)/)[1];
+    const bAge = b.split(/ (.+)/)[1];
     let aNumerical = 0;
     let bNumerical = 0;
     if (aStage === 'embryo') {
@@ -140,10 +135,10 @@ function sortMouseArray(a, b) {
     } else if (aStage === 'adult') {
         aNumerical = 10000;
     }
-    if (a.includes('days')) {
-        aNumerical += +a.split(' days)')[0].split('(')[1];
-    } else if (a.includes(' weeks')) {
-        aNumerical += +a.split(' weeks)')[0].split('(')[1] * 7;
+    if (aAge.includes('days')) {
+        aNumerical += +aAge.split('days')[0];
+    } else if (aAge.includes('weeks')) {
+        aNumerical += +aAge.split('weeks')[0] * 7;
     }
     if (bStage === 'embryo') {
         bNumerical = 100;
@@ -152,10 +147,10 @@ function sortMouseArray(a, b) {
     } else if (bStage === 'adult') {
         bNumerical = 10000;
     }
-    if (b.includes('days')) {
-        bNumerical += +b.split(' days)')[0].split('(')[1];
-    } else if (b.includes(' weeks')) {
-        bNumerical += +b.split(' weeks)')[0].split('(')[1] * 7;
+    if (bAge.includes('days')) {
+        bNumerical += +bAge.split('days')[0];
+    } else if (bAge.includes(' weeks')) {
+        bNumerical += +bAge.split('weeks')[0] * 7;
     }
     return aNumerical - bNumerical;
 }
@@ -261,81 +256,24 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     const { rowCategoryData, rowCategoryNames } = getRowCategories();
     const rowKeys = ['column-categories'];
 
-    // loop through row data to combine gendered mouse stage/ages into single row
-    const combinedRowCategoryData = JSON.parse(JSON.stringify(rowCategoryData));
-    rowCategoryData.forEach((row, rowIdx) => {
-        const newRowAgeArray = [];
-        row.biosample_summary.buckets.forEach((bucket) => {
-            const newAge = parseString(bucket.key, row.key).replace('male ', '').replace('female ', '');
-            if (newRowAgeArray.indexOf(newAge) === -1) {
-                newRowAgeArray.push(newAge);
-            }
-        });
-        newRowAgeArray.sort(sortMouseArray);
-        const fullRowAgeArray = [];
-        row.biosample_summary.buckets.forEach((bucket) => {
-            const newAge = parseString(bucket.key, row.key);
-            if (fullRowAgeArray.indexOf(newAge) === -1) {
-                fullRowAgeArray.push(newAge);
-            }
-        });
-        const newRowBuckets = [];
-        const newRowBucketsNames = [];
-        row.biosample_summary.buckets.forEach((bucket) => {
-            let temp;
-            // if there is already a bucket, add to it
-            const bucketName = parseString(bucket.key, row.key).replace('male ', '').replace('female ', '');
-            if (newRowBucketsNames.indexOf(bucketName) > -1) {
-                newRowBuckets.forEach((bucket2) => {
-                    const bucket2Key = parseString(bucket2.key, row.key);
-                    if (bucket2Key === bucketName) {
-                        const comboBuckets = [];
-                        bucket.assay_title.buckets.forEach((b) => {
-                            comboBuckets.push(b);
-                        });
-                        bucket2.assay_title.buckets.forEach((b2) => {
-                            comboBuckets.forEach((combo) => {
-                                let comboExists = 0;
-                                if (combo.key === b2.key) {
-                                    comboExists = 1;
-                                }
-                                if (comboExists === 0) {
-                                    comboBuckets.push(b2);
-                                }
-                            });
-                        });
-                        bucket2.assay_title.buckets = comboBuckets;
-                    }
-                });
-            // if not, push new bucket to bucket list
-            } else {
-                temp = Object.assign({}, bucket);
-                temp.key = temp.key.replace('male ', '').replace('female ', '');
-                newRowBuckets.push(temp);
-                newRowBucketsNames.push(parseString(temp.key, row.key));
-            }
-        });
-        combinedRowCategoryData[rowIdx].biosample_summary.buckets = newRowBuckets;
-    });
-
     // loop through row data to sort buckets by sorted mouse stage/age
-    const newRowCategoryData = JSON.parse(JSON.stringify(combinedRowCategoryData));
-    combinedRowCategoryData.forEach((row, rowIdx) => {
+    const newRowCategoryData = JSON.parse(JSON.stringify(rowCategoryData));
+    rowCategoryData.forEach((row, rowIdx) => {
         const rowAgeArray = [];
-        row.biosample_summary.buckets.forEach((bucket) => {
-            rowAgeArray.push(parseString(bucket.key, row.key));
+        row.life_stage_age.buckets.forEach((bucket) => {
+            rowAgeArray.push(bucket.key);
         });
         rowAgeArray.sort(sortMouseArray);
         const newBuckets = [];
         rowAgeArray.forEach((age) => {
-            row.biosample_summary.buckets.forEach((bucket, idx) => {
-                const ageKey = parseString(bucket.key, row.key);
+            row.life_stage_age.buckets.forEach((bucket, idx) => {
+                const ageKey = bucket.key;
                 if (age === ageKey) {
-                    newBuckets.push(row.biosample_summary.buckets[idx]);
+                    newBuckets.push(row.life_stage_age.buckets[idx]);
                 }
             });
         });
-        newRowCategoryData[rowIdx].biosample_summary.buckets = newBuckets;
+        newRowCategoryData[rowIdx].life_stage_age.buckets = newBuckets;
     });
 
     let matrixRow = 1;
@@ -351,12 +289,9 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     if (stageFilter) {
         stageFilter.forEach((f) => {
             if (['adult', 'postnatal', 'embryo'].includes(f)) {
-                selectedFilters += `replicates.library.biosample.life_stage=${f === 'embroyo' ? 'embryonic' : f}&`;
+                selectedFilters += `replicates.library.biosample.life_stage=${f === 'embryo' ? 'embryonic' : f}&`;
             } else {
-                const stageTerm = f.split(' ')[0] === 'embryo' ? 'embryonic' : f.split(' ')[0];
-                const ageTerm = f.split(' ').slice(1).join(' ');
-                selectedFilters += `replicates.library.biosample.life_stage=${stageTerm}&`;
-                selectedFilters += `replicates.library.biosample.age_display=${ageTerm}&`;
+                selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}&`;
             }
         });
         selectedFilters = selectedFilters.substring(0, selectedFilters.length - 1);
@@ -420,12 +355,18 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         // filter rows if needed
         let filteredRowSubcategoryBuckets = [];
         if (stageFilter) {
+            stageFilter.forEach((f) => {
+                if (['adult', 'postnatal', 'embryo'].includes(f)) {
+                    selectedFilters += `replicates.library.biosample.life_stage=${f === 'embryo' ? 'embryonic' : f}&`;
+                } else {
+                    selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}&`;
+                }
+            });
             filteredRowSubcategoryBuckets = visibleRowSubcategoryBuckets.filter((bucket) => {
                 let success = null;
                 stageFilter.forEach((singleFilter) => {
-                    const filterString = singleFilter.replace(/[()]/g, '');
-                    const bucketString = bucket.key.replace(/[()]/g, '');
-                    if (bucketString.includes(filterString)) {
+                    const filterString = singleFilter.replace('embryo', 'embryonic');
+                    if (bucket.key.includes(filterString)) {
                         success = bucket;
                     }
                 });
@@ -440,9 +381,7 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         // Generate one classification's rows of term names.
         const cells = Array(colCount);
         const subcategoryRows = filteredRowSubcategoryBuckets.map((rowSubcategoryBucket) => {
-            const maleSubcategoryBucketKey = `${rowSubcategoryBucket.key.split(rowCategoryBucket.key)[0]}${categoryNameQuery} male${rowSubcategoryBucket.key.split(rowCategoryBucket.key)[1]}`;
-            const femaleSubcategoryBucketKey = `${rowSubcategoryBucket.key.split(rowCategoryBucket.key)[0]}${categoryNameQuery} female${rowSubcategoryBucket.key.split(rowCategoryBucket.key)[1]}`;
-            const subCategoryQuery = `${ROW_SUBCATEGORY}=${encoding.encodedURIComponent(rowSubcategoryBucket.key)}&${ROW_SUBCATEGORY}=${encoding.encodedURIComponent(maleSubcategoryBucketKey)}&${ROW_SUBCATEGORY}=${encoding.encodedURIComponent(femaleSubcategoryBucketKey)}`;
+            const subCategoryQuery = `${ROW_SUBCATEGORY}=${encoding.encodedURIComponent(rowSubcategoryBucket.key)}`;
 
             // Generate an array of data cells for a single term-name row.
             cells.fill(null);
@@ -495,9 +434,8 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
             // Add a single term-name row's data and left header to the matrix.
             rowKeys[matrixRow] = `${rowCategoryBucket.key}|${rowSubcategoryBucket.key}`;
             matrixRow += 1;
-            const newLabel = parseString(rowSubcategoryBucket.key, rowCategoryBucket.key);
-            const labelStage = newLabel.split(' (')[0];
-            const labelLength = newLabel.split('(')[1].slice(0, -1);
+            const labelStage = rowSubcategoryBucket.key.split(/ (.+)/)[0].replace('embryonic', 'embryo');
+            const labelLength = rowSubcategoryBucket.key.split(/ (.+)/)[1];
             return {
                 rowContent: [
                     {
@@ -857,16 +795,16 @@ class MatrixPresentation extends React.Component {
         const rowCategoryData = context.matrix.y[rowCategory].buckets;
         const mouseAgeFullArray = [];
         rowCategoryData.forEach((datum) => {
-            datum.biosample_summary.buckets.forEach((bucket) => {
-                mouseAgeFullArray.push(parseString(bucket.key, datum.key).replace('male ', '').replace('female ', ''));
+            datum.life_stage_age.buckets.forEach((bucket) => {
+                mouseAgeFullArray.push(bucket.key.replace('embryonic', 'embryo'));
             });
         });
         mouseAgeFullArray.sort(sortMouseArray);
         const uniqueAgeArray = [...new Set(mouseAgeFullArray)];
         const mouseAgeObject = {
-            embryo: uniqueAgeArray.filter(age => age.includes('embryo')).map(age => age.replace('embryo (', '').replace(')', '')),
-            postnatal: uniqueAgeArray.filter(age => age.includes('postnatal')).map(age => age.replace('postnatal (', '').replace(')', '')),
-            adult: uniqueAgeArray.filter(age => age.includes('adult')).map(age => age.replace('adult (', '').replace(')', '')),
+            embryo: uniqueAgeArray.filter(age => age.includes('embryo')).map(age => age.replace('embryo', '')),
+            postnatal: uniqueAgeArray.filter(age => age.includes('postnatal')).map(age => age.replace('postnatal', '')),
+            adult: uniqueAgeArray.filter(age => age.includes('adult')).map(age => age.replace('adult', '')),
         };
         const embryoDefault = 50;
         const defaultWidth = 75;
@@ -901,14 +839,14 @@ class MatrixPresentation extends React.Component {
                 const stageFilterExists = additionalFilters.filter(f2 => f2.term === stageTerm).length > 0;
                 if (!stageFilterExists) {
                     additionalFilters.push({
-                        term: f === 'embryo' ? 'embryonic' : f,
+                        term: f.replace('embryo', 'embryonic'),
                         remove: '',
                         field: 'replicates.library.biosample.life_stage',
                     });
                 }
             } else {
-                const stageTerm = f.split(' ')[0] === 'embryo' ? 'embryonic' : f.split(' ')[0];
-                const ageTerm = f.split(' ').slice(1).join(' ');
+                const stageTerm = f.split(/ (.+)/)[0].replace('embryo', 'embryonic');
+                const ageTerm = f.split(/ (.+)/)[1];
                 const stageFilterExists = additionalFilters.filter(f2 => f2.term === stageTerm).length > 0;
                 const ageFilterExists = additionalFilters.filter(f2 => f2.term === ageTerm).length > 0;
                 if (!stageFilterExists) {
@@ -920,9 +858,9 @@ class MatrixPresentation extends React.Component {
                 }
                 if (!ageFilterExists) {
                     additionalFilters.push({
-                        term: ageTerm,
+                        term: f.replace('embryo', 'embryonic'),
                         remove: '',
-                        field: 'replicates.library.biosample.age_display',
+                        field: 'life_stage_age',
                     });
                 }
             }
@@ -948,7 +886,7 @@ class MatrixPresentation extends React.Component {
                                                     buttonWidth={embryoFirstRowWidth}
                                                 />
                                                 <div className="age-container">
-                                                    {embryoFirstRow.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo ${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                    {embryoFirstRow.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
                                                 </div>
                                             </div>
                                             <div className="stage-container">
@@ -960,7 +898,7 @@ class MatrixPresentation extends React.Component {
                                                     buttonWidth={embryoSecondRowWidth}
                                                 />
                                                 <div className="age-container">
-                                                    {embryoSecondRow.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo ${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                    {embryoSecondRow.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
                                                 </div>
                                             </div>
                                         </React.Fragment>
@@ -974,7 +912,7 @@ class MatrixPresentation extends React.Component {
                                                 buttonWidth={embryoWidth}
                                             />
                                             <div className="age-container">
-                                                {mouseAgeObject.embryo.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo ${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
+                                                {mouseAgeObject.embryo.map(age => <MouseStageButton keyWord={age} idString={`embryo ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`embryo${age}`) > -1) || (this.state.developmentStageClick.indexOf('embryo') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={embryoDefault} key={`embryo ${age}`} />)}
                                             </div>
                                         </div>
                                     }
@@ -987,7 +925,7 @@ class MatrixPresentation extends React.Component {
                                             buttonWidth={postnatalWidth}
                                         />
                                         <div className="age-container">
-                                            {mouseAgeObject.postnatal.map(age => <MouseStageButton keyWord={age} idString={`postnatal ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`postnatal ${age}`) > -1) || (this.state.developmentStageClick.indexOf('postnatal') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`postnatal ${age}`} />)}
+                                            {mouseAgeObject.postnatal.map(age => <MouseStageButton keyWord={age} idString={`postnatal ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`postnatal${age}`) > -1) || (this.state.developmentStageClick.indexOf('postnatal') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`postnatal ${age}`} />)}
                                         </div>
                                     </div>
                                     <div className="stage-container">
@@ -999,7 +937,7 @@ class MatrixPresentation extends React.Component {
                                             buttonWidth={adultWidth}
                                         />
                                         <div className="age-container">
-                                            {mouseAgeObject.adult.map(age => <MouseStageButton keyWord={age} idString={`adult ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`adult ${age}`) > -1) || (this.state.developmentStageClick.indexOf('adult') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`adult ${age}`} />)}
+                                            {mouseAgeObject.adult.map(age => <MouseStageButton keyWord={age} idString={`adult ${age}`} activeClass={(this.state.developmentStageClick.indexOf(`adult${age}`) > -1) || (this.state.developmentStageClick.indexOf('adult') > -1)} onClick={e => this.selectMouseDevelopmentStage(e)} buttonWidth={defaultWidth} key={`adult ${age}`} />)}
                                         </div>
                                     </div>
                                 </div>
