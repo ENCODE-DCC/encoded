@@ -63,7 +63,7 @@
         },
         "q30_bases_in_umi": {
             "title": "Q30 bases in umi",
-            "description": "Graction of UMI bases withQ-score >= 30, excluding very low quality/no-call (Q <= 2) bases from denominator.",
+            "description": "Fraction of UMI bases withQ-score >= 30, excluding very low quality/no-call (Q <= 2) bases from denominator.",
             "type": "number"
         },
         "fraction_antibody_reads": {
@@ -77,7 +77,7 @@
             "type": "number"
         },
         "antibody_reads_usable_per_cell": {
-            "title": "Antigody reads",
+            "title": "Antibody reads",
             "description": "Number of antibody reads usable divided by the number of cell-associated barcodes.",
             "type": "integer"
         },
