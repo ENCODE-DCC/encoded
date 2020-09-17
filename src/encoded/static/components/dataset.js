@@ -475,8 +475,16 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
         return null;
     }
 
-    const library_types  = libraryProtocolList(context.libraries, 'library_type');
     const library_titles = libraryProtocolList(context.libraries, 'name');
+
+    function libraryList(values, field) {
+        if (values && values.length > 0) {
+            return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
+        }
+        return null;
+    }
+
+    const library_types  = libraryList(context.libraries, 'assay');
 
     return (
         <div className={itemClass}>
