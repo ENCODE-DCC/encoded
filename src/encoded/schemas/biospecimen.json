@@ -4,17 +4,44 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
-    "identifyingProperties": ["uuid","accession"],
+    "required": [
+        "award",
+        "internal_ID",
+        "openspecimen_ID",
+        "patient",
+        "collection_date",
+        "collection_type",
+        "processing_type",
+        "host",
+        "distributed"
+    ],
+    "identifyingProperties": [
+        "uuid",
+        "accession"
+    ],
     "additionalProperties": false,
     "mixinProperties": [
-        {"$ref": "mixins.json#/submitted"},
-        {"$ref": "mixins.json#/accessioned_status"},
-        {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/attribution"},
-        { "$ref": "mixins.json#/documents" },
-        {"$ref": "mixins.json#/uuid"}
+        {
+            "$ref": "mixins.json#/submitted"
+        },
+        {
+            "$ref": "mixins.json#/accessioned_status"
+        },
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        {
+            "$ref": "mixins.json#/accession"
+        },
+        {
+            "$ref": "mixins.json#/attribution"
+        },
+        {
+            "$ref": "mixins.json#/documents"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        }
     ],
     "properties": {
         "schema_version": {
@@ -92,7 +119,6 @@
                 "Human",
                 "Mouse"
             ]
-
         },
         "originated_from": {
             "title": "Originated from",
@@ -159,8 +185,8 @@
         "documents": {
             "description": "Protocols or other documents that describe the sample collection or sample fixation or procession(not data files)."
         },
-        "organism": {
-            "title": "Organism",
+        "species": {
+            "title": "Species",
             "description": "The organism the biosample was originated from.",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
@@ -169,7 +195,7 @@
                 "Mouse"
             ]
         },
-        "sample_type":{
+        "sample_type": {
             "title": "Sample Type",
             "description": "The type of the biospecimen when it was taken.",
             "type": "string",
@@ -180,116 +206,194 @@
                 "Molecule"
             ]
         },
-        "sub_sample_type":{
-            "title": "Preserved_Sample Type",
-            "description": "The type of the biospecimen when it was taken.",
-            "type": "string",
-            "enum": [
-                "Whole Blood",
-                "Plasma",
-                "Serum",
-                "PBMC",
-                "Platelets",
-                "Buffy Coat",
-                "Tumor",
-                "Normal Kidney",
-                "Other tissue",
-                "Ascites Fluid",
-                "Pleural Fluid",
-                "Cerebrospinal Fluid",
-                "Synovial Fluid",
-                "Protein+RNA",
-                "RNAt",
-                "RNA",
-                "miRNA",
-                "DNA",
-                "Protein",
-                "cDNA",
-                "FF",
-                "FFPE",
-                "DMSO"
-            ]
+        "freeze_thaw_cycles": {
+            "title": "Freeze/Thaw Cycles",
+            "description": "Sample's freeze/thaw cycles",
+            "type": "integer",
+            "minimum": 0
         },
-        "donor": {
-            "title": "Donor",
-            "description": "The donor or strain the biosample was originated from.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Donor"
-        },
-        "treatments": {
-            "title": "Treatments",
-            "description": "A list of treatments applied to the biosample.",
-            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Treatment",
-                "comment": "See treatment.json for available identifiers.",
-                "type": "string",
-                "enum": [
-                    "Acriflavin",
-                    "cGAMP",
-                    "Dovitinib",
-                    "Erlotinib",
-                    "EZH2-1",
-                    "HHT",
-                    "HHT+Rapamycin",
-                    "HIF2a",
-                    "Non-Treated",
-                    "PT2399",
-                    "PT2399 to Vehicle",
-                    "Rapamycin",
-                    "Rapamycin+PT2399",
-                    "Sunitinib",
-                    "Sunitinib to PT2399",
-                    "Sunitinib to Rapamycin",
-                    "Sunitinib to Rapamycin+PT2399",
-                    "Vehicle",
-                    "Vehicle to PT2399",
-                    "Vehicle to Rapamycin",
-                    "Vehicle to Rapamycin+PT2399",
-                    "Hydroxychloroquine",
-                    "Cabozantinib",
-                    "TAK243"
-                ]
+        "blood_related_field": {
+            "title": "Blood Related Field",
+            "description": "blood related fields",
+            "type": "object",
+            "properties": {
+                "blood_component": {
+                    "title": "Blood Component",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Whole blood",
+                        "Plasma",
+                        "Serum",
+                        "PBMC",
+                        "Platelets",
+                        "Buffy Coat"
+                    ]
+                },
+                "blood_anticogulant": {
+                    "title": "Blood Anticoagulant",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Citrate[CPT]",
+                        "EDTA",
+                        "Heparin",
+                        "None"
+                    ]
+                }
             }
         },
-        "host_biosample": {
-            "title": "Host biosample",
-            "description": "A biosample that was hosting this biosample.",
-            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation. See biosamples.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Biospecimen"
-        },
-        "pooled_from": {
-            "title": "Pooled from",
-            "description": "The biosamples from which aliquots were pooled to form the biosample.",
-            "comment": "A list of biosamples used to create the biosample, if specified, it requires minimum of two entries.",
-            "type":  "array",
-            "uniqueItems": true,
-            "items": {
-                "description": "A biosample from which an aliquot was taken to form the biosample.",
-                "comment": "See biosample.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Biospecimen"
+        "tissue_related_field": {
+            "title": "Tissue Related Field",
+            "description": "Tissue related fields",
+            "type": "object",
+            "properties": {
+                "tissue_typeOftissue": {
+                    "title": "Type of Tissue",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Tumor",
+                        "Normal Kidney",
+                        "Other"
+                    ]
+                },
+                "tissue_other_specify": {
+                    "title": "Specify Other Tissue",
+                    "description": "",
+                    "comment": "",
+                    "type": "string"
+                }
             }
         },
-        "part_of": {
-            "title": "Separated from",
-            "description": "A biosample from which a discrete component was taken. That component is this biosample.",
-            "comment": "See biosamples.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Biospecimen"
+        "fluid_related_field": {
+            "title": "Fluid Related Field",
+            "description": "Fluid related fields",
+            "type": "object",
+            "properties": {
+                "fluid_type": {
+                    "title": "Type of fluid",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Ascites Fluid",
+                        "Pleural Fluid",
+                        "Cerebrospinal Fluid",
+                        "Synovial Fluid"
+                    ]
+                }
+            }
         },
-        "starting_amount": {
-            "title": "Starting amount",
+        "molecular_related_field": {
+            "title": "Molecular Related Field",
+            "description": "Molecular related fields",
+            "type": "object",
+            "properties": {
+                "molecular_extraction": {
+                    "title": "Molecular Extraction",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "P+R",
+                        "RNAt",
+                        "RNA",
+                        "miRNA",
+                        "DNA",
+                        "Protein",
+                        "cDNA"
+                    ]
+                },
+                "molecular_date_extracted": {
+                    "title": "Molecular Date Extracted",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "anyOf": [
+                        {
+                            "format": "date"
+                        }
+                    ]
+                },
+                "date_extacted_by": {
+                    "title": "Date Extracted By",
+                    "description": "",
+                    "comment": "",
+                    "type": "string"
+                },
+                "elution_number": {
+                    "title": "Elution Number",
+                    "description": "Molecular eluted volumn, possiblely equal to the stored sample volumn ",
+                    "comment": "",
+                    "type": "number"
+                },
+                "elution_number_units": {
+                    "title": "Elution Number Unit",
+                    "description": "Molecular eluted volumn unit",
+                    "comment": "",
+                    "type": "string",
+                    "default": "ul",
+                    "enum": [
+                        "ul"
+                    ]
+                },
+                "molecular_concentration": {
+                    "title": "Molecular Concentration",
+                    "description": "Final concentration after quantified",
+                    "comment": "",
+                    "type": "number"
+                },
+                "molecular_concentration_units": {
+                    "title": "Molecular Concentration Units",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "default": "ng/uL",
+                    "enum": [
+                        "ng/uL"
+                    ]
+                },
+                "260/230": {
+                    "title": "260/230",
+                    "description": "The ratio of the absorbance at 260 and 280 nm (A260/280)",
+                    "comment": "",
+                    "type": "number"
+                },
+                "260/280": {
+                    "title": "260/280",
+                    "description": "The ratio of the absorbance at 260 and 280 nm (A260/280), which is used to assess the purity of nucleic acids.",
+                    "comment": "",
+                    "type": "number"
+                },
+                "molecular_quantity": {
+                    "title": "Molecular Quantity",
+                    "description": "Total mass quantity of this molecular sample",
+                    "comment": "",
+                    "type": "number"
+                },
+                "molecular_quantity_unit": {
+                    "title": "Molecular Quantity Unit",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "default": "ng",
+                    "enum": [
+                        "ng"
+                    ]
+                }
+            }
+        },
+        "initial_quantity": {
+            "title": "Initial Quantity",
             "description": "The initial quantity of cells, tissue or animals obtained.",
             "type": "number",
-            "minimum":0
+            "minimum": 0
         },
-        "starting_amount_units": {
+        "initial_quantiy_units": {
             "title": "Starting amount units",
             "description": "The units used to quantify the amount of cells or tissue obtained.",
             "type": "string",
@@ -304,49 +408,243 @@
                 "μg"
             ]
         },
+        "available_quantity": {
+            "title": "Available Quantity",
+            "description": "Available sample quantities",
+            "comment": "",
+            "type": "number"
+        },
+        "available_quantity_unit": {
+            "title": "Available Quantity Unit",
+            "description": "Available sample quantities' unit",
+            "comment": "",
+            "type": "string",
+            "enum": [
+                "g",
+                "mg",
+                "ug",
+                "ng",
+                "l",
+                "ml",
+                "ul"
+            ]
+        },
         "preservation_method": {
             "title": "Preservation method",
             "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
             "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
             "type": "string",
             "enum": [
-                "cryopreservation",
-                "flash-freezing"
+                "DMSO",
+                "None"
             ]
         },
-        "mouse_life_stage": {
-            "title": "Mouse life stage",
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the biosample was originated from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
             "type": "string",
-            "description": "The life stage of the mouse biosample.",
-            "comment": "mouse_life_stage is not valid for a human biosample.",
+            "linkTo": "Donor"
+        },
+        "mouse_related_info": {
+            "title": "Mouse Sample Related Information",
+            "description": "Mouse Sample Related Information,mouse dependencies",
+            "type": "object",
+            "properties": {
+                "ortho_vs_sc": {
+                    "title": "Ortho VS S.C.",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Ortho",
+                        "s.c."
+                    ]
+                },
+                "mouse_cohort": {
+                    "title": "Mouse cohort number",
+                    "description": "",
+                    "comment": "",
+                    "type": "string"
+                },
+                "mouse_eartag": {
+                    "title": "Mouse Eartag",
+                    "description": "Mouse eartag id",
+                    "comment": "",
+                    "type": "string"
+                },
+                "mouse_thymoma": {
+                    "title": "Mouse Thymoma",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "mouse_suspicion_of_infection": {
+                    "title": "Suspicion of Infection",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "mouse_swabbed": {
+                    "title": "Mouse Swabbed",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "number_of_colony_abdomen": {
+                    "title": "Number of Colonies(Abdomen)",
+                    "description": "Number of colonies in abdomen",
+                    "comment": "",
+                    "type": "integer"
+                },
+                "number_of_colony_tumor": {
+                    "title": "Number of Colonies(Tumor)",
+                    "description": "Number of Colonies of tumor",
+                    "comment": "",
+                    "type": "integer"
+                },
+                "part_of_drug_trial": {
+                    "title": "Part of Drug Trial",
+                    "description": "",
+                    "comment": "",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "mouse_treatments": {
+                    "title": "Treatments",
+                    "description": "A list of treatments applied to the biosample.",
+                    "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
+                    "type": "array",
+                    "default": [],
+                    "uniqueItems": true,
+                    "items": {
+                        "title": "Treatment",
+                        "comment": "See treatment.json for available identifiers.",
+                        "type": "string",
+                        "enum": [
+                            "Acriflavin",
+                            "cGAMP",
+                            "Dovitinib",
+                            "Erlotinib",
+                            "EZH2-1",
+                            "HHT",
+                            "HHT+Rapamycin",
+                            "HIF2a",
+                            "Non-Treated",
+                            "PT2399",
+                            "PT2399 to Vehicle",
+                            "Rapamycin",
+                            "Rapamycin+PT2399",
+                            "Sunitinib",
+                            "Sunitinib to PT2399",
+                            "Sunitinib to Rapamycin",
+                            "Sunitinib to Rapamycin+PT2399",
+                            "Vehicle",
+                            "Vehicle to PT2399",
+                            "Vehicle to Rapamycin",
+                            "Vehicle to Rapamycin+PT2399",
+                            "Hydroxychloroquine",
+                            "Cabozantinib",
+                            "TAK243"
+                        ]
+                    }
+                },
+                "number_of_days_on_treatment": {
+                    "title": "Number of Days on Treatment",
+                    "description": "",
+                    "comment": "",
+                    "type": "integer"
+                }
+            }
+        },
+        "time_to_tissue_processing_after_resection": {
+            "title": "Time to Tissue Processing (Minutes) after resection",
+            "description": "",
+            "comment": "",
+            "type": "number"
+        },
+        "time_to_tissue_processing_after_resection_units": {
+            "title": "Time to Tissue Processing (Minutes) after Resection Units",
+            "description": "",
+            "comment": "",
+            "type": "string",
+            "default": "minute",
             "enum": [
-                "embryonic",
-                "postnatal",
-                "adult",
-                "unknown"
+                "minute",
+                "day",
+                "hour"
             ]
+        },
+        "host_biosample": {
+            "title": "Host biosample",
+            "description": "A biosample that was hosting this biosample.",
+            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation. See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biospecimen"
+        },
+        "pooled_from": {
+            "title": "Pooled from",
+            "description": "The biosamples from which aliquots were pooled to form the biosample.",
+            "comment": "A list of biosamples used to create the biosample, if specified, it requires minimum of two entries.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "description": "A biosample from which an aliquot was taken to form the biosample.",
+                "comment": "See biosample.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Biospecimen"
+            }
+        },
+        "part_of": {
+            "title": "Separated from",
+            "description": "A biosample from which a discrete component was taken. That component is this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biospecimen"
         }
-
     },
     "oneOf": [
         {
             "properties": {
                 "collection_type": {
-                    "enum": ["solid tissue"]
+                    "enum": [
+                        "solid tissue"
+                    ]
                 }
             },
-            "required": ["tissue_type", "anatomic_site", "primary_site"]
+            "required": [
+                "tissue_type",
+                "anatomic_site",
+                "primary_site"
+            ]
         },
         {
             "properties": {
                 "collection_type": {
-                    "enum": ["blood", "ascites fluid"]
+                    "enum": [
+                        "blood",
+                        "ascites fluid"
+                    ]
                 }
             }
         }
     ],
     "facets": {
-
         "status": {
             "title": "Status"
         },
@@ -388,8 +686,121 @@
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage"
+        },
+        "species": {
+            "title": "Species"
+        },
+        "sample_type": {
+            "title": "Sample Type"
+        },
+        "freeze_thaw_cycles": {
+            "title": "Freeze/Thaw Cycles"
+        },
+        "blood_related_field.blood_component": {
+            "title": "Blood Component"
+        },
+        "blood_related_field.blood_anticogulant": {
+            "title": "Blood Anticoagulant"
+        },
+        "blood_related_field.tissue_related_field": {
+            "title": "Tissue Related Field"
+        },
+        "blood_related_field.tissue_other_specify": {
+            "title": "Specify Other Tissue"
+        },
+        "fluid_related_field.fluid_type": {
+            "title": "Type of fluid"
+        },
+        "molecular_related_field.molecular_extraction": {
+            "title": "Molecular Extraction"
+        },
+        "molecular_related_field.molecular_date_extracted": {
+            "title": "Molecular Date Extracted"
+        },
+        "molecular_related_field.date_extacted_by": {
+            "title": "Date Extracted By"
+        },
+        "molecular_related_field.elution_number": {
+            "title": "Elution Number"
+        },
+        "molecular_related_field.elution_number_units": {
+            "title": "Elution Number Unit"
+        },
+        "molecular_related_field.molecular_concentration": {
+            "title": "Molecular Concentration"
+        },
+        "molecular_related_field.molecular_concentration_units": {
+            "title": "Molecular Concentration Units"
+        },
+        "molecular_related_field.260/230": {
+            "title": "260/230"
+        },
+        "molecular_related_field.260/280": {
+            "title": "260/280"
+        },
+        "molecular_related_field.molecular_quantity": {
+            "title": "Molecular Quantity"
+        },
+        "molecular_related_field.molecular_quantity_unit": {
+            "title": "Molecular Quantity Unit"
+        },
+        "initial_quantity": {
+            "title": "Initial Quantity"
+        },
+        "available_quantity": {
+            "title": "Available Quantity"
+        },
+        "preservation_method": {
+            "title": "Preservation method"
+        },
+        "donor": {
+            "title": "Donor"
+        },
+        "mouse_related_info.ortho_vs_sc": {
+            "title": "Ortho VS S.C."
+        },
+        "mouse_related_info.mouse_cohort": {
+            "title": "Mouse cohort number"
+        },
+        "mouse_related_info.mouse_eartag": {
+            "title": "Mouse Eartag"
+        },
+        "mouse_related_info.mouse_thymoma": {
+            "title": "mouse_thymoma"
+        },
+        "mouse_related_info.mouse_suspicion_of_infection": {
+            "title": "Suspicion of Infection"
+        },
+        "mouse_related_info.mouse_swabbed": {
+            "title": "Mouse Swabbed"
+        },
+        "mouse_related_info.number_of_colony_abdomen": {
+            "title": "Number of Colonies(Abdomen)"
+        },
+        "mouse_related_info.number_of_colony_tumor": {
+            "title": "Number of Colonies(Tumor)"
+        },
+        "mouse_related_info.part_of_drug_trial": {
+            "title": "Part of Drug Trial"
+        },
+        "mouse_related_info.mouse_treatments": {
+            "title": "Treatments"
+        },
+        "mouse_related_info.number_of_days_on_treatment": {
+            "title": "Number of Days on Treatment"
+        },
+        "time_to_tissue_processing_after_resection": {
+            "title": "Time to Tissue Processing (Minutes) after resection"
+        },
+        "host_biosample": {
+            "title": "Host biosample"
+        },
+        "pooled_from": {
+            "title": "Pooled from"
+        },
+        "part_of": {
+            "title": "Separated from"
         }
-
     },
     "columns": {
         "accession": {
@@ -416,7 +827,6 @@
         "distributed": {
             "title": "Distributed?"
         }
-
     },
     "boost_values": {
         "accession": 1.0,
@@ -426,14 +836,6 @@
         "anatomic_site": 1.0,
         "biolibrary.accession": 1.0,
         "biolibrary.biofile.accession": 1.0
-
-
     },
     "changelog": "/profiles/changelogs/biospecimen.md"
-
 }
-
-
-
-
-

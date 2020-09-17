@@ -74,14 +74,13 @@ class Bioexperiment extends React.Component {
         const references = pubReferenceList(context.references);
 
         // Determine this experiment's ENCODE version.
-        const encodevers = globals.encodeVersion(context);
+        // const encodevers = globals.encodeVersion(context);
 
         // // Make list of statuses.
         // const statuses = [{ status: context.status, title: 'Status' }];
         // // Determine whether the experiment is isogenic or anisogenic. No replication_type
         // // indicates isogenic.
-        const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
-        const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
+        // const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
 
         const itemClass = globals.itemClass(context, 'view-item');
@@ -91,6 +90,24 @@ class Bioexperiment extends React.Component {
             { id: <i>{context.accession}</i> },
         ];
         const crumbsReleased = (context.status === 'released');
+        const biospecimen_summary = context.biospecimen_summary;
+        let show_specimen_summary = [];
+        for (let i = 0; i < biospecimen_summary.length; i++) {
+            show_specimen_summary.push(<div>
+                <dt>biospecimen_summary{i+1} </dt>
+                <dd>{biospecimen_summary[i].accession}</dd>
+                <dd>{biospecimen_summary[i].patient}</dd>
+                <dd>{biospecimen_summary[i].openspecimen_ID}</dd>
+                <dd>{biospecimen_summary[i].collection_type}</dd>
+                <dd>{biospecimen_summary[i].processing_type}</dd>
+                <dd>{biospecimen_summary[i].tissue_type}</dd>
+                <dd>{biospecimen_summary[i].host}</dd>
+                <dd>{biospecimen_summary[i].anatomic_site}</dd>
+                <dd>{biospecimen_summary[i].primary_site}</dd>
+                </div>)
+                 
+            }
+        console.log("biospecimen_summary", show_specimen_summary);
 
         return (
             <div className={itemClass}>
@@ -131,25 +148,7 @@ class Bioexperiment extends React.Component {
                                         </dd>
                                     </div>
 
-                                    {/* {context.biosample_summary ?
-                                        <div data-test="biosample-summary">
-                                            <dt>Biosample summary</dt>
-                                            <dd>
-                                                {organismNames.length ?
-                                                    <span>
-                                                        {organismNames.map((organismName, i) =>
-                                                            <span key={organismName}>
-                                                                {i > 0 ? <span> and </span> : null}
-                                                                <i>{organismName}</i>
-                                                            </span>
-                                                        )}
-                                                        &nbsp;
-                                                    </span>
-                                                : null}
-                                                <span>{context.biosample_summary}</span>
-                                            </dd>
-                                        </div>
-                                    : null} */}
+                                    {show_specimen_summary}
                                     {/* 
                                     {context.biosample_ontology ?
                                         <div data-test="biosample-type">
@@ -279,7 +278,7 @@ class Bioexperiment extends React.Component {
                     <DocumentsPanelReq documents={combinedDocuments}></DocumentsPanelReq>
                     : null}
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
+                {/* <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} /> */}
 
                 {/* <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} /> */}
             </div>

@@ -291,6 +291,7 @@ class Experiment(Dataset,
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
+            
 
     @calculated_property(condition='assay_term_name', schema={
         "title": "Assay type",
