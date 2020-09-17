@@ -9,7 +9,6 @@ import { svgIcon } from '../libs/svg-icons';
 import DataTable from './datatable';
 import * as globals from './globals';
 import { MatrixInternalTags } from './objectutils';
-import { SearchControls } from './search';
 
 
 /**
@@ -221,7 +220,7 @@ const convertEncoreToDataTable = (context, displayedAssays, rowCategoryFilterTex
         if (hasTermName) {
             rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}=${encoding.encodedURIComponent(rowCategoryItem.key)}&${displayedTermNamesQuery}`;
         } else {
-            rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}!=*&${encoding.encodedURIComponent(rowCategoryItem.key)}&${displayedTermNamesQuery}`;
+            rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}!=*&${displayedTermNamesQuery}`;
         }
 
         // Make a new array for the whole row so we can fill individual cells, and fill in the left
