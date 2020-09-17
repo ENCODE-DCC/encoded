@@ -1376,6 +1376,7 @@ $encore-subheader-width: 30px;
 $encore-subheader-height: 56px;
 $encore-header-width: $encore-subheader-width;
 $encore-header-height: 150px;
+$encore-header-height-xs: 200px;
 $encore-header-width-spanned: $encore-subheader-width * 2;
 $encore-cell-width: $encore-subheader-width;
 $encore-spacer-width: 10px;
@@ -1496,17 +1497,29 @@ $rnaseq-term-name-colors:
         }
 
         .matrix__col-category-header {
-            height: $encore-header-height;
+            height: $encore-header-height-xs;
+
+            @media screen and (min-width: $screen-sm-min) {
+                height: $encore-header-height;
+            }
 
             > th {
-                height: $encore-header-height;
+                height: $encore-header-height-xs;
+
+                @media screen and (min-width: $screen-sm-min) {
+                    height: $encore-header-height;
+                }
 
                 &.encore-column-spacer {
                     width: $encore-spacer-width;
                 }
 
                 > a {
-                    height: $encore-header-height;
+                    height: $encore-header-height-xs;
+
+                    @media screen and (min-width: $screen-sm-min) {
+                        height: $encore-header-height;
+                    }
                 }
             }
 

@@ -206,15 +206,22 @@ const convertEncoreToDataTable = (context, displayedAssays, rowCategoryFilterTex
         return termKey.match(typeaheadVal);
     }) : context.matrix.y[rowCategory].buckets;
 
+    let displayedTermNamesQuery = displayedTermNames.map(displayedTermName => (
+        `${colSubCategory}=${encoding.encodedURIComponent(displayedTermName)}`
+    )).join('&');
+    if (rowCategory === 'target.label') {
+        displayedTermNamesQuery += `&${colSubCategory}=${encoding.encodedURIComponent('cell-free sample')}`;
+    }
+
     // Fill in the data portion of the table.
     rowCategoryBuckets.forEach((rowCategoryItem) => {
         // Targets without a biosample get the special key "no_term_name."
         let rowCategoryUrl;
         const hasTermName = rowCategoryItem.key !== 'no_term_name';
         if (hasTermName) {
-            rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}=${encoding.encodedURIComponent(rowCategoryItem.key)}`;
+            rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}=${encoding.encodedURIComponent(rowCategoryItem.key)}&${displayedTermNamesQuery}`;
         } else {
-            rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}!=*`;
+            rowCategoryUrl = `${baseUrlWithoutColCategoryType}&${rowCategory}!=*&${encoding.encodedURIComponent(rowCategoryItem.key)}&${displayedTermNamesQuery}`;
         }
 
         // Make a new array for the whole row so we can fill individual cells, and fill in the left
