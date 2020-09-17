@@ -24,8 +24,7 @@
         "fourier_transform_eleven": {
             "title": "Fourier transform eleven",
             "description": "Fourier transform of the insert size at 11 bases",
-            "type": "number",
-            "minimum": 0
+            "type": "number"
         },
         "insert_size_histogram": {
             "title": "Insert size histogram",
