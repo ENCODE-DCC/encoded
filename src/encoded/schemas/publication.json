@@ -119,13 +119,6 @@
             "title": "Identifiers"
         }
     },
-    "sort_by": {
-        "publication_year": {
-            "unmapped_type": "keyword",
-            "order": "desc",
-            "missing": "_last" 
-        }
-    },
     "changelog": "/profiles/changelogs/publication.md"
 
 }
