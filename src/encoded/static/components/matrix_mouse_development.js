@@ -155,6 +155,43 @@ function sortMouseArray(a, b) {
     return aNumerical - bNumerical;
 }
 
+// Generate object listing all ages corresponding to a mouse stage based on rowCategoryData
+const getMouseAgeObject = (rowCategoryData) => {
+    const mouseAgeFullArray = [];
+    rowCategoryData.forEach((datum) => {
+        datum.life_stage_age.buckets.forEach((bucket) => {
+            mouseAgeFullArray.push(bucket.key.replace('embryonic', 'embryo'));
+        });
+    });
+    mouseAgeFullArray.sort(sortMouseArray);
+    const uniqueAgeArray = [...new Set(mouseAgeFullArray)];
+    const mouseAgeObject = {
+        embryo: uniqueAgeArray.filter(age => age.includes('embryo')).map(age => age.replace('embryo', '')),
+        postnatal: uniqueAgeArray.filter(age => age.includes('postnatal')).map(age => age.replace('postnatal', '')),
+        adult: uniqueAgeArray.filter(age => age.includes('adult')).map(age => age.replace('adult', '')),
+    };
+    return mouseAgeObject;
+};
+
+// Convert array of filters into search query
+// For life stage filters, we must append search terms for all corresponding ages
+const generateFilterQuery = (stageFilter, mouseAgeObject) => {
+    let selectedFilters = '';
+    if (stageFilter) {
+        stageFilter.forEach((f) => {
+            if (['adult', 'postnatal', 'embryo'].includes(f)) {
+                mouseAgeObject[f].forEach((mouseAge) => {
+                    selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}${mouseAge}&`;
+                });
+            } else {
+                selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}&`;
+            }
+        });
+        selectedFilters = selectedFilters.substring(0, selectedFilters.length - 1);
+    }
+    return selectedFilters;
+};
+
 let _navbarHeight = null;
 
 /**
@@ -285,17 +322,8 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
     // hrefs.
 
     // add selected filters to column header links
-    let selectedFilters = '';
-    if (stageFilter) {
-        stageFilter.forEach((f) => {
-            if (['adult', 'postnatal', 'embryo'].includes(f)) {
-                selectedFilters += `replicates.library.biosample.life_stage=${f === 'embryo' ? 'embryonic' : f}&`;
-            } else {
-                selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}&`;
-            }
-        });
-        selectedFilters = selectedFilters.substring(0, selectedFilters.length - 1);
-    }
+    const mouseAgeObject = getMouseAgeObject(rowCategoryData);
+    const selectedFilters = generateFilterQuery(stageFilter, mouseAgeObject);
 
     const header = [{ header: null }].concat(sortedCols.map((colInfo) => {
         const categoryQuery = `${COL_CATEGORY}=${encoding.encodedURIComponent(colInfo.category)}`;
@@ -355,13 +383,6 @@ const convertExperimentToDataTable = (context, getRowCategories, mapRowCategoryQ
         // filter rows if needed
         let filteredRowSubcategoryBuckets = [];
         if (stageFilter) {
-            stageFilter.forEach((f) => {
-                if (['adult', 'postnatal', 'embryo'].includes(f)) {
-                    selectedFilters += `replicates.library.biosample.life_stage=${f === 'embryo' ? 'embryonic' : f}&`;
-                } else {
-                    selectedFilters += `life_stage_age=${f.replace('embryo', 'embryonic')}&`;
-                }
-            });
             filteredRowSubcategoryBuckets = visibleRowSubcategoryBuckets.filter((bucket) => {
                 let success = null;
                 stageFilter.forEach((singleFilter) => {
@@ -795,19 +816,7 @@ class MatrixPresentation extends React.Component {
 
         const rowCategory = context.matrix.y.group_by[0];
         const rowCategoryData = context.matrix.y[rowCategory].buckets;
-        const mouseAgeFullArray = [];
-        rowCategoryData.forEach((datum) => {
-            datum.life_stage_age.buckets.forEach((bucket) => {
-                mouseAgeFullArray.push(bucket.key.replace('embryonic', 'embryo'));
-            });
-        });
-        mouseAgeFullArray.sort(sortMouseArray);
-        const uniqueAgeArray = [...new Set(mouseAgeFullArray)];
-        const mouseAgeObject = {
-            embryo: uniqueAgeArray.filter(age => age.includes('embryo')).map(age => age.replace('embryo', '')),
-            postnatal: uniqueAgeArray.filter(age => age.includes('postnatal')).map(age => age.replace('postnatal', '')),
-            adult: uniqueAgeArray.filter(age => age.includes('adult')).map(age => age.replace('adult', '')),
-        };
+        const mouseAgeObject = getMouseAgeObject(rowCategoryData);
         const embryoDefault = 50;
         const defaultWidth = 75;
         const embryoWidth = (mouseAgeObject.embryo.length * (embryoDefault + 2)) - 2;
@@ -837,34 +846,19 @@ class MatrixPresentation extends React.Component {
         const additionalFilters = [];
         this.state.developmentStageClick.forEach((f) => {
             if (['adult', 'postnatal', 'embryo'].includes(f)) {
-                const stageTerm = f === 'embryo' ? 'embryonic' : f;
-                const stageFilterExists = additionalFilters.filter(f2 => f2.term === stageTerm).length > 0;
-                if (!stageFilterExists) {
+                mouseAgeObject[f].forEach((mouseAge) => {
                     additionalFilters.push({
-                        term: f.replace('embryo', 'embryonic'),
-                        remove: '',
-                        field: 'replicates.library.biosample.life_stage',
-                    });
-                }
-            } else {
-                const stageTerm = f.split(/ (.+)/)[0].replace('embryo', 'embryonic');
-                const ageTerm = f.split(/ (.+)/)[1];
-                const stageFilterExists = additionalFilters.filter(f2 => f2.term === stageTerm).length > 0;
-                const ageFilterExists = additionalFilters.filter(f2 => f2.term === ageTerm).length > 0;
-                if (!stageFilterExists) {
-                    additionalFilters.push({
-                        term: stageTerm,
-                        remove: '',
-                        field: 'replicates.library.biosample.life_stage',
-                    });
-                }
-                if (!ageFilterExists) {
-                    additionalFilters.push({
-                        term: f.replace('embryo', 'embryonic'),
+                        term: `${f.replace('embryo', 'embryonic')}${mouseAge}`,
                         remove: '',
                         field: 'life_stage_age',
                     });
-                }
+                });
+            } else {
+                additionalFilters.push({
+                    term: f.replace('embryo', 'embryonic'),
+                    remove: '',
+                    field: 'life_stage_age',
+                });
             }
         });
 
