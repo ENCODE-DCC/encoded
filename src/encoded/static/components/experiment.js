@@ -521,23 +521,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // Make a list of reference links, if any.
     const references = pubReferenceList(context.references);
 
-    // Prefer to use analysis objects for file graph if that's available.
-    const fileGraphContext = Object.assign({}, context);
-    if (fileGraphContext.analysis_objects && fileGraphContext.analysis_objects.length > 0) {
-        fileGraphContext.analyses = [];
-        fileGraphContext.analysis_objects.forEach((obj) => {
-            fileGraphContext.analyses.push(
-                Object.assign(
-                    {
-                        assemblies: obj.assembly ? [obj.assembly] : [],
-                        genome_annotations: obj.genome_annotation ? [obj.genome_annotation] : [],
-                    },
-                    obj
-                )
-            );
-        });
-    }
-
     return (
         <div className={itemClass}>
             <header>
@@ -885,7 +868,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
 
             {/* Display the file widget with the facet, graph, and tables for Experiment and FunctionalCharacterizationExperiment only. */}
             {!isEnhancerExperiment ?
-                <FileGallery context={fileGraphContext} encodevers={encodevers} anisogenic={anisogenic} />
+                <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?

@@ -300,56 +300,6 @@ class Experiment(Dataset,
             life_stage_age = ''.join(all_life_stage) + ' ' + ''.join(all_age_display)
             return life_stage_age
 
-    # Don't specify schema as this just overwrites the existing value
-    @calculated_property(condition='analyses')
-    def analyses(self, request, analyses):
-        updated_analyses = []
-        for analysis in analyses:
-            assemblies = set()
-            genome_annotations = set()
-            pipelines = set()
-            pipeline_award_rfas = set()
-            pipeline_labs = set()
-            for f in analysis.get('files', []):
-                file_object = request.embed(
-                    f,
-                    '@@object_with_select_calculated_properties?field=analysis_step_version'
-                )
-                if 'assembly' in file_object:
-                    assemblies.add(file_object['assembly'])
-                if 'genome_annotation' in file_object:
-                    genome_annotations.add(file_object['genome_annotation'])
-                if 'analysis_step_version' in file_object:
-                    analysis_step = request.embed(
-                        file_object['analysis_step_version'],
-                        '@@object?skip_calculated=true'
-                    )['analysis_step']
-                    pipelines |= set(
-                        request.embed(
-                            analysis_step,
-                            '@@object_with_select_calculated_properties?field=pipelines'
-                        ).get('pipelines', [])
-                    )
-                    for pipeline in pipelines:
-                        pipeline_object = request.embed(
-                            pipeline,
-                            '@@object?skip_calculated=true'
-                        )
-                        pipeline_award_rfas.add(
-                            request.embed(
-                                pipeline_object['award'],
-                                '@@object?skip_calculated=true'
-                            )['rfa']
-                        )
-                        pipeline_labs.add(pipeline_object['lab'])
-            analysis['assemblies'] = sorted(assemblies)
-            analysis['genome_annotations'] = sorted(genome_annotations)
-            analysis['pipelines'] = sorted(pipelines)
-            analysis['pipeline_award_rfas'] = sorted(pipeline_award_rfas)
-            analysis['pipeline_labs'] = sorted(pipeline_labs)
-            updated_analyses.append(analysis)
-        return analyses
-
     @calculated_property(schema={
         "title": "Perturbed",
         "description": "A flag to indicate whether any biosamples have been perturbed with treatments or genetic modifications.",

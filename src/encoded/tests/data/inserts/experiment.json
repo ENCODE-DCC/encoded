@@ -195,11 +195,6 @@
     {
         "_test": "shared biosample",
         "accession": "ENCSR000AEN",
-        "analyses": [
-            {
-                "files": ["ENCFF001RCV", "ENCFF001RCZ"]
-            }
-        ],
         "analysis_objects": ["ENCAN050LQR"],
         "assay_term_name": "shRNA knockdown followed by RNA-seq",
         "award": "U54HG007005",
@@ -791,17 +786,6 @@
         "lab": "/labs/encode-processing-pipeline/",
         "date_released": "2015-08-31",
         "accession": "ENCSR123MRN",
-        "analyses": [
-            {
-                "files": ["ENCFF101RCZ"]
-            },
-            {
-                "files": ["ENCFF003MRN", "ENCFF005MRN"]
-            },
-            {
-                "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"]
-            }
-        ],
         "analysis_objects": ["ENCAN545UKN", "ENCAN820ARO", "ENCAN914ASY"],
         "uuid": "e828ec88-8f74-437f-8bf7-8535ee34819e"
     },

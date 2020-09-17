@@ -4224,13 +4224,13 @@ def audit_experiment_no_processed_data(value, system, files_structure):
         yield AuditFailure('lacking processed data', detail, level='WARNING')
 
 
-def audit_experiment_inconsistent_analyses_files(value, system, files_structure):
+def audit_experiment_inconsistent_analysis_files(value, system, files_structure):
     processed_data = files_structure.get('processed_data')
     files_not_in_analysis = []
     files_not_in_processed_data = []
-    if processed_data and 'analyses' in value:
+    if processed_data and 'analysis_objects' in value:
         analysis_outputs = set()
-        for analysis in value['analyses']:
+        for analysis in value['analysis_objects']:
             for f in analysis['files']:
                 analysis_outputs.add(f)
         for processed_file_id in processed_data:
@@ -4252,7 +4252,7 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
                     ', '.join(files_not_in_analysis_links)
                 )
             )
-        yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
     if len(files_not_in_processed_data) > 0:
         files_not_in_processed_data_links = [audit_link(path_to_text(file), file) for file in files_not_in_processed_data]
         detail = ('Experiment {} '
@@ -4262,7 +4262,7 @@ def audit_experiment_inconsistent_analyses_files(value, system, files_structure)
                     ', '.join(files_not_in_processed_data_links)
                 )
             )
-        yield AuditFailure('inconsistent analyses files', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('inconsistent analysis files', detail, level='INTERNAL_ACTION')
 
 
 def audit_experiment_inconsistent_genetic_modifications(value, system, excluded_types):
@@ -5325,7 +5325,7 @@ function_dispatcher_with_files = {
     'audit_experiment_standards': audit_experiment_standards_dispatcher,
     'audit_submitted_status': audit_experiment_status,
     'audit_no_processed_data': audit_experiment_no_processed_data,
-    'audit_experiment_inconsistent_analyses_files': audit_experiment_inconsistent_analyses_files,
+    'audit_experiment_inconsistent_analysis_files': audit_experiment_inconsistent_analysis_files,
     'audit_analysis_files': audit_analysis_files,
 }
 
