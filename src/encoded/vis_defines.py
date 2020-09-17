@@ -550,10 +550,11 @@ class VisDefines(object):
                 vis_type = "SRNA"  # this will be more noticed if there is a mistake
             else:
                 average_fragment_size = reps[0].get("library", {}).get("average_fragment_size",)
-                if average_fragment_size <= 200:
-                    vis_type = "SRNA"
-                elif average_fragment_size > 200:
-                    vis_type = "LRNA"
+                if average_fragment_size is not None:
+                    if average_fragment_size <= 200:
+                        vis_type = "SRNA"
+                    elif average_fragment_size > 200:
+                        vis_type = "LRNA"
                 else:
                     size_range = reps[0].get("library", {}).get("size_range", "")
                     if size_range.startswith('>'):
