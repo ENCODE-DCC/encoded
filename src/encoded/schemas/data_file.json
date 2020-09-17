@@ -178,6 +178,5 @@
             "type": "string",
             "permission": "import_items"
         }
-    },
-    "changelog": "/profiles/changelogs/data_file.md"
+    }
 }
