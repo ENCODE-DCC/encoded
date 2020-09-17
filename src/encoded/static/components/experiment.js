@@ -349,6 +349,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         }
     }
 
+    // Collect all dbxrefs. Filter out SCREEN and Factorbook in separate arrays. Only the first SCREEN and Factorbook dbxref will be displayed.
+    const groupedDbxrefs = context.dbxrefs && context.dbxrefs.length > 0 ?
+        _(context.dbxrefs).groupBy((dbxref) => {
+            if (dbxref.startsWith('SCREEN')) {
+                return 'SCREEN';
+            }
+            if (dbxref.startsWith('FactorBook')) {
+                return 'FactorBook';
+            }
+            return 'normal';
+        })
+    : {};
+    // Result -- if nothing exists in any of these three categories, then
+    // that category’s key doesn't exist.
+
     // Collect all documents from the experiment itself.
     const documents = (context.documents && context.documents.length > 0) ? context.documents : [];
 
@@ -775,10 +790,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <dd>{context.award.project}</dd>
                             </div>
 
-                            {context.dbxrefs.length > 0 ?
+                            {groupedDbxrefs.normal ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
-                                    <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                                    <dd><DbxrefList context={context} dbxrefs={groupedDbxrefs.normal} /></dd>
                                 </div>
                             : null}
 
@@ -835,6 +850,28 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                     <dt>Tags</dt>
                                     <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                 </div>
+                            : null}
+
+                            {groupedDbxrefs.SCREEN || groupedDbxrefs.FactorBook ?
+                                <React.Fragment>
+                                    <div className="panel__split-heading panel__split-heading--experiment">
+                                        <h4>Encyclopedia Integration</h4>
+                                    </div>
+
+                                    {groupedDbxrefs.SCREEN ?
+                                        <div data-test="external-resources-screen">
+                                            <dt>Registry of cCREs</dt>
+                                            <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.SCREEN[0]]} title="view regulatory elements in this cell type on SCREEN" /></dd>
+                                        </div>
+                                    : null}
+
+                                    {groupedDbxrefs.FactorBook ?
+                                        <div data-test="external-resources-factorbook">
+                                            <dt>Factorbook</dt>
+                                            <dd><DbxrefList context={context} dbxrefs={[groupedDbxrefs.FactorBook[0]]} title="view motifs and integrative analysis" /></dd>
+                                        </div>
+                                    : null}
+                                </React.Fragment>
                             : null}
                         </dl>
                     </div>

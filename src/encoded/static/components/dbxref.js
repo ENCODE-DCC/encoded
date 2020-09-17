@@ -260,6 +260,12 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
+    'SCREEN-GRCh38': {
+        pattern: 'https://screen.encodeproject.org/search?q={0}&assembly=GRCh38',
+    },
+    'SCREEN-mm10': {
+        pattern: 'https://screen.encodeproject.org/search?q={0}&assembly=mm10',
+    },
 };
 
 
@@ -290,10 +296,11 @@ export function dbxrefHref(prefix, value) {
  * @prop {string} dbxref - String containing one dbxref string.
  * @prop {object} context - Object (Experiment, HumanDonor, etc.) containing the dbxref being
  *     displayed.
+ * @prop {title} title - String that is displayed instead of Dbxref string. Optional.
  */
 const DbxrefUrl = (props) => {
-    const { dbxref, context } = props;
-
+    const { dbxref, context, title } = props;
+    const displayTitle = title || dbxref;
     // Standard dbxref pattern: {prefix}:{value}. If the dbxref has more than one colon, only the
     // first colon splits the dbxref into `prefix` and `value`. The other colons get included as
     // part of the value. If the dbxref has no colons at all, prefix gets the whole dbxref string
@@ -327,7 +334,7 @@ const DbxrefUrl = (props) => {
         }
 
         // Return the final dbxref as a link.
-        return <a href={url}>{dbxref}</a>;
+        return <a href={url}>{displayTitle}</a>;
     }
 
     // The dbxref prefix didn't map to anything we know about, so just display the dbxref as
@@ -338,6 +345,11 @@ const DbxrefUrl = (props) => {
 DbxrefUrl.propTypes = {
     dbxref: PropTypes.string.isRequired, // dbxref string
     context: PropTypes.object.isRequired, // Object that contains the dbxref
+    title: PropTypes.string, // title string displayed instead of dbxref string
+};
+
+DbxrefUrl.defaultProps = {
+    title: '',
 };
 
 
@@ -352,14 +364,15 @@ DbxrefUrl.propTypes = {
  *     this property is always required though probably rarely used.
  * @prop {string} addClasses - String with space-separated classes that gets added to the <ul> that
  *     contains the displayed list of dbxrefs. Optional.
+ * @prop {title} title - String that is displayed instead of Dbxref string. Optional.
  */
 export const DbxrefList = (props) => {
-    const { dbxrefs, context, addClasses } = props;
+    const { dbxrefs, context, addClasses, title } = props;
 
     return (
         <ul className={addClasses}>
             {dbxrefs.map((dbxref, i) =>
-                <li key={i}><DbxrefUrl dbxref={dbxref} context={context} /></li>
+                <li key={i}><DbxrefUrl dbxref={dbxref} context={context} title={title} /></li>
             )}
         </ul>
     );
@@ -369,8 +382,10 @@ DbxrefList.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
     context: PropTypes.object.isRequired, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
+    title: PropTypes.string, // title string displayed instead of dbxref string
 };
 
 DbxrefList.defaultProps = {
     addClasses: '',
+    title: '',
 };
