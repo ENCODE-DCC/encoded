@@ -569,32 +569,6 @@ AlternateAccession.defaultProps = {
 
 
 /**
- * Display a list of internal_tags for an object as badges that link to a corresponding search. The
- * object in `context` must have at least one `internal_tags` value or the results are
- * unpredictable.
- */
-export const InternalTags = ({ internalTags, objectType, css }) => {
-    const tagBadges = internalTags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${encoding.encodedURIComponentOLD(tag)}&status=released`;
-        return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
-    });
-    return <span className={css}>{tagBadges}</span>;
-};
-
-InternalTags.propTypes = {
-    /** Array of internal tags to display */
-    internalTags: PropTypes.array.isRequired,
-    /** Object @type internal_tags belongs to */
-    objectType: PropTypes.string.isRequired,
-    /** Optional CSS class to assign to <span> surrounding all the badges */
-    css: PropTypes.string,
-};
-
-InternalTags.defaultProps = {
-    css: '',
-};
-
-/**
  * Display image with fallback for non-existent image links
  */
 export class ImageWithFallback extends React.Component {
@@ -654,21 +628,108 @@ ImageWithFallback.propTypes = {
 
 
 /**
- * Display internal tag badges from search results.
+ * Maps an internal tag to the corresponding image file name. Exported for Jest testing.
  */
-export const MatrixInternalTags = ({ context }) => {
+export const internalTagsMap = {
+    ccre_inputv1: 'tag-ccre_inputv1.svg',
+    ccre_inputv2: 'tag-ccre_inputv2.svg',
+    cre_inputv10: 'tag-cre_inputv10.svg',
+    cre_inputv11: 'tag-cre_inputv11.svg',
+    dbGaP: 'tag-dbGaP.png',
+    DREAM: 'tag-DREAM.png',
+    ENCORE: 'tag-ENCORE.svg',
+    ENCYCLOPEDIAv3: 'tag-ENCYCLOPEDIAv3.svg',
+    ENCYCLOPEDIAv4: 'tag-ENCYCLOPEDIAv4.svg',
+    ENCYCLOPEDIAv5: 'tag-ENCYCLOPEDIAv5.svg',
+    ENTEx: 'tag-ENTEx.png',
+    MouseDevSeries: 'tag-MouseDevSeries.svg',
+    PGP: 'tag-PGP.png',
+    RegulomeDB: 'tag-RegulomeDB.png',
+    SESCC: 'tag-SESCC.svg',
+};
+
+/**
+ * Maps a badge type to the corresponding image filename.
+ */
+const badgeMap = {
+    Experiment: 'badge-Experiment.svg',
+    Annotation: 'badge-Annotation.svg',
+    'ReferenceEpigenome-human': 'badge-ReferenceEpigenome-human.svg',
+    'ReferenceEpigenome-mouse': 'badge-ReferenceEpigenome-mouse.svg',
+    MouseDevelopment: 'badge-MouseDevelopment.svg',
+    ChIPseq: 'badge-ChIPseq.svg',
+};
+
+
+/**
+ * Display internal tag badges or a given badge ID from search results. Badge IDs are used for
+ * matrix displays that don't necessarily have internal_tags defined in the query string.
+ */
+export const MatrixBadges = ({ context, type }) => {
     // Collect filters that are internal_tags.
     const internalTags = _.uniq(context.filters.filter(filter => (
         filter.field === 'internal_tags' && filter.term !== '*'
     )).map(filter => filter.term));
-    return internalTags.map(tag => (
-        <ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />
-    ));
+    if (internalTags.length > 0) {
+        return internalTags.map((tag) => {
+            const filename = internalTagsMap[tag];
+            if (filename) {
+                return <img className="badge-image" src={`/static/img/${filename}`} alt={`${tag} logo`} key={tag} />;
+            }
+            return null;
+        });
+    }
+
+    // Use a badge for the specific given type, if provided, when no internal_tags used.
+    if (type) {
+        const filename = badgeMap[type];
+        if (filename) {
+            return <img className="badge-image" src={`/static/img/${filename}`} alt={`${type} badge`} />;
+        }
+    }
+    return null;
 };
 
-MatrixInternalTags.propTypes = {
+MatrixBadges.propTypes = {
     /** encode search-results object being displayed */
     context: PropTypes.object.isRequired,
+    /** Specific type of badge to display; used if available if internal_tags does not exist */
+    type: PropTypes.string,
+};
+
+MatrixBadges.defaultProps = {
+    type: '',
+};
+
+
+/**
+ * Display a list of internal_tags for an object as badges that link to a corresponding search. The
+ * object in `context` must have at least one `internal_tags` value or the results are
+ * unpredictable.
+ */
+export const InternalTags = ({ internalTags, objectType, css }) => {
+    const tagBadges = internalTags.map((tag) => {
+        const filename = internalTagsMap[tag];
+        if (filename) {
+            const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${encoding.encodedURIComponentOLD(tag)}&status=released`;
+            return <a href={tagSearchUrl} key={tag}><img src={`/static/img/${filename}`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
+        }
+        return null;
+    });
+    return <span className={css}>{tagBadges}</span>;
+};
+
+InternalTags.propTypes = {
+    /** Array of internal tags to display */
+    internalTags: PropTypes.array.isRequired,
+    /** Object @type internal_tags belongs to */
+    objectType: PropTypes.string.isRequired,
+    /** Optional CSS class to assign to <span> surrounding all the badges */
+    css: PropTypes.string,
+};
+
+InternalTags.defaultProps = {
+    css: '',
 };
 
 

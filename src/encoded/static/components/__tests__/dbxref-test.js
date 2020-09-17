@@ -760,4 +760,40 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinksMouseTarget.at(1).prop('href')).toEqual('https://factorbook.org/tf/mouse/Tbp/function');
         });
     });
+
+    describe('Test SCREEN-GRCh38', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['SCREEN-GRCh38:T-cell_donor_ENCDO685OXD', 'SCREEN-GRCh38:iPS_DF_4.7_male_newborn']}/>
+            );
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links for Human experiments', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=T-cell_donor_ENCDO685OXD&assembly=GRCh38');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=iPS_DF_4.7_male_newborn&assembly=GRCh38');
+        });
+    });
+
+    describe('Test SCREEN-mm10', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['SCREEN-mm10:C3H_C2C12', 'SCREEN-mm10:CD-1_c-Kit-negative_CD71-positive_TER-119-positive_erythroid_progenitor_cells_male_embryo_14.5_days']} />
+            );
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links for Mouse experiments', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://screen.encodeproject.org/search?q=C3H_C2C12&assembly=mm10');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://screen.encodeproject.org/search?q=CD-1_c-Kit-negative_CD71-positive_TER-119-positive_erythroid_progenitor_cells_male_embryo_14.5_days&assembly=mm10');
+        });
+    });
 });

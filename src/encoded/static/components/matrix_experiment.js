@@ -11,7 +11,7 @@ import { tintColor, isLight } from './datacolors';
 import DataTable from './datatable';
 import * as globals from './globals';
 import { RowCategoryExpander, SearchFilter, MATRIX_VISUALIZE_LIMIT } from './matrix';
-import { MatrixInternalTags } from './objectutils';
+import { MatrixBadges } from './objectutils';
 import { FacetList, ClearFilters, SearchControls } from './search';
 
 
@@ -301,13 +301,15 @@ const MatrixHeader = ({ context }) => {
     return (
         <div className="matrix-header">
             <div className="matrix-header__title">
-                <h1>{type ? `${type} ` : ''}{context.title}</h1>
-                <div className="matrix-tags">
-                    <MatrixInternalTags context={context} />
-                    {matrixDescription ?
-                        <div className="matrix-description">{matrixDescription}</div>
-                    : null}
+                <div className="matrix-title-badge">
+                    <h1>{type ? `${type} ` : ''}{context.title}</h1>
+                    <MatrixBadges context={context} type={type} />
                 </div>
+                {matrixDescription ?
+                    <div className="matrix-description">
+                        <div className="matrix-description__text">{matrixDescription}</div>
+                    </div>
+                : null}
             </div>
             <div className="matrix-header__controls">
                 <div className="matrix-header__filter-controls">

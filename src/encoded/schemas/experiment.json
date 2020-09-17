@@ -118,7 +118,7 @@
                 "title": "External identifier",
                 "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(FactorBook:ENCSR\\d{3}[A-Z]{3}|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*|4DN:4DNES[A-Z0-9]+)$"
+                "pattern": "^(SCREEN-GRCh38:[\\w\\d_$.+!*,()/'-]+|SCREEN-mm10:[\\w\\d_$.+!*,()/'-]+|FactorBook:ENCSR\\d{3}[A-Z]{3}|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*|4DN:4DNES[A-Z0-9]+)$"
             }
         },
         "documents": {
