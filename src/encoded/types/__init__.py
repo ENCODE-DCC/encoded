@@ -94,24 +94,3 @@ class Treatment(Item):
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
-
-
-@collection(
-    name='publications',
-    unique_key='publication:identifier',
-    properties={
-        'title': 'Publications',
-        'description': 'Publication pages',
-    })
-class Publication(Item):
-    item_type = 'publication'
-    schema = load_schema('encoded:schemas/publication.json')
-    embedded = [
-        'award'
-    ]
-
-    def unique_keys(self, properties):
-        keys = super(Publication, self).unique_keys(properties)
-        if properties.get('identifiers'):
-            keys.setdefault('alias', []).extend(properties['identifiers'])
-        return keys
