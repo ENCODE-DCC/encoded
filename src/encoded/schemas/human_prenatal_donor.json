@@ -51,6 +51,9 @@
         }
     },
     "facets": {
+        "life_stage": {
+            "title": "Life stage"
+        },
         "carnegie_stage": {
             "title": "Carnegie stage"
         },
@@ -70,6 +73,9 @@
         },
         "age_display": {
             "title": "Age"
+        },
+        "life_stage": {
+            "title": "Life stage"
         },
         "carnegie_stage": {
             "title": "Carnegie stage"

@@ -236,9 +236,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "suspension_type": {
             "title": "Suspension type"
         },
@@ -266,6 +263,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

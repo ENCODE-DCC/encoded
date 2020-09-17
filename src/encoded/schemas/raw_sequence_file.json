@@ -209,9 +209,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "read_type": {
             "title": "Read type"
         },
@@ -229,6 +226,9 @@
         },
         "award.name": {
             "title": "Award"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

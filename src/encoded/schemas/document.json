@@ -65,11 +65,11 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "document_type": {
             "title": "Document type"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
