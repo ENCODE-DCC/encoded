@@ -748,36 +748,6 @@ $row-data-header-width: 200px;
 
     @at-root #{&}__title {
         margin-bottom: 20px;
-
-        @media screen and (min-width: $screen-sm-min) {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        h1 {
-            flex: 0 1 auto;
-            margin: 0;
-        }
-
-        .matrix-tags {
-            margin: 20px 0;
-
-            @media screen and (min-width: $screen-sm-min) {
-                margin: 0;
-                flex: 0 1 40%;
-                text-align: right;
-            }
-
-            img {
-                display: inline-block;
-                margin-left: 5px;
-                height: 22px;
-            }
-
-            .matrix-description {
-                color: #606060;
-            }
-        }
     }
 
     @at-root #{&}__title-sescc-spacing {
@@ -832,6 +802,33 @@ $row-data-header-width: 200px;
 
         .results-table-control {
             margin-bottom: 0;
+        }
+    }
+}
+
+
+// Internal tags and type badges for matrix pages.
+.matrix-title-badge {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .badge-image {
+        margin-top: 33px;
+        height: 38px;
+    }
+}
+
+
+.matrix-description {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        justify-content: flex-end;
+
+        @at-root #{&}__text {
+            flex-basis: 40%;
+            text-align: right;
         }
     }
 }
