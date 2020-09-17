@@ -47,9 +47,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "ontology_database": {
             "title": "Ontology DB"
         },
@@ -61,6 +58,12 @@
         },
         "cell_slims": {
             "title": "Cell"
+        },
+        "disease_slims": {
+            "title": "Diease"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -81,6 +84,9 @@
         },
         "cell_slims": {
             "title": "Cell"
+        },
+        "disease_slims": {
+            "title": "Diease"
         },
         "status": {
             "title": "Status"

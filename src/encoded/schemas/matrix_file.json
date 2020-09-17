@@ -251,9 +251,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "output_types": {
             "title": "Output type"
         },
@@ -265,6 +262,9 @@
         },
         "award.name": {
             "title": "Award"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

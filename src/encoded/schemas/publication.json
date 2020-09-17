@@ -80,9 +80,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "award.project": {
             "title": "Project"
         },
@@ -94,6 +91,9 @@
         },
         "journal": {
             "title": "Journal"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

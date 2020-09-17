@@ -53,9 +53,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "biosample_ontology.system_slims": {
             "title": "System",
             "type": "typeahead"
@@ -67,6 +64,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

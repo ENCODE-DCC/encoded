@@ -229,9 +229,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "organism.name": {
             "title": "Organism"
         },
@@ -246,6 +243,9 @@
         },
         "file_format": {
             "title": "File format"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
