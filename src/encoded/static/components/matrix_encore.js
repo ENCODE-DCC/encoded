@@ -205,10 +205,12 @@ const convertEncoreToDataTable = (context, displayedAssays, rowCategoryFilterTex
         return termKey.match(typeaheadVal);
     }) : context.matrix.y[rowCategory].buckets;
 
+    // Generate query strings to filter targets to the relevant biosample term names.
     let displayedTermNamesQuery = displayedTermNames.map(displayedTermName => (
         `${colSubCategory}=${encoding.encodedURIComponent(displayedTermName)}`
     )).join('&');
     if (rowCategory === 'target.label') {
+        // Also add cell-free sample on the main ENCORE matrix.
         displayedTermNamesQuery += `&${colSubCategory}=${encoding.encodedURIComponent('cell-free sample')}`;
     }
 
