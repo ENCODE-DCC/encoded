@@ -42,11 +42,11 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 107
-    ontology.json file: ontology-2020-09-09.json
+    Site release version: 108
+    ontology.json file: ontology-2020-09-15.json
     [UBERON release date]: 2020-06-05
-    [OBI release date]: 2020-04-23
-    [EFO release date]: 2020-08-17
+    [OBI release date]: 2020-08-24
+    [EFO release date]: 2020-09-15
     [CLO release date]: 2019-02-10
     [DOID release date]: 2020-08-21
 

@@ -5,6 +5,7 @@
 * Added *SPRITE-IP* to *assay_term_name* enum
 * Added *life_stage_age* calculated property that summarizes the life stage and age of the biosamples used in the experiment.
 * Small RNA-seq experiments (with libraries of fragments <200 nucleotides long) may be submitted with *assay_term_name* enum: *small RNA-seq*.
+* Added *CUT&Tag* to *assay_term_name* enum
 * *SCREEN-GRCh38* and *SCREEN-mm10* can now be linked to an experiment under external resources (dbxrefs).
 
 ### Schema version 30

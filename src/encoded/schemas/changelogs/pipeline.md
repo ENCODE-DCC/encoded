@@ -3,6 +3,7 @@
 ### Minor changes since schema version 11
 * Added *CUT&RUN* to *assay_term_names* enum
 * Added *SPRITE-IP* to *assay_term_names* enum
+* Added *CUT&Tag* to *assay_term_name* enum
 
 ### Schema version 11
 
