@@ -25,6 +25,7 @@ class AntibodyLot(SharedItem):
         'host_organism'
     ]
 
+
     @calculated_property(schema={
         "title": "Title",
         "description": "The title of the antibody lot.",
