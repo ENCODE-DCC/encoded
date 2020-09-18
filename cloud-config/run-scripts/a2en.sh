@@ -1,13 +1,6 @@
 #!/bin/bash
 # Setup stuff after other installs
-echo -e "\n$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0)"
-
-# Check previous failure flag
-if [ -f "$encd_failed_flag" ]; then
-    echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Skipping: encd_failed_flag exits"
-    exit 1
-fi
-echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
+echo -e "$(basename $0) Running"
 
 # Script Below
 a2dismod mpm_event

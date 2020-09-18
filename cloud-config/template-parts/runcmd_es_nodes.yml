@@ -1,2 +1,0 @@
-- cloud-init-per always encd-cloudwatch sudo -u ubuntu %(SCRIPTS_DIR)s/app-cloudwatchmon.sh
-- cloud-init-per always encd-app-final sudo -u ubuntu %(SCRIPTS_DIR)s/app-final.sh

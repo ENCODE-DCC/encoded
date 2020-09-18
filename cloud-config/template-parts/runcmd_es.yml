@@ -1,1 +1,0 @@
-- cloud-init-per always encd-elasticsearch sudo -u ubuntu %(SCRIPTS_DIR)s/ami-elasticsearch.sh

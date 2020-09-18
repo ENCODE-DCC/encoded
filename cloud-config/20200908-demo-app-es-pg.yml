@@ -43,6 +43,8 @@ packages:
 - apache2
 - apache2-dev
 - apache2-utils
+- debhelper
+- dh-autoreconf
 - ssl-cert
 - libapache2-mod-wsgi-py3
 - w3m
@@ -62,8 +64,10 @@ packages:
 - g++
 - gcc
 - make
+# snovault
+## schema_graph -> https://linux.die.net/man/1/dot -> graphviz
+- graphviz
 # Other - Unknown
-# - graphviz
 # - libevent-dev
 # - libmagic-dev
 # - libxml2-dev
@@ -85,10 +89,23 @@ power_state:
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 runcmd:
+- cloud-init-per once conf-encd-pem-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/encoded-demos.pem /home/ubuntu/.ssh/encoded-demos.pem
+- cloud-init-per once conf-encd-pem-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/encoded-demos.pem
+- cloud-init-per once conf-encd-cfg-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/config /home/ubuntu/.ssh/config
+- cloud-init-per once conf-encd-cfg-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/config
+- cloud-init-per once conf-git-repo sudo -u ubuntu git clone git@github.com:ENCODE-DCC/encode-private-config.git /home/ubuntu/encode-private-config
+- cloud-init-per once conf-git-branch sudo -u ubuntu git -C /home/ubuntu/encode-private-config checkout -b encode-private-config origin/master
 - cloud-init-per once libmagic-mgc-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb && sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb && sudo apt-get install -yf
 - cloud-init-per once libmagic1-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb && sudo dpkg -i libmagic1_5.38-4_amd64.deb && sudo apt-get install -yf
 - cloud-init-per once libmagic-dev-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb && sudo dpkg -i libmagic-dev_5.38-4_amd64.deb && sudo apt-get install -yf
 - cloud-init-per once libmagic-dev-install sudo apt --fix-broken install && sudo apt autoremove
+
+- cloud-init-per once nagios-monitor-install /usr/bin/sudo /usr/bin/apt-get -y install nagios-nrpe-plugin monitoring-plugins nagios-nrpe-server libjson-perl libmonitoring-plugin-perl liblwp-useragent-determined-perl sysstat
+- cloud-init-per once nagios-files-s3 aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/nagios-plugins /home/ubuntu/nagios-plugins
+- cloud-init-per once nagios-mv-conf mv /home/ubuntu/nagios-plugins/nrpe_local.cfg /etc/nagios/nrpe.d/nrpe_local.cfg
+- cloud-init-per once nagios-plugins-permission chmod -R 0755 /home/ubuntu/nagios-plugins
+- cloud-init-per once nagios-plugins mv /home/ubuntu/nagios-plugins/* /usr/lib/nagios/plugins/
+
 - cloud-init-per once encd-git-repo sudo -u ubuntu git clone %(GIT_REPO)s /home/ubuntu/encoded
 - cloud-init-per once encd-git-branch sudo -u ubuntu git -C /home/ubuntu/encoded checkout -b %(GIT_BRANCH)s %(GIT_REMOTE)s/%(GIT_BRANCH)s
 - cloud-init-per once encd-java sudo -u ubuntu %(SCRIPTS_DIR)s/ami-java.sh
@@ -141,6 +158,11 @@ write_files:
     ENCD_GIT_REMOTE=%(GIT_REMOTE)s
     ENCD_GIT_REPO=%(GIT_REPO)s
     ENCD_HOME=%(HOME)s
+    ENCD_INDEX_PRIMARY=%(INDEX_PRIMARY)s
+    ENCD_INDEX_VIS=%(INDEX_VIS)s
+    ENCD_INDEX_REGION=%(INDEX_REGION)s
+    ENCD_INDEX_PROCS=%(INDEX_PROCS)s
+    ENCD_INDEX_CHUNK_SIZE=%(INDEX_CHUNK_SIZE)s
     ENCD_INSTALL_TAG=%(INSTALL_TAG)s
     ENCD_JVM_GIGS=%(JVM_GIGS)s
     ENCD_PG_VERSION=%(PG_VERSION)s
@@ -148,7 +170,7 @@ write_files:
     ENCD_PG_OPEN=%(PG_OPEN)s
     ENCD_PY3_PATH=%(PY3_PATH)s
     ENCD_REDIS_PORT=%(REDIS_PORT)s
-    ENCD_REGION_INDEX=%(REGION_INDEX)s
+    ENCD_REMOTE_INDEXING=%(REMOTE_INDEXING)s
     ENCD_ROLE=%(ROLE)s
     ENCD_S3_AUTH_KEYS=%(S3_AUTH_KEYS)s
     ENCD_SCRIPTS_DIR=%(SCRIPTS_DIR)s

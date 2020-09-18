@@ -14,8 +14,8 @@
 # Use Case with cloud-init in encoded/cloud-config/configs/app-encd.sh
 #  export a2conf_src_dir="/srv/encoded/cloud-config/configs/apache"
 #  export a2conf_dest_file='/etc/apache2/sites-available/encoded.conf'
-#  export ENCD_REGION_INDEX=False
-#  export ENCD_APP_WORKERS=6
+#  export encd_index_region=False
+#  export encd_app_workers=6
 #  sudo -u root "$a2conf_src_dir/build-conf.sh" "$a2conf_src_dir" "$a2conf_dest_file"
 #
 ## 
@@ -40,16 +40,16 @@ fi
 
 # Top
 cat "$src_dir/head.conf" > "$dest_path"
-sed "s/APP_WORKERS/$ENCD_APP_WORKERS/" <  "$src_dir/app.conf" >> "$dest_path"
+sed "s/APP_WORKERS/$encd_app_workers/" <  "$src_dir/app.conf" >> "$dest_path"
 
 # indexer processes
-if [ "$ENCD_INDEX_PRIMARY" == 'true' ]; then
+if [ "$encd_index_primary" == 'true' ]; then
         cat "$src_dir/indexer-proc.conf" >> "$dest_path"
 fi
-if [ "$ENCD_INDEX_VIS" == 'true' ]; then
+if [ "$encd_index_vis" == 'true' ]; then
     cat "$src_dir/vis-indexer-proc.conf" >> "$dest_path"
 fi
-if [ "$ENCD_INDEX_REGION" == 'true' ]; then
+if [ "$encd_index_region" == 'true' ]; then
     cat "$src_dir/region-indexer-proc.conf" >> "$dest_path"
 fi
 
@@ -57,13 +57,13 @@ fi
 cat "$src_dir/some-vars.conf" >> "$dest_path"
 
 # indexer directory permissions
-if [ "$ENCD_INDEX_PRIMARY" == 'true' ]; then
+if [ "$encd_index_primary" == 'true' ]; then
         cat "$src_dir/indexer-dir-permission.conf" >> "$dest_path"
 fi
-if [ "$ENCD_INDEX_VIS" == 'true' ]; then
+if [ "$encd_index_vis" == 'true' ]; then
     cat "$src_dir/vis-indexer-dir-permission.conf" >> "$dest_path"
 fi
-if [ "$ENCD_INDEX_REGION" == 'true' ]; then
+if [ "$encd_index_region" == 'true' ]; then
     cat "$src_dir/region-indexer-dir-permission.conf" >> "$dest_path"
 fi
 
