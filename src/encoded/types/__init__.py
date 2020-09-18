@@ -59,6 +59,10 @@ class Award(Item):
         'replaced': DELETED,
         'disabled': ALLOW_CURRENT
     }
+    embedded = [
+        'principal_investigators',
+        'collaborators'
+    ]
 
 
 @collection(

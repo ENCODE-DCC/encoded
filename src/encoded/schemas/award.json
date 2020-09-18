@@ -55,7 +55,6 @@
             "description": "Collaborators of the grant.",
             "comment": "See user.json for available identifiers.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "User",
