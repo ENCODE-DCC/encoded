@@ -1,0 +1,110 @@
+[app:app]
+use = config:base.ini#app
+# New
+accession_factory = encoded.server_defaults.test_accession
+blob_bucket = encoded-blobs-dev
+blob_store_profile_name = encoded-files-upload
+file_upload_bucket = encoded-files-dev
+
+indexer.chunk_size = 1024
+indexer.processes = 16
+session.secret = /Users/casey/mywork/repos/encd/encoded/session-secret.b64
+snp_search.server = localhost:9201
+# Direct file transfer from external AWS S3 to internal S3 bucket
+external_aws_s3_transfer_allow = false
+external_aws_s3_transfer_buckets = /Users/casey/mywork/repos/encd/encoded/.aws/direct-external-s3-list
+# Public bucket
+pds_private_bucket = encode-pds-private-dev
+pds_public_bucket = encode-pds-public-dev
+
+# Override base.ini in buildout.cfg
+
+
+[composite:indexer]
+use = config:base.ini#indexer
+
+[composite:visindexer]
+use = config:base.ini#visindexer
+
+[composite:regionindexer]
+use = config:base.ini#regionindexer
+
+[pipeline:main]
+pipeline =
+    config:base.ini#memlimit
+    egg:PasteDeploy#prefix
+    app
+
+[pipeline:debug]
+pipeline =
+    egg:repoze.debug#pdbpm
+    app
+set pyramid.includes =
+    pyramid_translogger
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:waitress#main
+host = 0.0.0.0
+port = 6543
+threads = 1
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, encoded, encoded_listener, file_encoded_listener, snovault.batchupgrade
+
+[handlers]
+keys = console, fl_batchupgrade
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = WARN
+handlers = console
+
+[logger_encoded]
+level = WARN
+handlers = console
+qualname = encoded
+propagate = 0
+
+[logger_encoded_listener]
+level = INFO
+handlers = console
+qualname = snovault.elasticsearch.es_index_listener
+propagate = 0
+
+[logger_file_encoded_listener]
+level = INFO
+handlers = console
+qualname = encoded.commands.es_file_index_listener
+propagate = 0
+
+[logger_snovault.batchupgrade]
+level = INFO
+handlers = fl_batchupgrade, console
+qualname = snovault.batchupgrade
+propagate = 0
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[handler_fl_batchupgrade]
+class = FileHandler
+args = ('batchupgrade.log','a')
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(levelname)s [%(name)s][%(threadName)s] %(message)s
