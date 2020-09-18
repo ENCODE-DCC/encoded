@@ -1638,7 +1638,7 @@ const Award = ({ context }, reactContext) => {
                 </PanelHeading>
                 <PanelBody>
                     {context.description ?
-                        <div className="two-column-long-text two-column-long-text--gap">
+                        <div>
                             <p>{context.description}</p>
                         </div>
                     :
@@ -1670,8 +1670,8 @@ const Award = ({ context }, reactContext) => {
                             </div>
 
                             <div data-test="projectinfo">
-                                <dt>CZI Grant</dt>
-                                <dd><a href={context.url} title={`${context.name} CZI Grant`}>{context.name}</a></dd>
+                                <dt>CZI Project</dt>
+                                <dd><a href={context.url} title={`${context.name} CZI Project`}>{context.name}</a></dd>
                             </div>
 
                             <div data-test="projectinfo">
@@ -1682,12 +1682,6 @@ const Award = ({ context }, reactContext) => {
                     </div>
                 </PanelBody>
             </Panel>
-
-            {context.milestones && loggedIn ?
-                <MilestonesTable award={context} />
-            : null}
-
-            <LineChart award={context} />
         </div>
     );
 };
