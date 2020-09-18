@@ -62,6 +62,8 @@ class Biosample(Item):
 
     @calculated_property(define=True,
                          schema={"title": "Donors",
+                                 "description": "The donors the sample was derived from.",
+                                 "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
                                     "type": "string",
@@ -82,6 +84,8 @@ class Biosample(Item):
 
     @calculated_property(schema={
         "title": "Summary",
+        "description": "A short summary of the sample.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def summary(self, request,
@@ -497,6 +501,8 @@ class Suspension(Biosample):
 
     @calculated_property(define=True,
                          schema={"title": "Organisms",
+                                 "description": "The species the sample came from.",
+                                 "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
                                     "type": "string"
@@ -515,7 +521,15 @@ class Suspension(Biosample):
 
     @calculated_property(define=True,
                          schema={"title": "Sex",
-                                 "type": "string"
+                                 "description": "The sex of the donor(s) that the sample came from.",
+                                 "comment": "Do not submit. This is a calculated property",
+                                 "type": "string",
+                                 "enum": [
+                                    "male",
+                                    "female",
+                                    "mixed",
+                                    "unknown"
+                                    ]
                                  })
     def sex(self, request, donors=None, organism=None):
         if donors is not None:
@@ -531,6 +545,8 @@ class Suspension(Biosample):
     @calculated_property(define=True,
                         schema={
                         "title": "Age display",
+                                 "description": "The age of the donor(s) that the sample came from.",
+                                 "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
                                     "type": "string"
@@ -545,6 +561,8 @@ class Suspension(Biosample):
 
     @calculated_property(define=True,
                          schema={"title": "Donor diseases",
+                                 "description": "The known diseases of the donor(s) that the sample came from.",
+                                 "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
                                     "type": "string"
@@ -569,9 +587,22 @@ class Suspension(Biosample):
 
     @calculated_property(define=True,
                          schema={"title": "Life stage",
+                                 "description": "The life_stage of the donor(s) that the sample came from.",
+                                 "comment": "Do not submit. This is a calculated property",
                                  "type": "array",
                                  "items": {
-                                    "type": "string"
+                                    "type": "string",
+                                     "enum": [
+                                        "embryonic",
+                                        "fetal",
+                                        "newborn",
+                                        "premature",
+                                        "infant",
+                                        "child",
+                                        "adolescent",
+                                        "adult",
+                                        "unknown"
+                                        ]
                                     }
                                  })
     def life_stage(self, request, donors=None, mouse_life_stage=None, organism=None):

@@ -26,6 +26,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(schema={
         "title": "Name",
+        "description": "The name used for the system to identify this object.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def name(self, properties=None):
@@ -47,6 +49,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "Organ",
+        "description": "The organs that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -57,6 +61,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "Cell",
+        "description": "The cell types that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -67,6 +73,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "Developmental slims",
+        "description": "The developmental stages that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -77,6 +85,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "System slims",
+        "description": "The biological systems that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -87,6 +97,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "Disease slims",
+        "description": "The diseases that this term is an ontological descendent of.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -97,6 +109,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "Synonyms",
+        "description": "The synonyms of this term, as listed by the ontology database.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -107,6 +121,8 @@ class OntologyTerm(SharedItem):
 
     @calculated_property(condition='term_id', schema={
         "title": "Ontology DB",
+        "description": "The ontology database for which this term belongs.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def ontology_database(self, registry, term_id):

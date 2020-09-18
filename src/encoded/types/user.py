@@ -54,6 +54,8 @@ class User(Item):
 
     @calculated_property(schema={
         "title": "Title",
+        "description": "The first and last name of the user.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, first_name, last_name):

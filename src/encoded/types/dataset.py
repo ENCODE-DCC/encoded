@@ -55,13 +55,15 @@ class Dataset(Item):
 
 
     @calculated_property(schema={
-            "title": "Superseded by",
-            "type": "array",
-            "items": {
-                "type": ['string', 'object'],
-                "linkFrom": "Dataset.supersedes",
-            },
-            "notSubmittable": True,
+        "title": "Superseded by",
+        "description": "The Dataset that supersedes this one.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Dataset.supersedes",
+        },
+        "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
@@ -69,6 +71,8 @@ class Dataset(Item):
 
     @calculated_property(schema={
         "title": "Libraries",
+        "description": "The Libraries that belong to this Dataset.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -82,6 +86,8 @@ class Dataset(Item):
 
     @calculated_property(schema={
         "title": "Original files",
+        "description": "The DataFiles that belong to this Dataset, regardless of status.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -95,6 +101,8 @@ class Dataset(Item):
 
     @calculated_property(schema={
         "title": "Contributing files",
+        "description": "The DataFiles that contribute to this Dataset's data products but do not belong to this Dataset, typically reference files.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -136,6 +144,8 @@ class Dataset(Item):
 
     @calculated_property(schema={
         "title": "Files",
+        "description": "The DataFiles that belong to this Dataset, filtered by status relative to the status of the Dataset.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -156,6 +166,8 @@ class Dataset(Item):
 
     @calculated_property(schema={
         "title": "Revoked files",
+        "description": "The DataFiles that are revoked and belong to this Dataset.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -171,6 +183,8 @@ class Dataset(Item):
 
     @calculated_property(define=True, schema={
         "title": "Genome assembly",
+        "description": "The Genome assemblies used for references in the data analysis in this Dataset.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -178,14 +192,6 @@ class Dataset(Item):
     })
     def assembly(self, request, original_files, status):
         return calculate_assembly(request, original_files, status)
-
-
-    @calculated_property(condition='assembly', schema={
-        "title": "Hub",
-        "type": "string",
-    })
-    def hub(self, request):
-        return request.resource_path(self, '@@hub', 'hub.txt')
 
 
     matrix = {

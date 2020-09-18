@@ -27,6 +27,8 @@ class AntibodyLot(SharedItem):
 
     @calculated_property(schema={
         "title": "Title",
+        "description": "The title of the antibody lot.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, accession):

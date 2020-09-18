@@ -49,7 +49,18 @@ class Library(Item):
 
     @calculated_property(condition='derived_from', schema={
         "title": "Assay",
-        "type": "string"
+        "description": "The general assay used for this Library.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "enum": [
+            "scATAC-seq",
+            "snATAC-seq",
+            "scRNA-seq",
+            "snRNA-seq",
+            "CITE-seq",
+            "bulk ATAC-seq",
+            "bulk RNA-seq"
+        ]
     })
     def assay(self, request, derived_from, protocol):
         protocolObject = request.embed(protocol, '@@object')
@@ -68,6 +79,8 @@ class Library(Item):
 
     @calculated_property(condition='derived_from', schema={
         "title": "Donors",
+        "description": "The donors from which samples were taken from to generate this Library.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -89,6 +102,8 @@ class Library(Item):
 
     @calculated_property(condition='dataset', schema={
         "title": "Award",
+        "description": "The Grant attribution for this Library.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
         "linkTo": "Award"
     })
