@@ -98,15 +98,3 @@ class Library(Item):
             if 'life_stage' in props
         }
         return donor_accs
-
-
-    @calculated_property(condition='dataset', schema={
-        "title": "Award",
-        "description": "The Grant attribution for this Library.",
-        "comment": "Do not submit. This is a calculated property",
-        "type": "string",
-        "linkTo": "Award"
-    })
-    def award(self, request, dataset):
-        datasetObject = request.embed(dataset, '@@object')
-        return datasetObject.get('award')
