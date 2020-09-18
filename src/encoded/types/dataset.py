@@ -42,6 +42,7 @@ class Dataset(Item):
     embedded = [
         'libraries',
         'libraries.protocol',
+        'libraries.derived_from',
         'award',
         'files',
         'references'
