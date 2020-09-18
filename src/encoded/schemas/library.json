@@ -139,7 +139,9 @@
                 "mg",
                 "ng",
                 "pg",
-                "µg"
+                "μg",
+                "cells/μl",
+                "nuclei/μl"
             ]
         },
         "rna_integrity_number": {

@@ -15,9 +15,6 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "treatments": [
-            "anna-greka:organoid_treatment"
-        ],
         "post_treatment_time": "10",
         "post_treatment_time_units": "day",
         "embedded_in_matrigel": true,
@@ -41,9 +38,6 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "treatments": [
-            "anna-greka:organoid_treatment"
-        ],
         "post_treatment_time": "10",
         "post_treatment_time_units": "day",
         "embedded_in_matrigel": true,
@@ -67,9 +61,6 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "treatments": [
-            "anna-greka:organoid_treatment"
-        ],
         "post_treatment_time": "8",
         "post_treatment_time_units": "day",
         "embedded_in_matrigel": true,
@@ -93,9 +84,6 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "treatments": [
-            "anna-greka:organoid_treatment"
-        ],
         "post_treatment_time": "8",
         "post_treatment_time_units": "day",
         "embedded_in_matrigel": true,
@@ -111,9 +99,6 @@
         "accession": "ENCBS100SCS",
         "uuid": "164042c5-ce91-4ca6-8a96-2d8ea58143c8",
         "description": "prenatal cell organoid 1",
-        "treatments": [
-            "jimmie-ye:VEGF_stimulation"
-        ],
         "derived_from": [
             "jimmie-ye:prenatal_cell_culture1"
         ],
@@ -130,9 +115,6 @@
         "accession": "ENCBS101SCS",
         "uuid": "7a0c1810-4d95-430b-9916-ab640a3cfe5d",
         "description": "prenatal cell organoid 2",
-        "treatments": [
-            "jimmie-ye:VEGF_stimulation"
-        ],
         "derived_from": [
             "jimmie-ye:prenatal_cell_culture2"
         ],
@@ -149,9 +131,6 @@
         "accession": "ENCBS102SCS",
         "uuid": "20e7a828-f0a5-4f3c-a122-f6385c98a1d5",
         "description": "prenatal cell organoid 3",
-        "treatments": [
-            "jimmie-ye:VEGF_stimulation"
-        ],
         "derived_from": [
             "jimmie-ye:prenatal_cell_culture3"
         ],

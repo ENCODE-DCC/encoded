@@ -1152,7 +1152,7 @@
     "chip_id": "chip_a",
     "channel_id": "A",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB701ABA",
@@ -1173,7 +1173,7 @@
     "chip_id": "chip_a",
     "channel_id": "B",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB702ABA",
@@ -1194,7 +1194,7 @@
     "chip_id": "chip_a",
     "channel_id": "C",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB703ABA",
@@ -1215,7 +1215,7 @@
     "chip_id": "chip_a",
     "channel_id": "D",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB704ABA",
@@ -1236,7 +1236,7 @@
     "chip_id": "chip_a",
     "channel_id": "E",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB705ABA",
@@ -1257,7 +1257,7 @@
     "chip_id": "chip_a",
     "channel_id": "F",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB706ABA",
@@ -1278,7 +1278,7 @@
     "chip_id": "chip_b",
     "channel_id": "A",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB707ABA",
@@ -1299,7 +1299,7 @@
     "chip_id": "chip_b",
     "channel_id": "B",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB708ABA",
@@ -1320,7 +1320,7 @@
     "chip_id": "chip_b",
     "channel_id": "C",
     "starting_quantity": 100,
-    "starting_quantity_units": "µg"
+    "starting_quantity_units": "μg"
   },
   {
     "accession": "ENCLB600AAA",

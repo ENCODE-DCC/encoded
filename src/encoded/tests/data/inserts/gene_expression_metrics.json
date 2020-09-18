@@ -5,7 +5,7 @@
 		],
 		"uuid": "b0b1b7e1-27e8-4edc-b922-2f8bba64e98c",
 		"status": "released",
-		"quality_metric_of": "anna-greka:donorA1_filtered_feature_bc_matrix.h5",
+		"quality_metric_of": "anna-greka:donorA1_filtered_feature_bc_matrix",
 		"estimated_number_of_cells": 5527,
 		"mean_reads_per_cell": 30853,
 		"median_genes_per_cell": 1836,

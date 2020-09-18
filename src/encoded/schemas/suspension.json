@@ -67,20 +67,6 @@
                 "nucleus"
             ]
         },
-        "cell_concentration": {
-            "title": "Cell concentration",
-            "description": "The quantified cell/nucleus concentration.",
-            "type": "integer"
-        },
-        "cell_concentration_units": {
-            "title": "Cell concentration units",
-            "description": "The units of the quantified cell/nucleus concentration.",
-            "type": "string",
-            "enum": [
-                "cells/μl",
-                "nuclei/μl"
-            ]
-        },
         "cell_viability_method": {
             "title": "Cell viability method",
             "description": "The method by which cell viability or nuclei integrity was assessed.",
@@ -89,6 +75,7 @@
                 "trypan blue staining",
                 "calcein-AM green/ethidium homodimer-1 red staining",
                 "free amine staining",
+                "nucleus shape",
                 "visual inspection",
                 "SYTOX dead cell stain"
             ]
@@ -140,7 +127,7 @@
             "description": "The units of measurement for cell size.",
             "type": "string",
             "enum": [
-                "µm"
+                "μm"
             ] 
         },
         "single_cell_isolation_method": {

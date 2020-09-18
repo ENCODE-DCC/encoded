@@ -25,8 +25,8 @@
         "preservation_time": 2,
         "preservation_time_units": "week",
         "fixed": false,
-        "starting_amount": 50,
-        "starting_amount_units": "g"
+        "starting_quantity": 50,
+        "starting_quantity_units": "g"
     },
     {
         "accession": "ENCBS855DDD",
@@ -52,8 +52,8 @@
         "spatial_information": "2cm from top edge",
         "preservation_method": "cryopreservation",
         "fixed": false,
-        "starting_amount": 100,
-        "starting_amount_units": "g"
+        "starting_quantity": 100,
+        "starting_quantity_units": "g"
     },
     {
         "accession": "ENCBS860DDD",
@@ -78,8 +78,8 @@
         "ischemic_time_units": "hour",
         "preservation_method": "cryopreservation",
         "fixed": false,
-        "starting_amount": 45,
-        "starting_amount_units": "g"
+        "starting_quantity": 45,
+        "starting_quantity_units": "g"
     },
     {
         "accession": "ENCBS865DDD",
@@ -104,8 +104,8 @@
         "ischemic_time_units": "hour",
         "preservation_method": "cryopreservation",
         "fixed": false,
-        "starting_amount": 45,
-        "starting_amount_units": "g"
+        "starting_quantity": 45,
+        "starting_quantity_units": "g"
     },
     {
         "accession": "ENCBS870DDD",
@@ -128,8 +128,8 @@
         "ischemic_time_units": "hour",
         "preservation_method": "n/a (fresh)",
         "fixed": false,
-        "starting_amount": 45,
-        "starting_amount_units": "g",
+        "starting_quantity": 45,
+        "starting_quantity_units": "g",
         "documents": [
             "anna-greka:SAEC_Stam_protocol"
         ]
@@ -155,8 +155,8 @@
         "ischemic_time_units": "hour",
         "preservation_method": "n/a (fresh)",
         "fixed": false,
-        "starting_amount": 45,
-        "starting_amount_units": "g",
+        "starting_quantity": 45,
+        "starting_quantity_units": "g",
         "documents": [
             "anna-greka:SAEC_Stam_protocol"
         ]
@@ -182,8 +182,8 @@
         "ischemic_time_units": "hour",
         "preservation_method": "n/a (fresh)",
         "fixed": false,
-        "starting_amount": 45,
-        "starting_amount_units": "g",
+        "starting_quantity": 45,
+        "starting_quantity_units": "g",
         "documents": [
             "anna-greka:SAEC_Stam_protocol"
         ]
@@ -209,8 +209,8 @@
         "ischemic_time_units": "hour",
         "preservation_method": "n/a (fresh)",
         "fixed": false,
-        "starting_amount": 45,
-        "starting_amount_units": "g",
+        "starting_quantity": 45,
+        "starting_quantity_units": "g",
         "documents": [
             "anna-greka:SAEC_Stam_protocol"
         ]

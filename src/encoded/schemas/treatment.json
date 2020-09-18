@@ -65,7 +65,7 @@
                 "μg",
                 "μg/kg",
                 "μg/mL",
-                "µL/mL",
+                "μL/mL",
                 "μM"
             ]
         },
@@ -92,8 +92,8 @@
             "enum": [
                 "activation",
                 "deactivation",
-                "differentiation",
-                "medication"
+                "medication",
+                "intervention"
             ]
         },
         "temperature": {
@@ -145,15 +145,13 @@
             "type": "string",
             "enum": [
                 "antibody",
+                "cells",
                 "chemical",
-                "exposure",
-                "infection",
-                "injection",
                 "irradiation",
                 "protein",
                 "stimulation",
-                "transplantation",
-                "fasting"
+                "fasting",
+                "virus"
             ]
         },
         "treatment_term_id": {

@@ -17,8 +17,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -64,8 +64,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -111,8 +111,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -150,8 +150,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -188,9 +188,9 @@
             "mechanical dissociation"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
+        "cell_viability_method": "nucleus shape",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
@@ -222,9 +222,9 @@
             "mechanical dissociation"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
+        "cell_viability_method": "nucleus shape",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
@@ -256,8 +256,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -290,8 +290,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -324,8 +324,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -358,8 +358,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -392,8 +392,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -426,8 +426,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -463,8 +463,8 @@
             "mechanical dissociation"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "single_cell_isolation_method": "10x",
@@ -501,8 +501,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -547,8 +547,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -593,8 +593,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -639,8 +639,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -685,8 +685,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -724,8 +724,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -763,8 +763,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -802,8 +802,8 @@
             "negative magnetic affinity cell sorting"
         ],
         "suspension_type": "nucleus",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1000,
+        "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
         "depleted_cell_types": [
@@ -841,8 +841,8 @@
         "suspension_type": "nucleus",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
-        "cell_concentration": 1100,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1100,
+        "starting_quantity_units": "nuclei/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "enriched_cell_types": [
@@ -868,8 +868,8 @@
         "suspension_type": "nucleus",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
-        "cell_concentration": 1100,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1100,
+        "starting_quantity_units": "nuclei/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "enriched_cell_types": [
@@ -895,8 +895,8 @@
         "suspension_type": "nucleus",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 95,
-        "cell_concentration": 1100,
-        "cell_concentration_units": "nuclei/μl",
+        "starting_quantity": 1100,
+        "starting_quantity_units": "nuclei/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "enriched_cell_types": [
@@ -922,8 +922,8 @@
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 90,
-        "cell_concentration": 1100,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1100,
+        "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": 8,
@@ -949,8 +949,8 @@
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 90,
-        "cell_concentration": 1100,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1100,
+        "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": 8,
@@ -976,8 +976,8 @@
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 90,
-        "cell_concentration": 1100,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1100,
+        "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": 8,
@@ -1003,8 +1003,8 @@
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 90,
-        "cell_concentration": 1200,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1200,
+        "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": 8,
@@ -1030,8 +1030,8 @@
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 90,
-        "cell_concentration": 1200,
-        "cell_concentration_units": "cells/μl",
+        "starting_quantity": 1200,
+        "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,
         "collection_to_dissociation_interval": 8,

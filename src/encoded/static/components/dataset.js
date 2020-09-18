@@ -475,7 +475,7 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
         return null;
     }
 
-    const library_titles = libraryProtocolList(context.libraries, 'name');
+    const library_titles = libraryProtocolList(context.libraries, 'title');
 
     function libraryList(values, field) {
         if (values && values.length > 0) {

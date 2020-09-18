@@ -5,7 +5,7 @@
 		],
 		"uuid": "4e3ed262-8044-4adc-bf76-4d4b7276f808",
 		"status": "released",
-		"quality_metric_of": "anna-greka:donorA1_filtered_feature_bc_matrix.h5",
+		"quality_metric_of": "anna-greka:donorA1_filtered_feature_bc_matrix",
 		"number_of_reads": 41007618,
 		"mean_reads_per_cell": 7419,
 		"valid_barcodes": 99.1,

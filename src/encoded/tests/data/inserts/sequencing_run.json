@@ -13,7 +13,10 @@
             }
         ],
         "platform": "Illumina HiSeq 4000",
-        "uuid": "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
+        "uuid": "2a12eb7b-ed78-466a-9552-7512bdd7f45f",
+        "dbxrefs": [
+            "SRA:SRR11111"
+        ]
     },
     {
         "aliases": [
@@ -29,7 +32,10 @@
             }
         ],
         "platform": "Illumina HiSeq 4000",
-        "uuid": "3f5c30e4-f5de-48d2-847f-959f3824931f"
+        "uuid": "3f5c30e4-f5de-48d2-847f-959f3824931f",
+        "dbxrefs": [
+            "SRA:SRR11112"
+        ]
     },
     {
         "aliases": [
@@ -45,7 +51,10 @@
             }
         ],
         "platform": "Illumina HiSeq 4000",
-        "uuid": "6ca560bd-5278-441d-8256-06f3e3c16e35"
+        "uuid": "6ca560bd-5278-441d-8256-06f3e3c16e35",
+        "dbxrefs": [
+            "ENA:ERR11111"
+        ]
     },
     {
         "aliases": [
@@ -61,9 +70,10 @@
             }
         ],
         "platform": "Illumina HiSeq 4000",
-        "uuid": "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-    
-
+        "uuid": "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7",
+        "dbxrefs": [
+            "ENA:ERR11112"
+        ]
     },
     {
         "aliases": [

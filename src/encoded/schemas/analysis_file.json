@@ -24,9 +24,6 @@
             "comment": "Applies to files created using annotations.",
             "type": "string",
             "enum": [
-                "hg19",
-                "GRCh38",
-                "mm10",
                 "GENCODE 32",
                 "GENCODE 28",
                 "GENCODE 24",

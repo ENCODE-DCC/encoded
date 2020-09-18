@@ -1,14 +1,14 @@
 [
     {
         "aliases": [
-            "anna-greka:donorA1_raw_feature_bc_matrix.h5"
+            "anna-greka:donorA1_raw_feature_bc_matrix.txt"
         ],
 		"status": "released",
         "award": "CZI001KID",
         "uuid": "6ef4d912-1166-4ccf-b836-8bb5e369ecaf",
         "md5sum": "7b003986191606bd7aa7ad8312c90797",
-        "submitted_file_name": "donorA1_raw_feature_bc_matrix.h5",
-        "file_format": "hdf5",
+        "submitted_file_name": "donorA1_raw_feature_bc_matrix.txt",
+        "file_format": "txt",
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
@@ -42,14 +42,14 @@
     },
     {
         "aliases": [
-            "anna-greka:donorA1_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorA1_filtered_feature_bc_matrix"
         ],
 		"status": "released",
         "award": "CZI001KID",
         "uuid": "63c1cd1a-48eb-4c9b-b037-0b384609708c",
         "md5sum": "7b003986191606bd7aa7ad8312c90797",
-        "submitted_file_name": "donorA1_raw_feature_bc_matrix.h5",
-        "file_format": "hdf5",
+        "submitted_file_name": "donorA1_raw_feature_bc_matrix.rds",
+        "file_format": "rds",
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
@@ -84,14 +84,14 @@
     },
     {
         "aliases": [
-            "anna-greka:donorA2_raw_feature_bc_matrix.h5"
+            "anna-greka:donorA2_raw_feature_bc_matrix.tsv"
         ],
 		"status": "released",
         "award": "CZI001KID",
         "uuid": "5668e31f-01cb-43a5-bc3c-00bb663d1878",
         "md5sum": "7b003986191606bd7aa7ad8312c90797",
-        "submitted_file_name": "donorA2_raw_feature_bc_matrix.h5",
-        "file_format": "hdf5",
+        "submitted_file_name": "donorA2_raw_feature_bc_matrix.tsv",
+        "file_format": "tsv",
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
@@ -3278,7 +3278,7 @@
             "seurat 3.0"
         ],
         "derived_from": [
-            "anna-greka:donorA1_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorA1_filtered_feature_bc_matrix",
             "anna-greka:donorA2_filtered_feature_bc_matrix.h5",
             "anna-greka:donorB1_filtered_feature_bc_matrix.h5",
             "anna-greka:donorB2_filtered_feature_bc_matrix.h5"
