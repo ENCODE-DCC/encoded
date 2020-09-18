@@ -209,9 +209,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "read_type": {
             "title": "Read type"
         },
@@ -224,14 +221,14 @@
         "file_format": {
             "title": "File format"
         },
-        "file_type": {
-            "title": "File type"
-        },
         "lab.title": {
             "title": "Lab"
         },
         "award.name": {
             "title": "Award"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -249,9 +246,6 @@
         },
         "file_format": {
             "title": "File Format"
-        },
-        "file_type": {
-            "title": "File type"
         },
         "file_size": {
             "title": "File size"

@@ -42,27 +42,59 @@ class Library(Item):
         'derived_from.biosample_ontology',
         'protocol',
         'dataset',
-        'dataset.award',
+        'award',
         'lab'
     ]
 
 
     @calculated_property(condition='derived_from', schema={
-        "title": "Donor accessions",
+        "title": "Assay",
+        "description": "The general assay used for this Library.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "enum": [
+            "scATAC-seq",
+            "snATAC-seq",
+            "scRNA-seq",
+            "snRNA-seq",
+            "CITE-seq",
+            "bulk ATAC-seq",
+            "bulk RNA-seq"
+        ]
+    })
+    def assay(self, request, derived_from, protocol):
+        protocolObject = request.embed(protocol, '@@object')
+        if protocolObject.get('library_type') in ['CITE-seq']:
+            return protocolObject.get('library_type')
+        else:
+            derfrObject = request.embed(derived_from[0], '@@object')
+            if derfrObject.get('suspension_type') == 'cell':
+                mat_type = 'sc'
+            elif derfrObject.get('suspension_type') == 'nucleus':
+                mat_type = 'sn'
+            else:
+                mat_type = 'bulk '
+            return mat_type + protocolObject.get('library_type')
+
+
+    @calculated_property(condition='derived_from', schema={
+        "title": "Donors",
+        "description": "The donors from which samples were taken from to generate this Library.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
             "linkTo": "Donor"
         },
     })
-    def donor_accessions(self, request, registry, derived_from, status):
+    def donors(self, request, registry, derived_from, status):
         conn = registry[CONNECTION]
         derived_from_closure = property_closure(request, 'derived_from', self.uuid)
         obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
-        # use organism as a proxy for donors because 'Donor in props['@type']' returned keyError
+        # use life_stage as a proxy for donors because 'Donor in props['@type']' returned keyError
         donor_accs = {
             props['accession']
             for props in obj_props
-            if 'organism' in props
+            if 'life_stage' in props
         }
         return donor_accs

@@ -20,13 +20,13 @@ class Gene(SharedItem):
     item_type = 'gene'
     schema = load_schema('encoded:schemas/gene.json')
     name_key = "geneid"
-    embedded = ['organism']
     rev = {
         'targets': ('Target', 'genes')
     }
 
     @calculated_property(schema={
         "title": "Title",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, request, organism, symbol):

@@ -267,14 +267,14 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "library_type": {
             "title": "Library type"
         },
         "construction_platform": {
             "title": "Construction platform"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

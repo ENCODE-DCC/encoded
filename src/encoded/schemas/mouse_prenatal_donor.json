@@ -37,6 +37,9 @@
         }
     },
     "facets": {
+        "life_stage": {
+            "title": "Life stage"
+        },
         "carnegie_stage": {
             "title": "Carnegie stage"
         },
@@ -57,6 +60,9 @@
         "age_display": {
             "title": "Age"
         },
+        "life_stage": {
+            "title": "Life stage"
+        },
         "carnegie_stage": {
             "title": "Carnegie stage"
         },
@@ -64,7 +70,7 @@
             "title": "Sex"
         },
         "organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism species"
         },
         "strain_term_name": {
             "title": "Strain"

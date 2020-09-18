@@ -236,11 +236,17 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "suspension_type": {
             "title": "Suspension type"
+        },
+        "organisms": {
+            "title": "Organism"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "life_stage": {
+            "title": "Life stage"
         },
         "biosample_ontology.system_slims": {
             "title": "System",
@@ -257,6 +263,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name",
             "type": "typeahead"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {

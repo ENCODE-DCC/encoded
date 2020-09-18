@@ -1,14 +1,10 @@
 from snovault.attachment import ItemWithAttachment
 from snovault import (
-    CONNECTION,
-    calculated_property,
     collection,
     load_schema,
 )
-from pyramid.traversal import find_root
 from .base import (
     Item,
-    paths_filtered_by_status,
     ALLOW_CURRENT,
     DELETED,
 )
@@ -57,13 +53,16 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
-    embedded = []
     STATUS_ACL = {
         'current': ALLOW_CURRENT,
         'deleted': DELETED,
         'replaced': DELETED,
         'disabled': ALLOW_CURRENT
     }
+    embedded = [
+        'principal_investigators',
+        'collaborators'
+    ]
 
 
 @collection(
@@ -88,12 +87,6 @@ class Organism(Item):
 class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('encoded:schemas/treatment.json')
-    embedded = []
-    set_status_up = [
-        'biosamples_used',
-        'antibodies_used',
-    ]
-    set_status_down = []
 
 
 @collection(
@@ -105,25 +98,3 @@ class Treatment(Item):
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
-    embedded = ['submitted_by']
-
-
-@collection(
-    name='publications',
-    unique_key='publication:identifier',
-    properties={
-        'title': 'Publications',
-        'description': 'Publication pages',
-    })
-class Publication(Item):
-    item_type = 'publication'
-    schema = load_schema('encoded:schemas/publication.json')
-    embedded = [
-        'award'
-    ]
-
-    def unique_keys(self, properties):
-        keys = super(Publication, self).unique_keys(properties)
-        if properties.get('identifiers'):
-            keys.setdefault('alias', []).extend(properties['identifiers'])
-        return keys

@@ -80,9 +80,6 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "award.project": {
             "title": "Project"
         },
@@ -94,6 +91,9 @@
         },
         "journal": {
             "title": "Journal"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -117,13 +117,6 @@
         },
         "identifiers": {
             "title": "Identifiers"
-        }
-    },
-    "sort_by": {
-        "publication_year": {
-            "unmapped_type": "keyword",
-            "order": "desc",
-            "missing": "_last" 
         }
     },
     "changelog": "/profiles/changelogs/publication.md"

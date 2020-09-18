@@ -65,11 +65,11 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "document_type": {
             "title": "Document type"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -94,9 +94,6 @@
         },
         "attachment.download": {
             "title": "File Name"
-        },
-        "submitted_by.title": {
-            "title": "Submitted by"
         }
     },
     "changelog": "/profiles/changelogs/document.md"

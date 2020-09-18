@@ -169,7 +169,7 @@
             "title": "Sex"
         },
         "organism.scientific_name": {
-            "title": "Organism"
+            "title": "Organism species"
         },
         "ethnicity.term_name": {
             "title": "Ethnicity"

@@ -187,36 +187,42 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
-        "lab.title": {
-            "title": "Lab"
+        "assay": {
+            "title": "Assay type"
         },
         "derived_from.biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
-        "protocol.library_type": {
-            "title": "Library type"
-        },
         "protocol.name": {
             "title": "Library protocols"
         },
-        "dataset.award.project": {
+        "award.project": {
             "title": "Project"
         },
-        "dataset.award.name": {
+        "award.name": {
             "title": "Award name"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
         "dataset.accession": {
             "title": "Dataset"
         },
-        "dataset.award.project": {
+        "assay": {
+            "title": "Assay type"
+        },
+        "protocol.name": {
+            "title": "Library protocol"
+        },
+        "award.project": {
             "title": "Project"
         },
-        "dataset.award.name": {
+        "award.name": {
             "title": "Award name"
         },
         "lab.title": {
@@ -224,12 +230,6 @@
         },
         "derived_from.biosample_ontology.term_name": {
             "title": "Biosample term name"
-        },
-        "protocol.library_type": {
-            "title": "Library type"
-        },
-        "protocol.name": {
-            "title": "Library protocol"
         }
     },
     "changelog": "/profiles/changelogs/library.md"

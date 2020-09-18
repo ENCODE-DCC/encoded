@@ -6,10 +6,10 @@ export default function pubReferenceList(values) {
     // Render each of the links, with null for each value without an identifier property
     if (values && values.length > 0) {
         const links = _.compact(values.map((value) => {
-            if (value.identifiers) {
-                return value.identifiers.map((identifier, index) =>
-                    <li key={index}>
-                        <a href={value['@id']}>{identifier}</a>
+            if (value.citation) {
+                return (
+                    <li>
+                        <a href={value['@id']}>{value.citation}</a>
                     </li>
                 );
             }

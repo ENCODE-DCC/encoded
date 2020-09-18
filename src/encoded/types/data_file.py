@@ -169,7 +169,7 @@ class DataFile(Item):
 
 
     @calculated_property(schema={
-        "title": "QualityMetric",
+        "title": "Quality metrics",
         "description": "The list of QC metric objects associated with this file.",
         "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
         "type": "array",
@@ -206,18 +206,6 @@ class DataFile(Item):
     def read_length_units(self, read_length=None, mapped_read_length=None):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
-
-    @calculated_property(schema={
-        "title": "File type",
-        "description": "The concatenation of file_format and file_format_type",
-        "comment": "Do not submit. This field is calculated from file_format and file_format_type.",
-        "type": "string"
-    })
-    def file_type(self, file_format, file_format_type=None):
-        if file_format_type is None:
-            return file_format
-        else:
-            return file_format + ' ' + file_format_type
 
     @calculated_property(schema={
         "title": "Superseded by",
@@ -281,48 +269,6 @@ class DataFile(Item):
         except HTTPNotFound:
             return None
         return 's3://{bucket}/{key}'.format(**external)
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Biosample ontology",
-            "type": "string",
-            "linkTo": "BiosampleType",
-            "notSubmittable": True
-        }
-    )
-    def biosample_ontology(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'biosample_ontology',
-                    dataset
-                )
-            )
-        )
-
-    @calculated_property(
-        condition='dataset',
-        define=True,
-        schema={
-            "title": "Target",
-            "type": "string",
-            "linkTo": "Target",
-            "notSubmittable": True,
-        }
-    )
-    def target(self, request, dataset):
-        return take_one_or_return_none(
-            ensure_list_and_filter_none(
-                try_to_get_field_from_item_with_skip_calculated_first(
-                    request,
-                    'target',
-                    dataset
-                )
-            )
-        )
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

@@ -138,11 +138,8 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
-        "libraries.protocol.library_type": {
-            "title": "Library type"
+        "libraries.assay": {
+            "title": "Assay type"
         },
         "libraries.protocol.name": {
             "title": "Library protocol"
@@ -156,12 +153,15 @@
         "assembly": {
             "title": "Genome assembly"
         },
-        "files.file_type": {
+        "files.file_format": {
             "title": "Available file types"
         },
         "date_released": {
             "title": "Date released",
             "length": "long"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -183,9 +183,9 @@
         "libraries.protocol.name": {
             "title": "Library protocol"
         },
-        "libraries.protocol.library_type": {
-            "title": "Library type"
+        "libraries.assay": {
+            "title": "Assay type"
         }
     },
-    "changelog": "/profiles/changelogs/Dataset.md"
+    "changelog": "/profiles/changelogs/dataset.md"
 }

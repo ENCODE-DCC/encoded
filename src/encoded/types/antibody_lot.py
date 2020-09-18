@@ -24,12 +24,12 @@ class AntibodyLot(SharedItem):
     embedded = [
         'host_organism'
     ]
-    audit_inherit = [
-        'host_organism'
-    ]
+
 
     @calculated_property(schema={
         "title": "Title",
+        "description": "The title of the antibody lot.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, accession):

@@ -32,8 +32,6 @@ function generateQuery(chosenOrganisms, searchTerm) {
         const queryStrings = {
             HUMAN: `${searchTerm}Homo+sapiens`, // human
             MOUSE: `${searchTerm}Mus+musculus`, // mouse
-            WORM: `${searchTerm}Caenorhabditis+elegans`, // worm
-            FLY: `${searchTerm}Drosophila+melanogaster&${searchTerm}Drosophila+pseudoobscura&${searchTerm}Drosophila+simulans&${searchTerm}Drosophila+mojavensis&${searchTerm}Drosophila+ananassae&${searchTerm}Drosophila+virilis&${searchTerm}Drosophila+yakuba`,
         };
         const organismQueries = chosenOrganisms.map(organism => queryStrings[organism]);
         query += `&${organismQueries.join('&')}`;
@@ -559,127 +557,6 @@ CategoryChart.contextTypes = {
 };
 
 
-// Display and handle clicks in the chart of antibodies.
-class AntibodyChart extends React.Component {
-    constructor() {
-        super();
-        this.createChart = this.createChart.bind(this);
-        this.updateChart = this.updateChart.bind(this);
-    }
-
-    componentDidMount() {
-        if (this.relevantData.length > 0) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.relevantData.length > 0) {
-            if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
-            } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
-            }
-        } else if (this.chart) {
-            this.chart.destroy();
-            this.chart = null;
-        }
-    }
-
-    // Update existing chart with new data.
-    updateChart(chart, facetData) {
-        // Extract the non-zero values, and corresponding labels and colors for the data.
-        const { award } = this.props;
-        const values = [];
-        const labels = [];
-        facetData.forEach((item) => {
-            if (item.doc_count) {
-                values.push(item.doc_count);
-                labels.push(item.key);
-            }
-        });
-        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-        const AntibodyQuery = generateQuery(this.props.selectedOrganisms, 'targets.organism.scientific_name=');
-        // Update chart data and redraw with the new data.
-        chart.data.datasets[0].data = values;
-        chart.data.datasets[0].backgroundColor = colors;
-        chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/report/?type=AntibodyLot&award.@id=/awards/${award.name}/${AntibodyQuery}&lot_reviews.status=`;
-        chart.update();
-
-        // Redraw the updated legend
-        document.getElementById(`${categoryChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
-    }
-
-    createChart(chartId, facetData) {
-        const { award, linkUri, categoryFacet } = this.props;
-
-        // Extract the non-zero values, and corresponding labels and colors for the data.
-        const values = [];
-        const labels = [];
-        facetData.forEach((item) => {
-            if (item.doc_count) {
-                values.push(item.doc_count);
-                labels.push(item.key);
-            }
-        });
-        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-
-        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award.name}/&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
-            .then((chartInstance) => {
-                // Save the created chart instance.
-                this.chart = chartInstance;
-            });
-    }
-
-    render() {
-        const { categoryData, ident, award } = this.props;
-        const AntibodyQuery = generateQuery(this.props.selectedOrganisms, 'targets.organism.scientific_name=');
-
-        // Filter out category data with zero doc_count.
-        this.relevantData = categoryData.filter(term => term.doc_count);
-
-        // Calculate a (hopefully) unique ID to put on the DOM elements.
-        const id = `${categoryChartId}-${ident}`;
-
-        return (
-            <div className="award-charts__chart">
-                <div className="award-charts__title">
-                    <div className="reagentsreporttitle">Antibodies</div>
-                    {this.relevantData.length > 0 ?
-                        <a className="btn btn-info btn-xs reagentsreportlink" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award.@id=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    : null}
-                </div>
-                {this.relevantData.length > 0 ?
-                    <div>
-                        <div className="award-charts__visual">
-                            <div id={id} className="award-charts__canvas">
-                                <canvas id={`${id}-chart`} />
-                            </div>
-                            <div id={`${id}-legend`} className="award-charts__legend" />
-                        </div>
-                    </div>
-                :
-                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
-                }
-            </div>
-        );
-    }
-}
-
-AntibodyChart.propTypes = {
-    award: PropTypes.object.isRequired, // Award being displayed
-    categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
-    categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
-    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
-    linkUri: PropTypes.string.isRequired,
-    selectedOrganisms: PropTypes.array.isRequired,
-};
-
-AntibodyChart.contextTypes = {
-    navigate: PropTypes.func,
-};
-
 // Display and handle clicks in the chart of biosamples.
 class BiosampleChart extends React.Component {
     constructor() {
@@ -720,12 +597,12 @@ class BiosampleChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-        const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
+        const LibraryQuery = generateQuery(this.props.selectedOrganisms, 'derived_from.organisms=');
         // Update chart data and redraw with the new data.
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/report/?type=Biosample&award.name=${award.name}&${BiosampleQuery}&biosample_ontology.classification=`;
+        chart.options.onClick.baseSearchUri = `/report/?type=Library&award.name=${award.name}&${LibraryQuery}&assay=`;
         chart.update();
 
         // Redraw the updated legend
@@ -754,7 +631,7 @@ class BiosampleChart extends React.Component {
 
     render() {
         const { categoryData, ident, award } = this.props;
-        const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
+        const LibraryQuery = generateQuery(this.props.selectedOrganisms, 'derived_from.organisms=');
 
         // Filter out category data with zero doc_count.
         this.relevantData = categoryData.filter(term => term.doc_count);
@@ -765,9 +642,9 @@ class BiosampleChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    <div className="reagentsreporttitle">Biosamples</div>
+                    <div className="reagentsreporttitle">Libraries</div>
                     {this.relevantData.length > 0 ?
-                        <a className="btn btn-info btn-sm reagentsreportlink" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        <a className="btn btn-info btn-sm reagentsreportlink" href={`/report/?type=Library&${LibraryQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     : null}
                 </div>
                 {this.relevantData.length > 0 ?
@@ -803,101 +680,6 @@ BiosampleChart.defaultProps = {
 BiosampleChart.contextTypes = {
     navigate: PropTypes.func,
 };
-
-/**
- * Function to be called in createChart and updateChart of class StatusExperimentChart, creates arrays for chart data.
- *
- * @param {object} experiments - Fetched data for experiments in Award
- * @param {object} unreplicated - Experiment search with specific replication_type unreplicated
- * @param {array} isogenic - Experiment search with specific replication_type isogenic
- * @param {array} anisogenic - Experiment search with specific replication_type anisogenic
- * @return {object} - with labels (for status -- x-axis of bar chart), unreplicatedDataset, isogenicDataset, anisogenicDataset
-//              to be passed to the createChart function
- */
-
-function StatusData(experiments, unreplicated, isogenic, anisogenic) {
-    let unreplicatedArray;
-    let isogenicArray;
-    let anisogenicArray;
-    const unreplicatedLabel = [];
-    let unreplicatedDataset = [];
-    const isogenicLabel = [];
-    let isogenicDataset = [];
-    const anisogenicLabel = [];
-    let anisogenicDataset = [];
-
-    // Find status in facets for each replicate type (unreplicated, isogenic, anisogenic) search
-    if (experiments && experiments.facets && experiments.facets.length > 0) {
-        const unreplicatedFacet = unreplicated.facets.find(facet => facet.field === 'status');
-        const isogenicFacet = isogenic.facets.find(facet => facet.field === 'status');
-        const anisogenicFacet = anisogenic.facets.find(facet => facet.field === 'status');
-        unreplicatedArray = (unreplicatedFacet && unreplicatedFacet.terms && unreplicatedFacet.terms.length > 0) ? unreplicatedFacet.terms : [];
-        isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length > 0) ? isogenicFacet.terms : [];
-        anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length > 0) ? anisogenicFacet.terms : [];
-    }
-    const labels = ['in progress', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
-
-    // Check existence of data for each of the keys in array labels
-    // Ensures that for each replicate type there exists the same set of labels and the corresponding data values (in order)
-    //      so that it can be easily and accurately passed to chart.js in createBarChart
-    //      First pushes anything that has a key in labels, then sorts the dataset
-    //      If the array has no length, just push an array with 0 values
-    if (unreplicatedArray.length > 0) {
-        for (let j = 0; j < labels.length; j += 1) {
-            for (let i = 0; i < unreplicatedArray.length; i += 1) {
-                if (unreplicatedArray[i].key === labels[j]) {
-                    unreplicatedLabel.push(unreplicatedArray[i].key);
-                    unreplicatedDataset.push(unreplicatedArray[i].doc_count);
-                }
-            }
-        }
-        for (let j = 0; j < labels.length; j += 1) {
-            if (labels[j] !== unreplicatedLabel[j]) {
-                unreplicatedLabel.splice(j, 0, labels[j]);
-                unreplicatedDataset.splice(j, 0, 0);
-            }
-        }
-    } else {
-        unreplicatedDataset = [0, 0, 0, 0, 0, 0, 0, 0];
-    }
-    if (isogenicArray.length > 0) {
-        for (let j = 0; j < labels.length; j += 1) {
-            for (let i = 0; i < isogenicArray.length; i += 1) {
-                if (isogenicArray[i].key === labels[j]) {
-                    isogenicLabel.push(isogenicArray[i].key);
-                    isogenicDataset.push(isogenicArray[i].doc_count);
-                }
-            }
-        }
-        for (let j = 0; j < labels.length; j += 1) {
-            if (labels[j] !== isogenicLabel[j]) {
-                isogenicLabel.splice(j, 0, labels[j]);
-                isogenicDataset.splice(j, 0, 0);
-            }
-        }
-    } else {
-        isogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
-    }
-    if (anisogenicArray.length > 0) {
-        for (let j = 0; j < labels.length; j += 1) {
-            for (let i = 0; i < anisogenicArray.length; i += 1) {
-                if (anisogenicArray[i].key === labels[j]) {
-                    anisogenicLabel.push(anisogenicArray[i].key);
-                    anisogenicDataset.push(anisogenicArray[i].doc_count);
-                }
-            }
-        }
-        for (let j = 0; j < labels.length; j += 1) {
-            if (labels[j] !== anisogenicLabel[j]) {
-                anisogenicLabel.splice(j, 0, labels[j]);
-                anisogenicDataset.splice(j, 0, 0);
-            }
-        }
-    } else {
-        anisogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
-    }
-    return ({ labels, unreplicatedDataset, isogenicDataset, anisogenicDataset });
-}
 
 class ControlsChart extends React.Component {
     constructor() {
@@ -943,7 +725,7 @@ class ControlsChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&control_type=*&award.name=${award.name}&${objectQuery}&status=`;
+        chart.options.onClick.baseSearchUri = `/matrix/?type=Dataset&award.name=${award.name}&${objectQuery}&status=`;
         chart.update();
 
         // Redraw the updated legend
@@ -1042,61 +824,6 @@ class StatusExperimentChart extends React.Component {
         }
     }
 
-    updateChart(chart) {
-        const { experiments, unreplicated, isogenic, anisogenic, linkUri, award, objectQuery } = this.props;
-        // Object with arrays of status labels, unreplicatedDataset, isogenicDataset, anisogenicDataset
-        const data = StatusData(experiments, unreplicated, isogenic, anisogenic);
-        const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
-        const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
-        // Must specify each case of data availability - must remove available, data-less chart.data.datasets
-        // Ensures that the colors will be the default and legend labels does not include unnecessary strings
-        if (data.unreplicatedDataset.some(x => x > 0)) {
-            chart.data.datasets[0] = { label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] };
-            if (data.isogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] };
-                if (data.anisogenicDataset.some(x => x > 0)) {
-                    chart.data.datasets[2] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] };
-                } else if (data.anisogenicDataset.every(x => x === 0)) {
-                    chart.data.datasets[2] = {};
-                }
-            } else if (data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
-                chart.data.datasets[2] = {};
-            }
-        } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[0] };
-            if (data.anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
-                chart.data.datasets[2] = {};
-            } else if (data.anisogenicDataset.every(x => x === 0)) {
-                chart.data.datasets[1] = {};
-                chart.data.datasets[2] = {};
-            }
-        } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[0] };
-            chart.data.datasets[1] = {};
-            chart.data.datasets[2] = {};
-        }
-        chart.options.onClick.baseSearchUri = `${linkUri}${award ? award.name : ''}${objectQuery}`;
-        chart.update();
-
-        document.getElementById(`${statusChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
-    }
-
-    createChart(chartId) {
-        const { experiments, unreplicated, isogenic, anisogenic } = this.props;
-        // Object with arrays of status labels, unreplicatedDataset, isogenicDataset, anisogenicDataset
-        const data = StatusData(experiments, unreplicated, isogenic, anisogenic);
-        const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
-        const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
-
-        createBarChart(chartId, data, colors, replicatelabels, 'Replication', `${this.props.linkUri}${this.props.award ? this.props.award.name : ''}`, (uri) => { this.context.navigate(uri); })
-            .then((chartInstance) => {
-                // Save the created chart instance.
-                this.chart = chartInstance;
-            });
-    }
-
     render() {
         const { statuses, ident } = this.props;
 
@@ -1132,18 +859,12 @@ StatusExperimentChart.propTypes = {
     linkUri: PropTypes.string.isRequired, // URI to use for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
     experiments: PropTypes.object.isRequired,
-    unreplicated: PropTypes.object,
-    anisogenic: PropTypes.object,
-    isogenic: PropTypes.object,
     objectQuery: PropTypes.string,
 };
 
 StatusExperimentChart.defaultProps = {
     award: null,
     statuses: [],
-    unreplicated: {},
-    anisogenic: {},
-    isogenic: {},
     objectQuery: '',
 };
 
@@ -1286,7 +1007,7 @@ function generateUpdatedSpeciesArray(categories, query, updatedSpeciesArray) {
 }
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations, antibodies, biosamples, handleClick, selectedOrganisms, unreplicated, isogenic, anisogenic, controls } = props;
+    const { award, experiments, biosamples, handleClick, selectedOrganisms } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -1296,21 +1017,10 @@ const ChartRenderer = (props) => {
             labs: [],
             categoryData: [],
             statuses: [],
-            categoryFacet: 'assay_title',
+            categoryFacet: 'libraries.assay',
             title: 'Assays',
-            uriBase: '/search/?type=Experiment&control_type!=*&award.name=',
-            linkUri: '/matrix/?type=Experiment&control_type!=*&award.name=',
-        },
-        annotations: {
-            ident: 'annotations',
-            data: [],
-            labs: [],
-            categoryData: [],
-            statuses: [],
-            categoryFacet: 'annotation_type',
-            title: 'Annotation Types',
-            uriBase: '/search/?type=Annotation&award.name=',
-            linkUri: '/matrix/?type=Annotation&award.name=',
+            uriBase: '/search/?type=Dataset&award.name=',
+            linkUri: '/report/?type=Dataset&award.name=',
         },
         biosamples: {
             ident: 'biosamples',
@@ -1318,67 +1028,29 @@ const ChartRenderer = (props) => {
             labs: [],
             categoryData: [],
             statuses: [],
-            categoryFacet: 'biosample_ontology.classification',
-            title: 'Biosamples',
-            uriBase: '/search/?type=Biosample&award.name=',
-            linkUri: '/report/?type=Biosample&award.name=',
-        },
-        antibodies: {
-            ident: 'antibodies',
-            data: [],
-            labs: [],
-            categoryData: [],
-            statuses: [],
-            categoryFacet: 'lot_reviews.status',
-            title: 'Antibodies',
-            uriBase: 'type=AntibodyLot&award.@id=/awards',
-            linkUri: '/report/?type=AntibodyLot&award.@id=/awards/',
-        },
-        controls: {
-            ident: 'experiments',
-            data: [],
-            labs: [],
-            categoryData: [],
-            statuses: [],
-            categoryFacet: 'assay_title',
-            title: 'Assays',
-            uriBase: '/search/?type=Experiment&control_type=*&award.name=',
-            linkUri: '/matrix/?type=Experiment&control_type=*&award.name=',
+            categoryFacet: 'assay',
+            title: 'Libraries',
+            uriBase: '/search/?type=Library&award.name=',
+            linkUri: '/report/?type=Library&award.name=',
         },
     };
     // Match the species to their genera
     const speciesGenusMap = {
         'Homo sapiens': 'HUMAN',
         'Mus musculus': 'MOUSE',
-        'Caenorhabditis elegans': 'WORM',
-        'Drosophila melanogaster': 'FLY',
-        'Drosophila pseudoobscura': 'FLY',
-        'Drosophila simulans': 'FLY',
-        'Drosophila mojavensis': 'FLY',
-        'Drosophila ananassae': 'FLY',
-        'Drosophila virilis': 'FLY',
-        'Drosophila yakuba': 'FLY',
     };
 
     // Find the chart data in the returned facets.
     const experimentsConfig = searchData.experiments;
-    const annotationsConfig = searchData.annotations;
     const biosamplesConfig = searchData.biosamples;
-    const antibodiesConfig = searchData.antibodies;
-    const controlsConfig = searchData.controls;
     let experimentSpeciesArray;
-    let annotationSpeciesArray;
     let biosampleSpeciesArray;
-    let antibodySpeciesArray;
     // let controlSpeciesArray;
     const updatedSpeciesArray = [];
     searchData.experiments.data = (experiments && experiments.facets) || [];
-    searchData.annotations.data = (annotations && annotations.facets) || [];
     searchData.biosamples.data = (biosamples && biosamples.facets) || [];
-    searchData.antibodies.data = (antibodies && antibodies.facets) || [];
-    searchData.controls.data = (controls && controls.facets) || [];
 
-    ['experiments', 'annotations', 'antibodies', 'biosamples', 'controls'].forEach((chartCategory) => {
+    ['experiments', 'biosamples'].forEach((chartCategory) => {
         if (searchData[chartCategory].data.length > 0) {
             // Get the array of lab data.
             const labFacet = searchData[chartCategory].data.find(facet => facet.field === 'lab.title');
@@ -1393,9 +1065,9 @@ const ChartRenderer = (props) => {
             searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length > 0) ? statusFacet.terms : [];
         }
     });
-    // If there are experiements, then the corresponding species are added to the array of species
+    // If there are experiments, then the corresponding species are added to the array of species
     if (experiments && experiments.facets && experiments.facets.length > 0) {
-        const genusFacet = experiments.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
+        const genusFacet = experiments.facets.find(facet => facet.field === 'libraries.derived_from.organisms');
         experimentSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const experimentSpeciesArrayLength = experimentSpeciesArray.length;
         for (let j = 0; j < experimentSpeciesArrayLength; j += 1) {
@@ -1404,20 +1076,9 @@ const ChartRenderer = (props) => {
             }
         }
     }
-    // If there are annotations, then the corresponding species are added to the array of species
-    if (annotations && annotations.facets && annotations.facets.length > 0) {
-        const genusFacet = annotations.facets.find(facet => facet.field === 'organism.scientific_name');
-        annotationSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
-        const annotationSpeciesArrayLength = annotationSpeciesArray.length;
-        for (let j = 0; j < annotationSpeciesArrayLength; j += 1) {
-            if (annotationSpeciesArray[j].doc_count !== 0) {
-                updatedSpeciesArray.push(annotationSpeciesArray[j].key);
-            }
-        }
-    }
     // If there are biosamples, then the corresponding species are iadded to the array of species
     if (biosamples && biosamples.facets && biosamples.facets.length > 0) {
-        const genusFacet = biosamples.facets.find(facet => facet.field === 'organism.scientific_name=');
+        const genusFacet = biosamples.facets.find(facet => facet.field === 'derived_from.organisms=');
         biosampleSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
         const biosampleSpeciesArrayLength = biosampleSpeciesArray.length;
         for (let j = 0; j < biosampleSpeciesArrayLength; j += 1) {
@@ -1426,31 +1087,17 @@ const ChartRenderer = (props) => {
             }
         }
     }
-    // If there are antibodies, then the corresponding species are added to the array of species
-    if (antibodies && antibodies.facets && antibodies.facets.length > 0) {
-        const genusFacet = antibodies.facets.find(facet => facet.field === 'targets.organism.scientific_name=');
-        antibodySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length > 0) ? genusFacet.terms : [];
-        const antibodySpeciesArrayLength = antibodySpeciesArray.length;
-        for (let j = 0; j < antibodySpeciesArrayLength; j += 1) {
-            if (antibodySpeciesArray[j].doc_count !== 0) {
-                updatedSpeciesArray.push(antibodySpeciesArray[j].key);
-            }
-        }
-    }
     // Array of species is converted to an array of genera
     let updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
 
     // Array of genera is deduplicated
     updatedGenusArray = _.uniq(updatedGenusArray);
-    const ExperimentQuery = generateQuery(selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
-    const AnnotationQuery = generateQuery(selectedOrganisms, 'organism.scientific_name=');
-
-    // For each category (experiments, annotations, biosamples, and antibodies), the corresponding species are added to the array of species
-    generateUpdatedSpeciesArray(experiments, 'replicates.library.biosample.donor.organism.scientific_name', updatedSpeciesArray);
-    generateUpdatedSpeciesArray(annotations, 'organism.scientific_name', updatedSpeciesArray);
-    generateUpdatedSpeciesArray(biosamples, 'organism.scientific_name=', updatedSpeciesArray);
-    generateUpdatedSpeciesArray(antibodies, 'targets.organism.scientific_name=', updatedSpeciesArray);
-
+    const ExperimentQuery = generateQuery(selectedOrganisms, 'libraries.derived_from.organisms=');
+ 
+    // For each category (experiments, biosamples), the corresponding species are added to the array of species
+    generateUpdatedSpeciesArray(experiments, 'libraries.derived_from.organisms=', updatedSpeciesArray);
+    generateUpdatedSpeciesArray(biosamples, 'derived_from.organisms=', updatedSpeciesArray);
+ 
     // Array of species is converted to an array of genera
     updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
 
@@ -1459,103 +1106,9 @@ const ChartRenderer = (props) => {
             <div> <GenusButtons handleClick={handleClick} selectedOrganisms={selectedOrganisms} updatedGenusArray={updatedGenusArray} /> </div>
             <PanelBody>
                 <div className="award-chart__group-wrapper">
-                    <h2>
-                        Assays
-                        {experimentsConfig.labs.length > 0 ?
-                            <a className="btn btn-info btn-sm" href={`/report/?type=Experiment&${ExperimentQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                        : null}
-                    </h2>
-                    {experimentsConfig.labs.length > 0 ?
-                        <div>
-                            <div className="award-chart__group">
-                                <LabChart
-                                    award={award}
-                                    labs={experimentsConfig.labs}
-                                    linkUri={experimentsConfig.linkUri}
-                                    ident={experimentsConfig.ident}
-                                    objectQuery={ExperimentQuery}
-                                />
-                                <CategoryChart
-                                    award={award}
-                                    categoryData={experimentsConfig.categoryData || []}
-                                    title={experimentsConfig.title}
-                                    linkUri={experimentsConfig.linkUri}
-                                    categoryFacet={experimentsConfig.categoryFacet}
-                                    ident={experimentsConfig.ident}
-                                    selectedOrganisms={updatedGenusArray}
-                                    objectQuery={ExperimentQuery}
-                                />
-                                <StatusExperimentChart
-                                    award={award}
-                                    experiments={experiments}
-                                    statuses={experimentsConfig.statuses || []}
-                                    linkUri={experimentsConfig.linkUri}
-                                    ident={experimentsConfig.ident}
-                                    unreplicated={unreplicated}
-                                    isogenic={isogenic}
-                                    anisogenic={anisogenic}
-                                    selectedOrganisms={updatedGenusArray}
-                                    objectQuery={ExperimentQuery}
-                                />
-                            </div>
-                        </div>
-                    :
-                        <div className="browser-error">No assays were submitted under this award</div>
-                    }
-                </div>
-                <div className="award-chart__group-wrapper">
-                    <h2>
-                        Annotations {annotationsConfig.labs.length > 0 ?
-                            <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&${AnnotationQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                        : null}
-                    </h2>
-                    {annotationsConfig.labs.length > 0 ?
-                        <div>
-                            <div className="award-chart__group">
-                                <LabChart
-                                    award={award}
-                                    labs={annotationsConfig.labs}
-                                    linkUri={annotationsConfig.linkUri}
-                                    ident={annotationsConfig.ident}
-                                    selectedOrganisms={selectedOrganisms}
-                                    objectQuery={AnnotationQuery}
-                                />
-                                <CategoryChart
-                                    award={award}
-                                    categoryData={annotationsConfig.categoryData || []}
-                                    linkUri={annotationsConfig.linkUri}
-                                    categoryFacet={annotationsConfig.categoryFacet}
-                                    title={annotationsConfig.title}
-                                    ident={annotationsConfig.ident}
-                                    selectedOrganisms={selectedOrganisms}
-                                    objectQuery={AnnotationQuery}
-                                />
-                                <StatusChart
-                                    award={award}
-                                    statuses={annotationsConfig.statuses || []}
-                                    linkUri={annotationsConfig.linkUri}
-                                    ident={annotationsConfig.ident}
-                                    selectedOrganisms={selectedOrganisms}
-                                    objectQuery={AnnotationQuery}
-                                />
-                            </div>
-                        </div>
-                    :
-                        <div className="browser-error">No annotations were submitted under this award</div>
-                    }
-                </div>
-                <div className="award-chart__group-wrapper">
-                    <h2>Reagents</h2>
-                    {antibodiesConfig.categoryData.length > 0 || biosamplesConfig.categoryData.length > 0 || experimentsConfig.statuses.length > 0 ?
+                    <h2>Libraries</h2>
+                    {biosamplesConfig.categoryData.length > 0 ?
                         <div className="award-chart__group">
-                            <AntibodyChart
-                                award={award}
-                                categoryData={antibodiesConfig.categoryData}
-                                categoryFacet={antibodiesConfig.categoryFacet}
-                                linkUri={antibodiesConfig.linkUri}
-                                ident={antibodiesConfig.ident}
-                                selectedOrganisms={selectedOrganisms}
-                            />
                             <BiosampleChart
                                 award={award}
                                 categoryData={biosamplesConfig.categoryData}
@@ -1564,17 +1117,9 @@ const ChartRenderer = (props) => {
                                 ident={biosamplesConfig.ident}
                                 selectedOrganisms={selectedOrganisms}
                             />
-                            <ControlsChart
-                                award={award}
-                                experiments={experiments}
-                                statuses={controlsConfig.statuses || []}
-                                linkUri={controlsConfig.linkUri}
-                                ident={controlsConfig.ident}
-                                objectQuery={ExperimentQuery}
-                            />
                         </div>
                     :
-                        <div className="browser-error">No reagents were submitted under this award</div>
+                        <div className="browser-error">No libraries were submitted under this award</div>
                     }
                 </div>
             </PanelBody>
@@ -1585,26 +1130,14 @@ const ChartRenderer = (props) => {
 ChartRenderer.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     experiments: PropTypes.object, // Search result of matching experiments
-    annotations: PropTypes.object, // Search result of matching annotations
-    antibodies: PropTypes.object, // Search result of matching antibodies
     biosamples: PropTypes.object, // Search result of matching biosamples
-    unreplicated: PropTypes.object,
-    isogenic: PropTypes.object,
-    anisogenic: PropTypes.object,
-    controls: PropTypes.object,
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
 };
 
 ChartRenderer.defaultProps = {
     experiments: {},
-    annotations: {},
-    antibodies: {},
     biosamples: {},
-    unreplicated: {},
-    isogenic: {},
-    anisogenic: {},
-    controls: {},
     selectedOrganisms: [],
 };
 
@@ -1623,14 +1156,6 @@ class GenusButtons extends React.Component {
                     null}
                     {updatedGenusArray.indexOf('MOUSE') !== -1 ?
                         <OrganismSelector organism="MOUSE" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
-                    :
-                    null}
-                    {updatedGenusArray.indexOf('WORM') !== -1 ?
-                        <OrganismSelector organism="WORM" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
-                    :
-                    null}
-                    {updatedGenusArray.indexOf('FLY') !== -1 ?
-                        <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
                     :
                     null}
                 </div>
@@ -1653,7 +1178,7 @@ GenusButtons.defaultProps = {
 };
 
 const milestonesTableColumns = {
-    assay_term_name: {
+    assay: {
         title: 'Assay name',
     },
 
@@ -1662,7 +1187,7 @@ const milestonesTableColumns = {
     },
 
     deliverable_unit: {
-        title: 'Biosample',
+        title: 'Library',
     },
 
     contract_date: {
@@ -1920,10 +1445,8 @@ class AwardCharts extends React.Component {
     render() {
         const { award, updatedGenusArray } = this.props;
         // Create searchTerm-specific query strings
-        const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
-        const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
-        const BiosampleQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
-        const AntibodyQuery = generateQuery(this.state.selectedOrganisms, 'targets.organism.scientific_name=');
+        const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'libraries.derived_from.organisms=');
+        const LibraryQuery = generateQuery(this.state.selectedOrganisms, 'derived_from.organisms=');
         return (
             <Panel>
                 <PanelHeading>
@@ -1932,14 +1455,8 @@ class AwardCharts extends React.Component {
                 </PanelHeading>
                 <div>
                     <FetchedData ignoreErrors>
-                        <Param name="experiments" url={`/search/?type=Experiment&control_type!=*&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
-                        <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
-                        <Param name="antibodies" url={`/search/?type=AntibodyLot&award.@id=${award['@id']}${AntibodyQuery}`} />
-                        <Param name="controls" url={`/search/?type=Experiment&control_type=*&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="unreplicated" url={`/search/?type=Experiment&control_type!=*&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="isogenic" url={`/search/?type=Experiment&control_type!=*&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />
-                        <Param name="anisogenic" url={`/search/?type=Experiment&control_type!=*&replication_type=anisogenic&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="experiments" url={`/search/?type=Dataset&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="biosamples" url={`/search/?type=Library&award.name=${award.name}${LibraryQuery}`} />
                         <ChartRenderer award={award} updatedGenusArray={updatedGenusArray} handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                     </FetchedData>
                 </div>
@@ -1963,7 +1480,7 @@ class LineChart extends React.Component {
         return (
             <div>
                 <FetchedData ignoreErrors>
-                    <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
+                    <Param name="experiments" url={`/search/?type=Dataset&award.name=${award.name}`} />
                     <ExperimentDate award={award} />
                 </FetchedData>
             </div>
@@ -2095,57 +1612,23 @@ CumulativeGraph.propTypes = {
     monthReleased: PropTypes.array.isRequired,
 };
 
-
-// Create Affiliated Labs list with carriage return to be displayed under description panel
-const AffiliatedLabsArray = (props) => {
-    const { labs, award } = props;
-    const labsArray = labs['@graph'].map(term => term.title);
-    const sortedArray = award.pi && award.pi.lab ? _.without(labsArray, award.pi.lab.title) : labsArray;
-    return (
-        <div>
-            {sortedArray.map((item, index) => <div key={index}>{item}</div>)}
-        </div>
-    );
-};
-
-AffiliatedLabsArray.propTypes = {
-    labs: PropTypes.object,
-    award: PropTypes.object.isRequired,
-};
-
-AffiliatedLabsArray.defaultProps = {
-    labs: {},
-};
-
-/* eslint-disable react/prefer-stateless-function */
-class AffiliatedLabs extends React.Component {
-    render() {
-        const { award } = this.props;
-        return (
-            <FetchedData>
-                <Param name="labs" url={`/search/?type=Lab&awards.name=${award.name}`} />
-                <AffiliatedLabsArray award={award} />
-            </FetchedData>
-        );
+function piList(values, field) {
+    if (values && values.length > 0) {
+        return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
     }
+    return null;
 }
-/* eslint-enable react/prefer-stateless-function */
-
-AffiliatedLabs.propTypes = {
-    award: PropTypes.object.isRequired, // Award represented by this chart
-};
 
 const Award = ({ context }, reactContext) => {
     const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
 
+    const pi_titles = piList(context.principal_investigators, 'title');
+    const collab_titles = piList(context.collaborators, 'title');
+
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header>
-                {context.pi && context.pi.lab ?
-                    <h1>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h1>
-                    :
-                    <h1>AWARD SUMMARY for ({context.name})</h1>
-                }
+                <h1>AWARD SUMMARY for {context.name}</h1>
                 <ItemAccessories item={context} />
             </header>
             <AwardCharts award={context} />
@@ -2155,7 +1638,7 @@ const Award = ({ context }, reactContext) => {
                 </PanelHeading>
                 <PanelBody>
                     {context.description ?
-                        <div className="two-column-long-text two-column-long-text--gap">
+                        <div>
                             <p>{context.description}</p>
                         </div>
                     :
@@ -2165,50 +1648,40 @@ const Award = ({ context }, reactContext) => {
                 <PanelBody addClasses="panel__split">
                     <div className="panel__split-element">
                         <dl className="key-value">
-                            <div data-test="projectinfo">
-                                <dt>Status</dt>
-                                <dd><Status item={context} inline /></dd>
-                            </div>
-
-                            <div data-test="projectinfo">
-                                <dt>NIH Grant</dt>
-                                <dd><a href={context.url} title={`${context.name} NIH Grant`}>{context.name}</a></dd>
-                            </div>
-
-                            {context.pi && context.pi.lab ?
+                            {context.principal_investigators ?
                                 <div data-test="pi">
-                                    <dt>Primary Investigator</dt>
-                                    <dd>{context.pi.lab.title}</dd>
+                                    <dt>Principal Investigators</dt>
+                                    <dd>{pi_titles}</dd>
                                 </div>
                             : null}
-
-                            <div data-test="labs">
-                                <dt>Affiliated Labs</dt>
-                                <dd><AffiliatedLabs award={context} /> </dd>
-                            </div>
+                            {context.collaborators ?
+                                <div data-test="colllabs">
+                                    <dt>Collaborators</dt>
+                                    <dd>{collab_titles}</dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
                     <div className="panel__split-element">
                         <dl className="key-value">
-                            <div data-test="dates">
-                                <dt>Dates</dt>
-                                <dd>{dayjs(context.start_date).format('MMMM DD, YYYY')} - {dayjs(context.end_date).format('MMMM DD, YYYY')}</dd>
+                            <div data-test="project">
+                                <dt>Project</dt>
+                                <dd>{context.project}</dd>
                             </div>
 
-                            <div data-test="rfa">
-                                <dt>Award RFA</dt>
-                                <dd>{context.rfa}</dd>
+                            <div data-test="projectinfo">
+                                <dt>CZI Project</dt>
+                                <dd><a href={context.url} title={`${context.name} CZI Project`}>{context.name}</a></dd>
+                            </div>
+
+                            <div data-test="projectinfo">
+                                <dt>Status</dt>
+                                <dd><Status item={context} inline /></dd>
                             </div>
                         </dl>
                     </div>
                 </PanelBody>
             </Panel>
-
-            {context.milestones && loggedIn ?
-                <MilestonesTable award={context} />
-            : null}
-
-            <LineChart award={context} />
         </div>
     );
 };
