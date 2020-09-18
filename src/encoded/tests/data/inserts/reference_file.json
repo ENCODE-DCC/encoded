@@ -50,7 +50,7 @@
         "organism": "mouse",
         "file_size": 5000000,
         "file_format": "tar",
-        "dataset": "ENCSR500ELM",
+        "dataset": "ENCSR800RRR",
         "md5sum": "96ed7b046cdc23953befeda89479d763",
         "output_types": [
             "genome reference"
@@ -67,7 +67,7 @@
         "uuid": "e877b293-e2c2-4aca-ab02-84a30f45bb42",
         "organism": "human",
         "file_size": 3000000,
-        "dataset": "ENCSR500ELM",
+        "dataset": "ENCSR800RRR",
         "file_format": "tar",
         "md5sum": "abfac356cf55eec96dcfa9b3e436fbdb",
         "output_types": [

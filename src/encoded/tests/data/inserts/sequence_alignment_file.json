@@ -1618,6 +1618,7 @@
         "aliases": [
             "peter-sims:alignment_3b.bam"
         ],
+        "uuid": "ee05b60f-b56d-4268-944f-bae6f7eb4907",
         "dataset":"peter-sims:scRNAseq_test_dataset",
         "lab": "peter-sims",
         "status": "released",
