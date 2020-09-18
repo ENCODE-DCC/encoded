@@ -1,8 +1,5 @@
 """
 Encoded Application AWS Deployment Helper
-
-- SpotClient was removed in EPIC-ENCD-4716/ENCD-4688-remove-unused-code-from-deploy.
-
 """
 import argparse
 import getpass
@@ -18,6 +15,26 @@ from os.path import expanduser
 from datetime import datetime
 
 import boto3
+from pathlib import Path
+
+
+REPO_DIR = f"{str(Path().parent.absolute())}"
+
+
+def _load_configuration(conf_path):
+    # Load config
+    from configparser import SafeConfigParser
+    config_parser = SafeConfigParser()
+    config_parser.read(conf_path)
+    # Convert to dict
+    conf_dict = {}
+    for section in config_parser.sections():
+        conf_dict[section] = {
+            key: val
+            for key, val in config_parser.items(section)
+        }
+    return conf_dict
+
 
 
 # AWS/EC2 - Deploy Cloud Config
@@ -326,7 +343,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
     if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
     else:
-        instances_tag_data['username'] = getpass.getuser()
+        instances_tag_data['username'] = main_args.username if main_args.username else getpass.getuser()
         if instances_tag_data['name'] is None:
             instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
             instances_tag_data['name'] = _nameify(
@@ -365,14 +382,13 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     build_type = instances_tag_data['build_type']  # template_name
     master_user_data = None
     git_remote = 'origin' if not is_tag else 'tags'
-    cc_dir = '/home/ubuntu/encoded/cloud-config'
     data_insert = {
         'APP_WORKERS': 'notused',
         'BATCHUPGRADE': 'true' if main_args.do_batchupgrade else 'false',
         'BATCHUPGRADE_VARS': 'notused',
         'BUILD_TYPE': build_type,
         'COMMIT': instances_tag_data['commit'],
-        'CC_DIR': cc_dir,
+        'CC_DIR': main_args.conf_dir_remote,
         'CLUSTER_NAME': 'NONE',
         'ES_IP': main_args.es_ip,
         'ES_PORT': main_args.es_port,
@@ -398,7 +414,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
-        'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
+        'SCRIPTS_DIR': "{}/run-scripts".format(main_args.conf_dir_remote),
         'WALE_S3_PREFIX': main_args.wale_s3_prefix,
     }
     if build_type == 'es-nodes':
@@ -475,13 +491,14 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'INDEX_PRIMARY': 'true',
             })
         user_data = _get_user_data(config_yaml, data_insert, main_args)
+
     run_args = {
         'count': count,
         'iam_role': iam_role,
         'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
-        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
+        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod',
     }
     if main_args.profile_name == 'production' and main_args.role != 'candidate':
         run_args['key-pair-name'] += '-prod'
@@ -634,6 +651,23 @@ def _write_config_to_file(build_config, build_path, template_name):
 def main():
     """Entry point for deployment"""
     main_args = _parse_args()
+    # Load repo default config
+    default_demo_ini = f"{REPO_DIR}/demo-config.ini"
+    ini_dict= _load_configuration(default_demo_ini)
+    # Load developer overrides
+    override_dev_ini = f"{REPO_DIR}/.dev-config.ini"
+    override_ini_dict = _load_configuration(override_dev_ini)
+    for key, val in override_ini_dict.get('deployment', {}).items():
+        if val:
+            ini_dict['deployment'][key] = val
+    # Main args overridden by deployment conf dict
+    for key, val in ini_dict['deployment'].items():
+        if hasattr(main_args, key):
+            if val:
+                setattr(main_args, key, val)
+        else:
+            setattr(main_args, key, val)
+
     assembled_template, save_path, template_name = _get_cloud_config_yaml(main_args)
     if main_args.diff_configs:
         sys.exit(0)
@@ -892,7 +926,7 @@ def _parse_args():
     parser.add_argument('--app-workers', default='6', help="Apache config app workers")
     parser.add_argument(
         '--conf-dir',
-        default='./cloud-config',
+        default=f"{REPO_DIR}/cloud-config",
         help="Location of cloud build config"
     )
     parser.add_argument(

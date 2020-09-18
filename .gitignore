@@ -46,3 +46,5 @@
 .config/
 initial-indexing-times*
 .viminfo
+
+.dev-config.ini
