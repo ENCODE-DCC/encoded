@@ -10,7 +10,6 @@
     "mixinProperties": [
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/description"},
-        {"$ref": "mixins.json#/award"},
         {"$ref": "mixins.json#/documents"},
         {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/notes"},
@@ -196,10 +195,10 @@
         "protocol.name": {
             "title": "Library protocols"
         },
-        "dataset.award.project": {
+        "award.project": {
             "title": "Project"
         },
-        "dataset.award.name": {
+        "award.name": {
             "title": "Award name"
         },
         "lab.title": {
@@ -219,10 +218,10 @@
         "protocol.name": {
             "title": "Library protocol"
         },
-        "dataset.award.project": {
+        "award.project": {
             "title": "Project"
         },
-        "dataset.award.name": {
+        "award.name": {
             "title": "Award name"
         },
         "lab.title": {

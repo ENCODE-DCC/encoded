@@ -42,7 +42,7 @@ class Library(Item):
         'derived_from.biosample_ontology',
         'protocol',
         'dataset',
-        'dataset.award',
+        'award',
         'lab'
     ]
 
@@ -85,3 +85,13 @@ class Library(Item):
             if 'life_stage' in props
         }
         return donor_accs
+
+
+    @calculated_property(condition='dataset', schema={
+        "title": "Award",
+        "type": "string",
+        "linkTo": "Award"
+    })
+    def award(self, request, dataset):
+        datasetObject = request.embed(dataset, '@@object')
+        return datasetObject.get('award')
