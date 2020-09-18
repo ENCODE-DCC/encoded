@@ -26,6 +26,7 @@ class Gene(SharedItem):
 
     @calculated_property(schema={
         "title": "Title",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, request, organism, symbol):

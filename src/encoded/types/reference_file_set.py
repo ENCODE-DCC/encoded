@@ -52,6 +52,8 @@ class ReferenceFileSet(Item):
 
     @calculated_property(schema={
         "title": "Original files",
+        "description": "The DataFiles belonging to this file set, regardless of status.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -65,6 +67,8 @@ class ReferenceFileSet(Item):
 
     @calculated_property(schema={
         "title": "Files",
+        "description": "The DataFiles belonging to this file set, filtered by status relative to the status of the file set.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -85,6 +89,8 @@ class ReferenceFileSet(Item):
 
     @calculated_property(schema={
         "title": "Revoked files",
+        "description": "The DataFiles belonging to this file set that are of status revoked.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -99,6 +105,8 @@ class ReferenceFileSet(Item):
 
     @calculated_property(define=True, schema={
         "title": "Reference version",
+        "description": "The version of references contained in this file set.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",

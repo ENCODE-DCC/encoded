@@ -25,6 +25,8 @@ class SequencingRun(Item):
 
     @calculated_property(schema={
         "title": "Files",
+        "description": "The DataFiles belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
@@ -36,10 +38,12 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
-            "title": "Read 1 file",
-            "type": "string",
-            "linkFrom": "RawSequenceFile.derived_from",
-            "notSubmittable": True,
+        "title": "Read 1 file",
+        "description": "The Read 1 DataFile belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "linkFrom": "RawSequenceFile.derived_from",
+        "notSubmittable": True,
     })
     def read_1_file(self, request, registry, files):
         for file_id in files:
@@ -50,10 +54,12 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
-            "title": "Read 2 file",
-            "type": "string",
-            "linkFrom": "RawSequenceFile.derived_from",
-            "notSubmittable": True,
+        "title": "Read 2 file",
+        "description": "The Read 2 DataFile belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "linkFrom": "RawSequenceFile.derived_from",
+        "notSubmittable": True,
     })
     def read_2_file(self, request, registry, files):
         for file_id in files:
@@ -64,10 +70,12 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
-            "title": "Read 1N file",
-            "type": "string",
-            "linkFrom": "RawSequenceFile.derived_from",
-            "notSubmittable": True,
+        "title": "Read 1N file",
+        "description": "The Read 1N DataFile belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "linkFrom": "RawSequenceFile.derived_from",
+        "notSubmittable": True,
     })
     def read_1N_file(self, request, registry, files):
         for file_id in files:
@@ -78,10 +86,12 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
-            "title": "Read 2N file",
-            "type": "string",
-            "linkFrom": "RawSequenceFile.derived_from",
-            "notSubmittable": True,
+        "title": "Read 2N file",
+        "description": "The Read 2N DataFile belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "linkFrom": "RawSequenceFile.derived_from",
+        "notSubmittable": True,
     })
     def read_2N_file(self, request, registry, files):
         for file_id in files:
@@ -92,10 +102,12 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
-            "title": "i5 index file",
-            "type": "string",
-            "linkFrom": "RawSequenceFile.derived_from",
-            "notSubmittable": True,
+        "title": "i5 index file",
+        "description": "The ii5 index DataFile belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "linkFrom": "RawSequenceFile.derived_from",
+        "notSubmittable": True,
     })
     def i5_index_file(self, request, registry, files):
         for file_id in files:
@@ -106,10 +118,12 @@ class SequencingRun(Item):
 
 
     @calculated_property(schema={
-            "title": "i7 index file",
-            "type": "string",
-            "linkFrom": "RawSequenceFile.derived_from",
-            "notSubmittable": True,
+        "title": "i7 index file",
+        "description": "The i7 index DataFile belonging to this sequencing run.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string",
+        "linkFrom": "RawSequenceFile.derived_from",
+        "notSubmittable": True,
     })
     def i7_index_file(self, request, registry, files):
         for file_id in files:

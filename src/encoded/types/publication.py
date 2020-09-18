@@ -31,6 +31,8 @@ class Publication(Item):
 
     @calculated_property(condition='authors', schema={
         "title": "Citation",
+        "description": "The short citation used to reference this paper.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string"
     })
     def citation(self, registry, authors, publication_year):

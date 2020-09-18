@@ -36,6 +36,8 @@ class Donor(Item):
     @calculated_property(define=True,
                         schema={
                         "title": "Age display",
+                        "description": "The age and age units of the donor.",
+                        "comment": "Do not submit. This is a calculated property",
                         "type": "string"})
     def age_display(self, request, age=None, age_units=None, gestational_age=None, gestational_age_units=None):
         if age != None and age_units !=None:
@@ -68,6 +70,8 @@ class MouseDonor(Donor):
 
     @calculated_property(condition='life_stage', schema={
         "title": "Life stage term ID",
+        "description": "The ontology term ID for the life stage of the donor.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def life_stage_term_id(self, request, life_stage):
@@ -112,6 +116,8 @@ class HumanDonor(Donor):
 
     @calculated_property(condition='life_stage', schema={
         "title": "Life stage term ID",
+        "description": "The ontology term ID for the life stage of the donor.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def life_stage_term_id(self, request, life_stage):
