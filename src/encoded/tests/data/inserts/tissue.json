@@ -379,5 +379,61 @@
         "references": [
             "52e85c70-fe2d-11e3-9191-0800200c9a66"
         ]
+    },
+    {
+        "accession": "ENCBS686GGG",
+        "description": "tissue_A",
+        "aliases": [
+            "anindita-basu:tissue_A"
+        ],
+        "status": "deleted",
+        "uuid": "0444b43a-1030-431c-8134-4d91f359e25a",
+        "submitted_by": "quisque.consequat@venenatis.magna",
+        "derived_from": [
+            "anindita-basu:postnatal_human_donorA"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0003365",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour",
+        "source": "original lab",
+        "references": [
+            "474461bd-943e-4514-92a7-e268390eef53"
+        ]
+    },
+    {
+        "accession": "ENCBS689GGG",
+        "description": "tissue_B",
+        "aliases": [
+            "anindita-basu:tissue_B"
+        ],
+        "status": "deleted",
+        "uuid": "05e227c4-ee1a-4473-b0e4-1d64cf8684f0",
+        "submitted_by": "quisque.consequat@venenatis.magna",
+        "derived_from": [
+            "anindita-basu:postnatal_human_donorA"
+        ],
+        "derivation_process": [
+            "dissection"
+        ],
+        "biosample_ontology": "UBERON_0003365",
+        "preservation_method": "cryopreservation",
+        "preservation_time": 2,
+        "preservation_time_units": "week",
+        "ischemic_temperature": "4",
+        "ischemic_temperature_units": "C",
+        "ischemic_time": 48,
+        "ischemic_time_units": "hour",
+        "source": "original lab",
+        "references": [
+            "474461bd-943e-4514-92a7-e268390eef53"
+        ]
     }
 ]

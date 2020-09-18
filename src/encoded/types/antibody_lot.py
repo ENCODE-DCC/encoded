@@ -22,31 +22,11 @@ class AntibodyLot(SharedItem):
     name_key = 'accession'
     rev = {}
     embedded = [
-        'host_organism',
-        'targets',
-        'targets.genes',
-        'targets.organism'
+        'host_organism'
     ]
     audit_inherit = [
-        'host_organism',
-        'targets',
-        'targets.organism'
+        'host_organism'
     ]
-    set_status_up = [
-        'targets',
-        'host_organism',
-    ]
-    set_status_down = []
-
-    def unique_keys(self, properties):
-        keys = super(AntibodyLot, self).unique_keys(properties)
-        source = properties['source']
-        product_id = properties['product_id']
-        lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
-        values = (u'{}/{}/{}'.format(source, product_id, lot_id)
-                  for lot_id in lot_ids)
-        keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
-        return keys
 
     @calculated_property(schema={
         "title": "Title",

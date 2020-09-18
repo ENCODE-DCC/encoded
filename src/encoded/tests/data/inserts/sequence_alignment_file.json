@@ -1,18 +1,1276 @@
 [
     {
         "aliases": [
+            "anna-greka:sc_donorA1.bam"
+        ],
+        "uuid": "32fa309c-7441-411a-adeb-676163f5b97c",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorA1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorA1_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorA2.bam"
+        ],
+        "uuid": "488c78de-f2fe-4ada-b446-f5e4333c238b",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorA2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorA2_S2_L002_I1_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_R1_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorB1.bam"
+        ],
+        "uuid": "2ddf70d5-bfd0-4b2b-959f-0ca3b0475962",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorB1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorB1_S3_L002_I1_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_R1_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorB2.bam"
+        ],
+        "uuid": "c134bc55-daa1-412d-a73a-e817a2b33139",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorA1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorB2_S4_L002_I1_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_R1_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_C1a.bam"
+        ],
+        "uuid": "49574a2b-d369-4f22-a33f-88714412f6ee",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorA1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC1a_S1_L004_I1_001.fastq",
+            "anna-greka:sc_donorC1a_S1_L004_R1_001.fastq",
+            "anna-greka:sc_donorC1a_S1_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_C1b.bam"
+        ],
+        "uuid": "b304b410-74dc-4a84-aac9-6c0cb7db1d19",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_C1b.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC1b_S2_L004_I1_001.fastq",
+            "anna-greka:sc_donorC1b_S2_L004_R1_001.fastq",
+            "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_C2a.bam"
+        ],
+        "uuid": "2d8aa190-2d0c-49bd-bc76-e00bdb2567ad",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_C2a.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC2a_S3_L004_I1_001.fastq",
+            "anna-greka:sc_donorC2a_S3_L004_R1_001.fastq",
+            "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_C2b.bam"
+        ],
+        "uuid": "e4bedc80-12ec-4c32-b110-6b83771564b0",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_C2b.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC2b_S4_L004_I1_001.fastq",
+            "anna-greka:sc_donorC2b_S4_L004_R1_001.fastq",
+            "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },    {
+        "aliases": [
+            "anna-greka:sc_donor_D1a.bam"
+        ],
+        "uuid": "632bcd92-ac4e-4328-ba6b-bba6be7246f4",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_D1a.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD1a_S5_L004_I1_001.fastq",
+            "anna-greka:sc_donorD1a_S5_L004_R1_001.fastq",
+            "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_D1b.bam"
+        ],
+        "uuid": "0c2de35d-d84d-4668-9eab-3b1418a8c4b0",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_D1b.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD1b_S6_L004_I1_001.fastq",
+            "anna-greka:sc_donorD1b_S6_L004_R1_001.fastq",
+            "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_D2a.bam"
+        ],
+        "uuid": "d1cabf16-e6f4-4332-84bd-d12e23d13be3",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_D2a.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD2a_S7_L004_I1_001.fastq",
+            "anna-greka:sc_donorD2a_S7_L004_R1_001.fastq",
+            "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donor_D2b.bam"
+        ],
+        "uuid": "0214d289-4e4c-4a15-9c61-7552675e5d0e",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donor_D2b.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD2b_S8_L004_I1_001.fastq",
+            "anna-greka:sc_donorD2b_S8_L004_R1_001.fastq",
+            "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorCD1_L001.bam"
+        ],
+        "uuid": "a26e13e9-3973-40cf-b38f-b334d4175fcc",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorCD1_L001.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD1_S1_L001_I1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L001_R1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L001_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorCD2_L001.bam"
+        ],
+        "uuid": "f01f357e-73e9-4ddf-8774-ead3d5eab940",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorCD2_L001.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD2_S1_L001_I1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L001_R1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L001_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorCD1_L002.bam"
+        ],
+        "uuid": "6247cc57-286d-4049-a1dc-b120ac2cb316",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorCD1_L002.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD1_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorCD2_L002.bam"
+        ],
+        "uuid": "baed6de4-a210-4d92-a4cb-4d448b73ee87",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorCD2_L002.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD2_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorE.bam"
+        ],
+        "uuid": "2c08656f-8ed4-457c-a35e-a6893592f80c",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorE1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorE_S1_L003_I1_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_R1_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorF.bam"
+        ],
+        "uuid": "10cd88c0-bbcc-4d36-a48f-5c2b5967052f",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorF1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorF_S3_L003_I1_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_R1_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorG.bam"
+        ],
+        "uuid": "1028e922-8e0e-4f8f-879e-4d53917112ad",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorG1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorG_S5_L003_I1_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_R1_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:sc_donorH.bam"
+        ],
+        "uuid": "55c608a4-f134-4542-bf12-80a1fbe772ce",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "sc_donorH1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "transcriptome alignments",
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorH_S7_L003_I1_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_R1_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "mapped_run_type": "single-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 91,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA1.bam"
+        ],
+        "uuid": "e5928f04-630c-450f-a38c-6f757786bea7",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorA1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA2.bam"
+        ],
+        "uuid": "6a9f0504-890e-4b9d-995e-0b0602b63a90",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorA2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB1.bam"
+        ],
+        "uuid": "b017f601-147e-416e-b933-c2a8ef9f3787",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorB1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB2.bam"
+        ],
+        "uuid": "f8fac24b-fbdc-4442-a8ea-14b17ae85fde",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorB2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC1.bam"
+        ],
+        "uuid": "7adc9217-19f2-49e7-8a64-459db175c90c",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorC1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC2.bam"
+        ],
+        "uuid": "7cc5f53a-0dfc-4ed1-af93-c8f467545059",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorC2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD1.bam"
+        ],
+        "uuid": "818dcd15-ed6c-4756-9e21-268f35e50c31",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorD1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD2.bam"
+        ],
+        "uuid": "66f0c7a0-08f1-4466-ac46-479d28b668e2",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorD2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE1.bam"
+        ],
+        "uuid": "71e7dbbb-9d12-47a9-a946-762c7beb0098",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorE1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE2.bam"
+        ],
+        "uuid": "c4a4000b-15d1-4449-bca5-68b3d08abf02",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorE2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF1.bam"
+        ],
+        "uuid": "505b8d81-ed17-4e2f-8bb1-855c1ba4d993",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorF1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF2.bam"
+        ],
+        "uuid": "73c0e9f0-177f-4c19-a53c-dd86e800436e",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorF2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG1.bam"
+        ],
+        "uuid": "633bd4ca-bc47-41c3-8394-e130ce3542e4",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorG1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG2.bam"
+        ],
+        "uuid": "ec86be0d-536f-4b28-a7e2-f4429edbf26d",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorG2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH1.bam"
+        ],
+        "uuid": "33a4ec57-9260-46d2-ae74-b4026c6d2b50",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorH1.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH2.bam"
+        ],
+        "uuid": "9310a7a5-2d6c-4d0c-a70f-c79130969649",
+        "lab": "anna-greka",
+        "status": "released",
+        "file_format": "bam",
+        "dataset": "anna-greka:large_test_dataset",
+        "file_size": 300000000,
+        "submitted_file_name": "snATAC_donorH2.bam",
+        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
+        "output_types": [
+            "genomic alignments"
+        ],
+        "derived_from": [
+            "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "mapped_run_type": "paired-ended",
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "mapped_read_length": 45,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
             "jimmie-ye:prenatal_1a_bam"
         ],
         "uuid": "47002127-00c1-43f1-837d-14bd2ec468e9",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_1a_bam.gz",
+        "submitted_file_name": "prenatal_1a.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -32,7 +1290,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -41,14 +1299,13 @@
         ],
         "uuid": "e1fcdf5c-bfb4-466b-bdf8-52c475f7c25f",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_1b_bam.gz",
+        "submitted_file_name": "prenatal_1b.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -68,7 +1325,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -77,14 +1334,13 @@
         ],
         "uuid": "207f2d33-b9e6-49f2-aa03-efb8e9860ae6",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_1c_bam.gz",
+        "submitted_file_name": "prenatal_1c.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -104,7 +1360,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -113,14 +1369,13 @@
         ],
         "uuid": "75e3f4e0-7c9f-4723-8f5d-417de1500380",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_2a_bam.gz",
+        "submitted_file_name": "prenatal_2a.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -140,7 +1395,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -149,14 +1404,13 @@
         ],
         "uuid": "c2360f47-9ba5-42d5-925e-e83b86ea9f5e",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_2b_bam.gz",
+        "submitted_file_name": "prenatal_2b.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -176,7 +1430,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -185,14 +1439,13 @@
         ],
         "uuid": "2d1bd1d6-78e4-4eb2-98c5-caa6a2eb57d1",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_2c_bam.gz",
+        "submitted_file_name": "prenatal_2c.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -212,7 +1465,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -221,14 +1474,13 @@
         ],
         "uuid": "2840bf3a-296b-4f42-9433-4384e81a29a4",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_3a_bam.gz",
+        "submitted_file_name": "prenatal_3a.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -248,7 +1500,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -257,14 +1509,13 @@
         ],
         "uuid": "408a2d0a-f098-4cf8-8cbe-3c186ff44f23",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_3b_bam.gz",
+        "submitted_file_name": "prenatal_3b.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -284,7 +1535,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -293,14 +1544,13 @@
         ],
         "uuid": "6b9884e5-ab13-45df-8d3c-70ffc124f339",
         "lab": "jimmie-ye",
-        "status": "released",
+        "status": "in progress",
         "file_format": "bam",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "file_size": 300000000,
-        "submitted_file_name": "prenatal_3c_bam.gz",
+        "submitted_file_name": "prenatal_3c.bam",
         "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
-            "transcriptome alignments",
             "genomic alignments"
         ],
         "derived_from": [
@@ -320,7 +1570,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -361,13 +1611,14 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
         "aliases": [
             "peter-sims:alignment_3b.bam"
         ],
+        "uuid": "ee05b60f-b56d-4268-944f-bae6f7eb4907",
         "dataset":"peter-sims:scRNAseq_test_dataset",
         "lab": "peter-sims",
         "status": "released",
@@ -401,7 +1652,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -442,7 +1693,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -483,7 +1734,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -524,7 +1775,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -565,7 +1816,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -606,7 +1857,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -647,7 +1898,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     },
     {
@@ -688,7 +1939,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 3.1"
         ]
     }
 ]

@@ -221,6 +221,18 @@
             "title": "Red blood cell lysis",
             "description": "If true, a red blood cell lysis step was included in the preparation protocol.",
             "type": "boolean"
+        },
+        "feature_antibodies": {
+            "title": "Feature antibodies",
+            "description": "Antibodies used for cell surface protein detection in Feature Barcoding technologies (aka: CITEseq) during biosample preparation",
+            "type": "array",
+            "items": {
+                "title": "Feature antibodies",
+                "description": "Antibodies used for cell surface protein detection in Feature Barcoding technologies (aka: CITEseq) during biosample preparation",
+                "comment": "See antibody_lot.json for available identifiers.",
+                "type": "string",
+                "linkTo": "AntibodyLot"
+            }
         }
     },
     "facets": {

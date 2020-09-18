@@ -2,7 +2,7 @@
     {
         "name": "homepage",
         "title": "The ENCODE Project",
-        "status": "deleted",
+        "status": "released",
         "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
         "layout": {
             "rows": [

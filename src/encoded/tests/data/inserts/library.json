@@ -11,7 +11,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorA"
+            "anna-greka:sc_citeseq_suspension_donorA"
         ],
         "dbxrefs": [
             "SRA:SRX122313"
@@ -38,7 +38,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorA"
+            "anna-greka:sc_citeseq_suspension_donorA"
         ],
         "dbxrefs": [
             "SRA:SRX122314"
@@ -65,7 +65,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorB"
+            "anna-greka:sc_citeseq_suspension_donorB"
         ],
         "dbxrefs": [
             "SRA:SRX122315"
@@ -92,7 +92,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorB"
+            "anna-greka:sc_citeseq_suspension_donorB"
         ],
         "dbxrefs": [
             "SRA:SRX122316"
@@ -119,7 +119,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorA"
+            "anna-greka:sc_citeseq_suspension_donorA"
         ],
         "dbxrefs": [
             "SRA:SRX122317"
@@ -146,7 +146,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorA"
+            "anna-greka:sc_citeseq_suspension_donorA"
         ],
         "dbxrefs": [
             "SRA:SRX122318"
@@ -173,7 +173,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorB"
+            "anna-greka:sc_citeseq_suspension_donorB"
         ],
         "dbxrefs": [
             "SRA:SRX122319"
@@ -200,7 +200,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorB"
+            "anna-greka:sc_citeseq_suspension_donorB"
         ],
         "dbxrefs": [
             "SRA:SRX122320"
@@ -713,7 +713,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorE"
+            "anna-greka:sc_citeseq_suspension_donorE"
         ],
         "dbxrefs": [
             "SRA:SRX122339"
@@ -740,7 +740,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorF"
+            "anna-greka:sc_citeseq_suspension_donorF"
         ],
         "dbxrefs": [
             "SRA:SRX122340"
@@ -767,7 +767,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorG"
+            "anna-greka:sc_citeseq_suspension_donorG"
         ],
         "dbxrefs": [
             "SRA:SRX122341"
@@ -794,7 +794,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:citeseq_suspension_donorH"
+            "anna-greka:sc_citeseq_suspension_donorH"
         ],
         "dbxrefs": [
             "SRA:SRX122342"
@@ -812,7 +812,7 @@
     {
         "accession": "ENCLB350DDD",
         "aliases": [
-            "anna-greka:sc_library_donorE1"
+            "anna-greka:sc_library_donorE"
         ],
 		"status": "released",
         "uuid": "b6776d80-fc1b-4fe4-b3f4-c979a5dd62ec",
@@ -821,7 +821,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorE"
+            "anna-greka:sc_citeseq_suspension_donorE"
         ],
         "dbxrefs": [
             "SRA:SRX122343"
@@ -837,36 +837,9 @@
         ]
     },
     {
-        "accession": "ENCLB355DDD",
-        "aliases": [
-            "anna-greka:sc_library_donorE2"
-        ],
-		"status": "released",
-        "uuid": "34349edb-ea30-491e-a288-5b808faa9034",
-        "dataset": "anna-greka:large_test_dataset",
-        "protocol": "10x-5'-v1",
-        "protocol_version": 1.1,
-        "lab": "Anna Greka, Broad",
-        "derived_from": [
-            "anna-greka:sc_suspension_donorE"
-        ],
-        "dbxrefs": [
-            "SRA:SRX122344"
-        ],
-        "starting_quantity": 85000,
-        "starting_quantity_units": "cells",
-        "rna_integrity_number": 9,
-        "chip_id": "chip_106",
-        "channel_id": "B",
-        "date_constructed": "2019-05-27",
-        "documents": [
-            "anna-greka:SAEC_Stam_protocol"
-        ]
-    },
-    {
         "accession": "ENCLB360DDD",
         "aliases": [
-            "anna-greka:sc_library_donorF1"
+            "anna-greka:sc_library_donorF"
         ],
 		"status": "released",
         "uuid": "6db2f1cc-0681-4a9a-ac7f-61f2320840ba",
@@ -875,7 +848,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorF"
+            "anna-greka:sc_citeseq_suspension_donorF"
         ],
         "dbxrefs": [
             "SRA:SRX122345"
@@ -891,36 +864,9 @@
         ]
     },
     {
-        "accession": "ENCLB365DDD",
-        "aliases": [
-            "anna-greka:sc_library_donorF2"
-        ],
-		"status": "released",
-        "uuid": "f2b6a7c1-49d6-4080-95cb-e6dbf6c924e5",
-        "dataset": "anna-greka:large_test_dataset",
-        "protocol": "10x-5'-v1",
-        "protocol_version": 1.1,
-        "lab": "Anna Greka, Broad",
-        "derived_from": [
-            "anna-greka:sc_suspension_donorF"
-        ],
-        "dbxrefs": [
-            "SRA:SRX122346"
-        ],
-        "starting_quantity": 85000,
-        "starting_quantity_units": "cells",
-        "rna_integrity_number": 9,
-        "chip_id": "chip_106",
-        "channel_id": "D",
-        "date_constructed": "2019-05-27",
-        "documents": [
-            "anna-greka:SAEC_Stam_protocol"
-        ]
-    },
-    {
         "accession": "ENCLB370DDD",
         "aliases": [
-            "anna-greka:sc_library_donorG1"
+            "anna-greka:sc_library_donorG"
         ],
 		"status": "released",
         "uuid": "87c7fc03-4471-45ec-99c1-b3266c9d4239",
@@ -929,7 +875,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorG"
+            "anna-greka:sc_citeseq_suspension_donorG"
         ],
         "dbxrefs": [
             "SRA:SRX122347"
@@ -945,36 +891,9 @@
         ]
     },
     {
-        "accession": "ENCLB375DDD",
-        "aliases": [
-            "anna-greka:sc_library_donorG2"
-        ],
-		"status": "released",
-        "uuid": "a30fd39e-35b4-46d9-9fea-1322d10596fe",
-        "dataset": "anna-greka:large_test_dataset",
-        "protocol": "10x-5'-v1",
-        "protocol_version": 1.1,
-        "lab": "Anna Greka, Broad",
-        "derived_from": [
-            "anna-greka:sc_suspension_donorG"
-        ],
-        "dbxrefs": [
-            "SRA:SRX122348"
-        ],
-        "starting_quantity": 85000,
-        "starting_quantity_units": "cells",
-        "rna_integrity_number": 9,
-        "chip_id": "chip_106",
-        "channel_id": "F",
-        "date_constructed": "2019-05-27",
-        "documents": [
-            "anna-greka:SAEC_Stam_protocol"
-        ]
-    },
-    {
         "accession": "ENCLB380DDD",
         "aliases": [
-            "anna-greka:sc_library_donorH1"
+            "anna-greka:sc_library_donorH"
         ],
 		"status": "released",
         "uuid": "3f029f71-4823-473b-a80a-81b1ec158979",
@@ -983,7 +902,7 @@
         "protocol_version": 1.1,
         "lab": "Anna Greka, Broad",
         "derived_from": [
-            "anna-greka:sc_suspension_donorH"
+            "anna-greka:sc_citeseq_suspension_donorH"
         ],
         "dbxrefs": [
             "SRA:SRX122349"
@@ -993,33 +912,6 @@
         "rna_integrity_number": 9,
         "chip_id": "chip_106",
         "channel_id": "G",
-        "date_constructed": "2019-05-27",
-        "documents": [
-            "anna-greka:SAEC_Stam_protocol"
-        ]
-    },
-    {
-        "accession": "ENCLB385DDD",
-        "aliases": [
-            "anna-greka:sc_library_donorH2"
-        ],
-		"status": "released",
-        "uuid": "20dae3ce-efc0-47ae-ad35-4f84c018cbe7",
-        "dataset": "anna-greka:large_test_dataset",
-        "protocol": "10x-5'-v1",
-        "protocol_version": 1.1,
-        "lab": "Anna Greka, Broad",
-        "derived_from": [
-            "anna-greka:sc_suspension_donorH"
-        ],
-        "dbxrefs": [
-            "SRA:SRX122350"
-        ],
-        "starting_quantity": 85000,
-        "starting_quantity_units": "cells",
-        "rna_integrity_number": 9,
-        "chip_id": "chip_106",
-        "channel_id": "H",
         "date_constructed": "2019-05-27",
         "documents": [
             "anna-greka:SAEC_Stam_protocol"
@@ -1609,5 +1501,43 @@
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",
         "channel_id": "C"
+    },
+    {
+        "accession": "ENCLB600GGG",
+        "aliases": [
+            "anindita-basu:libraryA"
+        ],
+        "status": "deleted",
+        "uuid": "981db702-6aa0-4a93-8faa-6757c0a5a04d",
+        "description": "library_3b",
+        "lab": "jason-lieb",
+        "dataset": "anindita-basu:scRNAseq_test_dataset_deleted",
+        "award": "CZI025LYN",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "anindita-basu:suspension_A"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "chip3",
+        "channel_id": "A"
+    },
+    {
+        "accession": "ENCLB601GGG",
+        "aliases": [
+            "anindita-basu:libraryB"
+        ],
+        "status": "deleted",
+        "uuid": "d8ee9e59-f698-482c-9774-2fb28df996a6",
+        "description": "library_3c",
+        "lab": "jason-lieb",
+        "dataset": "anindita-basu:scRNAseq_test_dataset_deleted",
+        "award": "CZI025LYN",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "anindita-basu:suspension_B"
+        ],
+        "date_constructed": "2020-07-29",
+        "chip_id": "chip3",
+        "channel_id": "B"
     }
 ]

@@ -1,20 +1,3559 @@
 [
     {
         "aliases": [
-            "jimmie-ye:filtered_tf_matrix_1a"
+            "anna-greka:donorA1_raw_feature_bc_matrix.h5"
         ],
-        "accession": "ENCFF400ABA",
-        "award": "CZI004LIV",
-        "uuid": "aa861f79-0d95-45e5-8433-30d90bef5723",
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "6ef4d912-1166-4ccf-b836-8bb5e369ecaf",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorA1_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorA1_S1_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L002_R2_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorA1_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "63c1cd1a-48eb-4c9b-b037-0b384609708c",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorA1_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorA1_S1_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorA1_S1_L002_R2_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorA1_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorA2_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "5668e31f-01cb-43a5-bc3c-00bb663d1878",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorA2_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorA2_S2_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L002_R2_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_I1_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_R1_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorA2_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "5b86a967-77f6-4164-815d-0857ded882d4",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorA2_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorA2_S2_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorA2_S2_L002_R2_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_I1_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_R1_001.fastq",
+            "anna-greka:sc_donorA2_S2_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorB1_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "a340d8bc-762b-4147-8882-4bb602ba6c6a",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorB1_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorB1_S3_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L002_R2_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_I1_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_R1_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorB1_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "29b5b02c-854a-4f45-a19d-41b8ada2ff70",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorB1_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorB1_S3_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorB1_S3_L002_R2_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_I1_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_R1_001.fastq",
+            "anna-greka:sc_donorB1_S3_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+        {
+        "aliases": [
+            "anna-greka:donorB2_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "f817c3e8-44e3-4f87-a83e-4cec9ea6f36e",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorB2_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorB2_S4_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L002_R2_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_I1_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_R1_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorB2_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "19e88d59-9c49-44ba-bce1-1aa25329f9b6",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorB2_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorB2_S4_L001_I1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L001_R1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L001_R2_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorB2_S4_L002_R2_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_I1_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_R1_001.fastq",
+            "anna-greka:sc_donorB2_S4_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "35377ad4-e49e-45e0-8161-dde762e89410",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorA1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e485bd06-b3a3-4d53-9ccb-d7cf5dca0893",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorA1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "12e3a600-39ac-405f-8ad3-a752407f0bbe",
         "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
         "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorA1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "09de0dec-39f1-4ab7-bfe1-1e85c144a23b",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorA2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "4988556b-6c27-4456-b316-d8734d3c8d3a",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorA2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "aa3ebbec-bf3e-4c72-8321-9e612ea74a91",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorA2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "ee32db1c-932d-4931-9240-dba7a85cb6b6",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorB1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "92e9859b-402f-4dce-ab49-5f5fec8b82c1",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorB1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "bbcbd9d1-f9b0-4757-84b9-5617181581a8",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorB1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "bee1457d-dceb-481f-b3fe-827c97021b54",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorB2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e5c4c026-7520-4106-b78c-de10e1749f72",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorB2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "f0347a86-a428-4b81-b489-b9911ae3be54",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorB2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R1_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq",
+            "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "63cc3027-d329-4746-b245-c67e709200fd",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorC1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "7620f84d-9946-4e44-9e24-3486bd771083",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorC1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "faddd31b-e1b1-4857-ae92-3dfe64826a11",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorC1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e129ec02-49ed-42b3-aaf9-393e7c30202a",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorC2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "67fd3665-cd65-4d04-aa17-eb0b0c90d336",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorC2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "3bb7f59b-67c0-4d12-8b2a-ddfed688d770",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorC2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e564638f-4b32-478d-9b72-080beb1a83dd",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorD1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "21f0d1ce-9763-459a-bf58-6ca0458524f6",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorD1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "d93da0b0-f426-47b2-b11e-322cbaa74c7a",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorD1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "97a3c63e-00bc-4c47-8e23-48c967313c9e",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorD2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "5b03312f-783e-48ee-a342-fc77096434e9",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorD2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "84ddb908-59cc-4af8-a1df-e0f6b6ca77c8",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorD2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R1_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq",
+            "anna-greka:snATAC_donorD2_S4_L001_R3_001.fastq",
+            "lattice:cellranger_atac_grch38_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "795f22f1-d772-4110-8137-52f6d311fd79",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorE1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "3748c8d0-de00-4b64-a85c-fba128acd87d",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorE1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "7e7cf72e-1d75-47e9-99be-47eb4778e372",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorE1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "cd04924c-c4ca-4ee2-93a6-74c36a6376b8",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorE2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "91638f70-ad49-42d5-a502-d92a556c447b",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorE2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "8c25b599-dfff-4219-a24d-4aa860bc0a36",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorE2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "171bf956-2f3e-422a-a831-3c165cfa1a4b",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorF1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "854fdf73-c531-4602-9e8f-df3edda3a02c",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorF1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "3f01af1a-5082-4557-a0bf-3f72c1ee03ba",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorF1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "feb5f062-ab3b-4fc8-b97a-4b9211a3e08e",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorF2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "d8d78050-39a2-47f2-b872-35a3c2be87ec",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorF2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e1e4a3df-4fda-4601-b41c-552a2bb15284",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorF2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "f2f51ac7-3282-4035-8445-77695609a2d8",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorG1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "04ad895b-95e5-44ea-b0b7-57bbc5bb2391",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorG1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "9e4d5236-15dd-43e6-a0bd-c2aaf1503f9c",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorG1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "86b297bf-561c-43d3-aa70-8208272181aa",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorG2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "ab18e031-b5c4-4d6b-a432-68f3f5aa4bb1",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorG2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "577e83de-be37-4d99-98ac-61992051246a",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorG2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH1_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "6358704e-8b12-4467-b2db-065ebad7f40f",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorH1_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "96913af6-1979-4c0b-9cc3-cfdf77946ef8",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorH1_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "7924162c-bd22-4bd6-816b-e98880f6c3f7",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorH1_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH2_raw_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "9e385fc4-c48c-430f-a2cd-d86e8bc216bd",
+        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorH2_raw_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "dfeb6a2d-bf5c-4b7d-acab-f97e87a92a46",
+        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorH2_filtered_peak_bc_matrix.h5",
+        "output_types": [
+            "peak quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "peak calling",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "09af3bba-700b-4a2d-8442-d1eb398093cc",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "hdf5",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "submitted_file_name": "snATAC_donorH2_filtered_tf_bc_matrix.h5",
+        "output_types": [
+            "transcription factor quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "derived_from": [
+            "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R1_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R2_001.fastq",
+            "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq",
+            "lattice:cellranger_atac_mm10_1.2.0"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "linear",
+        "value_units": "fragment ends",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger-atac count 1.2"
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC1a_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "137b653f-0f4a-4a8c-9a5b-8a34387c1a2e",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC1a_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC1a_S1_L004_I1_001.fastq",
+            "anna-greka:sc_donorC1a_S1_L004_R1_001.fastq",
+            "anna-greka:sc_donorC1a_S1_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC1a_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "483b5896-f67e-4689-8eec-e7c239d8c3f5",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC1a_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC1a_S1_L004_I1_001.fastq",
+            "anna-greka:sc_donorC1a_S1_L004_R1_001.fastq",
+            "anna-greka:sc_donorC1a_S1_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC1b_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "42a2cdbc-24f4-4930-a7be-b53021ce0ea8",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC1b_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC1b_S2_L004_I1_001.fastq",
+            "anna-greka:sc_donorC1b_S2_L004_R1_001.fastq",
+            "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC1b_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "621195f7-7dab-49fb-9426-85f965f567fb",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC1b_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC1b_S2_L004_I1_001.fastq",
+            "anna-greka:sc_donorC1b_S2_L004_R1_001.fastq",
+            "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC2a_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "583b93d0-ddde-4927-b65d-6e219d5f4ec9",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC2a_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC2a_S3_L004_I1_001.fastq",
+            "anna-greka:sc_donorC2a_S3_L004_R1_001.fastq",
+            "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC2a_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "f6258fad-4cf1-4829-ad63-bf796c70a089",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC2a_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC2a_S3_L004_I1_001.fastq",
+            "anna-greka:sc_donorC2a_S3_L004_R1_001.fastq",
+            "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC2b_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "f1c5eff4-ae0f-4fec-9050-4265d41fab65",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC2b_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC2b_S4_L004_I1_001.fastq",
+            "anna-greka:sc_donorC2b_S4_L004_R1_001.fastq",
+            "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorC2b_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "4d29239d-5b37-4f72-a13a-37760db2dd4c",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorC2b_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorC2b_S4_L004_I1_001.fastq",
+            "anna-greka:sc_donorC2b_S4_L004_R1_001.fastq",
+            "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD1a_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "12659f9f-884c-45c0-bf00-6536ad31e289",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD1a_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD1a_S5_L004_I1_001.fastq",
+            "anna-greka:sc_donorD1a_S5_L004_R1_001.fastq",
+            "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD1a_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "705bf2bf-dd50-4d21-af14-930b2063ed09",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD1a_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD1a_S5_L004_I1_001.fastq",
+            "anna-greka:sc_donorD1a_S5_L004_R1_001.fastq",
+            "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD1b_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e5a3aa14-c7ac-4ad3-b905-b034322277d5",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD1b_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD1b_S6_L004_I1_001.fastq",
+            "anna-greka:sc_donorD1b_S6_L004_R1_001.fastq",
+            "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD1b_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "d448900a-d4ce-4d5c-9ba5-b9ca12b02674",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD1b_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD1b_S6_L004_I1_001.fastq",
+            "anna-greka:sc_donorD1b_S6_L004_R1_001.fastq",
+            "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD2a_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "7aa35b79-f1c9-4562-8e65-84bd00619ce5",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD2a_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD2a_S7_L004_I1_001.fastq",
+            "anna-greka:sc_donorD2a_S7_L004_R1_001.fastq",
+            "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD2a_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "51ab68dc-d061-49b4-89bf-f3193781cb01",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD2a_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD2a_S7_L004_I1_001.fastq",
+            "anna-greka:sc_donorD2a_S7_L004_R1_001.fastq",
+            "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD2b_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e297abd2-5d99-4e0f-a89d-43ee4683881e",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD2b_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD2b_S8_L004_I1_001.fastq",
+            "anna-greka:sc_donorD2b_S8_L004_R1_001.fastq",
+            "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorD2b_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "93ccc741-19b6-4731-b9b8-e58efa82e97c",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorD2b_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorD2b_S8_L004_I1_001.fastq",
+            "anna-greka:sc_donorD2b_S8_L004_R1_001.fastq",
+            "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD1_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "86299715-1de5-45d8-a7d7-5e2c2040a5bd",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorCD1_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD1_S1_L001_I1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L001_R1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L001_R2_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD1_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "592b07a8-fd47-46cd-94b3-f8d58c1d4bc9",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorCD1_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD1_S1_L001_I1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L001_R1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L001_R2_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorCD1_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+     {
+        "aliases": [
+            "anna-greka:donorCD2_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "607e0255-f94f-471c-9791-7ef6e5f39587",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorCD2_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD2_S1_L001_I1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L001_R1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L001_R2_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD2_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "d45b8a67-826a-446b-8601-5ec43ca8c2cb",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorCD2_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:sc_donorCD2_S1_L001_I1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L001_R1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L001_R2_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_I1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_R1_001.fastq",
+            "anna-greka:sc_donorCD2_S1_L002_R2_001.fastq",
+            "lattice:cellranger_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+     {
+        "aliases": [
+            "anna-greka:donorE_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "7898e294-d0ae-416f-acda-b55d9c545b61",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorE_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorE_S1_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorE_S1_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorE_S1_L002_R2_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_I1_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_R1_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorE_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "269e21a2-a716-4f3b-a43c-e83b713a36c1",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorE_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorE_S1_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorE_S1_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorE_S1_L002_R2_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_I1_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_R1_001.fastq",
+            "anna-greka:sc_donorE_S1_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorF_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "e9ca3672-33f6-4c8c-ad2b-0c1290ddbb08",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorF_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorF_S2_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorF_S2_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorF_S2_L002_R2_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_I1_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_R1_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorF_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "11158457-33f4-448c-b39b-fddecab48fe5",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorF_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorF_S2_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorF_S2_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorF_S2_L002_R2_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_I1_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_R1_001.fastq",
+            "anna-greka:sc_donorF_S3_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorG_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "435fda57-bad6-4af2-98eb-0a995336ee3c",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorG_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorG_S3_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorG_S3_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorG_S3_L002_R2_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_I1_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_R1_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorG_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "6cfb273d-a72c-4d8a-adc4-e8449ffa118a",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorG_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorG_S3_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorG_S3_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorG_S3_L002_R2_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_I1_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_R1_001.fastq",
+            "anna-greka:sc_donorG_S5_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+     {
+        "aliases": [
+            "anna-greka:donorH_raw_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "068acabe-032f-4335-8f4c-e750768536bf",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorH_raw_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorH_S4_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorH_S4_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorH_S4_L002_R2_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_I1_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_R1_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorH_filtered_feature_bc_matrix.h5"
+        ],
+		"status": "released",
+        "award": "CZI001KID",
+        "uuid": "07413a49-5c41-445f-a8c6-1f3bafd5db95",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorH_filtered_feature_bc_matrix.h5",
+        "file_format": "hdf5",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "linear",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification",
+            "cell calling"
+        ],
+        "software": [
+            "cellranger count 4.0"
+        ],
+        "derived_from": [
+            "anna-greka:citeseq_donorH_S4_L002_I1_001.fastq",
+            "anna-greka:citeseq_donorH_S4_L002_R1_001.fastq",
+            "anna-greka:citeseq_donorH_S4_L002_R2_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_I1_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_R1_001.fastq",
+            "anna-greka:sc_donorH_S7_L003_R2_001.fastq",
+            "lattice:cellranger_gex_mm10_2020-A"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32"
+    },
+    {
+        "aliases": [
+            "anna-greka:donorAB_merged_sc_citeseq_matrix"
+        ],
+        "status": "released",
+        "award": "CZI001KID",
+        "uuid": "c9174f45-9558-4f60-99a7-f87f1dc489b8",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorAB_merged_sc_citeseq_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "natural log",
+        "value_units": "UMI",
+        "normalized": true,
+        "normalization_method": "LogNormalize",
+        "derivation_process": [
+            "merging",
+            "depth normalization"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorA1_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorA2_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorB1_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorB2_filtered_feature_bc_matrix.h5"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "filtering_cutoffs": [
+            {
+                "cutoff_value": 25000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 1000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "minimum"
+            },
+            {
+                "cutoff_value": 15,
+                "cutoff_units": "percent mitochondrial/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 3,
+                "cutoff_units": "cells/gene",
+                "cutoff_type": "minimum"
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD_merged_sc_matrix"
+        ],
+        "status": "released",
+        "award": "CZI001KID",
+        "uuid": "89ea961f-45ef-4079-afad-ee2e9bade386",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorCD_merged_sc_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 150000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "natural log",
+        "value_units": "UMI",
+        "normalized": true,
+        "normalization_method": "LogNormalize",
+        "derivation_process": [
+            "merging",
+            "depth normalization"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorC1a_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorC1b_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorC2a_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorC2b_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorD1a_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorD1b_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorD2a_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorD2b_filtered_feature_bc_matrix.h5"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "filtering_cutoffs": [
+            {
+                "cutoff_value": 25000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 800,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "minimum"
+            },
+            {
+                "cutoff_value": 15,
+                "cutoff_units": "percent mitochondrial/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 3,
+                "cutoff_units": "cells/gene",
+                "cutoff_type": "minimum"
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:donorCD_pooled_merged_sc_matrix"
+        ],
+        "status": "released",
+        "award": "CZI001KID",
+        "uuid": "a1343e3d-1ab0-440b-b0de-61b353566d87",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorCD_pooled_merged_sc_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "natural log",
+        "value_units": "UMI",
+        "normalized": true,
+        "normalization_method": "LogNormalize",
+        "derivation_process": [
+            "merging",
+            "depth normalization"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorCD1_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorCD2_filtered_feature_bc_matrix.h5"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "filtering_cutoffs": [
+            {
+                "cutoff_value": 25000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 1000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "minimum"
+            },
+            {
+                "cutoff_value": 10,
+                "cutoff_units": "percent mitochondrial/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 3,
+                "cutoff_units": "cells/gene",
+                "cutoff_type": "minimum"
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:donorEF_merged_sc_citeseq_matrix"
+        ],
+        "status": "released",
+        "award": "CZI001KID",
+        "uuid": "14d82127-6d99-4c53-bf95-ff25dcb3d14a",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorEF_merged_sc_citeseq_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 100000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "natural log",
+        "value_units": "UMI",
+        "normalized": true,
+        "normalization_method": "LogNormalize",
+        "derivation_process": [
+            "merging",
+            "depth normalization"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorE_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorF_filtered_feature_bc_matrix.h5"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "filtering_cutoffs": [
+            {
+                "cutoff_value": 25000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 1500,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "minimum"
+            },
+            {
+                "cutoff_value": 20,
+                "cutoff_units": "percent mitochondrial/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 3,
+                "cutoff_units": "cells/gene",
+                "cutoff_type": "minimum"
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "anna-greka:donorGH_merged_sc_citeseq_matrix"
+        ],
+        "status": "released",
+        "award": "CZI001KID",
+        "uuid": "e7caa3e4-fc3b-47be-8b8f-dcaa5db245e3",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "submitted_file_name": "donorGH_merged_sc_citeseq_matrix.mtx/",
+        "file_format": "mtx",
+        "file_size": 200000,
+        "lab": "anna-greka",
+        "output_types": [
+            "transcript quantifications"
+        ],
+        "dataset": "anna-greka:large_test_dataset",
+        "value_scale": "natural log",
+        "value_units": "UMI",
+        "normalized": true,
+        "normalization_method": "LogNormalize",
+        "derivation_process": [
+            "merging",
+            "depth normalization"
+        ],
+        "software": [
+            "seurat 3.0"
+        ],
+        "derived_from": [
+            "anna-greka:donorG_filtered_feature_bc_matrix.h5",
+            "anna-greka:donorH_filtered_feature_bc_matrix.h5"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "filtering_cutoffs": [
+            {
+                "cutoff_value": 25000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 1000,
+                "cutoff_units": "genes/cell",
+                "cutoff_type": "minimum"
+            },
+            {
+                "cutoff_value": 15,
+                "cutoff_units": "percent mitochondrial/cell",
+                "cutoff_type": "maximum"
+            },
+            {
+                "cutoff_value": 3,
+                "cutoff_units": "cells/gene",
+                "cutoff_type": "minimum"
+            }
+        ]
+    },
+    {
+        "aliases": [
+            "jimmie-ye:filtered_tf_matrix_1a"
+        ],
+        "accession": "ENCFF400ABA",
+        "award": "CZI021IMM",
+        "uuid": "aa861f79-0d95-45e5-8433-30d90bef5723",
+        "md5sum": "7b003986191606bd7aa7ad8312c90797",
+        "no_file_available": false,
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_1a.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -35,7 +3574,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -43,17 +3582,17 @@
             "jimmie-ye:filtered_tf_matrix_1b"
         ],
         "accession": "ENCFF401ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "a5f415ca-d81a-429f-8e5f-2acb78c7501b",
         "md5sum": "388a4eaef4d4ba87cb826c87d0c1051f",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_1b.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -74,7 +3613,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -82,17 +3621,17 @@
             "jimmie-ye:filtered_tf_matrix_1c"
         ],
         "accession": "ENCFF402ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "0d03d2fd-d58b-4cf1-9da4-40cd6e6ee8a7",
         "md5sum": "555401a775b5c5e91b0ed1324c4dc384",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_1c.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -113,7 +3652,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -121,17 +3660,17 @@
             "jimmie-ye:filtered_tf_matrix_2a"
         ],
         "accession": "ENCFF403ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "806b21f1-39a2-4596-8698-56f601199fb7",
         "md5sum": "213944c8b618045e5a5d6e07d29a4c33",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_2a.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -152,7 +3691,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -160,17 +3699,17 @@
             "jimmie-ye:filtered_tf_matrix_2b"
         ],
         "accession": "ENCFF404ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "4b53cda1-908a-4558-a167-56984e8da25e",
         "md5sum": "dfad9d2b7fd1cc11369e5ff9f2aeaabb",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_2b.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -191,7 +3730,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -199,17 +3738,17 @@
             "jimmie-ye:filtered_tf_matrix_2c"
         ],
         "accession": "ENCFF405ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "834d44f0-56bc-4329-971f-f303d8ef5881",
         "md5sum": "6dfb6b000564e89b1ce25aec0d65f8df",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_2c.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -230,7 +3769,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -238,17 +3777,17 @@
             "jimmie-ye:filtered_tf_matrix_3a"
         ],
         "accession": "ENCFF406ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "3d224856-34f6-41ea-8e6c-fa1ac17c7157",
         "md5sum": "2e4a8f4e24a975e7f5e2c7309c051306",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_3a.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -269,7 +3808,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -277,17 +3816,17 @@
             "jimmie-ye:filtered_tf_matrix_3b"
         ],
         "accession": "ENCFF407ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "1cd5cfa7-5aba-493f-b4a0-b6cac1abf52d",
         "md5sum": "89b4c5d97ee112b563eab630c1112b0f",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_3b.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -308,7 +3847,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -316,17 +3855,17 @@
             "jimmie-ye:filtered_tf_matrix_3c"
         ],
         "accession": "ENCFF408ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "febbed57-50a6-4115-bfcd-9ae2143f7d43",
         "md5sum": "5aadfbb12a66dac6b43e1cf6f82fddee",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_tf_matrix_3c.mtx/",
         "output_types": [
-            "transcription factors"
+            "transcription factor quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -347,7 +3886,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -355,17 +3894,17 @@
             "jimmie-ye:filtered_peak_matrix_1a"
         ],
         "accession": "ENCFF300ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "85d4d147-e5bd-44fb-9e17-2b03b7bca925",
         "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_1a.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -382,11 +3921,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -394,17 +3934,17 @@
             "jimmie-ye:filtered_peak_matrix_1b"
         ],
         "accession": "ENCFF301ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "e1dcf8d2-eed1-448e-9065-8cf888838e9e",
         "md5sum": "b05286fa6715b486de80a70b6ce4b0fc",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_1b.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -421,11 +3961,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -433,17 +3974,17 @@
             "jimmie-ye:filtered_peak_matrix_1c"
         ],
         "accession": "ENCFF302ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "ad18750c-608d-4682-b635-0186da1cd842",
         "md5sum": "7e79695f2175dabd4b448a9cf06416a2",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_1c.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -460,11 +4001,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -472,17 +4014,17 @@
             "jimmie-ye:filtered_peak_matrix_2a"
         ],
         "accession": "ENCFF303ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "b5f32dfb-f615-460e-8ad0-f021f1c805e6",
         "md5sum": "f091ce8310ebccd88baffd63992994b1",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_2a.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -499,11 +4041,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -511,17 +4054,17 @@
             "jimmie-ye:filtered_peak_matrix_2b"
         ],
         "accession": "ENCFF304ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "81ade3a8-4ccd-4130-a647-3b9b27a1fa5f",
         "md5sum": "1b763642a3d53a97f12ff13bd75b6c10",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_2b.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -538,11 +4081,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -550,17 +4094,17 @@
             "jimmie-ye:filtered_peak_matrix_2c"
         ],
         "accession": "ENCFF305ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "010b2039-43b3-45b0-b259-26b0529c5e90",
         "md5sum": "cd4531d3f141ca8713c767b6ff678aea",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_2c.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -577,11 +4121,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -589,17 +4134,17 @@
             "jimmie-ye:filtered_peak_matrix_3a"
         ],
         "accession": "ENCFF306ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "fcf0bbf6-f7cb-4bbd-9507-06156a9a3856",
         "md5sum": "97e44e8ffe63301b7450823b8ec81c04",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_3a.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -616,11 +4161,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -628,17 +4174,17 @@
             "jimmie-ye:filtered_peak_matrix_3b"
         ],
         "accession": "ENCFF307ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "67ef279a-3445-47a2-8db4-e9ae2c5beec8",
         "md5sum": "37d2befcd8d4394d437b380af6816ec1",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_3b.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -655,11 +4201,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -667,17 +4214,17 @@
             "jimmie-ye:filtered_peak_matrix_3c"
         ],
         "accession": "ENCFF308ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "b365d44d-e124-4362-89cb-35a8e0d7c6eb",
         "md5sum": "608b401ab675b19b8d76c0eaa84f543f",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "filtered_peak_matrix_3c.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -694,11 +4241,12 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
+            "peak calling",
             "quantification",
             "cell calling"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -706,17 +4254,17 @@
             "jimmie-ye:raw_peak_matrix_1a"
         ],
         "accession": "ENCFF200ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "5c0c595a-990c-4d0f-9584-978bc9429da2",
         "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_1a.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -733,11 +4281,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -745,17 +4293,17 @@
             "jimmie-ye:raw_peak_matrix_1b"
         ],
         "accession": "ENCFF201ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "d2092404-2c54-41d8-86a6-4975ea98e187",
         "md5sum": "8bba4b8c500921b12754118c6d68eb61",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_1b.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -772,11 +4320,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -784,17 +4332,17 @@
             "jimmie-ye:raw_peak_matrix_1c"
         ],
         "accession": "ENCFF202ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "016fb3ac-a626-45fe-b27b-657a4ac58768",
         "md5sum": "6ab8cc9f269823af49f10bdf01c906c1",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_1c.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -811,11 +4359,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -823,17 +4371,17 @@
             "jimmie-ye:raw_peak_matrix_2a"
         ],
         "accession": "ENCFF203ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "b1a923ed-195c-450e-8f8d-a91869f5933c",
         "md5sum": "5dfdb1415e760003ae5dd0415f165fbf",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_2a.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -850,11 +4398,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -862,17 +4410,17 @@
             "jimmie-ye:raw_peak_matrix_2b"
         ],
         "accession": "ENCFF204ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "4d412e77-cb21-43b4-be35-c6579a7c0f3e",
         "md5sum": "3634c894fdc52762af394bf2701913ca",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_2b.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -889,11 +4437,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -901,17 +4449,17 @@
             "jimmie-ye:raw_peak_matrix_2c"
         ],
         "accession": "ENCFF205ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "2e5bd897-f518-42f0-961b-ec613f020764",
         "md5sum": "4712f25af95218c4aeabb733a361c627",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_2c.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -928,11 +4476,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -940,17 +4488,17 @@
             "jimmie-ye:raw_peak_matrix_3a"
         ],
         "accession": "ENCFF206ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "fb557d3a-deca-49fd-9d0d-cb77ed5785ce",
         "md5sum": "401c004eb143e661115bd9bf33a34105",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_3a.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -967,11 +4515,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -979,17 +4527,17 @@
             "jimmie-ye:raw_peak_matrix_3b"
         ],
         "accession": "ENCFF207ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "b80409f6-f580-43d6-93b2-8b5f6a07bd53",
         "md5sum": "4a644a2bf079a219c0d62c1d5e556822",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_3b.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -1006,11 +4554,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -1018,17 +4566,17 @@
             "jimmie-ye:raw_peak_matrix_3c"
         ],
         "accession": "ENCFF208ABA",
-        "award": "CZI004LIV",
+        "award": "CZI021IMM",
         "uuid": "5888757c-9564-4a96-9db1-17ee8e502c81",
         "md5sum": "169d2680d34ccf013099f07ce8841cba",
         "no_file_available": false,
-        "status": "released",
+        "status": "in progress",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "jimmie-ye",
         "submitted_file_name": "raw_peak_matrix_3c.mtx/",
         "output_types": [
-            "peaks"
+            "peak quantifications"
         ],
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
@@ -1045,11 +4593,11 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "peak calling",
+            "quantification"
         ],
         "software": [
-            "cellranger-atac 1.2"
+            "cellranger-atac count 1.2"
         ]
     },
     {
@@ -1064,10 +4612,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "postnatal_1a_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1083,11 +4631,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1102,10 +4649,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "postnatal_1b_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1121,11 +4668,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1140,10 +4686,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "postnatal_1c_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1159,11 +4705,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1178,10 +4723,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_2a_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1197,11 +4742,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1216,10 +4760,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_2b_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1235,11 +4779,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1254,10 +4797,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_2c_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1273,11 +4816,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1292,10 +4834,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_3a_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1311,11 +4853,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1330,10 +4871,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_3b_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1349,11 +4890,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1368,10 +4908,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_3c_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1387,11 +4927,10 @@
         "normalized": false,
         "derivation_process": [
             "alignment",
-            "quantification",
-            "cell calling"
+            "quantification"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1406,10 +4945,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "postnatal_1a_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1429,7 +4968,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1444,10 +4983,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "postnatal_1b_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1467,7 +5006,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1482,10 +5021,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "postnatal_1c_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1505,7 +5044,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1520,10 +5059,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_2a_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1543,7 +5082,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1558,10 +5097,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_2b_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1581,7 +5120,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1596,10 +5135,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_2c_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1619,7 +5158,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1634,10 +5173,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_3a_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1657,7 +5196,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1672,10 +5211,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_3b_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1695,7 +5234,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1710,10 +5249,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_3c_filtered_matrix.mtx/",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1733,7 +5272,7 @@
             "cell calling"
         ],
         "software": [
-            "cellranger-count 4.0"
+            "cellranger count 4.0"
         ]
     },
     {
@@ -1748,10 +5287,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_merged_matrix.mtx",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1764,7 +5303,7 @@
         "value_scale": "natural log",
         "value_units": "UMI",
         "normalized": true,
-        "normalization_method": "LogNormalize",
+        "normalization_method": "cellranger aggr read depth normalization",
         "filtering_cutoffs": [
             {
                 "cutoff_value": 20000,
@@ -1788,10 +5327,11 @@
             }
         ],
         "derivation_process": [
-            "merging"
+            "merging",
+            "depth normalization"
         ],
         "software": [
-            "cellranger-aggr 4.0"
+            "cellranger aggr 4.0"
         ]
     },
     {
@@ -1806,10 +5346,10 @@
         "status": "released",
         "file_format": "mtx",
         "file_size": 50000,
-        "lab": "j-michael-cherry",
+        "lab": "peter-sims",
         "submitted_file_name": "prenatal_merged_matrix.mtx",
         "output_types": [
-            "gene quantifications"
+            "transcript quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -1825,7 +5365,7 @@
         "value_scale": "natural log",
         "value_units": "UMI",
         "normalized": true,
-        "normalization_method": "LogNormalize",
+        "normalization_method": "cellranger aggr read depth normalization",
         "filtering_cutoffs": [
             {
                 "cutoff_value": 20000,
@@ -1849,10 +5389,11 @@
             }
         ],
         "derivation_process": [
-            "merging"
+            "merging",
+            "depth normalization"
         ],
         "software": [
-            "cellranger-aggr 4.0"
+            "cellranger aggr 4.0"
         ]
     }
 ]

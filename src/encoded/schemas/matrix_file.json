@@ -146,7 +146,10 @@
             "enum": [
                 "mtx",
                 "csv",
-                "loom"
+                "loom",
+                "tsv",
+                "txt",
+                "hdf5"
             ]
         },
         "output_types": {
@@ -155,8 +158,8 @@
                 "enum": [
                     "gene quantifications",
                     "transcript quantifications",
-                    "peaks",
-                    "transcription factors"
+                    "peak quantifications",
+                    "transcription factor quantifications"
                 ]
             }
         },
@@ -321,9 +324,12 @@
         }
     },
     "file_format_file_extension": {
-        "mtx": "mtx",
         "csv": ".csv.gz",
-        "loom": ".loom"
+        "loom": ".loom",
+        "hdf5": ".h5",
+        "tsv": ".tsv",
+        "txt": ".txt",
+        "mtx": ".mtx"
     },
     "changelog": "/profiles/changelogs/matrix_file.md"
 }

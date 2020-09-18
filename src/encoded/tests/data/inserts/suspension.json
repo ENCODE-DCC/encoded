@@ -1,87 +1,9 @@
 [
     {
-        "accession": "ENCBS100DDD",
-        "uuid": "ca33833f-5ed0-4fdf-ad6e-d67d8c516bbc",
-        "aliases": [
-            "anna-greka:citeseq_suspension_donorA"
-        ],
-		"status": "released",
-        "derived_from": [
-            "anna-greka:human_tissue_donorA"
-        ],
-        "description": "citeseq human suspension from donorA",
-        "biosample_ontology": "UBERON_0001225",
-        "derivation_process": [
-            "enzymatic dissociation", 
-            "mechanical dissociation",
-            "negative magnetic affinity cell sorting"
-        ],
-        "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
-        "depleted_cell_types": [
-            "CL_0002305"
-        ],
-        "cell_depletion_factors": "SLC12A3",
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 1,
-        "medium": "some kind of medium",
-        "collection_to_dissociation_interval": 30,
-        "collection_to_dissociation_interval_units": "minute",
-        "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
-        "dissociation_time_units": "minute",
-        "red_blood_cell_lysis": true,
-        "dbxrefs": [
-            "GEO:SAM144223"
-        ]
-    },
-    {
-        "accession": "ENCBS105DDD",
-        "uuid": "aaab7be0-eb0b-40f8-b344-64e31f69c367",
-        "aliases": [
-            "anna-greka:citeseq_suspension_donorB"
-        ],
-		"status": "released",
-        "derived_from": [
-            "anna-greka:human_tissue_donorB"
-        ],
-        "description": "citeseq human suspension from donorB",
-        "biosample_ontology": "UBERON_0001225",
-        "derivation_process": [
-            "enzymatic dissociation", 
-            "mechanical dissociation",
-            "negative magnetic affinity cell sorting"
-        ],
-        "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
-        "depleted_cell_types": [
-            "CL_0002305"
-        ],
-        "cell_depletion_factors": "SLC12A3",
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 1,
-        "medium": "some kind of medium",
-        "collection_to_dissociation_interval": 30,
-        "collection_to_dissociation_interval_units": "minute",
-        "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
-        "dissociation_time_units": "minute",
-        "red_blood_cell_lysis": true,
-        "dbxrefs": [
-            "GEO:SAM14424"
-        ]
-    },
-    {
         "accession": "ENCBS110DDD",
         "uuid": "2ad6c9da-4fec-4590-848c-59f9e3a36334",
         "aliases": [
-            "anna-greka:sc_suspension_donorA"
+            "anna-greka:sc_citeseq_suspension_donorA"
         ],
 		"status": "released",
         "derived_from": [
@@ -114,13 +36,21 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144225"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0051_CD14",
+            "lattice:totalseq_C0034_CD3",
+            "lattice:totalseq_C0050_CD19",
+            "lattice:totalseq_C0161_CD11b",
+            "lattice:totalseq_C0046_CD8"
+
         ]
     },
     {
         "accession": "ENCBS115DDD",
         "uuid": "eab2241c-f97b-45e0-8bf9-6f948a01dc15",
         "aliases": [
-            "anna-greka:sc_suspension_donorB"
+            "anna-greka:sc_citeseq_suspension_donorB"
         ],
 		"status": "released",
         "derived_from": [
@@ -153,6 +83,14 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM14426"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0051_CD14",
+            "lattice:totalseq_C0034_CD3",
+            "lattice:totalseq_C0050_CD19",
+            "lattice:totalseq_C0161_CD11b",
+            "lattice:totalseq_C0046_CD8"
+
         ]
     },
     {
@@ -546,166 +484,10 @@
         ]
     },
     {
-        "accession": "ENCBS175DDD",
-        "uuid": "ec76ddfb-d044-454c-903d-165b6e79d3f1",
-        "aliases": [
-            "anna-greka:citeseq_suspension_donorE"
-        ],
-		"status": "released",
-        "derived_from": [
-            "anna-greka:mouse_tissue_donorE"
-        ],
-        "description": "citeseq mouse suspension from donorE",
-        "biosample_ontology": "UBERON_0002113",
-        "derivation_process": [
-            "enzymatic dissociation", 
-            "mechanical dissociation",
-            "negative magnetic affinity cell sorting"
-        ],
-        "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
-        "depleted_cell_types": [
-            "CL_0002305"
-        ],
-        "cell_depletion_factors": "SLC12A3",
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 1,
-        "medium": "some kind of medium",
-        "collection_to_dissociation_interval": 30,
-        "collection_to_dissociation_interval_units": "minute",
-        "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
-        "dissociation_time_units": "minute",
-        "red_blood_cell_lysis": true,
-        "dbxrefs": [
-            "GEO:SAM144238"
-        ]
-    },
-    {
-        "accession": "ENCBS180DDD",
-        "uuid": "d5fe3214-563e-4698-b899-92746ee604d7",
-        "aliases": [
-            "anna-greka:citeseq_suspension_donorF"
-        ],
-		"status": "released",
-        "derived_from": [
-            "anna-greka:mouse_tissue_donorF"
-        ],
-        "description": "citeseq mouse suspension from donorF",
-        "biosample_ontology": "UBERON_0002113",
-        "derivation_process": [
-            "enzymatic dissociation", 
-            "mechanical dissociation",
-            "negative magnetic affinity cell sorting"
-        ],
-        "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
-        "depleted_cell_types": [
-            "CL_0002305"
-        ],
-        "cell_depletion_factors": "SLC12A3",
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 1,
-        "medium": "some kind of medium",
-        "collection_to_dissociation_interval": 30,
-        "collection_to_dissociation_interval_units": "minute",
-        "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
-        "dissociation_time_units": "minute",
-        "red_blood_cell_lysis": true,
-        "dbxrefs": [
-            "GEO:SAM144239"
-        ]
-    },
-    {
-        "accession": "ENCBS185DDD",
-        "uuid": "21208e7d-2525-4bbf-8d59-304707a0074b",
-        "aliases": [
-            "anna-greka:citeseq_suspension_donorG"
-        ],
-		"status": "released",
-        "derived_from": [
-            "anna-greka:mouse_tissue_donorG"
-        ],
-        "description": "citeseq mouse suspension from donorG",
-        "biosample_ontology": "UBERON_0002113",
-        "derivation_process": [
-            "enzymatic dissociation", 
-            "mechanical dissociation",
-            "negative magnetic affinity cell sorting"
-        ],
-        "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
-        "depleted_cell_types": [
-            "CL_0002305"
-        ],
-        "cell_depletion_factors": "SLC12A3",
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 1,
-        "medium": "some kind of medium",
-        "collection_to_dissociation_interval": 30,
-        "collection_to_dissociation_interval_units": "minute",
-        "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
-        "dissociation_time_units": "minute",
-        "red_blood_cell_lysis": true,
-        "dbxrefs": [
-            "GEO:SAM144240"
-        ]
-    },
-    {
-        "accession": "ENCBS190DDD",
-        "uuid": "105338e9-d3ae-45e9-8b8b-b80e273b492c",
-        "aliases": [
-            "anna-greka:citeseq_suspension_donorH"
-        ],
-		"status": "released",
-        "derived_from": [
-            "anna-greka:mouse_tissue_donorH"
-        ],
-        "description": "citeseq mouse suspension from donorH",
-        "biosample_ontology": "UBERON_0002113",
-        "derivation_process": [
-            "enzymatic dissociation", 
-            "mechanical dissociation",
-            "negative magnetic affinity cell sorting"
-        ],
-        "suspension_type": "cell",
-        "cell_concentration": 1000,
-        "cell_concentration_units": "cells/μl",
-        "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
-        "depleted_cell_types": [
-            "CL_0002305"
-        ],
-        "cell_depletion_factors": "SLC12A3",
-        "single_cell_isolation_method": "10x",
-        "single_cell_isolation_method_version": 1,
-        "medium": "some kind of medium",
-        "collection_to_dissociation_interval": 30,
-        "collection_to_dissociation_interval_units": "minute",
-        "dissociation_reagent": "10x reagent",
-        "dissociation_time": 1,
-        "dissociation_time_units": "minute",
-        "red_blood_cell_lysis": true,
-        "dbxrefs": [
-            "GEO:SAM144241"
-        ]
-    },
-        {
         "accession": "ENCBS195DDD",
         "uuid": "5c2be32f-4635-46f1-a4fb-fa1b314e2f7e",
         "aliases": [
-            "anna-greka:sc_suspension_donorE"
+            "anna-greka:sc_citeseq_suspension_donorE"
         ],
 		"status": "released",
         "derived_from": [
@@ -738,13 +520,20 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144242"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
     {
         "accession": "ENCBS200DDD",
         "uuid": "e19614cc-d8e6-4c52-8948-f76649bc7690",
         "aliases": [
-            "anna-greka:sc_suspension_donorF"
+            "anna-greka:sc_citeseq_suspension_donorF"
         ],
 		"status": "released",
         "derived_from": [
@@ -777,13 +566,20 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144243"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
     {
         "accession": "ENCBS205DDD",
         "uuid": "e5fee54c-c8d5-4bd8-a1e5-47a9920859d8",
         "aliases": [
-            "anna-greka:sc_suspension_donorG"
+            "anna-greka:sc_citeseq_suspension_donorG"
         ],
 		"status": "released",
         "derived_from": [
@@ -816,13 +612,20 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144244"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
     {
         "accession": "ENCBS210DDD",
         "uuid": "2eca03aa-71c5-4af8-9fe3-7b67873b102d",
         "aliases": [
-            "anna-greka:sc_suspension_donorH"
+            "anna-greka:sc_citeseq_suspension_donorH"
         ],
 		"status": "released",
         "derived_from": [
@@ -855,6 +658,13 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAM144245"
+        ],
+        "feature_antibodies": [
+            "lattice:totalseq_C0002_CD8a",
+            "lattice:totalseq_C0424_CD14",
+            "lattice:totalseq_C0182_CD3",
+            "lattice:totalseq_C0092_CD19",
+            "lattice:totalseq_C0014_CD11b"
         ]
     },
         {
@@ -1167,6 +977,60 @@
         "cell_viability_method": "trypan blue staining",
         "percent_cell_viability": 90,
         "cell_concentration": 1100,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS600GGG",
+        "uuid": "48736044-3e53-4d30-8a8a-ab51aad5b624",
+        "aliases": [
+            "anindita-basu:suspension_A"
+        ],      
+        "status": "deleted",
+        "biosample_ontology": "UBERON_0003365",
+        "description": "anindita basu tissue A",
+        "derived_from": [
+            "anindita-basu:tissue_A"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1200,
+        "cell_concentration_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "collection_to_dissociation_interval": 8,
+        "collection_to_dissociation_interval_units": "hour",
+        "dissociation_time": 30,
+        "dissociation_time_units": "minute"
+    },
+    {
+        "accession": "ENCBS601GGG",
+        "uuid": "87a4d586-de61-4d12-b298-dff54b669bc6",
+        "aliases": [
+            "anindita-basu:suspension_B"
+        ],      
+        "status": "deleted",
+        "biosample_ontology": "UBERON_0003365",
+        "description": "anindita basu tissue B",
+        "derived_from": [
+            "anindita-basu:tissue_B"
+        ],
+        "derivation_process": [
+            "enzymatic dissociation", "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "cell_viability_method": "trypan blue staining",
+        "percent_cell_viability": 90,
+        "cell_concentration": 1200,
         "cell_concentration_units": "cells/μl",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 3,

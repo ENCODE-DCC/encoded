@@ -114,5 +114,33 @@
         "url":"https://virtualtissuebank.iu.edu/data/barcode/K108949/",
         "submitter_comment": "Some comments",
         "notes": "Some notes"
+    },
+    {
+        "accession": "ENCDO654GGG",
+        "aliases": [
+            "anindita-basu:postnatal_human_donorA"
+        ],
+        "status": "deleted",
+        "description":"Kidney failure female",
+        "age": "58",
+        "age_units": "year",
+        "life_stage": "adult",
+        "sex": "female",
+        "ethnicity": "HANCESTRO_0008",
+        "uuid": "f9b6ee3f-22f0-4544-9b69-d396b0425371",
+        "cause_of_death": "kidney failure",
+        "body_mass_index": 24.3,
+        "weight": 158,
+        "weight_unit": "lb",
+        "height": 67,
+        "height_unit": "in",
+        "times_pregnant": 1,
+        "smoking_history": "2 packs a week, 1 year since cessation",
+        "alcohol_history": "3 drinks a week",
+        "test_results": {
+            "HIV-1/HBV/HCV": "negative"
+        },
+        "submitter_comment": "Some comments",
+        "notes": "Some notes"
     }
 ]

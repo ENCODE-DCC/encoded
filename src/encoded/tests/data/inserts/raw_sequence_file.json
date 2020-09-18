@@ -776,7 +776,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 26,
         "read_count": 1000000,
         "sequence_elements": [
             "cell barcode",
@@ -807,7 +807,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 91,
         "read_count": 1000000,
         "sequence_elements": [
             "5' of molecule"
@@ -867,7 +867,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 26,
         "read_count": 1000000,
         "sequence_elements": [
             "cell barcode",
@@ -898,7 +898,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 91,
         "read_count": 1000000,
         "sequence_elements": [
             "5' of molecule"
@@ -958,7 +958,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 26,
         "read_count": 1000000,
         "sequence_elements": [
             "cell barcode",
@@ -989,7 +989,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 91,
         "read_count": 1000000,
         "sequence_elements": [
             "5' of molecule"
@@ -1049,7 +1049,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 26,
         "read_count": 1000000,
         "sequence_elements": [
             "cell barcode",
@@ -1080,7 +1080,7 @@
             "assigned reads"
         ],
         "file_size": 5000000,
-        "read_length": 8,
+        "read_length": 91,
         "read_count": 1000000,
         "sequence_elements": [
             "5' of molecule"
@@ -1663,14 +1663,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC1b_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorC1b_S2_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF143HHH",
         "uuid": "62620326-5465-4ff4-aa24-ef4fc8982d6b",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC1b_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorC1b_S2_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -1693,14 +1693,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC1b_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorC1b_S2_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF144HHH",
         "uuid": "6b9b47f4-24f0-4b9c-b419-a01f2ab30ef2",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC1b_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorC1b_S2_L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -1724,14 +1724,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC1b_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF145HHH",
         "uuid": "02ec94d8-d2b6-41f9-8272-dc655bfa8cda",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC1b_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorC1b_S2_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -1754,14 +1754,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC2a_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorC2a_S3_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF146HHH",
         "uuid": "eb16b715-3653-44a4-8bf5-e14ce9d72c3d",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC2a_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorC2a_S3_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -1784,14 +1784,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC2a_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorC2a_S3_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF147HHH",
         "uuid": "9700f993-b9fa-435f-903f-6e74ff58dec7",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC2a_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorC2a_S3_L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -1815,14 +1815,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC2a_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF148HHH",
         "uuid": "bababe53-e31f-491b-b2e6-003e7bb81b33",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC2a_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorC2a_S3_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -1845,14 +1845,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC2b_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorC2b_S4_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF149HHH",
         "uuid": "57d5092b-75c3-4ca5-8c60-e438aea317ea",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC2b_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorC2b_S4_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -1875,14 +1875,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC2b_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorC2b_S4_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF150HHH",
         "uuid": "d669e4f5-2b9c-46ef-a50e-6320beeb4dc7",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC2b_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorC2b_S4_L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -1906,14 +1906,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorC2b_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF151HHH",
         "uuid": "701b68b1-aef5-4412-b6d3-fafd4996d841",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorC2b_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorC2b_S4_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -1936,14 +1936,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD1a_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorD1a_S5_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF152HHH",
         "uuid": "49756670-9372-4012-aa26-940f382975f3",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD1a_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD1a_S5_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -1966,14 +1966,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD1a_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorD1a_S5_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF153HHH",
         "uuid": "ceea2972-2535-4a33-8f83-4a843e129a62",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD1a_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD1a_S5_L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -1997,14 +1997,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD1a_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF154HHH",
         "uuid": "7752f32a-9f6e-45b2-aefd-8925f526203b",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD1a_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorD1a_S5_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -2027,14 +2027,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD1b_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorD1b_S6_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF155HHH",
         "uuid": "ce158712-b5be-4a09-abae-653d5ae7549b",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD1b_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD1b_S6_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -2057,14 +2057,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD1b_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorD1b_S6_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF156HHH",
         "uuid": "edcad3c4-9371-45e1-abf2-0f67ceb66435",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD1b_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD1b_S6_L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -2088,14 +2088,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD1b_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF157HHH",
         "uuid": "89856997-63fb-49a5-96db-ec40c772e2e3",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD1b_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorD1b_S6_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -2118,14 +2118,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD2a_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorD2a_S7_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF158HHH",
         "uuid": "8da2f39a-4d07-4292-a01b-4a4317523044",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD2a_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD2a_S7_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -2148,14 +2148,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD2a_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorD2a_S7_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF159HHH",
         "uuid": "91d6de72-5461-4bfa-9900-f4b180d842aa",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD2a_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD2a_S7L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -2179,14 +2179,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD2a_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF160HHH",
         "uuid": "820258d1-75d0-49f4-881e-a94481294633",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD2a_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorD2a_S7_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -2209,14 +2209,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD2b_S1_L004_I1_001.fastq"
+            "anna-greka:sc_donorD2b_S8_L004_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF161HHH",
         "uuid": "ed1bcb87-66c8-4c33-b35f-8fc29568ebf6",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD2b_S1_L004_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD2b_S8_L004_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -2239,14 +2239,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD2b_S1_L004_R1_001.fastq"
+            "anna-greka:sc_donorD2b_S8_L004_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF162HHH",
         "uuid": "995b873c-268e-4303-8c8b-6e00802d434d",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD2b_S1_L004_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorD2b_S8_L004_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -2270,14 +2270,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorD2b_S1_L004_R2_001.fastq"
+            "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF163HHH",
         "uuid": "b06e42a0-92b5-488c-9098-1e7af1db3b06",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorD2b_S1_L004_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorD2b_S8_L004_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -3508,14 +3508,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorE1_S1_L003_I1_001.fastq"
+            "anna-greka:sc_donorE_S1_L003_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF198HHH",
         "uuid": "cd31427d-9d51-4fd5-acfe-e1414988961e",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorE1_S1_L003_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorE_S1_L003_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -3538,14 +3538,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorE1_S1_L003_R1_001.fastq"
+            "anna-greka:sc_donorE_S1_L003_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF199HHH",
         "uuid": "5487b66c-0afe-4def-8952-9e533d005ee6",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorE1_S1_L003_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorE_S1_L003_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -3569,14 +3569,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorE1_S1_L003_R2_001.fastq"
+            "anna-greka:sc_donorE_S1_L003_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF200HHH",
         "uuid": "0621748e-08a3-4be4-bea9-2df0df67d6f0",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorE1_S1_L003_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorE_S1_L003_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -3599,105 +3599,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorE2_S2_L003_I1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF201HHH",
-        "uuid": "c4826968-e388-415d-9300-c8b5493ac98e",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorE2_S2_L003_I1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "i7 index",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
-        "derived_from": [
-            "e66145dc-f7ad-449c-8a56-67680ab183b2"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorE2_S2_L003_R1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF202HHH",
-        "uuid": "e5b5ed53-2edc-407f-a676-5a27aae3204f",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorE2_S2_L003_R1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 1",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
-        "derived_from": [
-            "e66145dc-f7ad-449c-8a56-67680ab183b2"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorE2_S2_L003_R2_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF203HHH",
-        "uuid": "b892b30d-77e7-4762-9c8f-088c7c349186",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorE2_S2_L003_R2_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 2",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
-        "derived_from": [
-            "e66145dc-f7ad-449c-8a56-67680ab183b2"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorF1_S3_L003_I1_001.fastq"
+            "anna-greka:sc_donorF_S3_L003_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF204HHH",
         "uuid": "fb1c3b79-faeb-4c21-a512-97b9236ad38f",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorF1_S3_L003_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorF_S3_L003_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -3720,14 +3629,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorF1_S3_L003_R1_001.fastq"
+            "anna-greka:sc_donorF_S3_L003_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF205HHH",
         "uuid": "da6438a1-c87e-4695-95b8-692118707cae",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorF1_S3_L003_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorF_S3_L003_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -3751,14 +3660,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorF1_S3_L003_R2_001.fastq"
+            "anna-greka:sc_donorF_S3_L003_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF206HHH",
         "uuid": "c5f56b12-8868-4222-9d2b-35b5b0452eee",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorF1_S3_L003_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorF_S3_L003_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -3781,105 +3690,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorF2_S4_L003_I1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF207HHH",
-        "uuid": "29a164c4-aa33-4717-9d68-0b9a50cda054",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorF2_S4_L003_I1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "i7 index",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
-        "derived_from": [
-            "5dcfa043-6de5-41f5-87f5-fce27c1fbbe4"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorF2_S4_L003_R1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF208HHH",
-        "uuid": "ae7783fb-86e6-413a-99c3-e0e708ca6ef5",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorF2_S4_L003_R1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 1",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
-        "derived_from": [
-            "5dcfa043-6de5-41f5-87f5-fce27c1fbbe4"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorF2_S4_L003_R2_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF209HHH",
-        "uuid": "39cf61e1-b31d-4a83-93b2-9e5f7abc4fae",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorF2_S4_L003_R2_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 2",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
-        "derived_from": [
-            "5dcfa043-6de5-41f5-87f5-fce27c1fbbe4"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorG1_S5_L003_I1_001.fastq"
+            "anna-greka:sc_donorG_S5_L003_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF210HHH",
         "uuid": "d1924f1e-e6c8-4836-8a83-bde28c83198f",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorG1_S5_L003_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorG_S5_L003_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -3902,14 +3720,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorG1_S5_L003_R1_001.fastq"
+            "anna-greka:sc_donorG_S5_L003_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF211HHH",
         "uuid": "2548e3fa-82db-4f77-8b53-c05f0fdcd4ba",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorG1_S5_L003_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorG_S5_L003_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -3933,14 +3751,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorG1_S5_L003_R2_001.fastq"
+            "anna-greka:sc_donorG_S5_L003_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF212HHH",
         "uuid": "25031d1f-2475-4f9d-9327-7218efc868ef",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorG1_S5_L003_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorG_S5_L003_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -3963,105 +3781,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorG2_S6_L003_I1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF213HHH",
-        "uuid": "d8dc3304-6562-482c-ae7f-d7752a5fa188",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorG2_S6_L003_I1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "i7 index",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
-        "derived_from": [
-            "acffa741-4a65-4fdf-b271-7cf8d6da4772"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorG2_S6_L003_R1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF214HHH",
-        "uuid": "8141b2b5-4ec0-48ea-a085-a0c50ce6d3de",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorG2_S6_L003_R1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 1",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
-        "derived_from": [
-            "acffa741-4a65-4fdf-b271-7cf8d6da4772"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorG2_S6_L003_R2_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF215HHH",
-        "uuid": "cfcceb58-0751-48b6-b212-f44238298ad8",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorG2_S6_L003_R2_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 2",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
-        "derived_from": [
-            "acffa741-4a65-4fdf-b271-7cf8d6da4772"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorH1_S7_L003_I1_001.fastq"
+            "anna-greka:sc_donorH_S7_L003_I1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF216HHH",
         "uuid": "e16d2c95-1ff3-49d2-bc92-1c9d75eec19f",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorH1_S7_L003_I1_001.fastq.gz",
+        "submitted_file_name": "sc_donorH_S7_L003_I1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "i7 index",
@@ -4084,14 +3811,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorH1_S7_L003_R1_001.fastq"
+            "anna-greka:sc_donorH_S7_L003_R1_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF217HHH",
         "uuid": "5fc806d4-0de7-479b-9d4b-53625ece8f74",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorH1_S7_L003_R1_001.fastq.gz",
+        "submitted_file_name": "sc_donorH_S7_L003_R1_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
@@ -4115,14 +3842,14 @@
     },
     {
         "aliases": [
-            "anna-greka:sc_donorH1_S7_L003_R2_001.fastq"
+            "anna-greka:sc_donorH_S7_L003_R2_001.fastq"
         ],
 		"status": "released",
         "accession": "ENCFF218HHH",
         "uuid": "173f943f-dae5-4c57-a310-158cd3f875b5",
         "award": "CZI001KID",
         "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorH1_S7_L003_R2_001.fastq.gz",
+        "submitted_file_name": "sc_donorH_S7_L003_R2_001.fastq.gz",
         "dataset": "anna-greka:large_test_dataset",
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 2",
@@ -4141,97 +3868,6 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorH2_S8_L003_I1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF219HHH",
-        "uuid": "bb8e6435-5c55-493e-a7e7-c99f216d4542",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorH2_S8_L003_I1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "i7 index",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
-        "derived_from": [
-            "ecec6be8-ff1f-4fd9-b65a-913b85302cd6"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorH2_S8_L003_R1_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF220HHH",
-        "uuid": "436cf7be-43d8-48f5-b6aa-500fdb481ef1",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorH2_S8_L003_R1_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 1",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
-        "derived_from": [
-            "ecec6be8-ff1f-4fd9-b65a-913b85302cd6"
-        ]
-    },
-    {
-        "aliases": [
-            "anna-greka:sc_donorH2_S8_L003_R2_001.fastq"
-        ],
-		"status": "released",
-        "accession": "ENCFF221HHH",
-        "uuid": "930c460d-c49e-44de-9ec8-b53947b76443",
-        "award": "CZI001KID",
-        "submitted_by": "abbeclarke@broadinstitute.org",
-        "submitted_file_name": "sc_donorH2_S8_L003_R2_001.fastq.gz",
-        "dataset": "anna-greka:large_test_dataset",
-        "date_created": "2019-08-18T16:46:18.670068+00:00",
-        "read_type": "Read 2",
-        "file_format": "fastq",
-        "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
-        "output_types": [
-            "assigned reads"
-        ],
-        "file_size": 5000000,
-        "read_length": 8,
-        "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
-        "derived_from": [
-            "ecec6be8-ff1f-4fd9-b65a-913b85302cd6"
         ]
     },
     {
