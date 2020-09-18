@@ -1251,7 +1251,6 @@
         "description": "library 1a",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1273,7 +1272,6 @@
         "description": "library 1b",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1295,7 +1293,6 @@
         "description": "library 1c",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1317,7 +1314,6 @@
         "description": "library 2a",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1339,7 +1335,6 @@
         "description": "library 2b",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1361,7 +1356,6 @@
         "description": "library 2c",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1383,7 +1377,6 @@
         "description": "library 3a",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1405,7 +1398,6 @@
         "description": "library 3b",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1427,7 +1419,6 @@
         "description": "library 3c",
         "lab": "jimmie-ye",
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
-        "award": "CZI021IMM",
         "protocol": "ATAC-10x-v1",
         "protocol_version": 1.1,
         "derived_from": [
@@ -1449,7 +1440,6 @@
         "description": "library_1a",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension1"
@@ -1468,7 +1458,6 @@
         "description": "library_1b",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension1"
@@ -1487,7 +1476,6 @@
         "description": "library_1c",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension1"
@@ -1506,7 +1494,6 @@
         "description": "library_2a",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension2"
@@ -1525,7 +1512,6 @@
         "description": "library_2b",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension2"
@@ -1544,7 +1530,6 @@
         "description": "library_2c",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension2"
@@ -1563,7 +1548,6 @@
         "description": "library_3a",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension3"
@@ -1582,7 +1566,6 @@
         "description": "library_3b",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension3"
@@ -1601,7 +1584,6 @@
         "description": "library_3c",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:suspension3"
