@@ -35,6 +35,8 @@ class Bioexperiment(Item):
         'bioreplicate.biolibrary',
         'bioreplicate.biolibrary.documents',
         'bioreplicate.biolibrary.biospecimen',
+        'bioreplicate.biolibrary.biospecimen.donor',
+
         'bioreplicate.biolibrary.biospecimen.documents',
         "references"  # link to Publication
 
@@ -131,3 +133,92 @@ class Bioexperiment(Item):
                             biospecimen_summary_list.append(biospecimen_summary_dict)
 
         return biospecimen_summary_list
+
+    @calculated_property(schema={
+        "title": "Replication type",
+        "description": "Calculated field that indicates the replication model",
+        "type": "string"
+    })
+    def replication_type(self, request, bioreplicate=None, assay_term_name=None):
+        # ENCD-4251 loop through replicates and select one replicate, which has
+        # the smallest technical_replicate_number, per biological replicate.
+        # That replicate should have a libraries property which, as calculated
+        # in replicate.libraries (ENCD-4251), should have collected all
+        # possible technical replicates belong to the biological replicate.
+        # TODO: change this once we remove technical_replicate_number.
+        #This is the easiest way to use looping save time.Shortcut.
+        bio_rep_dict = {}
+        
+        for rep in bioreplicate:
+            replicate_object = request.embed(rep, '@@object')
+            if replicate_object['status'] == 'deleted':
+                continue
+            bio_rep_num = replicate_object['biological_replicate_number']
+            if bio_rep_num not in bio_rep_dict:
+                bio_rep_dict[bio_rep_num] = replicate_object
+                continue
+            tech_rep_num = replicate_object['technical_replicate_number']
+            if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
+                bio_rep_dict[bio_rep_num] = replicate_object
+
+        # Compare the biosamples to see if for humans they are the same donor and for
+        # model organisms if they are sex-matched and age-matched
+        biospecimen_donor_list = []
+        biospecimen_number_list = []
+
+        for replicate_object in bio_rep_dict.values():
+            if 'biolibrary' in replicate_object and replicate_object['biolibrary']:
+                biolibraryObject = request.embed(replicate_object['biolibrary'], '@@object')
+
+                # biospecimen = request.select_distinct_values(
+                #     'biosample', *replicate_object['biolibrary']
+                # )
+                if 'biospecimen' in biolibraryObject:
+                    # for b in biospecimen:
+                    biospecimen_object = request.embed(biolibraryObject['biospecimen'], '@@object')
+                    biospecimen_donor_list.append(
+                        biospecimen_object.get('donor')
+                    )
+                    biospecimen_number_list.append(
+                        replicate_object.get('biological_replicate_number')
+                    )
+                    biospecimen_species = biospecimen_object.get('species')
+                    biospecimen_type =biospecimen_object.get('sample_type'),
+                           
+                else:
+                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
+                    # untill we change our mind
+                    if assay_term_name == 'RNA Bind-n-Seq':
+                        return 'unreplicated'
+                    # If I have a library without a biosample,
+                    # I cannot make a call about replicate structure
+                    return None
+            else:
+                # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
+                # If I have a replicate without a library,
+                # I cannot make a call about the replicate structure
+                return None
+
+        #  exclude ENCODE2
+        if (len(set(biospecimen_number_list)) < 2):
+            return 'unreplicated'
+
+        if biospecimen_type == 'cell line':
+            return 'isogenic'
+
+        # Since we are not looking for model organisms here, we likely need audits
+        if biospecimen_species != 'human':
+            if len(set(biospecimen_donor_list)) == 1:
+                return 'isogenic'
+            else:
+                return 'anisogenic'
+
+        if len(set(biospecimen_donor_list)) == 0:
+            return None
+        if len(set(biospecimen_donor_list)) == 1:
+            if None in biospecimen_donor_list:
+                return None
+            else:
+                return 'isogenic'
+
+        return 'anisogenic'

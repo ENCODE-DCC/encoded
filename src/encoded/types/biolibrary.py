@@ -28,6 +28,7 @@ class Biolibrary(Item):
     embedded = [
         'biospecimen',
         'biospecimen.documents',
+        'biospecimen.donor',
         'biofile',
         'bioreplicate',
         'documents'

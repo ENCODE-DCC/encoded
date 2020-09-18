@@ -5,6 +5,8 @@
         "award": "Kidney-SPORE",
         "openspecimen_ID":"nulla ",
         "patient":"KCEPT708IJT",
+        "donor":"KCEDO017AAA",
+        "sample_type":"Tissue",
         "collection_date":"1941-02-16",
         "collection_type":"solid tissue",
         "processing_type":"xenograft",
@@ -23,6 +25,9 @@
         "award": "Kidney-SPORE",
         "openspecimen_ID":"minimcommodo",
         "patient":"KCEPT708IJT",
+        "donor":"KCEDO017AAA",
+        "sample_type":"Tissue",
+
         "collection_date":"1982-06-20",
         "collection_type":"solid tissue",
         "processing_type":"FFPE",
@@ -37,6 +42,27 @@
             "ea0125c1-97c8-4921-ba7a-b7eeb75ec4bd"
         ],
         "surgery": "KCESX708FIJ"
+    },
+    {
+        "accession": "KCEBS087RNA",
+        "internal_ID":"utminimsed",
+        "award": "Kidney-SPORE",
+        "openspecimen_ID":"ut",
+        "patient":"KCEPT139SOR",
+        "collection_date":"2013-02-09",
+        "collection_type":"solid tissue",
+        "processing_type":"FF",
+        "distributed":"No",
+        "tissue_type":"malignant metastasis",
+        "anatomic_site":"liver",
+        "uuid": "c58dd4d7-418a-4482-84c8-4d5ee6f29ea5",
+        "documents": [
+            "e0376e86-79d2-4041-80c2-4c8dfef83371"
+        ],
+        
+        "status": "released",
+        "host": "Human",
+        "primary_site": "kidney"
     },
     {
         "accession": "KCEBS356AAA",
@@ -160,27 +186,7 @@
         "host": "Human",
         "primary_site": "kidney"
     },
-    {
-        "accession": "KCEBS087RNA",
-        "internal_ID":"utminimsed",
-        "award": "Kidney-SPORE",
-        "openspecimen_ID":"ut",
-        "patient":"KCEPT139SOR",
-        "collection_date":"2013-02-09",
-        "collection_type":"solid tissue",
-        "processing_type":"FF",
-        "distributed":"No",
-        "tissue_type":"malignant metastasis",
-        "anatomic_site":"liver",
-        "uuid": "c58dd4d7-418a-4482-84c8-4d5ee6f29ea5",
-        "documents": [
-            "e0376e86-79d2-4041-80c2-4c8dfef83371"
-        ],
-        
-        "status": "released",
-        "host": "Human",
-        "primary_site": "kidney"
-    },
+    
     {
         "accession": "KCEBS088RNA",
         "internal_ID":"officia consequat ut nisi",
