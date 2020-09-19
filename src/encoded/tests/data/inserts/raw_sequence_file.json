@@ -3,7 +3,7 @@
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF100HHH",
         "uuid": "37f1b608-742f-4e78-ae56-baabb03afe69",
         "award": "CZI001KID",
@@ -14,7 +14,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -27,13 +26,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
-        ]
+        ],
+        "md5sum": "fc33724fb1dc16163432e7bd6bf6d4ed"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF101HHH",
         "uuid": "c4d6779f-9feb-426b-aecc-5476981a145f",
         "award": "CZI001KID",
@@ -44,7 +44,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -58,13 +57,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
-        ]
+        ],
+        "md5sum": "104bab5c8a4cd5610bb3669c610fec33"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF102HHH",
         "uuid": "b56c7d34-7b32-4517-8858-0ff44f518e8c",
         "award": "CZI001KID",
@@ -75,7 +75,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -88,13 +87,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
-        ]
+        ],
+        "md5sum": "eb740d2d90e5fad2a3cbf8a831eeb0a8"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA2_S2_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF103HHH",
         "uuid": "c49c95e4-1806-43ab-a088-09ec0d06f523",
         "award": "CZI001KID",
@@ -105,7 +105,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -118,13 +117,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "3f5c30e4-f5de-48d2-847f-959f3824931f"
-        ]
+        ],
+        "md5sum": "6716659d55a276614c775c9d679ee986"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA2_S2_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF104HHH",
         "uuid": "470114a6-bfea-4c7d-ad14-ad7a76314750",
         "award": "CZI001KID",
@@ -134,7 +134,6 @@
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -148,13 +147,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "3f5c30e4-f5de-48d2-847f-959f3824931f"
-        ]
+        ],
+        "md5sum": "8f8b772ce1d6f10a195b6dc01cfd0916"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA2_S2_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF105HHH",
         "uuid": "c4fa7074-eea3-4f8c-8d07-47a5c96b17ff",
         "award": "CZI001KID",
@@ -165,7 +165,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -178,13 +177,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "3f5c30e4-f5de-48d2-847f-959f3824931f"
-        ]
+        ],
+        "md5sum": "f29277b3dd2782e3abe28f37734630bc"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB1_S3_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF106HHH",
         "uuid": "8918c2e9-2eba-40ae-9666-4232e6ae0799",
         "award": "CZI001KID",
@@ -195,7 +195,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -208,13 +207,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "6ca560bd-5278-441d-8256-06f3e3c16e35"
-        ]
+        ],
+        "md5sum": "5729886fe20ef7266a3653e6cc18ba63"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB1_S3_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF107HHH",
         "uuid": "75963c4b-c633-46d2-9714-3a049fea0f68",
         "award": "CZI001KID",
@@ -225,7 +225,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -239,13 +238,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "6ca560bd-5278-441d-8256-06f3e3c16e35"
-        ]
+        ],
+        "md5sum": "445bd44d2c5238f9550c9260028d9835"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB1_S3_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF108HHH",
         "uuid": "5a8d9db2-ec5e-4fbe-a50e-0d9a6edbe587",
         "award": "CZI001KID",
@@ -256,7 +256,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -269,13 +268,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "6ca560bd-5278-441d-8256-06f3e3c16e35"
-        ]
+        ],
+        "md5sum": "0d15869ffbcf4cd6583de33fe754ddbe"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB2_S4_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF109HHH",
         "uuid": "dfc03ce0-8ead-4ec5-b749-61b01b88bd65",
         "award": "CZI001KID",
@@ -286,7 +286,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -299,13 +298,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-        ]
+        ],
+        "md5sum": "414f7ef094bab741597b2cbbd2e77ddb"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB2_S4_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF110HHH",
         "uuid": "d82f9dc7-d0f1-4bd6-a16d-bff382f49867",
         "award": "CZI001KID",
@@ -316,7 +316,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -330,13 +329,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-        ]
+        ],
+        "md5sum": "273acc3fd9b1d1beb074cdec0a855373"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB2_S4_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF111HHH",
         "uuid": "da3973cf-a4ea-4f3a-a2a8-44ae67de56e6",
         "award": "CZI001KID",
@@ -347,7 +347,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -360,13 +359,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
-        ]
+        ],
+        "md5sum": "13b5e6e91653af3ac9dcabe30c15b52b"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF000HHH",
         "uuid": "8ddfa427-d2f2-4ed7-9e2a-64f34ad8c4da",
         "award": "CZI001KID",
@@ -377,7 +377,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -390,13 +389,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "6a0ee005-4d3e-418b-bf47-498547ba3c53"
-        ]
+        ],
+        "md5sum": "c387aa071eb0273b20e488668b01547e"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF001HHH",
         "uuid": "8da4d8aa-87e9-4709-bb69-f9f4ccb876e4",
         "award": "CZI001KID",
@@ -407,7 +407,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -421,13 +420,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "6a0ee005-4d3e-418b-bf47-498547ba3c53"
-        ]
+        ],
+        "md5sum": "ed63e041625ec9cb1a7a7e0696890503"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA1_S1_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF002HHH",
         "uuid": "d93752f1-b186-4b15-8033-108a49d67f23",
         "award": "CZI001KID",
@@ -438,7 +438,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -451,13 +450,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "6a0ee005-4d3e-418b-bf47-498547ba3c53"
-        ]
+        ],
+        "md5sum": "49ee1286192110cecdad3f2945588dd3"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA2_S2_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF003HHH",
         "uuid": "d0dac4f8-5a4e-4d46-aebb-4c3af11ad575",
         "award": "CZI001KID",
@@ -468,7 +468,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -481,13 +480,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
-        ]
+        ],
+        "md5sum": "02d46a5aad064e6ab403f27adc17720d"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA2_S2_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF004HHH",
         "uuid": "83a11c5e-1aa0-4ada-b3da-edfa6870db0d",
         "award": "CZI001KID",
@@ -498,7 +498,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -512,13 +511,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
-        ]
+        ],
+        "md5sum": "d71041ea73fde614a55c7d70f5b3b3d2"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorA2_S2_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF005HHH",
         "uuid": "8ba35ef1-7b07-4532-97ad-51c2c81f47ed",
         "award": "CZI001KID",
@@ -529,7 +529,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -542,13 +541,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
-        ]
+        ],
+        "md5sum": "2df28e214cb38c7cf20421b43f631ec8"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB1_S3_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF006HHH",
         "uuid": "b3a80170-2347-485f-af84-a026a112605b",
         "award": "CZI001KID",
@@ -559,7 +559,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -572,13 +571,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
-        ]
+        ],
+        "md5sum": "3610a8ea023032b5910d789cb03b17f9"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB1_S3_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF007HHH",
         "uuid": "8a0b6861-1e8f-4d99-994a-abe52542e585",
         "award": "CZI001KID",
@@ -589,7 +589,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -603,13 +602,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
-        ]
+        ],
+        "md5sum": "710440573e56bc9c03b5f68e2d1bb86e"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB1_S3_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF008HHH",
         "uuid": "beacd12a-0815-403a-a618-77b51503d05f",
         "award": "CZI001KID",
@@ -620,7 +620,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -633,13 +632,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
-        ]
+        ],
+        "md5sum": "014e4a1547ed0daef3fb8ce2ea5f97a8"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB2_S4_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF009HHH",
         "uuid": "fc47bc1a-f7cc-441f-90e5-2d5719e0b52d",
         "award": "CZI001KID",
@@ -650,7 +650,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -663,13 +662,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
-        ]
+        ],
+        "md5sum": "85c6507ca5c1dcea43228b035a23fca1"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB2_S4_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF010HHH",
         "uuid": "380b7e85-f43b-4682-8d20-563d35cc17bc",
         "award": "CZI001KID",
@@ -680,7 +680,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -694,13 +693,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
-        ]
+        ],
+        "md5sum": "56f5936b1524ae25ba870ee8d3000fac"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorB2_S4_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF011HHH",
         "uuid": "56601795-54dd-43d6-a8d4-288437c8513b",
         "award": "CZI001KID",
@@ -711,7 +711,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -724,13 +723,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
-        ]
+        ],
+        "md5sum": "f4cd616d71670451d4e71b6a865d11c2"
     },
     {
         "aliases": [
             "anna-greka:sc_donorA1_S1_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF112HHH",
         "uuid": "8adc390b-3fc5-45f6-82be-c5471d1d6212",
         "award": "CZI001KID",
@@ -741,7 +741,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -754,13 +753,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "aecf582a-3fb4-4262-9cfb-76b92847119c"
-        ]
+        ],
+        "md5sum": "b0e61831d0a34e7f80651fbe5242e816"
     },
     {
         "aliases": [
             "anna-greka:sc_donorA1_S1_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF113HHH",
         "uuid": "12de91f5-6094-40c7-8ab9-e44ff5a0645a",
         "award": "CZI001KID",
@@ -771,7 +771,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -785,13 +784,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "aecf582a-3fb4-4262-9cfb-76b92847119c"
-        ]
+        ],
+        "md5sum": "f817eb79febd40fe2161ff1518c2ecd6"
     },
     {
         "aliases": [
             "anna-greka:sc_donorA1_S1_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF114HHH",
         "uuid": "04b676d5-fd26-485b-b438-af3ff5ae180b",
         "award": "CZI001KID",
@@ -802,7 +802,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -815,13 +814,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "aecf582a-3fb4-4262-9cfb-76b92847119c"
-        ]
+        ],
+        "md5sum": "df1f7162f1c54972243f08bb6e3b4029"
     },
     {
         "aliases": [
             "anna-greka:sc_donorA2_S2_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF115HHH",
         "uuid": "675435c1-ceb7-449c-b090-c180c6a2aeee",
         "award": "CZI001KID",
@@ -832,7 +832,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -845,13 +844,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
-        ]
+        ],
+        "md5sum": "00850f338061c35890791b4db2409fdc"
     },
     {
         "aliases": [
             "anna-greka:sc_donorA2_S2_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF116HHH",
         "uuid": "2e3ec3c2-350f-4eab-a4f2-acd742f83982",
         "award": "CZI001KID",
@@ -862,7 +862,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -876,13 +875,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
-        ]
+        ],
+        "md5sum": "fe1e6f3271d4d518d48d05ee30108447"
     },
     {
         "aliases": [
             "anna-greka:sc_donorA2_S2_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF117HHH",
         "uuid": "9e16cec7-d86b-4c88-9540-037916a5073f",
         "award": "CZI001KID",
@@ -893,7 +893,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -906,13 +905,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
-        ]
+        ],
+        "md5sum": "86b51dec28a90f17421daccf45f61c18"
     },
     {
         "aliases": [
             "anna-greka:sc_donorB1_S3_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF118HHH",
         "uuid": "91afc5ba-5077-4dd2-a7d6-b1a659ce8bc5",
         "award": "CZI001KID",
@@ -923,7 +923,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -936,13 +935,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "0629dab5-2389-4153-a010-165fc8414344"
-        ]
+        ],
+        "md5sum": "2aad655590f532caa097a102b319c177"
     },
     {
         "aliases": [
             "anna-greka:sc_donorB1_S3_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF119HHH",
         "uuid": "2bfc7fc9-2b9c-46c6-953d-c5fd3a61596d",
         "award": "CZI001KID",
@@ -953,7 +953,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -967,13 +966,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "0629dab5-2389-4153-a010-165fc8414344"
-        ]
+        ],
+        "md5sum": "95588f2717b944c0de762609059a81af"
     },
     {
         "aliases": [
             "anna-greka:sc_donorB1_S3_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF120HHH",
         "uuid": "6474aff0-5608-4c63-ad83-0c139a22c155",
         "award": "CZI001KID",
@@ -984,7 +984,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -997,13 +996,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "0629dab5-2389-4153-a010-165fc8414344"
-        ]
+        ],
+        "md5sum": "2e5e673dd2b2f50dde11b1beb8abd959"
     },
     {
         "aliases": [
             "anna-greka:sc_donorB2_S4_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF121HHH",
         "uuid": "e21279cd-c739-43f6-9925-a5d81f264b49",
         "award": "CZI001KID",
@@ -1014,7 +1014,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1027,13 +1026,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "7083435b-9c6d-4296-be7d-768d71584320"
-        ]
+        ],
+        "md5sum": "6d7c38e8b88edc14ee8cfe4f91c71d90"
     },
     {
         "aliases": [
             "anna-greka:sc_donorB2_S4_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF122HHH",
         "uuid": "d3fded15-42fd-40e9-a103-ac74395ed03b",
         "award": "CZI001KID",
@@ -1044,7 +1044,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1058,13 +1057,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "7083435b-9c6d-4296-be7d-768d71584320"
-        ]
+        ],
+        "md5sum": "ba241986d32e7021d343f778c797ca15"
     },
     {
         "aliases": [
             "anna-greka:sc_donorB2_S4_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF123HHH",
         "uuid": "3bba3908-3eaa-4a52-83c7-6bc2660e95b3",
         "award": "CZI001KID",
@@ -1075,7 +1075,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1088,13 +1087,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "7083435b-9c6d-4296-be7d-768d71584320"
-        ]
+        ],
+        "md5sum": "c626bd21c55b1796728b4d949c9a4199"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF124HHH",
         "uuid": "c3093297-ae32-4c4d-a3ad-6fa5b2bf6e9d",
         "award": "CZI001KID",
@@ -1105,7 +1105,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1118,13 +1117,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
-        ]
+        ],
+        "md5sum": "4fb391452a86667f6c442215cf061b39"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_S1_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF125HHH",
         "uuid": "04e12a89-1a67-4b7c-87bf-f0634fe2ef48",
         "award": "CZI001KID",
@@ -1135,7 +1135,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1148,13 +1147,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
-        ]
+        ],
+        "md5sum": "eaec44b3c60a459a6a287bca6ed9f7cf"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_S1_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF126HHH",
         "uuid": "8023dffe-405e-4c09-a2bb-4ebc92c60a4c",
         "award": "CZI001KID",
@@ -1165,7 +1165,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1178,13 +1177,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
-        ]
+        ],
+        "md5sum": "c877462f81de6345bc2a9b990ddfa8b5"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_S1_L003_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF127HHH",
         "uuid": "c96fb85b-0505-449b-851d-fa8648204b97",
         "award": "CZI001KID",
@@ -1195,7 +1195,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1208,13 +1207,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
-        ]
+        ],
+        "md5sum": "a7f0b2ab9cde8f647459822b700b3229"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF128HHH",
         "uuid": "1eb73d80-34a3-4716-be00-1ebd1448047d",
         "award": "CZI001KID",
@@ -1225,7 +1225,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1238,13 +1237,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ]
+        ],
+        "md5sum": "35fe53b4f7eace03db105c2ec173c0b8"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_S2_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF129HHH",
         "uuid": "d05c88f6-fb9f-4702-a524-a0d4d90227f5",
         "award": "CZI001KID",
@@ -1255,7 +1255,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1268,13 +1267,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ]
+        ],
+        "md5sum": "e74e08a6526fe960e4fd3af35fd6aaa8"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_S2_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF130HHH",
         "uuid": "02e9ad01-c7f1-4f43-b442-8db10b4464c8",
         "award": "CZI001KID",
@@ -1285,7 +1285,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1298,13 +1297,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ]
+        ],
+        "md5sum": "ecfa3bb88cbf55a19b176f472483f745"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_S2_L003_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF131HHH",
         "uuid": "3aa7cbf1-5d92-49dc-903c-611fe2618a83",
         "award": "CZI001KID",
@@ -1315,7 +1315,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1328,13 +1327,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
-        ]
+        ],
+        "md5sum": "419e108067a42333ec8ef565d0190bcd"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF132HHH",
         "uuid": "5accd97e-0ec9-4e05-8c8d-f0609ee3f4f1",
         "award": "CZI001KID",
@@ -1345,7 +1345,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1358,13 +1357,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ]
+        ],
+        "md5sum": "02c16fe4595cdbf83f7b73f153691c9b"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_S3_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF133HHH",
         "uuid": "b5b9ae70-c9e7-4c54-b620-5f820c60b268",
         "award": "CZI001KID",
@@ -1375,7 +1375,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1388,13 +1387,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ]
+        ],
+        "md5sum": "1397dcd5b85cfaa1e257d61c90f915bd"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_S3_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF134HHH",
         "uuid": "c303e2c5-d51c-4c40-a0bc-3c671e8de3a7",
         "award": "CZI001KID",
@@ -1405,7 +1405,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1418,13 +1417,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ]
+        ],
+        "md5sum": "1290027438ea421322da2eb762a40590"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_S3_L003_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF135HHH",
         "uuid": "0c09ff29-ee86-4731-9b66-63b6b50ff39c",
         "award": "CZI001KID",
@@ -1435,7 +1435,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1448,13 +1447,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
-        ]
+        ],
+        "md5sum": "5ff18b1a819b032e6467ba913734fd11"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF136HHH",
         "uuid": "39bde100-8694-4ba5-96aa-10e096db0de9",
         "award": "CZI001KID",
@@ -1465,7 +1465,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1478,13 +1477,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ]
+        ],
+        "md5sum": "1f93dcda094bab01d94552ea3a58e744"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_S4_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF137HHH",
         "uuid": "5cc65e68-9fbb-493a-9348-1f4995d950f8",
         "award": "CZI001KID",
@@ -1495,7 +1495,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1508,13 +1507,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ]
+        ],
+        "md5sum": "2769128388c0a97392b84424d14c5707"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_S4_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF138HHH",
         "uuid": "cbe78d04-7eb5-422b-95cc-0896e0a97cc9",
         "award": "CZI001KID",
@@ -1525,7 +1525,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1538,13 +1537,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ]
+        ],
+        "md5sum": "a48dbb48b6a79890d3cc4cf993e19e2a"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_S4_L003_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF139HHH",
         "uuid": "913ee143-6054-48e1-83c4-92fa99e1f324",
         "award": "CZI001KID",
@@ -1555,7 +1555,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1568,13 +1567,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
-        ]
+        ],
+        "md5sum": "a906d33246695838ca65b8f69e6ff0e2"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC1a_S1_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF140HHH",
         "uuid": "d7053f05-22b1-42c0-8411-8a646038a43d",
         "award": "CZI001KID",
@@ -1585,7 +1585,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1598,13 +1597,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
-        ]
+        ],
+        "md5sum": "bee13a3a990ab0ee85f9e2507d6bffb9"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC1a_S1_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF141HHH",
         "uuid": "39485023-9d37-4528-b1a6-58995b2faba7",
         "award": "CZI001KID",
@@ -1615,7 +1615,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1629,13 +1628,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
-        ]
+        ],
+        "md5sum": "f964756538ac78591cb0bfc02900dce4"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC1a_S1_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF142HHH",
         "uuid": "0bc07435-a4b2-400b-9967-6372fc65c093",
         "award": "CZI001KID",
@@ -1646,7 +1646,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1659,13 +1658,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
-        ]
+        ],
+        "md5sum": "fb56c4a4539a2063382157d523603fc1"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC1b_S2_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF143HHH",
         "uuid": "62620326-5465-4ff4-aa24-ef4fc8982d6b",
         "award": "CZI001KID",
@@ -1676,7 +1676,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1689,13 +1688,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
-        ]
+        ],
+        "md5sum": "16c5303409add0b33db7e46304a3a890"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC1b_S2_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF144HHH",
         "uuid": "6b9b47f4-24f0-4b9c-b419-a01f2ab30ef2",
         "award": "CZI001KID",
@@ -1706,7 +1706,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1720,13 +1719,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
-        ]
+        ],
+        "md5sum": "e2bc8b815c44834c035cded24b6cde80"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC1b_S2_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF145HHH",
         "uuid": "02ec94d8-d2b6-41f9-8272-dc655bfa8cda",
         "award": "CZI001KID",
@@ -1737,7 +1737,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1750,13 +1749,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
-        ]
+        ],
+        "md5sum": "b3c6bdcf63217ed19cea683519298272"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC2a_S3_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF146HHH",
         "uuid": "eb16b715-3653-44a4-8bf5-e14ce9d72c3d",
         "award": "CZI001KID",
@@ -1767,7 +1767,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1780,13 +1779,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
-        ]
+        ],
+        "md5sum": "c39da95fca731a153428463e428ae823"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC2a_S3_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF147HHH",
         "uuid": "9700f993-b9fa-435f-903f-6e74ff58dec7",
         "award": "CZI001KID",
@@ -1797,7 +1797,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1811,13 +1810,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
-        ]
+        ],
+        "md5sum": "2fa86f1630fdb92d0a8a28f6e00df7f1"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC2a_S3_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF148HHH",
         "uuid": "bababe53-e31f-491b-b2e6-003e7bb81b33",
         "award": "CZI001KID",
@@ -1828,7 +1828,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1841,13 +1840,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
-        ]
+        ],
+        "md5sum": "3e64ce801be205344d3c80a9b1415327"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC2b_S4_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF149HHH",
         "uuid": "57d5092b-75c3-4ca5-8c60-e438aea317ea",
         "award": "CZI001KID",
@@ -1858,7 +1858,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1871,13 +1870,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "e99de6aa-4ffe-4380-95aa-43077129b3c0"
-        ]
+        ],
+        "md5sum": "9407f25aa5716089b19f10d2bfa48c7c"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC2b_S4_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF150HHH",
         "uuid": "d669e4f5-2b9c-46ef-a50e-6320beeb4dc7",
         "award": "CZI001KID",
@@ -1888,7 +1888,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1902,13 +1901,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "e99de6aa-4ffe-4380-95aa-43077129b3c0"
-        ]
+        ],
+        "md5sum": "65df082163840f16e57db7f4ce9806b4"
     },
     {
         "aliases": [
             "anna-greka:sc_donorC2b_S4_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF151HHH",
         "uuid": "701b68b1-aef5-4412-b6d3-fafd4996d841",
         "award": "CZI001KID",
@@ -1919,7 +1919,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1932,13 +1931,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "e99de6aa-4ffe-4380-95aa-43077129b3c0"
-        ]
+        ],
+        "md5sum": "daefc8c8156a75d2dabd3c084063818f"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD1a_S5_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF152HHH",
         "uuid": "49756670-9372-4012-aa26-940f382975f3",
         "award": "CZI001KID",
@@ -1949,7 +1949,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1962,13 +1961,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
-        ]
+        ],
+        "md5sum": "3d27d4de11ba984fbdabfe0fc669589f"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD1a_S5_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF153HHH",
         "uuid": "ceea2972-2535-4a33-8f83-4a843e129a62",
         "award": "CZI001KID",
@@ -1979,7 +1979,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -1993,13 +1992,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
-        ]
+        ],
+        "md5sum": "1c3baa3e040987383e242838f66a0457"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD1a_S5_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF154HHH",
         "uuid": "7752f32a-9f6e-45b2-aefd-8925f526203b",
         "award": "CZI001KID",
@@ -2010,7 +2010,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2023,13 +2022,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
-        ]
+        ],
+        "md5sum": "8d6d45de842db71bed6a281afa1c2701"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD1b_S6_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF155HHH",
         "uuid": "ce158712-b5be-4a09-abae-653d5ae7549b",
         "award": "CZI001KID",
@@ -2040,7 +2040,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2053,13 +2052,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "089da0b8-d3de-4437-b9af-9ba9f888fda4"
-        ]
+        ],
+        "md5sum": "7c2aeca21ed8a27844eb3f0ce71e8bb1"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD1b_S6_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF156HHH",
         "uuid": "edcad3c4-9371-45e1-abf2-0f67ceb66435",
         "award": "CZI001KID",
@@ -2070,7 +2070,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2084,13 +2083,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "089da0b8-d3de-4437-b9af-9ba9f888fda4"
-        ]
+        ],
+        "md5sum": "ea7cc04649f657c2bb6e7c55406b4fb9"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD1b_S6_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF157HHH",
         "uuid": "89856997-63fb-49a5-96db-ec40c772e2e3",
         "award": "CZI001KID",
@@ -2101,7 +2101,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2114,13 +2113,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "089da0b8-d3de-4437-b9af-9ba9f888fda4"
-        ]
+        ],
+        "md5sum": "36a27ea90d07ddd72ebe614d3240dcfa"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD2a_S7_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF158HHH",
         "uuid": "8da2f39a-4d07-4292-a01b-4a4317523044",
         "award": "CZI001KID",
@@ -2131,7 +2131,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2144,13 +2143,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "44574a0a-e41c-4100-a666-3f60882bc23b"
-        ]
+        ],
+        "md5sum": "a66eb4bbdfedac11a851a717308886ad"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD2a_S7_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF159HHH",
         "uuid": "91d6de72-5461-4bfa-9900-f4b180d842aa",
         "award": "CZI001KID",
@@ -2161,7 +2161,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2175,13 +2174,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "44574a0a-e41c-4100-a666-3f60882bc23b"
-        ]
+        ],
+        "md5sum": "1fecd172bcf0893f8ff1a5cc0a6b2469"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD2a_S7_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF160HHH",
         "uuid": "820258d1-75d0-49f4-881e-a94481294633",
         "award": "CZI001KID",
@@ -2192,7 +2192,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2205,13 +2204,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "44574a0a-e41c-4100-a666-3f60882bc23b"
-        ]
+        ],
+        "md5sum": "79c297a7b4a723a3b318aa51af85ca11"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD2b_S8_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF161HHH",
         "uuid": "ed1bcb87-66c8-4c33-b35f-8fc29568ebf6",
         "award": "CZI001KID",
@@ -2222,7 +2222,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2235,13 +2234,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
-        ]
+        ],
+        "md5sum": "3167d1d8800eb2a78c75a2b034e67c61"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD2b_S8_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF162HHH",
         "uuid": "995b873c-268e-4303-8c8b-6e00802d434d",
         "award": "CZI001KID",
@@ -2252,7 +2252,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2266,13 +2265,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
-        ]
+        ],
+        "md5sum": "5267f177a814b152d5229b7a5f7f25bc"
     },
     {
         "aliases": [
             "anna-greka:sc_donorD2b_S8_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF163HHH",
         "uuid": "b06e42a0-92b5-488c-9098-1e7af1db3b06",
         "award": "CZI001KID",
@@ -2283,7 +2283,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2296,13 +2295,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
-        ]
+        ],
+        "md5sum": "ec4ff850d4beaf24af2b3a683d3542e6"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF164HHH",
         "uuid": "d3ff1a5f-2a43-4ee9-b9bf-f16394f882ea",
         "award": "CZI001KID",
@@ -2313,7 +2313,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2326,13 +2325,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ]
+        ],
+        "md5sum": "f9cd04a2eeaf5062b6e721400eefec96"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_S1_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF165HHH",
         "uuid": "cebeb9a9-822d-4dd6-ac5b-7bea97fb6050",
         "award": "CZI001KID",
@@ -2343,7 +2343,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2356,13 +2355,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ]
+        ],
+        "md5sum": "80c749930f6ce8e90cc9a7573b4893c8"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_S1_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF166HHH",
         "uuid": "190e5865-429b-4751-a97b-5d42d37295e8",
         "award": "CZI001KID",
@@ -2373,7 +2373,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2386,13 +2385,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ]
+        ],
+        "md5sum": "65b6d370828db71783b953ea7060adba"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_S1_L001_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF167HHH",
         "uuid": "cd553e56-2d6e-40ca-b066-d3938e01e7f3",
         "award": "CZI001KID",
@@ -2403,7 +2403,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2416,13 +2415,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
-        ]
+        ],
+        "md5sum": "7fdbc5bcbac719e2714f27c4ab79197d"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF168HHH",
         "uuid": "0282cc43-f29a-4eb2-aa42-75ccd01215a4",
         "award": "CZI001KID",
@@ -2433,7 +2433,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2446,13 +2445,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
-        ]
+        ],
+        "md5sum": "cbac4a1befa3713949cabeed0f0e42d0"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_S2_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF169HHH",
         "uuid": "e9ac552f-f35e-451a-bf0b-bff560acc026",
         "award": "CZI001KID",
@@ -2463,7 +2463,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2476,13 +2475,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
-        ]
+        ],
+        "md5sum": "9a56cebce17809fcb878ea6be7b570ae"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_S2_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF170HHH",
         "uuid": "59ecf2ef-f35b-47f7-9b91-c0eba1112cd7",
         "award": "CZI001KID",
@@ -2493,7 +2493,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2506,13 +2505,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
-        ]
+        ],
+        "md5sum": "c2fcb34bd1c03c500dc915852b85d3fb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_S2_L001_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF171HHH",
         "uuid": "ea9a8fd4-1c37-437c-b308-fcfdef32cd6c",
         "award": "CZI001KID",
@@ -2523,7 +2523,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2536,13 +2535,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
-        ]
+        ],
+        "md5sum": "7ac9620b4d90706a4759531c22d5a6cb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF172HHH",
         "uuid": "4527ae69-66cc-40ba-b7fd-2745517b5af5",
         "award": "CZI001KID",
@@ -2553,7 +2553,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2566,13 +2565,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ]
+        ],
+        "md5sum": "c6b61b3f0a33aa658e605cca74382da2"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_S3_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF173HHH",
         "uuid": "e5290ef9-435c-4d54-a787-86e592613aff",
         "award": "CZI001KID",
@@ -2583,7 +2583,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2596,13 +2595,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ]
+        ],
+        "md5sum": "5b4a017bbc447c59b7dcf2dfef9c2830"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_S3_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF174HHH",
         "uuid": "a8bd46e9-614d-4daf-8855-d51f6096f11e",
         "award": "CZI001KID",
@@ -2613,7 +2613,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2626,13 +2625,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ]
+        ],
+        "md5sum": "c193fe069190d3eb256edbb6395ab3da"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_S3_L001_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF175HHH",
         "uuid": "52c0994b-6efc-4430-bf8e-badbf447a0c8",
         "award": "CZI001KID",
@@ -2643,7 +2643,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2656,13 +2655,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
-        ]
+        ],
+        "md5sum": "573b0dd1f41f67432f8fc615fca5adfb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF176HHH",
         "uuid": "7b657c8a-32f0-4841-9497-d90b85d534b5",
         "award": "CZI001KID",
@@ -2673,7 +2673,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2686,13 +2685,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ]
+        ],
+        "md5sum": "7a6e2ab0f86abcd8a382b4a4cf0057c1"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_S4_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF177HHH",
         "uuid": "51c99ad1-543d-4ea1-91a4-7ebc11d4b178",
         "award": "CZI001KID",
@@ -2703,7 +2703,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2716,13 +2715,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ]
+        ],
+        "md5sum": "aaae2f574f662953031b1a3448b0c9b2"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_S4_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF178HHH",
         "uuid": "e2636e1d-0485-4a0b-ab61-0b5cb5f3a280",
         "award": "CZI001KID",
@@ -2733,7 +2733,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2746,13 +2745,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ]
+        ],
+        "md5sum": "e13760439a40cc72663e2383853708be"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_S4_L001_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF179HHH",
         "uuid": "24c7da3c-85c9-4920-8a9b-e9890875c2d8",
         "award": "CZI001KID",
@@ -2763,7 +2763,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2776,13 +2775,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
-        ]
+        ],
+        "md5sum": "250f66392beb12116e6b4a1f11e5dc6e"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD1_S1_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF180HHH",
         "uuid": "e60f2bf1-c385-4643-b75d-a92bb50aca37",
         "award": "CZI001KID",
@@ -2793,7 +2793,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2806,13 +2805,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
-        ]
+        ],
+        "md5sum": "72cd210fff268dceea8d41d98b1354e8"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD1_S1_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF181HHH",
         "uuid": "92bf6f1c-f7b1-4253-a537-86383da18c00",
         "award": "CZI001KID",
@@ -2823,7 +2823,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2837,13 +2836,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
-        ]
+        ],
+        "md5sum": "e19ed86d540f8b96bd7da31ad84ab81e"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD1_S1_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF182HHH",
         "uuid": "9cc59ceb-378b-4c24-8862-e31baab3d64b",
         "award": "CZI001KID",
@@ -2854,7 +2854,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2867,13 +2866,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
-        ]
+        ],
+        "md5sum": "bd45e6b1398d33b81d5c52e6f6116639"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD2_S1_L001_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF183HHH",
         "uuid": "79415b86-62a5-4909-9c67-71d22a8454b7",
         "award": "CZI001KID",
@@ -2884,7 +2884,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2897,13 +2896,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "a074eba7-31cf-41db-9675-d81d869345a9"
-        ]
+        ],
+        "md5sum": "d5816288defc73eeade2e8b4ab342283"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD2_S1_L001_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF184HHH",
         "uuid": "d67c6248-1dd7-48f7-b5eb-eb2c55699e2a",
         "award": "CZI001KID",
@@ -2914,7 +2914,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2928,13 +2927,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "a074eba7-31cf-41db-9675-d81d869345a9"
-        ]
+        ],
+        "md5sum": "f63cae9820992ed3d8ba6f7360332586"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD2_S1_L001_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF185HHH",
         "uuid": "4afef0a4-cdb2-4d3c-8748-e5639ac3d3a1",
         "award": "CZI001KID",
@@ -2945,7 +2945,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2958,13 +2957,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "a074eba7-31cf-41db-9675-d81d869345a9"
-        ]
+        ],
+        "md5sum": "097e4c526214c6c679269cb33c8fdbb3"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD1_S1_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF083HHH",
         "uuid": "830d5d47-dda7-4b1a-9a3b-d5e51c5cf713",
         "award": "CZI001KID",
@@ -2975,7 +2975,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -2988,13 +2987,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "f2342e08-61e6-4b4a-923f-db5c0507136f"
-        ]
+        ],
+        "md5sum": "0c1e8420f1b5d60a7cea86335d6bcd44"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD1_S1_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF084HHH",
         "uuid": "9ae012eb-d484-4b1d-b5cc-14a3373e5a9f",
         "award": "CZI001KID",
@@ -3005,7 +3005,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3019,13 +3018,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "f2342e08-61e6-4b4a-923f-db5c0507136f"
-        ]
+        ],
+        "md5sum": "887d6742543913599ecc1799b962f727"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD1_S1_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF085HHH",
         "uuid": "8016e2ba-639d-4904-8484-e89f5e79b548",
         "award": "CZI001KID",
@@ -3036,7 +3036,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3049,13 +3048,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "f2342e08-61e6-4b4a-923f-db5c0507136f"
-        ]
+        ],
+        "md5sum": "a3fc5df5bd4191fee34e01a42a490c12"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD2_S1_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF086HHH",
         "uuid": "a4e2c9a3-9a40-4313-ab4a-379543b16ab6",
         "award": "CZI001KID",
@@ -3066,7 +3066,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3079,13 +3078,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
-        ]
+        ],
+        "md5sum": "953bd85f6fd26ce1c83d1085e5bdbf65"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD2_S1_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF087HHH",
         "uuid": "f8df82f0-e8ad-494c-a10c-2d50ae8f51a5",
         "award": "CZI001KID",
@@ -3096,7 +3096,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3110,13 +3109,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
-        ]
+        ],
+        "md5sum": "4af4843a3a770941bcddab7c3908aa0a"
     },
     {
         "aliases": [
             "anna-greka:sc_donorCD2_S1_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF088HHH",
         "uuid": "37ad2385-1ca4-4ff2-a0d1-b036da654f93",
         "award": "CZI001KID",
@@ -3127,7 +3127,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3140,13 +3139,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
-        ]
+        ],
+        "md5sum": "d8c5e078e387808c827de8c6f0976dee"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorE_S1_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF186HHH",
         "uuid": "76042bfe-20a4-4bdb-b35a-e80bb832cd2f",
         "award": "CZI001KID",
@@ -3157,7 +3157,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3170,13 +3169,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
-        ]
+        ],
+        "md5sum": "20d4fffe4eae6b1adda161e120d72568"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorE_S1_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF187HHH",
         "uuid": "6383a57b-c31a-4a44-878c-c57231e1f2df",
         "award": "CZI001KID",
@@ -3187,7 +3187,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3201,13 +3200,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
-        ]
+        ],
+        "md5sum": "98c466decae660c8eeb9467dfadd2445"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorE_S1_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF188HHH",
         "uuid": "4e4a6b38-f8b6-4608-a521-6533175ff9c6",
         "award": "CZI001KID",
@@ -3218,7 +3218,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3231,13 +3230,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
-        ]
+        ],
+        "md5sum": "eabbdb5a22d106cb9bae7a3420826bbd"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorF_S2_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF189HHH",
         "uuid": "0e7cab3a-df95-4b26-92e2-bc61062e7425",
         "award": "CZI001KID",
@@ -3248,7 +3248,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3261,13 +3260,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "caa2e548-8160-4758-a58b-46aaffe4373b"
-        ]
+        ],
+        "md5sum": "098a03540cf9dffb7ecd20333f587b73"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorF_S2_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF190HHH",
         "uuid": "38971a63-31ff-43d7-af16-924059ccf387",
         "award": "CZI001KID",
@@ -3278,7 +3278,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3292,13 +3291,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "caa2e548-8160-4758-a58b-46aaffe4373b"
-        ]
+        ],
+        "md5sum": "91f54c282f4eee842176b7c2245c0dda"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorF_S2_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF191HHH",
         "uuid": "961369cf-20f8-4d59-a2a4-11825bf2a163",
         "award": "CZI001KID",
@@ -3309,7 +3309,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3322,13 +3321,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "caa2e548-8160-4758-a58b-46aaffe4373b"
-        ]
+        ],
+        "md5sum": "6c3d1bd517d2a58b4a20592f0e5ce9c9"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorG_S3_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF192HHH",
         "uuid": "eb046be0-3879-406e-ab3c-b80d20fb690d",
         "award": "CZI001KID",
@@ -3339,7 +3339,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3352,13 +3351,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
-        ]
+        ],
+        "md5sum": "aae5172f38d71c8bc75a7e3794916f17"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorG_S3_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF193HHH",
         "uuid": "1967388f-6477-48d5-b212-8a6a6e92c7d1",
         "award": "CZI001KID",
@@ -3369,7 +3369,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3383,13 +3382,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
-        ]
+        ],
+        "md5sum": "7528e07e80d74b43fd9770a1b4f700bd"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorG_S3_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF194HHH",
         "uuid": "eb96c50a-ef78-4a16-93e1-a3f85594fc17",
         "award": "CZI001KID",
@@ -3400,7 +3400,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3413,13 +3412,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
-        ]
+        ],
+        "md5sum": "df4896d0314a2cc4a480b6d1f119f30c"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorH_S4_L002_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF195HHH",
         "uuid": "9c19f853-ec8d-4dd1-a104-c5ac82d6b44f",
         "award": "CZI001KID",
@@ -3430,7 +3430,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3443,13 +3442,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "fd4b7148-7209-48e5-944e-2613c50e00d7"
-        ]
+        ],
+        "md5sum": "162e893b73a37133b44d544992d2784c"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorH_S4_L002_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF196HHH",
         "uuid": "f892f882-8ee0-4bce-bb6f-8092e2b0940e",
         "award": "CZI001KID",
@@ -3460,7 +3460,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3474,13 +3473,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "fd4b7148-7209-48e5-944e-2613c50e00d7"
-        ]
+        ],
+        "md5sum": "461182414db78e36ba9fea4aaa9b43c1"
     },
     {
         "aliases": [
             "anna-greka:citeseq_donorH_S4_L002_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF197HHH",
         "uuid": "0b33aea8-0399-48e4-86fe-5b8a76a3dbbb",
         "award": "CZI001KID",
@@ -3491,7 +3491,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3504,13 +3503,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "fd4b7148-7209-48e5-944e-2613c50e00d7"
-        ]
+        ],
+        "md5sum": "16a23d8062a49a769699817d47f0d0df"
     },
     {
         "aliases": [
             "anna-greka:sc_donorE_S1_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF198HHH",
         "uuid": "cd31427d-9d51-4fd5-acfe-e1414988961e",
         "award": "CZI001KID",
@@ -3521,7 +3521,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3534,13 +3533,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "38eecbc9-d0db-4a78-aa8c-292010afefb9"
-        ]
+        ],
+        "md5sum": "10115378c098977e66dbcb0f8889827a"
     },
     {
         "aliases": [
             "anna-greka:sc_donorE_S1_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF199HHH",
         "uuid": "5487b66c-0afe-4def-8952-9e533d005ee6",
         "award": "CZI001KID",
@@ -3551,7 +3551,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3565,13 +3564,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "38eecbc9-d0db-4a78-aa8c-292010afefb9"
-        ]
+        ],
+        "md5sum": "cbcc210876c0657c21ba085633f40f34"
     },
     {
         "aliases": [
             "anna-greka:sc_donorE_S1_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF200HHH",
         "uuid": "0621748e-08a3-4be4-bea9-2df0df67d6f0",
         "award": "CZI001KID",
@@ -3582,7 +3582,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3595,13 +3594,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "38eecbc9-d0db-4a78-aa8c-292010afefb9"
-        ]
+        ],
+        "md5sum": "a01e2da7d63d93e225f42fa5dd2efb75"
     },
     {
         "aliases": [
             "anna-greka:sc_donorF_S3_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF204HHH",
         "uuid": "fb1c3b79-faeb-4c21-a512-97b9236ad38f",
         "award": "CZI001KID",
@@ -3612,7 +3612,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3625,13 +3624,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
-        ]
+        ],
+        "md5sum": "39ade9830197c7c77005902e609b110d"
     },
     {
         "aliases": [
             "anna-greka:sc_donorF_S3_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF205HHH",
         "uuid": "da6438a1-c87e-4695-95b8-692118707cae",
         "award": "CZI001KID",
@@ -3642,7 +3642,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3656,13 +3655,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
-        ]
+        ],
+        "md5sum": "20a8c491d114e7097abf82e7f533badf"
     },
     {
         "aliases": [
             "anna-greka:sc_donorF_S3_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF206HHH",
         "uuid": "c5f56b12-8868-4222-9d2b-35b5b0452eee",
         "award": "CZI001KID",
@@ -3673,7 +3673,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3686,13 +3685,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
-        ]
+        ],
+        "md5sum": "f2fb1f343562657b9566c5495c5ea1ec"
     },
     {
         "aliases": [
             "anna-greka:sc_donorG_S5_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF210HHH",
         "uuid": "d1924f1e-e6c8-4836-8a83-bde28c83198f",
         "award": "CZI001KID",
@@ -3703,7 +3703,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3716,13 +3715,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
-        ]
+        ],
+        "md5sum": "1dd37259e3a672b315ea78f6bd17abb1"
     },
     {
         "aliases": [
             "anna-greka:sc_donorG_S5_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF211HHH",
         "uuid": "2548e3fa-82db-4f77-8b53-c05f0fdcd4ba",
         "award": "CZI001KID",
@@ -3733,7 +3733,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3747,13 +3746,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
-        ]
+        ],
+        "md5sum": "112d96824e76e42265730f7425f2bf90"
     },
     {
         "aliases": [
             "anna-greka:sc_donorG_S5_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF212HHH",
         "uuid": "25031d1f-2475-4f9d-9327-7218efc868ef",
         "award": "CZI001KID",
@@ -3764,7 +3764,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3777,13 +3776,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
-        ]
+        ],
+        "md5sum": "7d8a8bc9a6fde7c91402cf096ee2fed6"
     },
     {
         "aliases": [
             "anna-greka:sc_donorH_S7_L003_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF216HHH",
         "uuid": "e16d2c95-1ff3-49d2-bc92-1c9d75eec19f",
         "award": "CZI001KID",
@@ -3794,7 +3794,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3807,13 +3806,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ]
+        ],
+        "md5sum": "812964d5bdfce172501d226886452700"
     },
     {
         "aliases": [
             "anna-greka:sc_donorH_S7_L003_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF217HHH",
         "uuid": "5fc806d4-0de7-479b-9d4b-53625ece8f74",
         "award": "CZI001KID",
@@ -3824,7 +3824,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3838,13 +3837,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ]
+        ],
+        "md5sum": "47fe3d62909ba3ff429b933a6f96f3e1"
     },
     {
         "aliases": [
             "anna-greka:sc_donorH_S7_L003_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF218HHH",
         "uuid": "173f943f-dae5-4c57-a310-158cd3f875b5",
         "award": "CZI001KID",
@@ -3855,7 +3855,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3868,13 +3867,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
-        ]
+        ],
+        "md5sum": "891bc36282afc6ec7b2eb885a0325759"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF222HHH",
         "uuid": "ef6736a4-06aa-40b9-addd-f08d3d966ea5",
         "award": "CZI001KID",
@@ -3885,7 +3885,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3898,13 +3897,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ]
+        ],
+        "md5sum": "6c698d8e7fb802027b56642532d2d101"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_S1_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF223HHH",
         "uuid": "cd7a3b34-0d50-4d07-88a2-e44eee105c33",
         "award": "CZI001KID",
@@ -3915,7 +3915,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3928,13 +3927,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ]
+        ],
+        "md5sum": "e4a7afdc8d7df03cd27c5a7c2f3cad06"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_S1_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF224HHH",
         "uuid": "0a6b40fb-e01f-4b60-9746-2e49b073987d",
         "award": "CZI001KID",
@@ -3945,7 +3945,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3958,13 +3957,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ]
+        ],
+        "md5sum": "537bced35d30366924b942b0aea51148"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_S1_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF225HHH",
         "uuid": "71c19cf2-9c3c-4677-8aff-cfd596626148",
         "award": "CZI001KID",
@@ -3975,7 +3975,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -3988,13 +3987,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
-        ]
+        ],
+        "md5sum": "e7e1ade6aa8315d8f7022a0fe5c71c75"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF226HHH",
         "uuid": "83585f5f-22d3-4d82-a5b2-f7f306568f7d",
         "award": "CZI001KID",
@@ -4005,7 +4005,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4018,13 +4017,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ]
+        ],
+        "md5sum": "8dc6ecc5e4b581630653be12c6486857"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_S2_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF27HHH",
         "uuid": "8c2f958a-dc0b-4815-99c6-80b5c3629f66",
         "award": "CZI001KID",
@@ -4035,7 +4035,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4048,13 +4047,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ]
+        ],
+        "md5sum": "c742a5420f2e618b89738b21304f3c1c"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_S2_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF228HHH",
         "uuid": "e95813f1-d311-4086-ab6a-893d00ecdfea",
         "award": "CZI001KID",
@@ -4065,7 +4065,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4078,13 +4077,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ]
+        ],
+        "md5sum": "5033941b6d87f5ba48d292d272351afb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_S2_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF229HHH",
         "uuid": "b196c0da-287c-4b31-a831-a3126d926a20",
         "award": "CZI001KID",
@@ -4095,7 +4095,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4108,13 +4107,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
-        ]
+        ],
+        "md5sum": "77cf67b72ba450c6b5d38d0f1f43ae02"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF230HHH",
         "uuid": "9ce7b4c6-a7f0-4623-8d54-4029c050a474",
         "award": "CZI001KID",
@@ -4125,7 +4125,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4138,13 +4137,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ]
+        ],
+        "md5sum": "bdd9d87312db40554f69debd2cbd9396"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_S3_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF231HHH",
         "uuid": "b5a3b0ef-b959-4aa3-b151-e9d27a7794a7",
         "award": "CZI001KID",
@@ -4155,7 +4155,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4168,13 +4167,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ]
+        ],
+        "md5sum": "47c46d4440afc71de7f0e0e973357b64"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_S3_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF232HHH",
         "uuid": "0dbe3014-0c4d-456f-bccc-c9194326c581",
         "award": "CZI001KID",
@@ -4185,7 +4185,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4198,13 +4197,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ]
+        ],
+        "md5sum": "800537da2384bb56c5eced15c922441a"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_S3_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF233HHH",
         "uuid": "6d5186f7-d787-46c1-acf3-c6cd73a940c7",
         "award": "CZI001KID",
@@ -4215,7 +4215,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4228,13 +4227,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
-        ]
+        ],
+        "md5sum": "fdea2069e14ae4f712613403044774f1"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF234HHH",
         "uuid": "44bc540e-18ee-4d4f-83e2-0c1009513423",
         "award": "CZI001KID",
@@ -4245,7 +4245,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4258,13 +4257,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ]
+        ],
+        "md5sum": "32fcdf7b9d051927d232ae0783c5f117"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_S4_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF235HHH",
         "uuid": "abcbb6de-a71f-481a-9f72-d6e3bff7388e",
         "award": "CZI001KID",
@@ -4275,7 +4275,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4288,13 +4287,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ]
+        ],
+        "md5sum": "d03d0879943ae6751305a7796bc79fa4"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_S4_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF236HHH",
         "uuid": "cfa869f1-c7a9-4965-bcda-b85515f74f2e",
         "award": "CZI001KID",
@@ -4305,7 +4305,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4318,13 +4317,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ]
+        ],
+        "md5sum": "8883e1e2b92db14416deafd83c4fa023"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_S4_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF237HHH",
         "uuid": "da5a56c2-9e0a-4c41-a6f1-dd40c18d8fb5",
         "award": "CZI001KID",
@@ -4335,7 +4335,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4348,13 +4347,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
-        ]
+        ],
+        "md5sum": "8dbf075ffdae50db45bdd2140a99c58f"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF238HHH",
         "uuid": "85fe928c-27c5-4b53-93be-094fec490374",
         "award": "CZI001KID",
@@ -4365,7 +4365,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4378,13 +4377,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ]
+        ],
+        "md5sum": "3ef9503a4e75cce65eeb318d7b0c614e"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_S5_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF239HHH",
         "uuid": "e952b94a-30c0-48ab-a3ef-ab1b50441175",
         "award": "CZI001KID",
@@ -4395,7 +4395,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4408,13 +4407,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ]
+        ],
+        "md5sum": "0b24c13fa27d5153aa3736cd8dd4b4c5"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_S5_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF240HHH",
         "uuid": "f6fe6a4f-e61a-4387-8167-262af1c17d0a",
         "award": "CZI001KID",
@@ -4425,7 +4425,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4438,13 +4437,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ]
+        ],
+        "md5sum": "2d21285081cae5314a6d7d4b0799aeb3"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_S5_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF241HHH",
         "uuid": "ab856c9b-a127-4ff5-9dba-dc84d81fb8c7",
         "award": "CZI001KID",
@@ -4455,7 +4455,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4468,13 +4467,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
-        ]
+        ],
+        "md5sum": "5b3128db520742646df5e395dc4cf293"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF242HHH",
         "uuid": "ee4ecc35-210a-488d-a05f-86993a86601e",
         "award": "CZI001KID",
@@ -4485,7 +4485,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4498,13 +4497,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ]
+        ],
+        "md5sum": "dab7909b8bdfad3053aa6821eb2a4c8a"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_S6_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF243HHH",
         "uuid": "31145ab3-42e5-4f1a-a7ab-0d97c3b4c3cb",
         "award": "CZI001KID",
@@ -4515,7 +4515,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4528,13 +4527,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ]
+        ],
+        "md5sum": "0fadb10cf04649338083d2bc4cfda5cf"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_S6_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF244HHH",
         "uuid": "404dd1bc-3723-4222-b844-42d805fde07c",
         "award": "CZI001KID",
@@ -4545,7 +4545,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4558,13 +4557,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ]
+        ],
+        "md5sum": "6cf2ccf966a14167597700faffcda0aa"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_S6_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF245HHH",
         "uuid": "d3523b7e-815f-4c00-97fc-159c5b94f9a1",
         "award": "CZI001KID",
@@ -4575,7 +4575,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4588,13 +4587,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
-        ]
+        ],
+        "md5sum": "059ba9e6fe79ce69e66e054834cf05be"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF246HHH",
         "uuid": "adddc80c-c25d-4024-a253-a70ac7691a3b",
         "award": "CZI001KID",
@@ -4605,7 +4605,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4618,13 +4617,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ]
+        ],
+        "md5sum": "8bb3bcfc424e9bb55269677709371f2e"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_S7_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF247HHH",
         "uuid": "b6633a5f-43c4-4a99-a6f7-68d95e0eea4d",
         "award": "CZI001KID",
@@ -4635,7 +4635,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4648,13 +4647,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ]
+        ],
+        "md5sum": "d7174162ff309fdbb56cc1e1e52e0ede"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_S7_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF248HHH",
         "uuid": "c8cbc1d9-1edd-4244-a9e3-e8d9e0354aa8",
         "award": "CZI001KID",
@@ -4665,7 +4665,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4678,13 +4677,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ]
+        ],
+        "md5sum": "978e1e2d5970947b1652007ec9484ece"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_S7_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF249HHH",
         "uuid": "0c253d6c-050d-4c1b-874c-4a9e759ae516",
         "award": "CZI001KID",
@@ -4695,7 +4695,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4708,13 +4707,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
-        ]
+        ],
+        "md5sum": "4a664c757fbe2147af02a6eb4aed9aeb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF250HHH",
         "uuid": "9f4e969f-0b1b-43a8-9740-183e19053c35",
         "award": "CZI001KID",
@@ -4725,7 +4725,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4738,13 +4737,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
-        ]
+        ],
+        "md5sum": "f378439e1289f4387cbed277dd352199"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_S8_L004_R1_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF251HHH",
         "uuid": "a7e95cef-487c-4355-a75a-b25e93f8b16e",
         "award": "CZI001KID",
@@ -4755,7 +4755,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4768,13 +4767,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
-        ]
+        ],
+        "md5sum": "156621417cc6cb8314616643089b2ee1"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_S8_L004_R2_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF252HHH",
         "uuid": "8eb8f8d5-d87c-4ea7-ac57-cd9d3da3fd42",
         "award": "CZI001KID",
@@ -4785,7 +4785,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4798,13 +4797,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
-        ]
+        ],
+        "md5sum": "6148e0020a735d7bc9bf9e1bacfe05f0"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_S8_L004_R3_001.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF253HHH",
         "uuid": "bc24a9dc-468d-4ce0-94b2-6b6c443e6e5b",
         "award": "CZI001KID",
@@ -4815,7 +4815,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "anna-greka",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4828,13 +4827,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
-        ]
+        ],
+        "md5sum": "0101d7371313cdad1c6184a1b26eb00a"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1a_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF200FFF",
         "uuid": "8d06c303-1d8c-4cde-bea4-1f604d28804b",
         "award": "CZI021IMM",
@@ -4845,7 +4845,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "4f0b0cdacbcc8c82b22791b8856ef5bf",
         "output_types": [
             "assigned reads"
         ],
@@ -4858,13 +4857,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ]
+        ],
+        "md5sum": "3bed1c9c2df1c188e1c2fc3be1f0bd80"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1a_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF201FFF",
         "uuid": "598a3eca-4d85-475c-bf65-ec382a8e300d",
         "award": "CZI021IMM",
@@ -4875,7 +4875,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "41b2de312095ae62775cfbea21771207",
         "output_types": [
             "assigned reads"
         ],
@@ -4888,13 +4887,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ]
+        ],
+        "md5sum": "63cf7c450834afcd60fc9b44c87316fd"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1a_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF202FFF",
         "uuid": "7663bb6f-9402-488f-b942-ef366983b77b",
         "award": "CZI021IMM",
@@ -4905,7 +4905,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "a6a30246603f26acf1581fc592cba9bb",
         "output_types": [
             "assigned reads"
         ],
@@ -4918,13 +4917,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ]
+        ],
+        "md5sum": "6b790cfbcd900985f5808c261cc3ee57"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1a_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF203FFF",
         "uuid": "594750a7-de58-4304-ad0d-fae61e3824da",
         "award": "CZI021IMM",
@@ -4935,7 +4935,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "9e23fe4a6a143a3f3bf349b6b22332d4",
         "output_types": [
             "assigned reads"
         ],
@@ -4948,13 +4947,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
-        ]
+        ],
+        "md5sum": "53640b908fa93e874ca080028e91898e"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1b_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF204FFF",
         "uuid": "35a6dfc1-cb27-4f2e-9467-89ebf2685a4f",
         "award": "CZI021IMM",
@@ -4965,7 +4965,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "35ad03143ff14f1124efefc7af93c4bd",
         "output_types": [
             "assigned reads"
         ],
@@ -4978,13 +4977,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ]
+        ],
+        "md5sum": "ffc2a1def6749bccc04f9f2866dc46c6"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1b_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF205FFF",
         "uuid": "c1406845-992a-4ff8-bc45-f9035fb51bbc",
         "award": "CZI021IMM",
@@ -4995,7 +4995,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "ca76daf4faf7a0d3cc7d491932385824",
         "output_types": [
             "assigned reads"
         ],
@@ -5008,13 +5007,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ]
+        ],
+        "md5sum": "954240e8f81d4a219011b0f7a3b4fde2"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1b_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF206FFF",
         "uuid": "2e3fa43a-d186-4b62-aa58-084bbcad51e3",
         "award": "CZI021IMM",
@@ -5025,7 +5025,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "cd81b2686158ce81f1e2b8b0aae8c97a",
         "output_types": [
             "assigned reads"
         ],
@@ -5038,13 +5037,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ]
+        ],
+        "md5sum": "dffa7e95faad4bbb345717fdad96b988"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1b_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF207FFF",
         "uuid": "9e55441d-ddc3-4618-a93f-2f4157e38976",
         "award": "CZI021IMM",
@@ -5055,7 +5055,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "63d69e70fdae3aa247be486c09732b71",
         "output_types": [
             "assigned reads"
         ],
@@ -5068,13 +5067,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
-        ]
+        ],
+        "md5sum": "226876aecdc645adf3a9884d5effc846"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1c_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF208FFF",
         "uuid": "7bed0084-86ab-4b92-b627-08182ddb8b36",
         "award": "CZI021IMM",
@@ -5085,7 +5085,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "fc403ed7d6eeb7d2129868a5de351523",
         "output_types": [
             "assigned reads"
         ],
@@ -5098,13 +5097,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ]
+        ],
+        "md5sum": "61c2f280d9f83aee4801de30eb256f48"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1c_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF209FFF",
         "uuid": "d2196a92-c74d-4e81-87ba-11b3b9cb83bf",
         "award": "CZI021IMM",
@@ -5115,7 +5115,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "bb7e86a265b79851af8b3ea1d1eb3e8d",
         "output_types": [
             "assigned reads"
         ],
@@ -5128,13 +5127,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ]
+        ],
+        "md5sum": "c66ba66d8bfeaeb6c1b47381b7bf1a8c"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1c_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF210FFF",
         "uuid": "aee21e75-392e-4fa6-ae8d-d14094ff41ff",
         "award": "CZI021IMM",
@@ -5145,7 +5145,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "d80d656ff2a5d303fda0430753cbb5fd",
         "output_types": [
             "assigned reads"
         ],
@@ -5158,13 +5157,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ]
+        ],
+        "md5sum": "e4b5efec91953615a05908f5a4357e5e"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_1c_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF211FFF",
         "uuid": "76d6fe34-2e1a-4cd7-956f-d8a276aef3be",
         "award": "CZI021IMM",
@@ -5175,7 +5175,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "b55d27f2cfad063f4d70aacb5fef6ba3",
         "output_types": [
             "assigned reads"
         ],
@@ -5188,13 +5187,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
-        ]
+        ],
+        "md5sum": "dc6a95bd20ff7200cbac4d9718e6605a"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2a_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF212FFF",
         "uuid": "4a68367e-ecef-41c5-9df5-469821fa4aa3",
         "award": "CZI021IMM",
@@ -5205,7 +5205,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "fd3fa4da80fe90d5a70c9653df46e47c",
         "output_types": [
             "assigned reads"
         ],
@@ -5218,13 +5217,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ]
+        ],
+        "md5sum": "81e456b6878ce8f9a2e4dbb351fc3508"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2a_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF213FFF",
         "uuid": "7f668991-4057-4310-8715-adb8c19bb991",
         "award": "CZI021IMM",
@@ -5235,7 +5235,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "039bf37f67dc2e9809a7aaa81dd3c900",
         "output_types": [
             "assigned reads"
         ],
@@ -5248,13 +5247,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ]
+        ],
+        "md5sum": "4421d34ddc55efa6ff3da0999c97759c"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2a_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF214FFF",
         "uuid": "87a4abcc-908f-4b01-be8f-0ed4c588137d",
         "award": "CZI021IMM",
@@ -5265,7 +5265,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "67c4a35bd59923d26b2107d07da4b691",
         "output_types": [
             "assigned reads"
         ],
@@ -5278,13 +5277,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ]
+        ],
+        "md5sum": "0b8b2b01e4dc73e6cb44869e7134903b"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2a_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF215FFF",
         "uuid": "59d85797-da1f-4d8e-9684-0d8f76aff160",
         "award": "CZI021IMM",
@@ -5295,7 +5295,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "8e5b1e60003016186febd322331a9a13",
         "output_types": [
             "assigned reads"
         ],
@@ -5308,13 +5307,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
-        ]
+        ],
+        "md5sum": "08c7f1f71f8df001e20da5f47eef6baa"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2b_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF216FFF",
         "uuid": "bf10e571-34f7-4101-8791-6537037c051c",
         "award": "CZI021IMM",
@@ -5325,7 +5325,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "a955f87c1cd82324072b029a46ed9377",
         "output_types": [
             "assigned reads"
         ],
@@ -5338,13 +5337,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ]
+        ],
+        "md5sum": "281853588db0d1bf304db92809768195"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2b_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF217FFF",
         "uuid": "b842209d-e8d0-433a-8c91-78ce14343b7c",
         "award": "CZI021IMM",
@@ -5355,7 +5355,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "57c14d36b7da0f4c85302a1da968fc6f",
         "output_types": [
             "assigned reads"
         ],
@@ -5368,13 +5367,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ]
+        ],
+        "md5sum": "91dae899fb9fbe5cc8e0c6a9d47cf1ed"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2b_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF218FFF",
         "uuid": "3602e13b-c914-4e99-a1e8-d4e1f4ffeef3",
         "award": "CZI021IMM",
@@ -5385,7 +5385,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "8fd12793e78d468416330436c7a18d3b",
         "output_types": [
             "assigned reads"
         ],
@@ -5398,13 +5397,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ]
+        ],
+        "md5sum": "772ebd5a9dbf109a022bad6853e4bd13"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2b_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF219FFF",
         "uuid": "70c01b27-01e7-488e-951f-5ed3d5279dfa",
         "award": "CZI021IMM",
@@ -5415,7 +5415,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "6f42b2863ba68b3694a2a0e0f46d1a6f",
         "output_types": [
             "assigned reads"
         ],
@@ -5428,13 +5427,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
-        ]
+        ],
+        "md5sum": "fcdf676aeb08c2791f1271c8a5a4512c"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2c_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF220FFF",
         "uuid": "10fd5521-8a04-4978-aff5-c991d1803446",
         "award": "CZI021IMM",
@@ -5445,7 +5445,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "95ec4a9e99d69844c53fae46c3eed843",
         "output_types": [
             "assigned reads"
         ],
@@ -5458,13 +5457,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ]
+        ],
+        "md5sum": "fa95385d610a060c5abf03243dda0d97"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2c_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF221FFF",
         "uuid": "9b03ced2-ad11-41f5-a924-9e4b7f418ba5",
         "award": "CZI021IMM",
@@ -5475,7 +5475,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "751606835d083bbef0458bd9c5da2787",
         "output_types": [
             "assigned reads"
         ],
@@ -5488,13 +5487,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ]
+        ],
+        "md5sum": "23def3d78f9a88bae81b8b3517610edc"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2c_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF222FFF",
         "uuid": "9bab5f35-aca2-4307-986d-cf744da32154",
         "award": "CZI021IMM",
@@ -5505,7 +5505,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "621447062eb0ed9256e1abb64b06e928",
         "output_types": [
             "assigned reads"
         ],
@@ -5518,13 +5517,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ]
+        ],
+        "md5sum": "2853bed7f00a72eaa72fb874ae9882da"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_2c_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF223FFF",
         "uuid": "83274c92-8ed2-4d0f-b2d9-0ee544b896f5",
         "award": "CZI021IMM",
@@ -5535,7 +5535,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "7b6b1a8b3c7a55f097e80c300eb27369",
         "output_types": [
             "assigned reads"
         ],
@@ -5548,13 +5547,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
-        ]
+        ],
+        "md5sum": "41fe331b918d811d519caf67da784aaa"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3a_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF224FFF",
         "uuid": "3d8b93b0-4efd-49c0-9293-b63762ee1993",
         "award": "CZI021IMM",
@@ -5565,7 +5565,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "ecebbd264cbad105864d24aac349c5d8",
         "output_types": [
             "assigned reads"
         ],
@@ -5578,13 +5577,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ]
+        ],
+        "md5sum": "a0e92a638226cf4e6c0f4fe80ae7b953"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3a_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF225FFF",
         "uuid": "01d757e7-8618-481e-b798-c3153c854d70",
         "award": "CZI021IMM",
@@ -5595,7 +5595,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "8063f70d8809ed6c3273be66e8033e34",
         "output_types": [
             "assigned reads"
         ],
@@ -5608,13 +5607,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ]
+        ],
+        "md5sum": "a1cd9263d585006e305da351aa0eedc3"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3a_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF226FFF",
         "uuid": "e87493bf-4910-4b6b-9c0b-10a6c19310ae",
         "award": "CZI021IMM",
@@ -5625,7 +5625,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "8102c0b46bc42d660f3138c84d689513",
         "output_types": [
             "assigned reads"
         ],
@@ -5638,13 +5637,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ]
+        ],
+        "md5sum": "c2ca9803e8dc743717f6b189e28215da"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3a_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF227FFF",
         "uuid": "105f2911-0981-4a2d-8b5d-bec37ca08c12",
         "award": "CZI021IMM",
@@ -5655,7 +5655,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "5b32d209b72cb75e1d2e2ceed3b36db4",
         "output_types": [
             "assigned reads"
         ],
@@ -5668,13 +5667,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
-        ]
+        ],
+        "md5sum": "57ccf4c55b376e7dc9b07a75fa73b7c7"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3b_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF228FFF",
         "uuid": "a8b5118c-73e8-48f2-a29e-901a7f65dee7",
         "award": "CZI021IMM",
@@ -5685,7 +5685,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "bf95863e13818106a07f3802bf2a2a46",
         "output_types": [
             "assigned reads"
         ],
@@ -5698,13 +5697,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ]
+        ],
+        "md5sum": "390f5c7811304f8ceacdb03834b4039e"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3b_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF229FFF",
         "uuid": "4077ad8e-cd13-4b5e-96d6-98d9c087a5a3",
         "award": "CZI021IMM",
@@ -5715,7 +5715,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "bc35487c6b5e0f07f00bf45e74a9c2c3",
         "output_types": [
             "assigned reads"
         ],
@@ -5728,13 +5727,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ]
+        ],
+        "md5sum": "2479eed95f56c7dc99b1f25facc401c8"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3b_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF230FFF",
         "uuid": "fc49c692-ff28-4979-a751-91f934ae3090",
         "award": "CZI021IMM",
@@ -5745,7 +5745,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "dce25c5a2a9bc0a79bf736f0362f3c2a",
         "output_types": [
             "assigned reads"
         ],
@@ -5758,13 +5757,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ]
+        ],
+        "md5sum": "c2efc150bdf0dfc99108fbaf902d7252"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3b_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF231FFF",
         "uuid": "97772fca-85fb-4d78-b2db-5009304e8242",
         "award": "CZI021IMM",
@@ -5775,7 +5775,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "200ab0c03b9655d52ceebd5f17a34660",
         "output_types": [
             "assigned reads"
         ],
@@ -5788,13 +5787,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
-        ]
+        ],
+        "md5sum": "271a2ae24984fd06b1fca1811d25d2f1"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3c_R1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF232FFF",
         "uuid": "d888238c-cc9a-4f77-9059-0fe9cb651ad8",
         "award": "CZI021IMM",
@@ -5805,7 +5805,6 @@
         "read_type": "Read 1N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "7e1cb664af9509200271588106cac1f3",
         "output_types": [
             "assigned reads"
         ],
@@ -5818,13 +5817,14 @@
         "demultiplexed_type": "R1",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ]
+        ],
+        "md5sum": "ea418a3d6942d5f398cf1659a46780b2"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3c_R2.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF233FFF",
         "uuid": "15ba6192-6483-4050-b520-9907e4a34e61",
         "award": "CZI021IMM",
@@ -5835,7 +5835,6 @@
         "read_type": "i5 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "a26edc2dff6192f41c68da5d260da3c1",
         "output_types": [
             "assigned reads"
         ],
@@ -5848,13 +5847,14 @@
         "demultiplexed_type": "R2",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ]
+        ],
+        "md5sum": "a41f3caef6881460324b39248a07a67a"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3c_R3.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF234FFF",
         "uuid": "ca7b8e0f-324a-40ca-9617-0d556e30f3e6",
         "award": "CZI021IMM",
@@ -5865,7 +5865,6 @@
         "read_type": "Read 2N",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "77782bb8d7a20ceb59c2a1b573ef00ad",
         "output_types": [
             "assigned reads"
         ],
@@ -5878,13 +5877,14 @@
         "demultiplexed_type": "R3",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ]
+        ],
+        "md5sum": "9caf9becd4a0fff850983bd3c6f35ca3"
     },
     {
         "aliases": [
             "jimmie-ye:prenatal_3c_I1.fastq"
         ],
-		"status": "in progress",
+        "status": "in progress",
         "accession": "ENCFF235FFF",
         "uuid": "d3f9f2a2-0a71-44c1-8903-a170779dd62c",
         "award": "CZI021IMM",
@@ -5895,7 +5895,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "jimmie-ye",
-        "md5sum": "27b14b1648e741e1c53243c09684563f",
         "output_types": [
             "assigned reads"
         ],
@@ -5908,13 +5907,14 @@
         "demultiplexed_type": "I1",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
-        ]
+        ],
+        "md5sum": "dc48e720e830b060c567ef0c7395bb36"
     },
     {
         "aliases": [
             "peter-sims:sequence_1a_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF200MMM",
         "uuid": "f60b7dc8-ddcf-11ea-87d0-0242ac130003",
         "award": "CZI004LIV",
@@ -5925,7 +5925,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "be788716a6c61626ffda213dc7c9047f",
         "output_types": [
             "assigned reads"
         ],
@@ -5954,13 +5953,14 @@
         ],
         "derived_from": [
             "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
-        ]
+        ],
+        "md5sum": "0b6a36391e49bcebb773fcfee79a4b69"
     },
     {
         "aliases": [
             "peter-sims:sequence_1a_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF201MMM",
         "uuid": "839435f3-e7a4-4f09-8c65-13b633862065",
         "award": "CZI004LIV",
@@ -5971,7 +5971,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "15e856815c830b2daa32e8fb619988cb",
         "output_types": [
             "assigned reads"
         ],
@@ -5999,13 +5998,14 @@
         ],
         "derived_from": [
             "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
-        ]
+        ],
+        "md5sum": "55b6ccb954b024a8054f25c6619948e4"
     },
     {
         "aliases": [
             "peter-sims:sequence_1a_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF202MMM",
         "uuid": "03541efe-ddd0-11ea-87d0-0242ac130003",
         "award": "CZI004LIV",
@@ -6016,7 +6016,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "2653b300eb70899c93bf8dd1d30ba367",
         "output_types": [
             "assigned reads"
         ],
@@ -6044,13 +6043,14 @@
         ],
         "derived_from": [
             "a7cfa2ba-e8a2-455d-8387-cbd23e73b679"
-        ]
+        ],
+        "md5sum": "e5d299e84a2559823d107a8d116d5dc0"
     },
     {
         "aliases": [
             "peter-sims:sequence_1b_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF203MMM",
         "uuid": "bcfd1808-92df-43f8-bc6e-6681077833bd",
         "award": "CZI004LIV",
@@ -6061,7 +6061,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "518d42f603a49cde4339d7fd17865ab6",
         "output_types": [
             "assigned reads"
         ],
@@ -6090,13 +6089,14 @@
         ],
         "derived_from": [
             "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
-        ]
+        ],
+        "md5sum": "f8f6b885de9776d5a105a01f1596c610"
     },
     {
         "aliases": [
             "peter-sims:sequence_1b_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF204MMM",
         "uuid": "08871294-371e-4cba-9857-aed6ac01c7ef",
         "award": "CZI004LIV",
@@ -6107,7 +6107,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "0d70d0a3cc5793767420e41ced9cc87d",
         "output_types": [
             "assigned reads"
         ],
@@ -6135,13 +6134,14 @@
         ],
         "derived_from": [
             "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
-        ]
+        ],
+        "md5sum": "82bb3625e311bd480178e8ccdc4e0543"
     },
     {
         "aliases": [
             "peter-sims:sequence_1b_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF205MMM",
         "uuid": "a1cb0e58-d25e-4d95-9743-b3c113ab1ba3",
         "award": "CZI004LIV",
@@ -6152,7 +6152,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "1bae6123b13b23508c9e50d8f67693ac",
         "output_types": [
             "assigned reads"
         ],
@@ -6180,13 +6179,14 @@
         ],
         "derived_from": [
             "3ca3d763-50a2-45b7-9dd1-fd9f0d92109d"
-        ]
+        ],
+        "md5sum": "28cd2ec22e94c633a586f29d58fb1f9f"
     },
     {
         "aliases": [
             "peter-sims:sequence_1c_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF206MMM",
         "uuid": "ededcb37-16ac-43ba-99bf-5de60e1f4c4e",
         "award": "CZI004LIV",
@@ -6197,7 +6197,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "a8a56ea7f04541fbcd47c339dbd112e5",
         "output_types": [
             "assigned reads"
         ],
@@ -6226,13 +6225,14 @@
         ],
         "derived_from": [
             "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
-        ]
+        ],
+        "md5sum": "3f1b31a03e746428ff6a901e00c68456"
     },
     {
         "aliases": [
             "peter-sims:sequence_1c_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF207MMM",
         "uuid": "1b4b8474-1d13-4f86-9935-5f2285b6c91c",
         "award": "CZI004LIV",
@@ -6243,7 +6243,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "653e0e3a568b243b1638f79ea8788272",
         "output_types": [
             "assigned reads"
         ],
@@ -6271,13 +6270,14 @@
         ],
         "derived_from": [
             "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
-        ]
+        ],
+        "md5sum": "566eae936304827d4b2b4e1e445b83f2"
     },
     {
         "aliases": [
             "peter-sims:sequence_1c_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF208MMM",
         "uuid": "3c8f281d-995d-4e53-adb2-09cfeeecd271",
         "award": "CZI004LIV",
@@ -6288,7 +6288,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "c9b249ed3129f7697047e4e8da17fc7f",
         "output_types": [
             "assigned reads"
         ],
@@ -6316,13 +6315,14 @@
         ],
         "derived_from": [
             "c6bac386-c37c-4d6d-8ffc-637de37d30a8"
-        ]
+        ],
+        "md5sum": "392d4b4625e6612c2120444aee4b5e20"
     },
     {
         "aliases": [
             "peter-sims:sequence_2a_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF209MMM",
         "uuid": "ef40fe90-4189-4714-a366-d3e0c8bab91f",
         "award": "CZI004LIV",
@@ -6333,7 +6333,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "245cc29909585484ca2ab815e3e8eaf5",
         "output_types": [
             "assigned reads"
         ],
@@ -6362,13 +6361,14 @@
         ],
         "derived_from": [
             "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
-        ]
+        ],
+        "md5sum": "263545056a1d23e9187c842b3c0587cf"
     },
     {
         "aliases": [
             "peter-sims:sequence_2a_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF210MMM",
         "uuid": "8b621ed1-27bb-43db-8a6b-654db2130116",
         "award": "CZI004LIV",
@@ -6379,7 +6379,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "ef7a40ca2bb26c2633b2cd6cd2ed867a",
         "output_types": [
             "assigned reads"
         ],
@@ -6407,13 +6406,14 @@
         ],
         "derived_from": [
             "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
-        ]
+        ],
+        "md5sum": "afe65c9fcd4845db7d899f06b7cbc419"
     },
     {
         "aliases": [
             "peter-sims:sequence_2a_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF211MMM",
         "uuid": "76e9ddbb-ef19-41e7-92bd-aab9a38dbcd9",
         "award": "CZI004LIV",
@@ -6424,7 +6424,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "1076e16f4dccbe987ed5aab7e01eea63",
         "output_types": [
             "assigned reads"
         ],
@@ -6452,13 +6451,14 @@
         ],
         "derived_from": [
             "0c5b7e8c-375f-40cc-a18a-914e878b34fd"
-        ]
+        ],
+        "md5sum": "07f09cdee0a70898e2bcd9551cfd7c2a"
     },
     {
         "aliases": [
             "peter-sims:sequence_2b_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF212MMM",
         "uuid": "411f6095-354a-4e91-8ae1-ee16262abb5f",
         "award": "CZI004LIV",
@@ -6469,7 +6469,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "618c241a9a3e16faf715224a2e3ece61",
         "output_types": [
             "assigned reads"
         ],
@@ -6498,13 +6497,14 @@
         ],
         "derived_from": [
             "9a55c381-72ff-4cc2-a68d-c21244651431"
-        ]
+        ],
+        "md5sum": "a4ce3583b3727198a4174639863e04fe"
     },
     {
         "aliases": [
             "peter-sims:sequence_2b_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF213MMM",
         "uuid": "c687f3e5-8043-47d2-a380-cfc259095a3b",
         "award": "CZI004LIV",
@@ -6515,7 +6515,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "542bd45d066265f8d7071e96015caaa2",
         "output_types": [
             "assigned reads"
         ],
@@ -6543,13 +6542,14 @@
         ],
         "derived_from": [
             "9a55c381-72ff-4cc2-a68d-c21244651431"
-        ]
+        ],
+        "md5sum": "18067a1feb14c67c8f8611c34fe26d85"
     },
     {
         "aliases": [
             "peter-sims:sequence_2b_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF214MMM",
         "uuid": "6ed15626-92a6-4f3b-8100-a1df160bcbbf",
         "award": "CZI004LIV",
@@ -6560,7 +6560,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "774f58f00718722ac90389ef39a02f6c",
         "output_types": [
             "assigned reads"
         ],
@@ -6588,13 +6587,14 @@
         ],
         "derived_from": [
             "9a55c381-72ff-4cc2-a68d-c21244651431"
-        ]
+        ],
+        "md5sum": "6f4930d9471ea29ada57f5a2f762481c"
     },
     {
         "aliases": [
             "peter-sims:sequence_2c_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF215MMM",
         "uuid": "b9a48375-fc3b-4931-ae2b-56d46c4b7348",
         "award": "CZI004LIV",
@@ -6605,7 +6605,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "1ecacdcde243c2e1cd0c229f4a3183f5",
         "output_types": [
             "assigned reads"
         ],
@@ -6634,13 +6633,14 @@
         ],
         "derived_from": [
             "9cd890e1-2e9e-4994-ad35-271a78553248"
-        ]
+        ],
+        "md5sum": "dca58015fca72e008d7da759611954d6"
     },
     {
         "aliases": [
             "peter-sims:sequence_2c_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF216MMM",
         "uuid": "55c210f5-421f-44c0-8719-bd18c316671a",
         "award": "CZI004LIV",
@@ -6651,7 +6651,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "02b28939887aab52732c1f165ae28582",
         "output_types": [
             "assigned reads"
         ],
@@ -6679,13 +6678,14 @@
         ],
         "derived_from": [
             "9cd890e1-2e9e-4994-ad35-271a78553248"
-        ]
+        ],
+        "md5sum": "c435dfcb7b4ece23f4a1892f0da5e707"
     },
     {
         "aliases": [
             "peter-sims:sequence_2c_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF217MMM",
         "uuid": "d5b135b6-515e-443b-98f4-e8054d0731ff",
         "award": "CZI004LIV",
@@ -6696,7 +6696,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "027befa8161421dd70a23a19559271d8",
         "output_types": [
             "assigned reads"
         ],
@@ -6724,13 +6723,14 @@
         ],
         "derived_from": [
             "9cd890e1-2e9e-4994-ad35-271a78553248"
-        ]
+        ],
+        "md5sum": "d5e319e700f2655e78508488254940ff"
     },
     {
         "aliases": [
             "peter-sims:sequence_3a_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF218MMM",
         "uuid": "4cafd07c-5526-428e-b4b1-a72a17bb1fb6",
         "award": "CZI004LIV",
@@ -6741,7 +6741,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "68e11b5916db0de02b9a5d5d78c69533",
         "output_types": [
             "assigned reads"
         ],
@@ -6770,13 +6769,14 @@
         ],
         "derived_from": [
             "3dd59186-0407-4e29-9025-8443485fac53"
-        ]
+        ],
+        "md5sum": "843eddc70922e214bf3e52a8cbf348be"
     },
     {
         "aliases": [
             "peter-sims:sequence_3a_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF219MMM",
         "uuid": "2400d5e8-752e-4b2a-a5c7-9b030668836a",
         "award": "CZI004LIV",
@@ -6787,7 +6787,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "c28e111dccdff2d693308d77294ca89f",
         "output_types": [
             "assigned reads"
         ],
@@ -6815,13 +6814,14 @@
         ],
         "derived_from": [
             "3dd59186-0407-4e29-9025-8443485fac53"
-        ]
+        ],
+        "md5sum": "dbb09a0dffd307484cc328d8dd2094cc"
     },
     {
         "aliases": [
             "peter-sims:sequence_3a_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF220MMM",
         "uuid": "de5d7d30-96ba-467f-9f65-18cbf0f4ea85",
         "award": "CZI004LIV",
@@ -6832,7 +6832,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "4c9b73df40205d72c258d53fb8193a7a",
         "output_types": [
             "assigned reads"
         ],
@@ -6860,13 +6859,14 @@
         ],
         "derived_from": [
             "3dd59186-0407-4e29-9025-8443485fac53"
-        ]
+        ],
+        "md5sum": "53124e5ea45744f5e2f7c9b9e50d6519"
     },
     {
         "aliases": [
             "peter-sims:sequence_3b_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF221MMM",
         "uuid": "6f3af03c-cb0a-469d-8926-534ee3182c12",
         "award": "CZI004LIV",
@@ -6877,7 +6877,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "12f020df2c0e31fbe2adad368a17453e",
         "output_types": [
             "assigned reads"
         ],
@@ -6906,13 +6905,14 @@
         ],
         "derived_from": [
             "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
-        ]
+        ],
+        "md5sum": "dd6d83da4e0faad0004a4dd30ab77fb7"
     },
     {
         "aliases": [
             "peter-sims:sequence_3b_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF222MMM",
         "uuid": "488485f5-6465-4ccc-bfcf-43ef642863b7",
         "award": "CZI004LIV",
@@ -6923,7 +6923,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "e364d2a27620d82afa453096aef71efb",
         "output_types": [
             "assigned reads"
         ],
@@ -6951,13 +6950,14 @@
         ],
         "derived_from": [
             "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
-        ]
+        ],
+        "md5sum": "1f5d2dfa93a1aa9b98d155e7f0d05ad0"
     },
     {
         "aliases": [
             "peter-sims:sequence_3b_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF223MMM",
         "uuid": "ddbebd8e-6289-4c68-a24d-09bf14488c3d",
         "award": "CZI004LIV",
@@ -6968,7 +6968,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "66cc8851611451c0d781c7d9b6ace363",
         "output_types": [
             "assigned reads"
         ],
@@ -6996,13 +6995,14 @@
         ],
         "derived_from": [
             "bb75eed3-ac1d-4e8c-a989-dc12aabaa0df"
-        ]
+        ],
+        "md5sum": "5f2d8ed013b61a8a14cb1ef68a2cec21"
     },
     {
         "aliases": [
             "peter-sims:sequence_3c_R1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF224MMM",
         "uuid": "07cec74a-c64e-4536-83fc-f3e176f1a922",
         "award": "CZI004LIV",
@@ -7013,7 +7013,6 @@
         "read_type": "Read 1",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "c0fee18e9875b2e4479c057ced942fc7",
         "output_types": [
             "assigned reads"
         ],
@@ -7042,13 +7041,14 @@
         ],
         "derived_from": [
             "74ab76b9-0a74-4263-b1ef-75755938e939"
-        ]
+        ],
+        "md5sum": "ce62387106f8ec07a72e50592d17b892"
     },
     {
         "aliases": [
             "peter-sims:sequence_3c_R2.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF225MMM",
         "uuid": "082e03ac-37c3-44f8-b559-97daabe96ff7",
         "award": "CZI004LIV",
@@ -7059,7 +7059,6 @@
         "read_type": "Read 2",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "f522d5b0c4d9e9ce3d3a4074eaa34053",
         "output_types": [
             "assigned reads"
         ],
@@ -7087,13 +7086,14 @@
         ],
         "derived_from": [
             "74ab76b9-0a74-4263-b1ef-75755938e939"
-        ]
+        ],
+        "md5sum": "a7b49835b618f463c9ec071c7bf04eaa"
     },
     {
         "aliases": [
             "peter-sims:sequence_3c_I1.fastq"
         ],
-		"status": "released",
+        "status": "released",
         "accession": "ENCFF226MMM",
         "uuid": "1db24ef3-b243-4cec-9e8e-69b02f8d3a34",
         "award": "CZI004LIV",
@@ -7104,7 +7104,6 @@
         "read_type": "i7 index",
         "file_format": "fastq",
         "lab": "peter-sims",
-        "md5sum": "8f0026c9f6bd75c28e3530ebb090df1a",
         "output_types": [
             "assigned reads"
         ],
@@ -7132,6 +7131,7 @@
         ],
         "derived_from": [
             "74ab76b9-0a74-4263-b1ef-75755938e939"
-        ]
+        ],
+        "md5sum": "95f46cf0ad80459caf585f68919ed73d"
     }
 ]

@@ -3,10 +3,9 @@
         "aliases": [
             "anna-greka:donorA1_raw_feature_bc_matrix.txt"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "6ef4d912-1166-4ccf-b836-8bb5e369ecaf",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorA1_raw_feature_bc_matrix.txt",
         "file_format": "txt",
         "file_size": 100000,
@@ -38,16 +37,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "77d324e10b7dcbd06e53be5b8c2c31b7"
     },
     {
         "aliases": [
             "anna-greka:donorA1_filtered_feature_bc_matrix"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "63c1cd1a-48eb-4c9b-b037-0b384609708c",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorA1_raw_feature_bc_matrix.rds",
         "file_format": "rds",
         "file_size": 100000,
@@ -80,16 +79,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "30c7622f6007434c37f4c6d30e42d465"
     },
     {
         "aliases": [
             "anna-greka:donorA2_raw_feature_bc_matrix.tsv"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "5668e31f-01cb-43a5-bc3c-00bb663d1878",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorA2_raw_feature_bc_matrix.tsv",
         "file_format": "tsv",
         "file_size": 100000,
@@ -121,16 +120,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "99b7747497ca250ae236c828b446bde3"
     },
     {
         "aliases": [
             "anna-greka:donorA2_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "5b86a967-77f6-4164-815d-0857ded882d4",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorA2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -163,16 +162,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "9211c130bcfa065071ed1536577aeb66"
     },
     {
         "aliases": [
             "anna-greka:donorB1_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "a340d8bc-762b-4147-8882-4bb602ba6c6a",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorB1_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -204,16 +203,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "e4c3013fd79898426fd021f168f7126c"
     },
     {
         "aliases": [
             "anna-greka:donorB1_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "29b5b02c-854a-4f45-a19d-41b8ada2ff70",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorB1_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -246,16 +245,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "7265bd6e16c29e0a034266e9472f83a6"
     },
-        {
+    {
         "aliases": [
             "anna-greka:donorB2_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "f817c3e8-44e3-4f87-a83e-4cec9ea6f36e",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorB2_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -287,16 +286,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "7307c6d5d09aa4cb31a3617e9052e00e"
     },
     {
         "aliases": [
             "anna-greka:donorB2_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "19e88d59-9c49-44ba-bce1-1aa25329f9b6",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorB2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -329,18 +328,17 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "1c24591c682193508194b782331bc4b1"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "35377ad4-e49e-45e0-8161-dde762e89410",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -368,18 +366,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "6ebe5d60e64c75703f9f184506d4cba6"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e485bd06-b3a3-4d53-9ccb-d7cf5dca0893",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -408,18 +405,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "6ac72519c2b397ac1c63a45a1991b717"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "12e3a600-39ac-405f-8ad3-a752407f0bbe",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -448,18 +444,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "5d95e57866378889cdb3fe3f7ece7d91"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "09de0dec-39f1-4ab7-bfe1-1e85c144a23b",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -487,18 +482,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "300b1718edfd3209c692ae44e5480c1a"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "4988556b-6c27-4456-b316-d8734d3c8d3a",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -527,18 +521,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "2991358e34d1fc9a4d0123ad8c5e7b3f"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "aa3ebbec-bf3e-4c72-8321-9e612ea74a91",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -566,18 +559,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "a5edf082c71bf697b12034b785344be9"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "ee32db1c-932d-4931-9240-dba7a85cb6b6",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -605,18 +597,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "33c5bc7bae5e9e726a59f21abafaa3f1"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "92e9859b-402f-4dce-ab49-5f5fec8b82c1",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -645,18 +636,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "8d2c603855b454477cce0b4a49bca68e"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "bbcbd9d1-f9b0-4757-84b9-5617181581a8",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -684,18 +674,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "6ff1ed6b1aed8e606bdae1095a34e240"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "bee1457d-dceb-481f-b3fe-827c97021b54",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -723,18 +712,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "6aa4a2f7c22b209ebaa189201e50eeba"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e5c4c026-7520-4106-b78c-de10e1749f72",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -763,18 +751,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "527175445d30ebfdf549fa3d3c2899db"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "f0347a86-a428-4b81-b489-b9911ae3be54",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -802,18 +789,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "de69cd4312f07478d21c36198e13b7cb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "63cc3027-d329-4746-b245-c67e709200fd",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -841,18 +827,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "323684613c851a8279e3612d003a0e81"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "7620f84d-9946-4e44-9e24-3486bd771083",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -881,18 +866,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "4ac30d04e8f1f2bd1e7f594603f68fd3"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "faddd31b-e1b1-4857-ae92-3dfe64826a11",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -920,18 +904,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "478c983e2c88818e089d2509b56970c9"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e129ec02-49ed-42b3-aaf9-393e7c30202a",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -959,18 +942,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "32b6f43792a5d7058f24fc909a4d0e4b"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "67fd3665-cd65-4d04-aa17-eb0b0c90d336",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -999,18 +981,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "69f6e698ed84a669460fb541c1fcdcfd"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "3bb7f59b-67c0-4d12-8b2a-ddfed688d770",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1038,18 +1019,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "418afe4cc7f6577acea329736c8e3a45"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e564638f-4b32-478d-9b72-080beb1a83dd",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1077,18 +1057,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "f587b29a7531369ba45fbf01533e3788"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "21f0d1ce-9763-459a-bf58-6ca0458524f6",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1117,18 +1096,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "0a18cf5fd2e5f84d748e1d22dac0852b"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "d93da0b0-f426-47b2-b11e-322cbaa74c7a",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1156,18 +1134,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "8d10f823023a57a1013401ebee09e3e0"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "97a3c63e-00bc-4c47-8e23-48c967313c9e",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1195,18 +1172,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "53b15901f2f49f50c7d536cccf98d359"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "5b03312f-783e-48ee-a342-fc77096434e9",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1235,18 +1211,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "438b7e0bfd7ef14e975a2ccbe7a2ecc7"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "84ddb908-59cc-4af8-a1df-e0f6b6ca77c8",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1274,18 +1249,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "ceae622351e08bca8a11013640b05a4f"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "795f22f1-d772-4110-8137-52f6d311fd79",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1313,18 +1287,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "108943fd756ee170a8d8956da80da870"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "3748c8d0-de00-4b64-a85c-fba128acd87d",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1353,18 +1326,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "fa3f6b455dadef4efd03335a341b9f41"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "7e7cf72e-1d75-47e9-99be-47eb4778e372",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1392,18 +1364,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "c7b6a486158edc42c1080b688afe2a47"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "cd04924c-c4ca-4ee2-93a6-74c36a6376b8",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1431,18 +1402,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "27239be2723f4ca3e3b4935698faf63a"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "91638f70-ad49-42d5-a502-d92a556c447b",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1471,18 +1441,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "b461a1df2f8479ec0a491b8de9e8ea58"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "8c25b599-dfff-4219-a24d-4aa860bc0a36",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1510,18 +1479,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "1691e994fac00f56c365bf37d6caab85"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "171bf956-2f3e-422a-a831-3c165cfa1a4b",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1549,18 +1517,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "1490c316e1615d0564486f1e4ad6ab3b"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "854fdf73-c531-4602-9e8f-df3edda3a02c",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1589,18 +1556,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "7d412ebea9b803c26b3a48597854bbfe"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "3f01af1a-5082-4557-a0bf-3f72c1ee03ba",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1628,18 +1594,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "4f175e02e359f2a1eb683879191f15eb"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "feb5f062-ab3b-4fc8-b97a-4b9211a3e08e",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1667,18 +1632,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "25dcbbd255177cc82b809216909a821a"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "d8d78050-39a2-47f2-b872-35a3c2be87ec",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1707,18 +1671,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "a01fe5c058eaf74f619948a6cd66c6ac"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e1e4a3df-4fda-4601-b41c-552a2bb15284",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1746,18 +1709,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "f65b01abad5b21a92c6ff5c83e18ad41"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "f2f51ac7-3282-4035-8445-77695609a2d8",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1785,18 +1747,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "a7f02c33c7cd3f9461006e4c1e4b9fc7"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "04ad895b-95e5-44ea-b0b7-57bbc5bb2391",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1825,18 +1786,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "8d5465e30bc2c7c9427af64828b90083"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "9e4d5236-15dd-43e6-a0bd-c2aaf1503f9c",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1864,18 +1824,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "be7a22b3db14382eef69507e0ec7c9da"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "86b297bf-561c-43d3-aa70-8208272181aa",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1903,18 +1862,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "04b52cff73d40e2bed5c3b38037f069b"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "ab18e031-b5c4-4d6b-a432-68f3f5aa4bb1",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1943,18 +1901,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "468dabd840c01a9327cb83388c170927"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "577e83de-be37-4d99-98ac-61992051246a",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -1982,18 +1939,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "f2c2bd6ecc8e015cda0837e040fddc57"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "6358704e-8b12-4467-b2db-065ebad7f40f",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -2021,18 +1977,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "5efae53c8b966af196df7f914cd75cda"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "96913af6-1979-4c0b-9cc3-cfdf77946ef8",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -2061,18 +2016,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "2079a27a62107426c1c58962108e907e"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "7924162c-bd22-4bd6-816b-e98880f6c3f7",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -2100,18 +2054,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "4fce4de132386bc0ff8f62f4b8485b49"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_raw_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "9e385fc4-c48c-430f-a2cd-d86e8bc216bd",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -2139,18 +2092,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "b6d6168361bafb250824f8fcfbe835dd"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "dfeb6a2d-bf5c-4b7d-acab-f97e87a92a46",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -2179,18 +2131,17 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "42963bbbfa5fef9b7499488c9a67c9e0"
     },
     {
         "aliases": [
             "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "09af3bba-700b-4a2d-8442-d1eb398093cc",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
-        "status": "released",
         "file_format": "hdf5",
         "file_size": 150000,
         "lab": "anna-greka",
@@ -2218,16 +2169,16 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "699e92af12999925056ef9e411d5c20e"
     },
     {
         "aliases": [
             "anna-greka:donorC1a_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "137b653f-0f4a-4a8c-9a5b-8a34387c1a2e",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC1a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2253,16 +2204,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "5bb99d4f45a03fec10d05236dee52d69"
     },
     {
         "aliases": [
             "anna-greka:donorC1a_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "483b5896-f67e-4689-8eec-e7c239d8c3f5",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC1a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2289,16 +2240,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "29356483c34695c24b60eec707076ab5"
     },
     {
         "aliases": [
             "anna-greka:donorC1b_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "42a2cdbc-24f4-4930-a7be-b53021ce0ea8",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC1b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2324,16 +2275,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "5eb05afff324450fb1e4de66b498fa8a"
     },
     {
         "aliases": [
             "anna-greka:donorC1b_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "621195f7-7dab-49fb-9426-85f965f567fb",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC1b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2360,16 +2311,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "a943c3ecc8723adbaf16dbb30fa26e41"
     },
     {
         "aliases": [
             "anna-greka:donorC2a_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "583b93d0-ddde-4927-b65d-6e219d5f4ec9",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC2a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2395,16 +2346,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "25db035202452bb1e699fb04918e51d2"
     },
     {
         "aliases": [
             "anna-greka:donorC2a_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "f6258fad-4cf1-4829-ad63-bf796c70a089",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC2a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2431,16 +2382,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "6a769a24ef4b24d056314af1ca876470"
     },
     {
         "aliases": [
             "anna-greka:donorC2b_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "f1c5eff4-ae0f-4fec-9050-4265d41fab65",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC2b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2466,16 +2417,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "78b54e57c25174f01f44ac77c7e15cdd"
     },
     {
         "aliases": [
             "anna-greka:donorC2b_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "4d29239d-5b37-4f72-a13a-37760db2dd4c",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorC2b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2502,16 +2453,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "5ced08c46582127943ad2d32224ede49"
     },
     {
         "aliases": [
             "anna-greka:donorD1a_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "12659f9f-884c-45c0-bf00-6536ad31e289",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD1a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2537,16 +2488,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "7db2ca9aa535412215a16a12263813f1"
     },
     {
         "aliases": [
             "anna-greka:donorD1a_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "705bf2bf-dd50-4d21-af14-930b2063ed09",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD1a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2573,16 +2524,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "47b8d232b7ca4bff32e68c7a4ab167a3"
     },
     {
         "aliases": [
             "anna-greka:donorD1b_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e5a3aa14-c7ac-4ad3-b905-b034322277d5",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD1b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2608,16 +2559,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "e4725769cbde08eb02e3cbe5b298b71f"
     },
     {
         "aliases": [
             "anna-greka:donorD1b_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "d448900a-d4ce-4d5c-9ba5-b9ca12b02674",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD1b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2644,16 +2595,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "b82ac0119137f8472a2922b7b46eaa14"
     },
     {
         "aliases": [
             "anna-greka:donorD2a_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "7aa35b79-f1c9-4562-8e65-84bd00619ce5",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD2a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2679,16 +2630,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "990d20f4aa2794aa959763cdf2661cb9"
     },
     {
         "aliases": [
             "anna-greka:donorD2a_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "51ab68dc-d061-49b4-89bf-f3193781cb01",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD2a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2715,16 +2666,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "fe0f36ac13763d3272a959d3a5157d5c"
     },
     {
         "aliases": [
             "anna-greka:donorD2b_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e297abd2-5d99-4e0f-a89d-43ee4683881e",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD2b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2750,16 +2701,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "6391d53c935a8defaccfbcca8ce40631"
     },
     {
         "aliases": [
             "anna-greka:donorD2b_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "93ccc741-19b6-4731-b9b8-e58efa82e97c",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorD2b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2786,16 +2737,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "96a9e855f208144357f0d62f00c64148"
     },
     {
         "aliases": [
             "anna-greka:donorCD1_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "86299715-1de5-45d8-a7d7-5e2c2040a5bd",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorCD1_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2824,16 +2775,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "23b31847f5537ef302dd7486c7736d0b"
     },
     {
         "aliases": [
             "anna-greka:donorCD1_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "592b07a8-fd47-46cd-94b3-f8d58c1d4bc9",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorCD1_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2863,16 +2814,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "9c37badf95a2c2d63ae4ce700582e142"
     },
-     {
+    {
         "aliases": [
             "anna-greka:donorCD2_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "607e0255-f94f-471c-9791-7ef6e5f39587",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorCD2_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2901,16 +2852,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "4494f30178e1bdc09a5446954e0ab9e0"
     },
     {
         "aliases": [
             "anna-greka:donorCD2_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "d45b8a67-826a-446b-8601-5ec43ca8c2cb",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorCD2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2940,16 +2891,16 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "cd4a6f4051a67879c87089a32e606573"
     },
-     {
+    {
         "aliases": [
             "anna-greka:donorE_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "7898e294-d0ae-416f-acda-b55d9c545b61",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorE_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -2978,16 +2929,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "152cebddcc8ddec8a4ef313cc735ba10"
     },
     {
         "aliases": [
             "anna-greka:donorE_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "269e21a2-a716-4f3b-a43c-e83b713a36c1",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorE_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3017,16 +2968,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "2d5af333d24dc26d73078f61bd590719"
     },
     {
         "aliases": [
             "anna-greka:donorF_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "e9ca3672-33f6-4c8c-ad2b-0c1290ddbb08",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorF_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3055,16 +3006,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "6d7ac66b1cec9b904d7b7b3a722502ba"
     },
     {
         "aliases": [
             "anna-greka:donorF_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "11158457-33f4-448c-b39b-fddecab48fe5",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorF_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3094,16 +3045,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "48fa889dd89f1188103c462d26582a6f"
     },
     {
         "aliases": [
             "anna-greka:donorG_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "435fda57-bad6-4af2-98eb-0a995336ee3c",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorG_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3132,16 +3083,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "dbc5d9dc9287d556c3e9ae0fa572fbcb"
     },
     {
         "aliases": [
             "anna-greka:donorG_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "6cfb273d-a72c-4d8a-adc4-e8449ffa118a",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorG_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3171,16 +3122,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "2ec1e229b8cb74bd328e9b5b880632ad"
     },
-     {
+    {
         "aliases": [
             "anna-greka:donorH_raw_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "068acabe-032f-4335-8f4c-e750768536bf",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorH_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3209,16 +3160,16 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "0cc71f0abe3ca88354420c48f412f511"
     },
     {
         "aliases": [
             "anna-greka:donorH_filtered_feature_bc_matrix.h5"
         ],
-		"status": "released",
+        "status": "released",
         "award": "CZI001KID",
         "uuid": "07413a49-5c41-445f-a8c6-1f3bafd5db95",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorH_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
         "file_size": 100000,
@@ -3248,7 +3199,8 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32"
+        "genome_annotation": "GENCODE 32",
+        "md5sum": "399aa3bc4f1009addf1067cd8892ecfd"
     },
     {
         "aliases": [
@@ -3257,7 +3209,6 @@
         "status": "released",
         "award": "CZI001KID",
         "uuid": "c9174f45-9558-4f60-99a7-f87f1dc489b8",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorAB_merged_sc_citeseq_matrix.mtx/",
         "file_format": "mtx",
         "file_size": 100000,
@@ -3306,7 +3257,8 @@
                 "cutoff_units": "cells/gene",
                 "cutoff_type": "minimum"
             }
-        ]
+        ],
+        "md5sum": "48912b433c9105e6b4f32c79f6b09f6b"
     },
     {
         "aliases": [
@@ -3315,7 +3267,6 @@
         "status": "released",
         "award": "CZI001KID",
         "uuid": "89ea961f-45ef-4079-afad-ee2e9bade386",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorCD_merged_sc_matrix.mtx/",
         "file_format": "mtx",
         "file_size": 150000,
@@ -3368,7 +3319,8 @@
                 "cutoff_units": "cells/gene",
                 "cutoff_type": "minimum"
             }
-        ]
+        ],
+        "md5sum": "2dd4370d08bdf8666b859c888b1f7006"
     },
     {
         "aliases": [
@@ -3377,7 +3329,6 @@
         "status": "released",
         "award": "CZI001KID",
         "uuid": "a1343e3d-1ab0-440b-b0de-61b353566d87",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorCD_pooled_merged_sc_matrix.mtx/",
         "file_format": "mtx",
         "file_size": 100000,
@@ -3424,7 +3375,8 @@
                 "cutoff_units": "cells/gene",
                 "cutoff_type": "minimum"
             }
-        ]
+        ],
+        "md5sum": "98b5746b0f69e8be8c888e3c1d74b150"
     },
     {
         "aliases": [
@@ -3433,7 +3385,6 @@
         "status": "released",
         "award": "CZI001KID",
         "uuid": "14d82127-6d99-4c53-bf95-ff25dcb3d14a",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorEF_merged_sc_citeseq_matrix.mtx/",
         "file_format": "mtx",
         "file_size": 100000,
@@ -3480,7 +3431,8 @@
                 "cutoff_units": "cells/gene",
                 "cutoff_type": "minimum"
             }
-        ]
+        ],
+        "md5sum": "ee656a7331492beca246fcb1b503fd33"
     },
     {
         "aliases": [
@@ -3489,7 +3441,6 @@
         "status": "released",
         "award": "CZI001KID",
         "uuid": "e7caa3e4-fc3b-47be-8b8f-dcaa5db245e3",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "submitted_file_name": "donorGH_merged_sc_citeseq_matrix.mtx/",
         "file_format": "mtx",
         "file_size": 200000,
@@ -3536,7 +3487,8 @@
                 "cutoff_units": "cells/gene",
                 "cutoff_type": "minimum"
             }
-        ]
+        ],
+        "md5sum": "24aaa927d40e8680ea107684c39fb442"
     },
     {
         "aliases": [
@@ -3545,7 +3497,6 @@
         "accession": "ENCFF400ABA",
         "award": "CZI021IMM",
         "uuid": "aa861f79-0d95-45e5-8433-30d90bef5723",
-        "md5sum": "7b003986191606bd7aa7ad8312c90797",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3575,7 +3526,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "1dad2d4dffe26a4b09a0fddc6fc52bd0"
     },
     {
         "aliases": [
@@ -3584,7 +3536,6 @@
         "accession": "ENCFF401ABA",
         "award": "CZI021IMM",
         "uuid": "a5f415ca-d81a-429f-8e5f-2acb78c7501b",
-        "md5sum": "388a4eaef4d4ba87cb826c87d0c1051f",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3614,7 +3565,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "9417f1615b2b78a5c11e15093f562e69"
     },
     {
         "aliases": [
@@ -3623,7 +3575,6 @@
         "accession": "ENCFF402ABA",
         "award": "CZI021IMM",
         "uuid": "0d03d2fd-d58b-4cf1-9da4-40cd6e6ee8a7",
-        "md5sum": "555401a775b5c5e91b0ed1324c4dc384",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3653,7 +3604,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "5b04114fa2a5cc26c717c5ece363534f"
     },
     {
         "aliases": [
@@ -3662,7 +3614,6 @@
         "accession": "ENCFF403ABA",
         "award": "CZI021IMM",
         "uuid": "806b21f1-39a2-4596-8698-56f601199fb7",
-        "md5sum": "213944c8b618045e5a5d6e07d29a4c33",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3692,7 +3643,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "de9f4501f7d812f43bd5121e83928641"
     },
     {
         "aliases": [
@@ -3701,7 +3653,6 @@
         "accession": "ENCFF404ABA",
         "award": "CZI021IMM",
         "uuid": "4b53cda1-908a-4558-a167-56984e8da25e",
-        "md5sum": "dfad9d2b7fd1cc11369e5ff9f2aeaabb",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3731,7 +3682,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "e44dc98c2ad7ce7b3e9c0701e0b817a9"
     },
     {
         "aliases": [
@@ -3740,7 +3692,6 @@
         "accession": "ENCFF405ABA",
         "award": "CZI021IMM",
         "uuid": "834d44f0-56bc-4329-971f-f303d8ef5881",
-        "md5sum": "6dfb6b000564e89b1ce25aec0d65f8df",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3770,7 +3721,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "f9f7c568df684ed4aef14410d82b49d4"
     },
     {
         "aliases": [
@@ -3779,7 +3731,6 @@
         "accession": "ENCFF406ABA",
         "award": "CZI021IMM",
         "uuid": "3d224856-34f6-41ea-8e6c-fa1ac17c7157",
-        "md5sum": "2e4a8f4e24a975e7f5e2c7309c051306",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3809,7 +3760,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "b39448f475500107355f229ecccb027b"
     },
     {
         "aliases": [
@@ -3818,7 +3770,6 @@
         "accession": "ENCFF407ABA",
         "award": "CZI021IMM",
         "uuid": "1cd5cfa7-5aba-493f-b4a0-b6cac1abf52d",
-        "md5sum": "89b4c5d97ee112b563eab630c1112b0f",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3848,7 +3799,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "11aa5183f93bf123c387ef7e0e0dd444"
     },
     {
         "aliases": [
@@ -3857,7 +3809,6 @@
         "accession": "ENCFF408ABA",
         "award": "CZI021IMM",
         "uuid": "febbed57-50a6-4115-bfcd-9ae2143f7d43",
-        "md5sum": "5aadfbb12a66dac6b43e1cf6f82fddee",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3887,7 +3838,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "2fdbca0bb312f02efdc84fef82b914a6"
     },
     {
         "aliases": [
@@ -3896,7 +3848,6 @@
         "accession": "ENCFF300ABA",
         "award": "CZI021IMM",
         "uuid": "85d4d147-e5bd-44fb-9e17-2b03b7bca925",
-        "md5sum": "40ebba82890cc0c98c70549a494efc1d",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3927,7 +3878,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "0da463fc022a076ec9cc6c635da0934f"
     },
     {
         "aliases": [
@@ -3936,7 +3888,6 @@
         "accession": "ENCFF301ABA",
         "award": "CZI021IMM",
         "uuid": "e1dcf8d2-eed1-448e-9065-8cf888838e9e",
-        "md5sum": "b05286fa6715b486de80a70b6ce4b0fc",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -3967,7 +3918,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "a0e14d238f06919dca69dd275c10b38e"
     },
     {
         "aliases": [
@@ -3976,7 +3928,6 @@
         "accession": "ENCFF302ABA",
         "award": "CZI021IMM",
         "uuid": "ad18750c-608d-4682-b635-0186da1cd842",
-        "md5sum": "7e79695f2175dabd4b448a9cf06416a2",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4007,7 +3958,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "b691aa0778c3213e7b318efa558fe069"
     },
     {
         "aliases": [
@@ -4016,7 +3968,6 @@
         "accession": "ENCFF303ABA",
         "award": "CZI021IMM",
         "uuid": "b5f32dfb-f615-460e-8ad0-f021f1c805e6",
-        "md5sum": "f091ce8310ebccd88baffd63992994b1",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4047,7 +3998,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "c829aceaff13ad01453c4b39ca1f856f"
     },
     {
         "aliases": [
@@ -4056,7 +4008,6 @@
         "accession": "ENCFF304ABA",
         "award": "CZI021IMM",
         "uuid": "81ade3a8-4ccd-4130-a647-3b9b27a1fa5f",
-        "md5sum": "1b763642a3d53a97f12ff13bd75b6c10",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4087,7 +4038,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "f65eb489476d069394924142c4d97060"
     },
     {
         "aliases": [
@@ -4096,7 +4048,6 @@
         "accession": "ENCFF305ABA",
         "award": "CZI021IMM",
         "uuid": "010b2039-43b3-45b0-b259-26b0529c5e90",
-        "md5sum": "cd4531d3f141ca8713c767b6ff678aea",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4127,7 +4078,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "149527139b80175dc1cce36950f547f2"
     },
     {
         "aliases": [
@@ -4136,7 +4088,6 @@
         "accession": "ENCFF306ABA",
         "award": "CZI021IMM",
         "uuid": "fcf0bbf6-f7cb-4bbd-9507-06156a9a3856",
-        "md5sum": "97e44e8ffe63301b7450823b8ec81c04",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4167,7 +4118,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "4c792fc634bff7ff6c3687cca73dade3"
     },
     {
         "aliases": [
@@ -4176,7 +4128,6 @@
         "accession": "ENCFF307ABA",
         "award": "CZI021IMM",
         "uuid": "67ef279a-3445-47a2-8db4-e9ae2c5beec8",
-        "md5sum": "37d2befcd8d4394d437b380af6816ec1",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4207,7 +4158,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "1dd3e3d0a78ebdae3be61867d2faea2b"
     },
     {
         "aliases": [
@@ -4216,7 +4168,6 @@
         "accession": "ENCFF308ABA",
         "award": "CZI021IMM",
         "uuid": "b365d44d-e124-4362-89cb-35a8e0d7c6eb",
-        "md5sum": "608b401ab675b19b8d76c0eaa84f543f",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4247,7 +4198,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "f685e401feec1d36b8e0960a9218c616"
     },
     {
         "aliases": [
@@ -4256,7 +4208,6 @@
         "accession": "ENCFF200ABA",
         "award": "CZI021IMM",
         "uuid": "5c0c595a-990c-4d0f-9584-978bc9429da2",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4286,7 +4237,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "e7effaa434b25ec6a54aa29b11cca271"
     },
     {
         "aliases": [
@@ -4295,7 +4247,6 @@
         "accession": "ENCFF201ABA",
         "award": "CZI021IMM",
         "uuid": "d2092404-2c54-41d8-86a6-4975ea98e187",
-        "md5sum": "8bba4b8c500921b12754118c6d68eb61",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4325,7 +4276,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "9b4db05bd5478ab9db71d3bed8e18ef7"
     },
     {
         "aliases": [
@@ -4334,7 +4286,6 @@
         "accession": "ENCFF202ABA",
         "award": "CZI021IMM",
         "uuid": "016fb3ac-a626-45fe-b27b-657a4ac58768",
-        "md5sum": "6ab8cc9f269823af49f10bdf01c906c1",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4364,7 +4315,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "424b260516ccdbf78a7d37ef78575c82"
     },
     {
         "aliases": [
@@ -4373,7 +4325,6 @@
         "accession": "ENCFF203ABA",
         "award": "CZI021IMM",
         "uuid": "b1a923ed-195c-450e-8f8d-a91869f5933c",
-        "md5sum": "5dfdb1415e760003ae5dd0415f165fbf",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4403,7 +4354,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "6937b150fd7a8c025fadf5cb565465b7"
     },
     {
         "aliases": [
@@ -4412,7 +4364,6 @@
         "accession": "ENCFF204ABA",
         "award": "CZI021IMM",
         "uuid": "4d412e77-cb21-43b4-be35-c6579a7c0f3e",
-        "md5sum": "3634c894fdc52762af394bf2701913ca",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4442,7 +4393,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "d850a65365f474f954f1801320f02aec"
     },
     {
         "aliases": [
@@ -4451,7 +4403,6 @@
         "accession": "ENCFF205ABA",
         "award": "CZI021IMM",
         "uuid": "2e5bd897-f518-42f0-961b-ec613f020764",
-        "md5sum": "4712f25af95218c4aeabb733a361c627",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4481,7 +4432,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "e0ea7a30c2b95c4a03181a8f51a35809"
     },
     {
         "aliases": [
@@ -4490,7 +4442,6 @@
         "accession": "ENCFF206ABA",
         "award": "CZI021IMM",
         "uuid": "fb557d3a-deca-49fd-9d0d-cb77ed5785ce",
-        "md5sum": "401c004eb143e661115bd9bf33a34105",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4520,7 +4471,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "8a9fcb515f6bdd738b1e064c46134ebb"
     },
     {
         "aliases": [
@@ -4529,7 +4481,6 @@
         "accession": "ENCFF207ABA",
         "award": "CZI021IMM",
         "uuid": "b80409f6-f580-43d6-93b2-8b5f6a07bd53",
-        "md5sum": "4a644a2bf079a219c0d62c1d5e556822",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4559,7 +4510,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "5c0cee32250d2309b049eb1168da1f10"
     },
     {
         "aliases": [
@@ -4568,7 +4520,6 @@
         "accession": "ENCFF208ABA",
         "award": "CZI021IMM",
         "uuid": "5888757c-9564-4a96-9db1-17ee8e502c81",
-        "md5sum": "169d2680d34ccf013099f07ce8841cba",
         "no_file_available": false,
         "status": "in progress",
         "file_format": "mtx",
@@ -4598,7 +4549,8 @@
         ],
         "software": [
             "cellranger-atac count 1.2"
-        ]
+        ],
+        "md5sum": "c5b4cf72236a68bf9c548bf1fdf73212"
     },
     {
         "aliases": [
@@ -4607,7 +4559,6 @@
         "accession": "ENCFF100AAA",
         "award": "CZI004LIV",
         "uuid": "77e45170-df3e-11ea-87d0-0242ac130003",
-        "md5sum": "c0664a9a03dd7443f10279f45895c79d",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4635,7 +4586,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "2e5f4a5643dff7e46e1fa164722b082d"
     },
     {
         "aliases": [
@@ -4644,7 +4596,6 @@
         "accession": "ENCFF101AAA",
         "award": "CZI004LIV",
         "uuid": "425a21cd-ad72-49fb-9c9a-cd80d93ea5b4",
-        "md5sum": "806a5a374af888e08dd1ea9482455dc9",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4672,7 +4623,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "98bbebbf557750e83bf42ed0974e22bd"
     },
     {
         "aliases": [
@@ -4681,7 +4633,6 @@
         "accession": "ENCFF102AAA",
         "award": "CZI004LIV",
         "uuid": "2f280832-e0ce-11ea-87d0-0242ac130003",
-        "md5sum": "5e92599bf59d4488a65782576822267e",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4709,7 +4660,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "ea84ff21512a32c379b7cbf77618b728"
     },
     {
         "aliases": [
@@ -4718,7 +4670,6 @@
         "accession": "ENCFF103AAA",
         "award": "CZI004LIV",
         "uuid": "28fc5d7c-e0cf-11ea-87d0-0242ac130003",
-        "md5sum": "16fc0e9a18fd8bb798b6e23109614e2d",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4746,7 +4697,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "b02bc4994123ab4b4644aad304118b4c"
     },
     {
         "aliases": [
@@ -4755,7 +4707,6 @@
         "accession": "ENCFF104AAA",
         "award": "CZI004LIV",
         "uuid": "98527040-e1d1-4c89-a354-47a0f0fe738f",
-        "md5sum": "d41871cca478d562840b1647c35ff59b",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4783,7 +4734,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "9718d87b95adae875d0a2cfc2c64922d"
     },
     {
         "aliases": [
@@ -4792,7 +4744,6 @@
         "accession": "ENCFF105AAA",
         "award": "CZI004LIV",
         "uuid": "b9996519-e6f0-497e-a4ed-c19ea0ca5a1e",
-        "md5sum": "915a9ad6e55694339ec09a3c15dfabd4",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4820,7 +4771,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "dc92ebeafce2cb4c9730341e6efc65be"
     },
     {
         "aliases": [
@@ -4829,7 +4781,6 @@
         "accession": "ENCFF106AAA",
         "award": "CZI004LIV",
         "uuid": "f29c27f1-1b93-4650-bf83-5ba8fb898318",
-        "md5sum": "045894f2958e21ade9c500a6a8b2fbf9",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4857,7 +4808,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "cba03d18a91877d5677becaf15f195fa"
     },
     {
         "aliases": [
@@ -4866,7 +4818,6 @@
         "accession": "ENCFF107AAA",
         "award": "CZI004LIV",
         "uuid": "3b7039d8-e0cf-11ea-87d0-0242ac130003",
-        "md5sum": "2e11e5d889f715c96a4f6e3a00aa3d33",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4894,7 +4845,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "cfedc56fd843f516f0b69c06c3d52777"
     },
     {
         "aliases": [
@@ -4903,7 +4855,6 @@
         "accession": "ENCFF108AAA",
         "award": "CZI004LIV",
         "uuid": "32c7e05a-62fa-42ae-a524-0f4d02dc9b47",
-        "md5sum": "320bf46c52bf553c54533da384e6609f",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4931,7 +4882,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "c4e2fe787e7dc34adfd5135984cf9cef"
     },
     {
         "aliases": [
@@ -4940,7 +4892,6 @@
         "accession": "ENCFF109AAA",
         "award": "CZI004LIV",
         "uuid": "e40c90d2-af36-40d0-a947-e872fa5a0e7d",
-        "md5sum": "27c5a28254a58da490c04c5abc981644",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -4969,7 +4920,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "0b62d1ec99c15838826a0bac54ce732d"
     },
     {
         "aliases": [
@@ -4978,7 +4930,6 @@
         "accession": "ENCFF110AAA",
         "award": "CZI004LIV",
         "uuid": "059785ef-9e3c-4014-80d3-16248064fdcc",
-        "md5sum": "611f8ba1f0ee751f100784d9e1ba2325",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5007,7 +4958,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "b3c8e02b7f150a1567d840841ae2ea52"
     },
     {
         "aliases": [
@@ -5016,7 +4968,6 @@
         "accession": "ENCFF111AAA",
         "award": "CZI004LIV",
         "uuid": "be473115-9e5d-4094-9f22-9a8125d3aa68",
-        "md5sum": "e3e716cff4a5b14d50a438d9bcb5d494",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5045,7 +4996,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "632a9adf153040d5eb2bdfd96c53c5bd"
     },
     {
         "aliases": [
@@ -5054,7 +5006,6 @@
         "accession": "ENCFF112AAA",
         "award": "CZI004LIV",
         "uuid": "8ae541d4-541b-4a3d-99a4-98e97e3206f3",
-        "md5sum": "5883f0a7557865e980cefcba7701e558",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5083,7 +5034,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "7043cc8ac76c761cacbb3ad6868c2fda"
     },
     {
         "aliases": [
@@ -5092,7 +5044,6 @@
         "accession": "ENCFF113AAA",
         "award": "CZI004LIV",
         "uuid": "a4f7cbb1-9fec-471c-8daf-e475978fe0d3",
-        "md5sum": "5f21e1c7370fbee16bc2dad7850a8ebb",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5121,7 +5072,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "44a9817316acdba0872cb2f8c9bb60a0"
     },
     {
         "aliases": [
@@ -5130,7 +5082,6 @@
         "accession": "ENCFF114AAA",
         "award": "CZI004LIV",
         "uuid": "08c6b1da-11b5-4cc9-a1d5-86105d162fd1",
-        "md5sum": "aa9f7a8c40ba6313dd2b561e8367e1cb",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5159,7 +5110,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "e788b4b1a5ed6dc74e341fbd6d34b378"
     },
     {
         "aliases": [
@@ -5168,7 +5120,6 @@
         "accession": "ENCFF115AAA",
         "award": "CZI004LIV",
         "uuid": "117d7566-4586-4675-b359-73ee0351ac3b",
-        "md5sum": "325fadca0d4e07a4f5c4e33ce38b9175",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5197,7 +5148,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "34e36c93b861aeb18ca667b0234345c0"
     },
     {
         "aliases": [
@@ -5206,7 +5158,6 @@
         "accession": "ENCFF116AAA",
         "award": "CZI004LIV",
         "uuid": "e363e2cf-2ab5-4e2c-91b4-4ac4a65e69e8",
-        "md5sum": "765cfb5596ad4fe2995c4fec2e3a29bf",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5235,7 +5186,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "e84139020ca36418fc7c835ff98e56c4"
     },
     {
         "aliases": [
@@ -5244,7 +5196,6 @@
         "accession": "ENCFF117AAA",
         "award": "CZI004LIV",
         "uuid": "97c7a401-f6a8-4315-9d81-e12d84b79a80",
-        "md5sum": "b533cd31154325d50cbc6de5f1d4a99a",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5273,7 +5224,8 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ]
+        ],
+        "md5sum": "86e38ceabcc13bffa0e6093e17c30bfc"
     },
     {
         "aliases": [
@@ -5282,7 +5234,6 @@
         "accession": "ENCFF118AAA",
         "award": "CZI004LIV",
         "uuid": "1b5f2d6d-8dd0-4463-abd9-722bb2bd11a7",
-        "md5sum": "631cbab06a3b4980f698767169d7e12f",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5332,7 +5283,8 @@
         ],
         "software": [
             "cellranger aggr 4.0"
-        ]
+        ],
+        "md5sum": "b80320ebaa285af7a6880dbbd6795134"
     },
     {
         "aliases": [
@@ -5341,7 +5293,6 @@
         "accession": "ENCFF119AAA",
         "award": "CZI004LIV",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
-        "md5sum": "47b366807b827b9b2c9283376a7a087f",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -5394,6 +5345,7 @@
         ],
         "software": [
             "cellranger aggr 4.0"
-        ]
+        ],
+        "md5sum": "2e883306013203954eb1b69ae063eef1"
     }
 ]

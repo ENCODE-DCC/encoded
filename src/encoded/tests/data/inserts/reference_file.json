@@ -9,14 +9,14 @@
         "accession": "ENCFF450MMM",
         "dataset": "ENCSR500ELM",
         "file_format": "tar",
-        "md5sum": "d2a989b0b13b6bca2c9f56fd9188db4b",
         "output_types": [
-			"genome reference"
-		],
+            "genome reference"
+        ],
         "reference_version": "GRCh38",
         "submitted_file_name": "refdata-cellranger-atac-GRCh38-1.2.0.tar.gz",
         "status": "released",
-        "url": "https://support.10xgenomics.com/single-cell-atac/software/downloads/latest"
+        "url": "https://support.10xgenomics.com/single-cell-atac/software/downloads/latest",
+        "md5sum": "d5cad82c0269740a5eb189b0effcc6b4"
     },
     {
         "aliases": [
@@ -28,19 +28,25 @@
         "accession": "ENCFF300MMM",
         "dataset": "ENCSR500ELM",
         "file_format": "tar",
-        "md5sum": "40fd559ccd398b358840b0ed3ebc745b",
         "output_types": [
-			"genome reference"
-		],
+            "genome reference"
+        ],
         "reference_version": "GRCh38",
         "submitted_file_name": "refdata-gex-GRCh38-2020-A.tar.gz",
         "status": "released",
         "gene_biotypes_included": [
-            "protein_coding", "lincRNA", "antisense",
-            "IG_LV_gene", "IG_V_gene", "IG_D_gene",
-            "TR_V_gene", "TR_J_gene", "TR_C_gene"
+            "protein_coding",
+            "lincRNA",
+            "antisense",
+            "IG_LV_gene",
+            "IG_V_gene",
+            "IG_D_gene",
+            "TR_V_gene",
+            "TR_J_gene",
+            "TR_C_gene"
         ],
-        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest",
+        "md5sum": "1055135d5d9bcea7119a70e738975375"
     },
     {
         "aliases": [
@@ -51,14 +57,14 @@
         "file_size": 5000000,
         "file_format": "tar",
         "dataset": "ENCSR800RRR",
-        "md5sum": "96ed7b046cdc23953befeda89479d763",
         "output_types": [
             "genome reference"
         ],
         "reference_version": "mm10",
         "submitted_file_name": "refdata-cellranger-atac-mm10-1.2.0.tar.gz",
         "status": "released",
-        "url": "https://support.10xgenomics.com/single-cell-atac/software/downloads/latest"
+        "url": "https://support.10xgenomics.com/single-cell-atac/software/downloads/latest",
+        "md5sum": "25882589c46aa41d892441f73e576763"
     },
     {
         "aliases": [
@@ -69,7 +75,6 @@
         "file_size": 3000000,
         "dataset": "ENCSR800RRR",
         "file_format": "tar",
-        "md5sum": "abfac356cf55eec96dcfa9b3e436fbdb",
         "output_types": [
             "genome reference"
         ],
@@ -77,10 +82,17 @@
         "submitted_file_name": "refdata-gex-mm10-2020-A.tar.gz",
         "status": "released",
         "gene_biotypes_included": [
-            "protein_coding", "lincRNA", "IG_C_gene",
-            "IG_D_gene", "IG_V_gene", "IG_V_pseudogene",
-            "TR_V_gene", "TR_V_pseudogene", "TR_J_pseudogene"
+            "protein_coding",
+            "lincRNA",
+            "IG_C_gene",
+            "IG_D_gene",
+            "IG_V_gene",
+            "IG_V_pseudogene",
+            "TR_V_gene",
+            "TR_V_pseudogene",
+            "TR_J_pseudogene"
         ],
-        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest",
+        "md5sum": "a3d0a4a9bcddbb6cffde6506f8ab0756"
     }
 ]
