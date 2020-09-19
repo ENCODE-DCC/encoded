@@ -1986,7 +1986,7 @@ function filterItems(array, key, keyValue) {
             return replicate === keyValue[0];
         }
         if (key === 'assembly') {
-            if (keyValue[0] === 'All assemblies') {
+            if (keyValue[0] === 'All assemblies' || (el.output_category === 'raw data')) {
                 return true;
             }
             if (el.genome_annotation) {
