@@ -665,7 +665,7 @@ const AllSchemasPage = (props, reactContext) => {
                             organize and understand the data.
                         </p>
                         <p>
-                            The links below lead to pages describing each schema Lattice supports.
+                            The links below lead to pages describing each schema Lattice supports. Please note that these pages include properties specific to system operations, as well as calculated properties that are not submittable. Feel free to <a href="mailto: lattice-info@lists.stanford.edu">contact the Lattice team</a> if you would like a template of only submittable properties.
                         </p>
                     </div>
                     <div className="schema-list">
