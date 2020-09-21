@@ -1036,13 +1036,13 @@ def _parse_args():
     )
     parser.add_argument(
         '--index-procs',
-        default=18,
+        default=24,
         type=int,
         help="Remote indexing"
     )
     parser.add_argument(
         '--index-chunk-size',
-        default=200,
+        default=1024,
         type=int,
         help="Should be set lower for single-node demos"
     )
