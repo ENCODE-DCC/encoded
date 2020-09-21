@@ -547,7 +547,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             )
     else:
         # Frontends(app-es-pg, app-es, app-pg, app)
-        security_groups = ['ssh-http-https']
+        security_groups = ['ssh-http-restricted']
         iam_role = main_args.iam_role
         count = 1
         data_insert.update({
@@ -592,10 +592,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
-        'key-pair-name': DEFAULT_KEY_PAIR_NAME if main_args.role != 'candidate' else 'encoded-prod'
+        'key-pair-name': DEFAULT_KEY_PAIR_NAME
     }
-    if main_args.profile_name == 'production' and main_args.role != 'candidate':
-        run_args['key-pair-name'] += '-prod'
     return run_args
 
 
@@ -832,7 +830,7 @@ def main():
             MinCount=1,
             MaxCount=1,
             InstanceType=main_args.eshead_instance_type,
-            SecurityGroups=['ssh-http-https'],
+            SecurityGroups=['ssh-http-restricted'],
             UserData=run_args['master_user_data'],
             BlockDeviceMappings=bdm,
             InstanceInitiatedShutdownBehavior='terminate',
@@ -906,8 +904,7 @@ def main():
         print('')
         helper_vars.append("datam='{}'".format(instance_info['instance_id']))
         for index in range(main_args.cluster_size):
-            str_index = str(index)
-            key_name = 'cluster_node_' + str_index
+            key_name = 'cluster_node_{}'.format(str(index))
             node_info = instances_info[key_name]
             helper_vars.append("data{}='{}'  # {}".format(index, node_info['instance_id'], key_name))
             if index == 0:
