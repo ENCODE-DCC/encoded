@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import pluralize from 'pluralize';
 import url from 'url';
@@ -16,7 +16,6 @@ import DataTable from './datatable';
 
 
 const SEARCH_PERFORMED_PUBSUB = 'searchPerformed';
-const SEARCH_RESULT_COUNT_PUBSUB = 'searchResultCount';
 const CLEAR_SEARCH_BOX_PUBSUB = 'clearSearchBox';
 const LARGE_MATRIX_MIN_SIZE = 150;
 
@@ -121,21 +120,6 @@ const getChIPSeqData = (context, assayTitle, organismName) => {
 
 
 /**
- * Get search result-count
- *
- * @param {chIPSeqData} chIPSeqData
- * @returns Number 0 or higher that corresponds to search count
- */
-const getSearchResultCount = (chIPSeqData) => {
-    const count = chIPSeqData.dataRow
-        .reduce((a, b) => [...a, ...b], [])
-        .filter(i => !isNaN(i))
-        .reduce((a, b) => a + b, 0);
-
-    return count;
-};
-
-/**
  * Determines if the matrix update is large
  *
  * @param {*} currentChIPSeqData
@@ -166,9 +150,12 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
         };
     }
 
+    // add assay_title = Mint chip-seq if the assay selected in Histone chip-seq
+    const isAssayTitleHistone = chIPSeqData.assayTitle === 'Histone ChIP-seq';
+
     const dataTable = [];
     const headerRow = chIPSeqData.headerRow.map(x => ({
-        header: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}`} title={x}>{x}</a>,
+        header: <a href={`/search/?type=Experiment&status=released&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.term_name=${x}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}`} title={x}>{x}</a>,
     }));
 
     dataTable.push({
@@ -185,7 +172,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
             if (yIndex === 0) {
                 const borderLeft = '1px solid #fff'; // make left-most side border white
                 content = {
-                    header: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
+                    header: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>{y}</a>,
                     style: { borderLeft },
                 };
             } else {
@@ -193,7 +180,7 @@ const convertTargetDataToDataTable = (chIPSeqData, selectedTabLevel3) => {
                 const backgroundColor = y === 0 ? '#FFF' : '#688878'; // determined if box is colored or not
                 const borderRight = yIndex === rowLength - 1 ? '1px solid #f0f0f0' : ''; // add border color to right-most rows
                 content = {
-                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
+                    content: <a href={`/search/?type=Experiment&status=released&target.label=${row[0]}&assay_title=${chIPSeqData.assayTitle}${isAssayTitleHistone ? '&assay_title=Mint-ChIP-seq' : ''}&biosample_ontology.term_name=${chIPSeqData.headerRow[yIndex - 1]}&replicates.library.biosample.donor.organism.scientific_name=${chIPSeqData.organismName}&biosample_ontology.classification=${selectedTabLevel3}`} title={y}>&nbsp;</a>,
                     style: { backgroundColor, borderTop, borderRight },
                 };
             }
@@ -405,62 +392,35 @@ class ChIPSeqMatrixSearch extends SearchFilter {
 }
 
 /**
- * Render the area above the matrix itself, including the page title.
- *
- * @class ChIPSeqMatrixHeader
- * @extends {React.Component}
- */
-class ChIPSeqMatrixHeader extends React.Component {
-    constructor(props) {
-        super(props);
+* Render the area above the matrix itself, including the page title.
+*/
+const ChIPSeqMatrixHeader = (props) => {
+    const [context] = useState(props.context);
 
-        this.state = {
-            context: this.props.context,
-            searchResultCount: this.props.context.total,
-        };
-        this.setSearchResultCount = this.setSearchResultCount.bind(this);
-    }
-
-    componentDidMount() {
-        this.searchCount = PubSub.subscribe(SEARCH_RESULT_COUNT_PUBSUB, this.setSearchResultCount);
-    }
-
-    componentWillUnmount() {
-        PubSub.unsubscribe(this.searchCount);
-    }
-
-    setSearchResultCount(message, searchResultCount) {
-        this.setState({ searchResultCount });
-    }
-
-    render() {
-        return (
-            <div className="matrix-header">
-                <div className="matrix-header__title">
-                    <div className="matrix-title-badge">
-                        <h1>{this.state.context.title}</h1>
-                        <MatrixBadges context={this.state.context} type="ChIPseq" />
-                    </div>
+    return (
+        <div className="matrix-header">
+            <div className="matrix-header__title">
+                <div className="matrix-title-badge">
+                    <h1>{context.title}</h1>
+                    <MatrixBadges context={context} type="ChIPseq" />
                 </div>
-                <div className="matrix-header__controls">
-                    <div className="matrix-header__target-filter-controls">
-                        <ChIPSeqMatrixSearch context={this.state.context} />
-                    </div>
-                    <div className="matrix-header__target-search-controls">
-                        <h4>Showing {this.state.searchResultCount} results</h4>
-                        <div className="results-table-control">
-                            <div className="results-table-control__main">&nbsp;</div>
-                            <div className="results-table-control__json">
-                                <DisplayAsJson />
-                            </div>
+            </div>
+            <div className="matrix-header__controls">
+                <div className="matrix-header__target-filter-controls">
+                    <ChIPSeqMatrixSearch context={context} />
+                </div>
+                <div className="matrix-header__target-search-controls">
+                    <div className="results-table-control">
+                        <div className="results-table-control__main">&nbsp;</div>
+                        <div className="results-table-control__json">
+                            <DisplayAsJson />
                         </div>
                     </div>
                 </div>
             </div>
-        );
-    }
-}
-
+        </div>
+    );
+};
 
 ChIPSeqMatrixHeader.propTypes = {
     context: PropTypes.object.isRequired,
@@ -721,8 +681,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
         const selectedTabLevel3 = this.subTabs[isNaN(index) ? 0 : index];
         window.sessionStorage.setItem('encodeSelectedTabLevel3', selectedTabLevel3);
         const chIPSeqData = this.ChIPSeqMatrixData.chIPSeqData[selectedTabLevel3];
-        const count = getSearchResultCount(chIPSeqData);
-        PubSub.publish(SEARCH_RESULT_COUNT_PUBSUB, count);
+
 
         const isMatrixLarge = isMatrixUpdateLarge(chIPSeqData, this.state.chIPSeqData);
 
@@ -813,9 +772,6 @@ class ChIPSeqMatrixPresentation extends React.Component {
             chIPSeqData.headerRow = headerRow;
             chIPSeqData.dataRow = dataRow;
         }
-
-        const count = getSearchResultCount(chIPSeqData);
-        PubSub.publish(SEARCH_RESULT_COUNT_PUBSUB, count);
 
         const isMatrixLarge = isMatrixUpdateLarge(chIPSeqData, this.state.chIPSeqData);
 
