@@ -549,7 +549,7 @@ const SelectOrganismModal = () => (
             <div>Organism to view in matrix:</div>
             <div className="selectors">
                 {tabLevel1.map((tab, index) =>
-                    <a key={index} className={`btn btn-info btn__selector--${tab.id.replace(/ /g, '-')}`} href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${tab.id}&assay_title=Histone%20ChIP-seq&status=released`}>{tab.header}</a>
+                    <a key={index} className={`btn btn-info btn__selector--${tab.id.replace(/ /g, '-')}`} href={`/chip-seq-matrix/?type=Experiment&replicates.library.biosample.donor.organism.scientific_name=${tab.id}&assay_title=Histone%20ChIP-seq&assay_title=Mint-ChIP-seq&status=released`}>{tab.header}</a>
                 )}
             </div>
         </ModalBody>
