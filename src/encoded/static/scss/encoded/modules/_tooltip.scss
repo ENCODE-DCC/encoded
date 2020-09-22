@@ -45,9 +45,13 @@ $tooltip-color: #000;
     z-index: 1030;
     display: block;
     visibility: hidden;
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 1rem;
+    line-height: 1.2;
     opacity: 0;
+    @media screen and (max-width: $screen-md-min) {
+        line-height: 1.4;
+        font-size: 0.8rem;
+    }
 
     &.right {
         transform: translateY(-50%);

@@ -71,7 +71,7 @@ class EncodeSearch extends React.Component {
                         <div className="site-search__input">
                             <label htmlFor="encode-search" className="label--inline">Search ENCODE portal</label>
                             <Tooltip
-                                trigger={<i className="icon icon-info-circle" />}
+                                trigger={<i className="icon icon-question-circle" />}
                                 tooltipId="search-encode"
                                 css="tooltip-home-info"
                             >
@@ -456,7 +456,11 @@ class ScreenSearch extends React.Component {
                         <div className="site-search__input">
                             <label htmlFor="screen-search" id="screen-search-label">
                                 Search for candidate Cis-Regulatory Elements
-                                <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
+                                <Tooltip
+                                    trigger={<i className="icon icon-question-circle" />}
+                                    tooltipId="search-screen"
+                                    css="tooltip-home-info"
+                                >
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
                                 <div className="site-search__note">Hosted by <a href="https://screen.wenglab.org/">SCREEN</a></div>
