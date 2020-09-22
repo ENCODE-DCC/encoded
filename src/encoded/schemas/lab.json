@@ -21,7 +21,7 @@
             "title": "Name",
             "description": "A short unique name for the lab, current convention is lower cased and hyphen delimited of PI's first and last name (e.g. john-doe).",
             "type": "string",
-            "pattern": "^[a-z0-9\\-]+$",
+            "pattern": "^[a-zA-ZÀ-ÿæœ\\d_$.+!*,()'-]+$",
             "uniqueKey": "lab:name"
         },
         "title": {
