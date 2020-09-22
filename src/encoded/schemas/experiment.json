@@ -437,8 +437,6 @@
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
         "files.assembly": 5.0,
-        "files.replicate.experiment.assay_term_name": 5.0,
-        "files.replicate.experiment.assay_title": 5.0,
         "replicates.library.accession": 1.0,
         "replicates.library.alternate_accessions": 1.0,
         "replicates.library.aliases": 1.0,

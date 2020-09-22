@@ -61,9 +61,6 @@
         "organism.scientific_name": {
             "title": "Organism"
         },
-        "files.replicate.experiment.target.investigated_as": {
-            "title": "Target category"
-        },
         "files.file_type": {
             "title": "Available file types"
         },
@@ -93,10 +90,6 @@
         },
         "assay_term_name": {
             "title": "Assay name",
-            "type": "string"
-        },
-        "files.replicate.experiment.target.label":{
-            "title": "Target",
             "type": "string"
         },
         "description": {
@@ -135,10 +128,6 @@
         "lab.institute_name": 1.0,
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
-        "files.replicate.experiment.target.aliases": 1.0,
-        "files.replicate.experiment.target.genes.symbol": 1.0,
-        "files.replicate.experiment.target.label": 1.0,
-        "files.replicate.experiment.target.genes.dbxrefs": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
