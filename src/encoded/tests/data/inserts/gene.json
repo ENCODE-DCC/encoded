@@ -513,4 +513,46 @@
         "start": 47808713,
         "end": 47814692
     }]
+}, {
+    "dbxrefs": ["ENSEMBL:ENSG00000270647", "MIM:601574", "RefSeq:NM_139215.3", "Vega:OTTHUMG00000188384", "HGNC:11547", "GeneCards:TAF15", "UniProtKB:Q92804"],
+    "geneid": "8148",
+    "locations": [{
+        "assembly": "GRCh38",
+        "chromosome": "chr17",
+        "start": 35809484,
+        "end": 35847242
+    }, {
+        "assembly": "hg19",
+        "chromosome": "chr17",
+        "start": 34136488,
+        "end": 34174246
+    }],
+    "name": "TATA-box binding protein associated factor 15",
+    "ncbi_entrez_status": "live",
+    "organism": "human",
+    "status": "released",
+    "symbol": "TAF15",
+    "synonyms": ["TAFII68", "Npl3", "hTAFII68", "TAF2N", "RBP56"],
+    "uuid": "9edb73ff-3ba7-43fc-a038-b5042b252f62"
+}, {
+    "status": "released",
+    "geneid": "84524",
+    "ncbi_entrez_status": "live",
+    "symbol": "ZC3H8",
+    "name": "zinc finger CCCH-type containing 8",
+    "synonyms": ["Fliz1", "ZC3HDC8"],
+    "dbxrefs": ["HGNC:30941", "GeneCards:ZC3H8", "RefSeq:NM_032494.3", "ENSEMBL:ENSG00000144161", "UniProtKB:Q8N5P1", "Vega:OTTHUMG00000153270"],
+    "locations": [{
+        "assembly": "GRCh38",
+        "chromosome": "chr2",
+        "start": 112211529,
+        "end": 112255042
+    }, {
+        "assembly": "hg19",
+        "chromosome": "chr2",
+        "start": 112969106,
+        "end": 113012619
+    }],
+    "organism": "human",
+    "uuid": "13082204-d87e-4564-a49a-215b6f07fc31"
 }]

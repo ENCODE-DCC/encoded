@@ -2,6 +2,7 @@ $data-cell-width: 40px;
 $col-category-header-height: 200px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
+$matrix-border-color: #f0f0f0;
 
 // Add a shadow to the right edge of the first column's cells.
 @mixin matrix-freeze-shadow {
@@ -371,6 +372,8 @@ $row-data-header-width: 200px;
 .matrix {
     border-collapse: separate;
     max-width: none;
+    width: 1px;
+    height: 1px;
     border-spacing: 0;
 
     // Holds vertical facets and matrix itself.
@@ -475,7 +478,7 @@ $row-data-header-width: 200px;
         > th {
             width: $row-data-header-width;
             text-align: right;
-            border-left: 1px solid #f0f0f0;
+            border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
             border-bottom: 1px solid #fff;
             @extend %sticky-column;
@@ -519,8 +522,8 @@ $row-data-header-width: 200px;
             width: $data-cell-width;
             padding: 0 !important;
             text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-            border-left: 1px solid #f0f0f0;
+            border-bottom: 1px solid $matrix-border-color;
+            border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
 
             > a {
@@ -542,7 +545,7 @@ $row-data-header-width: 200px;
     @at-root #{&}__row-spacer {
         margin: 0;
         height: $row-category-cell-height;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid $matrix-border-color;
         vertical-align: top;
 
         > td {
@@ -601,6 +604,14 @@ $row-data-header-width: 200px;
                     flex: 0 1 auto;
                     font-weight: bold;
                     text-decoration: none;
+
+                    @media screen and (min-width: $screen-md-min) {
+                        white-space: normal;
+                    }
+
+                    @media screen and (min-width: $screen-lg-min) {
+                        white-space: nowrap;
+                    }
                 }
             }
         }
@@ -621,7 +632,7 @@ $row-data-header-width: 200px;
 
         > td {
             padding: 0 !important;
-            border-left: 1px solid #f0f0f0;
+            border-left: 1px solid $matrix-border-color;
             font-size: 1rem;
 
             &:last-child > div, &:last-child > a {
@@ -1359,4 +1370,286 @@ $divider-color: #000; // Color of dividers between assays with targets
         stroke: #ccc;
         stroke-width: 2px;
       }
+}
+
+
+/**
+ * ENCORE Styles
+ */
+
+// Width of the ENCORE header and subheader cells.
+$encore-subheader-width: 30px;
+$encore-subheader-height: 56px;
+$encore-header-width: $encore-subheader-width;
+$encore-header-height: 150px;
+$encore-header-height-xs: 200px;
+$encore-header-width-spanned: $encore-subheader-width * 2;
+$encore-cell-width: $encore-subheader-width;
+$encore-spacer-width: 10px;
+$encore-term-name-colors:
+    HepG2 #eed78c #000 #e4bc52,
+    K562 #879acd #000 #354b77,
+    none #e0e0e0 #000 #c0c0c0;
+$rnaseq-term-name-colors:
+    HepG2 #e4bc52 #000 #eed78c,
+    K562 #354b77 #fff #879acd,
+    none #c0c0c0 #000 #e0e0e0;
+
+// Styles specific to the ENCORE matrix.
+.matrix__content {
+    // Content for the whole ENCORE page, including the RNA-seq matrix
+    &.matrix__content--encore {
+        display: block;
+
+        .matrix__data {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .category-header {
+            padding: 0;
+            border-left: 1px solid transparent;
+            width: $encore-header-width;
+
+            > a {
+                width: $encore-header-width;
+                line-height: $encore-header-width;
+            }
+
+            &.category-header--spanned {
+                width: $encore-header-width-spanned;
+
+                > a {
+                    width: $encore-header-width-spanned;
+                    line-height: $encore-header-width-spanned;
+                }
+            }
+        }
+
+        .category-subheader {
+            width: $encore-subheader-width;
+            padding: 5px 0;
+            vertical-align: bottom;
+            border-left: 1px solid $matrix-border-color;
+            border-bottom: 1px solid $matrix-border-color;
+
+            @each $term, $header-color, $text-color in $encore-term-name-colors {
+                &.category-subheader--#{$term} {
+                    background-color: $header-color;
+
+                    a {
+                        display: block;
+                        font-weight: normal;
+                        color: $text-color;
+                        width: $encore-subheader-width;
+                        height: $encore-subheader-height;
+                        line-height: $encore-subheader-width;
+                        text-align: left;
+                        writing-mode: tb-rl;
+                        transform: rotate(180deg);
+
+                        &:hover {
+                            text-decoration: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        td {
+            width: $encore-subheader-width;
+            padding: 0 0 1px 1px;
+        }
+
+        .matrix__row-data {
+            height: 100%;
+
+            > th {
+                position: static;
+                width: auto;
+                border-left: none;
+                background-color: transparent;
+                border-bottom: 1px solid transparent;
+
+                > a {
+                    white-space: nowrap;
+                }
+            }
+
+            > td {
+                height: 100%;
+
+                > a {
+                    width: $encore-cell-width;
+                    height: 100%;
+                }
+
+                &:first-of-type {
+                    border-left: 1px solid $matrix-border-color;
+                }
+
+                .encore-cell {
+                    @each $term, $color, $text-color, $cell-color in $encore-term-name-colors {
+                        &.encore-cell--#{$term} {
+                            background-color: $cell-color;
+                        }
+                    }
+                }
+
+                &.encore-column-spacer {
+                    border-bottom: none;
+                }
+            }
+        }
+
+        .matrix__col-category-header {
+            height: $encore-header-height-xs;
+
+            @media screen and (min-width: $screen-sm-min) {
+                height: $encore-header-height;
+            }
+
+            > th {
+                height: $encore-header-height-xs;
+
+                @media screen and (min-width: $screen-sm-min) {
+                    height: $encore-header-height;
+                }
+
+                &.encore-column-spacer {
+                    width: $encore-spacer-width;
+                }
+
+                > a {
+                    height: $encore-header-height-xs;
+
+                    @media screen and (min-width: $screen-sm-min) {
+                        height: $encore-header-height;
+                    }
+                }
+            }
+
+            > td {
+                position: static;
+            }
+        }
+
+        .matrix__message {
+            height: 200px;
+            vertical-align: top;
+
+            > td {
+                padding: 5px 30px;
+                min-height: 100px;
+                text-align: center;
+                white-space: nowrap;
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.matrix {
+    &.matrix--rna-seq {
+        padding: 0 20px 20px 0;
+        border-top: 1px solid $matrix-border-color;
+        border-left: 1px solid $matrix-border-color;
+    }
+}
+
+// Inset RNA-seq matrix.
+.matrix__content.matrix__content--encore {
+    .matrix__presentation {
+        display: block;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        // The RNA-seq portion of the page.
+        .matrix__rna-seq {
+            margin-top: 10px;
+            padding: 3px 0 0 3px;
+            background-color: #e8e8e8;
+            border: 1px solid #d0d0d0;
+            margin-bottom: 50px;
+
+            @media screen and (min-width: $screen-md-min) {
+                order: 1;
+                margin-left: 50px;
+                margin-bottom: 0;
+                min-width: 1px; // Prevents flex row overflow by allowing scrolling of this matrix.
+
+                .uaTrident & {
+                    flex-grow: 1;
+                }
+            }
+
+            .matrix__col-category-header {
+                > td {
+                    background-color: transparent;
+                }
+            }
+
+            .category-subheader {
+                @each $term, $header-color, $text-color, $cell-color in $rnaseq-term-name-colors {
+                    &.category-subheader--#{$term} {
+                        background-color: $header-color;
+
+                        a {
+                            color: $text-color;
+                        }
+                    }
+                }
+            }
+
+            .matrix__row-data {
+                > td {
+                    .encore-cell {
+                        @each $term, $header-color, $text-color, $cell-color in $rnaseq-term-name-colors {
+                            &.encore-cell--#{$term} {
+                                background-color: $cell-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // The ENCORE portion of the page.
+        .matrix__encore {
+            @media screen and (min-width: $screen-md-min) {
+                order: 0;
+
+                .uaTrident & {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+}
+
+.type-EncoreMatrix {
+    .matrix-header__target-filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 450px;
+        }
+
+        .general-search-entry {
+            padding-right: 0;
+        }
+    }
+}
+
+.encore-column-spacer {
+    border-left: 1px solid $matrix-border-color;
+    width: $encore-spacer-width;
+}
+
+.type-EncoreMatrix {
+    .general-search-entry {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
 }
