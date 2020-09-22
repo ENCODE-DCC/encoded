@@ -389,6 +389,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
         'build_type': build_type_template_name,
         'is_qa_demo': main_args.is_qa_demo,
     }
+    subprocess.check_output(['git', 'fetch', '--tags'])
     instances_tag_data['commit'] = _get_commit_sha_for_branch(instances_tag_data['branch'])
     # check if commit is a tag first then branch
     is_tag = False
