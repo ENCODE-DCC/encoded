@@ -38,6 +38,7 @@ const displayedLibraryProperties = [
     { property: 'depleted_in_term_name', title: 'Depleted in', test: 'depletedin' },
     { property: 'nucleic_acid_starting_quantity', title: 'Library starting quantity', test: 'startingquantity' },
     { property: 'size_range', title: 'Size range', test: 'sizerange' },
+    { property: 'average_fragment_size', title: 'Average fragment size', test: 'avgfragmentsize' },
     { property: 'lysis_method', title: 'Lysis method', test: 'lysismethod' },
     { property: 'extraction_method', title: 'Extraction method', test: 'extractionmethod' },
     { property: 'fragmentation_methods', title: 'Fragmentation methods', test: 'fragmentationmethod' },
