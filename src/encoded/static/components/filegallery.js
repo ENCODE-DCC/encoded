@@ -2111,6 +2111,8 @@ export const compileAnalyses = (experiment, files) => {
             // `UNIFORM_PIPELINE_LAB` is only valid if alone.
             return (
                 analysis.assembly
+                && analysis.assembly !== 'mixed'
+                && analysis.genome_annotation !== 'mixed'
                 && analysis.pipeline_award_rfas.length === 1
                 && analysis.pipeline_labs.length > 0
                 && !(analysis.pipeline_labs.length === 1 && analysis.pipeline_labs[0] === UNIFORM_PIPELINE_LAB && rfas.length > 1)
