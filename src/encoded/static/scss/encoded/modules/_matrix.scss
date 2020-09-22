@@ -980,6 +980,12 @@ table.matrix th.group-all-groups-cell {
     }
 }
 
+.ChipSeqMatrix {
+    .general-search-entry {
+        margin: 0;
+    }
+}
+
 .chip_seq_matrix__data-wrapper {
     .tab-content {
             overflow-x: auto;
