@@ -33,19 +33,6 @@
             "type": "string",
             "linkTo": "OntologyTerm"
         },
-        "description": {
-            "elasticsearch_mapping_index_type": {
-                "title": "Field mapping index type",
-                "description": "Defines one of three types of indexing available",
-                "type": "string",
-                "default": "analyzed",
-                "enum": [
-                    "analyzed",
-                    "no",
-                    "not_analyzed"
-                ]
-            }
-        },
         "derived_from": {
             "title": "Derived from",
             "description": "The donor(s) or sample(s) from which this object was directly derived.",
