@@ -1,0 +1,95 @@
+{
+	"title": "Atac aggregate metrics",
+	"description": "Schema for submitting metadata for aggregate ATAC-seq metrics",
+	"id": "/profiles/atac_summary_metrics.json",
+	"schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"required": ["quality_metric_of"],
+	"identifyingProperties": ["uuid"],
+	"additionalProperties": false,
+	"mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/quality_metric_of"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "annotated_cells": {
+        	"title": "Annotated cells",
+        	"description": "Estimated number of cells.",
+        	"type": "integer"
+        },
+        "frac_cut_fragments_in_peaks": {
+        	"title": "Frac cut gragments in peaks",
+        	"description": "Fraction of transposition events in peaks.",
+        	"type": "number"
+        },
+        "frac_fragments_overlapping_peaks": {
+        	"title": "Frac fragments overlapping peaks",
+        	"description": "Fraction of fragements overlapping called peaks.",
+        	"type": "number"
+        },
+        "frac_fragments_overlapping_targets": {
+        	"title": "Frac fragments overlapping targets",
+        	"description": "Fraction of fragments overlapping any targeted region",
+        	"type": "number"
+        },
+        "median_fragments_per_cell": {
+        	"title": "Median fragments per cell",
+        	"description": "Median fragments per cell barcode",
+        	"type": "number"
+        },
+        "library_metrics": {
+        	"title": "Library metrics",
+        	"description": "Metrics of read pairs and fragments prior to and after depth normalization",
+        	"type": "array",
+        	"items": {
+        		"title": "Library metric",
+        		"description": "Metric of read pairs and fragments prior to and after depth normalization",
+        		"type": "object",
+        		"additionalProperties": false,
+        		"properties": {
+        			"library": {
+        				"title": "Library",
+                        "description": "The Library object representation that these metrics describe.",
+                        "type": "string",
+                        "linkTo": "Library"
+        			},
+        			"post_norm_median_frags_per_cell": {
+        				"title": "Post norm median frags per cell",
+        				"description": "Post-Normalization median unique fragments per cell in library",
+        				"type": "number"
+        			},
+        			"pre_norm_median_frags_per_cell": {
+        				"title": "Pre norm median frags per cell",
+        				"description": "Pre-Normalization median unique fragements per cell in library",
+        				"type": "number"
+        			},
+        			"total_post_normalization": {
+        				"title": "Total post normalization",
+        				"description": "Post-Normalization total mapped read pairs in library",
+        				"type": "number"
+        			},
+        			"total_pre_normalization": {
+        				"title": "Total pre normalization",
+        				"description": "Pre-Normalization total mapped read pairs in library",
+        				"type": "number"
+        			},
+        			"unique_post_normalization": {
+        				"title": "Unique post normalization",
+        				"description": "Post-Normalization unique fragments in library",
+        				"type": "number"
+        			}
+        		}
+        	}
+        }
+    },
+    "changelog": "/profiles/changelogs/atac_aggregate_metrics.md"
+}
