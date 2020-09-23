@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
+        {"$ref": "mixins.json#/starting_quantity"},
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
@@ -62,6 +63,15 @@
                     "enzymatic digestion"
                 ]
             }
+        },
+        "starting_quantity_units": {
+            "enum": [
+                "g",
+                "mg",
+                "μg",
+                "cm",
+                "sq cm"
+            ]
         },
         "death_to_preservation_interval": {
             "title": "Death to preservation interval",

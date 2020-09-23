@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
+        {"$ref": "mixins.json#/starting_quantity"},
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],
@@ -42,6 +43,16 @@
                     "Tissue"
                 ]
             }
+        },
+        "starting_quantity_units": {
+            "enum": [
+                "cells",
+                "cells/μl",
+                "cells/ml",
+                "g",
+                "mg",
+                "μg"
+            ]
         },
         "passage_number": {
             "title": "Passage number",

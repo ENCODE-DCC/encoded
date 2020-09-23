@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
+        {"$ref": "mixins.json#/starting_quantity"},
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],
@@ -42,6 +43,15 @@
                     "Organoid"
                 ]
             }
+        },
+        "starting_quantity_units": {
+            "enum": [
+                "g",
+                "mg",
+                "μg",
+                "cm",
+                "sq cm"
+            ]
         },
         "embedded_in_matrigel": {
             "title": "Embedded in matrigel",

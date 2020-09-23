@@ -21,7 +21,8 @@
         {"$ref": "mixins.json#/accessioned_status"},
         {"$ref": "mixins.json#/source"},
         {"$ref": "mixins.json#/dbxrefs"},
-        {"$ref": "mixins.json#/lab"}
+        {"$ref": "mixins.json#/lab"},
+        {"$ref": "mixins.json#/starting_quantity"}
     ],
     "dependencies": {
         "starting_quantity_units": ["starting_quantity"],
@@ -128,14 +129,9 @@
             }
         },
         "starting_quantity": {
-            "title": "Starting quantity",
-            "description": "The starting amount or concentration before selection and purification.",
-            "type": "number"
+            "description": "The starting amount or concentration before selection and purification."
         },
         "starting_quantity_units": {
-            "title": "Starting quantity units",
-            "description": "The units used to measure amount or concentration of input to the library preparation.",
-            "type": "string",
             "enum": [
                 "cell-equivalent",
                 "cells",

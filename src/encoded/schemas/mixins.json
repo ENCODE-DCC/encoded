@@ -315,6 +315,18 @@
             }
         }
     },
+    "starting_quantity": {
+        "starting_quantity": {
+            "title": "Starting quantity",
+            "type": "number",
+            "minimum": 0
+        },
+        "starting_quantity_units": {
+            "title": "Starting quantity units",
+            "description": "The units used to measure the starting amount.",
+            "type": "string"
+        }
+    },
     "diseases": {
         "diseases": {
             "title": "Diseases",

@@ -22,7 +22,8 @@
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
-        {"$ref": "mixins.json#/references"}
+        {"$ref": "mixins.json#/references"},
+        {"$ref": "mixins.json#/starting_quantity"}
     ],
     "dependencies": {},
     "properties": {
@@ -100,24 +101,14 @@
             }
         },
         "starting_quantity": {
-            "title": "Starting amount",
-            "description": "The initial quantity of cells, tissue or animals obtained.",
-            "type": "number",
-            "minimum":0
+            "description": "The initial measurement of material at the initiation of the suspension."
         },
         "starting_quantity_units": {
-            "title": "Starting amount units",
-            "description": "The units used to quantify the amount of cells or tissue obtained.",
-            "type": "string",
             "enum": [
                 "cells",
+                "nuclei",
                 "cells/ml",
-                "g",
-                "items",
-                "mg",
-                "whole animals",
-                "whole embryos",
-                "μg",
+                "nuclei/ml",
                 "cells/μl",
                 "nuclei/μl"
             ]
