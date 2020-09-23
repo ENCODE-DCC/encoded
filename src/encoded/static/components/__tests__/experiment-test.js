@@ -71,13 +71,59 @@ describe('Experiment Page', () => {
         test('has proper strand specificity', () => {
             const item = summarySections.find('[data-test="strandspecificity"]');
             const desc = item.find('dd');
-            expect(desc.text()).toEqual('Strand-specific');
+            expect(desc.text()).toEqual('Strand-specific (mixed)');
         });
 
         test('has proper spikeins', () => {
             const item = summarySections.find('[data-test="spikeins"]');
             const desc = item.find('dd');
             expect(desc.text()).toEqual('ENCSR000AJW');
+        });
+    });
+
+    describe('Replicate Panels, test Strand-specific', () => {
+        let experiment;
+        let summarySections;
+
+        beforeAll(() => {
+            const contextRep = _.clone(context);
+            contextRep.replicates = [require('../testdata/replicate/mouse')];
+            contextRep.replicates[0].library = require('../testdata/library/sid38807');
+            contextRep.files = [require('../testdata/file/fastq')[0]];
+            const store = mockStore(initialCart);
+            experiment = mount(
+                <Provider store={store}><Experiment context={contextRep} /></Provider>
+            );
+            summarySections = experiment.find('.panel__split-element');
+        });
+
+        test('has proper strand specificity', () => {
+            const item = summarySections.find('[data-test="strandspecificity"]');
+            const desc = item.find('dd');
+            expect(desc.text()).toEqual('Strand-specific');
+        });
+    });
+
+    describe('Replicate Panels, test Strand-specific with parenthesis', () => {
+        let experiment;
+        let summarySections;
+
+        beforeAll(() => {
+            const contextRep = _.clone(context);
+            contextRep.replicates = [require('../testdata/replicate/human')];
+            contextRep.replicates[0].library = require('../testdata/library/sid38806');
+            contextRep.files = [require('../testdata/file/fastq')[0]];
+            const store = mockStore(initialCart);
+            experiment = mount(
+                <Provider store={store}><Experiment context={contextRep} /></Provider>
+            );
+            summarySections = experiment.find('.panel__split-element');
+        });
+
+        test('has proper strand specificity', () => {
+            const item = summarySections.find('[data-test="strandspecificity"]');
+            const desc = item.find('dd');
+            expect(desc.text()).toEqual('Strand-specific (true)');
         });
     });
 
