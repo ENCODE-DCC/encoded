@@ -65,3 +65,25 @@ class GeneExpressionMetrics(Metrics):
     item_type = 'gene_expression_metrics'
     schema = load_schema('encoded:schemas/gene_expression_metrics.json')
     embedded = Metrics.embedded + []
+
+@collection(
+    name='atac_summary_metrics',
+    properties={
+        'title': "Atac Summary Metrics",
+        'description': "",
+    })
+class AtacSummaryMetrics(Metrics):
+    item_type = 'atac_summary_metrics'
+    schema = load_schema('encoded:schemas/atac_summary_metrics.json')
+    embedded = Metrics.embedded + []
+
+@collection(
+    name='atac_aggregate_metrics',
+    properties={
+        'title': "Atac Aggregate Metrics",
+        'description': "",
+    })
+class AtacAggregateMetrics(Metrics):
+    item_type = 'atac_aggregate_metrics'
+    schema = load_schema('encoded:schemas/atac_aggregate_metrics.json')
+    embedded = Metrics.embedded + []
