@@ -432,7 +432,7 @@
         "layout": {
             "blocks": [
               {
-                 "body": "<h2>Contact</h2>\n\n<p>For questions about the KCE Portal or KCE data, please email&nbsp;<a href=\"mailto:bicf@utsouthwestern.edu\">bicf@utsouthwestern.edu</a></p>\n\n<h2>Current team members</h2>\n\n<ul>\n\t<li><strong>Payal Kapur, M.D.</strong>, KCE Project Leader</li>\n\t<li><strong>Alana Christie, M.S.</strong>, Database Curator</li>\n\t<li><strong>Phillip Reeder,M.S.</strong>, Database Analyst</li>\n\t<li><strong>Venkat Malladi, M.S.</strong>, BICF Core Director</li>\n\t<li><strong>Mingzhu Nie, Ph.D.</strong>, Scientific programmer I</li>\n\t<li><strong>Mingjie Li, M.S.</strong>, Computational biologist II</li>\n</ul>\n\n<h2>Acknowledgments</h2>\n\n<ul>\n\t<li><strong>Yang Xie, Ph.D.</strong>, Director Bioinformatics Core</li>\n\t<li><strong>Ellen Araj, M.D.</strong>, Clinical Fellow / CoPath NLP</li>\n\t<li><strong>Min Soo Kim, M.S.</strong>, Former KCE Project Co-Lead</li>\n\t<li><strong>Qinbo Zhou, Ph.D.</strong>, Former Primary Web Developer</li>\n\t<li><strong>Xin Luo, Ph.D.</strong>, Database Curator</li>\n\t<li><strong>Bo Yao, Ph.D.</strong>, Web Developer</li>\n</ul>\n\n",              
+                 "body": "<h2>Contact</h2>\n\n<p>For questions about the KCE Portal or KCE data, please email&nbsp;<a href=\"mailto:bicf@utsouthwestern.edu\">bicf@utsouthwestern.edu</a></p>\n\n<h2>Current team members</h2>\n\n<ul>\n\t<li><strong>Payal Kapur, M.D.</strong>, KCE Project Leader</li>\n\t<li><strong>Alana Christie, M.S.</strong>, Database Curator</li>\n\t<li><strong>Phillip Reeder,M.S.</strong>, Database Analyst</li>\n\t<li><strong>Venkat Malladi, M.S.</strong>, BICF Core Director</li>\n\t<li><strong>Mingzhu Nie, Ph.D.</strong>, Web Developer</li>\n\t<li><strong>Mingjie Li, M.S.</strong>, Web Developer</li>\n</ul>\n\n<h2>Acknowledgments</h2>\n\n<ul>\n\t<li><strong>Yang Xie, Ph.D.</strong>, Director Quantitiative Biomedial Research Center</li>\n\t<li><strong>Ellen Araj, M.D.</strong>, Clinical Fellow / CoPath NLP</li>\n\t<li><strong>Min Soo Kim, M.S.</strong>, Former KCE Project Co-Lead</li>\n\t<li><strong>Qinbo Zhou, Ph.D.</strong>, Former Primary Web Developer</li>\n\t<li><strong>Xin Luo, Ph.D.</strong>, Database Curator</li>\n\t<li><strong>Bo Yao, Ph.D.</strong>, Web Developer</li>\n\t<li><strong>Guillaume Jimenez</strong>, Web Developer</li></ul>\n\n",
 
                 "@id": "#block2",
                 "@type": [
@@ -766,8 +766,8 @@
 
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "status": "released"
-        
-        
+
+
     },
     {
         "title": "New BOLD initiative to spur kidney cancer innovation",
@@ -805,8 +805,8 @@
 
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "status": "released"
-        
-        
+
+
     },
     {
         "title": "Kidney Cancer Program earns Leaders in Clinical Excellence Award",
@@ -843,7 +843,7 @@
         },
 
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "status": "released"       
+        "status": "released"
     },
     {
         "title": "KCP recognized at World Affairs Council award dinner",
@@ -880,7 +880,7 @@
         },
 
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "status": "released"       
+        "status": "released"
     },
     {
         "title": "Discovery of metabolic vulnerabilities in kidney tumors earns award for UTSW investigator",
@@ -917,7 +917,7 @@
         },
 
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "status": "released"       
+        "status": "released"
     },
     {
         "title": "Annual patient conference highlights latest in kidney cancer treatments, clinical trials, and UTSW discoveries",
@@ -954,11 +954,8 @@
         },
 
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
-        "status": "released"       
+        "status": "released"
     }
 
-    
+
 ]
-
-
-
