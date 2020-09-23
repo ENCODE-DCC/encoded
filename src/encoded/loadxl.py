@@ -44,6 +44,8 @@ ORDER = [
     'gene_expression_metrics',
     'antibody_capture_metrics',
     'aggregate_metrics',
+    'atac_summary_metrics',
+    'atac_aggregate_metrics',
     'image',
     'page',
     'access_key'
