@@ -8,7 +8,7 @@ Ontologies used
 
 | Ontology |  File used | Version in use | Version reference |
 |:--|:--|:--|:--|
-| [Uber-anatomy ontology (UBERON)] | `uberon/composite-vertebrate.owl` from [UBERON download] | 2020-09-16 | [UBERON release date] |
+| [Uber-anatomy ontology (UBERON)] | `composite-vertebrate.owl` from [UBERON download] | 2020-09-16 | [UBERON release date] |
 | [Cell Ontology (CL)] | incl. w/ UBERON | incl. w/ UBERON | incl. w/ UBERON |
 | [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2020-09-15 (3.22.0) | [EFO releases] |
 | [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2020-09-14 | [MONDO release date] |
