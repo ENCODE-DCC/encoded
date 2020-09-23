@@ -1,7 +1,7 @@
 [
     {
         "aliases": [
-            "anna-greka:donorA1_raw_feature_bc_matrix.txt"
+            "anna-greka:donorA1_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -11,7 +11,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -52,7 +52,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -84,7 +84,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorA2_raw_feature_bc_matrix.tsv"
+            "anna-greka:donorA2_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -94,7 +94,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -125,7 +125,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorA2_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorA2_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -135,7 +135,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -167,17 +167,17 @@
     },
     {
         "aliases": [
-            "anna-greka:donorB1_raw_feature_bc_matrix.h5"
+            "anna-greka:donorB1_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
         "uuid": "a340d8bc-762b-4147-8882-4bb602ba6c6a",
-        "submitted_file_name": "donorB1_raw_feature_bc_matrix.h5",
-        "file_format": "hdf5",
+        "submitted_file_name": "donorB1_raw_feature_bc_matrix/",
+        "file_format": "mtx",
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -208,7 +208,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorB1_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorB1_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -218,7 +218,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -250,7 +250,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorB2_raw_feature_bc_matrix.h5"
+            "anna-greka:donorB2_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -260,7 +260,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -291,7 +291,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorB2_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorB2_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -301,7 +301,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -333,7 +333,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorA1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -371,7 +371,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -410,7 +410,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -449,7 +449,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorA2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -487,7 +487,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -526,7 +526,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -564,7 +564,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorB1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -602,7 +602,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -641,7 +641,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -679,7 +679,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorB2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -717,7 +717,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -756,7 +756,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -794,7 +794,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorC1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -832,7 +832,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -871,7 +871,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -909,7 +909,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorC2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -947,7 +947,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -986,7 +986,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1024,7 +1024,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorD1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1062,7 +1062,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1101,7 +1101,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1139,7 +1139,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorD2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1177,7 +1177,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1216,7 +1216,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1254,7 +1254,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorE1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1292,7 +1292,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1331,7 +1331,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1369,7 +1369,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorE2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1407,7 +1407,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1446,7 +1446,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1484,7 +1484,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorF1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1522,7 +1522,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1561,7 +1561,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1599,7 +1599,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorF2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1637,7 +1637,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1676,7 +1676,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1714,7 +1714,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorG1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1752,7 +1752,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1791,7 +1791,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1829,7 +1829,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorG2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1867,7 +1867,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1906,7 +1906,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1944,7 +1944,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH1_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorH1_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -1982,7 +1982,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2021,7 +2021,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2059,7 +2059,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH2_raw_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorH2_raw_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2097,7 +2097,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix.h5"
+            "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2136,7 +2136,7 @@
     },
     {
         "aliases": [
-            "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix.h5"
+            "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2174,7 +2174,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC1a_raw_feature_bc_matrix.h5"
+            "anna-greka:donorC1a_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2184,7 +2184,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2209,7 +2209,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC1a_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorC1a_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2219,7 +2219,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2245,7 +2245,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC1b_raw_feature_bc_matrix.h5"
+            "anna-greka:donorC1b_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2255,7 +2255,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2280,7 +2280,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC1b_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorC1b_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2290,7 +2290,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2316,7 +2316,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC2a_raw_feature_bc_matrix.h5"
+            "anna-greka:donorC2a_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2326,7 +2326,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2351,7 +2351,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC2a_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorC2a_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2361,7 +2361,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2387,7 +2387,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC2b_raw_feature_bc_matrix.h5"
+            "anna-greka:donorC2b_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2397,7 +2397,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2422,7 +2422,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorC2b_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorC2b_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2432,7 +2432,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2458,7 +2458,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD1a_raw_feature_bc_matrix.h5"
+            "anna-greka:donorD1a_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2468,7 +2468,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2493,7 +2493,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD1a_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorD1a_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2503,7 +2503,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2529,7 +2529,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD1b_raw_feature_bc_matrix.h5"
+            "anna-greka:donorD1b_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2539,7 +2539,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2564,7 +2564,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD1b_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorD1b_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2574,7 +2574,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2600,7 +2600,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD2a_raw_feature_bc_matrix.h5"
+            "anna-greka:donorD2a_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2610,7 +2610,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2635,7 +2635,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD2a_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorD2a_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2645,7 +2645,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2671,7 +2671,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD2b_raw_feature_bc_matrix.h5"
+            "anna-greka:donorD2b_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2681,7 +2681,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2706,7 +2706,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorD2b_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorD2b_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2716,7 +2716,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2742,7 +2742,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorCD1_raw_feature_bc_matrix.h5"
+            "anna-greka:donorCD1_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2752,7 +2752,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2780,7 +2780,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorCD1_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorCD1_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2790,7 +2790,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2819,7 +2819,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorCD2_raw_feature_bc_matrix.h5"
+            "anna-greka:donorCD2_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2829,7 +2829,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2857,7 +2857,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorCD2_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorCD2_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2867,7 +2867,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2896,7 +2896,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorE_raw_feature_bc_matrix.h5"
+            "anna-greka:donorE_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2906,7 +2906,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2934,7 +2934,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorE_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorE_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2944,7 +2944,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -2973,7 +2973,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorF_raw_feature_bc_matrix.h5"
+            "anna-greka:donorF_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -2983,7 +2983,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -3011,7 +3011,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorF_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorF_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -3021,7 +3021,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -3050,7 +3050,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorG_raw_feature_bc_matrix.h5"
+            "anna-greka:donorG_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -3060,7 +3060,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -3088,7 +3088,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorG_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorG_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -3098,7 +3098,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -3127,7 +3127,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorH_raw_feature_bc_matrix.h5"
+            "anna-greka:donorH_raw_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -3137,7 +3137,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -3165,7 +3165,7 @@
     },
     {
         "aliases": [
-            "anna-greka:donorH_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorH_filtered_feature_bc_matrix"
         ],
         "status": "released",
         "award": "CZI001KID",
@@ -3175,7 +3175,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
@@ -3214,7 +3214,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
@@ -3230,9 +3230,9 @@
         ],
         "derived_from": [
             "anna-greka:donorA1_filtered_feature_bc_matrix",
-            "anna-greka:donorA2_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorB1_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorB2_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorA2_filtered_feature_bc_matrix",
+            "anna-greka:donorB1_filtered_feature_bc_matrix",
+            "anna-greka:donorB2_filtered_feature_bc_matrix"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
@@ -3272,7 +3272,7 @@
         "file_size": 150000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
@@ -3287,14 +3287,14 @@
             "seurat 3.0"
         ],
         "derived_from": [
-            "anna-greka:donorC1a_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorC1b_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorC2a_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorC2b_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorD1a_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorD1b_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorD2a_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorD2b_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorC1a_filtered_feature_bc_matrix",
+            "anna-greka:donorC1b_filtered_feature_bc_matrix",
+            "anna-greka:donorC2a_filtered_feature_bc_matrix",
+            "anna-greka:donorC2b_filtered_feature_bc_matrix",
+            "anna-greka:donorD1a_filtered_feature_bc_matrix",
+            "anna-greka:donorD1b_filtered_feature_bc_matrix",
+            "anna-greka:donorD2a_filtered_feature_bc_matrix",
+            "anna-greka:donorD2b_filtered_feature_bc_matrix"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
@@ -3334,7 +3334,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
@@ -3349,8 +3349,8 @@
             "seurat 3.0"
         ],
         "derived_from": [
-            "anna-greka:donorCD1_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorCD2_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorCD1_filtered_feature_bc_matrix",
+            "anna-greka:donorCD2_filtered_feature_bc_matrix"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
@@ -3390,7 +3390,7 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
@@ -3405,8 +3405,8 @@
             "seurat 3.0"
         ],
         "derived_from": [
-            "anna-greka:donorE_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorF_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorE_filtered_feature_bc_matrix",
+            "anna-greka:donorF_filtered_feature_bc_matrix"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
@@ -3446,7 +3446,7 @@
         "file_size": 200000,
         "lab": "anna-greka",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
@@ -3461,8 +3461,8 @@
             "seurat 3.0"
         ],
         "derived_from": [
-            "anna-greka:donorG_filtered_feature_bc_matrix.h5",
-            "anna-greka:donorH_filtered_feature_bc_matrix.h5"
+            "anna-greka:donorG_filtered_feature_bc_matrix",
+            "anna-greka:donorH_filtered_feature_bc_matrix"
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
@@ -4566,7 +4566,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "postnatal_1a_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4603,7 +4603,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "postnatal_1b_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4640,7 +4640,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "postnatal_1c_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4677,7 +4677,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_2a_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4714,7 +4714,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_2b_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4751,7 +4751,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_2c_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4788,7 +4788,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_3a_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4825,7 +4825,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_3b_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4862,7 +4862,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_3c_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4899,7 +4899,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "postnatal_1a_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4937,7 +4937,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "postnatal_1b_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -4975,7 +4975,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "postnatal_1c_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5013,7 +5013,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_2a_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5051,7 +5051,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_2b_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5089,7 +5089,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_2c_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5127,7 +5127,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_3a_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5165,7 +5165,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_3b_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5203,7 +5203,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_3c_filtered_matrix.mtx/",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5241,7 +5241,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_merged_matrix.mtx",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
@@ -5300,7 +5300,7 @@
         "lab": "peter-sims",
         "submitted_file_name": "prenatal_merged_matrix.mtx",
         "output_types": [
-            "transcript quantifications"
+            "gene quantifications"
         ],
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
