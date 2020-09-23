@@ -13,7 +13,7 @@
         "derivation_process": [
             "cell isolation", "differentiation", "expansion"
         ],
-        "biosample_ontology": "CL_0004905",
+        "biosample_ontology": "CL_0002248",
         "passage_number": 10,
         "is_immortalized": false,
         "mycoplasma_testing_method": "qPCR",
@@ -40,7 +40,7 @@
         "derivation_process": [
             "cell isolation", "differentiation", "expansion"
         ],
-        "biosample_ontology": "CL_0004905",
+        "biosample_ontology": "CL_0002248",
         "passage_number": 9,
         "is_immortalized": false,
         "mycoplasma_testing_method": "qPCR",

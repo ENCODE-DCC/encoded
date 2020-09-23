@@ -36,8 +36,7 @@
                     "ancestry_group": {
                         "description": "An ancestry group, preferably defined by the Human Ancestry Ontology.",
                         "type": "string",
-                        "linkTo": "OntologyTerm",
-                        "pattern": "^(HANCESTRO|NTR)_[0-9]{2,8}$"
+                        "linkTo": "OntologyTerm"
                     },
                     "percentage": {
                         "description": "An estimated percent ancestry to the corresponding group, as determined by genotype data.",
@@ -51,8 +50,7 @@
             "title": "Ethnicity",
             "description": "Ethnic group to which the donor belongs, usually self-reported by the donor.",
             "type": "string",
-            "linkTo": "OntologyTerm",
-            "pattern": "^(HANCESTRO|NTR)_[0-9]{2,8}$"
+            "linkTo": "OntologyTerm"
         },
         "parents": {
             "title": "Parents",

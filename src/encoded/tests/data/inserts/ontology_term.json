@@ -13,8 +13,8 @@
     },
     {
         "uuid": "5d0a236f-7128-49a2-a46b-64b1e2ad7219",
-        "term_name": "induced pluripotent stem cell",
-        "term_id": "CL:0004905",
+        "term_name": "pluripotent stem cell",
+        "term_id": "CL:0002248",
         "status": "released"
     },
     {
@@ -67,7 +67,7 @@
     },
     {
         "uuid": "b6bf197c-0e54-451b-80d8-7cae1d7a36fa",
-        "term_name": "vascular endothelial growth factor growth factor",
+        "term_name": "vascular endothelial growth factor",
         "term_id": "EFO:0003276",
         "status": "released"
     },
@@ -109,7 +109,7 @@
     },
     {
         "uuid": "2d745ae2-d915-11ea-87d0-0242ac130003",
-        "term_name": "type 2 diabetes mellitus",
+        "term_name": "type 1 diabetes mellitus",
         "term_id": "MONDO:0005147",
         "status": "released"
     },

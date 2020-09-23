@@ -37,9 +37,6 @@
         "schema_version": {
             "default": "1"
         },
-        "biosample_ontology": {
-            "pattern": "^(UBERON|NTR)_[0-9]{2,8}$"
-        },
         "derived_from": {
             "items": {
                 "title": "Derived from",
