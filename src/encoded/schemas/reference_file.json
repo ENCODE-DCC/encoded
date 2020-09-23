@@ -252,9 +252,6 @@
         "title": {
             "title": "Title"
         },
-        "accession": {
-            "title": "Accession"
-        },
         "dataset": {
             "title": "Dataset"
         },

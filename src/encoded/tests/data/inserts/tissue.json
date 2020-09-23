@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCBS850DDD",
+        "accession": "LATBS850DDD",
         "aliases": [
             "anna-greka:human_tissue_donorA"
         ],
@@ -29,7 +29,7 @@
         "starting_quantity_units": "g"
     },
     {
-        "accession": "ENCBS855DDD",
+        "accession": "LATBS855DDD",
         "aliases": [
             "anna-greka:human_tissue_donorB"
         ],
@@ -56,7 +56,7 @@
         "starting_quantity_units": "g"
     },
     {
-        "accession": "ENCBS860DDD",
+        "accession": "LATBS860DDD",
         "aliases": [
             "anna-greka:human_tissue_donorC"
         ],
@@ -82,7 +82,7 @@
         "starting_quantity_units": "g"
     },
     {
-        "accession": "ENCBS865DDD",
+        "accession": "LATBS865DDD",
         "aliases": [
             "anna-greka:human_tissue_donorD"
         ],
@@ -108,7 +108,7 @@
         "starting_quantity_units": "g"
     },
     {
-        "accession": "ENCBS870DDD",
+        "accession": "LATBS870DDD",
         "aliases": [
             "anna-greka:mouse_tissue_donorE"
         ],
@@ -135,7 +135,7 @@
         ]
     },
     {
-        "accession": "ENCBS875DDD",
+        "accession": "LATBS875DDD",
         "aliases": [
             "anna-greka:mouse_tissue_donorF"
         ],
@@ -162,7 +162,7 @@
         ]
     },
     {
-        "accession": "ENCBS880DDD",
+        "accession": "LATBS880DDD",
         "aliases": [
             "anna-greka:mouse_tissue_donorG"
         ],
@@ -189,7 +189,7 @@
         ]
     },
     {
-        "accession": "ENCBS885DDD",
+        "accession": "LATBS885DDD",
         "aliases": [
             "anna-greka:mouse_tissue_donorH"
         ],
@@ -216,7 +216,7 @@
         ]
     },
     {
-        "accession": "ENCBS550ABC",
+        "accession": "LATBS550ABC",
         "description": "prenatal_tissue1",
         "aliases": [
             "jimmie-ye:prenatal_tissue1"
@@ -243,7 +243,7 @@
         ]
     },
     {
-        "accession": "ENCBS551ABC",
+        "accession": "LATBS551ABC",
         "description": "prenatal_tissue2",
         "aliases": [
             "jimmie-ye:prenatal_tissue2"
@@ -270,7 +270,7 @@
         ]
     },
     {
-        "accession": "ENCBS552ABC",
+        "accession": "LATBS552ABC",
         "description": "prenatal_tissue3",
         "aliases": [
             "jimmie-ye:prenatal_tissue3"
@@ -297,7 +297,7 @@
         ]
     },
     {
-        "accession": "ENCBS543ABC",
+        "accession": "LATBS543ABC",
         "description": "tissue_1",
         "aliases": [
             "peter-sims:tissue_1"
@@ -325,7 +325,7 @@
         ]
     },
     {
-        "accession": "ENCBS544ABC",
+        "accession": "LATBS544ABC",
         "description": "tissue_2",
         "aliases": [
             "peter-sims:tissue_2"
@@ -353,7 +353,7 @@
         ]
     },
     {
-        "accession": "ENCBS545ABC",
+        "accession": "LATBS545ABC",
         "description": "tissue_3",
         "aliases": [
             "peter-sims:tissue_3"
@@ -381,7 +381,7 @@
         ]
     },
     {
-        "accession": "ENCBS686GGG",
+        "accession": "LATBS686GGG",
         "description": "tissue_A",
         "aliases": [
             "anindita-basu:tissue_A"
@@ -409,7 +409,7 @@
         ]
     },
     {
-        "accession": "ENCBS689GGG",
+        "accession": "LATBS689GGG",
         "description": "tissue_B",
         "aliases": [
             "anindita-basu:tissue_B"

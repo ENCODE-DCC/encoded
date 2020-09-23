@@ -4,8 +4,7 @@ from jsonschema_serialize_fork import FormatChecker
 from pyramid.threadlocal import get_current_request
 from uuid import UUID
 
-accession_re = re.compile(r'^ENC(FF|SR|AB|BS|DO|GM|LB|PL|AN)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
-test_accession_re = re.compile(r'^TST(FF|SR|AB|BS|DO|GM|LB|PL|AN)[0-9][0-9][0-9]([0-9][0-9][0-9]|[A-Z][A-Z][A-Z])$')
+accession_re = re.compile(r'^LAT(DS|LB|DF|HD|MD|BS|SU)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
 uuid_re = re.compile(r'(?i)\{?(?:[0-9a-f]{4}-?){8}\}?')
 
 
@@ -20,8 +19,7 @@ def is_accession(instance):
     ''' just a pattern checker '''
     # Unfortunately we cannot access the accessionType here
     return (
-        accession_re.match(instance) is not None or
-        test_accession_re.match(instance) is not None
+        accession_re.match(instance) is not None
     )
 
 
@@ -29,15 +27,10 @@ def is_accession(instance):
 def is_accession_for_server(instance):
     from .server_defaults import (
         ACCESSION_FACTORY,
-        test_accession,
     )
     # Unfortunately we cannot access the accessionType here
     if accession_re.match(instance):
         return True
-    request = get_current_request()
-    if request.registry[ACCESSION_FACTORY] is test_accession:
-        if test_accession_re.match(instance):
-            return True
     return False
 
 

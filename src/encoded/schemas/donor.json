@@ -6,24 +6,10 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [
-        {"$ref": "mixins.json#/accession"},
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"}
     ],
     "properties": {
-        "accession": {
-            "accessionType": "DO"
-        },
-        "alternate_accessions": {
-            "items": {
-                "title": "Alternate accession",
-                "description": "An accession previously assigned to an object that has been merged with this object.",
-                "comment": "Only accessions of objects that have status equal replaced will work here.",
-                "type": "string",
-                "format": "accession",
-                "pattern": "^(ENCDO\\d{3}[A-Z]{3})$|^(TSTDO\\d{6})$"
-            }
-        },
         "treatments": {
             "description": "A list of treatments applied to the donor.",
             "comment": "Can include drug treatments, medication, and/or conditions like fasting"

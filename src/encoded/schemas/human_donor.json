@@ -13,6 +13,19 @@
         {"$ref": "donor.json#/properties"}
     ],
     "properties": {
+        "accession": {
+            "accessionType": "HD"
+        },
+        "alternate_accessions": {
+            "items": {
+                "title": "Alternate accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(LATHD\\d{3}[A-Z]{3})$"
+            }
+        },
         "ancestry": {
             "title": "Ancestry",
             "description": "Ancestry of the donor, as determined by genotype.",

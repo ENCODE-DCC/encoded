@@ -6,8 +6,8 @@
         "uuid": "76704205-4dcd-48ae-b114-711fc98275b7",
         "organism": "human",
         "file_size": 3000000,
-        "accession": "ENCFF450MMM",
-        "dataset": "ENCSR500ELM",
+        "accession": "LATDF450MMM",
+        "dataset": "lattice:human-references",
         "file_format": "tar",
         "output_types": [
             "genome reference"
@@ -25,8 +25,8 @@
         "uuid": "031ba486-de5a-11ea-87d0-0242ac130003",
         "organism": "human",
         "file_size": 3000000,
-        "accession": "ENCFF300MMM",
-        "dataset": "ENCSR500ELM",
+        "accession": "LATDF300MMM",
+        "dataset": "lattice:human-references",
         "file_format": "tar",
         "output_types": [
             "genome reference"
@@ -56,7 +56,7 @@
         "organism": "mouse",
         "file_size": 5000000,
         "file_format": "tar",
-        "dataset": "ENCSR800RRR",
+        "dataset": "lattice:mouse-references",
         "output_types": [
             "genome reference"
         ],
@@ -73,7 +73,7 @@
         "uuid": "e877b293-e2c2-4aca-ab02-84a30f45bb42",
         "organism": "human",
         "file_size": 3000000,
-        "dataset": "ENCSR800RRR",
+        "dataset": "lattice:mouse-references",
         "file_format": "tar",
         "output_types": [
             "genome reference"

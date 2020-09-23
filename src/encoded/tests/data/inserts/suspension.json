@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCBS110DDD",
+        "accession": "LATSU110DDD",
         "uuid": "2ad6c9da-4fec-4590-848c-59f9e3a36334",
         "aliases": [
             "anna-greka:sc_citeseq_suspension_donorA"
@@ -47,7 +47,7 @@
         ]
     },
     {
-        "accession": "ENCBS115DDD",
+        "accession": "LATSU115DDD",
         "uuid": "eab2241c-f97b-45e0-8bf9-6f948a01dc15",
         "aliases": [
             "anna-greka:sc_citeseq_suspension_donorB"
@@ -94,7 +94,7 @@
         ]
     },
     {
-        "accession": "ENCBS120DDD",
+        "accession": "LATSU120DDD",
         "uuid": "01d10fa9-be2a-43cb-a281-7fc52e7d4393",
         "aliases": [
             "anna-greka:snATAC_suspension_donorA"
@@ -133,7 +133,7 @@
         ]
     },
     {
-        "accession": "ENCBS125DDD",
+        "accession": "LATSU125DDD",
         "uuid": "afc23bc4-4b35-4ca0-8019-09e71fca681d",
         "aliases": [
             "anna-greka:snATAC_suspension_donorB"
@@ -172,7 +172,7 @@
         ]
     },
     {
-        "accession": "ENCBS130DDD",
+        "accession": "LATSU130DDD",
         "uuid": "549efb34-9819-4e92-a9e0-d1f7fe90dbc2",
         "aliases": [
             "anna-greka:sc_suspension_donorC1"
@@ -206,7 +206,7 @@
         ]
     },
     {
-        "accession": "ENCBS135DDD",
+        "accession": "LATSU135DDD",
         "uuid": "cd4a7539-96a3-4913-8afa-5f947294acf8",
         "aliases": [
             "anna-greka:sc_suspension_donorC2"
@@ -240,7 +240,7 @@
         ]
     },
     {
-        "accession": "ENCBS140DDD",
+        "accession": "LATSU140DDD",
         "uuid": "b6f3add1-5f56-436e-abdd-75e8153afca3",
         "aliases": [
             "anna-greka:sc_suspension_donorD1"
@@ -274,7 +274,7 @@
         ]
     },
     {
-        "accession": "ENCBS145DDD",
+        "accession": "LATSU145DDD",
         "uuid": "bc6aef3b-3bed-4a86-afbc-da65ae627389",
         "aliases": [
             "anna-greka:sc_suspension_donorD2"
@@ -308,7 +308,7 @@
         ]
     },
     {
-        "accession": "ENCBS150DDD",
+        "accession": "LATSU150DDD",
         "uuid": "8b73445d-02b7-43ae-8803-317b82153900",
         "aliases": [
             "anna-greka:snATAC_suspension_donorC1"
@@ -342,7 +342,7 @@
         ]
     },
     {
-        "accession": "ENCBS155DDD",
+        "accession": "LATSU155DDD",
         "uuid": "66122ede-0222-4f49-8efd-bcf5fa429e45",
         "aliases": [
             "anna-greka:snATAC_suspension_donorC2"
@@ -376,7 +376,7 @@
         ]
     },
     {
-        "accession": "ENCBS160DDD",
+        "accession": "LATSU160DDD",
         "uuid": "faf17de0-ac08-4820-ab6a-8c8a7b292e66",
         "aliases": [
             "anna-greka:snATAC_suspension_donorD1"
@@ -410,7 +410,7 @@
         ]
     },
     {
-        "accession": "ENCBS165DDD",
+        "accession": "LATSU165DDD",
         "uuid": "cd27a46b-4068-4583-8482-b9847df60a0a",
         "aliases": [
             "anna-greka:snATAC_suspension_donorD2"
@@ -444,7 +444,7 @@
         ]
     },
     {
-        "accession": "ENCBS170DDD",
+        "accession": "LATSU170DDD",
         "uuid": "0567615f-866b-420d-b3c1-f59218680e41",
         "aliases": [
             "anna-greka:sc_pooled_suspension_donorCD"
@@ -484,7 +484,7 @@
         ]
     },
     {
-        "accession": "ENCBS195DDD",
+        "accession": "LATSU195DDD",
         "uuid": "5c2be32f-4635-46f1-a4fb-fa1b314e2f7e",
         "aliases": [
             "anna-greka:sc_citeseq_suspension_donorE"
@@ -530,7 +530,7 @@
         ]
     },
     {
-        "accession": "ENCBS200DDD",
+        "accession": "LATSU200DDD",
         "uuid": "e19614cc-d8e6-4c52-8948-f76649bc7690",
         "aliases": [
             "anna-greka:sc_citeseq_suspension_donorF"
@@ -576,7 +576,7 @@
         ]
     },
     {
-        "accession": "ENCBS205DDD",
+        "accession": "LATSU205DDD",
         "uuid": "e5fee54c-c8d5-4bd8-a1e5-47a9920859d8",
         "aliases": [
             "anna-greka:sc_citeseq_suspension_donorG"
@@ -622,7 +622,7 @@
         ]
     },
     {
-        "accession": "ENCBS210DDD",
+        "accession": "LATSU210DDD",
         "uuid": "2eca03aa-71c5-4af8-9fe3-7b67873b102d",
         "aliases": [
             "anna-greka:sc_citeseq_suspension_donorH"
@@ -668,7 +668,7 @@
         ]
     },
         {
-        "accession": "ENCBS215DDD",
+        "accession": "LATSU215DDD",
         "uuid": "907ab8a7-d3f4-4864-8ee3-0737cafe07e0",
         "aliases": [
             "anna-greka:snATAC_suspension_donorE"
@@ -707,7 +707,7 @@
         ]
     },
     {
-        "accession": "ENCBS220DDD",
+        "accession": "LATSU220DDD",
         "uuid": "c6c2f0a8-4444-49d7-ad91-d418abaa4b85",
         "aliases": [
             "anna-greka:snATAC_suspension_donorF"
@@ -746,7 +746,7 @@
         ]
     },
     {
-        "accession": "ENCBS225DDD",
+        "accession": "LATSU225DDD",
         "uuid": "5104aa34-2a62-42e9-a450-a68ec4bd86bd",
         "aliases": [
             "anna-greka:snATAC_suspension_donorG"
@@ -785,7 +785,7 @@
         ]
     },
     {
-        "accession": "ENCBS230DDD",
+        "accession": "LATSU230DDD",
         "uuid": "4917c7d7-c23c-4e01-a331-a9381a669120",
         "aliases": [
             "anna-greka:snATAC_suspension_donorH"
@@ -824,7 +824,7 @@
         ]
     },
     {
-        "accession": "ENCBS870AAA",
+        "accession": "LATSU870AAA",
         "uuid": "77e628c7-af1f-4df8-8a0b-3ae1bad64268",
         "aliases": [
             "jimmie-ye:suspension_1"
@@ -851,7 +851,7 @@
         "enrichment_factors": "ATF3"
     },
     {
-        "accession": "ENCBS873AAA",
+        "accession": "LATSU873AAA",
         "uuid": "dc6af8b5-2dc2-46b0-8601-e4a38b3c6777",
         "aliases": [
             "jimmie-ye:suspension_2"
@@ -878,7 +878,7 @@
         "enrichment_factors": "ATF3"
     },
     {
-        "accession": "ENCBS876AAA",
+        "accession": "LATSU876AAA",
         "uuid": "8a486f1f-d9cf-41e9-b2bb-15cf15ff7136",
         "aliases": [
             "jimmie-ye:suspension_3"
@@ -905,7 +905,7 @@
         "enrichment_factors": "ATF3"
     },
     {
-        "accession": "ENCBS600AAA",
+        "accession": "LATSU600AAA",
         "uuid": "dbe1211e-dc2b-11ea-87d0-0242ac130003",
         "aliases": [
             "peter-sims:suspension1"
@@ -932,7 +932,7 @@
         "dissociation_time_units": "minute"
     },
     {
-        "accession": "ENCBS603AAA",
+        "accession": "LATSU603AAA",
         "uuid": "8f62dfe8-dc40-11ea-87d0-0242ac130003",
         "aliases": [
             "peter-sims:suspension2"
@@ -959,7 +959,7 @@
         "dissociation_time_units": "minute"
     },
     {
-        "accession": "ENCBS606AAA",
+        "accession": "LATSU606AAA",
         "uuid": "7973f6f4-5e51-4d3b-9a5a-758f2b09c44c",
         "aliases": [
             "peter-sims:suspension3"
@@ -986,7 +986,7 @@
         "dissociation_time_units": "minute"
     },
     {
-        "accession": "ENCBS600GGG",
+        "accession": "LATSU600GGG",
         "uuid": "48736044-3e53-4d30-8a8a-ab51aad5b624",
         "aliases": [
             "anindita-basu:suspension_A"
@@ -1013,7 +1013,7 @@
         "dissociation_time_units": "minute"
     },
     {
-        "accession": "ENCBS601GGG",
+        "accession": "LATSU601GGG",
         "uuid": "87a4d586-de61-4d12-b298-dff54b669bc6",
         "aliases": [
             "anindita-basu:suspension_B"

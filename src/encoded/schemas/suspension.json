@@ -30,6 +30,19 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "SU"
+        },
+        "alternate_accessions": {
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(LATSU\\d{3}[A-Z]{3})$"
+            }
+        },
         "biosample_ontology": {
             "pattern": "^(CL|EFO|UBERON|NTR)_[0-9]{2,8}$"
         },
@@ -40,6 +53,7 @@
                 "type": "string",
                 "linkTo": [
                     "Biosample",
+                    "Suspension",
                     "Donor"
                 ]
             }

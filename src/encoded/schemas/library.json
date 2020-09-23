@@ -43,7 +43,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCLB\\d{3}[A-Z]{3})$|^(TSTLB\\d{6})$"
+                "pattern": "^(LATLB\\d{3}[A-Z]{3})$"
             }
         },
         "dataset": {
@@ -75,7 +75,10 @@
                 "title": "Derived from",
                 "description": "A biosample that nucleic acid was isolated from to generate the library.",
                 "type": "string",
-                "linkTo": "Biosample"
+                "linkTo": [
+                    "Biosample",
+                    "Suspension"
+                ]
             }
         },
         "plate_id": {

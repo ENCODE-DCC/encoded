@@ -10,7 +10,7 @@
     ],
     "properties": {
         "accession": {
-            "accessionType": "FF"
+            "accessionType": "DF"
         },
         "alternate_accessions": {
             "items": {
@@ -19,7 +19,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCFF\\d{3}[A-Z]{3})$|^(TSTFF\\d{6})$"
+                "pattern": "^(LATDF\\d{3}[A-Z]{3})$"
             }
         },
         "external_accession": {
