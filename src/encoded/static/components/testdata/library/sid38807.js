@@ -16,7 +16,7 @@ module.exports = {
     "nucleic_acid_term_id": "SO:0000871",
     "nucleic_acid_term_name": "polyadenylated mRNA",
     "size_range": ">200",
-    "strand_specificity": true,
+    "strand_specificity": 'strand-specific',
     "submitted_by": "/users/0abbd494-b852-433c-b360-93996f679dae/",
     "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
 };

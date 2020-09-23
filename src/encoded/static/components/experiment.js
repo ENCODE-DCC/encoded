@@ -38,8 +38,8 @@ const displayedLibraryProperties = [
     { property: 'depleted_in_term_name', title: 'Depleted in', test: 'depletedin' },
     { property: 'nucleic_acid_starting_quantity', title: 'Library starting quantity', test: 'startingquantity' },
     { property: 'size_range', title: 'Size range', test: 'sizerange' },
-    { property: 'average_fragment_size', title: 'Average fragment size', test: 'avgfragmentsize' },
     { property: 'lysis_method', title: 'Lysis method', test: 'lysismethod' },
+    { property: 'average_fragment_size', title: 'Average fragment size', test: 'avgfragmentsize' },
     { property: 'extraction_method', title: 'Extraction method', test: 'extractionmethod' },
     { property: 'fragmentation_methods', title: 'Fragmentation methods', test: 'fragmentationmethod' },
     { property: 'library_size_selection_method', title: 'Size selection method', test: 'sizeselectionmethod' },
@@ -137,13 +137,8 @@ const libraryPropertyExtractors = {
     },
 
     strand_specificity: (library) => {
-        const strandSpecificity = library.strand_specificity;
-        let libraryPropertyString = null;
+        const libraryPropertyString = library.strand_specificity;
 
-        // A strand_specificity of "false" is still a displayable value.
-        if (strandSpecificity !== undefined) {
-            libraryPropertyString = strandSpecificity ? 'Strand-specific' : 'Non-strand-specific';
-        }
         return { libraryPropertyString };
     },
 };
@@ -210,35 +205,54 @@ const LibraryProperties = ({ replicates }) => {
         displayedLibraryProperties.forEach((displayedLibraryProperty) => {
             const libraryPropertyElements = libraryPropertyDisplays[displayedLibraryProperty.property];
             if (libraryPropertyElements && libraryPropertyElements.length > 0) {
-                const homogeneous = !libraryPropertyElements.some(libraryProperty => libraryProperty.value !== libraryPropertyElements[0].value);
-                const forcedRepDisplay = libraryPropertyElements.some(libraryProperty => libraryProperty.forceRepDisplay);
-                if (!homogeneous || forcedRepDisplay) {
-                    // More than one value collected for this property, and at least one had a
-                    // different value from the others. Display all values with a replicate
-                    // identifier for each one.
-                    renderedLibraryProperties.push(
-                        <div key={displayedLibraryProperty.property} data-test={displayedLibraryProperty.test}>
-                            <dt>{displayedLibraryProperty.title}</dt>
-                            <dd>
-                                {libraryPropertyElements.map((libraryPropertyElement) => {
-                                    const replicateIdentifier = `[${libraryPropertyElement.bioRep}-${libraryPropertyElement.techRep}]`;
-                                    return (
-                                        <span key={replicateIdentifier} className="line-item">
-                                            {libraryPropertyElement.component || libraryPropertyElement.value} {replicateIdentifier}
-                                        </span>
-                                    );
-                                })}
-                            </dd>
-                        </div>
-                    );
+                if (displayedLibraryProperty.property !== 'strand_specificity') {
+                    const homogeneous = !libraryPropertyElements.some(libraryProperty => libraryProperty.value !== libraryPropertyElements[0].value);
+                    const forcedRepDisplay = libraryPropertyElements.some(libraryProperty => libraryProperty.forceRepDisplay);
+                    if (!homogeneous || forcedRepDisplay) {
+                        // More than one value collected for this property, and at least one had a
+                        // different value from the others. Display all values with a replicate
+                        // identifier for each one.
+                        renderedLibraryProperties.push(
+                            <div key={displayedLibraryProperty.property} data-test={displayedLibraryProperty.test}>
+                                <dt>{displayedLibraryProperty.title}</dt>
+                                <dd>
+                                    {libraryPropertyElements.map((libraryPropertyElement) => {
+                                        const replicateIdentifier = `[${libraryPropertyElement.bioRep}-${libraryPropertyElement.techRep}]`;
+                                        return (
+                                            <span key={replicateIdentifier} className="line-item">
+                                                {libraryPropertyElement.component || libraryPropertyElement.value} {replicateIdentifier}
+                                            </span>
+                                        );
+                                    })}
+                                </dd>
+                            </div>
+                        );
+                    } else {
+                        // Only one value collected for this property, or more than one but all have
+                        // the same value, so just display the one value without a replicate
+                        // identifier.
+                        renderedLibraryProperties.push(
+                            <div key={displayedLibraryProperty.property} data-test={displayedLibraryProperty.test}>
+                                <dt>{displayedLibraryProperty.title}</dt>
+                                <dd>{libraryPropertyElements[0].component || libraryPropertyElements[0].value}</dd>
+                            </div>
+                        );
+                    }
                 } else {
-                    // Only one value collected for this property, or more than one but all have
-                    // the same value, so just display the one value without a replicate
-                    // identifier.
+                    const strandSpecificValues = libraryPropertyElements.map(element => element.value);
+                    let strandSpecificity = '';
+                    const strandSpecificityFirstValue = strandSpecificValues[0];
+
+                    if (strandSpecificValues.every(value => value === strandSpecificityFirstValue)) {
+                        strandSpecificity = `Strand-specific${strandSpecificityFirstValue === 'strand-specific' ? '' : ` (${strandSpecificityFirstValue})`}`;
+                    } else {
+                        strandSpecificity = 'Strand-specific (mixed)';
+                    }
+
                     renderedLibraryProperties.push(
                         <div key={displayedLibraryProperty.property} data-test={displayedLibraryProperty.test}>
                             <dt>{displayedLibraryProperty.title}</dt>
-                            <dd>{libraryPropertyElements[0].component || libraryPropertyElements[0].value}</dd>
+                            <dd>{strandSpecificity}</dd>
                         </div>
                     );
                 }
