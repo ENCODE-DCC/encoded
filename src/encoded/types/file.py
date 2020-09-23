@@ -82,19 +82,14 @@ def file_is_md5sum_constrained(properties):
 
 
 @abstract_collection(
-    name='data-files',
-    unique_key='accession',
+    name='files',
+    unique_key='title',
     properties={
-        'title': 'Data Files',
-        'description': 'Listing of all types of data file.',
+        'title': 'Files',
+        'description': 'Listing of all types of file.',
     })
-class DataFile(Item):
-    base_types = ['DataFile'] + Item.base_types
-    name_key = 'accession'
-    rev = {
-        'superseded_by': ('DataFile', 'supersedes'),
-        'quality_metrics': ('Metrics', 'quality_metric_of'),
-    }
+class File(Item):
+    base_types = ['File'] + Item.base_types
     embedded = []
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
@@ -131,7 +126,7 @@ class DataFile(Item):
 
 
     def unique_keys(self, properties):
-        keys = super(DataFile, self).unique_keys(properties)
+        keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
@@ -168,21 +163,6 @@ class DataFile(Item):
         return request.resource_path(self, '@@download', filename)
 
 
-    @calculated_property(schema={
-        "title": "Quality metrics",
-        "description": "The list of QC metric objects associated with this file.",
-        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Metrics.quality_metric_of",
-        },
-        "notSubmittable": True,
-    })
-    def quality_metrics(self, request, quality_metrics):
-        return paths_filtered_by_status(request, quality_metrics)
-
-
     @calculated_property(condition=show_upload_credentials, schema={
         "title": "Upload Credentials",
         "description": "The upload credentials for S3 to submit the file content.",
@@ -194,64 +174,6 @@ class DataFile(Item):
         if external is not None:
             return external.get('upload_credentials', None)
 
-    @calculated_property(schema={
-        "title": "Read length units",
-        "description": "The units for read length.",
-        "comment": "Do not submit. This is a fixed value.",
-        "type": "string",
-        "enum": [
-            "nt"
-        ]
-    })
-    def read_length_units(self, read_length=None, mapped_read_length=None):
-        if read_length is not None or mapped_read_length is not None:
-            return "nt"
-
-    @calculated_property(schema={
-        "title": "Superseded by",
-        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
-        "comment": "Do not submit. Values in the list are reverse links of a file that supersedes.",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "DataFile.supersedes",
-        },
-        "notSubmittable": True,
-    })
-    def superseded_by(self, request, superseded_by):
-        return paths_filtered_by_status(request, superseded_by)
-
-    @calculated_property(
-        condition=show_cloud_metadata,
-        schema={
-            "title": "Cloud metadata",
-            "description": "Metadata required for cloud transfer.",
-            "comment": "Do not submit. Values are calculated from file metadata.",
-            "type": "object",
-            "notSubmittable": True,
-        }
-    )
-    def cloud_metadata(self, md5sum, file_size):
-        try:
-            external = self._get_external_sheet()
-        except HTTPNotFound:
-            return None
-        conn = boto3.client('s3', config=Config(
-            signature_version=botocore.UNSIGNED,
-        ))
-        location = conn.generate_presigned_url(
-            ClientMethod='get_object',
-            Params={
-                'Bucket': external['bucket'],
-                'Key': external['key']
-            },
-            ExpiresIn=0
-        )
-        return {
-            'url': location,
-            'md5sum_base64': base64.b64encode(bytes.fromhex(md5sum)).decode("utf-8"),
-            'file_size': file_size
-        }
 
     @calculated_property(
         condition=show_cloud_metadata,
@@ -269,32 +191,6 @@ class DataFile(Item):
         except HTTPNotFound:
             return None
         return 's3://{bucket}/{key}'.format(**external)
-
-    @classmethod
-    def create(cls, registry, uuid, properties, sheets=None):
-        if properties.get('status') == 'uploading':
-            sheets = {} if sheets is None else sheets.copy()
-
-            bucket = registry.settings['file_upload_bucket']
-            mapping = cls.schema['file_format_file_extension']
-            file_extension = mapping[properties['file_format']]
-            date = properties['date_created'].split('T')[0].replace('-', '/')
-            accession_or_external = properties.get('accession') or properties['external_accession']
-            key = '{date}/{uuid}/{accession_or_external}{file_extension}'.format(
-                accession_or_external=accession_or_external,
-                date=date, file_extension=file_extension, uuid=uuid, **properties)
-            name = 'up{time:.6f}-{accession_or_external}'.format(
-                accession_or_external=accession_or_external,
-                time=time.time(), **properties)[:32]  # max 32 chars
-
-            profile_name = registry.settings.get('file_upload_profile_name')
-            upload_creds = UploadCredentials(bucket, key, name, profile_name=profile_name)
-            s3_transfer_allow = registry.settings.get('external_aws_s3_transfer_allow', 'false')
-            sheets['external'] = upload_creds.external_creds(
-                s3_transfer_allow=asbool(s3_transfer_allow),
-                s3_transfer_buckets=registry.settings.get('external_aws_s3_transfer_buckets'),
-            )
-        return super(DataFile, cls).create(registry, uuid, properties, sheets)
 
     def _get_external_sheet(self):
         external = self.propsheets.get('external', {})
@@ -394,7 +290,7 @@ class DataFile(Item):
         return (return_flag, current_path, base_uri.format(private_bucket, current_key))
 
 
-@view_config(name='upload', context=DataFile, request_method='GET',
+@view_config(name='upload', context=File, request_method='GET',
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
@@ -412,7 +308,7 @@ def get_upload(context, request):
     }
 
 
-@view_config(name='upload', context=DataFile, request_method='POST',
+@view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
     properties = context.upgrade_properties()
@@ -475,7 +371,7 @@ def post_upload(context, request):
     return result
 
 
-@view_config(name='download', context=DataFile, request_method='GET',
+@view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties()
@@ -517,7 +413,7 @@ def download(context, request):
     raise HTTPTemporaryRedirect(location=location)
 
 
-@view_config(context=DataFile, permission='edit_bucket', request_method='PATCH',
+@view_config(context=File, permission='edit_bucket', request_method='PATCH',
              name='update_bucket')
 def file_update_bucket(context, request):
     new_bucket = request.json_body.get('new_bucket')
@@ -544,6 +440,69 @@ def file_update_bucket(context, request):
         'old_bucket': current_bucket,
         'new_bucket': new_bucket
     }
+
+
+@abstract_collection(
+    name='data-files',
+    unique_key='accession',
+    properties={
+        'title': 'Data Files',
+        'description': 'Listing of all types of data file.',
+    })
+class DataFile(File):
+    item_type = 'data_file'
+    base_types = ['DataFile'] + File.base_types
+    name_key = 'accession'
+    rev = {
+        'superseded_by': ('DataFile', 'supersedes'),
+        'quality_metrics': ('Metrics', 'quality_metric_of'),
+    }
+    embedded = []
+    public_s3_statuses = ['released', 'archived']
+    private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
+
+
+    @calculated_property(schema={
+        "title": "Read length units",
+        "description": "The units for read length.",
+        "comment": "Do not submit. This is a fixed value.",
+        "type": "string",
+        "enum": [
+            "nt"
+        ]
+    })
+    def read_length_units(self, read_length=None, mapped_read_length=None):
+        if read_length is not None or mapped_read_length is not None:
+            return "nt"
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a file that supersedes.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "DataFile.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+
+    @calculated_property(schema={
+        "title": "Quality metrics",
+        "description": "The list of QC metric objects associated with this file.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Metrics.quality_metric_of",
+        },
+        "notSubmittable": True,
+    })
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
 
 @abstract_collection(
@@ -574,19 +533,6 @@ class SequenceAlignmentFile(AnalysisFile):
 
 
 @collection(
-    name='reference-files',
-    unique_key='accession',
-    properties={
-        'title': "Reference Files",
-        'description': "",
-    })
-class ReferenceFile(DataFile):
-    item_type = 'reference_file'
-    schema = load_schema('encoded:schemas/reference_file.json')
-    embedded = DataFile.embedded + ['organism']
-
-
-@collection(
     name='raw-sequence-files',
     unique_key='accession',
     properties={
@@ -610,3 +556,16 @@ class MatrixFile(AnalysisFile):
     item_type = 'matrix_file'
     schema = load_schema('encoded:schemas/matrix_file.json')
     embedded = AnalysisFile.embedded + []
+
+
+@collection(
+    name='reference-files',
+    unique_key='accession',
+    properties={
+        'title': "Reference Files",
+        'description': "",
+    })
+class ReferenceFile(File):
+    item_type = 'reference_file'
+    schema = load_schema('encoded:schemas/reference_file.json')
+    embedded = DataFile.embedded + ['organism']
