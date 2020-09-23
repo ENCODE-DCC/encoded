@@ -8,13 +8,13 @@ Ontologies used
 
 | Ontology |  File used | Version in use | Version reference |
 |:--|:--|:--|:--|
-| [Uber-anatomy ontology (UBERON)] | `uberon/ext.owl` from [UBERON download] | 2020-06-05 | [UBERON release date] |
+| [Uber-anatomy ontology (UBERON)] | `uberon/composite-vertebrate.owl` from [UBERON download] | 2020-09-16 | [UBERON release date] |
 | [Cell Ontology (CL)] | incl. w/ UBERON | incl. w/ UBERON | incl. w/ UBERON |
-| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2020-07-15 (3.20.0) | [EFO releases] |
-| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2020-06-30 | [MONDO release date] |
+| [Experimental Factor Ontology (EFO)] | `efo-base.owl` from [EFO releases] | 2020-09-15 (3.22.0) | [EFO releases] |
+| [Mondo Disease Ontology (MONDO)] | `mondo.owl` from [MONDO] | 2020-09-14 | [MONDO release date] |
 | [Human Ancestry Ontology (HANCESTRO)] | `hancestro.owl` from [OLS] | 2019-07-22 (2.3) | [HANCESTRO releases] |
 
-**Current ontology.json:** `ontology-2020-08-04.json`  
+**Current ontology.json:** `ontology-2020-09-23.json`
 **Updated with site version:** 1
 
 How to update the ontology versions
@@ -23,7 +23,7 @@ How to update the ontology versions
 1. Run generate-ontology  
 *note: first look up the latest [EFO release] and include the version in the `efo-url`*
 ```
-	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/ext.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl
+	$ bin/generate-ontology --uberon-url=http://purl.obolibrary.org/obo/uberon/composite-vertebrate.owl --efo-url=https://github.com/EBISPOT/efo/releases/download/vX.XX.X/efo-base.owl --mondo-url=http://purl.obolibrary.org/obo/mondo.owl --hancestro-url=http://purl.obolibrary.org/obo/hancestro/hancestro.owl
 ```
 
 2. Rename the `ontology.json` to one with the date that it was generated
