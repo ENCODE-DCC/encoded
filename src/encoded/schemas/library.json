@@ -528,6 +528,36 @@
                     }
                 }
             }
+        },
+        "linkers": {
+            "type": "array",
+            "title": "Linkers",
+            "description": "Linker(s) used during ChIA-PET library preparation",
+            "uniqueItems": true,
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+                "title": "Linker",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "type": {
+                        "title": "Linker type",
+                        "description": "Name of linker.",
+                        "type": "string",
+                        "enum": [
+                            "linker a",
+                            "linker b"
+                        ]
+                    },
+                    "sequence": {
+                        "title": "Linker sequence",
+                        "description": "The sequence of the linker ligated to the library DNA fragments.",
+                        "type": "string",
+                        "pattern": "^[ACTG]+$"
+                    }
+                }
+            }
         }
     },
     "columns": {

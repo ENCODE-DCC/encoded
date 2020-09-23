@@ -1,5 +1,9 @@
 ## Changelog for library.json
 
+### Minor changes sicne schema version 14
+
+* *linkers* property is added to specify the linker(s) used during ChIA-PET library preparation.
+
 ### Schema version 14
 
 * Added dependency that does not allow *nucleic_acid_term_name* and *depleted_in_term_name* to have the same value of *polyadenylated mRNA*.
