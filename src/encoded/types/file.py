@@ -175,23 +175,6 @@ class File(Item):
             return external.get('upload_credentials', None)
 
 
-    @calculated_property(
-        condition=show_cloud_metadata,
-        schema={
-            "title": "S3 URI",
-            "description": "The S3 URI of public file object.",
-            "comment": "Do not submit. Value is calculated from file metadata.",
-            "type": "string",
-            "notSubmittable": True,
-        }
-    )
-    def s3_uri(self):
-        try:
-            external = self._get_external_sheet()
-        except HTTPNotFound:
-            return None
-        return 's3://{bucket}/{key}'.format(**external)
-
     def _get_external_sheet(self):
         external = self.propsheets.get('external', {})
         if external.get('service') == 's3':

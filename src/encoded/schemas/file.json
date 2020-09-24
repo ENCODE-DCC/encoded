@@ -26,6 +26,11 @@
             "comment": "Although this is not required. It is highly recommended.",
             "type": "string"
         },
+        "s3_uri": {
+            "title": "S3 URI",
+            "description": "The S3 URI of public file object.",
+            "type": "string"
+        },
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",

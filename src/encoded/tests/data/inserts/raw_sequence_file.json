@@ -27,7 +27,8 @@
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
         ],
-        "md5sum": "fc33724fb1dc16163432e7bd6bf6d4ed"
+        "md5sum": "fc33724fb1dc16163432e7bd6bf6d4ed",
+        "s3_uri": "s3://submissions-czi012eye/19D013_foveaR_I1.fastq.gz"
     },
     {
         "aliases": [
