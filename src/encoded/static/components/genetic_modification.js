@@ -54,9 +54,55 @@ IntroducedTags.propTypes = {
 };
 
 
-// All possible genetic modification object modification site property names. This might need to
-// change if the genetic_modification.json schema changes.
-const modificationSitePropNames = ['modified_site_by_target_id', 'modified_site_by_coordinates', 'modified_site_by_sequence', 'modified_site_nonspecific'];
+const modifiedSiteRenderers = {
+    modified_site_by_target_id: (gm) => {
+        let targetName;
+        let targetLink;
+
+        if (typeof gm.modified_site_by_target_id === 'string') {
+            // Non-embedded target; get its name from its @id.
+            targetName = globals.atIdToAccession(gm.modified_site_by_target_id);
+            targetLink = gm.modified_site_by_target_id;
+        } else {
+            // Embedded target; get its name from the embedded object.
+            targetName = gm.modified_site_by_target_id.name;
+            targetLink = gm.modified_site_by_target_id['@id'];
+        }
+        return (
+            <div data-test="mstarget">
+                <dt>Target</dt>
+                <dd><a href={targetLink} title={`View page for target ${targetName}`}>{targetName}</a></dd>
+            </div>
+        );
+    },
+    modified_site_by_gene_id: gm => (
+        <div data-test="msgene">
+            <dt>Gene</dt>
+            <dd className="sequence"><a href={gm.modified_site_by_gene_id['@id']}>{gm.modified_site_by_gene_id.symbol}</a></dd>
+        </div>
+    ),
+    modified_site_by_coordinates: (gm) => {
+        const { assembly, chromosome, start, end } = gm.modified_site_by_coordinates;
+        return (
+            <div data-test="mscoords">
+                <dt>Coordinates</dt>
+                <dd>{`${assembly} chr${chromosome}:${start}-${end}`}</dd>
+            </div>
+        );
+    },
+    modified_site_by_sequence: gm => (
+        <div data-test="msseq">
+            <dt>Sequence</dt>
+            <dd className="sequence">{gm.modified_site_by_sequence}</dd>
+        </div>
+    ),
+    modified_site_nonspecific: gm => (
+        <div data-test="msnonspec">
+            <dt>Integration site</dt>
+            <dd>{gm.modified_site_nonspecific}</dd>
+        </div>
+    ),
+};
 
 
 /**
@@ -64,63 +110,18 @@ const modificationSitePropNames = ['modified_site_by_target_id', 'modified_site_
  * @param {object} geneticModification GM object
  * @return {boolean} True if `geneticModification` includes any modification site properties.
  */
-const hasModificationSiteProps = (geneticModification) => {
-    const gmKeys = Object.keys(geneticModification);
-    return modificationSitePropNames.some(siteType => gmKeys.indexOf(siteType) !== -1);
-};
+const hasModificationSiteProps = geneticModification => (
+    Object.keys(modifiedSiteRenderers).some(siteType => geneticModification[siteType])
+);
 
 
 // Render the modification site items into a definition list.
 const ModificationSiteItems = (props) => {
     const { geneticModification, itemClass } = props;
 
-    const renderers = {
-        modified_site_by_target_id: (gm) => {
-            let targetName;
-            let targetLink;
-
-            if (typeof gm.modified_site_by_target_id === 'string') {
-                // Non-embedded target; get its name from its @id.
-                targetName = globals.atIdToAccession(gm.modified_site_by_target_id);
-                targetLink = gm.modified_site_by_target_id;
-            } else {
-                // Embedded target; get its name from the embedded object.
-                targetName = gm.modified_site_by_target_id.name;
-                targetLink = gm.modified_site_by_target_id['@id'];
-            }
-            return (
-                <div data-test="mstarget">
-                    <dt>Target</dt>
-                    <dd><a href={targetLink} title={`View page for target ${targetName}`}>{targetName}</a></dd>
-                </div>
-            );
-        },
-        modified_site_by_coordinates: (gm) => {
-            const { assembly, chromosome, start, end } = gm.modified_site_by_coordinates;
-            return (
-                <div data-test="mscoords">
-                    <dt>Coordinates</dt>
-                    <dd>{`${assembly} chr${chromosome}:${start}-${end}`}</dd>
-                </div>
-            );
-        },
-        modified_site_by_sequence: gm => (
-            <div data-test="msseq">
-                <dt>Sequence</dt>
-                <dd className="sequence">{gm.modified_site_by_sequence}</dd>
-            </div>
-        ),
-        modified_site_nonspecific: gm => (
-            <div data-test="msnonspec">
-                <dt>Integration site</dt>
-                <dd>{gm.modified_site_nonspecific}</dd>
-            </div>
-        ),
-    };
-
-    const elements = modificationSitePropNames.map((siteType) => {
+    const elements = Object.keys(modifiedSiteRenderers).map((siteType) => {
         if (geneticModification[siteType]) {
-            return <div key={siteType}>{renderers[siteType](geneticModification)}</div>;
+            return <div key={siteType}>{modifiedSiteRenderers[siteType](geneticModification)}</div>;
         }
         return null;
     });
