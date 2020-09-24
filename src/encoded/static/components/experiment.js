@@ -1200,7 +1200,7 @@ class RelatedSeriesItem extends React.Component {
                 <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
                 <div className="tooltip-trigger">
                     <i
-                        className="icon icon-info-circle"
+                        className="icon icon-question-circle"
                         onMouseEnter={this.handleInfoHoverIn}
                         onMouseLeave={this.handleInfoHoverOut}
                         onClick={this.handleInfoClick}

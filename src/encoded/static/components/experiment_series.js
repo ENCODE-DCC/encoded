@@ -120,7 +120,7 @@ const experimentTableColumns = {
     },
 
     readDepth: {
-        title: <div>Read depth<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. Minimum read depth is 5M. For broad histone marks, acceptable read depth is &gt;35M and recommended read depth is &gt;45M. For other targets, acceptable read depth is &gt;10M and recommended read depth is &gt;20M.</Tooltip></div>,
+        title: <div>Read depth<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Number of mapped reads passing quality control filtering. Minimum read depth is 5M. For broad histone marks, acceptable read depth is &gt;35M and recommended read depth is &gt;45M. For other targets, acceptable read depth is &gt;10M and recommended read depth is &gt;20M.</Tooltip></div>,
         display: (experiment, meta) => {
             const low = 5000000;
             let minimal = 10000000;
@@ -162,7 +162,7 @@ const experimentTableColumns = {
     },
 
     NRF: {
-        title: <div>NRF<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Non-redundant fraction (indicates library complexity). Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads. Acceptable NRF is &gt;0.5 and recommended NRF is &gt;0.8.</Tooltip></div>,
+        title: <div>NRF<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Non-redundant fraction (indicates library complexity). Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads. Acceptable NRF is &gt;0.5 and recommended NRF is &gt;0.8.</Tooltip></div>,
         display: (experiment, meta) => {
             const qm = getQualityMetricsByReplicate(experiment, 'NRF')[meta.bioRepNum];
             if (qm && qm.length > 1) {
@@ -186,7 +186,7 @@ const experimentTableColumns = {
     },
 
     NSC: {
-        title: <div>NSC<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts. Acceptable NSC is &gt;1.05 and recommended NSC is &gt;1.1.</Tooltip></div>,
+        title: <div>NSC<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts. Acceptable NSC is &gt;1.05 and recommended NSC is &gt;1.1.</Tooltip></div>,
         display: (experiment, meta) => {
             const qm = getQualityMetricsByReplicate(experiment, 'NSC')[meta.bioRepNum];
             if (qm && qm.length > 1) {
@@ -210,7 +210,7 @@ const experimentTableColumns = {
     },
 
     PBC1: {
-        title: <div>PBC1<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely. Acceptable PBC1 is &gt;0.5 and recommended PBC1 is &gt;0.9.</Tooltip></div>,
+        title: <div>PBC1<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely. Acceptable PBC1 is &gt;0.5 and recommended PBC1 is &gt;0.9.</Tooltip></div>,
         display: (experiment, meta) => {
             const qm = getQualityMetricsByReplicate(experiment, 'PBC1')[meta.bioRepNum];
             if (qm && qm.length > 1) {
@@ -234,7 +234,7 @@ const experimentTableColumns = {
     },
 
     PBC2: {
-        title: <div>PBC2<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely. Acceptable PBC2 is &gt;1 and recommended PBC2 &gt;10.</Tooltip></div>,
+        title: <div>PBC2<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely. Acceptable PBC2 is &gt;1 and recommended PBC2 &gt;10.</Tooltip></div>,
         display: (experiment, meta) => {
             const qm = getQualityMetricsByReplicate(experiment, 'PBC2')[meta.bioRepNum];
             if (qm && qm.length > 1) {
@@ -258,7 +258,7 @@ const experimentTableColumns = {
     },
 
     IDR: {
-        title: <div>IDR<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Irreproducible discovery rate is determined by the self-consistency ratio and the rescue ratio. The self-consistency ratio measures consistency within a single dataset. The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable. The IDR test fails if both ratios are &lt;2, and passes if both ratios are &gt;2. Otherwise, IDR is borderline.</Tooltip></div>,
+        title: <div>IDR<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">Irreproducible discovery rate is determined by the self-consistency ratio and the rescue ratio. The self-consistency ratio measures consistency within a single dataset. The rescue ratio measures consistency between datasets when the replicates within a single experiment are not comparable. The IDR test fails if both ratios are &lt;2, and passes if both ratios are &gt;2. Otherwise, IDR is borderline.</Tooltip></div>,
         display: (experiment, meta) => {
             const rescueRatios = getQualityMetricsByReplicate(experiment, 'rescue_ratio')[meta.bioRepNum];
             const selfConsistencyRatios = getQualityMetricsByReplicate(experiment, 'self_consistency_ratio')[meta.bioRepNum];
@@ -279,7 +279,7 @@ const experimentTableColumns = {
     },
 
     peakCount: {
-        title: <div>Replicated Peak count<Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
+        title: <div>Replicated Peak count<Tooltip trigger={<i className="icon icon-question-circle" />} tooltipId="qc-report-nrf" css="tooltip-home-info">The replicated peak count reported here is for replicated experiments only. It is the peak count of either optimal IDR thresholded peaks for TF ChIP or replicated peaks for histone ChIP. Please note that higher peak count does NOT necessarily mean higher quality data.</Tooltip></div>,
         getValue: (experiment, meta) => {
             // ENCODE3 TF and histone ChIP-seq quality metrics modeling
             // Skip peakCount if the experiment has less than 1 replicate
