@@ -134,7 +134,6 @@
         },
         "general_reads": {
             "title": "Number of general reads",
-            "comment": "Number of sequences and not unmapped reads",
             "type": "integer",
             "minimum": 0
         },
