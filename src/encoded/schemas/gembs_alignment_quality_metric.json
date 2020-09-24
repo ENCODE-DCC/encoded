@@ -127,6 +127,27 @@
             "minimum": 0,
             "maximum": 100.0
         },
+        "correct_pairs": {
+            "title": "Number of correct pairs",
+            "type": "integer",
+            "minimum": 0
+        },
+        "general_reads": {
+            "title": "Number of general reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "average_coverage": {
+            "title": "Average coverage",
+            "type": "number",
+            "minimum": 0
+        },
+        "pct_general_reads": {
+            "title": "Percentage of general reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
         "unique_fragments": {
             "title": "Number of unique fragments",
             "type": "integer",
