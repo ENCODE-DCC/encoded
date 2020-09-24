@@ -1,7 +1,7 @@
 {
-	"title": "Atac aggregate metrics",
+	"title": "ATAC aggregate metrics",
 	"description": "Schema for submitting metadata for aggregate ATAC-seq metrics",
-	"id": "/profiles/atac_summary_metrics.json",
+	"id": "/profiles/atac_aggregate_metrics.json",
 	"schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"required": ["quality_metric_of"],
@@ -27,17 +27,17 @@
         	"type": "integer"
         },
         "frac_cut_fragments_in_peaks": {
-        	"title": "Frac cut gragments in peaks",
+        	"title": "Fraction of cut sites in peaks",
         	"description": "Fraction of transposition events in peaks.",
         	"type": "number"
         },
         "frac_fragments_overlapping_peaks": {
-        	"title": "Frac fragments overlapping peaks",
+        	"title": "Fraction of fragments overlapping peaks",
         	"description": "Fraction of fragements overlapping called peaks.",
         	"type": "number"
         },
         "frac_fragments_overlapping_targets": {
-        	"title": "Frac fragments overlapping targets",
+        	"title": "Fraction of fragments overlapping targets",
         	"description": "Fraction of fragments overlapping any targeted region",
         	"type": "number"
         },
@@ -63,27 +63,27 @@
                         "linkTo": "Library"
         			},
         			"post_norm_median_frags_per_cell": {
-        				"title": "Post norm median frags per cell",
+        				"title": "Post-normalization median fragmentss per cell",
         				"description": "Post-Normalization median unique fragments per cell in library",
         				"type": "number"
         			},
         			"pre_norm_median_frags_per_cell": {
-        				"title": "Pre norm median frags per cell",
+        				"title": "Pre-normalization median fragments per cell",
         				"description": "Pre-Normalization median unique fragements per cell in library",
         				"type": "number"
         			},
         			"total_post_normalization": {
-        				"title": "Total post normalization",
+        				"title": "Total post-normalization mapped read pairs",
         				"description": "Post-Normalization total mapped read pairs in library",
         				"type": "number"
         			},
         			"total_pre_normalization": {
-        				"title": "Total pre normalization",
+        				"title": "Total pre-normalization mapped read pairs",
         				"description": "Pre-Normalization total mapped read pairs in library",
         				"type": "number"
         			},
         			"unique_post_normalization": {
-        				"title": "Unique post normalization",
+        				"title": "Unique post normalization fragments",
         				"description": "Post-Normalization unique fragments in library",
         				"type": "number"
         			}

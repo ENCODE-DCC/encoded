@@ -69,7 +69,7 @@ class GeneExpressionMetrics(Metrics):
 @collection(
     name='atac_summary_metrics',
     properties={
-        'title': "Atac Summary Metrics",
+        'title': "ATAC Summary Metrics",
         'description': "",
     })
 class AtacSummaryMetrics(Metrics):
@@ -80,7 +80,7 @@ class AtacSummaryMetrics(Metrics):
 @collection(
     name='atac_aggregate_metrics',
     properties={
-        'title': "Atac Aggregate Metrics",
+        'title': "ATAC Aggregate Metrics",
         'description': "",
     })
 class AtacAggregateMetrics(Metrics):

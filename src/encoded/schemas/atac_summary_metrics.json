@@ -1,5 +1,5 @@
 {
-	"title": "Atac summary metrics",
+	"title": "ATAC summary metrics",
 	"description": "Schema for submitting metadata for processing metrics of an ATAC-seq library",
 	"id": "/profiles/atac_summary_metrics.json",
 	"schema": "http://json-schema.org/draft-04/schema#",
@@ -42,32 +42,32 @@
         	"type": "number"
         },
         "frac_cut_fragments_in_peaks": {
-        	"title": "Frac cut fragments in peaks",
+        	"title": "Fraction of cut sites in peaks",
         	"desciption": "Fraction of transposition events in peaks",
         	"type": "number"
         },
         "frac_fragments_nfr": {
-        	"title": "Frac fragments nfr",
+        	"title": "Fraction of fragments nfr",
         	"description": "Fraction of fragments in nucleosome-free regions (with size smaller than 147 basepairs)",
         	"type": "number"
         },
         "frac_fragments_nuc": {
-        	"title": "Frac fragments nuc",
+        	"title": "Fraction of fragments nuc",
         	"description": "Fraction of fragments flanking a single nucleosome (with size between 147 and 294 basepairs)",
         	"type": "number"
         },
         "frac_fragments_nfr_or_nuc": {
-        	"title": "Frac fragments nfr or nuc",
+        	"title": "Fraction of fragments nfr or nuc",
         	"description": "Fraction of fragments in nucleosome-free or single-nucleosome regions",
         	"type": "number"
         },
         "frac_fragments_overlapping_targets": {
-        	"title": "Frac fragment overlapping targets",
+        	"title": "Fraction of fragments overlapping targets",
         	"description": "The fraction of fragments (that passed all filters) overlapping targeted regions (transcription start sites, DNase hypersensitive regions, enhancer or promoter regions, as present in the reference)",
         	"type": "number"
         },
         "frac_fragments_overlapping_peaks": {
-        	"title": "Frac fragments overlapping peaks",
+        	"title": "Fraction of fragments overlapping peaks",
         	"description": "The fraction of fragments (that passed all filters) overlapping the set of peaks called for the library.",
         	"type": "number"
         },
@@ -77,67 +77,67 @@
         	"type": "number"
         },
         "bc_q30_bases_fract": {
-        	"title": "Bc q30 bases fract",
+        	"title": "Fraction of barcode q30 bases",
         	"description": "Fraction of Q30 bases in barcode read",
         	"type": "number"
         },
         "r1_q30_bases_fract": {
-        	"title": "R1 q30 bases fract",
+        	"title": "Fraction of R1 q30 bases",
         	"desciption": "Fraction of Q30 bases in Read 1",
         	"type": "number"
         },
         "r2_q30_bases_fract": {
-        	"title": "R2 q30 bases fract", 
+        	"title": "Fraction of R2 q30 bases", 
         	"description": "Fraction of Q30 bases in Read 2", 
         	"type": "number"
         },
         "si_q30_bases_fract": {
-        	"title": "Si q30 bases fract",
+        	"title": "Fraction of sample index q30 bases",
         	"description": "Fraction of Q30 bases in Sample Index",
         	"type": "number"
         },
         "frac_waste_no_barcode": {
-        	"title": "Frac waste no barcode",
+        	"title": "Fraction of invalid barcode read pairs",
         	"description": "Fraction of read pairs with invalid barcodes",
         	"type": "number"
         },
         "frac_waste_overall_nondup": {
-        	"title": "Frac waste overall nondup",
+        	"title": "Fraction of overall nondup read pairs",
         	"description": "Fraction of total read pairs that are non-duplicate and wasted read pairs",
         	"type": "number"
         },
         "frac_waste_non_cell_barcode": {
-        	"title": "Frac waste non cell barcode",
+        	"title": "Fraction of non-cell barcode read pairs",
         	"description": "Fraction of total read pairs in non-cell barcodes",
         	"type": "number"
         },
         "frac_waste_chimeric": {
-        	"title": "Frac waste chimeric",
+        	"title": "Fraction of chimeric read pairs",
         	"description": "Fraction of total read pairs that are improper pairs or map to a supplementary contig and are in cell barcodes",
         	"type": "number"
         },
         "frac_waste_mitochondrial": {
-        	"title": "Frac waste mitochondrial",
+        	"title": "Fraction of mitochondrial read pairs",
         	"description": "Fraction of all the sequenced read pairs that come from cell barcodes and map to the mitochondrial genome.",
         	"type": "number"
         },
         "frac_waste_unmapped": {
-        	"title": "Frac waste unmapped",
+        	"title": "Fraction of unmapped read pairs",
         	"description": "Fraction of all the sequenced read pairs that come from cell barcodes and could not be mapped to the genome with confidence.",
         	"type": "number"
         },
         "frac_waste_lowmapq": {
-        	"title": "Frac waste lowmapq",
+        	"title": "Fraction of lowmapq read pairs",
         	"description": "Fraction of total read pairs that have low mapping quality and are in cell barcodes.",
         	"type": "number"
         },
         "frac_waste_duplicate": {
-        	"title": "Frac waste duplicate",
+        	"title": "Fraction of duplicate read pairs",
         	"description": "Fraction of all the sequenced read pairs that come from cell barcodes and are deemed to be PCR duplicates due to alignment to the same genomic position as another read pair in the library.",
         	"type": "number"
         },
         "frac_waste_total": {
-        	"title": "Frac waste total",
+        	"title": "Fraction of total wasted read pairs",
         	"description": "Fraction of total read pairs wasted (either have invalid barcodes or in non cell barcodes, or did not pass filters).",
         	"type": "number"
         },
@@ -147,12 +147,12 @@
         	"type": "number"
         },
         "frac_mapped_confidently": {
-        	"title": "Frac mapped confidently",
+        	"title": "Fraction of mapped confidently read pairs",
         	"description": "Fraction of all the sequenced read pairs that mapped to the genome with high mapping quality (>30 mapq). Includes unique and duplicate read pairs from any barcode",
         	"type": "number"
         },
         "num_fragments": {
-        	"title": "Num fragments",
+        	"title": "Number of fragments",
         	"description": "Total number of read pairs that were assigned to this library in demultiplexing.",
         	"type": "number"
         },
