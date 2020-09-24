@@ -56,6 +56,7 @@ ORDER = [
     'replication_timing_series',
     'aggregate_series',
     'experiment_series',
+    'gene_silencing_series',
     'reference_epigenome',
     'software',
     'software_version',

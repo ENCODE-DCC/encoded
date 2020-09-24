@@ -974,3 +974,16 @@ class FunctionalCharacterizationSeries(Series):
     item_type = 'functional_characterization_series'
     schema = load_schema('encoded:schemas/functional_characterization_series.json')
     embedded = Series.embedded
+
+
+@collection(
+    name='gene-silencing-series',
+    unique_key='accession',
+    properties={
+        'title': "Gene silencing series",
+        'description': 'A series that group gene silencing experiments with the relevant controls.',
+    })
+class GeneSilencingSeries(Series):
+    item_type = 'gene_silencing_series'
+    schema = load_schema('encoded:schemas/gene_silencing_series.json')
+    embedded = Series.embedded
