@@ -16,6 +16,10 @@
         "bisulfite_reads_g2a": 551633709,
         "pct_bisulfite_reads_g2a": 48.79,
         "insert_size_plot":"ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
-        "mapq_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png"
+        "mapq_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "correct_pairs": 4507,
+        "general_reads": 1130527650, 
+        "average_coverage": 30.3,
+        "pct_general_reads": 17.4
     }
 ]
