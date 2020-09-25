@@ -91,7 +91,6 @@ class Bioexperiment extends React.Component {
         ];
         const crumbsReleased = (context.status === 'released');
         const biospecimen_summary = context.biospecimen_summary;
-        // let show_specimen_summary ={};
         let show_specimen_summary = (<div>
             <dt>biospecimen_summary</dt>
             <dd><strong>Accession: </strong>{biospecimen_summary[0].accession}</dd>
@@ -104,11 +103,6 @@ class Bioexperiment extends React.Component {
             <dd><strong>Anatomic Site: </strong>{biospecimen_summary[0].anatomic_site}</dd>
             <dd><strong>Primary Site: </strong>{biospecimen_summary[0].primary_site}</dd>
         </div>);
-
-
-
-
-
 
         return (
             <div className={itemClass}>
