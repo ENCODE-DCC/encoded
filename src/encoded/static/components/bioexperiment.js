@@ -91,23 +91,24 @@ class Bioexperiment extends React.Component {
         ];
         const crumbsReleased = (context.status === 'released');
         const biospecimen_summary = context.biospecimen_summary;
-        let show_specimen_summary = [];
-        for (let i = 0; i < biospecimen_summary.length; i++) {
-            show_specimen_summary.push(<div>
-                <dt>biospecimen_summary{i+1} </dt>
-                <dd>{biospecimen_summary[i].accession}</dd>
-                <dd>{biospecimen_summary[i].patient}</dd>
-                <dd>{biospecimen_summary[i].openspecimen_ID}</dd>
-                <dd>{biospecimen_summary[i].collection_type}</dd>
-                <dd>{biospecimen_summary[i].processing_type}</dd>
-                <dd>{biospecimen_summary[i].tissue_type}</dd>
-                <dd>{biospecimen_summary[i].host}</dd>
-                <dd>{biospecimen_summary[i].anatomic_site}</dd>
-                <dd>{biospecimen_summary[i].primary_site}</dd>
-                </div>)
-                 
-            }
-        console.log("biospecimen_summary", show_specimen_summary);
+        // let show_specimen_summary ={};
+        let show_specimen_summary = (<div>
+            <dt>biospecimen_summary</dt>
+            <dd><strong>Accession: </strong>{biospecimen_summary[0].accession}</dd>
+            <dd><strong>Patient: </strong>{biospecimen_summary[0].patient}</dd>
+            <dd><strong>Openspecimen ID: </strong>{biospecimen_summary[0].openspecimen_ID}</dd>
+            <dd><strong>Collection Type: </strong>{biospecimen_summary[0].collection_type}</dd>
+            <dd><strong>Processing Type: </strong>{biospecimen_summary[0].processing_type}</dd>
+            <dd><strong>Tissue Type: </strong>{biospecimen_summary[0].tissue_type}</dd>
+            <dd><strong>Species: </strong>{biospecimen_summary[0].host}</dd>
+            <dd><strong>Anatomic Site: </strong>{biospecimen_summary[0].anatomic_site}</dd>
+            <dd><strong>Primary Site: </strong>{biospecimen_summary[0].primary_site}</dd>
+        </div>);
+
+
+
+
+
 
         return (
             <div className={itemClass}>
@@ -149,20 +150,20 @@ class Bioexperiment extends React.Component {
                                     </div>
 
                                     {show_specimen_summary}
-                                    {/* 
-                                    {context.biosample_ontology ?
-                                        <div data-test="biosample-type">
-                                            <dt>Biosample Type</dt>
-                                            <dd>{context.biosample_ontology.classification}</dd>
-                                        </div>
-                                    : null} */}
 
-                                    {/* {context.replication_type ?
+                                    {context.biospecimen_summary.tissue_type ?
+                                        <div data-test="biosample-type">
+                                            <dt>Biospecimen Type</dt>
+                                            <dd>{context.biospecimen_summary.tissue_type}</dd>
+                                        </div>
+                                        : null}
+
+                                    {context.replication_type ?
                                         <div data-test="replicationtype">
                                             <dt>Replication type</dt>
                                             <dd>{context.replication_type}</dd>
                                         </div>
-                                    : null} */}
+                                        : null}
 
                                     {context.experiment_description ?
                                         <div data-test="experiment_description">
