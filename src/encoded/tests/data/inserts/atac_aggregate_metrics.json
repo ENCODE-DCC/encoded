@@ -13,16 +13,16 @@
 		"library_metrics": [
 			{
 				"library": "anna-greka:snATAC_library_donorF1",
-				"post_norm_median_frags_per_cell": 149038.353,
-				"pre_norm_median_frags_per_cell": 132495.6,
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
 				"total_post_normalization": 1293586.4,
 				"total_pre_normalization": 1469346.34,
 				"unique_post_normalization": 23523
 			},
 			{
 				"library": "anna-greka:snATAC_library_donorF2",
-				"post_norm_median_frags_per_cell": 149038.353,
-				"pre_norm_median_frags_per_cell": 132495.6,
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
 				"total_post_normalization": 1293586.4,
 				"total_pre_normalization": 1469346.34,
 				"unique_post_normalization": 37543
@@ -43,16 +43,16 @@
 		"library_metrics": [
 			{
 				"library": "anna-greka:snATAC_library_donorE1",
-				"post_norm_median_frags_per_cell": 149038.353,
-				"pre_norm_median_frags_per_cell": 132495.6,
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
 				"total_post_normalization": 1293586.4,
 				"total_pre_normalization": 1469346.34,
 				"unique_post_normalization": 28543
 			},
 			{
 				"library": "anna-greka:snATAC_library_donorE2",
-				"post_norm_median_frags_per_cell": 149038.353,
-				"pre_norm_median_frags_per_cell": 132495.6,
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
 				"total_post_normalization": 1293586.4,
 				"total_pre_normalization": 1469346.34,
 				"unique_post_normalization": 31472
