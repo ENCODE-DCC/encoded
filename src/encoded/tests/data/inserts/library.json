@@ -182,7 +182,7 @@
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
         "nucleic_acid_term_name": "RNA",
-        "average_fragment_size": 243,
+        "size_range": ">200",
         "strand_specificity": "forward",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
@@ -258,7 +258,7 @@
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_name": "DNA",
-        "average_fragment_size": 230,
+        "size_range": "150-350",
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
     },
@@ -275,7 +275,7 @@
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
         "nucleic_acid_term_name": "RNA",
-        "average_fragment_size": 246,
+        "size_range": ">200",
         "strand_specificity": "strand-specific",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
@@ -670,7 +670,6 @@
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
-        "average_fragment_size": 243,
         "uuid": "65a36949-a525-4f2b-ba22-3a7eee53edfd",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
@@ -682,7 +681,6 @@
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
-        "size_range": "170-200",
         "uuid": "1ad8e550-4ca7-4121-8168-748efc2c5895",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
@@ -694,7 +692,6 @@
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "nucleic_acid_term_name": "DNA",
-        "size_range": ">200",
         "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
