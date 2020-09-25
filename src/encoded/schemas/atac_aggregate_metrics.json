@@ -62,12 +62,12 @@
                         "type": "string",
                         "linkTo": "Library"
         			},
-        			"post_norm_median_frags_per_cell": {
+        			"post_normalization_median_frags_per_cell": {
         				"title": "Post-normalization median fragmentss per cell",
         				"description": "Post-Normalization median unique fragments per cell in library",
         				"type": "number"
         			},
-        			"pre_norm_median_frags_per_cell": {
+        			"pre_normalization_median_frags_per_cell": {
         				"title": "Pre-normalization median fragments per cell",
         				"description": "Pre-Normalization median unique fragements per cell in library",
         				"type": "number"
