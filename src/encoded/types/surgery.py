@@ -91,33 +91,7 @@ class Surgery(Item):
     def pathology_report(self, request, pathology_report):
         return paths_filtered_by_status(request, pathology_report)
 
-    @calculated_property(
-        condition="pathology_report",
-        schema={
-            "title": "pathonlogy_report tumor size range",
-            "type": "array",
-            "items": {"type": "string",},
-        },
-    )
-    def tumor_size_range(self, request, pathology_report):
 
-        for object in pathology_report:
-
-            tumor_object = request.embed(object, "@@object")
-            tumor_size = tumor_object["tumor_size"]
-
-            tumor_size_range = []
-
-            if 0 <= tumor_size < 3:
-                tumor_size_range.append("0-3 cm")
-            elif 3 <= tumor_size < 7:
-                tumor_size_range.append("3-7 cm")
-            elif 7 <= tumor_size < 10:
-                tumor_size_range.append("7-10 cm")
-            else:
-                tumor_size_range.append("10+ cm")
-        return tumor_size_range
-   
 @collection(
     name="surgery-procedures",
     properties={
@@ -133,6 +107,3 @@ class SurgeryProcedure(Item):
 
     def name(self):
         return self.__name__
-    
-
-    

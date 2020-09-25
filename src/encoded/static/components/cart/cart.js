@@ -23,8 +23,8 @@ import CartMergeShared from './merge_shared';
 const PAGE_ELEMENT_COUNT = 25;
 /** File facet fields to display in order of display */
 const displayedFacetFields = [
-    'collection_type',
-    'processing_type',
+    'sample_type',
+    'tissue_derivatives',
     'tissue_type',
     'anatomic_site',
     'status',

@@ -62,11 +62,67 @@ class SurgeryChart extends React.Component {
         sortedDateUnix = this.props.data.map(i => { return Date.parse(i.date) });
         sortedDateUnix.sort((a, b) => a - b);
 
-        let minDateUnix = sortedDateUnix[0];
+        let minDateUnix = new Date(this.props.first_treatment_date + ' 00:00:00');
         let maxDateUnix = sortedDateUnix[sortedDateUnix.length - 1];
 
         let data = [];
         let traceNeph = {};
+
+        //add deceasedDate or lastFollowUpDate
+        let deceasedDate;
+        let lastFollowUpDate;
+        if (this.props.death_date != null){
+        deceasedDate = new Date(this.props.death_date + ' 00:00:00');
+        maxDateUnix = Date.parse(this.props.death_date + ' 00:00:00');
+        } else if(this.props.last_follow_up_date != "Not available") {
+        lastFollowUpDate = new Date(this.props.last_follow_up_date + ' 00:00:00');
+        maxDateUnix = Date.parse(this.props.last_follow_up_date + ' 00:00:00');
+        }
+
+        let trace2 = {};
+        if (deceasedDate != null) {
+            trace2 = {
+                x: [deceasedDate],
+                y: ["  "],
+                mode: 'markers+text',
+                type: 'scatter',
+                name: '',
+                text: ['Deceased date'],
+                hovertemplate: "Deceased date: " + this.props.death_date,
+                textposition: 'left',
+                textfont: {
+                    family:  'Raleway, sans-serif',
+                    size: 15
+                },
+                marker: { 
+                    color: '#D31E1E',
+                    size: 15
+                }
+            };
+            data.push(trace2);
+        } else if (lastFollowUpDate!= null) {
+            trace2 = {
+                x: [lastFollowUpDate],
+                y: ["  "],
+                mode: 'markers+text',
+                type: 'scatter',
+                name: '',
+                text: ['Date of last follow up'],
+                hovertemplate: "Date of last follow up: " + this.props.last_follow_up_date,
+                textposition: 'left',
+                textfont: {
+                    family:  'Raleway, sans-serif',
+                    size: 15
+                },
+                marker: { 
+                color: '#D31E1E',
+                size: 15
+                }
+            };
+            data.push(trace2);
+        }
+       
+        
         if (nephDataPoints.length > 0) {
             for (let i = 0; i < nephDataPoints.length; i++) {
                 traceNeph = {
@@ -75,9 +131,9 @@ class SurgeryChart extends React.Component {
                     y: [nephDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'blue',
+                        color: '#29A2CC',
                         symbol: 'diamond',
-                        size: '16'
+                        size: '15'
                     },
                     text: nephDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -96,9 +152,9 @@ class SurgeryChart extends React.Component {
                     y: [metDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'red',
+                        color: '#29A2CC',
                         symbol: 'circle',
-                        size: '16'
+                        size: '15'
                     },
                     text: metDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -117,9 +173,9 @@ class SurgeryChart extends React.Component {
                     y: [ablaDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'green',
+                        color: '#29A2CC',
                         symbol: 'square',
-                        size: '16'
+                        size: '15'
                     },
                     text: ablaDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -136,9 +192,9 @@ class SurgeryChart extends React.Component {
                     y: [biopsyDataPoints[i]["procedure_type"]],
                     mode: 'markers',
                     marker: {
-                        color: 'orange',
+                        color: '#29A2CC',
                         symbol: 'oval',
-                        size: '16'
+                        size: '15'
                     },
                     text: biopsyDataPoints[i]["procedure_type"],
                     textposition: "right",
@@ -147,12 +203,40 @@ class SurgeryChart extends React.Component {
                 data.push(traceAbla);
             };
         };
+        let trace1 ={};
+        //add Date of diagnosis
+        let diagnosisDate;
+        if (this.props.diagnosis_date != "Not available") {
+            diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
+           
+        }
+        if (diagnosisDate != null) {
+            trace1 = {
+                x: [diagnosisDate],
+                y: [" "],
+                mode: 'markers+text',
+                type: 'scatter',
+                name: '',
+                text: ['Date of diagnosis'],
+                hovertemplate: "Date of diagnosis: " + this.props.diagnosis_date,
+                textposition: 'right',
+                textfont: {
+                    family:  'Raleway, sans-serif',
+                    size: 15
+                },
+                marker: { 
+                    color: '#D31E1E',
+                    size: 15
+                }
+            };
+            data.push(trace1)
+        }
         var layout = {
 
             autosize: true,
             height: 300,
             xaxis: {
-                range: [minDateUnix - 600000 * 60 * 24 * 30, maxDateUnix + 600000 * 60 * 24 * 30],
+                range: [minDateUnix - 60000 * 60 * 24 * 30, maxDateUnix + 60000 * 60 * 24 * 30],
                 showgrid: true,
                 showline: true,
             },
@@ -163,16 +247,13 @@ class SurgeryChart extends React.Component {
                 fixedrange: true
             },
             margin: {
-                l: 150,
-                r: 40,
-                b: 50,
-                t: 20,
+                l: 120,
+                r: 20,
+                b: 30,
+                t: 60,
                 pad: 4
             },
-            font: {
-                family: "Georgia",
-                size: 16,
-            },
+
             hovermode: 'closest',
             showlegend: false,
         };
@@ -199,3 +280,5 @@ class SurgeryChart extends React.Component {
 }
 
 export default SurgeryChart;
+
+

@@ -124,8 +124,8 @@
             "title": "Accession"
         },
         
-        "biospecimen.collection_type": {
-            "title": "Collection Type"
+        "biospecimen.sample_type": {
+            "title": "Sample Type"
         },
         "biospecimen.anatomic_site": {
             "title": "Anatomic Site"
@@ -133,8 +133,8 @@
         "biospecimen.tissue_type": {
             "title": "Tisue Type"
         },
-        "biospecimen.processing_type": {
-            "title": "Processing Type"
+        "biospecimen.tissue_derivatives": {
+            "title": "Tissue Derivatives"
         },
         "nucleic_acid_term_name": {
             "title": "Library material"

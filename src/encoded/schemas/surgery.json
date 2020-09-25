@@ -75,7 +75,7 @@
         "nephr_robotic_assist":{
             "title":"Nephrectomy Robotic Assist"
         },
-        "tumor_size_range": {
+        "pathology_report.tumor_size_range": {
             "title": "Tumor Size"
         },
         "pathology_report.ajcc_p_stage": {
@@ -140,7 +140,7 @@
         "pathology_report.ihc.result": {
             "title": "IHC/FISH results"
         }
-       
+
     },
     "columns": {
         "accession": {
@@ -158,11 +158,10 @@
         "surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
-
         "surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
         },
-        "tumor_size_range": {
+        "pathology_report.tumor_size_range": {
             "title": "Tumor Size"
         },
         "pathology_report.ajcc_p_stage": {
@@ -189,11 +188,9 @@
         "pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
         "pathology_report.histology": {
             "title": "Tumor Histologic Subtypes"
         },
-
         "pathology_report.focality": {
             "title": "Tumor Focality"
         },
@@ -227,13 +224,11 @@
         "pathology_report.ihc.result": {
             "title": "IHC/FISH results"
         }
-
     },
     "boost_values": {
         "accession": 1.0,
         "patient": 1.0,
         "surgery_procedure.procedure_type": 1.0,
-        "tumor_size_range": 1.0,
         "pathology_report.ajcc_p_stage": 1.0,
         "pathology_report.n_stage": 1.0,
         "pathology_report.m_stage": 1.0,
@@ -241,7 +236,7 @@
         "pathology_report.metasis_details.type": 1.0,
         "pathology_report.ajcc_tnm_stage": 1.0,
         "pathology_report.ajcc_version": 1.0,
-        "pathology_report.laterality":1.0, 
+        "pathology_report.laterality":1.0,
         "pathology_report.histology": 1.0,
         "pathology_report.focality": 1.0,
         "pathology_report.grade": 1.0,
@@ -254,8 +249,6 @@
         "pathology_report.micro_adrenal": 1.0,
         "pathology_report.ihc.antibody": 1.0,
         "pathology_report.ihc.result": 1.0
-
-
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }

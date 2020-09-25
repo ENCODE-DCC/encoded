@@ -137,8 +137,8 @@
         }
     }
 
-    &.negated-selected {
-        background-color: #e50400;
+    &.negated-selected>.facet-term__item {
+        text-decoration: line-through;
     }
 
     // Optional icon in status facets.

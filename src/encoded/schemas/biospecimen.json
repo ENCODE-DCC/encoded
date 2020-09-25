@@ -4,7 +4,7 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host","distributed"],
+    "required": [ "award", "internal_ID", "openspecimen_ID", "patient", "collection_date", "sample_type", "tissue_derivatives", "host","distributed"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -59,26 +59,27 @@
             "type": "string",
             "format": "date"
         },
-        "collection_type": {
-            "title": "Collection Type",
+        "sample_type": {
+            "title": "Sample Type",
             "description": "The type of the biospecimen when it was taken.",
             "type": "string",
             "enum": [
-                "solid tissue",
-                "blood"
+                "Tissue",
+                "Blood",
+                "Stool"
             ]
         },
-        "processing_type": {
-            "title": "Processing Type",
-            "description": "the type of the final product after processing.",
+        "tissue_derivatives": {
+            "title": "Tissue Derivatives",
+            "description": "the type of the final product after sample processing.",
             "type": "string",
             "enum": [
                 "FF",
                 "FFPE",
-                "xenograft",
+                "TG(PDX)",
                 "DMSO",
-                "blood",
-                "cell line"
+                "Blood",
+                "Primary cell line"
             ]
         },
         "host": {
@@ -104,47 +105,46 @@
             "title": "Tissue Type",
             "type": "string",
             "enum": [
-                "malignant primary",
-                "malignant metastasis",
-                "benign",
-                "normal"
+                "Primary",
+                "Metastasis",
+                "Benign tumor",
+                "Normal"
             ]
         },
         "anatomic_site": {
             "title": "Anatomic Site",
             "type": "string",
             "enum": [
-                "kidney",
-                "abdominal Wall",
-                "adrenal",
-                "bone",
-                "brain",
-                "liver",
-                "lung",
-                "lymph node",
-                "pancreas",
-                "peritoneum",
-                "retroperitoneal mass",
-                "thrombus",
-                "hematopoietic system"
+                "Kidney",
+                "Abdominal Wall",
+                "Adrenal",
+                "Bone",
+                "Brain",
+                "Liver",
+                "Lung",
+                "Lymph node",
+                "Pancreas",
+                "Peritoneum",
+                "Retroperitoneal mass",
+                "Thrombus"
             ]
         },
         "primary_site": {
             "title": "Primary Site",
             "type": "string",
             "enum": [
-                "kidney",
-                "abdominal Wall",
-                "adrenal",
-                "bone",
-                "brain",
-                "liver",
-                "lung",
-                "lymph node",
-                "pancreas",
-                "peritoneum",
+                "Kidney",
+                "Abdominal Wall",
+                "Adrenal",
+                "Bone",
+                "Brain",
+                "Liver",
+                "Lung",
+                "Lymph node",
+                "Pancreas",
+                "Peritoneum",
                 "Retroperitoneal mass",
-                "thrombus"
+                "Thrombus"
             ]
         },
         "distributed": {
@@ -162,16 +162,16 @@
     "oneOf": [
         {
             "properties": {
-                "collection_type": {
-                    "enum": ["solid tissue"]
+                "sample_type": {
+                    "enum": ["Tissue"]
                 }
             },
             "required": ["tissue_type", "anatomic_site", "primary_site"]
         },
         {
             "properties": {
-                "collection_type": {
-                    "enum": ["blood", "ascites fluid"]
+                "sample_type": {
+                    "enum": ["Blood", "Stool"]
                 }
             }
         }
@@ -181,11 +181,11 @@
         "status": {
             "title": "Status"
         },
-        "collection_type": {
-            "title": "Collection Type"
+        "sample_type": {
+            "title": "Sample Type"
         },
-        "processing_type": {
-            "title": "Product Type"
+        "tissue_derivatives": {
+            "title": "Tissue Derivatives"
         },
         "tissue_type": {
             "title": "Tissue Type"
@@ -232,11 +232,11 @@
         "openspecimen_ID": {
             "title": "OpenSpecimen ID"
         },
-        "collection_type": {
-            "title": "Collection Type"
+        "sample_type": {
+            "title": "Sample Type"
         },
-        "processing_type": {
-            "title": "Processing Type"
+        "tissue_derivatives": {
+            "title": "Tissue Derivatives"
         },
         "tissue_type": {
             "title": "Tissue Type"
@@ -263,6 +263,7 @@
     "changelog": "/profiles/changelogs/biospecimen.md"
 
 }
+
 
 
 

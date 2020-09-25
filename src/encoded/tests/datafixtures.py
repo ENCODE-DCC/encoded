@@ -1090,7 +1090,7 @@ def patient(testapp):
             "age": "60",
             "age_units": "year",
             "ethnicity": "Hispanic",
-            "gender": "Female",
+            "sex": "Female",
             "race": "White",
             "mrn": "934"
     }
