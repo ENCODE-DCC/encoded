@@ -1,6 +1,6 @@
 {
 	"title": "ATAC aggregate metrics",
-	"description": "Schema for submitting metadata for aggregate ATAC-seq metrics",
+	"description": "Schema for submitting metadata for aggregate metrics of multiple ATAC-seq libraries",
 	"id": "/profiles/atac_aggregate_metrics.json",
 	"schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",

@@ -1,0 +1,137 @@
+{
+    "title": "RNA metrics",
+    "description": "Schema for submitting metadata for processing metrics of a RNA-seq library.",
+    "id": "/profiles/rna_metrics.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["quality_metric_of"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        {"$ref": "mixins.json#/aliases"},
+        {"$ref": "mixins.json#/documents"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/quality_metric_of"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "estimated_number_of_cells": {
+            "title": "Estimated number of cells",
+            "description": "Number of barcodes associated with cell-containing partitions, estimated from UMI counts.",
+            "type": "integer"
+        },
+        "mean_reads_per_cell": {
+            "title": "Mean reads per cell",
+            "description": "Total number of reads divided by estimated number of cells.",
+            "type": "integer"
+        },
+        "median_genes_per_cell": {
+            "title": "Median genes per cell",
+            "description": "Median number of genes detected (with nonzero UMI counts) across cell-associated barcodes.",
+            "type": "integer"
+        },
+        "number_of_reads": {
+            "title": "Number of reads",
+            "description": "Total number of sequenced reads.",
+            "type": "integer"
+        },
+        "valid_barcodes": {
+            "title": "Valid barcodes",
+            "description": "Percentage of reads with cell barcodes that match the whitelist.",
+            "type": "number"
+        },
+        "reads_mapped_to_genome":{
+            "title": "Reads mapped to the genome",
+            "description": "Percentage of reads that mapped to genome",
+            "type": "number"
+        },
+        "reads_mapped_confidently_to_genome": {
+            "title": "Reads mapped confidently to genome",
+            "description": "Percentage of reads that mapped confidently to genome",
+            "type": "number"
+        },
+        "reads_mapped_antisense_to_gene": {
+            "title": "Reads mapped antisense to a gene",
+            "description": "Percentage of reads that mapped antisense to a gene",
+            "type": "number"
+        },
+        "reads_mapped_confidently_to_transcriptome": {
+            "title": "Reads mapped confidently to the transcriptome",
+            "description": "Percentage of reads mapped to a unique gene in the transcriptome with high mapping quality score.",
+            "type": "number"
+        },
+        "reads_mapped_confidently_to_exonic_regions": {
+            "title": "Reads mapped confidently to exonic regions",
+            "description": "Percentage of reads that mapped to the exonic regions of the genome with high mapping quality score.",
+            "type": "number"
+        },
+        "reads_mapped_confidently_to_intronic_regions": {
+            "title": "Reads mapped confidently to intronic regions",
+            "description": "Percentage of reads that mapped to the intronic regions of genome with a high mapping quality score.",
+            "type": "number"
+        },
+        "reads_mapped_confidently_to_intergenic_regions": {
+            "title": "Reads mapped confidently to intergenic regions",
+            "description": "Percentage of reads that mapped to the intergenic regions of the genome with a high mapping quality score.",
+            "type": "number"
+        },
+        "sequencing_saturation": {
+            "title": "Sequencing saturation",
+            "description": "Percentage of reads originating from an already-observed UMI.",
+            "type": "number"
+        },
+        "q30_bases_in_barcode": {
+            "title": "Q30 bases in barcode",
+            "description": "Percentage of bases with Q-score of at least 30 in the cell barcode sequences.",
+            "type": "number"
+        },
+        "q30_bases_in_rna_read": {
+            "title": "Q30 bases in rna read",
+            "description": "Percentage of bases with Q-score of at least 30 in the RNA read sequence",
+            "type": "number"
+        },
+        "q30_bases_in_sample_index": {
+            "title": "Q30 bases in sample index",
+            "description": "Percentage of bases with Q-score of at least 30 in the sample index sequences.",
+            "type": "number"
+        },
+        "q30_bases_in_umi": {
+            "title": "Q30 bases in umi",
+            "description": "Fraction of bases with Q-score of at least 30 in the UMI sequences.",
+            "type": "number"
+        },
+        "fraction_reads_in_cells": {
+            "title": "Fraction reads in cells",
+            "description": "Percentage of cell-barcoded, confidently mapped reasds with cell-associated barcodes.",
+            "type": "number"
+        },
+        "total_genes_detected": {
+            "title": "Total genes detected",
+            "description": "The number of genes with at least one UMI count in any cell.",
+            "type": "integer"
+        },
+        "median_umi_counts_per_cell": {
+            "title": "Median umi counts per cell",
+            "description": "The median number of total UMI counts across all cell-associated barcodes.",
+            "type": "integer"
+        },
+        "antibody_capture_metrics": {
+            "title": "Antibody capture metrics",
+            "description": "The antibody capture metrics that is also associated with the feature expression matrix from which this gene expression metrics was generated.",
+            "type": "string",
+            "linkTo": "AntibodyCaptureMetrics"
+        },
+        "doublet_rate": {
+            "title": "Doublet rate",
+            "description": "The rate that doublets were detected in the associated data",
+            "type": "integer"
+        }
+    },
+    "changelog": "/profiles/changelogs/rna_metrics.md"
+}
