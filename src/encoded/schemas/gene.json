@@ -4,7 +4,7 @@
     "id": "/profiles/gene.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["geneid", "ncbi_entrez_status", "symbol", "dbxrefs", "organism"],
+    "required": ["geneid", "ensembl_status", "symbol", "dbxrefs", "organism"],
     "identifyingProperties": ["uuid", "geneid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -101,25 +101,112 @@
             "default": "1"
         },
         "geneid": {
-            "title": "NCBI Entrez Gene ID",
-            "description": "NCBI Entrez GeneID of this gene.",
-            "comment": "An ENCODE gene (object) needs to have an Entrez GeneID and needs to be approved by (i.e. have an ID and gene symbol from) offical nomenclature such as HGNC, MGI.",
+            "title": "Ensembl gene ID",
+            "description": "Ensembl GeneID, which starts with 'ENSG', of this gene, not including the gene version",
             "type": "string",
-            "pattern": "^[1-9][0-9]*$",
+            "pattern": "^ENSG[0-9]*$",
             "permission": "import_items",
             "uniqueKey": true
         },
-        "ncbi_entrez_status": {
-          "title": "NCBI Entrez Gene Status",
-            "description": "The status of the NCBI Entrez record for this gene.",
-          "type": "string",
-          "default": "live",
-          "enum" : [
-              "live",
-              "secondary",
-              "discontinued"
-          ],
-          "permission": "import_items"
+        "ensembl_version": {
+            "title": "Ensembl version",
+            "description": "The version of the gene as assigned by Ensembl.",
+            "type": "integer"
+        },
+        "ensembl_status": {
+            "title": "Ensembl gene status",
+            "description": "The status of the Ensembl record for this gene.",
+            "type": "string",
+            "default": "live",
+            "enum": [
+                "live",
+                "discontinued"
+            ],
+            "permission": "import_items"
+        },
+        "gencode_version": {
+            "title": "GENCODE version",
+            "description": "The version of GENCODE release that this gene version is associated with.",
+            "type": "integer"
+        },
+        "gene_biotype": {
+            "title": "Gene biotype",
+            "description": "The biological classification that describes the gene, as defined by GENCODE and Ensembl",
+            "type": "string",
+            "enum": [
+                "IG_C_gene",
+                "IG_D_gene",
+                "IG_J_gene",
+                "IG_LV_gene",
+                "IG_V_gene",
+                "TR_C_gene",
+                "TR_J_gene",
+                "TR_V_gene",
+                "TR_D_gene",
+                "IG_pseudogene",
+                "IG_C_pseudogene",
+                "IG_J_pseudogene",
+                "IG_V_pseudogene",
+                "TR_V_pseudogene",
+                "TR_J_pseudogene",
+                "Mt_rRNA",
+                "Mt_tRNA",
+                "miRNA",
+                "misc_RNA",
+                "rRNA",
+                "scRNA",
+                "snRNA",
+                "snoRNA",
+                "ribozyme",
+                "sRNA",
+                "scaRNA",
+                "lncRNA",
+                "Mt_tRNA_pseudogene",
+                "tRNA_pseudogene",
+                "snoRNA_pseudogene",
+                "snRNA_pseudogene",
+                "scRNA_pseudogene",
+                "rRNA_pseudogene",
+                "misc_RNA_pseudogene",
+                "miRNA_pseudogene",
+                "TEC",
+                "nonsense_mediated_decay",
+                "retained_intron",
+                "protein_coding",
+                "non_coding",
+                "ambiguous_org",
+                "sense_intronic",
+                "sense_overlapping",
+                "antisense",
+                "known_ncrna",
+                "pseudogene",
+                "processed_pseudogene",
+                "polymorphic_pseudogene",
+                "retrotransposed",
+                "transcribed_processed_pseudogene",
+                "transcribed_unprocessed_pseudogene",
+                "transcribed_unitary_pseudogene",
+                "translated_processed_pseudogene",
+                "translated_unprocessed_pseudogene",
+                "unitary_pseudogene",
+                "unprocessed_pseudogene",
+                "artifact",
+                "lincRNA",
+                "macro_lncRNA",
+                "3prime_overlapping_ncRNA",
+                "disrupted_domain",
+                "vaultRNA",
+                "bidirectional_promoter_lncRNA"
+            ]
+        },
+        "strand": {
+            "title": "Strand",
+            "description": "The genomic strand that the gene maps to",
+            "type": "string",
+            "enum": [
+                "-",
+                "+"
+            ]
         },
         "symbol": {
             "title": "Gene symbol",
