@@ -670,6 +670,9 @@ PHASE1_PIPELINES = {
     'replication_timing_series': [
         remove_keys('related_datasets'),
     ],
+    'gene_silencing_series': [
+        remove_keys('related_datasets'),
+    ],
     'reference_epigenome': [
         remove_keys('related_datasets', 'supersedes'),
     ],
@@ -763,6 +766,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'replication_timing_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'gene_silencing_series': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'reference_epigenome': [
