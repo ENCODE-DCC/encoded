@@ -394,6 +394,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'ES_IP': main_args.es_ip,
         'ES_PORT': main_args.es_port,
         'ES_OPT_FILENAME': 'notused',
+        'PRIMARY_SHARDS': main_args.primary_shards,
+        'REPLICATE_SHARDS': main_args.replicate_shards,
         'FE_IP': main_args.fe_ip,
         'FULL_BUILD': main_args.full_build,
         'GIT_BRANCH': main_args.branch,
@@ -486,6 +488,8 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'ES_OPT_FILENAME': 'es-demo.yml',
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
+                'PRIMARY_SHARDS': 1,
+                'REPLICATE_SHARDS': 0,
             })
         if main_args.primary_indexing:
             data_insert.update({
@@ -1012,6 +1016,8 @@ def _parse_args():
     parser.add_argument('--cluster-size', type=int, default=5, help="Elasticsearch cluster size")
     parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
     parser.add_argument('--es-port', default='9201', help="ES Master ip port")
+    parser.add_argument('--primary-shards', default=3, type=int, help="ES number of primary shards")
+    parser.add_argument('--replicate-shards', default=1, type=int, help="ES number of replicate shards")
     parser.add_argument(
         '--node-name',
         default=None,
