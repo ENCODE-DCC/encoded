@@ -23,29 +23,56 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
-        {"$ref": "biosample.json#/properties"}
+        {"$ref": "mixins.json#/starting_quantity"}
     ],
     "dependencies": {},
     "properties": {
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "SU"
+        },
+        "alternate_accessions": {
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(LATSU\\d{3}[A-Z]{3})$"
+            }
+        },
         "biosample_ontology": {
-            "pattern": "^(CL|EFO|UBERON|NTR)_[0-9]{2,8}$"
+            "title": "Biosample ontology",
+            "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
+            "comment": "See ontology_term.json for available identifiers.",
+            "type": "string",
+            "linkTo": "OntologyTerm"
         },
         "derived_from": {
+            "title": "Derived from",
+            "description": "The donor(s) or sample(s) from which this object was directly derived.",
+            "type": "array",
+            "uniqueItems": true,            
             "items": {
                 "title": "Derived from",
                 "description": "A donor or sample from which this object was directly derived.",
                 "type": "string",
                 "linkTo": [
                     "Biosample",
+                    "Suspension",
                     "Donor"
                 ]
             }
         },
         "derivation_process": {
+            "title": "Derivation process",
+            "description": "The method(s) by which this object was derived.",
+            "type": "array",
             "items": {
+                "title": "Derivation process",
+                "description": "A method by which this object was derived.",
                 "type": "string",
                 "enum": [
                     "detergent solubilization",
@@ -57,6 +84,34 @@
                     "negative magnetic affinity cell sorting"
                 ]
             }
+        },
+        "treatments": {
+            "description": "A list of treatments applied to the biosample.",
+            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified."
+        },
+        "diseases": {
+            "description": "Known diseases of the specific sample"
+        },
+        "dbxrefs": {
+            "items": {
+                "title": "External identifier",
+                "description": "An identifier from external resource.",
+                "type":  "string",
+                "pattern": "^((GEO:SAM\\d+)|(SRA:SRS\\d+)|(ENA:(ERS|SAM)\\d+))$"
+            }
+        },
+        "starting_quantity": {
+            "description": "The initial measurement of material at the initiation of the suspension."
+        },
+        "starting_quantity_units": {
+            "enum": [
+                "cells",
+                "nuclei",
+                "cells/ml",
+                "nuclei/ml",
+                "cells/μl",
+                "nuclei/μl"
+            ]
         },
         "suspension_type": {
             "title": "Suspension type",

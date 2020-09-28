@@ -23,7 +23,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCBS\\d{3}[A-Z]{3})$|^(TSTBS\\d{6})$"
+                "pattern": "^(LATBS\\d{3}[A-Z]{3})$"
             }
         },
         "biosample_ontology": {
@@ -32,19 +32,6 @@
             "comment": "See ontology_term.json for available identifiers.",
             "type": "string",
             "linkTo": "OntologyTerm"
-        },
-        "description": {
-            "elasticsearch_mapping_index_type": {
-                "title": "Field mapping index type",
-                "description": "Defines one of three types of indexing available",
-                "type": "string",
-                "default": "analyzed",
-                "enum": [
-                    "analyzed",
-                    "no",
-                    "not_analyzed"
-                ]
-            }
         },
         "derived_from": {
             "title": "Derived from",
@@ -85,27 +72,7 @@
             "format": "date"
         },
         "starting_quantity": {
-            "title": "Starting amount",
-            "description": "The initial quantity of cells, tissue or animals obtained.",
-            "type": "number",
-            "minimum":0
-        },
-        "starting_quantity_units": {
-            "title": "Starting amount units",
-            "description": "The units used to quantify the amount of cells or tissue obtained.",
-            "type": "string",
-            "enum": [
-                "cells",
-                "cells/ml",
-                "g",
-                "items",
-                "mg",
-                "whole animals",
-                "whole embryos",
-                "μg",
-                "cells/μl",
-                "nuclei/μl"
-            ]
+            "description": "The initial quantity measured at the point in time that the sample was obtained."
         },
         "post_treatment_time": {
             "title": "Post-treatment time",

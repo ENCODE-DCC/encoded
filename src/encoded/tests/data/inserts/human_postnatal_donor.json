@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCDO085DDD",
+        "accession": "LATHD085DDD",
         "uuid": "54fd414d-6da2-4ab2-b164-403d77b988e3",
         "aliases": [
             "anna-greka:adult_human_donorB"
@@ -38,7 +38,7 @@
         ]
     },
     {
-        "accession": "ENCDO080DDD",
+        "accession": "LATHD080DDD",
         "uuid": "80588b81-eba0-4f83-9c24-549a4fa43ec0",
         "aliases": [
             "anna-greka:adult_human_donorA"
@@ -77,7 +77,7 @@
         ]
     },
     {
-        "accession": "ENCDO654AAA",
+        "accession": "LATHD654AAA",
         "aliases": [
             "peter-sims:postnatal_donor1"
         ],
@@ -116,7 +116,7 @@
         "notes": "Some notes"
     },
     {
-        "accession": "ENCDO654GGG",
+        "accession": "LATHD654GGG",
         "aliases": [
             "anindita-basu:postnatal_human_donorA"
         ],

@@ -98,3 +98,20 @@ class Treatment(Item):
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
+
+
+@collection(
+    name='antibodies',
+    unique_key='accession',
+    properties={
+        'title': 'Antibody lot',
+        'description': 'Listing of ENCODE antibodies',
+    })
+class AntibodyLot(Item):
+    item_type = 'antibody_lot'
+    schema = load_schema('encoded:schemas/antibody_lot.json')
+    name_key = 'accession'
+    rev = {}
+    embedded = [
+        'host_organism'
+    ]

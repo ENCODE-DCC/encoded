@@ -4,7 +4,7 @@
             "anna-greka:large_test_dataset"
         ],
         "description": "Human, mouse, and CITEseq large dataset",
-        "accession": "ENCSR700BBB",
+        "accession": "LATDS700BBB",
         "uuid": "062a566c-89f9-4d23-b0a5-aa38026fb37e",
         "award": "CZI001KID",
         "submitted_by": "jlz@stanford.edu",
@@ -25,7 +25,7 @@
         "aliases": [
             "jimmie-ye:snATACseq_atac_dataset"
         ],
-        "accession": "ENCSR600ABA",
+        "accession": "LATDS600ABA",
         "uuid": "3cc751d2-e330-11ea-87d0-0242ac130003",
         "description": "A scATACseq test dataset with cell culture and organoids.",
         "award": "CZI021IMM",
@@ -50,7 +50,7 @@
         "aliases": [
             "peter-sims:scRNAseq_test_dataset"
         ],
-        "accession": "ENCSR654AAA",
+        "accession": "LATDS654AAA",
         "uuid": "2e0694f2-db63-11ea-87d0-0242ac130003",
         "description": "A scRNAseq test dataset with 6 prenatal and 3 postnatal libraries.",
         "award": "CZI004LIV",
@@ -75,7 +75,7 @@
         "aliases": [
             "anindita-basu:scRNAseq_test_dataset_deleted"
         ],
-        "accession": "ENCSR800GGG",
+        "accession": "LATDS800GGG",
         "uuid": "dc46b067-d401-40d8-bce5-1f76e56f13e2",
         "description": "A deleted test dataset",
         "award": "CZI025LYN",

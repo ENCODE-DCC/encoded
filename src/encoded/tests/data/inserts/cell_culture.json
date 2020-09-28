@@ -4,7 +4,7 @@
             "anna-greka:cell_culture_donorC"
         ],
         "status": "released",
-        "accession": "ENCBS300DDD",
+        "accession": "LATBS300DDD",
         "uuid": "05e0478e-eba2-403d-b598-b268fa5a9b1e",
         "description": "cell culture from prenatal donorC",
         "derived_from": [
@@ -13,7 +13,7 @@
         "derivation_process": [
             "cell isolation", "differentiation", "expansion"
         ],
-        "biosample_ontology": "CL_0004905",
+        "biosample_ontology": "CL_0002248",
         "passage_number": 10,
         "is_immortalized": false,
         "mycoplasma_testing_method": "qPCR",
@@ -31,7 +31,7 @@
             "anna-greka:cell_culture_donorD"
         ],
         "status": "released",
-        "accession": "ENCBS350DDD",
+        "accession": "LATBS350DDD",
         "uuid": "cc667626-8e1b-4410-a74a-39920b3fb414",
         "description": "cell culture from prenatal donorD",
         "derived_from": [
@@ -40,7 +40,7 @@
         "derivation_process": [
             "cell isolation", "differentiation", "expansion"
         ],
-        "biosample_ontology": "CL_0004905",
+        "biosample_ontology": "CL_0002248",
         "passage_number": 9,
         "is_immortalized": false,
         "mycoplasma_testing_method": "qPCR",
@@ -57,7 +57,7 @@
         "aliases": [
             "jimmie-ye:prenatal_cell_culture1"
         ],
-        "accession": "ENCBS788AAA",
+        "accession": "LATBS788AAA",
         "uuid": "39be8f63-832c-4118-b5ef-6ea6e8ecfcb2",
         "description": "prenatal cell culture 1",
         "derived_from": [
@@ -82,7 +82,7 @@
             "jimmie-ye:prenatal_cell_culture2"
         ],
         "status": "in progress",
-        "accession": "ENCBS789AAA",
+        "accession": "LATBS789AAA",
         "uuid": "6a089ddd-6487-49aa-aa8e-cabee07ee436",
         "description": "prenatal cell culture 2",
         "derived_from": [
@@ -106,7 +106,7 @@
             "jimmie-ye:prenatal_cell_culture3"
         ],
         "status": "in progress",
-        "accession": "ENCBS790AAA",
+        "accession": "LATBS790AAA",
         "uuid": "de2912d6-d43c-43e4-8e07-ea977983b972",
         "description": "prenatal cell culture 3",
         "derived_from": [

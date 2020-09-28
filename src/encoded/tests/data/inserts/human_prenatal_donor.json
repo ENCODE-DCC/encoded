@@ -1,6 +1,6 @@
 [
     {
-        "accession": "ENCDO070DDD",
+        "accession": "LATHD070DDD",
         "aliases": [
             "anna-greka:fetal_human_donorC"
         ],
@@ -30,7 +30,7 @@
         "crown_rump_length_units": "mm"
     },
     {
-        "accession": "ENCDO075DDD",
+        "accession": "LATHD075DDD",
         "aliases": [
             "anna-greka:fetal_human_donorD"
         ],
@@ -60,7 +60,7 @@
         "crown_rump_length_units": "mm"
     },
     {
-        "accession": "ENCDO130BBB",
+        "accession": "LATHD130BBB",
         "aliases": [
             "jimmie-ye:prenatal_donor1"
         ],
@@ -80,7 +80,7 @@
         "submitter_comment": "Test comment"
     },
     {
-        "accession": "ENCDO131BBB",
+        "accession": "LATHD131BBB",
         "aliases": [
             "jimmie-ye:prenatal_donor2"
         ],
@@ -100,7 +100,7 @@
         "submitter_comment": "Test comment"
     },
     {
-    	"accession": "ENCDO123ABC",
+    	"accession": "LATHD123ABC",
     	"aliases": [
     		"peter-sims:prenatal_donor2"
     	],
@@ -127,7 +127,7 @@
     	"submitter_comment": "Test comment"
     },
     {
-    	"accession": "ENCDO124ABC",
+    	"accession": "LATHD124ABC",
     	"aliases": [
     		"peter-sims:prenatal_donor3",
             "jimmie-ye:prenatal_donor3"

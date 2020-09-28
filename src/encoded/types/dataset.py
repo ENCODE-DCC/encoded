@@ -122,11 +122,13 @@ class Dataset(Item):
         conn = registry[CONNECTION]
         for i in outside_ids:
             file_id = i.split('/')[-2]
-            if len(file_id) > 11:
-                outsideObject = conn.get_by_uuid(file_id).__json__(request)
-            else:
+            if conn.get_by_unique_key('accession', file_id):
                 outsideObject = conn.get_by_unique_key('accession', file_id).__json__(request)
-            # use md5sum as a proxy for DataFiles
+            elif conn.get_by_unique_key('external_accession', file_id):
+                outsideObject = conn.get_by_unique_key('external_accession', file_id).__json__(request)
+            else:
+                outsideObject = conn.get_by_uuid(file_id).__json__(request)
+            # use md5sum as a proxy for Files
             if 'md5sum' in outsideObject.keys():
                 outside_files.append(i)
 

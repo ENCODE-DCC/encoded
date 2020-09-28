@@ -55,7 +55,7 @@
     "accession": {
         "accession": {
             "title": "Accession",
-            "description": "A unique identifier to be used to reference the object prefixed with ENC.",
+            "description": "A unique identifier to be used to reference the object prefixed with LAT.",
             "comment": "Do not submit. The accession is assigned by the server.",
             "type": "string",
             "format": "accession",
@@ -315,6 +315,18 @@
             }
         }
     },
+    "starting_quantity": {
+        "starting_quantity": {
+            "title": "Starting quantity",
+            "type": "number",
+            "minimum": 0
+        },
+        "starting_quantity_units": {
+            "title": "Starting quantity units",
+            "description": "The units used to measure the starting amount.",
+            "type": "string"
+        }
+    },
     "diseases": {
         "diseases": {
             "title": "Diseases",
@@ -325,8 +337,7 @@
             "items": {
                 "title": "Disease",
                 "type": "string",
-                "linkTo": "OntologyTerm",
-                "pattern": "^(MONDO|NTR)_[0-9]{2,8}$"
+                "linkTo": "OntologyTerm"
             }
         }
     },

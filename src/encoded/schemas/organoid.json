@@ -23,6 +23,7 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
+        {"$ref": "mixins.json#/starting_quantity"},
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],
@@ -30,9 +31,6 @@
     "properties": {
         "schema_version": {
             "default": "1"
-        },
-        "biosample_ontology": {
-            "pattern": "^(UBERON|NTR)_[0-9]{2,8}$"
         },
         "derived_from": {
             "items": {
@@ -45,6 +43,15 @@
                     "Organoid"
                 ]
             }
+        },
+        "starting_quantity_units": {
+            "enum": [
+                "g",
+                "mg",
+                "μg",
+                "cm",
+                "sq cm"
+            ]
         },
         "embedded_in_matrigel": {
             "title": "Embedded in matrigel",

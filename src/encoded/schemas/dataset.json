@@ -50,7 +50,7 @@
             "default": "1"
         },
         "accession": {
-            "accessionType": "SR"
+            "accessionType": "DS"
         },
         "alternate_accessions": {
             "items": {
@@ -59,7 +59,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
+                "pattern": "^(LATDS\\d{3}[A-Z]{3})$"
             }
         },
         "corresponding_contributor": {

@@ -1,12 +1,13 @@
 [
     {
-        "accession": "ENCDO060DDD",
+        "accession": "LATMD060DDD",
         "aliases": [
             "anna-greka:adult_mouse_donorE"
         ],
         "uuid": "2a45dbaf-bdd0-48bb-9b40-03284a254c6b",
         "life_stage": "adult",
         "mating_status": "mated",
+        "status": "released",
         "sex": "female",
         "age": "1",
         "age_units": "year",
@@ -23,13 +24,14 @@
         ]
     },
         {
-        "accession": "ENCDO065DDD",
+        "accession": "LATMD065DDD",
         "aliases": [
             "anna-greka:adult_mouse_donorF"
         ],
         "uuid": "104f035e-98c7-434f-8638-8cdd7de59c3a",
         "life_stage": "adult",
         "mating_status": "sterile",
+        "status": "released",
         "sex": "male",
         "age": "1",
         "age_units": "year",

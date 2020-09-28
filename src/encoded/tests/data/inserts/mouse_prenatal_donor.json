@@ -1,11 +1,12 @@
 [
     {
-        "accession": "ENCDO050DDD",
+        "accession": "LATMD050DDD",
         "aliases": [
             "anna-greka:embryonic_mouse_donorG"
         ],
         "uuid": "dbd270ca-fbf0-4d03-9e22-babf92165142",
         "life_stage": "embryonic",
+        "status": "released",
         "sex": "female",
         "strain_background": "C57BL/6J",
         "strain_term_name": "C57BL/6J",
@@ -23,13 +24,14 @@
         ]
     },
     {
-        "accession": "ENCDO055DDD",
+        "accession": "LATMD055DDD",
         "aliases": [
             "anna-greka:embryonic_mouse_donorH"
         ],
         "uuid": "444440cb-3402-4074-bc1b-aa3b01bd27fb",
         "life_stage": "embryonic",
         "sex": "male",
+        "status": "released",
         "strain_background": "C57BL/6J",
         "strain_term_name": "C57BL/6J",
         "strain_term_id": "EFO:0000606",
