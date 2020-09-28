@@ -1,0 +1,78 @@
+{
+    "STARR": {
+        "rule": "'{assay_term_name}' == 'STARR-seq'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE STARR-seq experiments",
+            "shortLabel": "ENCODE STARR-seq"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Peaks", "Signal" , "Signal p-value", "Control normalized signal" ],
+            "groups": {
+                "Peaks": {
+                    "tag": "aPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "output_type": [ "peaks" ]
+                },
+                "Signal": {
+                    "tag": "bSIG",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal of unique reads" ]
+                },
+                "Signal p-value": {
+                    "tag": "cSPV",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal p-value" ]
+                },
+                "Control normalized signal": {
+                    "tag": "dCNS",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "control normalized signal" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}
+
