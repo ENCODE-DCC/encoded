@@ -1094,6 +1094,7 @@
         "dbxrefs": ["GEO:GSE80910"],
         "description": "shRNA knockdown against TAF15 in K562 cells followed by RNA-seq. (TAF15-LV08)",
         "internal_tags": ["ENCORE"],
+        "possible_controls": ["ENCSR001EPI"],
         "lab": "brenton-graveley",
         "status": "released",
         "submitted_by": "mus.mi@porttitor.molestie",
