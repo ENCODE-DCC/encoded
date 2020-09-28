@@ -160,9 +160,60 @@
                     "gene quantifications",
                     "transcript quantifications",
                     "peak quantifications",
-                    "transcription factor quantifications"
+                    "transcription factor quantifications",
+                    "antibody capture quantifications"
                 ]
             }
+        },
+        "feature_keys": {
+            "title": "Feature keys",
+            "description": "The category of identifiers used as the key for the features of the matrix.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Feature key",
+                "type": "string",
+                "enum": [
+                    "Ensembl gene ID",
+                    "gene symbol",
+                    "antibody target",
+                    "genomic coordinates",
+                    "motif ID"
+                ]
+            }
+        },
+        "feature_counts": {
+            "title": "Feature counts",
+            "description": "For each category of feature type, the number of entries found in the matrix considered as features (eg: genes, antibody capture, or peaks)",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Feature count",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "feature_type": {
+                        "title": "Feature type",
+                        "type": "string",
+                        "enum": [
+                            "gene",
+                            "peak",
+                            "transcription factor",
+                            "antibody capture"
+                        ]
+                    },
+                    "feature_count": {
+                        "title": "Feature count",
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "observation_count": {
+            "title": "Observation count",
+            "description": "The number of entries found in the matrix considered as observations (eg: cell barcodes)",
+            "type": "integer"
         },
         "value_scale": {
             "title": "Value scale",

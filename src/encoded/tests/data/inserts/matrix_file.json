@@ -11,8 +11,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -52,8 +62,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 11323,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -94,8 +114,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -135,8 +165,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 15234,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -177,8 +217,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -218,8 +268,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 10425,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -260,8 +320,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -301,8 +371,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 11938,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -346,6 +426,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 239104}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
@@ -384,6 +471,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 129394}
+        ],
+        "observation_count": 20334,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
@@ -423,6 +517,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 20332,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorA1_S1_L003_I1_001.fastq",
@@ -462,6 +563,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 265435}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
@@ -500,6 +608,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 121134}
+        ],
+        "observation_count": 10323,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
@@ -539,6 +654,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 654}
+        ],
+        "observation_count": 10655,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorA2_S2_L003_I1_001.fastq",
@@ -577,6 +699,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 254644}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
@@ -615,6 +744,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 103241}
+        ],
+        "observation_count": 100239,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
@@ -654,6 +790,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 544}
+        ],
+        "observation_count": 9387,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorB1_S3_L003_I1_001.fastq",
@@ -692,6 +835,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 267755}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
@@ -730,6 +880,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 103400}
+        ],
+        "observation_count": 11858,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
@@ -769,6 +926,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 590}
+        ],
+        "observation_count": 9833,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorB2_S4_L003_I1_001.fastq",
@@ -807,6 +971,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 266211}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
@@ -845,6 +1016,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 102311}
+        ],
+        "observation_count": 12596,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
@@ -884,6 +1062,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 511}
+        ],
+        "observation_count": 8342,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorC1_S1_L001_I1_001.fastq",
@@ -922,6 +1107,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
@@ -960,6 +1152,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 11239,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
@@ -999,6 +1198,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 9283,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorC2_S2_L001_I1_001.fastq",
@@ -1037,6 +1243,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
@@ -1075,6 +1288,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 12985,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
@@ -1114,6 +1334,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 9284,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorD1_S3_L001_I1_001.fastq",
@@ -1152,6 +1379,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
@@ -1190,6 +1424,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 10484,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
@@ -1229,6 +1470,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 9838,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorD2_S4_L001_I1_001.fastq",
@@ -1267,6 +1515,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
@@ -1305,6 +1560,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 11831,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
@@ -1344,6 +1606,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 8234,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorE1_S1_L004_I1_001.fastq",
@@ -1382,6 +1651,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
@@ -1420,6 +1696,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 12993,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
@@ -1459,6 +1742,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 8431,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorE2_S2_L004_I1_001.fastq",
@@ -1497,6 +1787,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
@@ -1535,6 +1832,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 13982,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
@@ -1574,6 +1878,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 9210,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorF1_S3_L004_I1_001.fastq",
@@ -1612,6 +1923,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
@@ -1650,6 +1968,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 14982,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
@@ -1689,6 +2014,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 600}
+        ],
+        "observation_count": 8837,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorF2_S4_L004_I1_001.fastq",
@@ -1727,6 +2059,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
@@ -1765,6 +2104,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100000}
+        ],
+        "observation_count": 14872,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
@@ -1804,6 +2150,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 612}
+        ],
+        "observation_count": 723,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorG1_S5_L004_I1_001.fastq",
@@ -1842,6 +2195,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 294882}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
@@ -1880,6 +2240,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 119204}
+        ],
+        "observation_count": 18273,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
@@ -1919,6 +2286,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 620}
+        ],
+        "observation_count": 8772,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorG2_S6_L004_I1_001.fastq",
@@ -1957,6 +2331,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 293848}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
@@ -1995,6 +2376,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 119393}
+        ],
+        "observation_count": 18476,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
@@ -2034,6 +2422,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 593}
+        ],
+        "observation_count": 9282,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorH1_S7_L004_I1_001.fastq",
@@ -2072,6 +2467,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 200831}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
@@ -2110,6 +2512,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 102011}
+        ],
+        "observation_count": 16283,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
@@ -2149,6 +2558,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 548}
+        ],
+        "observation_count": 9281,
         "dataset": "anna-greka:large_test_dataset",
         "derived_from": [
             "anna-greka:snATAC_donorH2_S8_L004_I1_001.fastq",
@@ -2186,6 +2602,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2221,6 +2644,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 19387,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2257,6 +2687,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2292,6 +2729,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 19844,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2328,6 +2772,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2363,6 +2814,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 18746,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2399,6 +2857,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2434,6 +2899,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 16253,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2470,6 +2942,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2505,6 +2984,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 12949,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2541,6 +3027,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2576,6 +3069,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 20384,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2612,6 +3112,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2647,6 +3154,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 29332,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2683,6 +3197,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2718,6 +3239,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 17363,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2754,6 +3282,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2792,6 +3327,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 13922,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2831,6 +3373,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2869,6 +3418,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33000}
+        ],
+        "observation_count": 19388,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2906,8 +3462,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2944,8 +3510,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 29488,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -2983,8 +3559,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -3021,8 +3607,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 12191,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -3060,8 +3656,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -3098,8 +3704,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 10472,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -3137,8 +3753,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -3175,8 +3801,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 18283,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "linear",
         "value_units": "UMI",
@@ -3214,8 +3850,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "gene symbol",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 20192,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
         "value_units": "UMI",
@@ -3274,6 +3920,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950}
+        ],
+        "observation_count": 82379,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
         "value_units": "UMI",
@@ -3336,6 +3989,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950}
+        ],
+        "observation_count": 18293,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
         "value_units": "UMI",
@@ -3390,8 +4050,18 @@
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "gene symbol",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 18722,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
         "value_units": "UMI",
@@ -3446,8 +4116,18 @@
         "file_size": 200000,
         "lab": "anna-greka",
         "output_types": [
-            "gene quantifications"
+            "gene quantifications",
+            "antibody capture quantifications"
         ],
+        "feature_keys": [
+            "gene symbol",
+            "antibody target"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 329950},
+            {"feature_type": "antibody capture", "feature_count": 50}
+        ],
+        "observation_count": 29292,
         "dataset": "anna-greka:large_test_dataset",
         "value_scale": "natural log",
         "value_units": "UMI",
@@ -3506,6 +4186,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 540}
+        ],
+        "observation_count": 5399,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1a_R1.fastq",
@@ -3545,6 +4232,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 540}
+        ],
+        "observation_count": 4939,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1b_R1.fastq",
@@ -3584,6 +4278,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 540}
+        ],
+        "observation_count": 5533,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1c_R1.fastq",
@@ -3623,6 +4324,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 540}
+        ],
+        "observation_count": 7238,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2a_R1.fastq",
@@ -3662,6 +4370,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 540}
+        ],
+        "observation_count": 5122,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2b_R1.fastq",
@@ -3701,6 +4416,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 610}
+        ],
+        "observation_count": 4992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2c_R1.fastq",
@@ -3740,6 +4462,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 540}
+        ],
+        "observation_count": 6331,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3a_R1.fastq",
@@ -3779,6 +4508,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 521}
+        ],
+        "observation_count": 5100,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3b_R1.fastq",
@@ -3818,6 +4554,13 @@
         "output_types": [
             "transcription factor quantifications"
         ],
+        "feature_keys": [
+            "motif ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "transcription factor", "feature_count": 542}
+        ],
+        "observation_count": 4992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3c_R1.fastq",
@@ -3857,6 +4600,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 99231}
+        ],
+        "observation_count": 9818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1a_R1.fastq",
@@ -3897,6 +4647,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 99231}
+        ],
+        "observation_count": 9818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1b_R1.fastq",
@@ -3937,6 +4694,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 99231}
+        ],
+        "observation_count": 10292,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1c_R1.fastq",
@@ -3977,6 +4741,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100122}
+        ],
+        "observation_count": 9118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2a_R1.fastq",
@@ -4017,6 +4788,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 110332}
+        ],
+        "observation_count": 10211,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2b_R1.fastq",
@@ -4057,6 +4835,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 100211}
+        ],
+        "observation_count": 9981,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2c_R1.fastq",
@@ -4097,6 +4882,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 120042}
+        ],
+        "observation_count": 9811,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3a_R1.fastq",
@@ -4137,6 +4929,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 150399}
+        ],
+        "observation_count": 9118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3b_R1.fastq",
@@ -4177,6 +4976,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 142921}
+        ],
+        "observation_count": 7818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3c_R1.fastq",
@@ -4217,6 +5023,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 221022}
+        ],
+        "observation_count": 12992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1a_R1.fastq",
@@ -4256,6 +5069,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 201829}
+        ],
+        "observation_count": 13992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1b_R1.fastq",
@@ -4295,6 +5115,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 200120}
+        ],
+        "observation_count": 12885,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_1c_R1.fastq",
@@ -4334,6 +5161,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 210231}
+        ],
+        "observation_count": 12818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2a_R1.fastq",
@@ -4373,6 +5207,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 200231}
+        ],
+        "observation_count": 12818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2b_R1.fastq",
@@ -4412,6 +5253,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 211231}
+        ],
+        "observation_count": 11818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_2c_R1.fastq",
@@ -4451,6 +5299,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 220231}
+        ],
+        "observation_count": 13118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3a_R1.fastq",
@@ -4490,6 +5345,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 200312}
+        ],
+        "observation_count": 12991,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3b_R1.fastq",
@@ -4529,6 +5391,13 @@
         "output_types": [
             "peak quantifications"
         ],
+        "feature_keys": [
+            "genomic coordinates"
+        ],
+        "feature_counts": [
+            {"feature_type": "peak", "feature_count": 268231}
+        ],
+        "observation_count": 11318,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
         "derived_from": [
             "jimmie-ye:prenatal_3c_R1.fastq",
@@ -4568,6 +5437,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_1a_R1.fastq",
@@ -4605,6 +5481,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_1b_R1.fastq",
@@ -4642,6 +5525,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_1c_R1.fastq",
@@ -4679,6 +5569,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_2a_R1.fastq",
@@ -4716,6 +5613,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_2b_R1.fastq",
@@ -4753,6 +5657,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_2c_R1.fastq",
@@ -4790,6 +5701,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_3a_R1.fastq",
@@ -4827,6 +5745,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_3b_R1.fastq",
@@ -4864,6 +5789,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_3c_R1.fastq",
@@ -4901,6 +5833,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 20991,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_1a_R1.fastq",
@@ -4939,6 +5878,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 19282,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_1b_R1.fastq",
@@ -4977,6 +5923,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 21882,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_1c_R1.fastq",
@@ -5015,6 +5968,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 18727,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_2a_R1.fastq",
@@ -5053,6 +6013,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 17882,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_2b_R1.fastq",
@@ -5091,6 +6058,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 16222,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_2c_R1.fastq",
@@ -5129,6 +6103,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 14829,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_3a_R1.fastq",
@@ -5167,6 +6148,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 12992,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_3b_R1.fastq",
@@ -5205,6 +6193,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "Ensembl gene ID"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 33029}
+        ],
+        "observation_count": 18823,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:sequence_3c_R1.fastq",
@@ -5243,6 +6238,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 20919}
+        ],
+        "observation_count": 18292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:postnatal_1a_filtered_matrix",
@@ -5302,6 +6304,13 @@
         "output_types": [
             "gene quantifications"
         ],
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 20919}
+        ],
+        "observation_count": 50292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
         "derived_from": [
             "peter-sims:prenatal_2a_filtered_matrix",
