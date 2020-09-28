@@ -427,7 +427,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 239104}
@@ -472,7 +472,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 129394}
@@ -564,7 +564,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 265435}
@@ -609,7 +609,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 121134}
@@ -700,7 +700,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 254644}
@@ -745,7 +745,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 103241}
@@ -836,7 +836,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 267755}
@@ -881,7 +881,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 103400}
@@ -972,7 +972,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 266211}
@@ -1017,7 +1017,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 102311}
@@ -1108,7 +1108,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1153,7 +1153,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1244,7 +1244,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1289,7 +1289,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1380,7 +1380,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1425,7 +1425,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1516,7 +1516,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1561,7 +1561,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1652,7 +1652,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1697,7 +1697,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1788,7 +1788,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1833,7 +1833,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1924,7 +1924,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -1969,7 +1969,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -2060,7 +2060,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -2105,7 +2105,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100000}
@@ -2196,7 +2196,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 294882}
@@ -2241,7 +2241,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 119204}
@@ -2332,7 +2332,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 293848}
@@ -2377,7 +2377,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 119393}
@@ -2468,7 +2468,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 200831}
@@ -2513,7 +2513,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 102011}
@@ -3854,7 +3854,7 @@
             "antibody capture quantifications"
         ],
         "feature_keys": [
-            "gene symbol name",
+            "gene symbol",
             "antibody target"
         ],
         "feature_counts": [
@@ -3921,7 +3921,7 @@
             "gene quantifications"
         ],
         "feature_keys": [
-            "gene symbol name"
+            "gene symbol"
         ],
         "feature_counts": [
             {"feature_type": "gene", "feature_count": 329950}
@@ -3990,7 +3990,7 @@
             "gene quantifications"
         ],
         "feature_keys": [
-            "gene symbol name"
+            "gene symbol"
         ],
         "feature_counts": [
             {"feature_type": "gene", "feature_count": 329950}
@@ -4054,7 +4054,7 @@
             "antibody capture quantifications"
         ],
         "feature_keys": [
-            "gene symbol name",
+            "gene symbol",
             "antibody target"
         ],
         "feature_counts": [
@@ -4120,7 +4120,7 @@
             "antibody capture quantifications"
         ],
         "feature_keys": [
-            "gene symbol name",
+            "gene symbol",
             "antibody target"
         ],
         "feature_counts": [
@@ -4601,7 +4601,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 99231}
@@ -4648,7 +4648,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 99231}
@@ -4695,7 +4695,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 99231}
@@ -4742,7 +4742,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100122}
@@ -4789,7 +4789,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 110332}
@@ -4836,7 +4836,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 100211}
@@ -4883,7 +4883,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 120042}
@@ -4930,7 +4930,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 150399}
@@ -4977,7 +4977,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 142921}
@@ -5024,7 +5024,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 221022}
@@ -5070,7 +5070,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 201829}
@@ -5116,7 +5116,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 200120}
@@ -5162,7 +5162,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 210231}
@@ -5208,7 +5208,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 200231}
@@ -5254,7 +5254,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 211231}
@@ -5300,7 +5300,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 220231}
@@ -5346,7 +5346,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 200312}
@@ -5392,7 +5392,7 @@
             "peak quantifications"
         ],
         "feature_keys": [
-            "peak chromosome coordinates"
+            "genomic coordinates"
         ],
         "feature_counts": [
             {"feature_type": "peak", "feature_count": 268231}
@@ -6239,7 +6239,7 @@
             "gene quantifications"
         ],
         "feature_keys": [
-            "gene symbol name"
+            "gene symbol"
         ],
         "feature_counts": [
             {"feature_type": "gene", "feature_count": 20919}
@@ -6305,7 +6305,7 @@
             "gene quantifications"
         ],
         "feature_keys": [
-            "gene symbol name"
+            "gene symbol"
         ],
         "feature_counts": [
             {"feature_type": "gene", "feature_count": 20919}

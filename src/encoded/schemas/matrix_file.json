@@ -175,9 +175,9 @@
                 "type": "string",
                 "enum": [
                     "Ensembl gene ID",
-                    "gene symbol name",
+                    "gene symbol",
                     "antibody target",
-                    "peak chromosome coordinates",
+                    "genomic coordinates",
                     "motif ID"
                 ]
             }
