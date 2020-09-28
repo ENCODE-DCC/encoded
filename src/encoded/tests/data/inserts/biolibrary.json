@@ -7,14 +7,18 @@
         "documents": [
             "f8599a9f-4095-4b9a-b11a-ea022e2af1f7"
         ],
-        "accession": "KCELB012FAA"
+        "accession": "KCELB012FAA",
+        "submitter_comment":"One sample was failed when sequencing, and have to repeat and combine the half of the failed sample"
+
     },
     {
         "biospecimen": "KCEBS708IJT",
         "nucleic_acid_term_name": "DNA",
         "status": "released",
         "uuid": "2f5757f7-59f1-4b26-bcb5-7aa9803776c8",
-        "accession": "KCELB745FAA"
+        "accession": "KCELB745FAA",
+        "submitter_comment":"This is a test for submitter_comment"
+
     },
     {
         "biospecimen": "KCEBS000AAA",
@@ -24,13 +28,16 @@
         "documents": [
             "6ab18a00-50aa-11e4-916c-0800200c9a66","e0376e86-79d2-4041-80c2-4c8dfef83371"
         ],
-        "accession": "KCELB038EAA"
+        "accession": "KCELB038EAA",
+        "submitter_comment":"This is a test for submitter_comment"
     },
     {
         "biospecimen": "KCEBS087RNA",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "3245ac16-1d07-4360-bb5c-a7f6dff52885",
-        "accession": "KCELB987EAA"
+        "accession": "KCELB987EAA",
+        "submitter_comment":"This is a test for submitter_comment"
+
     }
 ]

@@ -13,7 +13,8 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/submitter_comment" }
         
     ],
     "facets": {

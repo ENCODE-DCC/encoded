@@ -113,11 +113,11 @@ function AssayDetails(replicates, libVals, libSpecials, libComps) {
                                     <span>
                                         {Object.keys(libraryEntry.component).map(componentKey => <span key={componentKey}>{libraryEntry.component[componentKey]}</span>)}
                                     </span>
-                                :
+                                    :
                                     <span>{libraryEntry.value}</span>
                                 }
                             </span>
-                        :
+                            :
                             <span>
                                 {Object.keys(libraryEntry.values).map((replicateId) => {
                                     const value = libraryEntry.values[replicateId];
@@ -152,10 +152,8 @@ class Bioexperiment extends React.Component {
     constructor(props) {
         super(props);
         this.libraryValues = {
-            // treatments: { values: {}, value: undefined, component: {}, title: 'Treatments', test: 'treatments' },
             nucleic_acid_term_name: { values: {}, value: undefined, component: {}, title: 'Nucleic acid type', test: 'nucleicacid' },
             rna_integrity_number: { values: {}, value: undefined, component: {}, title: 'RNA integrity number', test: 'rnaintegritynumber' },
-            // depleted_in_term_name: { values: {}, value: undefined, component: {}, title: 'Depleted in', test: 'depletedin' },
             nucleic_acid_starting_quantity: { values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity' },
             size_range: { values: {}, value: undefined, component: {}, title: 'Size range', test: 'sizerange' },
             lysis_method: { values: {}, value: undefined, component: {}, title: 'Lysis method', test: 'lysismethod' },
@@ -163,21 +161,19 @@ class Bioexperiment extends React.Component {
             fragmentation_methods: { values: {}, value: undefined, component: {}, title: 'Fragmentation methods', test: 'fragmentationmethod' },
             library_size_selection_method: { values: {}, value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod' },
             strand_specificity: { values: {}, value: undefined, component: {}, title: 'Strand specificity', test: 'strandspecificity' },
-            // spikeins_used: { values: {}, value: undefined, component: {}, title: 'Spike-ins datasets', test: 'spikeins' },
         };
     }
 
 
     render() {
-        
-        let context = this.props.context;
+
+        const context = this.props.context;
         console.log('context', context);
 
         let librarySpecials = {};
         let libraryComponents = {};
         // let condensedReplicates = [];
-        // let libSubmitterComments = [];
-        // const context = this.props.context;
+        let libSubmitterComments = [];
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const itemClass = globals.itemClass(context, 'view-item');
@@ -193,43 +189,43 @@ class Bioexperiment extends React.Component {
 
             // Now create an array of React components displaying each library submitter comment
             // as part of a definitino list.
-            // if (libraries.length) {
-            //     libSubmitterComments = libraries.map((biolibrary) => {
-            //         if (biolibrary.submitter_comment) {
-            //             return (
-            //                 <div key={biolibrary['@id']} data-test={`submittercomment${biolibrary['@id']}`}>
-            //                     <dt>{biolibrary.accession} submitter comment</dt>
-            //                     <dd>{biolibrary.submitter_comment}</dd>
-            //                 </div>
-            //             );
-            //         }
+            if (libraries.length) {
+                libSubmitterComments = libraries.map((biolibrary) => {
+                    if (biolibrary.submitter_comment) {
+                        return (
+                            <div key={biolibrary['@id']} data-test={`submittercomment${biolibrary['@id']}`}>
+                                <dt>{biolibrary.accession} submitter comment</dt>
+                                <dd>{biolibrary.submitter_comment}</dd>
+                            </div>
+                        );
+                    }
 
-            //         // No submitter comment.
-            //         return null;
-            //     });
-            // }
+                    // No submitter comment.
+                    return null;
+                });
+            }
         }
 
         // Collect all documents from the experiment itself.
-        // const documents = (context.documents && context.documents.length) ? context.documents : [];
+        const documents = (context.documents && context.documents.length) ? context.documents : [];
 
         // Make array of all replicate biosamples, not including biosample-less replicates. Also
         // collect up library documents.
-        // const libraryDocs = [];
-        // let biosamples = [];
-        // if (replicates.length) {
-        //     biosamples = _.compact(replicates.map((bioreplicate) => {
-        //         if (bioreplicate.biolibrary) {
-        //             if (bioreplicate.biolibrary.documents && bioreplicate.biolibrary.documents.length) {
-        //                 Array.prototype.push.apply(libraryDocs, bioreplicate.biolibrary.documents);
-        //             }
+        const libraryDocs = [];
+        let biosamples = [];
+        if (replicates.length) {
+            biosamples = _.compact(replicates.map((bioreplicate) => {
+                if (bioreplicate.biolibrary) {
+                    if (bioreplicate.biolibrary.documents && bioreplicate.biolibrary.documents.length) {
+                        Array.prototype.push.apply(libraryDocs, bioreplicate.biolibrary.documents);
+                    }
 
-        //             return bioreplicate.biolibrary.biospecimen;
-        //         }
-        //         return null;
-        //     }));
-        // }
-
+                    return bioreplicate.biolibrary.biospecimen;
+                }
+                return null;
+            }));
+        }
+        console.log("libraryDoc",libraryDocs);
         // Create platforms array from file platforms; ignore duplicate platforms.
         // const platforms = {};
         // if (context.files && context.files.length) {
@@ -276,23 +272,7 @@ class Bioexperiment extends React.Component {
                     }
                     return undefined;
                 },
-                // depleted_in_term_name: (biolibrary) => {
-                //     const terms = biolibrary.depleted_in_term_name;
-                //     if (terms && terms.length) {
-                //         return terms.sort().join(', ');
-                //     }
-                //     return undefined;
-                // },
-                // spikeins_used: (biolibrary) => {
-                //     const spikeins = biolibrary.spikeins_used;
 
-                //     // Just track @id for deciding if all values are the same or not. Rendering
-                //     // handled in libraryComponents
-                //     if (spikeins && spikeins.length) {
-                //         return spikeins.sort().join();
-                //     }
-                //     return undefined;
-                // },
                 fragmentation_methods: (biolibrary) => {
                     const fragMethods = biolibrary.fragmentation_methods;
                     if (fragMethods && fragMethods.length > 0) {
@@ -309,34 +289,19 @@ class Bioexperiment extends React.Component {
                     return null;
                 },
                 strand_specificity: biolibrary => (biolibrary ? <span>{biolibrary.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span> : null),
-                // spikeins_used: (biolibrary) => {
-                //     const spikeins = biolibrary && biolibrary.spikeins_used;
-                //     if (spikeins && spikeins.length) {
-                //         return (
-                //             <span>
-                //                 {spikeins.map((spikeinsAtId, i) =>
-                //                     <span key={i}>
-                //                         {i > 0 ? ', ' : ''}
-                //                         <a href={spikeinsAtId}>{globals.atIdToAccession(spikeinsAtId)}</a>
-                //                     </span>
-                //                 )}
-                //             </span>
-                //         );
-                //     }
-                //     return null;
-                // },
+
             };
         }
 
         // Collect biosample docs.
-        // let biosampleDocs = [];
-        // biosamples.forEach((biosample) => {
-        //     biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
-        //     if (biosample.part_of) {
-        //         biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
-        //     }
-        // });
-
+        let biosampleDocs = [];
+        biosamples.forEach((biospecimen) => {
+            biosampleDocs = biosampleDocs.concat(biospecimen.documents);
+            if (biospecimen.part_of) {
+                biosampleDocs = biosampleDocs.concat(biosepcimen.part_of);
+            }
+        });
+console.log("biosampledoc",biosampleDocs);
         // Collect pipeline-related documents.
         // let analysisStepDocs = [];
         // let pipelineDocs = [];
@@ -365,7 +330,14 @@ class Bioexperiment extends React.Component {
         // }
         // analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
         // pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
-
+        
+        const combinedDocuments = _.uniq(documents.concat(
+            biosampleDocs,
+            libraryDocs,
+            // pipelineDocs,
+            // analysisStepDocs
+        ));
+        console.log("combineDoc",combinedDocuments);
         // Determine this experiment's ENCODE version.
         const encodevers = globals.encodeVersion(context);
 
@@ -384,52 +356,10 @@ class Bioexperiment extends React.Component {
         // if (context.related_series && context.related_series.length) {
         //     seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         // }
-// //========================================================================
-//         //collect all the documents
-//         let bioexperimentDoc = [];
-//         //Get experiment documents
-//         let bioexperimentDoc1 = [];
-//         if (context.documents.length > 0) {
-//             bioexperimentDoc1 = context.documents
-//         }
+        
 
-//         bioexperimentDoc.push(bioexperimentDoc1);
-//         // bioexperimentDoc.unique();
-//         // bioexperimentDoc=_.uniq(bioexperimentDoc);
-//         console.log('bioexperimentdoc1', bioexperimentDoc1);
-
-//         //Get library documents:
-//         let bioreplicates = context.bioreplicate;
-//         let biolibraryDoc = [];
-//         if (bioreplicates.length > 0) {
-
-//             biolibraryDoc = [...new Set(bioreplicates.filter(i => i.biolibrary.documents.length > 0).map(i => (i.biolibrary.documents)))];
-//         }
-//         // biolibraryDoc.unique();
-//         console.log('biolibrarydoc', biolibraryDoc);
-//         //get biospecimen documents
-
-//         let biospecimenDoc = [];
-//         if (bioreplicates.length > 0) {
-//             biospecimenDoc = [...new Set(bioreplicates.filter(i => i.biolibrary.biospecimen.documents.length > 0).map(i => (i.biolibrary.biospecimen.documents)))];
-//         }
-//         // biospecimenDoc.unique();
-//         console.log('biospecimenDoc', biospecimenDoc);
-
-//         // combineDoc.push(bioexperimentDoc,biolibraryDoc,biospecimenDoc);
-//         // console.log('combineDoc', combineDoc);
-//         let combinedDocuments = [];
-//         // combinedDocuments = [].concat(
-//         //     // bioexperimentDoc,
-//         //     // biospecimenDoc,
-//         //     biolibraryDoc
-//         // );
-//         combinedDocuments = bioexperimentDoc1;
-//         // combinedDocuments.unique();
-//         console.log("combinedDocuments", combinedDocuments);
-
-//         // Make a list of reference links, if any.
-//         const references = pubReferenceList(context.references);
+                // Make a list of reference links, if any.
+                const references = pubReferenceList(context.references);
 
         // Determine this experiment's ENCODE version.
         // const encodevers = globals.encodeVersion(context);
@@ -585,12 +515,12 @@ class Bioexperiment extends React.Component {
                                         </div>
                                         : null}
 
-                                    {/* {references ?
+                                    {references ?
                                         <div data-test="references">
                                             <dt>References</dt>
                                             <dd>{references}</dd>
                                         </div>
-                                        : null} */}
+                                        : null}
 
                                     {context.aliases.length ?
                                         <div data-test="aliases">
@@ -613,23 +543,23 @@ class Bioexperiment extends React.Component {
                                         </div>
                                         : null}
 
-                                    {/* {context.submitter_comment ?
+                                    {context.submitter_comment ?
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
                                         : null} */}
-
-                                    {/* {libSubmitterComments} */}
+                                    {libSubmitterComments}
+                                    {/* {/*  */}
                                 </dl>
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
                 {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
-                {/* {combinedDocuments.length ?
+                {combinedDocuments.length ?
                     <DocumentsPanelReq documents={combinedDocuments}></DocumentsPanelReq>
-                    : null} */}
+                    : null}
                 {/* Display the file widget with the facet, graph, and tables */}
                 {/* <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} /> */}
 
