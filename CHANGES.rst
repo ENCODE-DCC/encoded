@@ -1,5 +1,36 @@
 Changes
 =======
+107.0 (released) snovault 1.0.49
+--------------------------------------------------------------------
+1. ENCD-5538 fix mouse dev queries (#3539)
+2. ENCD-4275-encore-matrix (#3543) (note: not ENCD-3078)
+3. ENCD-5544-chip-matrix-remove-x-result-and-add-mint (#3542)
+4. ENCD-5549-exclude-mixed-assembly-or-annotation-for-file-graph (#3545)
+5. ENCD-5354-update-schema-replace-analyses-with-analysis-objects (#3536)
+6. ENCD-5527-add-cut-and-tag-assay (#3524)
+7. ENCD-5504 fourier transform min value (#3512)
+8. ENCD-5488-add-valis-1-3-x-update (#3537)
+9. ENCD-5442-improve-factorbook-integration (#3522)
+10. ENCD-5536-empty-average-fragment-size-variable-compared-to-int (#3535)
+11. ENCD-5530 Badges for all matrix pages (#3530)
+12. ENCD-5524 use new life stage age property for mouse dev matrix (#3533)
+13. ENCD-5514-fix-miRNA-experiment-audits-on-miRNA-quant-files (#3534)
+14. ENCD-5499-new-output-types-for-Bru-WGBS-sc (#3532)
+15. ENCD-5535-pipeline-arrows (#3531)
+16. ENCD-5502-modENCODE-to-chip-matrix (#3511)
+17. ENCD-5522-add-cutadapt-to-trimmingqm (#3525)
+18. ENCD-5519-change-calculation-contributing-files (#3517)
+19. ENCD-5498-allow-average-fragment-size-remove-small-RNA-title-calc (#3518)
+20. ENCD-5468-IDR-thresholded-peaks-ATAC-audit (#3499)
+21. ENCD-5377-generate-glossary-page-from-glossary-json (#3526)
+22. ENCD-5523-life-stage-age-calc-property (#3521)
+23. ENCD-5509 wgbs analysis step types update (#3515)
+24. ENCD-5493-adjust-GM-schema-CRISPR (#3520)
+25. ENCD-5507 RSC NSC values and audit (#3519)
+26. ENCD-5344-fix-phone-issue-on-lab-update (#3508)
+27. ENCD-5528-use-analysis-objects-to-draw-file-graph (#3523)
+28. ENCD-5500-bdd-fixes (#3510)
+
 106.0 (released) snovault 1.0.49
 --------------------------------------------------------------------
 1. ENCD-5510-set-file-permissions-nagios (#3513)
