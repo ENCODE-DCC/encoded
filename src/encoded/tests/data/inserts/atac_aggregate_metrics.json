@@ -1,0 +1,62 @@
+[
+	{
+		"aliases": [
+			"anna-greka:snATAC_donorF_aggregate_metrics"
+		],
+		"uuid": "7042a791-c49e-4eb4-9cfd-e5015e2aca51",
+		"status": "released",
+		"quality_metric_of": "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix",
+		"annotated_cells": 5350,
+		"frac_cut_fragments_in_peaks": 0.823243,
+		"frac_fragments_overlapping_peaks": 0.8434325,
+		"median_fragments_per_cell": 395283,
+		"library_metrics": [
+			{
+				"library": "anna-greka:snATAC_library_donorF1",
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
+				"total_post_normalization": 1293586.4,
+				"total_pre_normalization": 1469346.34,
+				"unique_post_normalization": 23523
+			},
+			{
+				"library": "anna-greka:snATAC_library_donorF2",
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
+				"total_post_normalization": 1293586.4,
+				"total_pre_normalization": 1469346.34,
+				"unique_post_normalization": 37543
+			}
+		]
+	},
+	{
+		"aliases": [
+			"anna-greka:snATAC_donorE_aggregate_metrics"
+		],
+		"uuid": "c6c51153-f570-4140-bcdf-06b41e5ebca2",
+		"status": "released",
+		"quality_metric_of": "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix",
+		"annotated_cells": 6437,
+		"frac_cut_fragments_in_peaks": 0.823243,
+		"frac_fragments_overlapping_peaks": 0.8434325,
+		"median_fragments_per_cell": 443463,
+		"library_metrics": [
+			{
+				"library": "anna-greka:snATAC_library_donorE1",
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
+				"total_post_normalization": 1293586.4,
+				"total_pre_normalization": 1469346.34,
+				"unique_post_normalization": 28543
+			},
+			{
+				"library": "anna-greka:snATAC_library_donorE2",
+				"post_normalization_median_frags_per_cell": 149038.353,
+				"pre_normalization_median_frags_per_cell": 132495.6,
+				"total_post_normalization": 1293586.4,
+				"total_pre_normalization": 1469346.34,
+				"unique_post_normalization": 31472
+			}
+		]
+	}
+]

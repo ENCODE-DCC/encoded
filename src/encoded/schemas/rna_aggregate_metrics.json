@@ -1,7 +1,7 @@
 {
-    "title": "Aggregate metrics",
-    "description": "Schema for submitting metadata for aggregate metrics.",
-    "id": "/profiles/aggregate_metrics.json",
+    "title": "RNA aggregate metrics",
+    "description": "Schema for submitting metadata for aggregate metrics of multiple RNA-seq libraries.",
+    "id": "/profiles/rna_aggregate_metrics.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["quality_metric_of"],
@@ -76,6 +76,6 @@
             }
         }
     },
-    "changelog": "/profiles/changelogs/aggregate_metrics.md"
+    "changelog": "/profiles/changelogs/rna_aggregate_metrics.md"
 }
 

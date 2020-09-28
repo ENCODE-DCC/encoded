@@ -1,7 +1,7 @@
 {
-    "title": "Gene expression metrics",
-    "description": "Schema for submitting metadata for processing metrics of a gene expression library.",
-    "id": "/profiles/gene_expression_metrics.json",
+    "title": "RNA metrics",
+    "description": "Schema for submitting metadata for processing metrics of a RNA-seq library.",
+    "id": "/profiles/rna_metrics.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["quality_metric_of"],
@@ -133,5 +133,5 @@
             "type": "integer"
         }
     },
-    "changelog": "/profiles/changelogs/gene_expression_metrics.md"
+    "changelog": "/profiles/changelogs/rna_metrics.md"
 }

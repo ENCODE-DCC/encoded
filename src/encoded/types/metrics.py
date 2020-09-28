@@ -20,14 +20,14 @@ class Metrics(Item):
 
 
 @collection(
-    name='aggregate-metrics',
+    name='rna-aggregate-metrics',
     properties={
-        'title': "Aggregate Metrics",
+        'title': "RNA Aggregate Metrics",
         'description': "",
     })
-class AggregateMetrics(Metrics):
-    item_type = 'aggregate_metrics'
-    schema = load_schema('encoded:schemas/aggregate_metrics.json')
+class RnaAggregateMetrics(Metrics):
+    item_type = 'rna_aggregate_metrics'
+    schema = load_schema('encoded:schemas/rna_aggregate_metrics.json')
     embedded = Metrics.embedded + []
 
 
@@ -56,12 +56,34 @@ class ClusterMetrics(Metrics):
 
 
 @collection(
-    name='gene-expression-metrics',
+    name='rna-metrics',
     properties={
-        'title': "Gene Expression Metrics",
+        'title': "RNA Metrics",
         'description': "",
     })
-class GeneExpressionMetrics(Metrics):
-    item_type = 'gene_expression_metrics'
-    schema = load_schema('encoded:schemas/gene_expression_metrics.json')
+class RnaMetrics(Metrics):
+    item_type = 'rna_metrics'
+    schema = load_schema('encoded:schemas/rna_metrics.json')
+    embedded = Metrics.embedded + []
+
+@collection(
+    name='atac-metrics',
+    properties={
+        'title': "ATAC Metrics",
+        'description': "",
+    })
+class AtacMetrics(Metrics):
+    item_type = 'atac_metrics'
+    schema = load_schema('encoded:schemas/atac_metrics.json')
+    embedded = Metrics.embedded + []
+
+@collection(
+    name='atac-aggregate-metrics',
+    properties={
+        'title': "ATAC Aggregate Metrics",
+        'description': "",
+    })
+class AtacAggregateMetrics(Metrics):
+    item_type = 'atac_aggregate_metrics'
+    schema = load_schema('encoded:schemas/atac_aggregate_metrics.json')
     embedded = Metrics.embedded + []

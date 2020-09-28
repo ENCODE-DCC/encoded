@@ -41,9 +41,11 @@ ORDER = [
     'raw_sequence_file',
     'sequence_alignment_file',
     'matrix_file',
-    'gene_expression_metrics',
+    'rna_metrics',
     'antibody_capture_metrics',
-    'aggregate_metrics',
+    'rna_aggregate_metrics',
+    'atac_metrics',
+    'atac_aggregate_metrics',
     'image',
     'page',
     'access_key'
