@@ -2,7 +2,7 @@
 	{
         "_test": "gene silencing series",
 		"accession": "ENCSR001GSS",
-        "award": "ENCODE4",
+        "award": "UM1HG009390",
         "description": "Gene silencing series.",
         "lab": "tim-reddy",
         "status": "released",
@@ -11,7 +11,7 @@
             "/experiments/ENCSR611ZAL",
             "/experiments/ENCSR001EPI"
         ],
-        "uuid": "a89265c7-30ef-4b1d-abad-8798c9f65842 ",
+        "uuid": "c0114093-5696-43f6-9a8d-b1b19072e846",
         "date_released": "2020-09-28"
     }
 ]
