@@ -406,21 +406,21 @@
             }
         }
     },
-     "aliases": {
-         "aliases": {
-             "title": "Aliases",
-             "description": "Lab specific identifiers to reference an object.",
-             "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
-             "type": "array",
-             "default": [],
-             "uniqueItems": true,
-             "items": {
-                 "uniqueKey": "alias",
-                 "title": "Lab alias",
-                 "description": "A lab specific identifier to reference an object.",
-                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
-                 "type":  "string",
-                 "pattern": ["^(?:",
+    "aliases": {
+        "aliases": {
+            "title": "Aliases",
+            "description": "Lab specific identifiers to reference an object.",
+            "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "uniqueKey": "alias",
+                "title": "Lab alias",
+                "description": "A lab specific identifier to reference an object.",
+                "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
+                "type":  "string",
+                "pattern": ["^(?:",
                     "anindita-basu|",
                     "anna-greka|",
                     "benjamin-humphreys|",
