@@ -161,7 +161,6 @@
                     "type": "integer",
                     "minimum": 0
                 }
-            
             },
             "permission": "import_items"
         },
@@ -170,14 +169,9 @@
             "description": "The genome assembly to which location coordinates relate. e.g. GRCh38.",
             "type": "string",
             "enum": [
-                "ce11",
-                "ce10",
-                "dm6",
-                "dm3",
                 "GRCh38",
                 "hg19",
-                "mm10",
-                "mm9"
+                "mm10"
             ]
         }
     },
@@ -193,5 +187,4 @@
         }
     },
     "changelog": "/profiles/changelogs/gene.md"
-
 }
