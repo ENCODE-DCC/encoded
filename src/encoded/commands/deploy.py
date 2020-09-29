@@ -724,6 +724,9 @@ def main():
         sys.exit(20)
     # Create aws demo instance or frontend instance
     # OR instances for es_wait nodes, es_elect nodes depending on count
+    shut_down_behavior = 'terminate'
+    if main_args.cluster_name and template_name == 'app':
+        shut_down_behavior = 'stop'
     instances = ec2_client.create_instances(
         ImageId=main_args.image_id,
         MinCount=run_args['count'],
@@ -732,7 +735,7 @@ def main():
         SecurityGroups=run_args['security_groups'],
         UserData=run_args['user_data'],
         BlockDeviceMappings=bdm,
-        InstanceInitiatedShutdownBehavior='terminate',
+        InstanceInitiatedShutdownBehavior=shut_down_behavior,
         IamInstanceProfile={
             "Name": run_args['iam_role'],
         },
