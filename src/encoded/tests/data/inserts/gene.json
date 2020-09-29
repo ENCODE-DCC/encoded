@@ -1,25 +1,101 @@
 [
     {
-    "geneid": "ENSG00000183186",
-    "uuid": "0c9a9a6f-02de-4072-a5a3-6628f13070f6",
-    "status": "released",
-    "ensembl_version": 7,
-    "ensembl_status": "live",
-    "gencode_version": 32,
-    "gene_biotype": "protein_coding",
-    "strand": "-",
-    "symbol": "C2CD4C",
-    "full_name": "C2 calcium dependent domain containing 4C",
-    "synonyms": ["FAM148C","KIAA195","NLF3"],
-    "dbxrefs": ["MIM:610336","HGNC:29417"],
-    "locations": [
-        {
-            "assembly": "GRCh38",
+        "gene_id": "ENSG00000243485",
+        "uuid": "1814e427-fee3-4d89-9643-be12261b957d",
+        "status": "released",
+        "gene_version": 5,
+        "ensembl_status": "live",
+        "gene_biotype": "lncRNA",
+        "symbol": "MIR1302-2HG",
+        "strand": "+",
+        "dbxrefs": [
+            "HGNC:52482",
+            "Vega:OTTHUMG00000000959"
+        ],
+        "location": {
+            "chromosome": "chr1",
+            "start": 29554,
+            "end": 31109
+        },
+        "assembly": "GRCh38"
+    },
+    {
+        "gene_id": "ENSG00000183186",
+        "uuid": "baeb3b72-4496-4567-80cc-38c6eb6bbadb",
+        "status": "released",
+        "gene_version": 8,
+        "ensembl_status": "live",
+        "gene_biotype": "protein_coding",
+        "strand": "-",
+        "symbol": "C2CD4C",
+        "dbxrefs": [
+            "HGNC:29417",
+            "Vega:OTTHUMG00000180534"
+        ],
+        "location": {
             "chromosome": "chr19",
-            "start": 405438,
-            "end": 409170
-        }
-    ],
-    "organism": "human"
+            "start": 405445,
+            "end": 409147
+        },
+        "assembly": "GRCh38"
+    },
+    {
+        "gene_id": "ENSG00000272031",
+        "uuid": "63375f76-1c7d-41c5-82b9-51c5d79a4153",
+        "status": "released",
+        "gene_version": 3,
+        "ensembl_status": "live",
+        "gene_biotype": "protein_coding",
+        "strand": "-",
+        "symbol": "ANKRD34A",
+        "dbxrefs": [
+            "HGNC:27639",
+            "Vega:OTTHUMG00000013740"
+        ],
+        "location": {
+            "chromosome": "chr1",
+            "start": 145959441,
+            "end": 145964575
+        },
+        "assembly": "GRCh38" 
+    },
+    {
+        "gene_id": "ENSG00000213553",
+        "uuid": "814de216-566a-4077-be47-e990794cadf9",
+        "status": "released",
+        "gene_version": 4,
+        "ensembl_status": "live",
+        "gene_biotype": "processed_pseudogene",
+        "strand": "+",
+        "symbol": "RPLP0P6",
+        "dbxrefs": [
+            "HGNC:36404",
+            "Vega:OTTHUMG00000153430"
+        ],
+        "location": {
+            "chromosome": "chr2",
+            "start": 38481851,
+            "end": 38482804
+        },
+        "assembly": "GRCh38" 
+    },
+    {
+        "gene_id": "ENSG00000266211",
+        "uuid": "2e07ae88-8b4a-4fd4-a7a2-055d4ee211fd",
+        "status": "released",
+        "gene_version": 1,
+        "ensembl_status": "live",
+        "gene_biotype": "miRNA",
+        "strand": "-",
+        "symbol": "MIR3156-3",
+        "dbxrefs": [
+            "HGNC:38229"
+        ],
+        "location": {
+            "chromosome": "chr21",
+            "start": 13406384,
+            "end": 13406460
+        },
+        "assembly": "GRCh38"  
     }
 ]
