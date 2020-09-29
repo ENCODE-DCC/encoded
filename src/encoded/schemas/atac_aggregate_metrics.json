@@ -57,7 +57,7 @@
         		"additionalProperties": false,
         		"properties": {
         			"library": {
-        				"title": "Library",
+                        "title": "Library",
                         "description": "The Library object representation that these metrics describe.",
                         "type": "string",
                         "linkTo": "Library"
@@ -86,9 +86,9 @@
         				"title": "Unique post normalization fragments",
         				"description": "Post-Normalization unique fragments in library",
         				"type": "number"
-        			}
-        		}
-        	}
+                    }
+                }
+            }
         }
     },
     "changelog": "/profiles/changelogs/atac_aggregate_metrics.md"
