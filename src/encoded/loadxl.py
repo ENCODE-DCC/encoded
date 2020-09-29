@@ -18,7 +18,6 @@ ORDER = [
     'lab',
     'organism',
     'gene',
-    'target',
     'publication',
     'document',
     'library_protocol',
