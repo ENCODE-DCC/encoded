@@ -67,3 +67,13 @@ ENC_ACCESSION_FORMAT = (digits, digits, digits, ascii_uppercase, ascii_uppercase
 def enc_accession(accession_type):
     random_part = ''.join(random.choice(s) for s in ENC_ACCESSION_FORMAT)
     return 'LAT' + accession_type + random_part
+
+
+TEST_ACCESSION_FORMAT = (digits, ) * 6
+
+
+def test_accession(accession_type):
+    """ Test accessions are generated on test.encodedcc.org
+    """
+    random_part = ''.join(random.choice(s) for s in TEST_ACCESSION_FORMAT)
+    return 'TST' + accession_type + random_part
