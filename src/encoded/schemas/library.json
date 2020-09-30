@@ -79,6 +79,38 @@
                     }
                 }
             }
+        },
+        "linkers": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "linkers": {
+                            "maxItems": 1,
+                            "items": {
+                                "properties": {
+                                    "type": {
+                                        "enum": ["bridge linker"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "linkers": {
+                            "minItems": 2,
+                            "items": {
+                                "properties": {
+                                    "type": {
+                                        "enum": ["linker a", "linker b"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -540,6 +572,7 @@
                 "title": "Linker",
                 "type": "object",
                 "additionalProperties": false,
+                "required": ["type", "sequence"],
                 "properties": {
                     "type": {
                         "title": "Linker type",
@@ -547,7 +580,8 @@
                         "type": "string",
                         "enum": [
                             "linker a",
-                            "linker b"
+                            "linker b",
+                            "bridge linker"
                         ]
                     },
                     "sequence": {
