@@ -60,7 +60,6 @@ const portal = {
                 { id: 'fileformats', title: 'File formats', url: '/help/file-formats/' },
                 { id: 'sep-mm-1' },
                 { id: 'dataorg', title: 'Data organization', url: '/help/data-organization/' },
-                { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
                 { id: 'profiles', title: 'Schemas', url: '/profiles/' },
             ],
         },

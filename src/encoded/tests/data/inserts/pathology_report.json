@@ -113,7 +113,7 @@
     "positive_lymph_nodes": 1,
     "m_stage": "pM0",
     "status": "released",
-    "ajcc_version": "7th edition",
+    "ajcc_version": "8th edition",
     "ajcc_tnm_stage": "3",
     "ajcc_p_stage": "1A",
     "report_source": "Pathology Report",

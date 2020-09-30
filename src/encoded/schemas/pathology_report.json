@@ -374,7 +374,8 @@
             "type": "string",
             "enum": [
                 "6th edition",
-                "7th edition"
+                "7th edition",
+                "8th edition"
             ]
         },
         "ajcc_tnm_stage": {
