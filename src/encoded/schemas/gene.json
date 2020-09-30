@@ -4,8 +4,8 @@
     "id": "/profiles/gene.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["geneid", "ncbi_entrez_status", "symbol", "dbxrefs", "organism"],
-    "identifyingProperties": ["uuid", "geneid"],
+    "required": ["gene_id", "gene_version", "ensembl_status", "symbol", "assembly"],
+    "identifyingProperties": ["uuid", "gene_id"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/schema_version" },
@@ -14,112 +14,110 @@
         {"$ref": "mixins.json#/standard_status" },
         {"$ref": "mixins.json#/dbxrefs"}
     ],
-    "dependencies": {
-        "locations": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "locations": {
-                            "items": {
-                                "properties": {
-                                    "assembly": {
-                                        "enum": ["GRCh38", "hg19"]
-                                    }
-                                }
-                            }
-                        },
-                        "organism": {
-                            "linkTo": "Organism",
-                            "linkEnum": [
-                                "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "locations": {
-                            "items": {
-                                "properties": {
-                                    "assembly": {
-                                        "enum": ["mm10", "mm9"]
-                                    }
-                                }
-                            }
-                        },
-                        "organism": {
-                            "linkTo": "Organism",
-                            "linkEnum": [
-                                "3413218c-3d86-498b-a0a2-9a406638e786"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "locations": {
-                            "items": {
-                                "properties": {
-                                    "assembly": {
-                                        "enum": ["dm6", "dm3"]
-                                    }
-                                }
-                            }
-                        },
-                        "organism": {
-                            "linkTo": "Organism",
-                            "linkEnum": [
-                                "ab546d43-8e2a-4567-8db7-a217e6d6eea0"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "locations": {
-                            "items": {
-                                "properties": {
-                                    "assembly": {
-                                        "enum": ["ce11", "ce10"]
-                                    }
-                                }
-                            }
-                        },
-                        "organism": {
-                            "linkTo": "Organism",
-                            "linkEnum": [
-                                "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20"
-                            ]
-                        }
-                    }
-                }
-            ]
-        }
-    },
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "geneid": {
-            "title": "NCBI Entrez Gene ID",
-            "description": "NCBI Entrez GeneID of this gene.",
-            "comment": "An ENCODE gene (object) needs to have an Entrez GeneID and needs to be approved by (i.e. have an ID and gene symbol from) offical nomenclature such as HGNC, MGI.",
+        "gene_id": {
+            "title": "Ensembl gene ID",
+            "description": "Ensembl gene ID, which starts with 'ENSG', for this gene, not including the gene version",
             "type": "string",
-            "pattern": "^[1-9][0-9]*$",
+            "pattern": "^ENSG[0-9]*\\d$",
             "permission": "import_items",
             "uniqueKey": true
         },
-        "ncbi_entrez_status": {
-          "title": "NCBI Entrez Gene Status",
-            "description": "The status of the NCBI Entrez record for this gene.",
-          "type": "string",
-          "default": "live",
-          "enum" : [
-              "live",
-              "secondary",
-              "discontinued"
-          ],
-          "permission": "import_items"
+        "gene_version": {
+            "title": "Ensembl gene version",
+            "description": "The version of the gene as assigned by Ensembl.",
+            "type": "integer"
+        },
+        "ensembl_status": {
+            "title": "Ensembl gene status",
+            "description": "The status of the Ensembl record for this gene.",
+            "type": "string",
+            "default": "live",
+            "enum": [
+                "live",
+                "discontinued"
+            ],
+            "permission": "import_items"
+        },
+        "gene_biotype": {
+            "title": "Gene biotype",
+            "description": "The biological classification that describes the gene, as defined by GENCODE and Ensembl",
+            "type": "string",
+            "enum": [
+                "IG_C_gene",
+                "IG_D_gene",
+                "IG_J_gene",
+                "IG_LV_gene",
+                "IG_V_gene",
+                "TR_C_gene",
+                "TR_J_gene",
+                "TR_V_gene",
+                "TR_D_gene",
+                "IG_pseudogene",
+                "IG_C_pseudogene",
+                "IG_J_pseudogene",
+                "IG_V_pseudogene",
+                "TR_V_pseudogene",
+                "TR_J_pseudogene",
+                "Mt_rRNA",
+                "Mt_tRNA",
+                "miRNA",
+                "misc_RNA",
+                "rRNA",
+                "scRNA",
+                "snRNA",
+                "snoRNA",
+                "ribozyme",
+                "sRNA",
+                "scaRNA",
+                "lncRNA",
+                "Mt_tRNA_pseudogene",
+                "tRNA_pseudogene",
+                "snoRNA_pseudogene",
+                "snRNA_pseudogene",
+                "scRNA_pseudogene",
+                "rRNA_pseudogene",
+                "misc_RNA_pseudogene",
+                "miRNA_pseudogene",
+                "TEC",
+                "nonsense_mediated_decay",
+                "retained_intron",
+                "protein_coding",
+                "non_coding",
+                "ambiguous_org",
+                "sense_intronic",
+                "sense_overlapping",
+                "known_ncrna",
+                "pseudogene",
+                "processed_pseudogene",
+                "polymorphic_pseudogene",
+                "retrotransposed",
+                "transcribed_processed_pseudogene",
+                "transcribed_unprocessed_pseudogene",
+                "transcribed_unitary_pseudogene",
+                "translated_processed_pseudogene",
+                "translated_unprocessed_pseudogene",
+                "unitary_pseudogene",
+                "unprocessed_pseudogene",
+                "artifact",
+                "macro_lncRNA",
+                "3prime_overlapping_ncRNA",
+                "disrupted_domain",
+                "vaultRNA",
+                "bidirectional_promoter_lncRNA"
+            ] 
+        },
+        "strand": {
+            "title": "Strand",
+            "description": "The genomic strand that the gene maps to",
+            "type": "string",
+            "enum": [
+                "-",
+                "+"
+            ]
         },
         "symbol": {
             "title": "Gene symbol",
@@ -128,118 +126,79 @@
             "format": "gene_name",
             "permission": "import_items"
         },
-        "full_name": {
-            "title": "Name",
-            "description": "The full gene name preferably approved by the official nomenclature.",
-            "type": "string",
-            "format": "gene_name",
-            "permission": "import_items"
-        },
-        "synonyms": {
-            "title": "Synonyms",
-            "description": "Alternative symbols that have been used to refer to the gene.",
-            "comment": "The list of synonyms is maintained using information from NCBI Entrez. Synonyms not included in NCBI gene_info can be added but are not actively maintained.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Synonym",
-                "description": "An alternative symbol/name referring to the gene.",
-                "type":  "string",
-                "format": "gene_name"
-            },
-            "permission": "import_items"
-        },
         "dbxrefs": {
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource (e.g. HGNC, MGI, ENSEMBL, MIM, UniProtKB, Vega, miRBase).",
+                "description": "A unique identifier from the external resource HGNC",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_[\\d.]+))$"
+                "pattern": "^(HGNC:\\d+)$"
             },
             "permission": "import_items"
         },
-        "locations": {
-            "title": "Gene locations",
-            "description": "Gene locations specified using 1-based, closed coordinates for different versions of reference genome assemblies.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Gene location",
-                "description": "Gene location specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["assembly", "chromosome", "start", "end"],
-                "properties": {
-                    "assembly": {
-                        "title": "Mapping assembly",
-                        "description": "The genome assembly to which coordinates relate. e.g. GRCh38.",
-                        "type": "string",
-                        "enum": [
-                            "ce11",
-                            "ce10",
-                            "dm6",
-                            "dm3",
-                            "GRCh38",
-                            "hg19",
-                            "mm10",
-                            "mm9"
-                        ]
-                    },
-                    "chromosome": {
-                        "title": "Chromosome",
-                        "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
-                        "type": "string",
-                        "pattern": "^(chr[0-9A-Za-z]+)$"
-                    },
-                    "start": {
-                        "title": "Start",
-                        "description": "The starting coordinate.",
-                        "type": "integer",
-                        "minimum": 0
-                    },
-                    "end": {
-                        "title": "End",
-                        "description": "The ending coordinate.",
-                        "type": "integer",
-                        "minimum": 0
-                    }
+        "location": {
+            "title": "Gene location",
+            "description": "Gene location specified using 1-based, closed coordinates for a specific version of the reference genome assembly.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["chromosome", "start", "end"],
+            "properties": {
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                    "type": "string",
+                    "pattern": "^(chr[0-9A-Za-z]+)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate.",
+                    "type": "integer",
+                    "minimum": 0
                 }
             },
             "permission": "import_items"
         },
-        "organism": {
-            "title": "Organism",
-            "description": "Organism of the gene.",
-            "comment": "See organism.json for available identifiers.",
+        "assembly": {
+            "title": "Mapping assembly",
+            "description": "The genome assembly to which location coordinates relate. e.g. GRCh38.",
             "type": "string",
-            "linkTo": "Organism",
-            "permission": "import_items"
+            "enum": [
+                "GRCh38",
+                "hg19",
+                "mm10"
+            ]
         }
     },
     "facets": {
-        "organism.scientific_name": {
-            "title": "Organism"
+        "assembly": {
+            "title": "Assembly"
+        },
+        "gene_biotype": {
+            "title": "Gene biotype"
         }
     },
     "columns": {
-        "geneid": {
-            "title": "NCBI Entrez Gene ID"
+        "gene_id": {
+            "title": "Ensembl Gene ID"
         },
         "symbol": {
             "title": "Gene symbol"
         },
-        "synonyms": {
-            "title": "Synonyms"
-        },
         "dbxrefs": {
             "title": "External resources"
         },
-        "organism.scientific_name": {
-            "title": "Organism"
+        "assembly": {
+            "title": "Assembly"
+        },
+        "gene_biotype": {
+            "title": "Gene biotype"
         }
     },
     "changelog": "/profiles/changelogs/gene.md"
-
 }

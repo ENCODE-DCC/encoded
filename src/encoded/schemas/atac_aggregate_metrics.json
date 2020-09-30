@@ -63,7 +63,7 @@
                         "linkTo": "Library"
         			},
         			"post_normalization_median_frags_per_cell": {
-        				"title": "Post-normalization median fragmentss per cell",
+        				"title": "Post-normalization median fragments per cell",
         				"description": "Post-Normalization median unique fragments per cell in library",
         				"type": "number"
         			},

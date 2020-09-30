@@ -11,7 +11,7 @@ from .base import (
 
 @collection(
     name='genes',
-    unique_key='gene:geneid',
+    unique_key='gene:gene_id',
     properties={
         'title': 'Genes',
         'description': 'Listing of genes',
@@ -19,31 +19,12 @@ from .base import (
 class Gene(SharedItem):
     item_type = 'gene'
     schema = load_schema('encoded:schemas/gene.json')
-    name_key = "geneid"
-    rev = {
-        'targets': ('Target', 'genes')
-    }
+    name_key = "gene_id"
 
     @calculated_property(schema={
         "title": "Title",
         "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
-    def title(self, request, organism, symbol):
-        organism_props = request.embed(organism, '@@object')
-        return u'{} ({})'.format(symbol, organism_props['scientific_name'])
-
-    @calculated_property(schema={
-        "description": "List of associated targets.",
-        "comment": "Do not submit. Values in the list are reverse links of a"
-                   " target that have this gene under its genes property.",
-        "title": "Target",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "Target.genes"
-        },
-        "notSubmittable": True,
-    })
-    def targets(self, request, targets):
-        return paths_filtered_by_status(request, targets)
+    def title(self, request, assembly, symbol):
+        return u'{} ({})'.format(symbol, assembly)

@@ -1,516 +1,97 @@
-[{
-    "geneid": "912",
-    "uuid": "0c9a9a6f-02de-4072-a5a3-6628f13070f6",
-    "dbxrefs": ["MIM:188410", "HGNC:1637", "ENSEMBL:ENSG00000158473", "IMGT/GENE-DB:CD1D", "Vega:OTTHUMG00000022436", "UniProtKB:P15813"],
-    "full_name": "CD1d molecule",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "CD1D",
-    "synonyms": ["CD1A", "R3", "R3G1"]
-}, {
-    "geneid": "2995",
-    "uuid": "83a311d1-7ed3-41bb-85f0-1f00c458e6fc",
-    "dbxrefs": ["MIM:110750", "HGNC:4704", "ENSEMBL:ENSG00000136732", "Vega:OTTHUMG00000131464", "UniProtKB:P04921", "RefSeq:NG_007479"],
-    "full_name": "glycophorin C (Gerbich blood group)",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "GYPC",
-    "synonyms": ["CD236", "CD236R", "GE", "GE:GPC:GPD:GYPD", "GPC", "GPD", "GYPD", "PAS-2", "PAS-2'"]
-}, {
-    "geneid": "6482",
-    "uuid": "2cb7d65a-342e-4ab0-a5c4-6e7365f200a2",
-    "dbxrefs": ["MIM:607187", "HGNC:10862", "ENSEMBL:ENSG00000008513", "Vega:OTTHUMG00000164534", "UniProtKB:Q11201", "UniProtKB:A0A024R9L6"],
-    "full_name": "ST3 beta-galactoside alpha-2,3-sialyltransferase 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "ST3GAL1",
-    "synonyms": ["Gal-NAc6S", "SIAT4A", "SIATFL", "ST3GalA", "ST3GalA.1", "ST3GalIA", "ST3GalIA,1", "ST3O"]
-}, {
-    "geneid": "15077",
-    "uuid": "c1bce75a-44ee-49a0-b950-926fabd6b2db",
-    "dbxrefs": ["MGI:2448355", "ENSEMBL:ENSMUSG00000093769", "Vega:OTTMUSG00000021930", "UniProtKB:P84228", "UniProtKB:B9EI85"],
-    "full_name": "histone cluster 2, H3c1",
-    "ncbi_entrez_status": "live",
-    "organism": "mouse",
-    "status": "released",
-    "symbol": "Hist2h3c1",
-    "synonyms": ["BE691662", "H3-615", "H3f2", "Hist2h3ca1"]
-}, {
-    "geneid": "126961",
-    "uuid": "f57eac34-29e1-4c21-b94a-f3a2c32e4fa7",
-    "dbxrefs": ["MIM:142780", "HGNC:20503", "ENSEMBL:ENSG00000203811", "Vega:OTTHUMG00000012190", "UniProtKB:Q71DI3"],
-    "full_name": "histone cluster 2 H3 family member c",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "HIST2H3C",
-    "synonyms": ["H3", "H3.2", "H3/M", "H3F2", "H3FM", "H3FN"]
-}, {
-    "geneid": "3178",
-    "uuid": "51fe6251-4079-4467-b74a-f48f31d2e2de",
-    "dbxrefs": ["MIM:164017", "HGNC:5031", "ENSEMBL:ENSG00000135486", "Vega:OTTHUMG00000169702", "UniProtKB:P09651", "UniProtKB:A0A024RB53", "UniProtKB:A0A024RAZ7", "RefSeq:NG_033830"],
-    "full_name": "heterogeneous nuclear ribonucleoprotein A1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "HNRNPA1",
-    "synonyms": ["ALS19", "ALS20", "HNRPA1", "HNRPA1L3", "IBMPFD3", "UP 1", "hnRNP A1", "hnRNP-A1"]
-}, {
-    "geneid": "6872",
-    "uuid": "7a125d82-d95b-4123-8b11-a0d6809a9106",
-    "dbxrefs": ["MIM:313650", "HGNC:11535", "ENSEMBL:ENSG00000147133", "Vega:OTTHUMG00000022723", "UniProtKB:P21675", "RefSeq:NG_012771"],
-    "full_name": "TATA-box binding protein associated factor 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "TAF1",
-    "synonyms": ["BA2R", "CCG1", "CCGS", "DYT3", "DYT3/TAF1", "KAT4", "MRXS33", "N-TAF1", "NSCL2", "OF", "P250", "TAF(II)250", "TAF2A", "TAFII-250", "TAFII250", "XDP"]
-}, {
-    "geneid": "6925",
-    "uuid": "567d7d65-0b85-4676-be8c-24c07af418d6",
-    "dbxrefs": ["MIM:602272", "HGNC:11634", "ENSEMBL:ENSG00000196628", "Vega:OTTHUMG00000132713", "UniProtKB:P15884", "UniProtKB:A0A1B0GWD5", "UniProtKB:E9PH57", "UniProtKB:B3KVA4", "UniProtKB:A0A024R2C0", "UniProtKB:H3BPJ7", "UniProtKB:A0A1B0GVR6", "UniProtKB:H3BTP3", "UniProtKB:A0A1B0GW91", "RefSeq:NG_011716"],
-    "full_name": "transcription factor 4",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "TCF4",
-    "synonyms": ["E2-2", "FECD3", "ITF-2", "ITF2", "PTHS", "SEF-2", "SEF2", "SEF2-1", "SEF2-1A", "SEF2-1B", "SEF2-1D", "TCF-4", "bHLHb19"]
-}, {
-    "geneid": "7025",
-    "uuid": "75866336-b42b-4341-9b70-240eb469c231",
-    "dbxrefs": ["MIM:132890", "HGNC:7975", "ENSEMBL:ENSG00000175745", "Vega:OTTHUMG00000119079", "UniProtKB:P10589", "RefSeq:NG_034119"],
-    "full_name": "nuclear receptor subfamily 2 group F member 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "NR2F1",
-    "synonyms": ["BBOAS", "BBSOAS", "COUP-TFI", "COUPTF1", "EAR-3", "EAR3", "ERBAL3", "SVP44", "TCFCOUP1", "TFCOUP1"]
-}, {
-    "geneid": "179824",
-    "uuid": "6d4d22fb-99ee-4246-94a0-184aee5d72a1",
-    "dbxrefs": ["UniProtKB:Q9NH52"],
-    "full_name": "Histone-lysine N-methyltransferase mes-4",
-    "ncbi_entrez_status": "live",
-    "organism": "celegans",
-    "status": "released",
-    "symbol": "mes-4"
-}, {
-    "geneid": "172920",
-    "uuid": "de7d137a-dafd-46c8-99c3-111b5255e304",
-    "dbxrefs": ["UniProtKB:Q7K798", "UniProtKB:Q9U302", "UniProtKB:Q7K797"],
-    "full_name": "PolyA Binding protein;Polyadenylate-binding protein",
-    "ncbi_entrez_status": "live",
-    "organism": "celegans",
-    "status": "released",
-    "symbol": "pab-1"
-}, {
-    "geneid": "1879",
-    "uuid": "cd05d34d-9a51-4efc-b0ec-9245a1d83b40",
-    "dbxrefs": ["MIM:164343", "HGNC:3126", "ENSEMBL:ENSG00000164330", "Vega:OTTHUMG00000130304", "UniProtKB:Q9UH73", "UniProtKB:B4E2U8"],
-    "full_name": "early B cell factor 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "EBF1",
-    "synonyms": ["COE1", "EBF", "O/E-1", "OLF1"]
-}, {
-    "geneid": "35341",
-    "uuid": "a562a789-e89d-498f-a6e3-3fbbdd042ec3",
-    "dbxrefs": ["UniProtKB:P09085", "UniProtKB:M9PDI3"],
-    "full_name": "caudal",
-    "ncbi_entrez_status": "live",
-    "organism": "dmelanogaster",
-    "status": "released",
-    "symbol": "cad",
-    "synonyms": ["38E.19", "CAD", "CG1759", "Cad", "Dmel\\CG1759", "S67", "anon-WO2004063362.83", "cd"]
-}, {
-    "geneid": "182874",
-    "uuid": "08e44197-9c28-4f80-b9ef-2f420869b443",
-    "dbxrefs": ["UniProtKB:O17593"],
-    "full_name": "ForKHead transcription factor family",
-    "ncbi_entrez_status": "live",
-    "organism": "celegans",
-    "status": "released",
-    "symbol": "fkh-10"
-}, {
-    "geneid": "79068",
-    "uuid": "4e0994eb-e669-450d-99f4-7e19fc217c0a",
-    "dbxrefs": ["MIM:610966", "HGNC:24678", "ENSEMBL:ENSG00000140718", "Vega:OTTHUMG00000158780", "UniProtKB:Q9C0B1", "UniProtKB:A0A1B0GTC5", "UniProtKB:B3KU60", "UniProtKB:Q99770", "RefSeq:NG_012969"],
-    "full_name": "FTO, alpha-ketoglutarate dependent dioxygenase",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "FTO",
-    "synonyms": ["ALKBH9", "BMIQ14", "GDFD"]
-}, {
-    "geneid": "34560",
-    "uuid": "6e42c31d-0fcc-4793-80e1-e93d83f33bb5",
-    "dbxrefs": ["UniProtKB:Q24174", "UniProtKB:M9PB99"],
-    "full_name": "abrupt",
-    "ncbi_entrez_status": "live",
-    "organism": "dmelanogaster",
-    "status": "released",
-    "symbol": "ab",
-    "synonyms": ["Ab", "B2149", "CG32830", "CG43860", "CG4807", "Dmel\\CG43860", "Dmel_CG32830", "Dmel_CG4807", "clu", "l(2)k02807", "ptd"]
-}, {
-    "geneid": "8335",
-    "uuid": "9a591682-cb1e-4bb1-bc24-d5093d65433a",
-    "dbxrefs": ["MIM:602795", "HGNC:4734", "ENSEMBL:ENSG00000278463", "Vega:OTTHUMG00000014420", "UniProtKB:P04908", "UniProtKB:Q08AJ9"],
-    "full_name": "histone cluster 1 H2A family member b",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "HIST1H2AB",
-    "synonyms": ["H2A/m", "H2AFM"]
-}, {
-    "geneid": "3012",
-    "uuid": "6e23b54c-1a2e-41f5-b925-578f359f8eb7",
-    "dbxrefs": ["MIM:602786", "HGNC:4724", "ENSEMBL:ENSG00000277075", "Vega:OTTHUMG00000014440", "UniProtKB:P04908", "UniProtKB:Q08AJ9"],
-    "full_name": "histone cluster 1 H2A family member e",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "HIST1H2AE",
-    "synonyms": ["H2A.1", "H2A.2", "H2A/a", "H2AFA"]
-}, {
-    "geneid": "503538",
-    "uuid": "17ba934c-8a56-4c02-b08c-011ad4adcde9",
-    "dbxrefs": ["HGNC:37133", "ENSEMBL:ENSG00000268895"],
-    "full_name": "A1BG antisense RNA 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "A1BG-AS1",
-    "synonyms": ["A1BG-AS", "A1BGAS", "NCRNA00181"]
-}, {
-    "geneid": "284837",
-    "uuid": "4ceb141b-9276-485b-8865-5a833044e952",
-    "dbxrefs": ["HGNC:51526", "ENSEMBL:ENSG00000215458"],
-    "full_name": "apoptosis associated transcript in bladder cancer",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "AATBC"
-}, {
-    "geneid": "80161",
-    "uuid": "00522a7c-1dd0-4f8b-abe3-633c514ec760",
-    "dbxrefs": ["HGNC:25811", "RefSeq:NG_030331"],
-    "full_name": "ASMTL antisense RNA 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "ASMTL-AS1",
-    "synonyms": ["ASMTL-AS", "ASMTLAS", "CXYorf2", "NCRNA00105"]
-}, {
-    "geneid": "388699",
-    "uuid": "c99ce1d3-5ca2-4cdf-85dc-d69d18f227c0",
-    "dbxrefs": ["HGNC:31825"],
-    "full_name": "long intergenic non-protein coding RNA 302",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "LINC00302",
-    "synonyms": ["C1orf46", "NCRNA00302", "xp33"]
-}, {
-    "geneid": "406904",
-    "uuid": "f982bb50-dd2b-4f39-9daa-3d4445a37ffd",
-    "dbxrefs": ["MIM:609326", "HGNC:31499", "ENSEMBL:ENSG00000199017", "miRBase:MI0000651"],
-    "full_name": "microRNA 1-1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "MIR1-1",
-    "synonyms": ["MIRN1-1", "hsa-mir-1-1", "miRNA1-1", "mir-1-1"]
-}, {
-    "geneid": "407053",
-    "uuid": "c7c7722d-89c5-4c53-a314-8a67b6e129a9",
-    "dbxrefs": ["MIM:611606", "HGNC:31648", "ENSEMBL:ENSG00000199158", "miRBase:MI0000098", "RefSeq:NG_023385"],
-    "full_name": "microRNA 96",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "MIR96",
-    "synonyms": ["DFNA50", "MIRN96", "hsa-mir-96", "miR-96", "miRNA96"]
-}, {
-    "geneid": "100847068",
-    "uuid": "0947ecdc-96c8-4815-ac7b-eaa75c8a21b3",
-    "dbxrefs": ["HGNC:43539", "ENSEMBL:ENSG00000263372", "miRBase:MI0017871"],
-    "full_name": "microRNA 548ao",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "MIR548AO"
-}, {
-    "geneid": "100500894",
-    "uuid": "4b1bfaad-184d-4bda-9652-92c51d67e956",
-    "dbxrefs": ["HGNC:38967", "ENSEMBL:ENSG00000265658", "miRBase:MI0016091"],
-    "full_name": "microRNA 3690",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "MIR3690",
-    "synonyms": ["MIR3690-1", "MIR3690-2", "hsa-mir-3690-1", "hsa-mir-3690-2", "mir-3690-1", "mir-3690-2"]
-}, {
-    "geneid": "4550",
-    "uuid": "63aec915-ee40-4514-8a20-e5e461d53b61",
-    "dbxrefs": ["MIM:561010", "HGNC:7471"],
-    "full_name": "mitochondrially encoded 16S RNA",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "MT-RNR2",
-    "synonyms": ["MTRNR2"]
-}, {
-    "geneid": "100189478",
-    "uuid": "f29c5f47-e473-45d3-bb0e-f2b9358f7418",
-    "dbxrefs": ["HGNC:35051"],
-    "full_name": "nuclear-encoded mitochondrial transfer RNA-Gln (TTG) 12-1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "NMTRQ-TTG12-1",
-    "synonyms": ["TRNAQ41P"]
-}, {
-    "geneid": "6023",
-    "uuid": "7b573441-ce01-423c-9160-e23b5afa0c16",
-    "dbxrefs": ["MIM:157660", "HGNC:10031", "ENSEMBL:ENSG00000269900", "RefSeq:NG_017041"],
-    "full_name": "RNA component of mitochondrial RNA processing endoribonuclease",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RMRP",
-    "synonyms": ["CHH", "NME1", "RMRPR", "RRP2"]
-}, {
-    "geneid": "125050",
-    "uuid": "3217c0b6-66ed-4446-ab42-9cc6ee337355",
-    "dbxrefs": ["MIM:606515", "HGNC:10037", "ENSEMBL:ENSG00000202198"],
-    "full_name": "RNA, 7SK small nuclear",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RN7SK",
-    "synonyms": ["7SK"]
-}, {
-    "geneid": "6029",
-    "uuid": "034842a9-077f-4b8c-be10-b1d73d2c5093",
-    "dbxrefs": ["MIM:612177", "HGNC:10038", "ENSEMBL:ENSG00000276168"],
-    "full_name": "RNA, 7SL, cytoplasmic 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RN7SL1",
-    "synonyms": ["7L1a", "7SL", "RN7SL", "RNSRP1"]
-}, {
-    "geneid": "100008587",
-    "uuid": "d120b568-9ec0-4dfd-8655-2a1d30386203",
-    "dbxrefs": ["HGNC:53533"],
-    "full_name": "RNA, 5.8S ribosomal N5",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNA5-8SN5",
-    "synonyms": ["RN5-8S1", "RNA5-8S5"]
-}, {
-    "geneid": "100169751",
-    "uuid": "e9833860-a123-4402-be71-14c72bf35c98",
-    "dbxrefs": ["HGNC:34362", "ENSEMBL:ENSG00000199352"],
-    "full_name": "RNA, 5S ribosomal 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNA5S1",
-    "synonyms": ["RN5S1"]
-}, {
-    "geneid": "26871",
-    "uuid": "6461de1a-7c5c-4abb-9506-f16f8d7c1da7",
-    "dbxrefs": ["HGNC:10120", "ENSEMBL:ENSG00000206652"],
-    "full_name": "RNA, U1 small nuclear 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU1-1",
-    "synonyms": ["HSD1", "HU1-1", "RNU1", "RNU1A", "RNU1A3", "RNU1G4", "Rnu1a1", "U1", "U1A1"]
-}, {
-    "geneid": "6066",
-    "uuid": "5812b697-cd0c-417c-a231-711bc0afacf3",
-    "dbxrefs": ["MIM:180690", "HGNC:10142", "ENSEMBL:ENSG00000274585"],
-    "full_name": "RNA, U2 small nuclear 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU2-1",
-    "synonyms": ["RNU2", "U2"]
-}, {
-    "geneid": "26835",
-    "uuid": "ab493d18-fbe8-4d53-a847-5675009ac8d2",
-    "dbxrefs": ["HGNC:10192", "ENSEMBL:ENSG00000200795"],
-    "full_name": "RNA, U4 small nuclear 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU4-1",
-    "synonyms": ["RNU4A", "RNU4B2", "U4", "U4BL"]
-}, {
-    "geneid": "100151683",
-    "uuid": "fb65b660-e245-4275-ad17-426b309c2f90",
-    "dbxrefs": ["MIM:601428", "HGNC:34016", "ENSEMBL:ENSG00000264229", "RefSeq:NG_029832"],
-    "full_name": "RNA, U4atac small nuclear (U12-dependent splicing)",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU4ATAC",
-    "synonyms": ["MOPD1", "RFMN", "RNU4ATAC1", "TALS", "U4ATAC"]
-}, {
-    "geneid": "26831",
-    "uuid": "d68a9602-f2fa-4c49-b55e-4ae590de211e",
-    "dbxrefs": ["MIM:180691", "HGNC:10211", "ENSEMBL:ENSG00000199568"],
-    "full_name": "RNA, U5A small nuclear 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU5A-1",
-    "synonyms": ["RNU5", "RNU5A", "RNU5C", "U5A", "U5B1"]
-}, {
-    "geneid": "26827",
-    "uuid": "5d47b7dd-fe3a-4520-b243-05c8927c673e",
-    "dbxrefs": ["MIM:180692", "HGNC:10227", "ENSEMBL:ENSG00000206625"],
-    "full_name": "RNA, U6 small nuclear 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU6-1",
-    "synonyms": ["RNU6", "RNU6A", "U6", "U6-1"]
-}, {
-    "geneid": "26824",
-    "uuid": "a469aa70-c618-46c6-8157-6f7fead8f4e4",
-    "dbxrefs": ["HGNC:10108", "ENSEMBL:ENSG00000274978"],
-    "full_name": "RNA, U11 small nuclear",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU11",
-    "synonyms": ["RNU11-1", "U11"]
-}, {
-    "geneid": "26767",
-    "uuid": "5ad4f405-741e-4877-bad1-953bedce2899",
-    "dbxrefs": ["HGNC:10103", "ENSEMBL:ENSG00000201348"],
-    "full_name": "RNA, U105B small nucleolar",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNU105B",
-    "synonyms": ["105B", "E1-2"]
-}, {
-    "geneid": "6084",
-    "uuid": "0372fbb8-e89f-43fb-bc7f-f95aec0ea92e",
-    "dbxrefs": ["MIM:601821", "HGNC:10242", "ENSEMBL:ENSG00000201098"],
-    "full_name": "RNA, Ro-associated Y1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "RNY1",
-    "synonyms": ["HY1", "Y1"]
-}, {
-    "geneid": "677774",
-    "uuid": "5c44a122-d27a-4d6b-86b5-9b0db1f0e42a",
-    "dbxrefs": ["HGNC:32555", "ENSEMBL:ENSG00000252947"],
-    "full_name": "small Cajal body-specific RNA 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "SCARNA1",
-    "synonyms": ["ACA35"]
-}, {
-    "geneid": "677792",
-    "uuid": "ff8c979b-2172-448c-bbd7-329a9fa094a6",
-    "dbxrefs": ["HGNC:32557", "ENSEMBL:ENSG00000206834"],
-    "full_name": "small nucleolar RNA, H/ACA box 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "SNORA1",
-    "synonyms": ["ACA1"]
-}, {
-    "geneid": "677848",
-    "uuid": "4afdd01a-2511-4ee9-a6fa-e6f7201d89e8",
-    "dbxrefs": ["HGNC:32556", "ENSEMBL:ENSG00000278261"],
-    "full_name": "small nucleolar RNA, C/D box 1A",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "SNORD1A",
-    "synonyms": ["R38A", "snR38A"]
-}, {
-    "geneid": "56664",
-    "uuid": "74daa5bf-f36f-4bd4-aa72-dba6c6232dc4",
-    "dbxrefs": ["MIM:612695", "HGNC:12654", "ENSEMBL:ENSG00000199990"],
-    "full_name": "vault RNA 1-1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "VTRNA1-1",
-    "synonyms": ["HVG1", "VAULTRC1", "VR1", "hvg-1", "vRNA"]
-}, {
-    "geneid": "100128260",
-    "uuid": "de15fbe2-0d2d-4573-8d39-01f5c957061c",
-    "dbxrefs": ["HGNC:38513", "ENSEMBL:ENSG00000185203"],
-    "full_name": "WASH and IL9R antisense RNA 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "WASIR1",
-    "synonyms": ["NCRNA00286B"]
-}, {
-    "uuid": "a8e1de0f-e223-4402-9e6e-e9ed37f56bb8",
-    "dbxrefs": ["MIM:611386", "HGNC:15766", "ENSEMBL:ENSG00000101126", "Vega:OTTHUMG00000032737", "UniProtKB:Q9H2P0", "UniProtKB:Q6DHZ8"],
-    "geneid": "23394",
-    "full_name": "activity dependent neuroprotector homeobox",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "ADNP",
-    "synonyms": ["ADNP1", "HVDAS", "MRD28"]
-}, {
-    "uuid": "5ade49e2-57b1-4198-9915-542579ec3e09",
-    "dbxrefs": ["MIM:189971", "HGNC:3113", "ENSEMBL:ENSG00000101412", "Vega:OTTHUMG00000032265", "UniProtKB:Q01094", "UniProtKB:Q9BSD8"],
-    "geneid": "1869",
-    "full_name": "E2F transcription factor 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "E2F1",
-    "synonyms": ["E2F-1", "RBAP1", "RBBP3", "RBP3"]
-}, {
-    "uuid": "a9288b44-6ef4-460e-a3d6-464fd625b103",
-    "dbxrefs": ["MIM:604167", "HGNC:13723", "ENSEMBL:ENSG00000102974", "Vega:OTTHUMG00000137539", "UniProtKB:P49711", "UniProtKB:A0A2R8YFL0"],
-    "geneid": "10664",
-    "full_name": "CCCTC-binding factor",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "CTCF",
-    "synonyms": ["MRD21"]
-}, {
-    "uuid": "a13fb026-d42f-481c-9420-5fe3f17ede30",
-    "dbxrefs": ["MIM:609150", "HGNC:24343", "ENSEMBL:ENSG00000154832", "Vega:OTTHUMG00000132670", "UniProtKB:Q9P0U4"],
-    "geneid": "30827",
-    "full_name": "CXXC finger protein 1",
-    "ncbi_entrez_status": "live",
-    "organism": "human",
-    "status": "released",
-    "symbol": "CXXC1",
-    "synonyms": ["2410002I16Rik", "5830420C16Rik", "CFP1", "CGBP", "HsT2645", "PCCX1", "PHF18", "SPP1", "ZCGPC1", "hCGBP"],
-    "locations": [{
-        "assembly": "GRCh38",
-        "chromosome": "chr18",
-        "start": 50282343,
-        "end": 50288322
-    }, {"assembly": "hg19",
-        "chromosome": "chr18",
-        "start": 47808713,
-        "end": 47814692
-    }]
-}]
+[
+    {
+        "gene_id": "ENSG00000243485",
+        "uuid": "1814e427-fee3-4d89-9643-be12261b957d",
+        "status": "released",
+        "gene_version": 5,
+        "ensembl_status": "live",
+        "gene_biotype": "lncRNA",
+        "symbol": "MIR1302-2HG",
+        "strand": "+",
+        "dbxrefs": [
+            "HGNC:52482"
+        ],
+        "location": {
+            "chromosome": "chr1",
+            "start": 29554,
+            "end": 31109
+        },
+        "assembly": "GRCh38"
+    },
+    {
+        "gene_id": "ENSG00000183186",
+        "uuid": "baeb3b72-4496-4567-80cc-38c6eb6bbadb",
+        "status": "released",
+        "gene_version": 8,
+        "ensembl_status": "live",
+        "gene_biotype": "protein_coding",
+        "strand": "-",
+        "symbol": "C2CD4C",
+        "dbxrefs": [
+            "HGNC:29417"
+        ],
+        "location": {
+            "chromosome": "chr19",
+            "start": 405445,
+            "end": 409147
+        },
+        "assembly": "GRCh38"
+    },
+    {
+        "gene_id": "ENSG00000272031",
+        "uuid": "63375f76-1c7d-41c5-82b9-51c5d79a4153",
+        "status": "released",
+        "gene_version": 3,
+        "ensembl_status": "live",
+        "gene_biotype": "protein_coding",
+        "strand": "-",
+        "symbol": "ANKRD34A",
+        "dbxrefs": [
+            "HGNC:27639"
+        ],
+        "location": {
+            "chromosome": "chr1",
+            "start": 145959441,
+            "end": 145964575
+        },
+        "assembly": "GRCh38" 
+    },
+    {
+        "gene_id": "ENSG00000213553",
+        "uuid": "814de216-566a-4077-be47-e990794cadf9",
+        "status": "released",
+        "gene_version": 4,
+        "ensembl_status": "live",
+        "gene_biotype": "processed_pseudogene",
+        "strand": "+",
+        "symbol": "RPLP0P6",
+        "dbxrefs": [
+            "HGNC:36404"
+        ],
+        "location": {
+            "chromosome": "chr2",
+            "start": 38481851,
+            "end": 38482804
+        },
+        "assembly": "GRCh38" 
+    },
+    {
+        "gene_id": "ENSG00000266211",
+        "uuid": "2e07ae88-8b4a-4fd4-a7a2-055d4ee211fd",
+        "status": "released",
+        "gene_version": 1,
+        "ensembl_status": "live",
+        "gene_biotype": "miRNA",
+        "strand": "-",
+        "symbol": "MIR3156-3",
+        "dbxrefs": [
+            "HGNC:38229"
+        ],
+        "location": {
+            "chromosome": "chr21",
+            "start": 13406384,
+            "end": 13406460
+        },
+        "assembly": "GRCh38"  
+    }
+]
