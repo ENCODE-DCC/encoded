@@ -19,14 +19,14 @@ Steps to add a new assay
 1. Schemas and changelogs:
 
     Assays are identified by precise ontological terms that we list in a property *assay_term_name*. This is used in many different objects on the portal, and in most cases a mixin property ```assay``` provides this enum list. You will need to add your new assay type to the enum in mixins.json and update the changelogs of the objects that import this property.
-    The objects **Award**, **Pipeline**, and **Software** list ```assay_term_name``` in unique objects without importing the ```assay``` property, so both the schema profile and changelog will need to be updated in these cases.
+    The objects **Award**, **Pipeline**, and **Software** list ```assay_term_name``` in unique properties without importing the ```assay``` property, so both the schema profile and changelog will need to be updated in these cases.
     
     * [mixins.json] & [mixins changelog]
     * [award.json] & [award changelog]
     * [software.json] & [software changelog]
     * [pipeline.json] & [pipeline changelog]
 
-    To find objects that import the ```assay``` property, search for: ```"$ref": "mixins.json#/assay"```; update the changelog for these objects. A list of links for these object changelogs is at the end of this document.
+    To find objects that import the ```assay``` property, search for: ```"$ref": "mixins.json#/assay"``` and update the changelogs for all objects you find in the results.
     
     For additional information on schema changes, please refer to [schema-changes.md].
 
@@ -103,6 +103,8 @@ Steps to add a new assay
     * A shortened form of the name in ```preferred_name```
     * The parent term for assay type that it will slim to in ```assay```
 
+    Note that even for some official OBI terms, ```preferred_name``` or the ```assay``` to slim to will not be specified and you will be required to add them manually. If these are absent in the ENCODE ontology.json (see [Updating ontologies] for details), you can associate the OBI term with the desired ```preferred_name``` in [src/encoded/commands/generate_ontology.py], and assign an ```assay``` slim in [src/encoded/commands/manual_slims.py].
+
     For **CUT&Tag**, the entry would appear as follows:
     ```
      "NTR:0000564": {
@@ -120,96 +122,6 @@ Steps to add a new assay
     },
     ```
     Lastly, follow the instructions in [Updating ontologies] to include your new assay in the encoded application ```ontology.json```.
-
-
-Changelogs for objects with the ```assay``` mixin property
--------------------
-42 code results in ENCODE-DCC/encoded for ```"$ref": "mixins.json#/assay"```
-If your search does not match this, the list needs to be updated.
-
-[experiment.md]
-
-[annotation.md]
-
-[atac_alignment_quality_metric.md]
-
-[atac_alignment_enrichment_quality_metric.md]
-
-[atac_library_complexity_quality_metric.md]
-
-[atac_peak_enrichment_quality_metric.md]
-
-[atac_replication_quality_metric.md]
-
-[bismark_quality_metric.md]
-
-[chip_alignment_enrichment_quality_metric.md]
-
-[chip_alignment_samstat_quality_metric.md]
-
-[chip_library_quality_metric.md]
-
-[chip_peak_enrichment_quality_metric.md]
-
-[chip_replication_quality_metric.md]
-
-[chipseq_filter_quality_metric.md]
-
-[complexity_xcorr_quality_metric.md]
-
-[correlation_quality_metric.md]
-
-[cpg_correlation_quality_metric.md]
-
-[dnase_alignment_quality_metric.md]
-
-[dnase_footprinting_quality_metric.md]
-
-[duplicates_quality_metric.md]
-
-[edwbamstats_quality_metric.md]
-
-[filtering_quality_metric.md]
-
-[gembs_alignment_quality_metric.md]
-
-[gencode_category_quality_metric.md]
-
-[gene_quantification_quality_metric.md]
-
-[generic_quality_metric.md]
-
-[gene_type_quantification_quality_metric.md]
-
-[histone_chipseq_quality_metric.md]
-
-[hotspot_quality_metric.md]
-
-[idr_quality_metric.md]
-
-[idr_summary_quality_metric.md]
-
-[long_read_rna_mapping_quality_metric.md]
-
-[long_read_rna_quantification_quality_metric.md]
-
-[mad_quality_metric.md]
-
-[micro_rna_mapping_quality_metric.md]
-
-[micro_rna_quantification_quality_metric.md]
-
-[quality_metric.md]
-
-[samtools_flagstats_quality_metric.md]
-
-[samtools_stats_quality_metric.md]
-
-[star_quality_metric.md]
-
-[transgenic_enhancer_experiment.md]
-
-[trimming_quality_metric.md]
 
 [JSONSchema]: http://json-schema.org/
 [JSON-LD]:  http://json-ld.org/
@@ -237,47 +149,6 @@ If your search does not match this, the list needs to be updated.
 [NTR board]: https://encodedcc.atlassian.net/browse/NTR
 [types/assay_data.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/types/assay_data.py
 [src/encoded/commands/ntr_terms.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/ntr_terms.py
+[src/encoded/commands/generate_ontology.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/generate_ontology.py
+[src/encoded/commands/manual_slims.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/manual_slims.py
 [Updating ontologies]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/docs/updating_ontologies.md
-
-[experiment.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/experiment.md
-[annotation.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/annotation.md
-[atac_alignment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/atac_alignment_quality_metric.md
-[atac_alignment_enrichment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/atac_alignment_enrichment_quality_metric.md
-[atac_library_complexity_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/atac_library_complexity_quality_metric.md
-[atac_peak_enrichment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/atac_peak_enrichment_quality_metric.md
-[atac_replication_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/atac_replication_quality_metric.md
-[bismark_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/bismark_quality_metric.md
-[chip_alignment_enrichment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/chip_alignment_enrichment_quality_metric.md
-[chip_alignment_samstat_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/chip_alignment_samstat_quality_metric.md
-[chip_library_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/chip_library_quality_metric.md
-[chip_peak_enrichment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/chip_peak_enrichment_quality_metric.md
-[chip_replication_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/chip_replication_quality_metric.md
-[chipseq_filter_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/chipseq_filter_quality_metric.md
-[complexity_xcorr_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/complexity_xcorr_quality_metric.md
-[correlation_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/correlation_quality_metric.md
-[cpg_correlation_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/cpg_correlation_quality_metric.md
-[dnase_alignment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/dnase_alignment_quality_metric.md
-[dnase_footprinting_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/dnase_footprinting_quality_metric.md
-[duplicates_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/duplicates_quality_metric.md
-[edwbamstats_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/edwbamstats_quality_metric.md
-[filtering_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/filtering_quality_metric.md
-[gembs_alignment_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/gembs_alignment_quality_metric.md
-[gencode_category_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/gencode_category_quality_metric.md
-[gene_quantification_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/gene_quantification_quality_metric.md
-[generic_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/generic_quality_metric.md
-[gene_type_quantification_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/gene_type_quantification_quality_metric.md
-[histone_chipseq_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/histone_chipseq_quality_metric.md
-[hotspot_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/hotspot_quality_metric.md
-[idr_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/idr_quality_metric.md
-[idr_summary_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/idr_summary_quality_metric.md
-[long_read_rna_mapping_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/long_read_rna_mapping_quality_metric.md
-[long_read_rna_quantification_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/long_read_rna_quantification_quality_metric.md
-[mad_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/mad_quality_metric.md
-[micro_rna_mapping_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/micro_rna_mapping_quality_metric.md
-[micro_rna_quantification_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/micro_rna_quantification_quality_metric.md
-[quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/quality_metric.md
-[samtools_flagstats_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/samtools_flagstats_quality_metric.md
-[samtools_stats_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/samtools_stats_quality_metric.md
-[star_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/star_quality_metric.md
-[transgenic_enhancer_experiment.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/transgenic_enhancer_experiment.md
-[trimming_quality_metric.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/schemas/changelogs/trimming_quality_metric.md
