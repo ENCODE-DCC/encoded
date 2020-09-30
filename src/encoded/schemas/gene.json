@@ -129,7 +129,7 @@
         "dbxrefs": {
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource (e.g. HGNC, MGI, ENSEMBL, MIM, UniProtKB, Vega, miRBase).",
+                "description": "A unique identifier from the external resource HGNC",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
                 "pattern": "^(HGNC:\\d+)$"
