@@ -132,7 +132,7 @@
                 "description": "A unique identifier from external resource (e.g. HGNC, MGI, ENSEMBL, MIM, UniProtKB, Vega, miRBase).",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^((HGNC:\\d+)|(MGI:\\d+)|(ENSEMBL:ENS[A-Z]*G\\d+)|(MIM:\\d+)|(UniProtKB:[0-9A-Z]+)|(Vega:OTT[A-Z]+G\\d+)|(miRBase:MI\\d+)|(IMGT/GENE-DB:[0-9A-Za-z/\\(\\)\\-]+)|(RefSeq:[A-Z]{2}_[\\d.]+))$"
+                "pattern": "^(HGNC:\\d+)$"
             },
             "permission": "import_items"
         },
@@ -175,6 +175,14 @@
             ]
         }
     },
+    "facets": {
+        "assembly": {
+            "title": "Assembly"
+        },
+        "gene_biotype": {
+            "title": "Gene biotype"
+        }
+    },
     "columns": {
         "gene_id": {
             "title": "Ensembl Gene ID"
@@ -184,6 +192,12 @@
         },
         "dbxrefs": {
             "title": "External resources"
+        },
+        "assembly": {
+            "title": "Assembly"
+        },
+        "gene_biotype": {
+            "title": "Gene biotype"
         }
     },
     "changelog": "/profiles/changelogs/gene.md"

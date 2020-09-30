@@ -9,8 +9,7 @@
         "symbol": "MIR1302-2HG",
         "strand": "+",
         "dbxrefs": [
-            "HGNC:52482",
-            "Vega:OTTHUMG00000000959"
+            "HGNC:52482"
         ],
         "location": {
             "chromosome": "chr1",
@@ -29,8 +28,7 @@
         "strand": "-",
         "symbol": "C2CD4C",
         "dbxrefs": [
-            "HGNC:29417",
-            "Vega:OTTHUMG00000180534"
+            "HGNC:29417"
         ],
         "location": {
             "chromosome": "chr19",
@@ -49,8 +47,7 @@
         "strand": "-",
         "symbol": "ANKRD34A",
         "dbxrefs": [
-            "HGNC:27639",
-            "Vega:OTTHUMG00000013740"
+            "HGNC:27639"
         ],
         "location": {
             "chromosome": "chr1",
@@ -69,8 +66,7 @@
         "strand": "+",
         "symbol": "RPLP0P6",
         "dbxrefs": [
-            "HGNC:36404",
-            "Vega:OTTHUMG00000153430"
+            "HGNC:36404"
         ],
         "location": {
             "chromosome": "chr2",
