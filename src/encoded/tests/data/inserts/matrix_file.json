@@ -6,8 +6,8 @@
         "status": "released",
         "award": "CZI001KID",
         "uuid": "6ef4d912-1166-4ccf-b836-8bb5e369ecaf",
-        "submitted_file_name": "donorA1_raw_feature_bc_matrix.txt",
-        "file_format": "txt",
+        "submitted_file_name": "donorA1_raw_feature_bc_matrix/",
+        "file_format": "mex",
         "file_size": 100000,
         "lab": "anna-greka",
         "output_types": [

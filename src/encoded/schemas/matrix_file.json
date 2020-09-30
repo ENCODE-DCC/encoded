@@ -151,7 +151,8 @@
                 "tsv",
                 "txt",
                 "hdf5",
-                "rds"
+                "rds",
+                "mex"
             ]
         },
         "output_types": {
@@ -377,7 +378,8 @@
         "tsv": ".tsv",
         "txt": ".txt",
         "mtx": ".mtx",
-        "rds": ".rds"
+        "rds": ".rds",
+        "mex": ""
     },
     "changelog": "/profiles/changelogs/matrix_file.md"
 }
