@@ -187,3 +187,35 @@ def test_visualize(submitter_testapp, index_workbook):
 def test_bigInteract_trackDb(testapp, index_workbook, expected):
     res = testapp.get("/experiments/ENCSR270OQH/@@hub/hg19/trackDb.txt")
     assert expected in res.text
+
+
+@pytest.mark.parametrize('expected', [
+    "track ENCSR928SVL",
+    "compositeTrack on",
+    "type bed 3",
+    "longLabel STARR-seq of Homo sapiens WTC-11 cell line genetically modified (knockout) using CRISPR - ENCSR928SVL",
+    "shortLabel STARR-seq of WTC-11 ENCSR928SVL",
+    "visibility dense",
+    "subGroup1 view Views aPKS=Peaks bSIG=Signal_of_unique_reads cSPV=Signal_p-value dCNS=Control_normalized_signal",
+    "subGroup2 BS Biosample WTC4511=WTC-11",
+    "subGroup3 EXP Experiment ENCSR928SVL=ENCSR928SVL",
+    "subGroup4 REP Replicates rep01=Replicate_1",
+    "sortOrder BS=+ REP=+ view=+",
+    "dimensions dimA=REP",
+    "dimensionAchecked rep01",
+    "    track ENCSR928SVL_aPKS_view",
+    "    parent ENCSR928SVL on",
+    "    view aPKS",
+    "    type bigBed",
+    "    visibility dense",
+    "        track ENCFF105SVF",
+    "        parent ENCSR928SVL_aPKS_view on",
+    "        bigDataUrl /files/ENCFF105SVF/@@download/ENCFF105SVF.bigBed?proxy=true",
+    "        longLabel STARR-seq of WTC-11 peaks rep1 ENCSR928SVL - ENCFF105SVF",
+    "        shortLabel rep1 peaks",
+    "        type bigBed",
+    "        subGroups BS=WTC4511 EXP=ENCSR928SVL REP=rep01 view=aPKS",
+])
+def test_STARR_bigBed_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/functional-characterization-experiments/ENCSR928SVL/@@hub/hg19/trackDb.txt")
+    assert expected in res.text
