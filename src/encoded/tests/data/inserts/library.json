@@ -1091,5 +1091,15 @@
         ],
         "submitted_by": "mus.mi@porttitor.molestie",
         "uuid": "35c3c851-544a-4b6d-8f18-f235c166d5a1"
+    },
+    {
+        "accession": "ENCLB741SFV",
+        "biosample": "ENCBS888RUL",
+        "lab": "kevin-white",
+        "status": "released",
+        "nucleic_acid_term_name": "DNA",
+        "uuid": "9252caa7-6a95-4c10-9e54-3da14d7094d1",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "UM1HG009390"
     }
 ]

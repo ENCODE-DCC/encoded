@@ -4108,5 +4108,21 @@
         "lab": "/labs/barbara-wold/",
         "aliases": [],
         "notes": "File format not yet supported for this output_type (expecting h5ad)"
+    },
+    {
+        "status": "released",
+        "uuid": "c310637b-4efb-4441-ab60-c92025acd151",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "fd2313835b59785f20dbb6bd14f84f49",
+        "accession": "ENCFF105SVF",
+        "file_format": "bigBed",
+        "file_format_type": "bed6+",
+        "award": "/awards/UM1HG009390/",
+        "assembly": "hg19",
+        "dataset": "/experiments/ENCSR928SVL/",
+        "replicate": "31f76c7b-b6ac-4e06-b1d3-8907a4136ab1",
+        "file_size": 2925359,
+        "output_type": "peaks",
+        "lab": "/labs/kevin-white/"
     }
 ]
