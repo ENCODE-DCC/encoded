@@ -4620,29 +4620,6 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
             yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
 
 
-def audit_analysis_files(value, system, files_structure):
-    if 'analysis_objects' not in value:
-        return
-    detail_list = []
-    for analysis in value['analysis_objects']:
-        for f in analysis.get('files', []):
-            if f not in files_structure['original_files']:
-                detail_list.append(
-                    'Analysis {} has a file {} which does not belong to this '
-                    'experiment {}.'.format(
-                        audit_link(
-                            path_to_text(analysis['@id']), analysis['@id']
-                        ),
-                        audit_link(path_to_text(f), f),
-                        audit_link(path_to_text(value['@id']), value['@id']),
-                    )
-                )
-                break
-    for detail in detail_list:
-        yield AuditFailure('inconsistent analysis files', detail, 'WARNING')
-
-
-
 #######################
 # utilities
 #######################
@@ -5326,7 +5303,6 @@ function_dispatcher_with_files = {
     'audit_submitted_status': audit_experiment_status,
     'audit_no_processed_data': audit_experiment_no_processed_data,
     'audit_experiment_inconsistent_analysis_files': audit_experiment_inconsistent_analysis_files,
-    'audit_analysis_files': audit_analysis_files,
 }
 
 

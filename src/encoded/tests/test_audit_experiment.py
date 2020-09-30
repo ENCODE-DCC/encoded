@@ -3972,42 +3972,6 @@ def test_audit_experiment_ATAC_ENCODE4_QC_standards(
     assert any(error['category'] == 'duplicate QC metrics' for error in collect_audit_errors(res2))
 
 
-def test_audit_experiment_analysis_files(
-    testapp,
-    base_experiment,
-    ctrl_experiment,
-    base_analysis,
-    file1,
-    file2
-):
-    testapp.patch_json(file1['@id'], {'dataset': ctrl_experiment['@id']})
-    testapp.patch_json(file2['@id'], {'dataset': ctrl_experiment['@id']})
-    testapp.patch_json(base_analysis['@id'], {'files': [file1['@id']]})
-    testapp.patch_json(
-        base_experiment['@id'], {'analysis_objects': [base_analysis['@id']]}
-    )
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(
-        error['category'] == 'inconsistent analysis files'
-        for error in collect_audit_errors(res)
-    )
-    testapp.patch_json(file1['@id'], {'dataset': base_experiment['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(
-        error['category'] != 'inconsistent analysis files'
-        for error in collect_audit_errors(res)
-    )
-    testapp.patch_json(
-        base_analysis['@id'], {'files': [file1['@id'], file2['@id']]}
-    )
-    testapp.patch_json(file1['@id'], {'derived_from': [file2['@id']]})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(
-        error['category'] == 'inconsistent analysis files'
-        for error in collect_audit_errors(res)
-    )
-
-
 def test_audit_experiment_average_fragment_size(testapp, base_experiment, base_replicate, base_library):
     # average_fragment_size may stand in for size_range, behavior should match
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
