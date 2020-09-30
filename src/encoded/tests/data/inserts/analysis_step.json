@@ -516,7 +516,7 @@
             "alignments"
         ],
         "output_file_types": [
-            "smoothed methylation stage at CpG",
+            "smoothed methylation state at CpG",
             "CpG sites coverage",
             "plus strand methylation state at CpG",
             "minus strand methylation state at CpG"

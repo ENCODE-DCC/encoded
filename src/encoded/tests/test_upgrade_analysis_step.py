@@ -69,13 +69,13 @@ def test_analysis_step_9_10(upgrader, analysis_step_9):
     assert 'spike-ins' in value['output_file_types']
 
 
-def test_analysis_step_10_11(upgrader, analysis_step_10):
+def test_analysis_step_10_11(upgrader, analysis_step_11):
     value = upgrader.upgrade(
         'analysis_step',
-        analysis_step_10,
-        current_version='10',
-        target_version='11'
+        analysis_step_11,
+        current_version='11',
+        target_version='12'
     )
-    assert value['schema_version'] == '11'
-    assert 'pseudo-replicated peaks' in value['input_file_types']
-    assert 'pseudo-replicated peaks' in value['output_file_types']
+    assert value['schema_version'] == '12'
+    assert 'smoothed methylation state at CpG' in value['input_file_types']
+    assert 'smoothed methylation state at CpG' in value['output_file_types']

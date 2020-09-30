@@ -711,3 +711,10 @@ def file_23_24(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5480
     if value.get('output_type', '') == 'stable peaks':
         value['output_type'] = 'pseudo-replicated peaks'
+
+
+@upgrade_step('file', '24', '25')
+def file_24_25(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5480
+    if value.get('output_type', '') == 'smoothed methylation stage at CpG':
+        value['output_type'] = 'smoothed methylation state at CpG'

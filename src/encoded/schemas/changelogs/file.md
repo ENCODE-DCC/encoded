@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 25
+* *output_type* *smoothed methylation stage at CpG* was updated to *smoothed methylation state at CpG*
+
 ### Minor changes since schema version 24
 * The *output_type* enum was updated to include *UV enriched segment quantifications*, *plus strand methylation state at CpG*, *minus strand methylation state at CpG*, *CpG sites coverage*, and *sparse gene count matrix*.
 

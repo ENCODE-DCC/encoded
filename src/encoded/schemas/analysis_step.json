@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "step_label": {
             "title": "Step label",
@@ -224,7 +224,7 @@
                     "signal of all reads",
                     "signal of unique reads",
                     "signal p-value",
-                    "smoothed methylation stage at CpG",
+                    "smoothed methylation state at CpG",
                     "snRNA reference",
                     "sparse gene count matrix",
                     "spike-ins",
@@ -375,7 +375,7 @@
                     "signal of all reads",
                     "signal of unique reads",
                     "signal p-value",
-                    "smoothed methylation stage at CpG",
+                    "smoothed methylation state at CpG",
                     "snRNA reference",
                     "sparse gene count matrix",
                     "spike-ins",

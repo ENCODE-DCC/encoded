@@ -1864,3 +1864,21 @@ def file_bed_IDR_peaks_2_atac(testapp, ATAC_experiment_replicated, ATAC_bam3,
         'step_run': analysis_step_run_atac_encode4_partition_concordance['@id']
     }
     return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_24(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': base_experiment['uuid'],
+        "file_format": "bed",
+        "file_format_type": "bedMethyl",
+        "file_size": 24000,
+        "assembly": "mm10",
+        "md5sum": "91be74b6e11515223507f4ebf266d88a",
+        "output_type": "smoothed methylation stage at CpG",
+        "award": award["uuid"],
+        "lab": encode_lab["uuid"],
+        "status": "released",
+        "step_run": analysis_step_run_bam['uuid']
+    }
+    return item

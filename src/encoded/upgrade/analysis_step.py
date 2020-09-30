@@ -248,3 +248,15 @@ def analysis_step_10_11(value, system):
     if 'stable peaks' in value.get('output_file_types', []):
         value['output_file_types'].remove('stable peaks')
         value['output_file_types'].append('pseudo-replicated peaks')
+
+
+@upgrade_step('analysis_step', '11', '12')
+def analysis_step_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5551
+
+    if 'smoothed methylation stage at CpG' in value.get('input_file_types', []):
+        value['input_file_types'].remove('smoothed methylation stage at CpG')
+        value['input_file_types'].append('smoothed methylation state at CpG')
+    if 'smoothed methylation stage at CpG' in value.get('output_file_types', []):
+        value['output_file_types'].remove('smoothed methylation stage at CpG')
+        value['output_file_types'].append('smoothed methylation state at CpG')
