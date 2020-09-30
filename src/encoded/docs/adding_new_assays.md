@@ -103,7 +103,7 @@ Steps to add a new assay
     * A shortened form of the name in ```preferred_name```
     * The parent term for assay type that it will slim to in ```assay```
 
-    If you are using an OBI term, you will need to check that ```preferred_name``` and the ```assay``` to slim to are specified. First check for these properties in the OBI entry for your term in the ENCODE ```ontology.json``` (see [Updating ontologies] for details). If either is absent, you will be required to add each proprerty manually:
+    If you are using an OBI term, you will need to check that ```preferred_name``` and the ```assay``` to slim to are specified. First check for these properties in the OBI entry for your term in the ENCODE ```ontology.json``` (see [Updating ontologies] for details). If they're absent, you will need to manually provide these terms:
     * Associate the OBI term with the desired ```preferred_name``` in [src/encoded/commands/generate_ontology.py]
     * Assign an ```assay``` slim in [src/encoded/commands/manual_slims.py]
 
