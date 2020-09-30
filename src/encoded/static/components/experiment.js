@@ -38,6 +38,7 @@ const displayedLibraryProperties = [
     { property: 'depleted_in_term_name', title: 'Depleted in', test: 'depletedin' },
     { property: 'nucleic_acid_starting_quantity', title: 'Library starting quantity', test: 'startingquantity' },
     { property: 'size_range', title: 'Size range', test: 'sizerange' },
+    { property: 'average_fragment_size', title: 'Average fragment size', test: 'avgfragmentsize' },
     { property: 'lysis_method', title: 'Lysis method', test: 'lysismethod' },
     { property: 'extraction_method', title: 'Extraction method', test: 'extractionmethod' },
     { property: 'fragmentation_methods', title: 'Fragmentation methods', test: 'fragmentationmethod' },
@@ -85,6 +86,18 @@ const libraryPropertyExtractors = {
             libraryPropertyComponent = <span>{quantity}<span className="unit">{units}</span></span>;
         }
         return { libraryPropertyString, libraryPropertyComponent };
+    },
+
+    size_range: (library, replicates) => {
+        // Always display replicate if any other replicate libraries have `average_fragment_size`.
+        const libraryPropertyForceRepDisplay = replicates.some(replicate => replicate.library && replicate.library.average_fragment_size);
+        return { libraryPropertyString: library.size_range, libraryPropertyForceRepDisplay };
+    },
+
+    average_fragment_size: (library, replicates) => {
+        // Always display replicate if any other replicate libraries have `size_range`.
+        const libraryPropertyForceRepDisplay = replicates.some(replicate => replicate.library && replicate.library.size_range);
+        return { libraryPropertyString: library.average_fragment_size, libraryPropertyForceRepDisplay };
     },
 
     depleted_in_term_name: (library) => {
@@ -154,10 +167,12 @@ const LibraryProperties = ({ replicates }) => {
                 // For each possible displayed library property within the current replicate,
                 // retrieve a string representing its value as well as an optional JSX component
                 // from the replicate library and add them along with the corresponding replicate
-                // numbers to `libraryPropertyDisplays`.
+                // numbers to `libraryPropertyDisplays`, and if a property requires replicate
+                // strings displayed.
                 displayedLibraryProperties.forEach(({ property }) => {
                     let libraryPropertyString = '';
                     let libraryPropertyComponent = null;
+                    let libraryPropertyForceRepDisplay = false;
                     if (!libraryPropertyDisplays[property]) {
                         libraryPropertyDisplays[property] = [];
                     }
@@ -169,9 +184,7 @@ const LibraryProperties = ({ replicates }) => {
                     const libraryPropertyRawValue = replicate.library[property];
                     if (libraryPropertyExtractors[property]) {
                         // Library property has a property extractor.
-                        const extractedProperty = libraryPropertyExtractors[property](replicate.library);
-                        libraryPropertyString = extractedProperty.libraryPropertyString;
-                        libraryPropertyComponent = extractedProperty.libraryPropertyComponent;
+                        ({ libraryPropertyString, libraryPropertyComponent, libraryPropertyForceRepDisplay } = libraryPropertyExtractors[property](replicate.library, replicates));
                     } else if (typeof libraryPropertyRawValue === 'string' || typeof libraryPropertyRawValue === 'number') {
                         // Library property is a simple value, so just use it directly.
                         libraryPropertyString = libraryPropertyRawValue;
@@ -183,6 +196,7 @@ const LibraryProperties = ({ replicates }) => {
                         libraryPropertyDisplays[property].push({
                             value: libraryPropertyString,
                             component: libraryPropertyComponent,
+                            forceRepDisplay: libraryPropertyForceRepDisplay,
                             bioRep: replicate.biological_replicate_number,
                             techRep: replicate.technical_replicate_number,
                         });
@@ -197,7 +211,8 @@ const LibraryProperties = ({ replicates }) => {
             const libraryPropertyElements = libraryPropertyDisplays[displayedLibraryProperty.property];
             if (libraryPropertyElements && libraryPropertyElements.length > 0) {
                 const homogeneous = !libraryPropertyElements.some(libraryProperty => libraryProperty.value !== libraryPropertyElements[0].value);
-                if (!homogeneous) {
+                const forcedRepDisplay = libraryPropertyElements.some(libraryProperty => libraryProperty.forceRepDisplay);
+                if (!homogeneous || forcedRepDisplay) {
                     // More than one value collected for this property, and at least one had a
                     // different value from the others. Display all values with a replicate
                     // identifier for each one.
