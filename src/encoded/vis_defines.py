@@ -29,6 +29,7 @@ IHEC_LIB_STRATEGY = {
     'microRNA-seq': 'miRNA-Seq',
     'microRNA counts': 'miRNA-Seq',
     'MRE-seq': 'MRE-Seq',
+    'polyA plus RNA-seq': 'RNA-Seq',
     'RNA-seq': 'RNA-Seq',
     'RRBS': 'Bisulfite-Seq',
     'whole-genome shotgun bisulfite sequencing': 'Bisulfite-Seq'
