@@ -10,7 +10,7 @@ $file-restricted-bg: #ffdcda; // Background color of restricted files
 
     @at-root #{&}__scrollarea {
         overflow-x: auto;
-        overflow-y: scroll;
+        overflow-y: hidden;
     }
 }
 
