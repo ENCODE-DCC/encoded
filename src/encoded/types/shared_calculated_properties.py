@@ -217,6 +217,7 @@ class CalculatedBiosampleSummary:
                           request,
                           replicates=None):
         drop_age_sex_flag = False
+        add_classification_flag = False
         dictionaries_of_phrases = []
         biosample_accessions = set()
         if replicates is not None:
@@ -237,9 +238,12 @@ class CalculatedBiosampleSummary:
                             biosample_info = biosample_summary_information(request, biosampleObject)
                             biosample_summary_dictionary = biosample_info[0]
                             biosample_drop_age_sex_flag = biosample_info[1]
+                            biosample_add_classification_flag = biosample_info[2]
                             dictionaries_of_phrases.append(biosample_summary_dictionary)
                             if biosample_drop_age_sex_flag is True:
                                 drop_age_sex_flag = True
+                            if biosample_add_classification_flag is True:
+                                add_classification_flag = True
 
         if drop_age_sex_flag is True:
             sentence_parts = [
@@ -247,6 +251,21 @@ class CalculatedBiosampleSummary:
                 'experiment_term_phrase',
                 'phase',
                 'fractionated',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in',
+                'disease_term_name'
+            ]
+        elif add_classification_flag is True:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'sample_type',
+                'phase',
+                'fractionated',
+                'sex_stage_age',
                 'synchronization',
                 'modifications_list',
                 'originated_from',
