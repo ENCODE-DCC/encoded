@@ -88,10 +88,7 @@
             "description": "The laterality of tumor",
             "type": "string",
             "enum": [
-                "Bilateral",
-                "Bilateral, Asynchronous",
                 "Bilateral, Horseshoe",
-                "Bilateral, Synchronous",
                 "Left",
                 "Right",
                 "Not Available"
