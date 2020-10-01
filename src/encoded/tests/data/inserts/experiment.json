@@ -52,7 +52,8 @@
         "dbxrefs": [
             "UCSC-ENCODE-mm9:wgEncodeEM002001",
             "GEO:GSM798326",
-            "GEO:GSE32218"
+            "GEO:GSE32218",
+            "SCREEN-GRCh38:GM12864"
         ],
         "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
         "documents": [
@@ -100,6 +101,7 @@
         "award": "ENCODE2-Mouse",
         "biosample_ontology": "cell_line_EFO_0005233",
         "dbxrefs": [
+            "FactorBook:ENCSR000BLX",
             "UCSC-ENCODE-mm9:wgEncodeEM002004",
             "GEO:GSM798327",
             "GEO:GSE32218"

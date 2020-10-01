@@ -348,6 +348,20 @@ const ExperimentComponent = (props, reactContext) => {
         );
     }
 
+    // Get SCREEN link and FactorBook link if they exist
+    const screenLink = result.dbxrefs.filter(dbxref => (dbxref.indexOf('SCREEN') > -1))[0];
+    const motifsLink = result.dbxrefs.filter(dbxref => (dbxref.indexOf('FactorBook') > -1))[0];
+    let screenSearch = '';
+    let screenAssembly = '';
+    if (screenLink) {
+        screenSearch = screenLink.split(':')[1];
+        screenAssembly = screenLink.split('-')[1].split(':')[0];
+    }
+    let motifsSearch = '';
+    if (motifsLink) {
+        motifsSearch = motifsLink.split(':')[1];
+    }
+
     return (
         <li className={resultItemClass(result)}>
             <div className="result-item">
@@ -410,6 +424,12 @@ const ExperimentComponent = (props, reactContext) => {
                                         )}
                                     </div>
                                 )}
+                                {screenLink ?
+                                    <div><strong>candidate Cis-Regulatory Elements (cCREs): </strong><a href={`https://screen.encodeproject.org/search?q=${screenSearch}&assembly=${screenAssembly}`}>SCREEN</a></div>
+                                : null}
+                                {motifsLink ?
+                                    <div><strong>Target: </strong><a href={`https://factorbook.org/experiment/${motifsSearch}`}>CTCF (Factorbook)</a></div>
+                                : null}
                             </React.Fragment>
                         : null}
                     </div>

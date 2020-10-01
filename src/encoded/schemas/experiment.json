@@ -340,6 +340,9 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
+        "dbxrefs": {
+            "title": "Dbxrefs"
+        },
         "description": {
             "title": "Description"
         },
