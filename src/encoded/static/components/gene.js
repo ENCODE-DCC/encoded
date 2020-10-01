@@ -24,14 +24,8 @@ class Gene extends React.Component {
         const nadbIDs = [];
         const uniprotIDs = [];
         this.props.context.dbxrefs.forEach((dbxref) => {
-            if (dbxref.startsWith('WormBase:WBGene')) {
-                nadbIDs.push(dbxref.replace('WormBase:', 'WB:'));
-            } else if (dbxref.startsWith('FlyBase:FBgn')) {
-                nadbIDs.push(dbxref.replace('FlyBase:', 'FB:'));
-            } else if (dbxref.startsWith('MGI:')) {
-                nadbIDs.push('MGI:'.concat(dbxref));
-            } else if (dbxref.startsWith('UniProtKB:')) {
-                uniprotIDs.push(dbxref);
+            if (dbxref.startsWith('HGNC:')) {
+                nadbIDs.push('HGNC:'.concat(dbxref));
             }
         });
         Promise.all((nadbIDs.length > 0 ? nadbIDs : uniprotIDs).map(
@@ -64,11 +58,6 @@ class Gene extends React.Component {
         // Set up breadcrumbs
         const crumbs = [
             { id: 'Genes' },
-            {
-                id: <i>{context.organism.scientific_name}</i>,
-                query: `organism.scientific_name=${context.organism.scientific_name}`,
-                tip: `${context.organism.scientific_name}`,
-            },
         ];
 
         const crumbsReleased = (context.status === 'released');
@@ -77,17 +66,17 @@ class Gene extends React.Component {
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
                     <Breadcrumbs root="/search/?type=Gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h2>
+                    <h2>{context.symbol} (<em>{context.assembly}</em>)</h2>
                     <ItemAccessories item={context} />
                 </header>
 
                 <div className="panel">
                     <dl className={itemClass}>
-                        {/* TODO link to NCBI Entrez page? */}
-                        <div data-test="gendid">
-                            <dt>Entrez GeneID</dt>
+                        {/* TODO link to external page? */}
+                        <div data-test="gene_id">
+                            <dt>Ensembl Gene ID</dt>
                             <dd>
-                                <a href={dbxrefHref('GeneID', context.geneid)}>{context.geneid}</a>
+                                <a href={dbxrefHref('Gene ID', context.gene_id)}>{context.gene_id}</a>
                             </dd>
                         </div>
 
@@ -97,26 +86,18 @@ class Gene extends React.Component {
                             <dd>{context.symbol}</dd>
                         </div>
 
-                        {context.name ?
-                            <div data-test="name">
-                                <dt>Official gene name</dt>
-                                <dd>{context.name}</dd>
+                        {context.assembly ?
+                            <div data-test="assembly">
+                                <dt>Assembly</dt>
+                                <dd>{context.assembly}</dd>
                             </div>
                         : null}
 
-                        {context.synonyms ?
-                          <div data-test="synonyms">
-                              <dt>Synonyms</dt>
-                              <dd>
-                                  <ul>
-                                      {context.synonyms.map(synonym =>
-                                          <li key={synonym}>
-                                              <span>{synonym}</span>
-                                          </li>
-                                      )}
-                                  </ul>
-                              </dd>
-                          </div>
+                        {context.gene_biotype ?
+                            <div data-test="gene_biotype">
+                                <dt>Biotype</dt>
+                                <dd>{context.gene_biotype}</dd>
+                            </div>
                         : null}
 
                         <div data-test="external">
@@ -127,29 +108,8 @@ class Gene extends React.Component {
                                 : <em>None submitted</em> }
                             </dd>
                         </div>
-
-                        {this.state.goIDs.length > 0 ?
-                            <div data-test="go_ids">
-                                <dt>Gene Ontology</dt>
-                                <dd>
-                                    <DbxrefList context={context} dbxrefs={this.state.goIDs} />
-                                </dd>
-                            </div>
-                        : null}
                     </dl>
                 </div>
-
-                <RelatedItems
-                    title={`Functional genomics experiments targeting gene ${context.symbol}`}
-                    url={`/search/?type=Experiment&target.genes.uuid=${context.uuid}`}
-                    Component={ExperimentTable}
-                />
-
-                <RelatedItems
-                    title={`Functional characterization experiments targeting gene ${context.symbol}`}
-                    url={`/search/?type=FunctionalCharacterizationExperiment&target.genes.uuid=${context.uuid}`}
-                    Component={ExperimentTable}
-                />
             </div>
         );
     }
@@ -178,7 +138,7 @@ const ListingComponent = (props, reactContext) => {
                 <div className="result-item__data">
                     <a href={result['@id']} className="result-item__link">
                         {result.symbol}
-                        {result.organism && result.organism.scientific_name ? <em>{` (${result.organism.scientific_name})`}</em> : null}
+                        {result.assembly} : null}
                     </a>
                     <div className="result-item__data-row">
                         <strong>External resources: </strong>
