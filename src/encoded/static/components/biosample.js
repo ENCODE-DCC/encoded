@@ -31,14 +31,6 @@ class BiosampleComponent extends React.Component {
         // Collect all documents in this biosample
         let combinedDocs = CollectBiosampleDocs(context);
 
-        // If this biosample is part of another, collect those documents too, then remove
-        // any duplicate documents in the combinedDocs array.
-        if (context.part_of) {
-            const parentCombinedDocs = CollectBiosampleDocs(context.part_of);
-            combinedDocs = combinedDocs.concat(parentCombinedDocs);
-        }
-        combinedDocs = globals.uniqueObjectsArray(combinedDocs);
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -199,10 +191,6 @@ class BiosampleComponent extends React.Component {
                     <div>
                         {PanelLookup({ context: context.donor, biosample: context })}
                     </div>
-                : null}
-
-                {combinedDocs.length > 0 ?
-                    <DocumentsPanel documentSpecs={[{ documents: combinedDocs }]} />
                 : null}
             </div>
         );

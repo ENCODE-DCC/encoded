@@ -36,20 +36,6 @@ export function CollectBiosampleDocs(biosample) {
     if (biosample.documents && biosample.documents.length > 0) {
         protocolDocuments = _.uniq(biosample.documents);
     }
-    let characterizations = [];
-    if (biosample.characterizations && biosample.characterizations.length > 0) {
-        characterizations = _.uniq(biosample.characterizations);
-    }
-    let donorDocuments = [];
-    let donorCharacterizations = [];
-    if (biosample.donor) {
-        if (biosample.donor.characterizations && biosample.donor.characterizations.length > 0) {
-            donorCharacterizations = biosample.donor.characterizations;
-        }
-        if (biosample.donor.documents && biosample.donor.documents.length > 0) {
-            donorDocuments = biosample.donor.documents;
-        }
-    }
     let treatmentDocuments = [];
     if (biosample.treatments && biosample.treatments.length > 0) {
         treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length > 0) ? allDocs.concat(treatment.documents) : allDocs), []);
@@ -59,9 +45,6 @@ export function CollectBiosampleDocs(biosample) {
     // Compile the document list
     const combinedDocuments = _.uniq([].concat(
         protocolDocuments,
-        characterizations,
-        donorDocuments,
-        donorCharacterizations,
         treatmentDocuments
     ));
 
