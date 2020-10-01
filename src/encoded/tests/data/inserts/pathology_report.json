@@ -126,7 +126,7 @@
     "patient":"KCEPT359MHZ",
     "tumor_sequence_number": 1,
     "date": "1860-06-03",
-    "laterality": "Bilateral",
+    "laterality": "Right",
     "tumor_size": 2,
     "tumor_size_units": "cm",
     "focality": "Unifocal",
