@@ -318,6 +318,101 @@ ReplacementAccessions.propTypes = {
 
 
 /**
+ * Display a count of libraries in the footer, with a link to the corresponding search if needed.
+ */
+const LibraryTableFooter = ({ items, total, url }) => (
+    <div className="table-panel__std-footer">
+        <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
+    </div>
+);
+
+LibraryTableFooter.propTypes = {
+    /** Array of libraries that were displayed in the table */
+    items: PropTypes.array.isRequired,
+    /** Total number of libraries */
+    total: PropTypes.number,
+    /** URL to link to equivalent librarie search results */
+    url: PropTypes.string.isRequired,
+};
+
+LibraryTableFooter.defaultProps = {
+    total: 0,
+};
+
+
+const libraryTableColumns = {
+    accession: {
+        title: 'Accession',
+    },
+
+    assay: {
+        title: 'Assay',
+    },
+
+    'protocol.title': {
+        title: 'Protocol',
+        getValue: item => item.protocol && item.protocol.title,
+    },
+
+    'derived_from.biosample_ontology.term_name': {
+        title: 'Biosample term name',
+        getValue: item => item.derived_from && item.derived_from.biosample_ontology && item.derived_from.biosample_ontology.term_name,
+    },
+
+    title: {
+        title: 'Lab',
+        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+
+    'award.name': {
+        title: 'Award',
+        getValue: item => item.award && item.award.name,
+    },
+};
+
+
+export const LibraryTable = ({ items, limit, total, url, title }) => {
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements.
+    if (items.length > 0) {
+        const libraries = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+
+        return (
+            <div>
+                <SortTablePanel title={title}>
+                    <SortTable list={libraries} columns={libraryTableColumns} footer={<LibraryTableFooter items={libraries} total={total} url={url} />} />
+                </SortTablePanel>
+            </div>
+        );
+    }
+    return null;
+};
+
+LibraryTable.propTypes = {
+    /** List of libraries to display in the table */
+    items: PropTypes.array.isRequired,
+    /** Maximum number of libraries to display in the table */
+    limit: PropTypes.number,
+    /** Total number of libraries */
+    total: PropTypes.number,
+    /** URI to go to equivalent search results */
+    url: PropTypes.string.isRequired,
+    /** Title for the table of libraries; can be string or component */
+    title: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.node,
+    ]),
+};
+
+LibraryTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    title: '',
+};
+
+
+/**
  * Display a count of experiments in the footer, with a link to the corresponding search if needed.
  */
 const ExperimentTableFooter = ({ items, total, url }) => (
@@ -414,7 +509,7 @@ ExperimentTable.defaultProps = {
 
 const tableContentMap = {
     Experiment: 'Experiments',
-    FunctionalCharacterizationExperiment: 'Functional characterization experiments',
+    Library: 'Libraries',
 };
 /**
  * Display a table of experiments with the dataset in `context` as a possible_controls.

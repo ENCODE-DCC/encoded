@@ -5,21 +5,20 @@ import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
-import { DocumentsPanel, DocumentsSubpanels } from './doc';
-import GeneticModificationSummary from './genetic_modification';
+import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { requestObjects, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
+import { requestObjects, AlternateAccession, ItemAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
-import { BiosampleTable, ExperimentTable } from './typeutils';
+import { LibraryTable } from './typeutils';
 import formatMeasurement from './../libs/formatMeasurement';
 
 
-const HumanDonor = (props) => {
+const Donor = (props) => {
     const { context, biosample } = props;
     const references = pubReferenceList(context.references);
 
@@ -45,13 +44,6 @@ const HumanDonor = (props) => {
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.external_ids && context.external_ids.length > 0 ?
-                            <div data-test="externalid">
-                                <dt>Donor external identifiers</dt>
-                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
                             </div>
                         : null}
 
@@ -83,17 +75,17 @@ const HumanDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.health_status ?
-                            <div data-test="health-status">
-                                <dt>Health status</dt>
-                                <dd className="sentence-case">{context.health_status}</dd>
-                            </div>
-                        : null}
-
                         {context.ethnicity ?
                             <div data-test="ethnicity">
                                 <dt>Ethnicity</dt>
-                                <dd className="sentence-case">{context.ethnicity}</dd>
+                                <dd className="sentence-case">{context.ethnicity.term_name}</dd>
+                            </div>
+                        : null}
+
+                        {context.strain_term_name ?
+                            <div data-test="strain_term_name">
+                                <dt>Strain</dt>
+                                <dd className="sentence-case">{context.strain_term_name}</dd>
                             </div>
                         : null}
 
@@ -117,13 +109,6 @@ const HumanDonor = (props) => {
                                 <dd>{context.submitter_comment}</dd>
                             </div>
                         : null}
-
-                        {context.internal_tags && context.internal_tags.length > 0 ?
-                            <div className="tag-badges" data-test="tags">
-                                <dt>Tags</dt>
-                                <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
-                            </div>
-                        : null}
                     </dl>
                 </PanelBody>
             </Panel>
@@ -131,16 +116,16 @@ const HumanDonor = (props) => {
     );
 };
 
-HumanDonor.propTypes = {
+Donor.propTypes = {
     context: PropTypes.object.isRequired, // Donor being displayed
     biosample: PropTypes.object, // Biosample this donor is associated with
 };
 
-HumanDonor.defaultProps = {
+Donor.defaultProps = {
     biosample: null,
 };
 
-globals.panelViews.register(HumanDonor, 'HumanDonor');
+globals.panelViews.register(Donor, 'Donor');
 
 
 /**
@@ -193,265 +178,6 @@ DonorTable.defaultProps = {
     title: '',
     donors: '',
 };
-
-
-const MouseDonor = (props) => {
-    const { context, biosample } = props;
-    let donorUrlDomain;
-
-    // Get the domain name of the donor URL.
-    if (biosample && biosample.donor && biosample.donor.url) {
-        const donorUrl = url.parse(biosample.donor.url);
-        donorUrlDomain = donorUrl.hostname || '';
-    }
-
-    return (
-        <div>
-            <Panel>
-                <PanelHeading>
-                    <h4>Strain information</h4>
-                </PanelHeading>
-                <PanelBody>
-                    <dl className="key-value">
-                        <div data-test="status">
-                            <dt>Status</dt>
-                            <dd><Status item={context} inline /></dd>
-                        </div>
-
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
-                        </div>
-
-                        {context.aliases.length > 0 ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{context.aliases.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.external_ids && context.external_ids.length > 0 ?
-                            <div data-test="externalid">
-                                <dt>Donor external identifiers</dt>
-                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
-                            </div>
-                        : null}
-
-                        {context.organism.scientific_name ?
-                            <div data-test="organism">
-                                <dt>Species</dt>
-                                <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                            </div>
-                        : null}
-
-                        {context.genotype ?
-                            <div data-test="genotype">
-                                <dt>Genotype</dt>
-                                <dd>{context.genotype}</dd>
-                            </div>
-                        : null}
-
-                        {biosample && biosample.sex ?
-                            <div data-test="sex">
-                                <dt>Sex</dt>
-                                <dd className="sentence-case">{biosample.sex}</dd>
-                            </div>
-                        : null}
-
-                        {biosample && biosample.health_status ?
-                            <div data-test="health-status">
-                                <dt>Health status</dt>
-                                <dd className="sentence-case">{biosample.health_status}</dd>
-                            </div>
-                        : null}
-
-                        {donorUrlDomain ?
-                            <div data-test="mutatedgene">
-                                <dt>Strain reference</dt>
-                                <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
-                            </div>
-                        : null}
-
-                        {context.strain_background ?
-                            <div data-test="strain-background">
-                                <dt>Strain background</dt>
-                                <dd className="sentence-case">{context.strain_background}</dd>
-                            </div>
-                        : null}
-
-                        {context.strain_name ?
-                            <div data-test="strain-name">
-                                <dt>Strain name</dt>
-                                <dd>{context.strain_name}</dd>
-                            </div>
-                        : null}
-
-                        {context.dbxrefs && context.dbxrefs.length > 0 ?
-                            <div data-test="external-resources">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length > 0 ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd>{pubReferenceList(context.references)}</dd>
-                            </div>
-                        : null}
-
-                        {context.submitter_comment ?
-                            <div data-test="submittercomment">
-                                <dt>Submitter comment</dt>
-                                <dd>{context.submitter_comment}</dd>
-                            </div>
-                        : null}
-                    </dl>
-
-                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length > 0 ?
-                        <div>
-                            <hr />
-                            <h4>Characterizations</h4>
-                            <PanelBody addClasses="panel-body-doc-interior">
-                                <DocumentsSubpanels documentSpec={{ documents: biosample.donor.characterizations }} />
-                            </PanelBody>
-                        </div>
-                    : null}
-                </PanelBody>
-            </Panel>
-        </div>
-    );
-};
-
-MouseDonor.propTypes = {
-    context: PropTypes.object.isRequired, // Mouse donor object being rendered
-    biosample: PropTypes.object, // Biosample object this donor belongs to
-};
-
-MouseDonor.defaultProps = {
-    biosample: null,
-};
-
-globals.panelViews.register(MouseDonor, 'MouseDonor');
-
-
-const FlyWormDonor = (props) => {
-    const { context, biosample } = props;
-    let donorUrlDomain;
-
-    return (
-        <div>
-            <Panel>
-                <PanelHeading>
-                    <h4>Strain information</h4>
-                </PanelHeading>
-                <PanelBody>
-                    <dl className="key-value">
-                        <div data-test="status">
-                            <dt>Status</dt>
-                            <dd><Status item={context} inline /></dd>
-                        </div>
-
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
-                        </div>
-
-                        {context.aliases.length > 0 ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{context.aliases.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {context.external_ids && context.external_ids.length > 0 ?
-                            <div data-test="externalid">
-                                <dt>Donor external identifiers</dt>
-                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
-                            </div>
-                        : null}
-
-                        {context.organism.scientific_name ?
-                            <div data-test="species">
-                                <dt>Species</dt>
-                                <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                            </div>
-                        : null}
-
-                        {context.genotype ?
-                            <div data-test="genotype">
-                                <dt>Genotype</dt>
-                                <dd>{context.genotype}</dd>
-                            </div>
-                        : null}
-
-                        {biosample && biosample.sex ?
-                            <div data-test="sex">
-                                <dt>Sex</dt>
-                                <dd className="sentence-case">{biosample.sex}</dd>
-                            </div>
-                        : null}
-
-                        {biosample && biosample.health_status ?
-                            <div data-test="health-status">
-                                <dt>Health status</dt>
-                                <dd className="sentence-case">{biosample.health_status}</dd>
-                            </div>
-                        : null}
-
-                        {donorUrlDomain ?
-                            <div data-test="mutatedgene">
-                                <dt>Strain reference</dt>
-                                <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
-                            </div>
-                        : null}
-
-                        {context.strain_background ?
-                            <div data-test="strain-background">
-                                <dt>Strain background</dt>
-                                <dd className="sentence-case">{context.strain_background}</dd>
-                            </div>
-                        : null}
-
-                        {context.strain_name ?
-                            <div data-test="strain-name">
-                                <dt>Strain name</dt>
-                                <dd>{context.strain_name}</dd>
-                            </div>
-                        : null}
-
-                        {context.dbxrefs && context.dbxrefs.length > 0 ?
-                            <div data-test="external-resources">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
-
-
-                        {context.submitter_comment ?
-                            <div data-test="submittercomment">
-                                <dt>Submitter comment</dt>
-                                <dd>{context.submitter_comment}</dd>
-                            </div>
-                        : null}
-                    </dl>
-                </PanelBody>
-            </Panel>
-        </div>
-    );
-};
-
-FlyWormDonor.propTypes = {
-    context: PropTypes.object.isRequired, // Mouse donor object being rendered
-    biosample: PropTypes.object, // Biosample object this donor belongs to
-};
-
-FlyWormDonor.defaultProps = {
-    biosample: null,
-};
-
-globals.panelViews.register(FlyWormDonor, 'FlyDonor');
-globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
 // This component activates for any donors that aren't any of the above registered types.
@@ -578,16 +304,6 @@ class DonorComponent extends React.Component {
 
                 <PanelView key={context.uuid} {...this.props} />
 
-                {context.genetic_modifications && context.genetic_modifications.length > 0 ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
-                : null}
-
-                <RelatedItems
-                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=Biosample&donor.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
-
                 {context['@type'][0] === 'HumanDonor' && this.state.childDonors && this.state.childDonors.length > 0 ?
                     <DonorTable title="Children of this donor" donors={this.state.childDonors} />
                 : null}
@@ -597,15 +313,9 @@ class DonorComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title={`Functional genomics experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
-                    Component={ExperimentTable}
-                />
-
-                <RelatedItems
-                    title={`Functional characterization experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
-                    Component={ExperimentTable}
+                    title={`Libraries from this donor`}
+                    url={`/search/?type=Library&field=assay&field=award.name&field=dataset.accession&field=accession&field=derived_from.biosample_ontology.term_name&field=protocol.title&field=lab.title&donors=${context.accession}`}
+                    Component={LibraryTable}
                 />
 
                 {combinedDocuments.length > 0 ?
@@ -627,9 +337,9 @@ DonorComponent.contextTypes = {
     session_properties: PropTypes.object,
 };
 
-const Donor = auditDecor(DonorComponent);
+const DonorAudit = auditDecor(DonorComponent);
 
-globals.contentViews.register(Donor, 'Donor');
+globals.contentViews.register(DonorAudit, 'Donor');
 
 
 const DonorListingComponent = (props, reactContext) => {
@@ -701,15 +411,5 @@ const MouseListing = props => (
     <DonorListing {...props} organismTitle="Mouse donor" />
 );
 
-const WormListing = props => (
-    <DonorListing {...props} organismTitle="Worm donor" />
-);
-
-const FlyListing = props => (
-    <DonorListing {...props} organismTitle="Fly donor" />
-);
-
 globals.listingViews.register(HumanListing, 'HumanDonor');
 globals.listingViews.register(MouseListing, 'MouseDonor');
-globals.listingViews.register(WormListing, 'WormDonor');
-globals.listingViews.register(FlyListing, 'FlyDonor');
