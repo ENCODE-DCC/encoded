@@ -522,7 +522,22 @@ class GenomeBrowser extends React.Component {
         if (files.length > 0) {
             tracks = this.filesToTracks(newFiles, this.props.label, domain);
         }
-        this.setState({ trackList: tracks }, () => {
+        let contig = this.state.contig;
+        let x0 = this.state.x0;
+        let x1 = this.state.x1;
+        if (this.chartdisplay) {
+            const scrollLocation = this.chartdisplay.getElementsByClassName('hpgv_panel-header')[0].getElementsByTagName('span')[0].innerText;
+            const splitScrollLocation = scrollLocation.split(' ');
+            contig = splitScrollLocation[0];
+            x0 = (splitScrollLocation[1].indexOf('Mbp') > -1) ? +splitScrollLocation[1].replace('Mbp', '') * 1e6 : +splitScrollLocation[1].replace('bp', '');
+            x1 = (splitScrollLocation[3].indexOf('Mbp') > -1) ? +splitScrollLocation[3].replace('Mbp', '') * 1e6 : +splitScrollLocation[3].replace('bp', '');
+        }
+        this.setState({
+            trackList: tracks,
+            contig,
+            x0,
+            x1,
+        }, () => {
             if (this.chartdisplay && tracks.length > 0) {
                 this.drawTracks(this.chartdisplay);
             }
