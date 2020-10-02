@@ -17,7 +17,7 @@ require('./globals');
 require('./graph');
 require('./doc');
 require('./donor');
-require('./data_file');
+require('./file');
 require('./item');
 require('./page');
 require('./facets');

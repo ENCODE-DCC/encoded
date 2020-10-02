@@ -650,7 +650,7 @@ const derivingCols = {
         sorter: false,
     },
     file_format: { title: 'File format', sorter: false },
-    output_type: { title: 'Output type', sorter: false },
+    output_types: { title: 'Output type', sorter: false },
     title: {
         title: 'Lab',
         getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
