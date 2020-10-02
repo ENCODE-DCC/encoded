@@ -2981,7 +2981,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <h2>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h2>
             </div>
         );
-        const fileQualityMetrics = selectedFile.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
+        const fileQualityMetrics = selectedFile.quality_metrics;
 
         body = (
             <div>
@@ -3106,7 +3106,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
-                    {fileQualityMetrics.length > 0 ?
+                    {fileQualityMetrics && fileQualityMetrics.length > 0 ?
                         <div data-test="fileqc">
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
