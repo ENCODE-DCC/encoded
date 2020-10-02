@@ -60,8 +60,6 @@ const portal = {
                 { id: 'mouse-postnatal-donor-report', title: 'Mouse Postnatal', url: '/report/?type=MousePostnatalDonor', tag: 'collection' },
                 { id: 'mouse-pretnatal-donor-report', title: 'Mouse Prenatal', url: '/report/?type=MousePrenatalDonor', tag: 'collection' },
                 { id: 'sep-mm-1' },
-                { id: 'suspension-report', title: 'Suspensions', url: '/report/?type=Suspension', tag: 'collection' },
-                { id: 'sep-mm-2' },
                 { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
             ],
         },
@@ -70,7 +68,7 @@ const portal = {
             title: 'Wrangling tools',
             children: [
                 { id: 'ontology-terms', title: 'Ontology terms', url: '/report/?type=OntologyTerm' },
-                { id: 'test-results', title: 'Test results', url: '/report/?type=HumanPostnatalDonor&field=%40id&field=test_results' },
+                { id: 'test-results', title: 'Test results', url: '/report/?type=HumanPostnatalDonor&test_results=*&field=accession&field=test_results' },
             ],
         },
     ],
