@@ -16,9 +16,48 @@ Guide to where to edit Source Code
 Steps to add a new assay
 ---------------- 
 
-1. Schemas and changelogs:
+1. Ontology:
 
-    Assays are identified by precise ontological terms that we list in a property *assay_term_name*. This is used in many different objects on the portal, and in most cases a mixin property ```assay``` provides this enum list. You will need to add your new assay type to the enum in mixins.json and update the changelogs of the objects that import this property.
+    Assays are identified by precise ontological terms that we list in a property *assay_term_name*.
+    First, check to see if the new assay type has an entry in [OBI].
+    * If there is an entry, you will use the OBI identifier for your term (e.g., OBI:0002039).
+    * If there is no entry, write a New Term Request ticket on the [NTR board], and provide a publication describing the assay type. The ticket number will be used as your assay term identifier (e.g., NTR-564 becomes NTR:0000564).
+
+    Add the assay term name and identifier to [types/assay_data.py].
+
+    Your term identifier will be associated with three properties:
+    * ```name```: the name for your assay type in its non-abbreviated form (e.g., *single-nucleus ATAC-seq*)
+    * ```preferred_name```: your term, the shortened form of the assay name (e.g., *snATAC-seq*)
+    * ```assay```: the parent term for that your assay term will slim to
+
+    If you are using an OBI term, you will need to check if ```preferred_name``` and ```assay``` are already specified. Check for these properties in the OBI entry for your term in the ENCODE ```ontology.json``` (see [Updating ontologies] for details). If they're absent, you will need to manually provide these terms in these files:
+    * Associate the OBI term with the desired ```preferred_name``` in [src/encoded/commands/generate_ontology.py]
+    * Assign an ```assay``` slim in [src/encoded/commands/manual_slims.py]
+
+    If instead you are using an NTR identifier, add an entry to [src/encoded/commands/ntr_terms.py] providing the three properties (```name```, ```preferred_name```, and ```assay```).
+
+    For **CUT&Tag**, the entry would appear as follows:
+    ```
+     "NTR:0000564": {
+        "assay": ['DNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "Cleavage Under Targets and Tagmentation",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CUT&Tag",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    ```
+    Follow the instructions in [Updating ontologies] to include your new assay in the encoded application ```ontology.json```.
+
+
+2. Schemas and changelogs:
+
+    This is used in many different objects on the portal, and in most cases a mixin property ```assay``` provides this enum list. You will need to add your new assay type to the enum in mixins.json and update the changelogs of the objects that import this property.
     The objects **Award**, **Pipeline**, and **Software** list ```assay_term_name``` in unique properties without importing the ```assay``` property, so both the schema profile and changelog will need to be updated in these cases.
     
     * [mixins.json] & [mixins changelog]
@@ -30,13 +69,13 @@ Steps to add a new assay
     
     For additional information on schema changes, please refer to [schema-changes.md].
 
-2. Audits: 
+3. Audits:
 
     In [audit/experiment.py], determine what audit checks are appropriate for your type of assay. Assays that need controls should be added to ```controlRequiredAssayList```, assays that have targets should be added to ```targetRequiredAssayList```, and sequencing assays should be added to ```seq_assays```.
 
     For additional information or how to add entirely new audits, please refer to [making_audits.md].
 
-3. Tests:
+4. Tests:
 
     * Add an experiment insert. This is an example experiment of this assay type, which you will place in [src/encoded/inserts/experiment.json]. This will be a simple ```JSON``` object that can load in the local application. If we were adding the assay type **CUT&Tag**, the insert might appear as:
 
@@ -90,40 +129,13 @@ Steps to add a new assay
         ```
         * If you prefer, you can also write a new experiment fixture which you would add to [tests/fixtures/schemas/experiment.py]. For more detailed instructions, please refer to [making_audits.md].
 
-4. Ontology: 
-
-    Check to see if the new assay type has an entry in [OBI].
-    * If there is an entry, you will use the OBI identifier (e.g., OBI:0002039).
-    * If there is no entry, write a New Term Request ticket on the [NTR board], and provide a publication describing the assay type. The ticket number will be used as your assay term identifier (e.g., NTR-564 becomes NTR:0000564).
-
-    Add the assay term name and identifier to [types/assay_data.py].
-
-    If you using an NTR identifier, add an entry to [src/encoded/commands/ntr_terms.py]. You will need to provide:
-    * The name for your assay type in the ```name``` property
-    * A shortened form of the name in ```preferred_name```
-    * The parent term for assay type that it will slim to in ```assay```
-
-    If you are using an OBI term, you will need to check that ```preferred_name``` and the ```assay``` to slim to are specified. First check for these properties in the OBI entry for your term in the ENCODE ```ontology.json``` (see [Updating ontologies] for details). If they're absent, you will need to manually provide these terms:
-    * Associate the OBI term with the desired ```preferred_name``` in [src/encoded/commands/generate_ontology.py]
-    * Assign an ```assay``` slim in [src/encoded/commands/manual_slims.py]
-
-    For **CUT&Tag**, the entry would appear as follows:
-    ```
-     "NTR:0000564": {
-        "assay": ['DNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Cleavage Under Targets and Tagmentation",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CUT&Tag",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    ```
-    Lastly, follow the instructions in [Updating ontologies] to include your new assay in the encoded application ```ontology.json```.
+[OBI]: http://www.ontobee.org/ontology/OBI
+[NTR board]: https://encodedcc.atlassian.net/browse/NTR
+[types/assay_data.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/types/assay_data.py
+[src/encoded/commands/ntr_terms.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/ntr_terms.py
+[src/encoded/commands/generate_ontology.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/generate_ontology.py
+[src/encoded/commands/manual_slims.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/manual_slims.py
+[Updating ontologies]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/docs/updating_ontologies.md
 
 [JSONSchema]: http://json-schema.org/
 [JSON-LD]:  http://json-ld.org/
@@ -146,11 +158,3 @@ Steps to add a new assay
 [encoded README.md]: https://github.com/ENCODE-DCC/encoded/blob/dev/README.md
 [tests/test_audit_experiment.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/tests/test_audit_experiment.py
 [tests/fixtures/schemas/experiment.py]: https://github.com/ENCODE-DCC/encoded/tree/dev/src/encoded/tests/fixtures/schemas/experiment.py
-
-[OBI]: http://www.ontobee.org/ontology/OBI
-[NTR board]: https://encodedcc.atlassian.net/browse/NTR
-[types/assay_data.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/types/assay_data.py
-[src/encoded/commands/ntr_terms.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/ntr_terms.py
-[src/encoded/commands/generate_ontology.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/generate_ontology.py
-[src/encoded/commands/manual_slims.py]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/commands/manual_slims.py
-[Updating ontologies]: https://github.com/ENCODE-DCC/encoded/blob/dev/src/encoded/docs/updating_ontologies.md
