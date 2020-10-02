@@ -1,3 +1,9 @@
+- cloud-init-per once conf-encd-pem-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/encoded-demos.pem /home/ubuntu/.ssh/encoded-demos.pem
+- cloud-init-per once conf-encd-pem-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/encoded-demos.pem
+- cloud-init-per once conf-encd-cfg-s3 sudo -u ubuntu aws s3 cp --region=us-west-2 s3://encoded-conf-prod/encd-pems/config /home/ubuntu/.ssh/config
+- cloud-init-per once conf-encd-cfg-chmod sudo -u ubuntu chmod 0600 /home/ubuntu/.ssh/config
+- cloud-init-per once conf-git-repo sudo -u ubuntu git clone git@github.com:ENCODE-DCC/encode-private-config.git /home/ubuntu/encode-private-config
+- cloud-init-per once conf-git-branch sudo -u ubuntu git -C /home/ubuntu/encode-private-config checkout -b encode-private-config origin/master
 - cloud-init-per once libmagic-mgc-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb && sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb && sudo apt-get install -yf
 - cloud-init-per once libmagic1-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb && sudo dpkg -i libmagic1_5.38-4_amd64.deb && sudo apt-get install -yf
 - cloud-init-per once libmagic-dev-install wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb && sudo dpkg -i libmagic-dev_5.38-4_amd64.deb && sudo apt-get install -yf

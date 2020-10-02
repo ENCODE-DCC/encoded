@@ -1,91 +1,5 @@
 """
 Encoded Application AWS Deployment Helper
-
-- SpotClient was removed in EPIC-ENCD-4716/ENCD-4688-remove-unused-code-from-deploy.
-
-# Creating private AMIs
-
-### Demos
-    1. Create demo ami instance to build demo ami image
-        $ bin/deploy --name encdbuildami-demo --build-ami
-    2. Watch the logs of both machines, wait till deployment finishes. 
-    3. Create the demo ami image from the instance using the commands printed in the console.
-        Example create ami command
-            $ python ./cloud-config/create-ami.py $username demo $encd_instance_id
-        Terminate the instance when ami image is built
-    4. Add the ami-id to the ami_map['demo'] below, commit and push the code
-    5. Then create a test demo
-        $ bin/deploy -n test-encdami-demo
-
-### ES wait nodes
-    1. Create es wait node and head for ami instance to build ami images
-        $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami  --profile-name default
-    2. Watch the logs of both machines, wait till deployment finishes.
-    3. Create the es data and head node ami image from the instance using the commands 
-        printed in the console.
-
-        Examples:
-            $ python ./cloud-config/create-ami.py $username es-wait-node $encd_instance_id
-            $ python ./cloud-config/create-ami.py $username es-wait-head $encd_instance_id
-        Terminate the instances when ami image is built
-
-    4. Add the ami-id to the ami_map['es-wait-node-cluster'] and
-        ami_map['es-wait-head-cluster'] below, commit and push the code.
-    5. Then create a test demo
-        $ bin/deploy --cluster-name test-encdami-eswait --es-wait
-
-
-### Frontend
-    1. Create frontend ami instance to build fronend ami image
-        $ bin/deploy --cluster-name encdbuildami-frontend --build-ami --es-ip 1.2.3.4  --profile-name default
-    2. Watch the logs of both machines, wait till deployment finishes.
-    3. Create the frontend ami image from the instance using the command
-        printed in the console.
-
-        Example:
-        $ python ./cloud-config/create-ami.py $username frontend $encd_instance_id
-        Terminate the instance when ami image is built
-    
-    4. Add the ami-id to the ami_map['fe-cluster'] below, commit and push the code.
-    5. Then create a test frontend
-        $ bin/deploy --cluster-name test-encdami-eswait --es-ip $es_head_ip
-
-
-
-Ex) Build a new ami and deploy a demo
-1. Demo: the --build-ami argument sets the aws image to base ubbuntu 18
-    $ bin/deploy encd-demo-ami --build-ami -n
-    # ssh on and watch cloud-init-output.log for errors.
-    # Once completed, and the machine rebooted, contintue to next step.
-2. Go to aws console and create an image from the instance
-3. Once completed,
-    * terminate the ami ec2 instance
-    * create tags for the ami image, with started-by your-name, desc like buildtype and date
-    * copy the the-image-ami-id to use to build a demo instance
-3. Create a demo with the-image-ami-id, ex) ami-03d883df2ca6cbaf9
-    $ bin/deploy -n encd-demo-test --use-prebuilt-config 20200129-u18-demo --image-id ami-03d883df2ca6cbaf9
-    # QA the demo, as a PR that updates the AMI in the deploy.py
-
-Ex) How to use this script to build a new config files, like the Ubuntu 18/Python 3.7 update
-1. Copy a demo prebuilt yaml in encoded/cloud-config/prebuilt-config-yamls
-    $ cp 20190923-pg11-demo.yml 20191112-pg11-u18-demo.yml
-2. Deploy use the new prebuilt yaml from encoded/
-    $ bin/deploy --use-prebuilt-config 20191112-pg11-u18-demo
-3. Update the prebuilt yaml by hand with necessary changes.
-4. Repeat 2. and 3. until the update is complete.
-5. Make a new template in encoded/cloud-config/
-    $ cp demo-template.yml demo-without-pg.yml # for example
-6. Create a new set of files in encoded/cloud-config/template-parts
-    to be used in u18-demo.yml template.  Examine older templates to see how.
-7. Diff the compiled yml with the manual yml.  Fix any differences.
-8. Save the compiled yml to prebuilt using today's date
-    $ bin/deploy --save-config-name 20200129
-9. Remove the manualy prebuilt, we'll keep the compiled version
-10. Deploy the new prebuilt as in step two.
-11. Make templates in encoded/cloud-config/ for es nodes and frontend if needed.
-    Try to reused the demo template-parts is possible.  Make new ones for es or frontend if needed.
-
-
 """
 import argparse
 import getpass
@@ -101,6 +15,26 @@ from os.path import expanduser
 from datetime import datetime
 
 import boto3
+from pathlib import Path
+
+
+REPO_DIR = f"{str(Path().parent.absolute())}"
+
+
+def _load_configuration(conf_path):
+    # Load config
+    from configparser import SafeConfigParser
+    config_parser = SafeConfigParser()
+    config_parser.read(conf_path)
+    # Convert to dict
+    conf_dict = {}
+    for section in config_parser.sections():
+        conf_dict[section] = {
+            key: val
+            for key, val in config_parser.items(section)
+        }
+    return conf_dict
+
 
 
 # AWS/EC2 - Deploy Cloud Config
@@ -410,7 +344,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
     if not is_tag and not is_branch:
         print("Commit %r not in origin. Did you git push?" % instances_tag_data['commit'])
     else:
-        instances_tag_data['username'] = getpass.getuser()
+        instances_tag_data['username'] = main_args.username if main_args.username else getpass.getuser()
         if instances_tag_data['name'] is None:
             instances_tag_data['short_name'] = _short_name(instances_tag_data['branch'])
             instances_tag_data['name'] = _nameify(
@@ -449,14 +383,13 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     build_type = instances_tag_data['build_type']  # template_name
     master_user_data = None
     git_remote = 'origin' if not is_tag else 'tags'
-    cc_dir = '/home/ubuntu/encoded/cloud-config'
     data_insert = {
         'APP_WORKERS': 'notused',
         'BATCHUPGRADE': 'true' if main_args.do_batchupgrade else 'false',
         'BATCHUPGRADE_VARS': 'notused',
         'BUILD_TYPE': build_type,
         'COMMIT': instances_tag_data['commit'],
-        'CC_DIR': cc_dir,
+        'CC_DIR': main_args.conf_dir_remote,
         'CLUSTER_NAME': 'NONE',
         'ES_IP': main_args.es_ip,
         'ES_PORT': main_args.es_port,
@@ -482,7 +415,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
-        'SCRIPTS_DIR': "{}/run-scripts".format(cc_dir),
+        'SCRIPTS_DIR': "{}/run-scripts".format(main_args.conf_dir_remote),
         'WALE_S3_PREFIX': main_args.wale_s3_prefix,
     }
     if build_type == 'es-nodes':
@@ -559,13 +492,14 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'INDEX_PRIMARY': 'true',
             })
         user_data = _get_user_data(config_yaml, data_insert, main_args)
+
     run_args = {
         'count': count,
         'iam_role': iam_role,
         'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
-        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
+        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod',
     }
     if main_args.profile_name == 'production' and main_args.role != 'candidate':
         run_args['key-pair-name'] += '-prod'
@@ -718,6 +652,23 @@ def _write_config_to_file(build_config, build_path, template_name):
 def main():
     """Entry point for deployment"""
     main_args = _parse_args()
+    # Load repo default config
+    default_demo_ini = f"{REPO_DIR}/demo-config.ini"
+    ini_dict= _load_configuration(default_demo_ini)
+    # Load developer overrides
+    override_dev_ini = f"{REPO_DIR}/.dev-config.ini"
+    override_ini_dict = _load_configuration(override_dev_ini)
+    for key, val in override_ini_dict.get('deployment', {}).items():
+        if val:
+            ini_dict['deployment'][key] = val
+    # Main args overridden by deployment conf dict
+    for key, val in ini_dict['deployment'].items():
+        if hasattr(main_args, key):
+            if val:
+                setattr(main_args, key, val)
+        else:
+            setattr(main_args, key, val)
+
     assembled_template, save_path, template_name = _get_cloud_config_yaml(main_args)
     if main_args.diff_configs:
         sys.exit(0)
@@ -976,7 +927,7 @@ def _parse_args():
     parser.add_argument('--app-workers', default='6', help="Apache config app workers")
     parser.add_argument(
         '--conf-dir',
-        default='./cloud-config',
+        default=f"{REPO_DIR}/cloud-config",
         help="Location of cloud build config"
     )
     parser.add_argument(
