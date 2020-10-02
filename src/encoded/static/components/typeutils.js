@@ -360,6 +360,11 @@ const libraryTableColumns = {
         getValue: item => item.derived_from && item.derived_from.biosample_ontology && item.derived_from.biosample_ontology.term_name,
     },
 
+    'dataset.accession': {
+        title: 'Dataset',
+        getValue: item => item.dataset && item.dataset.accession,
+    },
+
     title: {
         title: 'Lab',
         getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
