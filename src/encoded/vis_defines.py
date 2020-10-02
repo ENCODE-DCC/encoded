@@ -146,8 +146,8 @@ BIGBED_FILE_TYPES = ['bigBed']
 HIC_FILE_TYPES = ['hic']
 BIGINTERACT_FILE_TYPES = ['bigInteract']
 VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES + HIC_FILE_TYPES + BIGINTERACT_FILE_TYPES
-VISIBLE_DATASET_TYPES = ["Experiment", "Annotation", "FunctionalCharacterizationExperiment"]
-VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation", "functionalcharacterizationexperiment"]
+VISIBLE_DATASET_TYPES = ["Experiment", "Annotation", "Functional_Characterization_Experiment"]
+VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation", "functional_characterization_experiment"]
 
 
 # Supported tokens are the only tokens the code currently knows how to look up.
