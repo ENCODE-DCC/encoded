@@ -50,17 +50,20 @@
         "ontology_database": {
             "title": "Ontology DB"
         },
-        "organ_slims": {
-            "title": "Organ"
-        },
         "system_slims": {
             "title": "System"
         },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "typeahead"
+        },
         "cell_slims": {
-            "title": "Cell"
+            "title": "Cell",
+            "type": "typeahead"
         },
         "disease_slims": {
-            "title": "Diease"
+            "title": "Diease",
+            "type": "typeahead"
         },
         "status": {
             "title": "Status"

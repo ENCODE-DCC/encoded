@@ -291,8 +291,7 @@
             "title": "Life stage"
         },
         "biosample_ontology.system_slims": {
-            "title": "System",
-            "type": "typeahead"
+            "title": "System"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ",
