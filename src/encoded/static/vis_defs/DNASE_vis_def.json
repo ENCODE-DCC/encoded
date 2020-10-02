@@ -10,7 +10,7 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Normalized Signal", "Signal", "Peaks", "Hotspots", "AutoScale Signal" ],
+            "group_order": [ "Normalized Signal", "Signal", "Peaks", "FDR cut rate", "Footprints", "Hotspots", "AutoScale Signal" ],
             "groups": {
                 "Normalized Signal": {
                     "tag": "aNSIG",
@@ -34,21 +34,33 @@
                 },
                 "Peaks": {
                     "tag": "bPKS",
-                    "visibility": "hide",
+                    "visibility": "dense",
                     "type": "bigBed",
                     "spectrum": "on",
                     "signalFilter": "0",
                     "output_type": [ "peaks" ]
                 },
+                "FDR cut rate": {
+                    "tag": "cFDR",
+                    "type": "bigBed",
+                    "visibility": "hide",
+                    "output_type": [ "FDR cut rate" ]
+                },
+                "Footprints": {
+                    "tag": "dFOOT",
+                    "type": "bigBed",
+                    "visibility": "hide",
+                    "output_type": [ "footprints" ]
+                },
                 "Hotspots": {
-                    "tag": "cHOT",
+                    "tag": "eHOT",
                     "visibility": "hide",
                     "type": "bigBed",
                     "spectrum": "on",
                     "output_type": [ "hotspots" ]
                 },
                 "AutoScale Signal": {
-                    "tag": "dSIG2",
+                    "tag": "fSIG2",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:80",
