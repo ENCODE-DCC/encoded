@@ -266,21 +266,6 @@ class DonorComponent extends React.Component {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const PanelView = globals.panelViews.lookup(context);
-        let characterizationDocuments = [];
-        let donorDocuments = [];
-
-        // Collect the characterization documents.
-        if (context.characterizations && context.characterizations.length > 0) {
-            characterizationDocuments = context.characterizations;
-        }
-
-        // Collect the donor documents.
-        if (context.documents && context.documents.length > 0) {
-            donorDocuments = context.documents;
-        }
-
-        // Combine characterization and donor documents.
-        const combinedDocuments = [].concat(characterizationDocuments, donorDocuments);
 
         // Set up breadcrumbs.
         const crumbs = [
@@ -304,23 +289,11 @@ class DonorComponent extends React.Component {
 
                 <PanelView key={context.uuid} {...this.props} />
 
-                {context['@type'][0] === 'HumanDonor' && this.state.childDonors && this.state.childDonors.length > 0 ?
-                    <DonorTable title="Children of this donor" donors={this.state.childDonors} />
-                : null}
-
-                {context['@type'][0] === 'HumanDonor' && this.state.parentDonors && this.state.parentDonors.length > 0 ?
-                    <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
-                : null}
-
                 <RelatedItems
                     title={`Libraries from this donor`}
                     url={`/search/?type=Library&field=assay&field=award.name&field=dataset.accession&field=accession&field=derived_from.biosample_ontology.term_name&field=protocol.title&field=lab.title&donors=${context.accession}`}
                     Component={LibraryTable}
                 />
-
-                {combinedDocuments.length > 0 ?
-                    <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} />
-                : null}
             </div>
         );
     }
@@ -350,8 +323,6 @@ const DonorListingComponent = (props, reactContext) => {
     // constructor in the filter cleverly filters out falsy values from the array. See:
     // https://stackoverflow.com/questions/32906887/remove-all-falsy-values-from-an-array#answer-32906951
     const details = [
-        result.strain_name,
-        result.strain_background ? (result.strain_background !== 'unknown' ? result.strain_background : 'unknown strain background') : null,
         result.sex ? (result.sex !== 'unknown' ? result.sex : 'unknown sex') : null,
         result.life_stage ? (result.life_stage !== 'unknown' ? result.life_stage : 'unknown life stage') : null,
         formatMeasurement(result.age, result.age_units),
