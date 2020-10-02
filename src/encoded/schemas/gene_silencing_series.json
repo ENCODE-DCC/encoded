@@ -204,7 +204,6 @@
             "title": "Control",
             "type": "string"
         }
-
     },
     "boost_values": {
         "accession": 20.0,
