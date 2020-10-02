@@ -689,31 +689,6 @@ const replicateTableColumns = {
         },
     },
 
-    genetic_modification: {
-        title: 'Modifications',
-        display: (condensedReplicate) => {
-            const replicate = condensedReplicate[0];
-            const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
-            if (gms && gms.length > 0) {
-                return (
-                    <span>
-                        {gms.map((gm, i) => (
-                            <span key={gm.uuid}>
-                                {i > 0 ? <span>, </span> : null}
-                                <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
-                            </span>
-                        ))}
-                    </span>
-                );
-            }
-            return null;
-        },
-        hide: list => _(list).all((condensedReplicate) => {
-            const replicate = condensedReplicate[0];
-            return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length > 0);
-        }),
-    },
-
     antibody_accession: {
         title: 'Antibody',
         display: (condensedReplicate) => {
