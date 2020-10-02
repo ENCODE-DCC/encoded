@@ -6,8 +6,7 @@ import time
 
 EPILOG = __doc__
 
-_HUMAN_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&organism.scientific_name=Homo+sapiens&limit=all'
-_MOUSE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&organism.scientific_name=Mus+musculus&limit=all'
+_GENE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&organism.scientific_name=Mus+musculus&limit=all'
 
 
 def get_annotation():
@@ -19,45 +18,51 @@ def get_annotation():
     }
 
 
-def human_annotations(url):
+def all_annotations(url):
     annotations = []
-    species = ' (homo sapiens)'
-    species_for_payload = re.split('[(|)]', species)[1]
     response = requests.get(url)
     for gene in response.json()['@graph']:
         doc = {'annotations': []}
-        if 'dbxrefs' in gene:
-            hgnc_id = [x for x in gene['dbxrefs'] if x.startswith('HGNC:')]
-            if len(hgnc_id) == 1:
-                hgnc_id = ''.join(hgnc_id)
-                if 'name' in gene:
-                    doc['suggest'] = {
-                        'input': [gene['name'] + species, gene['symbol'] + species, hgnc_id, gene['geneid'] + ' (Gene ID)']
-                    }
-                    doc['payload'] = {'id': hgnc_id, 'species': species_for_payload}
-                    doc['id'] = hgnc_id
 
-                if 'synonyms' in gene:
-                    synonyms = [s + species for s in gene['synonyms']]
-                    doc['suggest']['input'] = doc['suggest']['input'] + synonyms
+        if 'organism' in gene:
+            organism = gene['organism'].get('scientific_name')
+            if organism == 'Homo sapiens':
+                species = ' (homo sapiens)'
+            elif organism == 'Mus musculus':
+                species = ' (mus musculus)'
 
-                annotation = get_annotation()
+            if 'dbxrefs' in gene:
+                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:'))]
+                if len(identifier) == 1:
+                    identifier = ''.join(identifier)
+                    if 'name' in gene:
+                        species_for_payload = re.split('[(|)]', species)[1]
+                        doc['suggest'] = {
+                            'input': [gene['name'] + species, gene['symbol'] + species, identifier, gene['geneid'] + ' (Gene ID)']
+                        }
+                        doc['payload'] = {'id': identifier, 'species': species_for_payload}
+                        doc['id'] = identifier
 
-                if 'locations' in gene:
-                    for location in gene['locations']:
-                        annotation['assembly_name'] = location['assembly']
-                        annotation['chromosome'] = location['chromosome'][3:]
-                        annotation['start'] = location['start']
-                        annotation['end'] = location['end']
-                        doc['annotations'].append(annotation)
+                    if 'synonyms' in gene:
+                        synonyms = [s + species for s in gene['synonyms']]
+                        doc['suggest']['input'] = doc['suggest']['input'] + synonyms
 
-                annotations.append({
-                    'index': {
-                        '_index': 'annotations',
-                        '_type': 'default',
-                        '_id': doc['id']
-                    }
-                })
+                    if 'locations' in gene:
+                        for location in gene['locations']:
+                            annotation = get_annotation()
+                            annotation['assembly_name'] = location['assembly']
+                            annotation['chromosome'] = location['chromosome'][3:]
+                            annotation['start'] = location['start']
+                            annotation['end'] = location['end']
+                            doc['annotations'].append(annotation)
+
+                    annotations.append({
+                        'index': {
+                            '_index': 'annotations',
+                            '_type': 'default',
+                            '_id': doc['id']
+                        }
+                    })
 
         annotations.append(doc)
 
@@ -66,7 +71,7 @@ def human_annotations(url):
 
 def main():
     '''
-    Get annotations from multiple sources
+    Get annotations from portal Gene objects
     This helps to implement autocomplete for region search
     '''
     import argparse
@@ -75,8 +80,8 @@ def main():
         epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    human = human_annotations(_HUMAN_URL)
-    annotations = human
+
+    annotations = all_annotations(_GENE_URL)
 
     # Create annotations JSON file
     with open('annotations_local.json', 'w') as outfile:
