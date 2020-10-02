@@ -1085,7 +1085,7 @@ class App extends React.Component {
         }
         if (category === 'global_sections') {
             if (this.state.session_properties['auth.userid']) {
-                return portal.authenticated_sections.concat(portal.global_sections);
+                return portal.global_sections.concat(portal.authenticated_sections);
             }
             return portal.global_sections;
         }
