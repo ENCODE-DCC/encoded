@@ -883,5 +883,15 @@
         "submitted_by": "mus.mi@porttitor.molestie",
         "technical_replicate_number": 1,
         "uuid": "31f76c7b-b6ac-4e06-b1d3-8907a4136ab1"
+    },
+    {
+        "aliases": ["gregory-crawford:PCE-lib"],
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR127PCE",
+        "library": "ENCLB102GPS",
+        "status": "released",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "technical_replicate_number": 1,
+        "uuid": "23d52556-2287-47e2-add1-777d7df6b56d"
     }
 ]

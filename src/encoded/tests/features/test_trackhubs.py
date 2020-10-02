@@ -219,3 +219,34 @@ def test_bigInteract_trackDb(testapp, index_workbook, expected):
 def test_STARR_bigBed_trackDb(testapp, index_workbook, expected):
     res = testapp.get("/functional-characterization-experiments/ENCSR928SVL/@@hub/hg19/trackDb.txt")
     assert expected in res.text
+
+
+@pytest.mark.parametrize('expected', [
+    "track ENCSR127PCE",
+    "compositeTrack on",
+    "type bed 3",
+    "longLabel pooled clone sequencing of DNA cloning sample - ENCSR127PCE",
+    "shortLabel pooled clone sequencing of DNA cloning sample ENCSR127PCE",
+    "visibility full",
+    "subGroup1 view Views aSIG=Signal_of_unique_reads",
+    "subGroup2 EXP Experiment ENCSR127PCE=ENCSR127PCE",
+    "subGroup3 REP Replicates rep01=Replicate_1",
+    "sortOrder REP=+ view=+",
+    "dimensions dimA=REP",
+    "dimensionAchecked rep01",
+    "    track ENCSR127PCE_aSIG_view",
+    "    parent ENCSR127PCE on",
+    "    view aSIG",
+    "    type bigWig",
+    "    visibility full",
+    "        track ENCFF210SUR",
+    "        parent ENCSR127PCE_aSIG_view on",
+    "        bigDataUrl /files/ENCFF210SUR/@@download/ENCFF210SUR.bigWig?proxy=true",
+    "        longLabel pooled clone sequencing of DNA cloning sample signal of unique reads rep1 ENCSR127PCE - ENCFF210SUR",
+    "        shortLabel rep1 unq sig",
+    "        type bigWig",
+    "        subGroups EXP=ENCSR127PCE REP=rep01 view=aSIG",
+])
+def test_PCS_bigWig_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/functional-characterization-experiments/ENCSR127PCE/@@hub/hg19/trackDb.txt")
+    assert expected in res.text

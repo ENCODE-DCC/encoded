@@ -5,9 +5,9 @@
             "longLabel":  "Collection of ENCODE pooled clone sequencing experiments",
             "shortLabel": "ENCODE pooled clone sequencing"
         },
-        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "longLabel":  "{assay_title} of {biosample_term_name} - {accession}",
         "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
-        "sortOrder": [ "Biosample", "Replicates", "Views" ],
+        "sortOrder": [ "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
             "group_order": [ "Signal of unique reads" ],
@@ -25,7 +25,7 @@
             }
         },
         "other_groups":  {
-            "dimensions": { "Biosample": "dimY", "Replicates": "dimA" },
+            "dimensions": { "Replicates": "dimA" },
             "dimensionAchecked": "first",
             "groups": {
                 "Replicates": {
@@ -36,10 +36,6 @@
                             "combined_title": "Pooled"
                         }
                     }
-                },
-                "Biosample": {
-                    "tag": "BS",
-                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
                 }
             }
         },

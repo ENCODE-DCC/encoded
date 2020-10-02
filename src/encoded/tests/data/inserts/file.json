@@ -4124,5 +4124,20 @@
         "file_size": 2925359,
         "output_type": "peaks",
         "lab": "/labs/kevin-white/"
+    },
+    {
+        "accession": "ENCFF210SUR",
+        "assembly": "hg19",
+        "award": "U54HG007010",
+        "dataset": "ENCSR127PCE",
+        "file_format": "bigWig",
+        "file_size": 341248,
+        "lab": "/labs/gregory-crawford/",
+        "md5sum": "1a3d236f0a9ea5d5e25f39ca24d4c96f",
+        "replicate": "23d52556-2287-47e2-add1-777d7df6b56d",
+        "output_type": "signal of unique reads",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "f74b8d29-7d3f-4a93-9994-0d359568606a"
     }
 ]
