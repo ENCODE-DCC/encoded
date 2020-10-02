@@ -27,10 +27,10 @@ Steps to add a new assay
 
     Your term identifier will be associated with three properties:
     * ```name```: the name for your assay type in its non-abbreviated form (e.g., *single-nucleus ATAC-seq*)
-    * ```preferred_name```: your term, the shortened form of the assay name (e.g., *snATAC-seq*)
-    * ```assay```: the parent term for that your assay term will slim to
+    * ```preferred_name```: the shortened form of the assay name (e.g., *snATAC-seq*)
+    * ```assay```: the parent term that your assay term will slim to
 
-    If you are using an OBI term, you will need to check if ```preferred_name``` and ```assay``` are already specified. Check for these properties in the OBI entry for your term in the ENCODE ```ontology.json``` (see [Updating ontologies] for details). If they're absent, you will need to manually provide these terms in these files:
+    If you are using an OBI term, you will need to check if ```preferred_name``` and ```assay``` are already specified. Look for these properties in the OBI entry for your term in the ENCODE ```ontology.json``` (see [Updating ontologies] for details). If they're absent, you will need to manually provide these terms in these files:
     * Associate the OBI term with the desired ```preferred_name``` in [src/encoded/commands/generate_ontology.py]
     * Assign an ```assay``` slim in [src/encoded/commands/manual_slims.py]
 
@@ -57,8 +57,8 @@ Steps to add a new assay
 
 2. Schemas and changelogs:
 
-    This is used in many different objects on the portal, and in most cases a mixin property ```assay``` provides this enum list. You will need to add your new assay type to the enum in mixins.json and update the changelogs of the objects that import this property.
-    The objects **Award**, **Pipeline**, and **Software** list ```assay_term_name``` in unique properties without importing the ```assay``` property, so both the schema profile and changelog will need to be updated in these cases.
+    The *assay_term_name* property is used in many different objects on the portal, and in most cases a mixin property ```assay``` provides this enum list of assay terms. You will need to add your new assay type to the enum in mixins.json and update the changelogs of the objects that import this property.
+    Additionally, the objects **Award**, **Pipeline**, and **Software** list ```assay_term_name``` in unique properties without importing the ```assay``` property, so both the schema profile and changelog will need to be updated in these cases.
     
     * [mixins.json] & [mixins changelog]
     * [award.json] & [award changelog]
