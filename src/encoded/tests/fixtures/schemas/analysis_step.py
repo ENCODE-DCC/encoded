@@ -200,3 +200,17 @@ def analysis_step_9(testapp):
         'output_file_types': ['spike-in sequence']
     }
     return item
+
+
+@pytest.fixture
+def analysis_step_11(testapp):
+    item = {
+        'schema_version': '11',
+        'step_label': 'wgbs-methylation-step',
+        'title': 'wgbs methylation step',
+        'major_version': 1,
+        'analysis_step_types': ['methylation estimation'],
+        'input_file_types': ['smoothed methylation stage at CpG'],
+        'output_file_types': ['smoothed methylation stage at CpG']
+    }
+    return item

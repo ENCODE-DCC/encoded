@@ -3755,7 +3755,7 @@
         "file_size": 132245
     },
     {
-        "_test": "smoothed methylation stage",
+        "_test": "smoothed methylation state",
         "dataset": "ENCSR000AJK",
         "status": "released",
         "award": "U54HG006998",
@@ -3763,7 +3763,7 @@
         "md5sum": "47bdf23be9e5fd78428ce1016c0e19ef",
         "uuid": "c6373e40-817f-436f-9c7c-8211e5a2aaec",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "output_type": "smoothed methylation stage at CpG",
+        "output_type": "smoothed methylation state at CpG",
         "file_format": "bed",
         "lab": "ali-mortazavi",
         "file_format_type": "bedMethyl",

@@ -174,3 +174,11 @@ def test_file_upgrade_23_to_24(root, testapp, upgrader, registry, file_23):
     )
     assert value['schema_version'] == '24'
     assert value['output_type'] == 'pseudo-replicated peaks'
+
+
+def test_file_upgrade_24_to_25(root, testapp, upgrader, registry, file_24):
+    value = upgrader.upgrade(
+        'file', file_24, current_version='24', target_version='25'
+    )
+    assert value['schema_version'] == '25'
+    assert value['output_type'] == 'smoothed methylation state at CpG'
