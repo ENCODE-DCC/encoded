@@ -428,8 +428,8 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         });
     }
 
-    // Collect biosample docs
-    // Collect plasmid maps from applied_modifictions documents.
+    // Collect biosample docs.
+    // Collect plasmid maps from applied_modifications documents.
     let biosampleDocs = [];
     let plasmidMapDocs = [];
     biosamples.forEach((biosample) => {
@@ -441,8 +441,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             biosample.applied_modifications.forEach((am) => {
                 const plasmidMapDoc = (am.documents && am.documents.length > 0) ? am.documents.filter(doc => doc.document_type === 'plasmid map') : [];
                 plasmidMapDocs = plasmidMapDocs.concat(plasmidMapDoc);
-            }
-            );
+            });
         }
         plasmidMapDocs = _.uniq(plasmidMapDocs);
     });
