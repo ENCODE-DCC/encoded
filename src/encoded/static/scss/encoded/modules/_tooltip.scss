@@ -11,13 +11,7 @@ $tooltip-color: #000;
 
 // Tooltips specifically for antibody statuses
 .tooltip-status {
-    position: absolute;
-    visibility: hidden;
-    top: 20px;
-    left: 15px;
     padding: 2px 5px;
-    z-index: 100;
-    background-color: $tooltip-color;
     text-align: center;
     white-space: nowrap;
     font-size: 0.9rem;
@@ -26,10 +20,6 @@ $tooltip-color: #000;
     span:last-child {
         font-weight: normal;
     }
-
-    &.tooltipopen {
-        visibility: visible;
-    }
 }
 
 .tooltip-status-trigger {
@@ -37,6 +27,28 @@ $tooltip-color: #000;
     margin-left: 5px;
     font-size: 1.2rem;
     cursor: default;
+}
+
+// Info icons with tooltips.
+.tooltip-home-info {
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    vertical-align: baseline;
+}
+
+// Series tooltip on experiment pages
+.series-tooltip {
+    margin-left: 2px;
+    button {
+        font-size: 1rem;
+    }
+    @media screen and (min-width: $screen-md-min) {
+        button {
+            font-size: 1.2rem;
+        }
+    }
 }
 
 .tooltip {

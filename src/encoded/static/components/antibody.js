@@ -15,6 +15,7 @@ import { AlternateAccession, ItemAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ExperimentTable, BiosampleCharacterizationTable } from './typeutils';
+import Tooltip from '../libs/ui/tooltip';
 
 
 // Order that antibody statuses should be displayed.
@@ -571,76 +572,15 @@ globals.documentViews.detail.register(CharacterizationDetail, 'AntibodyCharacter
 
 
 // Display one antibody status indicator
-class StatusIndicator extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React component state.
-        this.state = {
-            tipOpen: false,
-            tipStyles: {},
-        };
-
-        // Bind `this` to non-React methods.
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-    }
-
-    // Display tooltip on hover
-    onMouseEnter() {
-        function getNextElementSibling(el) {
-            // IE8 doesn't support nextElementSibling
-            return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
-        }
-
-        // Get viewport bounds of result table and of this tooltip
-        let whiteSpace = 'nowrap';
-        const resultBounds = document.getElementById('result-table').getBoundingClientRect();
-        const resultWidth = resultBounds.right - resultBounds.left;
-        const tipBounds = _.clone(getNextElementSibling(this.indicator).getBoundingClientRect());
-        const tipWidth = tipBounds.right - tipBounds.left;
-        let width = tipWidth;
-        if (tipWidth > resultWidth) {
-            // Tooltip wider than result table; set tooltip to result table width and allow text to wrap
-            tipBounds.right = (tipBounds.left + resultWidth) - 2;
-            whiteSpace = 'normal';
-            width = tipBounds.right - tipBounds.left - 2;
-        }
-
-        // Set an inline style to move the tooltip if it runs off right edge of result table
-        const leftOffset = resultBounds.right - tipBounds.right;
-        if (leftOffset < 0) {
-            // Tooltip goes outside right edge of result table; move it to the left
-            this.setState({ tipStyles: { left: `${leftOffset + 10}px`, maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
-        } else {
-            // Tooltip fits inside result table; move it to native position
-            this.setState({ tipStyles: { left: '10px', maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
-        }
-
-        this.setState({ tipOpen: true });
-    }
-
-    // Close tooltip when not hovering
-    onMouseLeave() {
-        this.setState({ tipStyles: { maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px' } }); // Reset position and width
-        this.setState({ tipOpen: false });
-    }
-
-    render() {
-        const classes = `tooltip-status sentence-case${this.state.tipOpen ? ' tooltipopen' : ''}`;
-
-        return (
-            <span className="tooltip-status-trigger">
-                <span ref={(indicator) => { this.indicator = indicator; }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-                    <Status item={this.props.status} badgeSize="small" noLabel inline />
-                </span>
-                <div className={classes} style={this.state.tipStyles}>
-                    {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
-                </div>
-            </span>
-        );
-    }
-}
+const StatusIndicator = props => (
+    <Tooltip
+        trigger={<Status item={props.status} badgeSize="small" noLabel inline />}
+        tooltipId={props.status}
+        css={'tooltip-status'}
+    >
+        {props.status}<br /><span>{props.terms.join(', ')}</span>
+    </Tooltip>
+);
 
 StatusIndicator.propTypes = {
     status: PropTypes.string,

@@ -17,6 +17,7 @@ import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
+import Tooltip from '../libs/ui/tooltip';
 
 
 const anisogenicValues = [
@@ -1157,75 +1158,22 @@ RelatedSeriesList.propTypes = {
 
 
 // Display a one dataset related to the experiment
-class RelatedSeriesItem extends React.Component {
-    constructor() {
-        super();
-
-        // Intialize component state.
-        this.state = {
-            touchOn: false, // True if icon has been touched
-        };
-
-        // Bind `this` to non-React methods.
-        this.touchStart = this.touchStart.bind(this);
-        this.handleInfoHoverIn = this.handleInfoHoverIn.bind(this);
-        this.handleInfoHoverOut = this.handleInfoHoverOut.bind(this);
-        this.handleInfoClick = this.handleInfoClick.bind(this);
-    }
-
-    // Touch screen
-    touchStart() {
-        this.setState({ touchOn: !this.state.touchOn });
-        this.props.handleInfoClick(this.props.series, true);
-    }
-
-    handleInfoHoverIn() {
-        this.props.handleInfoHover(this.props.series, true);
-    }
-
-    handleInfoHoverOut() {
-        this.props.handleInfoHover(this.props.series, false);
-    }
-
-    handleInfoClick() {
-        this.props.handleInfoClick(this.props.series, false);
-    }
-
-    render() {
-        const { series, detailOpen } = this.props;
-
-        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-        return (
-            <span>
-                <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
-                <div className="tooltip-trigger">
-                    <i
-                        className="icon icon-question-circle"
-                        onMouseEnter={this.handleInfoHoverIn}
-                        onMouseLeave={this.handleInfoHoverOut}
-                        onClick={this.handleInfoClick}
-                        onTouchStart={this.touchStart}
-                    />
-                    <div className={`tooltip bottom${detailOpen ? ' tooltip-open' : ''}`}>
-                        <div className="tooltip-arrow" />
-                        <div className="tooltip-inner">
-                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
-                        </div>
-                    </div>
-                </div>
-            </span>
-        );
-        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
-    }
-}
+const RelatedSeriesItem = (props) => {
+    const series = props.series;
+    return (
+        <span>
+            <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
+            <Tooltip
+                trigger={<i className="icon icon-question-circle" />}
+                tooltipId={series.accession}
+                css={'series-tooltip'}
+            >
+                {series.description ? <span>{series.description}</span> : <em>No description available</em>}
+            </Tooltip>
+        </span>
+    );
+};
 
 RelatedSeriesItem.propTypes = {
     series: PropTypes.object.isRequired, // Series object to display
-    detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
-    handleInfoClick: PropTypes.func.isRequired, // Function to call to handle click in info icon
-    handleInfoHover: PropTypes.func.isRequired, // Function to call when mouse enters or leaves info icon
-};
-
-RelatedSeriesItem.defaultProps = {
-    detailOpen: false,
 };
