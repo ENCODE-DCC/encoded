@@ -149,7 +149,7 @@ def visindexer_state_show(request):
 
     display = state.display(uuids=request.params.get("uuids"))
     try:
-        count = es.count(index=VIS_CACHE_INDEX, doc_type='default').get('count',0)
+        count = es.count(index=VIS_CACHE_INDEX).get('count',0)
         if count:
             display['vis_blobs_in_index'] = count
     except:

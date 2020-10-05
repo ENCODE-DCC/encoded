@@ -1,1 +1,2 @@
+- cloud-init-per always encd-boto3-for-monitoring sudo -u ubuntu pip3 install boto3
 - cloud-init-per always encd-elasticsearch sudo -u ubuntu %(SCRIPTS_DIR)s/ami-elasticsearch.sh

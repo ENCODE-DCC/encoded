@@ -1,0 +1,1 @@
+- cloud-init-per always encd-kibana sudo -u ubuntu %(SCRIPTS_DIR)s/ami-kibana.sh

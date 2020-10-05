@@ -157,7 +157,7 @@ def get_annotation_coordinates(es, id, assembly):
     ''' Gets annotation coordinates from annotation index in ES '''
     chromosome, start, end = '', '', ''
     try:
-        es_results = es.get(index='annotations', doc_type='default', id=id)
+        es_results = es.get(index='annotations', id=id)
     except:
         return (chromosome, start, end)
     else:
@@ -324,7 +324,6 @@ def region_search(context, request):
             peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
-                                     doc_type=_GENOME_TO_ALIAS[assembly],
                                      size=99999)
     except Exception:
         result['notification'] = 'Error during search'
@@ -358,7 +357,7 @@ def region_search(context, request):
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
-            body=query, index='experiment', doc_type='experiment', size=size, request_timeout=60
+            body=query, index='experiment', size=size, request_timeout=60
         )
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']

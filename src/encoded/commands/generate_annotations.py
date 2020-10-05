@@ -119,7 +119,6 @@ def human_single_annotation(r):
         annotations.append({
             "index": {
                 "_index": "annotations",
-                "_type": "default",
                 "_id": doc['id']
             }
         })
@@ -176,7 +175,6 @@ def mouse_single_annotation(r):
     annotations.append({
         "index": {
             "_index": "annotations",
-            "_type": "default",
             "_id": doc['id']
         }
     })
@@ -259,7 +257,6 @@ def other_annotations(file, species, assembly):
         annotations.append({
             "index": {
                 "_index": "annotations",
-                "_type": "default",
                 "_id": doc['id']
             }
         })

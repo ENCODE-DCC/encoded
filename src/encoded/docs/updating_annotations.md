@@ -47,9 +47,9 @@ How to update the annotations versions
 
 9.  Update the following information
     
-    Site release version: 92
-    annotations.json file: annotations-2019-10-18.json
-    [Ensembl release date]: 2019-09-26
+    Site release version: 92 (needs updating the info here)
+    annotations.json file: annotations-2019-06-28.json
+    [Ensembl release date]: 2020-04-29
 
 [Ensembl Gene ID (Ensembl)]: http://ensembl.org/
 [Entrez Gene ID (NCBI)]: http://ncbi.nlm.nih.gov/gene/

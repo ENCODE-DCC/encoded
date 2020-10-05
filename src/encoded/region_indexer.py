@@ -95,9 +95,6 @@ def tsvreader(file):
 def get_mapping(assembly_name='hg19'):
     return {
         assembly_name: {
-            '_all': {
-                'enabled': False
-            },
             '_source': {
                 'enabled': True
             },
@@ -105,6 +102,7 @@ def get_mapping(assembly_name='hg19'):
                 'uuid': {
                     'type': 'keyword' # WARNING: to add local files this must be 'type': 'string'
                 },
+                'assembly': assembly_name,
                 'positions': {
                     'type': 'nested',
                     'properties': {
@@ -123,9 +121,11 @@ def get_mapping(assembly_name='hg19'):
 
 def index_settings():
     return {
-        'index': {
-            'number_of_shards': 1,
-            'max_result_window': 99999
+        'settings': {
+            'index': {
+                'number_of_shards': 1,
+                'max_result_window': 99999
+            }
         }
     }
 
@@ -312,7 +312,7 @@ def regionindexer_state_show(request):
     display = state.display(uuids=request.params.get("uuids"))
 
     try:
-        count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type='default').get('count',0)
+        count = regions_es.count(index=RESIDENT_REGIONSET_KEY).get('count',0)
         if count:
             display['files_in_index'] = count
     except:
@@ -337,6 +337,7 @@ def regionindexer_state_show(request):
 
 @view_config(route_name='index_region', request_method='POST', permission="index")
 def index_regions(request):
+    return {}
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
     request.datastore = 'elasticsearch'  # Let's be explicit
@@ -500,7 +501,7 @@ class RegionIndexer(Indexer):
         '''returns True if an id is in regions es'''
         #return False # DEBUG
         try:
-            doc = self.regions_es.get(index=self.residents_index, doc_type='default', id=str(id)).get('_source',{})
+            doc = self.regions_es.get(index=self.residents_index, id=str(id)).get('_source',{})
             if doc:
                 return True
         except NotFoundError:
@@ -516,7 +517,7 @@ class RegionIndexer(Indexer):
         '''Removes all traces of an id (usually uuid) from region search elasticsearch index.'''
         #return True # DEBUG
         try:
-            doc = self.regions_es.get(index=self.residents_index, doc_type='default', id=str(id)).get('_source',{})
+            doc = self.regions_es.get(index=self.residents_index, id=str(id)).get('_source',{})
             if not doc:
                 return False
         except:
@@ -524,13 +525,13 @@ class RegionIndexer(Indexer):
 
         for chrom in doc['chroms']:
             try:
-                self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(uuid))
+                self.regions_es.delete(index=chrom, id=str(uuid))
             except:
                 #log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))
                 return False # Will try next full cycle
 
         try:
-            self.regions_es.delete(index=self.residents_index, doc_type='default', id=str(uuid))
+            self.regions_es.delete(index=self.residents_index, id=str(uuid))
         except:
             log.error("Region indexer failed to remove %s from %s" % (id, self.residents_index))
             return False # Will try next full cycle
@@ -544,16 +545,15 @@ class RegionIndexer(Indexer):
         for key in regions:
             doc = {
                 'uuid': str(id),
+                'assembly': assembly,
                 'positions': regions[key]
             }
             # Could be a chrom never seen before!
             if not self.regions_es.indices.exists(key):
                 self.regions_es.indices.create(index=key, body=index_settings())
+                self.regions_es.indices.put_mapping(index=key, body=get_mapping(assembly))
 
-            if not self.regions_es.indices.exists_type(index=key, doc_type=assembly):
-                self.regions_es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
-
-            self.regions_es.index(index=key, doc_type=assembly, body=doc, id=str(id))
+            self.regions_es.index(index=key, body=doc, id=str(id))
 
         # Now add dataset to residency list
         doc = {
@@ -567,11 +567,11 @@ class RegionIndexer(Indexer):
         if not self.regions_es.indices.exists(self.residents_index):
             self.regions_es.indices.create(index=self.residents_index, body=index_settings())
 
-        if not self.regions_es.indices.exists_type(index=self.residents_index, doc_type='default'):
-            mapping = {'default': {"enabled": False}}
-            self.regions_es.indices.put_mapping(index=self.residents_index, doc_type='default', body=mapping)
+        if not self.regions_es.indices.exists_type(index=self.residents_index):
+            mapping = {"enabled": False}
+            self.regions_es.indices.put_mapping(index=self.residents_index, body=mapping)
 
-        self.regions_es.index(index=self.residents_index, doc_type='default', body=doc, id=str(id))
+        self.regions_es.index(index=self.residents_index, body=doc, id=str(id))
         return True
 
     def add_encoded_file_to_regions_es(self, request, assay_term_name, afile):
