@@ -11,7 +11,7 @@ echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
 # Manually install java
-sudo -u ubuntu aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/encd-tars ~ubuntu/encd-tars
+sudo -u ubuntu aws s3 cp --region=us-east-1 --recursive s3://kce-conf-prod/encd-tars ~ubuntu/encd-tars
 sudo mkdir -p /usr/lib/jvm
 sudo chmod 777 /usr/lib/jvm
 sudo tar -xzvf /home/ubuntu/encd-tars/jdk-11.0.3_linux-x64_bin.tar.gz --directory /usr/lib/jvm/
