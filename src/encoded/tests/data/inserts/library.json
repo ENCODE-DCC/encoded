@@ -1066,5 +1066,30 @@
         "strand_specificity": "strand-specific",
         "submitted_by": "mus.mi@porttitor.molestie",
         "uuid": "1de973bf-ebe1-4644-9333-6de525db0bd4"
+    },
+    {
+        "accession": "ENCLB922CPL",
+        "award": "UM1HG009442",
+        "biosample": "ENCBS475JUN",
+        "lab": "michael-snyder",
+        "library_size_selection_method": "BluePippin",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "350-600",
+        "status": "in progress",
+        "crosslinking_method": "formaldehyde",
+        "fragmentation_methods": ["sonication (Branson Sonifier 250)"],
+        "lysis_method": "SDS",
+        "linkers": [
+            {
+                "type": "linker a",
+                "sequence": "ACGCGATATCTTATCTGACT"
+            },
+            {
+                "type": "linker b",
+                "sequence": "AGTCAGATAAGATATCGCGT"
+            }
+        ],
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "uuid": "35c3c851-544a-4b6d-8f18-f235c166d5a1"
     }
 ]
