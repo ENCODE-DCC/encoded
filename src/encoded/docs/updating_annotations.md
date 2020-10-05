@@ -23,7 +23,7 @@ How to update the annotations versions
 	* RefSeq identifiers: [Refseq (NCBI)]
 
 
-2. Run [generate-annotations] locally to generate a new ```annotations_local.json``` file:
+2. Run [generate_annotations] locally to generate a new ```annotations_local.json``` file:
 ```
 $ bin/generate-annotations
 ```
@@ -38,19 +38,19 @@ $ cp annotations_local.json annotations_YYYY_MM_DD.json
 $ aws s3 cp annotations_YYYY_MM_DD.json s3://encoded-build/annotations/
 ```
 
-5.  Update the annotations version in the [buildout.cfg]:
+5. Update the annotations version in the [buildout.cfg]:
 ```
 curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annotations/annotations_YYYY_MM_DD.json
 ```
 
-6.  Update the following information
-    
-	* Site release version: 108
-	* annotations.json file: annotations-2020-10-02.json
-	* [GRCh38 gff assembly release date]: 2019-02-28
-	* [hg19 gff assembly release date]: 2013-06-28
-	* [mm10 gff assembly release date]: 2017-09-15
-	* [mm9 gff assembly release date]: 2010-10-21
+6. Update the following information
+
+* Site release version: 108
+* annotations.json file: annotations-2020-10-02.json
+* [GRCh38 gff assembly release date]: 2019-02-28
+* [hg19 gff assembly release date]: 2013-06-28
+* [mm10 gff assembly release date]: 2017-09-15
+* [mm9 gff assembly release date]: 2010-10-21
 
 [ENCODE Genes]: https://www.encodeproject.org/search/?type=Gene
 [NCBI Genomes]: https://ftp.ncbi.nlm.nih.gov/genomes/
@@ -63,4 +63,4 @@ curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annota
 [GRCh38 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.39/
 [hg19 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.25/
 [mm10 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001635.26/
-[mm9 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001635.18
+[mm9 gff assembly release date]: https://www.ncbi.nlm.nih.gov/assembly/GCF_000001635.18/

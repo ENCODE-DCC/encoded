@@ -7,6 +7,7 @@ import time
 EPILOG = __doc__
 
 _GENE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&organism.scientific_name=Mus+musculus&limit=all'
+_HUMAN_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&limit=all'
 
 
 def get_annotation():
@@ -50,7 +51,10 @@ def all_annotations(url):
                     if 'locations' in gene:
                         for location in gene['locations']:
                             annotation = get_annotation()
-                            annotation['assembly_name'] = location['assembly']
+                            if location['assembly'] == 'hg19':
+                                annotation['assembly_name'] = 'GRCh37'
+                            else:
+                                annotation['assembly_name'] = location['assembly']
                             annotation['chromosome'] = location['chromosome'][3:]
                             annotation['start'] = location['start']
                             annotation['end'] = location['end']
@@ -81,7 +85,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
-    annotations = all_annotations(_GENE_URL)
+    annotations = all_annotations(_HUMAN_URL)
 
     # Create annotations JSON file
     with open('annotations_local.json', 'w') as outfile:
