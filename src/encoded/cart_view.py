@@ -18,6 +18,7 @@ def includeme(config):
     # config.scan()
     config.add_route('cart-view', '/cohort-view{slash:/?}')
     config.add_route('cart-manager', '/cohort-manager{slash:/?}')
+    config.add_route('search_elements', '/search_elements/{search_params}')
     config.scan(__name__)
 
 
