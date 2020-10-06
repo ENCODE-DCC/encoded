@@ -187,3 +187,66 @@ def test_visualize(submitter_testapp, index_workbook):
 def test_bigInteract_trackDb(testapp, index_workbook, expected):
     res = testapp.get("/experiments/ENCSR270OQH/@@hub/hg19/trackDb.txt")
     assert expected in res.text
+
+
+@pytest.mark.parametrize('expected', [
+    "track ENCSR928SVL",
+    "compositeTrack on",
+    "type bed 3",
+    "longLabel STARR-seq of Homo sapiens WTC-11 cell line genetically modified (knockout) using CRISPR - ENCSR928SVL",
+    "shortLabel STARR-seq of WTC-11 ENCSR928SVL",
+    "visibility dense",
+    "subGroup1 view Views aPKS=Peaks bSIG=Signal_of_unique_reads cSPV=Signal_p-value dCNS=Control_normalized_signal",
+    "subGroup2 BS Biosample WTC4511=WTC-11",
+    "subGroup3 EXP Experiment ENCSR928SVL=ENCSR928SVL",
+    "subGroup4 REP Replicates rep01=Replicate_1",
+    "sortOrder BS=+ REP=+ view=+",
+    "dimensions dimA=REP",
+    "dimensionAchecked rep01",
+    "    track ENCSR928SVL_aPKS_view",
+    "    parent ENCSR928SVL on",
+    "    view aPKS",
+    "    type bigBed",
+    "    visibility dense",
+    "        track ENCFF105SVF",
+    "        parent ENCSR928SVL_aPKS_view on",
+    "        bigDataUrl /files/ENCFF105SVF/@@download/ENCFF105SVF.bigBed?proxy=true",
+    "        longLabel STARR-seq of WTC-11 peaks rep1 ENCSR928SVL - ENCFF105SVF",
+    "        shortLabel rep1 peaks",
+    "        type bigBed",
+    "        subGroups BS=WTC4511 EXP=ENCSR928SVL REP=rep01 view=aPKS",
+])
+def test_STARR_bigBed_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/functional-characterization-experiments/ENCSR928SVL/@@hub/hg19/trackDb.txt")
+    assert expected in res.text
+
+
+@pytest.mark.parametrize('expected', [
+    "track ENCSR127PCE",
+    "compositeTrack on",
+    "type bed 3",
+    "longLabel pooled clone sequencing of DNA cloning sample - ENCSR127PCE",
+    "shortLabel pooled clone sequencing of DNA cloning sample ENCSR127PCE",
+    "visibility full",
+    "subGroup1 view Views aSIG=Signal_of_unique_reads",
+    "subGroup2 EXP Experiment ENCSR127PCE=ENCSR127PCE",
+    "subGroup3 REP Replicates rep01=Replicate_1",
+    "sortOrder REP=+ view=+",
+    "dimensions dimA=REP",
+    "dimensionAchecked rep01",
+    "    track ENCSR127PCE_aSIG_view",
+    "    parent ENCSR127PCE on",
+    "    view aSIG",
+    "    type bigWig",
+    "    visibility full",
+    "        track ENCFF210SUR",
+    "        parent ENCSR127PCE_aSIG_view on",
+    "        bigDataUrl /files/ENCFF210SUR/@@download/ENCFF210SUR.bigWig?proxy=true",
+    "        longLabel pooled clone sequencing of DNA cloning sample signal of unique reads rep1 ENCSR127PCE - ENCFF210SUR",
+    "        shortLabel rep1 unq sig",
+    "        type bigWig",
+    "        subGroups EXP=ENCSR127PCE REP=rep01 view=aSIG",
+])
+def test_PCS_bigWig_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/functional-characterization-experiments/ENCSR127PCE/@@hub/hg19/trackDb.txt")
+    assert expected in res.text

@@ -4108,5 +4108,36 @@
         "lab": "/labs/barbara-wold/",
         "aliases": [],
         "notes": "File format not yet supported for this output_type (expecting h5ad)"
+    },
+    {
+        "status": "released",
+        "uuid": "c310637b-4efb-4441-ab60-c92025acd151",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "fd2313835b59785f20dbb6bd14f84f49",
+        "accession": "ENCFF105SVF",
+        "file_format": "bigBed",
+        "file_format_type": "bed6+",
+        "award": "/awards/UM1HG009390/",
+        "assembly": "hg19",
+        "dataset": "/experiments/ENCSR928SVL/",
+        "replicate": "31f76c7b-b6ac-4e06-b1d3-8907a4136ab1",
+        "file_size": 2925359,
+        "output_type": "peaks",
+        "lab": "/labs/kevin-white/"
+    },
+    {
+        "accession": "ENCFF210SUR",
+        "assembly": "hg19",
+        "award": "U54HG007010",
+        "dataset": "ENCSR127PCE",
+        "file_format": "bigWig",
+        "file_size": 341248,
+        "lab": "/labs/gregory-crawford/",
+        "md5sum": "1a3d236f0a9ea5d5e25f39ca24d4c96f",
+        "replicate": "23d52556-2287-47e2-add1-777d7df6b56d",
+        "output_type": "signal of unique reads",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "f74b8d29-7d3f-4a93-9994-0d359568606a"
     }
 ]

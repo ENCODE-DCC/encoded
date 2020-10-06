@@ -156,5 +156,20 @@
         }, {"gene": "/genes/2995/",
             "expression_range_minimum": 2,
             "expression_range_maximum": 70}]
+    },
+    {
+        "accession": "ENCSR928SVL",
+        "assay_term_name": "STARR-seq",
+        "award": "UM1HG009390",
+        "biosample_ontology": "cell_line_EFO_0009747",
+        "description": "STARR-seq on undifferentiated WTC11",
+        "lab": "kevin-white",
+        "status": "released",
+        "date_submitted": "2019-02-20",
+        "date_released": "2020-03-05",
+        "elements_mapping": "ENCSR212POL",
+        "elements_references": ["ENCSR001REF"],
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "uuid": "242dcf83-6173-4e7c-8c71-2ee28998352f"
     }
 ]
