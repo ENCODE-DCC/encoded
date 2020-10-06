@@ -44,7 +44,7 @@ def all_annotations(url):
                         doc['payload'] = {'id': identifier, 'species': species_for_payload}
                         doc['id'] = identifier
 
-                    if 'synonyms' in gene:
+                    if 'synonyms' in gene and organism == 'Homo sapiens':
                         synonyms = [s + species for s in gene['synonyms']]
                         doc['suggest']['input'] = doc['suggest']['input'] + synonyms
 
@@ -53,6 +53,10 @@ def all_annotations(url):
                             annotation = get_annotation()
                             if location['assembly'] == 'hg19':
                                 annotation['assembly_name'] = 'GRCh37'
+                            elif location['assembly'] == 'mm9':
+                                annotation['assembly_name'] = 'GRCm37'
+                            elif location['assembly'] == 'mm10':
+                                annotation['assembly_name'] = 'GRCm38'
                             else:
                                 annotation['assembly_name'] = location['assembly']
                             annotation['chromosome'] = location['chromosome'][3:]
@@ -85,7 +89,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
-    annotations = all_annotations(_HUMAN_URL)
+    annotations = all_annotations(_GENE_URL)
 
     # Create annotations JSON file
     with open('annotations_local.json', 'w') as outfile:

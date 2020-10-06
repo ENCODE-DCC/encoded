@@ -45,12 +45,12 @@ curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annota
 
 6. Update the following information
 
-* Site release version: 108
-* annotations.json file: annotations-2020-10-02.json
-* [GRCh38 gff assembly release date]: 2019-02-28
-* [hg19 gff assembly release date]: 2013-06-28
-* [mm10 gff assembly release date]: 2017-09-15
-* [mm9 gff assembly release date]: 2010-10-21
+    Site release version: 108
+    annotations.json file: annotations-2020-10-06.json
+    [GRCh38 gff assembly release date]: 2019-02-28
+    [hg19 gff assembly release date]: 2013-06-28
+    [mm10 gff assembly release date]: 2017-09-15
+    [mm9 gff assembly release date]: 2010-10-21
 
 [ENCODE Genes]: https://www.encodeproject.org/search/?type=Gene
 [NCBI Genomes]: https://ftp.ncbi.nlm.nih.gov/genomes/
