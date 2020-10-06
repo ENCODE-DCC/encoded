@@ -645,7 +645,6 @@ export default class Home extends React.Component {
         const currentQuery = generateQuery(this.state.organisms, this.state.assayCategory);
 
         return (
-<<<<<<< HEAD
             <Panel>
                 <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
                 <HomeBanner adminUser={adminUser} />

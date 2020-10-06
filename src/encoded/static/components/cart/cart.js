@@ -63,7 +63,6 @@ const assemblySorter = facetTerms => (
  * - sorter: Function to sort terms within the facet
  */
 const displayedFacetFields = [
-<<<<<<< HEAD
 
     { field: 'assembly', title: 'Genome assembly', radio: true, sorter: assemblySorter },
     { field: 'output_type', title: 'Output type' },
