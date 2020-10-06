@@ -13,7 +13,7 @@ packages:
 %(packages_pg)s
 %(packages_node)s
 power_state:
-  mode: reboot
+  mode: poweroff
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 runcmd:
