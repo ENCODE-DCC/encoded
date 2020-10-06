@@ -1218,13 +1218,13 @@ $file-type-colors: (
 .cart-dataset-selector {
     width: 100%;
     margin-bottom: 5px;
+    padding: 0 5px;
 
     @media screen and (min-width: $screen-md-min) {
         width: auto;
         height: 29px;
         margin-right: 5px;
         margin-bottom: 0;
-        padding: 0;
     }
 }
 

@@ -63,8 +63,8 @@ class CartAddAllSearchComponent extends React.Component {
                         // Not logged in, so test whether the merged new and existing carts would have
                         // more elements than allowed in a logged-out cart. Display an error modal if
                         // that happens.
-                        const margedCarts = mergeCarts(this.props.elements, elementsForCart);
-                        if (margedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
+                        const mergedCarts = mergeCarts(this.props.elements, elementsForCart);
+                        if (mergedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
                             this.setState({ overMaximumError: true });
                             return;
                         }

@@ -11,7 +11,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal'
 import Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
-import GenomeBrowser from '../genome_browser';
+import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
 import { itemClass, atIdToType } from '../globals';
 import { requestObjects, ItemAccessories, isFileVisualizable, computeAssemblyAnnotationValue, filterForVisualizableFiles } from '../objectutils';
 import { ResultTableList } from '../search';
@@ -101,16 +101,6 @@ const requestedFacetFields = displayedFacetFields.concat([
     { field: 'dataset' },
     { field: 'biological_replicates' },
 ]);
-
-
-/**
- * Maps long annotation_type values to shorter versions for Valis track labels. Any not included
- * remain unchanged.
- */
-const annotationTypeMap = {
-    'candidate Cis-Regulatory Elements': 'cCRE',
-    'representative DNase hypersensitivity sites (rDHSs)': 'rDHS',
-};
 
 
 /**
