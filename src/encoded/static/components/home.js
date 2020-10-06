@@ -646,24 +646,6 @@ export default class Home extends React.Component {
 
         return (
             <Panel>
-                <AssayClicking assayCategory={this.state.assayCategory} handleAssayCategoryClick={this.handleAssayCategoryClick} />
-                <HomeBanner adminUser={adminUser} />
-                <div className="organism-tabs">
-                    <TabClicking organisms={this.state.organisms} handleTabClick={this.handleTabClick} />
-                </div>
-                <div className="graphs">
-                    <HomepageChartLoader organisms={this.state.organisms} assayCategory={this.state.assayCategory} query={currentQuery} />
-                </div>
-                <div className="social">
-                    <div className="social-news">
-                        <div className="news-header">
-                            <h2>News <a href={newsUri} title="More KCP news" className="twitter-ref">More KCP news</a></h2>
-                        </div>
-                        <NewsLoader newsLoaded={this.newsLoaded} />
-                    </div>
-                    <div className="social-twitter">
-                        <TwitterWidget height={this.state.socialHeight} />
-=======
             <div className="whole-page">
                 <div className="row">
                     <div className="col-xs-12">
@@ -681,9 +663,9 @@ export default class Home extends React.Component {
                                 </div>
                             </div>
                         </Panel>
->>>>>>> kce
                     </div>
                 </div>
+              </div>
             </Panel>
         );
     }
