@@ -4106,8 +4106,7 @@
         "file_size": 370148294,
         "output_type": "sparse gene count matrix",
         "lab": "/labs/barbara-wold/",
-        "aliases": [],
-        "notes": "File format not yet supported for this output_type (expecting h5ad)"
+        "aliases": ["encode:hdf5-sparse-count-matrix"]
     },
     {
         "status": "released",
