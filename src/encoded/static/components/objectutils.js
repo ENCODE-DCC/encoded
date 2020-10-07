@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import * as encoding from '../libs/query_encoding';
-import { CartToggle } from './cart';
+import { CartToggle, cartGetAllowedTypes } from './cart';
 import * as globals from './globals';
 import { BrowserFeat } from './browserfeat';
 
@@ -776,21 +776,24 @@ DocTypeTitle.contextTypes = {
 /**
  * Display a block of accessory controls on object-display pages, e.g. the audit indicator button.
  */
-export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) => (
-    <div className="item-accessories">
-        <div className="item-accessories--left">
-            {audit ?
-                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
-            : null}
+export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) => {
+    const isItemAllowedInCart = cartGetAllowedTypes().includes(item['@type'][0]);
+    return (
+        <div className="item-accessories">
+            <div className="item-accessories--left">
+                {audit ?
+                    audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
+                : null}
+            </div>
+            <div className="item-accessories--right">
+                <DisplayAsJson />
+                {hasCartControls && isItemAllowedInCart ?
+                    <CartToggle element={item} />
+                : null}
+            </div>
         </div>
-        <div className="item-accessories--right">
-            <DisplayAsJson />
-            {hasCartControls ?
-                <CartToggle element={item} />
-            : null}
-        </div>
-    </div>
-);
+    );
+};
 
 ItemAccessories.propTypes = {
     /** Object being displayed that needs these accessories */

@@ -5,7 +5,7 @@ import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
 import { auditDecor } from './audit';
-import { CartToggle, CartSearchControls } from './cart';
+import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
 import FacetRegistry from './facets';
 import * as globals from './globals';
 import {
@@ -283,6 +283,9 @@ const ExperimentComponent = (props, reactContext) => {
     const { context: result, cartControls, mode } = props;
     let synchronizations;
 
+    // Determine if search result is allowed in carts.
+    const isResultAllowedInCart = cartGetAllowedTypes().includes(result['@type'][0]);
+
     // Determine whether object is Experiment, FunctionalCharacterizationExperiment, or TransgenicEnhancerExperiment.
     const experimentType = result['@type'][0];
     const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
@@ -419,7 +422,7 @@ const ExperimentComponent = (props, reactContext) => {
                         </React.Fragment>
                     : null}
                 </div>
-                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
+                {cartControls && isResultAllowedInCart && !(reactContext.actions && reactContext.actions.length > 0) ?
                     <div className="result-item__cart-control">
                         <CartToggle element={result} />
                     </div>

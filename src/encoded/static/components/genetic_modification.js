@@ -18,16 +18,6 @@ import Status from './status';
 import { BiosampleTable, DonorTable } from './typeutils';
 
 
-/**
- * Maps long annotation_type values to shorter versions for Valis track labels. Any not included
- * remain unchanged.
- */
-export const annotationTypeMap = {
-    'candidate Cis-Regulatory Elements': 'cCRE',
-    'representative DNase hypersensitivity sites (rDHSs)': 'rDHS',
-};
-
-
 // Generate a <dt>/<dd> combination to render GeneticModification.epitope_tags into a <dl>. If no
 // epitope_tags exist in the given genetic modification object, nothing gets rendered.
 const IntroducedTags = (props) => {

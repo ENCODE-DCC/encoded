@@ -3,9 +3,19 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from './fetched';
 import { BrowserFeat } from './browserfeat';
-import { truncateString } from './globals';
 import { filterForVisualizableFiles } from './objectutils';
 import AutocompleteBox from './region_search';
+
+
+/**
+ * Maps long annotation_type values to shorter versions for Valis track labels. Any not included
+ * remain unchanged.
+ */
+export const annotationTypeMap = {
+    'candidate Cis-Regulatory Elements': 'cCRE',
+    'representative DNase hypersensitivity sites (rDHSs)': 'rDHS',
+};
+
 
 // Files to be displayed for local version of browser
 const dummyFiles = [
@@ -168,9 +178,9 @@ const sortLookUp = (obj, param) => {
     case 'Replicates':
         return obj.biological_replicates.length > 1 ? +obj.biological_replicates.join('') : +obj.biological_replicates * 1000;
     case 'Output type':
-        return obj.output_type.toLowerCase();
+        return obj.output_type && obj.output_type.toLowerCase();
     case 'File type':
-        return obj.file_type.toLowerCase();
+        return obj.file_type && obj.file_type.toLowerCase();
     case 'Assay term name':
         return obj.assay_term_name && obj.assay_term_name.toLowerCase();
     case 'Biosample term name':
@@ -497,11 +507,13 @@ class GenomeBrowser extends React.Component {
         let files = propsFiles;
 
         // Apply sort parameters
-        orderedSortParam.forEach((param) => {
-            files = _.chain(files)
-                .sortBy(obj => sortLookUp(obj, param));
-        });
-        files = files.value();
+        if (this.props.displaySort) {
+            orderedSortParam.forEach((param) => {
+                files = _.chain(files)
+                    .sortBy(obj => sortLookUp(obj, param));
+            });
+            files = files.value();
+        }
 
         // sortBy sorts in ascending order and sortDirection is true if descending
         // We want to reverse the sort order when the sort is toggled and ascending (to make it descending)
