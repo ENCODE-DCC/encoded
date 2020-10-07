@@ -927,7 +927,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             />
 
             {isFunctionalExperiment && plasmidMapDocs.length > 0 ?
-                <DocumentsPanelReq documents={plasmidMapDocs} title="Plasmid Maps" />
+                <DocumentsPanelReq documents={plasmidMapDocs} title="Plasmid maps" />
             : null}
 
             {combinedDocuments.length > 0 ?
