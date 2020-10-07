@@ -10,6 +10,79 @@ from .base import (
 )
 
 
+def is_desired_object(obj, filters):
+    if not isinstance(obj, dict) or not isinstance(filters, dict):
+        return
+    # Keys/Conditions in filters are combined with AND
+    for key in filters:
+        if key not in obj:
+            return False
+        if isinstance(filters[key], list):
+            if isinstance(obj[key], list):
+                if sorted(filters[key]) != sorted(obj[key]):
+                    return False
+            elif obj[key] not in filters[key]:
+                return False
+        else:
+            if isinstance(obj[key], list):
+                if filters[key] not in obj[key]:
+                    return False
+            elif obj[key] != filters[key]:
+                return False
+    return True
+
+
+def make_quality_metric_report(request, file_objects, quality_metric_definition):
+    quality_metrics_report = {quality_metric_definition['report_name']: []}
+    for f_obj in file_objects:
+        if not is_desired_object(
+            f_obj, quality_metric_definition.get('file_filters', {})
+        ):
+            continue
+        for qm in f_obj.get('quality_metrics', []):
+            qm_obj = request.embed(qm, '@@object')
+            if not is_desired_object(
+                qm_obj,
+                quality_metric_definition.get('quality_metric_filters', {})
+            ):
+                continue
+            qm_report = {
+                'metric': qm_obj.get(
+                    quality_metric_definition['quality_metric_name']
+                )
+            }
+            if qm_report['metric'] is None:
+                continue
+            standard = quality_metric_definition.get('standard', {})
+            # The following order matters and depends a lot on the schema
+            # definition.
+            for qm_level in [
+                'pass',
+                'warning',
+                'not_compliant',
+                'error',
+                None
+            ]:
+                if qm_level not in standard:
+                    continue
+                threshold = standard[qm_level]
+                qualified = (
+                    (
+                        isinstance(threshold, str)
+                        and qm_report['metric'] == threshold
+                    )
+                    or qm_report['metric'] >= threshold
+                )
+                if qualified:
+                    break
+            if qm_level is not None:
+                qm_report['quality'] = qm_level
+            quality_metrics_report[
+                quality_metric_definition['report_name']
+            ].append(qm_report)
+    return quality_metrics_report
+
+
 @collection(
     name='analyses',
     unique_key='accession',
@@ -209,3 +282,54 @@ class Analysis(Item):
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
+
+    # Don't specify schema as it is highly variable
+    @calculated_property()
+    def quality_metrics_report(self, request, files, quality_standard=None):
+        if not quality_standard:
+            return
+        qm_defs = request.embed(
+            quality_standard, '@@object?skip_calculated=true'
+        ).get('definitions', [])
+        file_objects = [
+            request.embed(
+                f,
+                '@@object_with_select_calculated_properties?field=quality_metrics'
+            )
+            for f in files
+        ]
+        quality_metrics_report = {}
+        for qm_def in qm_defs:
+            quality_metrics_report.update(
+                make_quality_metric_report(
+                    request=request,
+                    file_objects=file_objects,
+                    quality_metric_definition=qm_def,
+                )
+            )
+        return quality_metrics_report
+
+
+@collection(
+    name='quality-standards',
+    unique_key='quality_standard:name',
+    properties={
+        'title': 'Quality standards',
+        'description': 'Listing of Quality Standards',
+    })
+class QualityStandard(Item):
+    item_type = 'quality_standard'
+    schema = load_schema('encoded:schemas/quality_standard.json')
+
+    def unique_keys(self, properties):
+        keys = super(QualityStandard, self).unique_keys(properties)
+        keys.setdefault('quality_standard:name', []).append(self._name(properties))
+        return keys
+
+    @property
+    def __name__(self):
+        properties = self.upgrade_properties()
+        return self._name(properties)
+
+    def _name(self, properties):
+        return properties['name']

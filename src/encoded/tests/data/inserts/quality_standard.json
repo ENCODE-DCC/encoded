@@ -1,0 +1,23 @@
+[
+    {
+        "uuid":"a05a6a79-024c-47b9-b507-1fa5e323044c",
+        "name": "test-quality-definition-1",
+        "title": "Test quality definition 1",
+        "definitions": [
+            {
+                "report_name": "Test alignments quality metric report",
+                "file_filters": { "output_type": "alignments" },
+                "quality_metric_filters": {
+                    "@type": "MicroRnaMappingQualityMetric"
+                },
+                "quality_metric_name": "aligned_reads",
+                "standard": {
+                    "pass": 1,
+                    "warning": 2,
+                    "not_compliant": 3,
+                    "error": 4
+                }
+            }
+        ]
+    }
+]
