@@ -1,9 +1,9 @@
 Organization deployment configuration and build files
 =====================================================
-    When bin/deploy is run user_data is sent to AWS.  The user_data defines the type of deployment, 
-    i.e. Demo, es cluster, frontend, etc.  The user_data is compiled in two stages.  The first 
+    When bin/deploy is run user_data is sent to AWS.  The user_data defines the type of deployment,
+    i.e. Demo, es cluster, frontend, etc.  The user_data is compiled in two stages.  The first
     stage creates an Assembled Template.  By default the template is in memory but a bin/deploy
-    argument exists that allows the assembled template to be saved and used later.  The second stage 
+    argument exists that allows the assembled template to be saved and used later.  The second stage
     adds Run Variables to the Assembled Template.  Then it can be sent as user_data to AWS to create
     an instance.
 
@@ -14,16 +14,16 @@ Organization deployment configuration and build files
     Demo/QA Demo                : app-es-pg-template.yml
     Cluster Frontend            : app-pg-template.yml
     Cluster Elasticsearch       : es-nodes-template.yml
-    
+
     # Non Standard Templates
     Instance with remote pg     : app-es-template.yml
     Instance with remote pg/es  : app-template.yml
 
-    Open one of the templates above to compare with ./template-parts.  Each variable '%(varname)s' 
+    Open one of the templates above to compare with ./template-parts.  Each variable '%(varname)s'
     in the template has a matching file in ./template-parts.  Next is a way to view and save
     assembled templates.
 
-    We can save Assembled Templates with the --save-configure bin/deploy argument.  It will 
+    We can save Assembled Templates with the --save-configure bin/deploy argument.  It will
     automaticallly determine which template to used based on input arguments.
 
     $ bin/deploy --save-config-name 20200430
@@ -52,7 +52,7 @@ Organization deployment configuration and build files
     * They are used in the run-scripts to configure the system and application builds
     * /etc/environment is loaded into login/ssh sessions so you can echo them on the instance.
     * The file will contain dupicate entries when deploying from an AMI.  Last ones are used.
-    
+
     View them locally with --dry-run along with other info.  Does not deploy
     $ bin/deploy --dry-run
 
@@ -78,7 +78,7 @@ Organization deployment configuration and build files
 ###### This command builds the Elasticsearch cluster
     $ export CLUSTER_NAME='encd-dev'
     $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-wait
-   
+
         ### Output
         Deploying es-nodes
         $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-wait
@@ -92,7 +92,7 @@ Organization deployment configuration and build files
 
 ###### This command builds the front-end machine that connects to the specified elasticsearch cluster
     $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-ip "$ES_IP"
-    
+
         ### Output
         Deploying app-pg
         $ bin/deploy --full-build --cluster-name encd-dev --es-ip 172.31.26.236
@@ -123,7 +123,7 @@ Organization deployment configuration and build files
 
 ###### This command builds the front-end machine that connects to the specified elasticsearch cluster with an open postgres port.
     $ bin/deploy --full-build --cluster-name "$CLUSTER_NAME" --es-ip "$ES_IP" --pg-open
-    
+
         ### Output
         Deploying app-pg
         $ bin/deploy --full-build --cluster-name encd-dev-open --es-ip 172.31.29.190 --pg-open

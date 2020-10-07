@@ -58,7 +58,7 @@ fi
 # Downlaod encoded demo aws keys
 encd_keys_dir=/home/ubuntu/encd-aws-keys
 mkdir "$encd_keys_dir"
-aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/encd-aws-keys "$encd_keys_dir"
+aws s3 cp --region=us-east-1 --recursive s3://kce-conf-prod/encd-aws-keys "$encd_keys_dir"
 if [ ! -f "$encd_keys_dir/credentials" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home encd aws creds"
     # Build has failed

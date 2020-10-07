@@ -8,7 +8,7 @@ Encoded Application AWS Deployment Helper
 ### Demos
     1. Create demo ami instance to build demo ami image
         $ bin/deploy --name encdbuildami-demo --build-ami
-    2. Watch the logs of both machines, wait till deployment finishes. 
+    2. Watch the logs of both machines, wait till deployment finishes.
     3. Create the demo ami image from the instance using the commands printed in the console.
         Example create ami command
             $ python ./cloud-config/create-ami.py $username demo $encd_instance_id
@@ -21,7 +21,7 @@ Encoded Application AWS Deployment Helper
     1. Create es wait node and head for ami instance to build ami images
         $ bin/deploy --cluster-name encdbuildami-es-wait --es-wait --build-ami  --profile-name default
     2. Watch the logs of both machines, wait till deployment finishes.
-    3. Create the es data and head node ami image from the instance using the commands 
+    3. Create the es data and head node ami image from the instance using the commands
         printed in the console.
 
         Examples:
@@ -45,7 +45,7 @@ Encoded Application AWS Deployment Helper
         Example:
         $ python ./cloud-config/create-ami.py $username frontend $encd_instance_id
         Terminate the instance when ami image is built
-    
+
     4. Add the ami-id to the ami_map['fe-cluster'] below, commit and push the code.
     5. Then create a test frontend
         $ bin/deploy --cluster-name test-encdami-eswait --es-ip $es_head_ip
@@ -119,9 +119,9 @@ def _tag_ec2_instance(
     # Defaults to demo development
     tags_dict = {
         # Org
-        'project': 'encoded',
+        'project': 'kce',
         'section': 'app',
-        'account': 'cherry-lab',
+        'account': 'utsw-bicf',
         'started_by': tag_data['username'],
         # Instance
         'Name': tag_data['name'],
@@ -143,7 +143,7 @@ def _tag_ec2_instance(
         'detailB': 'notused',
         'detailC': 'notused',
     }
-    if profile_name == 'default': 
+    if profile_name == 'default':
         if role == 'rc':
             tags_dict['Role'] += '-new-rc'
             tags_dict['section'] += '-rc'
@@ -168,7 +168,7 @@ def _tag_ec2_instance(
                 tags_dict['Role'] += '-cluster'
                 tags_dict['section'] += '-cluster'
     elif profile_name == 'production':
-        tags_dict['account'] = 'encode-prod'
+        tags_dict['account'] = 'kce-prod'
         if role == 'candidate':
             tags_dict['Role'] += '-new-prod'
             tags_dict['section'] += '-prod'
@@ -237,7 +237,7 @@ def _wait_and_tag_instances(
             # override default node name
             # This is to add a node to a preexisting cluster since there is a name check
             instances_tag_data['name'] = main_args.node_name
-        url = None 
+        url = None
         if not is_cluster and not cluster_master:
             # Demos and frontends
             # - build type
@@ -247,9 +247,9 @@ def _wait_and_tag_instances(
                 info_type = 'demo'
             # - url for prod and demo
             if instances_tag_data['domain'] == 'production':
-                url = 'http://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'production')
+                url = 'http://%s.%s.kce.u-hackmed.org' % (instances_tag_data['name'], 'production')
             else:
-                url = 'https://%s.%s.encodedcc.org' % (instances_tag_data['name'], 'demo')
+                url = 'https://%s.%s.kce.u-hackmed.org' % (instances_tag_data['name'], 'demo')
         if url:
             instances_tag_data['url'] = url
         # Set Tags
@@ -265,7 +265,7 @@ def _wait_and_tag_instances(
         )
         # Create return info
         instances_info[info_type] = {
-            'instance_id_domain': "{}.{}.encodedcc.org".format(
+            'instance_id_domain': "{}.{}.kce.u-hackmed.org".format(
                 instance.id,
                 instances_tag_data['domain'],
             ),
@@ -360,7 +360,7 @@ def _get_user_data(config_yaml, data_insert, main_args):
         )
     data_insert['SSH_KEY'] = ssh_pub_key
     # aws s3 authorized_keys folder
-    auth_base = 's3://encoded-conf-prod/ssh-keys'
+    auth_base = 's3://kce-conf-prod/ssh-keys'
     auth_type = 'prod'
     if main_args.profile_name != 'production':
         auth_type = 'demo'
@@ -425,7 +425,7 @@ def _get_instances_tag_data(main_args, build_type_template_name):
 
 
 def _get_ec2_client(main_args, instances_tag_data):
-    session = boto3.Session(region_name='us-west-2', profile_name=main_args.profile_name)
+    session = boto3.Session(region_name='us-east-1', profile_name=main_args.profile_name)
     ec2 = session.resource('ec2')
     name_to_check = instances_tag_data['name']
     if main_args.node_name:
@@ -471,7 +471,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
         'INDEX_PROCS': main_args.index_procs,
         'INDEX_CHUNK_SIZE': main_args.index_chunk_size,
-        'INSTALL_TAG': 'encd-install',
+        'INSTALL_TAG': 'kce-install',
         'JVM_GIGS': 'notused',
         'PG_VERSION': main_args.postgres_version,
         'PG_OPEN': 'true' if main_args.pg_open else 'false',
@@ -495,7 +495,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
             'JVM_GIGS': main_args.jvm_gigs,
         })
         user_data = _get_user_data(config_yaml, data_insert, main_args)
-        # Additional head node: FYI: --node-name is used for adding/recreating an es node in 
+        # Additional head node: FYI: --node-name is used for adding/recreating an es node in
         #  an already existing cluster
         if main_args.es_wait and main_args.node_name is None:
             master_data_insert = copy.copy(data_insert)
@@ -545,7 +545,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
                 'INDEX_PRIMARY': 'true',
                 'INDEX_VIS': 'true',
             })
-        else: 
+        else:
             # 'app-es-pg' == "Demo"
             data_insert.update({
                 'JVM_GIGS': main_args.jvm_gigs,
@@ -565,7 +565,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
-        'key-pair-name': 'encoded-demos' if main_args.role != 'candidate' else 'encoded-prod'
+        'key-pair-name': 'kce-demos' if main_args.role != 'candidate' else 'kce-prod'
     }
     if main_args.profile_name == 'production' and main_args.role != 'candidate':
         run_args['key-pair-name'] += '-prod'
@@ -578,7 +578,7 @@ def _get_cloud_config_yaml(main_args):
     - There will still be run variables in the template.
     """
     # pylint: disable=too-many-locals, too-many-return-statements
-    
+
     def _diff_configs(config_one, config_two):
         results = list(
             Differ().compare(
@@ -634,7 +634,7 @@ def _get_cloud_config_yaml(main_args):
     if main_args.cluster_name and main_args.es_ip == 'localhost' and not main_args.pg_ip == '':
         print('Error: --cluster-name cannot be used without --es-ip')
         return None, None, None
-    # Determine template 
+    # Determine template
     template_name = 'app-es-pg'
     if main_args.es_elect or main_args.es_wait:
         template_name = 'es-nodes'
@@ -651,7 +651,7 @@ def _get_cloud_config_yaml(main_args):
     elif main_args.no_indexing:
         # Standard cluster frontend with remote es and local pg
         # but the apache build_conf will not add the indexing processes
-        # See env vars with --dry-run 
+        # See env vars with --dry-run
             # 'INDEX_PRIMARY': 'false',
             # 'INDEX_VIS': 'false',
             # 'INDEX_REGION': 'false',
@@ -967,7 +967,7 @@ def _parse_args():
     parser.add_argument('--is-qa-demo', action='store_true', help="Flagged as qa demo")
     parser.add_argument(
         '--git-repo',
-        default='https://github.com/ENCODE-DCC/encoded.git',
+        default='https://github.com/utsw-bicf/pandiseased.git',
         help="Git repo to checkout branches: https://github.com/{user|org}/{repo}.git"
     )
 
@@ -1077,7 +1077,7 @@ def _parse_args():
 
     # AWS
     parser.add_argument('--profile-name', default='default', help="AWS creds profile")
-    parser.add_argument('--iam-role', default='encoded-instance', help="Frontend AWS iam role")
+    parser.add_argument('--iam-role', default='pandiseased-instance', help="Frontend AWS iam role")
     parser.add_argument('--iam-role-es', default='elasticsearch-instance', help="ES AWS iam role")
     parser.add_argument(
         '--build-ami',
@@ -1105,7 +1105,7 @@ def _parse_args():
     )
     parser.add_argument(
         '--availability-zone',
-        default='us-west-2a',
+        default='us-east-1a',
         help="Set EC2 availabilty zone"
     )
     parser.add_argument(
@@ -1126,7 +1126,7 @@ def _parse_args():
     # Set AMI per build type
     ami_map = {
         # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
-        'default': 'ami-0d1cd67c26f5fca19',
+        'default': 'ami-09c5258a58aeabe14',
         'arm_default': 'ami-003b90277095b7a42',
 
         # Private AMIs: Add comments to each build
@@ -1156,7 +1156,7 @@ def _parse_args():
         'frontend-prod': 'ami-0e13a1f4c36d19ac1',
     }
     if not args.image_id:
-        # Select ami by build type.  
+        # Select ami by build type.
         if args.build_ami:
             # Building new amis or making full builds from scratch
             # should start from base ubutnu image

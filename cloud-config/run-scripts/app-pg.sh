@@ -54,30 +54,30 @@ function append_with_user {
 
 ### Configure
 
-#echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Setup aws keys for wal-e"
+echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Setup aws keys for wal-e"
 
 # Downlaod postgres demo aws keys
-#pg_keys_dir='/home/ubuntu/pg-aws-keys'
-#mkdir "$pg_keys_dir"
-#aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/pg-aws-keys "$pg_keys_dir"
-#if [ ! -f "$pg_keys_dir/credentials" ]; then
-#    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
-#    # Build has failed
-#    touch "$encd_failed_flag"
-#    exit 1
-#fi
+pg_keys_dir='/home/ubuntu/pg-aws-keys'
+mkdir "$pg_keys_dir"
+aws s3 cp --region=us-east-1 --recursive s3://encoded-conf-prod/pg-aws-keys "$pg_keys_dir"
+if [ ! -f "$pg_keys_dir/credentials" ]; then
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
+    # Build has failed
+    touch "$encd_failed_flag"
+    exit 1
+fi
 
 ## Copy postgres aws to home
-#pg_keys_dir='/home/ubuntu/pg-aws-keys'
-#if [ ! -f "$pg_keys_dir/credentials" ]; then
-#    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
-#    # Build has failed
-#    touch "$encd_failed_flag"
-#    exit 1
-#fi
-#sudo -u root mkdir /var/lib/postgresql/.aws
-#sudo -u root cp /home/ubuntu/pg-aws-keys/* ~postgres/.aws/
-#sudo -u root chown -R postgres:postgres /var/lib/postgresql/.aws/
+pg_keys_dir='/home/ubuntu/pg-aws-keys'
+if [ ! -f "$pg_keys_dir/credentials" ]; then
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: ubuntu home pg aws creds"
+    # Build has failed
+    touch "$encd_failed_flag"
+    exit 1
+fi
+sudo -u root mkdir /var/lib/postgresql/.aws
+sudo -u root cp /home/ubuntu/pg-aws-keys/* ~postgres/.aws/
+sudo -u root chown -R postgres:postgres /var/lib/postgresql/.aws/
 
 # Add ssh keys to postgres user
 sudo -u postgres mkdir /var/lib/postgresql/.ssh
@@ -90,7 +90,7 @@ for filename in 'custom.conf' 'demo.conf' 'master.conf' 'recovery.conf'; do
     copy_with_permission "$PG_CONF_SRC" "$PG_CONF_DEST" "$filename"
 done
 
-#append_with_user "$ENCD_WALE_S3_PREFIX" 'postgres' "$PG_CONF_DEST/WALE_S3_PREFIX"
+append_with_user "$ENCD_WALE_S3_PREFIX" 'postgres' "$PG_CONF_DEST/WALE_S3_PREFIX"
 
 ## pg conf master.conf:
 # Create the archive_command variable with agrument and store as string
@@ -139,36 +139,36 @@ sudo -u postgres createdb --owner=encoded encoded
 
 
 ### Wale-E
-#echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Install wal-e"
+echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Install wal-e"
 ## Create Wal-e ENV - python3 only
-#sudo -u root mkdir -p "$WALE_ENV"
-#sudo -u root chown postgres:postgres "$WALE_ENV"
-#for filename in 'AWS_ACCESS_KEY_ID' 'AWS_SECRET_ACCESS_KEY' 'AWS_REGION'; do
-#    copy_with_permission "$AWS_CREDS_DIR" "$WALE_ENV" "$filename"
-#done
-#copy_with_permission "$PG_CONF_DEST" "$WALE_ENV" 'WALE_S3_PREFIX'
+sudo -u root mkdir -p "$WALE_ENV"
+sudo -u root chown postgres:postgres "$WALE_ENV"
+for filename in 'AWS_ACCESS_KEY_ID' 'AWS_SECRET_ACCESS_KEY' 'AWS_REGION'; do
+    copy_with_permission "$AWS_CREDS_DIR" "$WALE_ENV" "$filename"
+done
+copy_with_permission "$PG_CONF_DEST" "$WALE_ENV" 'WALE_S3_PREFIX'
 
 ## Install wal-e
-#sudo -u root mkdir -p "$WALE_DIR"
-#sudo -u root chown postgres:postgres "$WALE_DIR"
-#sudo -u root cp "$WALE_REQS_SRC" "$WALE_REQS_DST"
-#sudo -u root chown postgres:postgres "$WALE_REQS_DST"
-#sudo -H -u postgres "$ENCD_PY3_PATH" -m venv "$WALE_VENV"
-#if [ ! -f "$WALE_BIN/pip" ]; then
-#    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Wale bin does not exist"
-#    touch "$encd_failed_flag"
-#    exit 1
-#fi
-#sudo -H -u postgres "$WALE_BIN/pip" install pip setuptools --upgrade
-#sudo -H -u postgres "$WALE_BIN/pip" install boto awscli PyYAML==5.2
-#sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_REQS_DST"
-#sudo -u postgres git clone https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
-#sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"
+sudo -u root mkdir -p "$WALE_DIR"
+sudo -u root chown postgres:postgres "$WALE_DIR"
+sudo -u root cp "$WALE_REQS_SRC" "$WALE_REQS_DST"
+sudo -u root chown postgres:postgres "$WALE_REQS_DST"
+sudo -H -u postgres "$ENCD_PY3_PATH" -m venv "$WALE_VENV"
+if [ ! -f "$WALE_BIN/pip" ]; then
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Wale bin does not exist"
+    touch "$encd_failed_flag"
+    exit 1
+fi
+sudo -H -u postgres "$WALE_BIN/pip" install pip setuptools --upgrade
+sudo -H -u postgres "$WALE_BIN/pip" install boto awscli PyYAML==5.2
+sudo -H -u postgres "$WALE_BIN/pip" install -r "$WALE_REQS_DST"
+sudo -u postgres git clone https://github.com/wal-e/wal-e.git "$WALE_DIR/wal-e"
+sudo -H -u postgres "$WALE_BIN/pip" install -e "$WALE_DIR/wal-e"
 
 ### Postgres
-#echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Do initial wal-e backup-fetch"
+echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Do initial wal-e backup-fetch"
 ## Update db from wale backup
-#sudo -u postgres pg_ctlcluster 11 main stop
+sudo -u postgres pg_ctlcluster 11 main stop
 #sudo -u postgres "$WALE_BIN/envdir" "$WALE_ENV" "$WALE_BIN/wal-e" backup-fetch "$PG_DATA" LATEST
 
 ## Restart
