@@ -137,13 +137,7 @@ const libraryPropertyExtractors = {
     },
 
     strand_specificity: (library) => {
-        const strandSpecificity = library.strand_specificity;
-        let libraryPropertyString = null;
-
-        // A strand_specificity of "false" is still a displayable value.
-        if (strandSpecificity !== undefined) {
-            libraryPropertyString = strandSpecificity ? 'Strand-specific' : 'Non-strand-specific';
-        }
+        const libraryPropertyString = library.strand_specificity;
         return { libraryPropertyString };
     },
 };
@@ -212,7 +206,8 @@ const LibraryProperties = ({ replicates }) => {
             if (libraryPropertyElements && libraryPropertyElements.length > 0) {
                 const homogeneous = !libraryPropertyElements.some(libraryProperty => libraryProperty.value !== libraryPropertyElements[0].value);
                 const forcedRepDisplay = libraryPropertyElements.some(libraryProperty => libraryProperty.forceRepDisplay);
-                if (!homogeneous || forcedRepDisplay) {
+                const isStrandSpecificity = displayedLibraryProperty.property === 'strand_specificity';
+                if (!isStrandSpecificity && (!homogeneous || forcedRepDisplay)) {
                     // More than one value collected for this property, and at least one had a
                     // different value from the others. Display all values with a replicate
                     // identifier for each one.
@@ -232,13 +227,26 @@ const LibraryProperties = ({ replicates }) => {
                         </div>
                     );
                 } else {
+                    let strandSpecificity = null;
+
+                    if (isStrandSpecificity) {
+                        const strandSpecificValues = libraryPropertyElements.map(element => element.value);
+                        const strandSpecificityFirstValue = strandSpecificValues[0];
+
+                        if (strandSpecificValues.every(value => value === strandSpecificityFirstValue)) {
+                            strandSpecificity = `Strand-specific${strandSpecificityFirstValue === 'strand-specific' ? '' : ` (${strandSpecificityFirstValue})`}`;
+                        } else {
+                            strandSpecificity = 'Strand-specific (mixed)';
+                        }
+                    }
+
                     // Only one value collected for this property, or more than one but all have
                     // the same value, so just display the one value without a replicate
                     // identifier.
                     renderedLibraryProperties.push(
                         <div key={displayedLibraryProperty.property} data-test={displayedLibraryProperty.test}>
                             <dt>{displayedLibraryProperty.title}</dt>
-                            <dd>{libraryPropertyElements[0].component || libraryPropertyElements[0].value}</dd>
+                            <dd>{strandSpecificity || libraryPropertyElements[0].component || libraryPropertyElements[0].value}</dd>
                         </div>
                     );
                 }
