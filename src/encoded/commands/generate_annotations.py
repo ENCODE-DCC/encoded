@@ -1,13 +1,11 @@
 import requests
 import json
 import re
-import time
 
 
 EPILOG = __doc__
 
-_GENE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&organism.scientific_name=Mus+musculus&limit=all'
-_HUMAN_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&limit=all'
+_GENE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&limit=all'
 
 
 def get_annotation():
@@ -31,11 +29,19 @@ def all_annotations(url):
                 species = ' (homo sapiens)'
             elif organism == 'Mus musculus':
                 species = ' (mus musculus)'
+            elif organism == 'Caenorhabditis elegans':
+                species = ' (caenorhabditis elegans)'
+            elif organism == 'Drosophila melanogaster':
+                species = ' (drosophila melanogaster)'
 
             if 'dbxrefs' in gene:
-                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:'))]
+                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:', 'WormBase:', 'FlyBase:'))]
                 if len(identifier) == 1:
                     identifier = ''.join(identifier)
+
+                    if 'name' not in gene:
+                        continue
+
                     if 'name' in gene:
                         species_for_payload = re.split('[(|)]', species)[1]
                         doc['suggest'] = {
@@ -51,14 +57,15 @@ def all_annotations(url):
                     if 'locations' in gene:
                         for location in gene['locations']:
                             annotation = get_annotation()
-                            if location['assembly'] == 'hg19':
+                            assembly = location['assembly']
+                            if assembly  == 'hg19':
                                 annotation['assembly_name'] = 'GRCh37'
-                            elif location['assembly'] == 'mm9':
+                            elif assembly == 'mm9':
                                 annotation['assembly_name'] = 'GRCm37'
-                            elif location['assembly'] == 'mm10':
+                            elif assembly == 'mm10':
                                 annotation['assembly_name'] = 'GRCm38'
                             else:
-                                annotation['assembly_name'] = location['assembly']
+                                annotation['assembly_name'] = assembly
                             annotation['chromosome'] = location['chromosome'][3:]
                             annotation['start'] = location['start']
                             annotation['end'] = location['end']
