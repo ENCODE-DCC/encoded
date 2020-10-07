@@ -51,6 +51,7 @@ const types = {
     ucsc_browser_composite: { title: 'UCSC browser composite file set' },
     functional_characterization_experiment: { title: 'Functional characterization experiments' },
     transgenic_enhancer_experiment: { title: 'Transgenic enhancer experiments' },
+    gene_silencing_series: { title: 'Gene silencing series' },
 };
 
 const datasetTypes = {
@@ -72,6 +73,7 @@ const datasetTypes = {
     UcscBrowserComposite: types.ucsc_browser_composite.title,
     FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
     TransgenicEnhancerExperiment: types.transgenic_enhancer_experiment.title,
+    GeneSilencingSeries: types.gene_silencing_series.title,
 };
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));

@@ -18,4 +18,8 @@ def test_assembly_from_related_datasets(testapp, base_reference_epigenome, base_
 def test_assay_single_cell_rna_series(testapp, base_single_cell_series):
     res = testapp.get(base_single_cell_series['@id'] + '@@index-data')
     assert sorted(res.json['object']['assay_term_name']) == ["RNA-seq"]
- 
+
+
+def test_gene_silencing_series(testapp, base_gene_silencing_series):
+    res = testapp.get(base_gene_silencing_series['@id'] + '@@index-data')
+    assert sorted(res.json['object']['assay_term_name']) == ["RNA-seq"]

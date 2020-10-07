@@ -57,6 +57,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.fly_donor',
     'encoded.tests.fixtures.schemas.generic_quality_metric',
     'encoded.tests.fixtures.schemas.gene',
+    'encoded.tests.fixtures.schemas.gene_silencing_series',
     'encoded.tests.fixtures.schemas.functional_characterization_experiment',
     'encoded.tests.fixtures.schemas.hotspot_quality_metric',
     'encoded.tests.fixtures.schemas.human_donor',

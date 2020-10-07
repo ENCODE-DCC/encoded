@@ -56,6 +56,7 @@ ORDER = [
     'replication_timing_series',
     'aggregate_series',
     'experiment_series',
+    'gene_silencing_series',
     'reference_epigenome',
     'software',
     'software_version',
@@ -669,6 +670,9 @@ PHASE1_PIPELINES = {
     'replication_timing_series': [
         remove_keys('related_datasets'),
     ],
+    'gene_silencing_series': [
+        remove_keys('related_datasets'),
+    ],
     'reference_epigenome': [
         remove_keys('related_datasets', 'supersedes'),
     ],
@@ -762,6 +766,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'replication_timing_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'gene_silencing_series': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'reference_epigenome': [
