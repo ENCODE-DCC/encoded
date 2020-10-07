@@ -178,13 +178,13 @@ const sortLookUp = (obj, param) => {
     case 'Replicates':
         return obj.biological_replicates.length > 1 ? +obj.biological_replicates.join('') : +obj.biological_replicates * 1000;
     case 'Output type':
-        return obj.output_type && obj.output_type.toLowerCase();
+        return obj.output_type.toLowerCase();
     case 'File type':
-        return obj.file_type && obj.file_type.toLowerCase();
+        return obj.file_type.toLowerCase();
     case 'Assay term name':
-        return obj.assay_term_name && obj.assay_term_name.toLowerCase();
+        return obj.assay_term_name.toLowerCase();
     case 'Biosample term name':
-        return obj.biosample_ontology && obj.biosample_ontology.term_name.toLowerCase();
+        return obj.biosample_ontology.term_name.toLowerCase();
     default:
         return null;
     }
