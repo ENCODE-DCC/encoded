@@ -226,7 +226,7 @@ class AuditGroup extends React.Component {
                         <i className={iconClass} />
                         <strong>&nbsp;{categoryName}</strong>
                         <div className="btn-info-audit">
-                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-question-circle" /></a>
+                            <a href={`/data-standards/audits/#${categoryName.toLowerCase().split(' ').join('_')}`} title={`View description of ${categoryName} in a new tab`} rel="noopener noreferrer" target="_blank"><i className="icon icon-info-circle" /></a>
                         </div>
                     </div>
                 </div>

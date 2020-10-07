@@ -29,6 +29,18 @@ $tooltip-color: #000;
     cursor: default;
 }
 
+// Series and info tooltip sizing
+.series-tooltip, .tooltip-home-info {
+    button {
+        font-size: 1rem;
+    }
+    @media screen and (min-width: $screen-md-min) {
+        button {
+            font-size: 1.2rem;
+        }
+    }
+}
+
 // Info icons with tooltips.
 .tooltip-home-info {
     margin-left: 5px;
@@ -41,14 +53,6 @@ $tooltip-color: #000;
 // Series tooltip on experiment pages
 .series-tooltip {
     margin-left: 2px;
-    button {
-        font-size: 1rem;
-    }
-    @media screen and (min-width: $screen-md-min) {
-        button {
-            font-size: 1.2rem;
-        }
-    }
 }
 
 .tooltip {
