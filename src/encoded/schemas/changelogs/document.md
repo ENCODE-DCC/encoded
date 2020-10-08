@@ -2,6 +2,7 @@
 
 ### Schema version 8
 
+* Added *plasmid map* as enum in *document_type*
 * *status* property was restricted to one of  
     "enum" : [
         "in progress",

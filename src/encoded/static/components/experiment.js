@@ -438,12 +438,21 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     }
 
     // Collect biosample docs.
+    // Collect plasmid maps from applied_modifications documents.
     let biosampleDocs = [];
+    let plasmidMapDocs = [];
     biosamples.forEach((biosample) => {
         biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
         if (biosample.part_of) {
             biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
         }
+        if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
+            biosample.applied_modifications.forEach((am) => {
+                const plasmidMapDoc = (am.documents && am.documents.length > 0) ? am.documents.filter(doc => doc.document_type === 'plasmid map').map(doc => doc['@id']) : [];
+                plasmidMapDocs = plasmidMapDocs.concat(plasmidMapDoc);
+            });
+        }
+        plasmidMapDocs = _.uniq(plasmidMapDocs);
     });
 
     // Collect pipeline-related documents.
@@ -925,6 +934,10 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                 Component={ExperimentTable}
                 title={`Functional characterization experiments with ${context.accession} as an elements cloning`}
             />
+
+            {isFunctionalExperiment && plasmidMapDocs.length > 0 ?
+                <DocumentsPanelReq documents={plasmidMapDocs} title="Plasmid maps" />
+            : null}
 
             {combinedDocuments.length > 0 ?
                 <DocumentsPanelReq documents={combinedDocuments} />

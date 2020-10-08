@@ -86,17 +86,19 @@ DocumentsPanel.defaultProps = {
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
     if (documents && documents.length > 0) {
-        return <DocumentsPanel documentSpecs={[{ documents }]} />;
+        return <DocumentsPanel documentSpecs={[{ documents }]} title={props.title} />;
     }
     return null;
 };
 
 DocumentsPanelRenderer.propTypes = {
     documentSearch: PropTypes.object, // Search result object; this uses its @graph to get the documents,
+    title: PropTypes.string, // Title of document panel
 };
 
 DocumentsPanelRenderer.defaultProps = {
     documentSearch: null,
+    title: '',
 };
 
 
@@ -109,7 +111,7 @@ export const DocumentsPanelReq = (props) => {
         return (
             <FetchedData>
                 <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
-                <DocumentsPanelRenderer />
+                <DocumentsPanelRenderer title={props.title} />
             </FetchedData>
         );
     }
@@ -118,8 +120,12 @@ export const DocumentsPanelReq = (props) => {
 
 DocumentsPanelReq.propTypes = {
     documents: PropTypes.array.isRequired, // Array of document @ids to request and render
+    title: PropTypes.string, // Title of document panel
 };
 
+DocumentsPanelReq.defaultProps = {
+    title: '',
+};
 
 export const DocumentsSubpanels = (props) => {
     const documentSpec = props.documentSpec;
