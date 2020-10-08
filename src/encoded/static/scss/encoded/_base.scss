@@ -15,6 +15,7 @@ $std-href-color:               #428bca;
 
 $site-font:                    'Mada', sans-serif;
 $brand-font:                   'Mada', sans-serif;
+$button-font:                  'Quicksand', sans-serif;
 
 $Homo-sapiens:                  #63326E;
 $Mus-musculus:                  #3D518C;
@@ -73,6 +74,11 @@ body {
     button {
         cursor: pointer;
         font-family: $site-font;
+        font-size: $font-size-base * $mobile-font-factor;
+
+        @media screen and (min-width: $screen-sm-min) {
+            font-size: $font-size-base;
+        }
     }
 }
 
@@ -184,9 +190,13 @@ blockquote {
  */
 @mixin button-size($padding-vertical, $padding-horizontal, $font-size, $btn-height, $border-radius) {
     padding: 0 $padding-horizontal;
-    font-size: $font-size;
+    font-size: $font-size * $mobile-font-factor;
     height: $btn-height;
     border-radius: $border-radius;
+
+    @media screen and (min-width: $screen-sm-min) {
+        font-size: $font-size;
+    }
 }
 
 $disabled-color-factor: 20%;
@@ -393,6 +403,7 @@ pre code {
         border-right: none;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
+        text-align: left;
     }
 
     & > &__composite > &__composite-trigger {
@@ -409,6 +420,7 @@ pre code {
     @at-root #{&}__content {
         position: absolute;
         top: 100%;
+        right: 0;
         margin: 4px 0;
         padding: 0;
         width: 300px;
@@ -450,5 +462,13 @@ pre code {
                 }
             }
         }
+    }
+
+    @at-root #{&}__overlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
     }
 }

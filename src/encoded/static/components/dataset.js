@@ -86,7 +86,7 @@ const AnnotationComponent = (props, reactContext) => {
                 <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h1>Summary for annotation file set {context.accession}</h1>
                 <ReplacementAccessions context={context} />
-                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'annotation-audit' }} />
+                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'annotation-audit' }} hasCartControls />
             </header>
             {auditDetail(context.audit, 'annotation-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>
@@ -1509,7 +1509,7 @@ export const SeriesComponent = (props, reactContext) => {
                 <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h1>Summary for {seriesTitle} {context.accession}</h1>
                 <ReplacementAccessions context={context} />
-                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
+                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} hasCartControls={seriesType === 'FunctionalCharacterizationSeries'} />
             </header>
             {auditDetail(context.audit, 'series-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
             <Panel>

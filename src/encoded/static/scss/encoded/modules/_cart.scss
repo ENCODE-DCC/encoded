@@ -252,15 +252,14 @@
         }
     }
 
-    @at-root #{&}__tools {
-        display: flex;
-        flex: 0 1 auto;
-    }
-
     // Header of cart panel.
     @at-root #{&}__header {
-        display: flex;
-        justify-content: space-between;
+        display: block;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            justify-content: space-between;
+        }
     }
 
     @at-root #{&}__facet-disabled-overlay {
@@ -299,13 +298,26 @@
     }
 }
 
+.cart-tools {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex: 0 1 auto;
+    }
+}
+
 .cart-assembly-indicator {
-    display: flex;
-    padding: 0 10px;
-    align-items: center;
-    border: 1px solid #a0a0a0;
-    color: #606060;
-    font-weight: bold;
+    display: none;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        padding: 0 10px;
+        align-items: center;
+        border: 1px solid #a0a0a0;
+        color: #606060;
+        font-weight: bold;
+    }
 }
 
 // Cart button in navigation bar
@@ -1094,12 +1106,19 @@ $file-type-colors: (
 
 // Control to batch download cart files.
 .cart-download {
-    margin-right: 5px;
+    margin-bottom: 5px;
+
+    @media screen and (min-width: $screen-md-min) {
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
 
     button {
         @extend .btn;
         @extend .btn-info;
         @extend .btn-sm;
+
+        font-size: inherit; // Override .btn
     }
 
     @at-root #{&}__option-title {
@@ -1114,6 +1133,20 @@ $file-type-colors: (
         font-size: 0.9rem;
         font-weight: normal;
         pointer-events: none;
+    }
+
+    .dropdown-button__composite {
+        .dropdown-button__composite-execute {
+            flex-grow: 1;
+            flex-basis: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-button__composite-trigger {
+            flex-grow: 0;
+            flex-basis: 30px;
+        }
     }
 
     .dropdown-button__content {
@@ -1154,5 +1187,69 @@ $file-type-colors: (
 
     > svg {
         fill: #000;
+    }
+}
+
+// Cart-tools buttons that stay side by side even on mobile.
+.cart-tools-extras {
+    display: flex;
+    align-content: stretch;
+    margin-bottom: 5px;
+
+    @media screen and (min-width: $screen-md-min) {
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+
+    .cart-tools-extras__button {
+        margin-right: 5px;
+        flex-grow: 1;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+}
+
+.cart-dataset-selector {
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 0 5px;
+
+    @media screen and (min-width: $screen-md-min) {
+        width: auto;
+        height: 29px;
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+}
+
+.cart-merge {
+    margin-bottom: 5px;
+
+    @media screen and (min-width: $screen-md-min) {
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+
+    button {
+        width: 100%;
+
+        @media screen and (min-width: $screen-md-min) {
+            width: auto;
+        }
+    }
+}
+
+.cart-dataset-search {
+    display: block;
+    width: 100%;
+
+    @media screen and (min-width: $screen-md-min) {
+        width: auto;
     }
 }

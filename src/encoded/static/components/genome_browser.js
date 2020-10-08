@@ -6,6 +6,17 @@ import { BrowserFeat } from './browserfeat';
 import { filterForVisualizableFiles } from './objectutils';
 import AutocompleteBox from './region_search';
 
+
+/**
+ * Maps long annotation_type values to shorter versions for Valis track labels. Any not included
+ * remain unchanged.
+ */
+export const annotationTypeMap = {
+    'candidate Cis-Regulatory Elements': 'cCRE',
+    'representative DNase hypersensitivity sites (rDHSs)': 'rDHS',
+};
+
+
 // Files to be displayed for local version of browser
 const dummyFiles = [
     {
@@ -186,19 +197,29 @@ const TrackLabel = ({ file, label, long }) => {
     const biologicalReplicates = file.biological_replicates && file.biological_replicates.join(', ');
     const splitDataset = file.dataset.split('/');
     const datasetName = splitDataset[splitDataset.length - 2];
+
+    // For Valis in carts, build the short string.
+    let cartShortLabel;
+    if (label === 'cart') {
+        cartShortLabel = _.compact([
+            file.target && file.target.label,
+            file.assay_term_name,
+            file.biosample_ontology && file.biosample_ontology.term_name,
+            file.annotation_type,
+        ]).join(', ');
+    }
+
     return (
         <React.Fragment>
             {(label === 'cart') ?
                 <ul className="gb-info">
-                    {file.target ? <span>{file.target.label}, </span> : null}
-                    {file.assay_term_name ? <span>{file.assay_term_name}, </span> : null}
-                    {file.biosample_ontology && file.biosample_ontology.term_name ? <span>{file.biosample_ontology.term_name}</span> : null}
+                    {cartShortLabel}
                     {long ?
                         <React.Fragment>
                             <li><a href={file.dataset} className="gb-accession">{datasetName}<span className="sr-only">{`Details for dataset ${datasetName}`}</span></a></li>
                             <li><a href={file['@id']} className="gb-accession">{file.title}<span className="sr-only">{`Details for file ${file.title}`}</span></a></li>
                             <li>{file.output_type}</li>
-                            <li>{`rep ${biologicalReplicates}`}</li>
+                            {biologicalReplicates ? <li>{`rep ${biologicalReplicates}`}</li> : null}
                         </React.Fragment>
                     : null}
                 </ul>
@@ -486,11 +507,13 @@ class GenomeBrowser extends React.Component {
         let files = propsFiles;
 
         // Apply sort parameters
-        orderedSortParam.forEach((param) => {
-            files = _.chain(files)
-                .sortBy(obj => sortLookUp(obj, param));
-        });
-        files = files.value();
+        if (this.props.displaySort) {
+            orderedSortParam.forEach((param) => {
+                files = _.chain(files)
+                    .sortBy(obj => sortLookUp(obj, param));
+            });
+            files = files.value();
+        }
 
         // sortBy sorts in ascending order and sortDirection is true if descending
         // We want to reverse the sort order when the sort is toggled and ascending (to make it descending)
@@ -549,14 +572,15 @@ class GenomeBrowser extends React.Component {
             let labelLength = 0;
             const defaultHeight = 34;
             const extraLineHeight = 12;
-            const maxCharPerLine = 30;
+            const maxCharPerLine = 26;
             // Some labels on the cart which have a target, assay name, and biosample are too long for one line (some actually extend to three lines)
             // Here we do some approximate math to try to figure out how many lines the labels extend to assuming that ~30 characters fit on one line
             // Labels on the experiment pages are short enough to fit on one line (they contain less information) so we can bypass these calculations for those pages
             if (label === 'cart') {
                 labelLength += file.target ? file.target.label.length + 2 : 0;
                 labelLength += file.assay_term_name ? file.assay_term_name.length + 2 : 0;
-                labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length : 0;
+                labelLength += file.biosample_ontology && file.biosample_ontology.term_name ? file.biosample_ontology.term_name.length + 2 : 0;
+                labelLength += file.annotation_type ? file.annotation_type.length : 0;
                 labelLength = Math.floor(labelLength / maxCharPerLine);
             }
             if (file.name) {
@@ -608,7 +632,7 @@ class GenomeBrowser extends React.Component {
             if (file.file_format_type &&
                 (['bedrnaelements', 'peptidemapping', 'bedexonscore', 'bed12', 'bed9'].indexOf(file.file_format_type.toLowerCase()) > -1)) {
                 trackObj.name = <TrackLabel file={file} label={label} long />;
-                trackObj.heightPx = 90;
+                trackObj.heightPx = 95;
                 trackObj.expandable = false;
             }
             return trackObj;

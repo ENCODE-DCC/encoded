@@ -27,7 +27,7 @@ const CartLockTriggerComponent = ({ savedCartObj, inProgress, onLock }) => {
     }
 
     return (
-        <div className="cart-manager-table__tooltip-group">
+        <div className="cart-manager-table__tooltip-group cart-tools-extras__button">
             {disabledTooltip ?
                 <div
                     className="cart-manager-table__button-overlay"

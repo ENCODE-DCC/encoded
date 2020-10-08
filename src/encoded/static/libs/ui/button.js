@@ -192,7 +192,7 @@ const useDropdownButton = () => {
  * Implements the immediate form of dropdown button, where selecting an item from the dropdown menu
  * immediately executes that item.
  */
-export const Immediate = ({ label, id, css, inline, children }) => {
+export const Immediate = ({ label, id, css, inline, disabled, children }) => {
     const [state, actions] = useDropdownButton();
 
     // Wrap each child in an <li> element, as they will be children of a <ul>.
@@ -213,6 +213,7 @@ export const Immediate = ({ label, id, css, inline, children }) => {
                 onMouseLeave={actions.houseMouseLeave}
                 onFocus={actions.handleFocus}
                 onBlur={actions.handleBlur}
+                disabled={disabled}
             >
                 {label}
             </button>
@@ -245,6 +246,8 @@ Immediate.propTypes = {
     css: PropTypes.string,
     /** True to make this an inline component */
     inline: PropTypes.bool,
+    /** True to disable the button */
+    disabled: PropTypes.bool,
     /** Child components within in this component */
     children: PropTypes.node.isRequired,
 };
@@ -252,6 +255,7 @@ Immediate.propTypes = {
 Immediate.defaultProps = {
     css: '',
     inline: false,
+    disabled: false,
 };
 
 
@@ -259,7 +263,7 @@ Immediate.defaultProps = {
  * Implements the selected form of the dropdown button, where items in the dropdown menu select the
  * action taken when the button is clicked.
  */
-export const Selected = ({ labels, execute, id, triggerVoice, css, inline, children }) => {
+export const Selected = ({ labels, execute, id, triggerVoice, css, inline, disabled, children }) => {
     const [state, actions] = useDropdownButton();
 
     // Extract the id attributes of each of the child components.
@@ -287,7 +291,7 @@ export const Selected = ({ labels, execute, id, triggerVoice, css, inline, child
     return (
         <div className={`dropdown-button${css ? ` ${css}` : ''}`} style={inline ? { display: 'inline-flex' } : null}>
             <div className="dropdown-button__composite" onMouseEnter={actions.handleMouseEnter} onMouseLeave={actions.houseMouseLeave}>
-                <button className="dropdown-button__composite-execute" onClick={handleExecute} onKeyUp={actions.handleKey}>
+                <button className="dropdown-button__composite-execute" onClick={handleExecute} onKeyUp={actions.handleKey} disabled={disabled}>
                     {labels[selection]}
                 </button>
                 <button
@@ -299,6 +303,7 @@ export const Selected = ({ labels, execute, id, triggerVoice, css, inline, child
                     aria-label={triggerVoice}
                     onFocus={actions.handleFocus}
                     onBlur={actions.handleBlur}
+                    disabled={disabled}
                 >
                     {svgIcon('chevronDown')}
                 </button>
@@ -332,6 +337,8 @@ Selected.propTypes = {
     css: PropTypes.string,
     /** True to make this an inline component */
     inline: PropTypes.bool,
+    /** True to disable the action and menu buttons */
+    disabled: PropTypes.bool,
     /** Child components within in this component */
     children: PropTypes.node.isRequired,
 };
@@ -339,4 +346,5 @@ Selected.propTypes = {
 Selected.defaultProps = {
     css: '',
     inline: false,
+    disabled: false,
 };

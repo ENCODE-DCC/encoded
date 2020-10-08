@@ -5,7 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import * as encoding from '../../libs/query_encoding';
+import url from 'url';
+import QueryString from '../../libs/query_string';
 import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
 import { atIdToType } from '../globals';
 import { requestSearch } from '../objectutils';
@@ -36,56 +37,40 @@ class CartAddAllSearchComponent extends React.Component {
      * all their @ids that we can add to the cart.
      */
     handleClick() {
-        // Get the array of object types in the cart and remove any types found in the filter
-        // array of the current search results. Also make a copy of the current search results
-        // including only the properties we need to avoid mutating a prop.
-        const allowedTypes = cartGetAllowedTypes();
-        const queryFilters = [];
-        this.props.searchResults.filters.forEach((filter) => {
-            // Copy all filter fields and terms to our array of filters used for the query, except
-            // any 'type=something' terms for types not allowed in carts.
-            if (filter.field !== 'type' || allowedTypes.indexOf(filter.term) !== -1) {
-                queryFilters.push({ field: filter.field, term: filter.term });
-            }
+        // Don't use existing search results as they might only include 25 results and we need all
+        // of them. Do the same search but with limit=all and field=@id.
+        const parsedUrl = url.parse(this.props.searchResults['@id']);
+        const query = new QueryString(parsedUrl.query);
+        query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id');
+        const searchQuery = query.format();
 
-            // If the filter is for a type allowed in the cart, remove it from the allowedTypes
-            // list as we don't need to add it later.
-            if (filter.field === 'type') {
-                const index = allowedTypes.indexOf(filter.term);
-                if (index !== -1) {
-                    allowedTypes.splice(index, 1);
-                }
-            }
-        });
-
-        // Add a partial filter entry for any types not included in the current search result
-        // filters.
-        allowedTypes.forEach((type) => {
-            queryFilters.push({ field: 'type', term: type });
-        });
-
-        // Use the existing query plus any cartable object types to search for all @ids to add to
-        // the cart.
-        const searchQuery = `${queryFilters.map(element => (
-            `${element.field}=${encoding.encodedURIComponentOLD(element.term)}`
-        )).join('&')}&limit=all&field=%40id`;
+        // With the updated query string, perform the search of all @ids matching the current
+        // search.
         this.props.setInProgress(true);
         requestSearch(searchQuery).then((results) => {
             this.props.setInProgress(false);
             if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
                 const loggedIn = !!(this.props.session && this.props.session['auth.userid']);
-                const elementsForCart = results['@graph'].map(result => result['@id']);
-                if (!loggedIn) {
-                    // Not logged in, so test whether the merged new and existing carts would have
-                    // more elements than allowed in a logged-out cart. Display an error modal if
-                    // that happens.
-                    const margedCarts = mergeCarts(this.props.elements, elementsForCart);
-                    if (margedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
-                        this.setState({ overMaximumError: true });
-                        return;
+                const allowedTypes = cartGetAllowedTypes();
+
+                // Get all elements from results that qualify to exist in carts.
+                const elementsForCart = results['@graph'].filter(result => allowedTypes.includes(result['@type'][0])).map(result => result['@id']);
+                if (elementsForCart.length > 0) {
+                    // We should always have elements qualified to exist in a cart because we
+                    // wouldn't have shown the "Add all items to cart" button if we didn't know we
+                    // had qualfied elements in the search results, but just in case.
+                    if (!loggedIn) {
+                        // Not logged in, so test whether the merged new and existing carts would have
+                        // more elements than allowed in a logged-out cart. Display an error modal if
+                        // that happens.
+                        const mergedCarts = mergeCarts(this.props.elements, elementsForCart);
+                        if (mergedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
+                            this.setState({ overMaximumError: true });
+                            return;
+                        }
                     }
+                    this.props.addAllResults(elementsForCart);
                 }
-                this.props.addAllResults(elementsForCart);
             }
         });
     }
