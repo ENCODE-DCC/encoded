@@ -191,11 +191,23 @@
         "assay": {
             "title": "Assay type"
         },
-        "derived_from.biosample_ontology.term_name": {
-            "title": "Biosample term name"
-        },
         "protocol.name": {
             "title": "Library protocols"
+        },
+        "derived_from.biosample_ontology.term_name": {
+            "title": "Biosample term name",
+            "type": "typeahead"
+        },
+        "derived_from.biosample_ontology.system_slims": {
+            "title": "System"
+        },
+        "derived_from.biosample_ontology.organ_slims": {
+            "title": "Organ",
+            "type": "typeahead"
+        },
+        "derived_from.biosample_ontology.cell_slims": {
+            "title": "Cell",
+            "type": "typeahead"
         },
         "award.project": {
             "title": "Project"

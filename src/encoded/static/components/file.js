@@ -51,13 +51,10 @@ const derivingCols = {
     },
     dataset: {
         title: 'Dataset',
-        display: (file) => {
-            const datasetAccession = globals.atIdToAccession(file.dataset);
-            return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
-        },
+        getValue: item => (item.dataset && item.dataset.accession ? item.dataset.accession : null),
     },
     file_format: { title: 'File format' },
-    output_type: { title: 'Output type' },
+    output_types: { title: 'Output type' },
     title: {
         title: 'Lab',
         getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
@@ -321,7 +318,7 @@ class FileComponent extends React.Component {
 
                                 <div data-test="outputtype">
                                     <dt>Output type</dt>
-                                    <dd>{context.output_type}</dd>
+                                    <dd>{context.output_types}</dd>
                                 </div>
 
                                 {context.restriction_enzymes ?
@@ -340,20 +337,6 @@ class FileComponent extends React.Component {
                                     <dt>Technical replicate(s)</dt>
                                     <dd>{`[${context.technical_replicates && context.technical_replicates.length > 0 ? context.technical_replicates.join(', ') : '-'}]`}</dd>
                                 </div>
-
-                                {pipelines.length > 0 ?
-                                    <div data-test="pipelines">
-                                        <dt>Pipelines</dt>
-                                        <dd>
-                                            {pipelines.map((pipeline, i) =>
-                                                <span key={pipeline['@id']}>
-                                                    {i > 0 ? <span>{','}<br /></span> : null}
-                                                    <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
-                                                </span>
-                                            )}
-                                        </dd>
-                                    </div>
-                                : null}
 
                                 <div data-test="md5sum">
                                     <dt>MD5sum</dt>
@@ -410,18 +393,6 @@ class FileComponent extends React.Component {
                                 <div data-test="lab">
                                     <dt>Lab</dt>
                                     <dd>{context.lab.title}</dd>
-                                </div>
-
-                                {context.award.pi && context.award.pi.lab ?
-                                    <div data-test="awardpi">
-                                        <dt>Award PI</dt>
-                                        <dd>{context.award.pi.lab.title}</dd>
-                                    </div>
-                                : null}
-
-                                <div data-test="submittedby">
-                                    <dt>Submitted by</dt>
-                                    <dd>{context.submitted_by.title}</dd>
                                 </div>
 
                                 {context.award.project ?
@@ -649,12 +620,6 @@ class ListingComponent extends React.Component {
                             <div><strong>Lab: </strong>{result.lab.title}</div>
                             {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
                         </div>
-                    </div>
-                    <div className="result-item__meta">
-                        <div className="result-item__meta-title">File</div>
-                        <div className="result-item__meta-id">{` ${result.title}`}</div>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
                     <PickerActions context={result} />
                 </div>

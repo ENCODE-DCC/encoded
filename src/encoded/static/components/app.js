@@ -35,6 +35,16 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 
 const portal = {
     portal_title: 'LatticeDB',
+    global_sections: [
+        {
+            id: 'dataorganization',
+            title: 'Data Organization',
+            children: [
+                { id: 'overview', title: 'Overview', url: '/data-organization/' },
+                { id: 'profiles', title: 'Schemas', url: '/profiles/' },
+            ],
+        },
+    ],
     authenticated_sections: [
        {
             id: 'data',
@@ -50,23 +60,15 @@ const portal = {
                 { id: 'mouse-postnatal-donor-report', title: 'Mouse Postnatal', url: '/report/?type=MousePostnatalDonor', tag: 'collection' },
                 { id: 'mouse-pretnatal-donor-report', title: 'Mouse Prenatal', url: '/report/?type=MousePrenatalDonor', tag: 'collection' },
                 { id: 'sep-mm-1' },
-                { id: 'samples', title: 'Sample data' },
-                { id: 'tissue-report', title: 'Tissues', url: '/report/?type=Tissue', tag: 'collection' },
-                { id: 'organoid-report', title: 'Organoids', url: '/report/?type=Organoid', tag: 'collection' },
-                { id: 'cellculture-report', title: 'Cell cultures', url: '/report/?type=CellCulture', tag: 'collection' },
-                { id: 'suspension-report', title: 'Suspensions', url: '/report/?type=Suspension', tag: 'collection' },
-                { id: 'sep-mm-2' },
                 { id: 'publications', title: 'Publications', url: '/report/?type=Publication' },
             ],
-        }
-    ],
-    global_sections: [
+        },
         {
-            id: 'dataorganization',
-            title: 'Data Organization',
+            id: 'wrangler-tools',
+            title: 'Wrangling tools',
             children: [
-                { id: 'overview', title: 'Overview', url: '/data-organization/' },
-                { id: 'profiles', title: 'Schemas', url: '/profiles/' },
+                { id: 'ontology-terms', title: 'Ontology terms', url: '/report/?type=OntologyTerm' },
+                { id: 'test-results', title: 'Test results', url: '/report/?type=HumanPostnatalDonor&test_results=*&field=accession&field=test_results' },
             ],
         },
     ],
@@ -1081,7 +1083,7 @@ class App extends React.Component {
         }
         if (category === 'global_sections') {
             if (this.state.session_properties['auth.userid']) {
-                return portal.authenticated_sections.concat(portal.global_sections);
+                return portal.global_sections.concat(portal.authenticated_sections);
             }
             return portal.global_sections;
         }
