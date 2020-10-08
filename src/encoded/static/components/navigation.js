@@ -232,7 +232,6 @@ const GlobalSections = (props, context) => {
                                     <Tooltip
                                         trigger={<i className="icon icon-question-circle" />}
                                         tooltipId={childAction.id}
-                                        timerFlag={false}
                                         innerCss={`menu-tooltip ${childAction.tag ? 'sub-menu' : ''}`}
                                         relativeTooltipFlag
                                     >

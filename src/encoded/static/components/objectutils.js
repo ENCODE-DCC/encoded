@@ -493,11 +493,13 @@ export const DownloadableAccession = (props) => {
 
 DownloadableAccession.propTypes = {
     file: PropTypes.object.isRequired, // File whose accession to render
+    buttonEnabled: PropTypes.bool, // Check if button is enabled
     clickHandler: PropTypes.func, // Function to call when button is clicked
     loggedIn: PropTypes.bool, // True if current user is logged in
 };
 
 DownloadableAccession.defaultProps = {
+    buttonEnabled: true,
     clickHandler: null,
     loggedIn: false,
 };
