@@ -1074,6 +1074,7 @@
     },
     {
         "_test": "CUT&Tag test",
+        "aliases": ["jesse-engreitz:test-new-aliases_name.space"],
         "uuid": "6600481e-b667-46ff-acd8-7de7026c2fdf",
         "accession": "ENCSR830QHT",
         "lab": "/labs/john-stamatoyannopoulos/",
