@@ -102,7 +102,7 @@ class QueryString {
      * key/value pair.
      * @param {string} key Key value to replace
      * @param {string} value Non-URL-encoded value to replace
-     * @param {string} negative True if new key/value is a negative (a!=b)
+     * @param {bool} negative True if new key/value is a negative (a!=b)
      *
      * @param {object} Reference to this object for method chaining.
      */

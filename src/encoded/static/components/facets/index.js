@@ -6,10 +6,11 @@
  * Custom facet-renderer modules all need to be imported anonymously here so that they can register
  * themselves on page load.
  */
-import FacetRegistry from './registry';
+import FacetRegistry, { SpecialFacetRegistry } from './registry';
 import { DefaultFacet, DefaultTitle, DefaultTerm, DefaultTermName, DefaultSelectedTermName } from './defaults';
 // Custom facet-renderer modules imported here. Keep them alphabetically sorted.
 import './audit';
+import './audit_processed_data';
 import './date_selector';
 import './exists';
 import './internal_status';
@@ -30,10 +31,20 @@ FacetRegistry.SelectedTermName._setDefaultComponent(DefaultSelectedTermName);
 
 
 /**
+ * Set the default special facet components.
+ */
+SpecialFacetRegistry.Title._setDefaultComponent(DefaultTitle);
+SpecialFacetRegistry.Term._setDefaultComponent(DefaultTerm);
+SpecialFacetRegistry.TermName._setDefaultComponent(DefaultTermName);
+SpecialFacetRegistry.Facet._setDefaultComponent(DefaultFacet);
+SpecialFacetRegistry.SelectedTermName._setDefaultComponent(DefaultSelectedTermName);
+
+
+/**
  * All usage of the facet registry external to this directory should only use what gets exported
  * here.
  */
-export default FacetRegistry;
+export { FacetRegistry, SpecialFacetRegistry };
 
 
 /**

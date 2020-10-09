@@ -6,7 +6,7 @@ import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
 import { auditDecor } from './audit';
 import { CartToggle, CartSearchControls, cartGetAllowedTypes } from './cart';
-import FacetRegistry from './facets';
+import { FacetRegistry, SpecialFacetRegistry } from './facets';
 import * as globals from './globals';
 import {
     DisplayAsJson,
@@ -912,6 +912,9 @@ export const FacetList = (props) => {
         }
     }
 
+    // Combine facets from search results with special facets, and treat them mostly the same.
+    const allFacets = SpecialFacetRegistry.Facet.getFacets().concat(facets);
+
     return (
         <div className="search-results__facets">
             <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
@@ -926,7 +929,7 @@ export const FacetList = (props) => {
                     : null}
                     {mode === 'picker' && !hideTextFilter ? <TextFilter {...props} filters={filters} /> : ''}
                     <div className="facet-wrapper">
-                        {facets.map((facet) => {
+                        {allFacets.map((facet) => {
                             // Filter the filters to just the ones relevant to the current facet,
                             // matching negation filters too.
                             const relevantFilters = context && context.filters.filter(filter => (
@@ -936,10 +939,15 @@ export const FacetList = (props) => {
                             // Look up the renderer registered for this facet and use it to render this
                             // facet if a renderer exists. A non-existing renderer supresses the
                             // display of a facet.
-                            const FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                            let FacetRenderer;
+                            if (facet.specialFieldName) {
+                                FacetRenderer = SpecialFacetRegistry.Facet.lookup(facet.field);
+                            } else {
+                                FacetRenderer = FacetRegistry.Facet.lookup(facet.field);
+                            }
                             const isExpanded = expandedFacets.has(facet.field);
                             return FacetRenderer && <FacetRenderer
-                                key={facet.field}
+                                key={facet.specialFieldName || facet.field}
                                 facet={facet}
                                 results={context}
                                 mode={mode}

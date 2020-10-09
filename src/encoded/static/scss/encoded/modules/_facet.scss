@@ -606,3 +606,9 @@ div.meta-status {
         display: block;
     }
 }
+
+.facet--audit-warning {
+    .boolean-switch {
+        padding: 0 20px 0 10px;
+    }
+}
