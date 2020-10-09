@@ -5,7 +5,7 @@
         "status": "released",
         "uuid": "e6f6c49d-89d4-4adb-baa4-38c103b1583c",
         "documents": [
-            "f8599a9f-4095-4b9a-b11a-ea022e2af1f7"
+            "encode:Snyder_Histone_Mouse_protocol"
         ],
         "accession": "KCELB012FAA",
         "submitter_comment":"One sample was failed when sequencing, and have to repeat and combine the half of the failed sample"
@@ -26,7 +26,8 @@
         "status": "released",
         "uuid": "873440f2-13a2-4564-a127-3c88c9a33c8e",
         "documents": [
-            "6ab18a00-50aa-11e4-916c-0800200c9a66","e0376e86-79d2-4041-80c2-4c8dfef83371"
+            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
         "accession": "KCELB038EAA",
         "submitter_comment":"This is a test for submitter_comment"

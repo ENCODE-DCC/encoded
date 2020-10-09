@@ -294,13 +294,21 @@ class Bioexperiment extends React.Component {
         }
 
         // Collect biosample docs.
-        let biosampleDocs = [];
-        biosamples.forEach((biospecimen) => {
-            biosampleDocs = biosampleDocs.concat(biospecimen.documents);
-            if (biospecimen.part_of) {
-                biosampleDocs = biosampleDocs.concat(biosepcimen.part_of);
-            }
-        });
+          let biosampleDocs = [];
+          biosamples.forEach((biosample) => {
+              biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
+              if (biosample.part_of) {
+                  biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
+              }
+          });
+        // let biosampleDocs = [];
+        // biosamples.forEach((biospecimen) => {
+        //     biosampleDocs = biosampleDocs.concat(biospecimen.documents);
+        //     if (biospecimen.part_of) {
+        //         biosampleDocs = biosampleDocs.concat(biosepcimen.part_of);
+        //     }
+        //     biosampleDocs=[...new Set(biosampleDocs)];//get rid of the same document
+        // });
 console.log("biosampledoc",biosampleDocs);
         // Collect pipeline-related documents.
         // let analysisStepDocs = [];
@@ -548,7 +556,7 @@ console.log("biosampledoc",biosampleDocs);
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
-                                        : null} */}
+                                        : null} 
                                     {libSubmitterComments}
                                     {/* {/*  */}
                                 </dl>
