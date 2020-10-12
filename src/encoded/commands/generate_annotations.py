@@ -36,16 +36,17 @@ def all_annotations(url):
                 species = ' (drosophila melanogaster)'
 
             if 'dbxrefs' in gene:
-                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'ENSEMBL:ENSMUSG', 'WormBase:', 'FlyBase:'))]
-                mgi_id = [x for x in gene['dbxrefs'] if x.startswith(('MGI:'))]
+                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:', 'WormBase:', 'FlyBase:'))]
+                #mgi_id = [x for x in gene['dbxrefs'] if x.startswith(('MGI:'))]
                 if len(identifier) != 1:
                     continue
                 if len(identifier) == 1:
-                    if organism == 'Mus musculus':
-                        identifier = ''.join(identifier)
-                        identifier = identifier[8:]
-                    else:
-                        identifier = ''.join(identifier)
+                    identifier = ''.join(identifier)
+                    #if organism == 'Mus musculus':
+                        #identifier = ''.join(identifier)
+                        #identifier = identifier[8:]
+                    #else:
+                        #identifier = ''.join(identifier)
 
                     if 'name' not in gene:
                         continue
@@ -59,7 +60,8 @@ def all_annotations(url):
                             'input': [gene['name'] + species, gene['symbol'] + species, identifier, gene['geneid'] + ' (Gene ID)']
                         }
                         elif organism == 'Mus musculus':
-                            doc['suggest'] = {'input': [gene['symbol'] + species, ''.join(mgi_id) + species]}
+                            #doc['suggest'] = {'input': [gene['symbol'] + species, ''.join(mgi_id) + species]}
+                            doc['suggest'] = {'input': [gene['symbol'] + species, identifier + species]}
 
                     if 'synonyms' in gene and organism == 'Homo sapiens':
                         synonyms = [s + species for s in gene['synonyms']]
