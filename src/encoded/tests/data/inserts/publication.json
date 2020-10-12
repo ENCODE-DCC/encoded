@@ -1,7 +1,8 @@
 [
     {
         "aliases": [
-            "lattice:Greka_Clark_2019_large_dataset"
+            "lattice:Greka_Clark_2019_large_dataset",
+            "lattice:Litviňuková_Teichmann_2020_heart"
         ],
         "title": "A comprehensive dataset with human, mouse, and CITEseq",
         "abstract": "A comprehensive dataset of kidney with human, mouse, and CITEseq",

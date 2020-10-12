@@ -439,7 +439,7 @@
                     "sarah-teichmann|",
                     "sten-linnarsson|",
                     "lattice",
-                    "):[a-zA-ZÀ-ÿæœ\\d_$.+!*,()'-]+$"
+                    "):[a-zA-Z\u00C0-\u024F\u1E00-\u1EFFæœ\\d_$.+!*,()'-]+$"
                 ]
             }
         }
