@@ -17,7 +17,7 @@ def includeme(config):
 
 
 @collection(
-    name='library_protocols',
+    name='library-protocols',
     unique_key='library_protocol:name',
     properties={
         'title': 'Library protocols',
@@ -101,7 +101,7 @@ class Document(ItemWithAttachment, Item):
 
 
 @collection(
-    name='antibodies',
+    name='antibody-lots',
     unique_key='accession',
     properties={
         'title': 'Antibody lot',
