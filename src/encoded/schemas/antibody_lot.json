@@ -26,7 +26,6 @@
             "title": "Lot ID aliases",
             "description": "The lot identifiers for this lot deemed to be exactly the same by the vendor.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Lot ID Alias",
@@ -107,7 +106,6 @@
             "title": "Purification methods",
             "description": "The purification protocols used to isolate the antibody.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Purification method",

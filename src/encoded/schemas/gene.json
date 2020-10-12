@@ -35,7 +35,6 @@
             "title": "Gene status",
             "description": "The status of the GENCODE record for this gene.",
             "type": "string",
-            "default": "live",
             "enum": [
                 "live",
                 "discontinued"

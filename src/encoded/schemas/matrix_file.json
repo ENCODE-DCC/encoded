@@ -266,7 +266,6 @@
             "title": "Filtering cutoffs",
             "description": "The list of cutoffs that were used for filtering in generating the matrix.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Filtering cutoff",
                 "type": "object",

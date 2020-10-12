@@ -57,7 +57,6 @@
             "description": "Biological parents of this donor",
             "comment":"This is a link for cases when families are all donors in our system. Children will be calculated from this link.",
             "type":  "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Parent",
@@ -72,7 +71,6 @@
             "description": "Donors that have at least one parent in common with this donor.",
             "comment":"This is a link for cases when families are all donors in our system.",
             "type":  "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Sibling",

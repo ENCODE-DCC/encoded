@@ -50,7 +50,6 @@
             "description": "For each sequence file, the machine id, flowcell, and lane information for the sequencing run.",
             "comment": "Enter values with their property labels, “machine: NNNNNN, flowcell: NNNNNNNNNN, lane: #”.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Flowcell details",
                 "type": "object",

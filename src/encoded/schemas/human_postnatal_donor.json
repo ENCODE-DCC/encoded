@@ -71,7 +71,6 @@
             "title": "Family history breast cancer",
             "description": "Familial relations with history of breast cancer.",
             "type":  "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "",

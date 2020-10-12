@@ -33,8 +33,7 @@
         "no_file_available": {
             "title": "No file available",
             "permission":"import_items",
-            "description": "A flag to indicate whether this file is available to download. It may also not exist if it is the result of an unproductive analysis.",
-            "comment": "Do not submit. This value can only be set by admins.",
+            "description": "A flag to indicate whether this file is available to download.",
             "default": false,
             "type": "boolean"
         },
