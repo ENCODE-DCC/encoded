@@ -178,10 +178,10 @@
             "description": "The GENCODE annotation version that the gene .",
             "type": "string",
             "enum": [
-                "v19",
-                "v24",
-                "v28",
-                "v32",
+                "19",
+                "24",
+                "28",
+                "32",
                 "M9",
                 "M18",
                 "M23"
