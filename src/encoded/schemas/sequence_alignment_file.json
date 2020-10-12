@@ -249,9 +249,6 @@
         "software": {
             "title": "Software"
         },
-        "submitter_comment": {
-            "title": "Submitter comment"
-        },
         "status": {
             "title": "Status"
         }

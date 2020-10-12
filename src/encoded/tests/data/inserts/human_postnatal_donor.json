@@ -112,7 +112,6 @@
             "HIV-1/HBV/HCV": "negative"
         },
         "url":"https://virtualtissuebank.iu.edu/data/barcode/K108949/",
-        "submitter_comment": "Some comments",
         "notes": "Some notes"
     },
     {
@@ -140,7 +139,6 @@
         "test_results": {
             "HIV-1/HBV/HCV": "negative"
         },
-        "submitter_comment": "Some comments",
         "notes": "Some notes"
     }
 ]

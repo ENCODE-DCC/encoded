@@ -275,9 +275,6 @@
         "date_created": {
             "title": "Date created"
         },
-        "submitter_comment": {
-            "title": "Submitter comment"
-        },
         "status": {
             "title": "Status"
         }

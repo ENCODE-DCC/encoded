@@ -43,7 +43,6 @@
         "urls": [
             "https://data.humancellatlas.org/explore/projects/4a95101c-9ffc-4f30-a809-f04518a23803"
         ],
-        "submitter_comment": "Test submitter_comment",
         "notes": "Test notes"
     },
     {
@@ -68,7 +67,6 @@
         "urls": [
             "https://data.humancellatlas.org/explore/projects/4a95101c-9ffc-4f30-a809-f04518a23803"
         ],
-        "submitter_comment": "Test submitter_comment",
         "notes": "Test notes"
     },
     {
@@ -93,7 +91,6 @@
         "urls": [
             "https://data.humancellatlas.org/explore/projects/a29952d9-925e-40f4-8a1c-274f118f1f51"
         ],
-        "submitter_comment": "Test submitter_comment",
         "notes": "Test notes"
     }
 ]
