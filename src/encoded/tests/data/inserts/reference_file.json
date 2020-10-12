@@ -36,8 +36,7 @@
         "status": "released",
         "gene_biotypes_included": [
             "protein_coding",
-            "lincRNA",
-            "antisense",
+            "lncRNA",
             "IG_LV_gene",
             "IG_V_gene",
             "IG_D_gene",
@@ -83,7 +82,7 @@
         "status": "released",
         "gene_biotypes_included": [
             "protein_coding",
-            "lincRNA",
+            "lncRNA",
             "IG_C_gene",
             "IG_D_gene",
             "IG_V_gene",

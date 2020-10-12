@@ -203,8 +203,7 @@
                 "type": "string",
                 "enum": [
                     "protein_coding",
-                    "lincRNA",
-                    "antisense",
+                    "lncRNA",
                     "IG_LV_gene",
                     "IG_V_gene",
                     "IG_V_pseudogene",
@@ -215,7 +214,7 @@
                     "IG_C_pseudogene",
                     "TR_V_gene",
                     "TR_V_pseudogene",
-                    "TR__D_gene",
+                    "TR_D_gene",
                     "TR_J_gene",
                     "TR_J_pseudogene",
                     "TR_C_gene"
