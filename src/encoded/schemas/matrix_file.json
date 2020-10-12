@@ -139,7 +139,8 @@
                 "linkTo": [
                     "RawSequenceFile",
                     "ReferenceFile",
-                    "MatrixFile"
+                    "MatrixFile",
+                    "Library"
                 ]
             }
         },

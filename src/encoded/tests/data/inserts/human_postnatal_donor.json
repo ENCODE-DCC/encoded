@@ -140,5 +140,18 @@
             "HIV-1/HBV/HCV": "negative"
         },
         "notes": "Some notes"
+    },
+    {
+        "aliases": [
+            "peter-sims:unconsented_postnatal_human_donorA"
+        ],
+        "status": "released",
+        "description":"Teenage female",
+        "age": "16",
+        "age_units": "year",
+        "life_stage": "adolescent",
+        "sex": "female",
+        "ethnicity": "HANCESTRO_0008",
+        "uuid": "08a2e6fe-0878-4790-8544-2ad7db0ed1dd"
     }
 ]

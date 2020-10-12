@@ -1581,5 +1581,19 @@
         "date_constructed": "2020-07-29",
         "chip_id": "chip3",
         "channel_id": "B"
+    },
+    {
+        "aliases": [
+            "peter-sims:unconsented_lung_lib"
+        ],
+        "status": "released",
+        "lab": "peter-sims",
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "award": "CZI025LYN",
+        "protocol": "10x-3'-v3",
+        "derived_from": [
+            "peter-sims:unconsented_lung_susp"
+        ],
+        "uuid": "0bcbdcb5-3704-4755-be93-f9ec8e1327b3"
     }
 ]
