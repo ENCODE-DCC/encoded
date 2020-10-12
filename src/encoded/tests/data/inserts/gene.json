@@ -4,7 +4,7 @@
         "uuid": "1814e427-fee3-4d89-9643-be12261b957d",
         "status": "released",
         "gene_version": 5,
-        "ensembl_status": "live",
+        "gene_status": "live",
         "gene_biotype": "lncRNA",
         "symbol": "MIR1302-2HG",
         "strand": "+",
@@ -16,14 +16,15 @@
             "start": 29554,
             "end": 31109
         },
-        "assembly": "GRCh38"
+        "assembly": "GRCh38",
+        "gencode_version": "v32"
     },
     {
         "gene_id": "ENSG00000183186",
         "uuid": "baeb3b72-4496-4567-80cc-38c6eb6bbadb",
         "status": "released",
         "gene_version": 8,
-        "ensembl_status": "live",
+        "gene_status": "live",
         "gene_biotype": "protein_coding",
         "strand": "-",
         "symbol": "C2CD4C",
@@ -35,14 +36,15 @@
             "start": 405445,
             "end": 409147
         },
-        "assembly": "GRCh38"
+        "assembly": "GRCh38",
+        "gencode_version": "v32"
     },
     {
         "gene_id": "ENSG00000272031",
         "uuid": "63375f76-1c7d-41c5-82b9-51c5d79a4153",
         "status": "released",
         "gene_version": 3,
-        "ensembl_status": "live",
+        "gene_status": "live",
         "gene_biotype": "protein_coding",
         "strand": "-",
         "symbol": "ANKRD34A",
@@ -54,14 +56,15 @@
             "start": 145959441,
             "end": 145964575
         },
-        "assembly": "GRCh38" 
+        "assembly": "GRCh38",
+        "gencode_version": "v32"
     },
     {
         "gene_id": "ENSG00000213553",
         "uuid": "814de216-566a-4077-be47-e990794cadf9",
         "status": "released",
         "gene_version": 4,
-        "ensembl_status": "live",
+        "gene_status": "live",
         "gene_biotype": "processed_pseudogene",
         "strand": "+",
         "symbol": "RPLP0P6",
@@ -73,14 +76,15 @@
             "start": 38481851,
             "end": 38482804
         },
-        "assembly": "GRCh38" 
+        "assembly": "GRCh38",
+        "gencode_version": "v32"
     },
     {
         "gene_id": "ENSG00000266211",
         "uuid": "2e07ae88-8b4a-4fd4-a7a2-055d4ee211fd",
         "status": "released",
         "gene_version": 1,
-        "ensembl_status": "live",
+        "gene_status": "discontinued",
         "gene_biotype": "miRNA",
         "strand": "-",
         "symbol": "MIR3156-3",
@@ -92,6 +96,27 @@
             "start": 13406384,
             "end": 13406460
         },
-        "assembly": "GRCh38"  
+        "assembly": "hg19",
+        "gencode_version": "v19"
+    },
+    {
+        "gene_id": "ENSMUSG00000074637",
+        "uuid": "1cb7c24f-e910-4122-828a-4b69125192da",
+        "status": "released",
+        "gene_version": 3,
+        "gene_status": "live",
+        "gene_biotype": "protein_coding",
+        "strand": "+",
+        "symbol": "Sox-2",
+        "dbxrefs": [
+            "MGI:98364"
+        ],
+        "location": {
+            "chromosome": "chr3",
+            "start": 34,
+            "end": 650
+        },
+        "assembly": "mm10",
+        "gencode_version": "M23"
     }
 ]

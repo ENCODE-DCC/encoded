@@ -4,7 +4,7 @@
     "id": "/profiles/gene.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["gene_id", "gene_version", "ensembl_status", "symbol", "assembly"],
+    "required": ["gene_id", "gene_version", "gene_status", "symbol", "assembly", "gencode_version"],
     "identifyingProperties": ["uuid", "gene_id"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -22,18 +22,18 @@
             "title": "Ensembl gene ID",
             "description": "Ensembl gene ID, which starts with 'ENSG', for this gene, not including the gene version",
             "type": "string",
-            "pattern": "^ENSG[0-9]*\\d$",
+            "pattern": "^(ENSG|ENSMUSG)[0-9]*\\d$",
             "permission": "import_items",
             "uniqueKey": true
         },
         "gene_version": {
-            "title": "Ensembl gene version",
+            "title": "GENCODE gene version",
             "description": "The version of the gene as assigned by Ensembl.",
             "type": "integer"
         },
-        "ensembl_status": {
-            "title": "Ensembl gene status",
-            "description": "The status of the Ensembl record for this gene.",
+        "gene_status": {
+            "title": "Gene status",
+            "description": "The status of the GENCODE record for this gene.",
             "type": "string",
             "default": "live",
             "enum": [
@@ -132,7 +132,7 @@
                 "description": "A unique identifier from the external resource HGNC",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^(HGNC:\\d+)$"
+                "pattern": "^((HGNC|MGI):\\d+)$"
             },
             "permission": "import_items"
         },
@@ -173,14 +173,34 @@
                 "hg19",
                 "mm10"
             ]
+        },
+        "gencode_version": {
+            "title": "GENCODE version",
+            "description": "The GENCODE annotation version that the gene .",
+            "type": "string",
+            "enum": [
+                "v19",
+                "v24",
+                "v28",
+                "v32",
+                "M9",
+                "M18",
+                "M23"
+            ]
         }
     },
     "facets": {
         "assembly": {
             "title": "Assembly"
         },
+        "gencode_version": {
+            "title": "GENCODE version"
+        },
         "gene_biotype": {
             "title": "Gene biotype"
+        },
+        "gene_status": {
+            "title": "Gene status"
         }
     },
     "columns": {
