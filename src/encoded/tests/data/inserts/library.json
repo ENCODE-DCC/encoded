@@ -1589,7 +1589,7 @@
         "status": "released",
         "lab": "peter-sims",
         "dataset": "peter-sims:scRNAseq_test_dataset",
-        "award": "CZI025LYN",
+        "award": "CZI004LIV",
         "protocol": "10x-3'-v3",
         "derived_from": [
             "peter-sims:unconsented_lung_susp"

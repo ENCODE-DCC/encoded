@@ -1051,6 +1051,7 @@
             "mechanical dissociation"
         ],
         "suspension_type": "cell",
+        "status": "released",
         "cell_viability_method": "trypan blue staining",
         "starting_quantity": 1200,
         "starting_quantity_units": "cells/μl",
