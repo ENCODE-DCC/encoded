@@ -884,10 +884,7 @@ export function computeAssemblyAnnotationValue(assembly, annotation) {
  */
 export const isFileVisualizable = file => (
     (file.file_format === 'bigWig' || file.file_format === 'bigBed')
-        && (file.file_format_type !== 'bedMethyl')
         && (file.file_format_type !== 'bedLogR')
-        && (file.file_format_type !== 'idr_peak')
-        && (file.file_format_type !== 'tss_peak')
         && (file.file_format_type !== 'pepMap')
         && (file.file_format_type !== 'modPepMap')
         && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
