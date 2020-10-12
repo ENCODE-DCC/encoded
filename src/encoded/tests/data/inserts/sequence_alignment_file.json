@@ -33,7 +33,8 @@
             "cellranger count 4.0"
         ],
         "award": "CZI001KID",
-        "md5sum": "d710e450cdf4ced7ba333ae35bfafa97"
+        "md5sum": "d710e450cdf4ced7ba333ae35bfafa97",
+        "validated": true
     },
     {
         "aliases": [
@@ -608,7 +609,8 @@
             "cellranger count 4.0"
         ],
         "award": "CZI001KID",
-        "md5sum": "b8dcab1528c69fc887b451321618e7ce"
+        "md5sum": "b8dcab1528c69fc887b451321618e7ce",
+        "validated": true
     },
     {
         "aliases": [
