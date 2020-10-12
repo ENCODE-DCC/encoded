@@ -4,14 +4,7 @@
     "id": "/profiles/raw_sequence_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "anyOf": [
-        {
-            "required": ["dataset", "award", "file_format", "output_types", "derived_from", "md5sum"]
-        },
-        {
-            "required": ["dataset", "award", "file_format", "output_types", "derived_from", "no_file_available"]
-        }
-    ],
+    "required": ["dataset", "award", "file_format", "output_types", "derived_from"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

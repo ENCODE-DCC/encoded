@@ -47,8 +47,7 @@
             "lattice:cellranger_2020-A"
         ],
         "assembly": "GRCh38",
-        "genome_annotation": "GENCODE 32",
-        "md5sum": "77d324e10b7dcbd06e53be5b8c2c31b7"
+        "genome_annotation": "GENCODE 32"
     },
     {
         "aliases": [

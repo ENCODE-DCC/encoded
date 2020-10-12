@@ -68,8 +68,7 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
-        "md5sum": "ce496582d967c1b91453edd1011ec776"
+        "award": "CZI001KID"
     },
     {
         "aliases": [
