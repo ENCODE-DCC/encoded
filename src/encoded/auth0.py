@@ -35,7 +35,6 @@ _marker = object()
 
 def includeme(config):
     config.scan(__name__)
-    config.add_route('signup', 'signup')
     config.add_route('login', 'login')
     config.add_route('logout', 'logout')
     config.add_route('session', 'session')
@@ -72,9 +71,9 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
                     request)
             request._auth0_authenticated = None
             return None
-        
+
         try:
-            domain = 'encode.auth0.com'
+            domain = 'dev-kce.auth0.com'
             user_url = "https://{domain}/userinfo?access_token={access_token}" \
                 .format(domain=domain, access_token=access_token)
             user_info = requests.get(user_url).json()
@@ -99,34 +98,6 @@ class Auth0AuthenticationPolicy(CallbackAuthenticationPolicy):
 
     def forget(self, request):
         return []
-
-
-@view_config(context=User.Collection, request_method='POST', permission='signup', name='sign-up')
-def signup(context, request):
-    """
-    Create new user.
-
-    :param request: Pyramid request object
-    """
-    domain = 'encode.auth0.com'
-    access_token = request.json.get('accessToken')
-    if not access_token:
-        raise HTTPBadRequest(explanation='Access token required')
-    url = 'https://{domain}/userinfo?access_token={access_token}'.format(domain=domain, access_token=access_token)
-    user_data_request = requests.get(url)
-    if user_data_request.status_code != 200:
-        raise HTTPBadRequest(explanation='Could not get user data')
-    user_data = user_data_request.json()
-    if user_data['email_verified'] is not True:
-        raise HTTPBadRequest(explanation='Unverified email')
-    user_info = _get_user_info(user_data)
-    validate_request(context.type_info.schema, request, user_info)
-    if request.errors:
-        raise ValidationError(', '.join(request.errors))
-    result = collection_add(context, request, user_info)
-    if not result or result['status'] != 'success':
-        raise HTTPInternalServerError(explanation='attempt to create account was not successful')
-    return result
 
 
 def _get_first_and_last_names_from_name(name):

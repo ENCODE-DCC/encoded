@@ -163,67 +163,6 @@ class Timeout {
     }
 }
 
-const EulaModal = ({ closeModal, signup }) => (
-    <Modal>
-        <ModalHeader title="Creating a new account" closeModal={closeModal} />
-        <ModalBody>
-            <p>
-                You are about to create an ENCODE account. Please have a look at the <a href="https://www.stanford.edu/site/terms/">terms of service</a> and <a href="https://www.stanford.edu/site/privacy/">privacy policy</a>.
-            </p>
-        </ModalBody>
-        <ModalFooter
-            closeModal={closeModal}
-            submitBtn={signup}
-            submitTitle="Proceed"
-        />
-    </Modal>
-);
-
-EulaModal.propTypes = {
-    closeModal: PropTypes.func.isRequired,
-    signup: PropTypes.func.isRequired,
-};
-
-const AccountCreationFailedModal = ({ closeModal, date }) => (
-    <Modal>
-        <ModalHeader title="Failed to create a new account." closeModal={closeModal} />
-        <ModalBody>
-            <p>
-                Creating a new account failed. Please contact <a href={`mailto:encode-help@lists.stanford.edu?subject=Creating e-mail account failed&body=Creating an account failed at time: ${date}`}>support</a>.
-            </p>
-        </ModalBody>
-        <ModalFooter
-            cancelTitle="Close"
-            closeModal={closeModal}
-        />
-    </Modal>
-);
-
-AccountCreationFailedModal.propTypes = {
-    closeModal: PropTypes.func.isRequired,
-    date: PropTypes.string.isRequired,
-};
-
-
-const AccountCreatedModal = ({ closeModal }) => (
-    <Modal>
-        <ModalHeader title="Account Created" closeModal={closeModal} />
-        <ModalBody>
-            <p>
-                Welcome! A new user account is now created for you and you are automatically logged in.
-            </p>
-        </ModalBody>
-        <ModalFooter
-            closeModal={closeModal}
-            cancelTitle={'Close'}
-        />
-    </Modal>
-);
-
-AccountCreatedModal.propTypes = {
-    closeModal: PropTypes.func.isRequired,
-};
-
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -268,8 +207,8 @@ class App extends React.Component {
             logout: 'triggerLogout',
         };
 
-        this.domain = 'encode.auth0.com';
-        this.clientId = 'WIOr638GdDdEGPJmABPhVzMn6SYUIdIH';
+        this.domain = 'dev-kce.auth0.com';
+        this.clientId = 'eCMsd3DmeGygs9zS3AhPZ17FB0f5N0Q4';
 
         // Bind this to non-React methods.
         this.fetch = this.fetch.bind(this);
@@ -355,9 +294,9 @@ class App extends React.Component {
             },
             socialButtonStyle: 'big',
             languageDictionary: {
-                title: 'Log in to ENCODE',
+                title: 'Log in to KCE',
             },
-            allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
+            allowedConnections: ['google-oauth2'],
         });
         this.lock.on('authenticated', this.handleAuth0Login);
 
@@ -370,8 +309,8 @@ class App extends React.Component {
                 const privacyLinkText = document.createTextNode('Privacy policy');
                 privacyLink.appendChild(privacyLinkText);
                 privacyDiv.className = 'auth0__privacy-notice';
-                privacyLink.href = 'https://www.stanford.edu/site/privacy/';
-                privacyLink.title = 'View Stanford University privacy policy';
+                privacyLink.href = 'https://www.utsouthwestern.edu/legal/privacy-policy.html';
+                privacyLink.title = 'View UT Southwestern privacy policy';
                 privacyDiv.appendChild(privacyLink);
                 lockElements[0].appendChild(privacyDiv);
             }
@@ -1241,23 +1180,6 @@ class App extends React.Component {
                                     <div id="layout-footer" />
                                 </div>
                             </Provider>
-                            {this.state.eulaModalVisibility ?
-                                <EulaModal
-                                    closeModal={this.closeSignupModal}
-                                    signup={this.signup}
-                                />
-                            : null}
-                            { this.state.accountCreatedModalVisibility ?
-                                <AccountCreatedModal
-                                    closeModal={this.closeAccountCreationNotification}
-                                />
-                            : null}
-                            {this.state.accountCreationFailedVisibility ?
-                                <AccountCreationFailedModal
-                                    closeModal={this.closeAccountCreationErrorModal}
-                                    date={(new Date()).toUTCString()}
-                                />
-                            : null}
                             <Footer version={this.props.context.app_version} />
                         </div>
                     </div>
