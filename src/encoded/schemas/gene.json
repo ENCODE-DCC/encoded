@@ -33,11 +33,11 @@
         },
         "gene_status": {
             "title": "Gene status",
-            "description": "The status of the GENCODE record for this gene.",
+            "description": "The status of the Ensembl record for this gene.",
             "type": "string",
             "enum": [
-                "live",
-                "discontinued"
+                "current",
+                "retired"
             ],
             "permission": "import_items"
         },
