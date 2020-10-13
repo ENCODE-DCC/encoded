@@ -5,8 +5,7 @@ import re
 
 EPILOG = __doc__
 
-_GENE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&limit=all'
-_TEST_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&organism.scientific_name=Mus+musculus&limit=all'
+_GENE_URL = 'https://www.encodeproject.org/search/?type=Gene&format=json&locations=*&field=geneid&field=name&field=symbol&field=synonyms&field=dbxrefs&field=locations&field=organism.scientific_name&organism.scientific_name=Homo+sapiens&organism.scientific_name=Mus+musculus&limit=all'
 
 
 def get_annotation():
@@ -37,16 +36,10 @@ def all_annotations(url):
 
             if 'dbxrefs' in gene:
                 identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:', 'WormBase:', 'FlyBase:'))]
-                #mgi_id = [x for x in gene['dbxrefs'] if x.startswith(('MGI:'))]
                 if len(identifier) != 1:
                     continue
                 if len(identifier) == 1:
                     identifier = ''.join(identifier)
-                    #if organism == 'Mus musculus':
-                        #identifier = ''.join(identifier)
-                        #identifier = identifier[8:]
-                    #else:
-                        #identifier = ''.join(identifier)
 
                     if 'name' not in gene:
                         continue
@@ -60,7 +53,6 @@ def all_annotations(url):
                             'input': [gene['name'] + species, gene['symbol'] + species, identifier, gene['geneid'] + ' (Gene ID)']
                         }
                         elif organism == 'Mus musculus':
-                            #doc['suggest'] = {'input': [gene['symbol'] + species, ''.join(mgi_id) + species]}
                             doc['suggest'] = {'input': [gene['symbol'] + species, identifier + species]}
 
                     if 'synonyms' in gene and organism == 'Homo sapiens':
@@ -109,7 +101,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
-    annotations = all_annotations(_TEST_URL)
+    annotations = all_annotations(_GENE_URL)
 
     # Create annotations JSON file
     with open('annotations_local.json', 'w') as outfile:
