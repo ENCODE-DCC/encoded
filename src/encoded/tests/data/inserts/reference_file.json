@@ -44,6 +44,7 @@
             "TR_J_gene",
             "TR_C_gene"
         ],
+        "premrna_package": true,
         "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
     },
     {

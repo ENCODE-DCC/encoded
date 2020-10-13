@@ -246,6 +246,13 @@
                     "vaultRNA"
                 ]
             }
+        },
+        "premrna_package": {
+            "title": "Pre-mRNA package",
+            "description": "If true, the reference allows for intronic reads to be included in the UMI counts for each gene and barcode.",
+            "comment": "https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#premrna",
+            "type": "boolean",
+            "default": false
         }
     },
     "facets": {
