@@ -172,7 +172,6 @@ export class FileTable extends React.Component {
             // TODO: (1)Move .hide to FileTable.procTableColumns declaration
             // (2) move showReplicateNumber to meta
             FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
-            FileTable.procTableColumns.visualize.hide = () => browserOptions.browserFileSelectHandler === null;
 
             return (
                 <div>
@@ -331,6 +330,7 @@ FileTable.contextTypes = {
 FileTable.procTableColumns = {
     visualize: {
         title: 'Visualize',
+        hide: (list, columns, meta) => meta && meta.browserOptions && (meta.browserOptions.browserFileSelectHandler === null || meta.browserOptions.currentBrowser !== 'hic'),
         display: (item, meta) => {
             const selectedFile = meta.browserOptions.selectedBrowserFiles.find(file => file['@id'] === item['@id']);
             const selectable = visFileSelectable(item, meta.browserOptions.selectedBrowserFiles, meta.browserOptions.currentBrowser);
