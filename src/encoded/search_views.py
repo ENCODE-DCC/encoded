@@ -51,22 +51,15 @@ def includeme(config):
 
 
 DEFAULT_ITEM_TYPES = [
-    'AntibodyLot',
     'Award',
-    'Biosample',
-    'BiosampleType',
     'Dataset',
-    'Document',
-    'Donor',
-    'GeneticModification',
     'Page',
-    'Pipeline',
     'Publication',
-    'Software',
-    'Gene',
-    'Target',
     'File',
-    'Lab'
+    'Patient',
+    'Biospecimen',
+    'Surgery',
+    'PathologyReport'
 ]
 
 

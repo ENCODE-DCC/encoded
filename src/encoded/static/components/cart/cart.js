@@ -241,7 +241,7 @@ const CartFiles = ({ files, currentPage }) => {
             </div>
         );
     }
-    return <div className="nav result-table cart__empty-message">No files to view in any dataset in the cart.</div>;
+    return <div className="nav result-table cart__empty-message">No files to view in any dataset in the cohort.</div>;
 };
 
 CartFiles.propTypes = {
@@ -1247,25 +1247,25 @@ CounterTab.defaultProps = {
 const getCartInfo = (context, savedCartObj, elements) => {
     let cartType;
     let cartName;
-    let cartDatasets;
+    let cartPatients;
     if (context['@type'][0] === 'cart-view') {
         // Viewing a current active or memory cart on the /cart-view/ page.
         if (savedCartObj && Object.keys(savedCartObj).length > 0) {
             cartType = 'ACTIVE';
             cartName = savedCartObj.name;
-            cartDatasets = savedCartObj.elements;
+            cartPatients = savedCartObj.elements;
         } else {
             cartType = 'MEMORY';
             cartName = 'Cart';
-            cartDatasets = elements;
+            cartPatients = elements;
         }
     } else {
         // Viewing a saved cart at its unique path.
         cartType = 'OBJECT';
         cartName = context.name;
-        cartDatasets = context.elements;
+        cartPatients = context.elements;
     }
-    return { cartType, cartName, cartDatasets };
+    return { cartType, cartName, cartPatients };
 };
 
 
@@ -1416,7 +1416,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
     const [rawdataFiles, setRawdataFiles] = React.useState([]);
 
     // Retrieve current cart information regardless of its source (memory, object, active).
-    const { cartType, cartName, cartDatasets } = getCartInfo(context, savedCartObj, elements);
+    const { cartType, cartName, cartPatients } = getCartInfo(context, savedCartObj, elements);
 
     // Get all files or just visualizable ones based on the Show Visualizable Data Only switch.
     const getConsideredFiles = () => (visualizableOnly ? filterForVisualizableFiles(allFiles) : allFiles);
@@ -1486,14 +1486,14 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
 
     // After mount, we can fetch all datasets in the cart and from them extract all their files.
     React.useEffect(() => {
-        if (cartDatasets.length > 0) {
-            retrieveDatasetsFiles(cartDatasets, setFacetProgress, fetch, session).then(({ datasetFiles, datasets }) => {
+        if (cartPatients.length > 0) {
+            retrieveDatasetsFiles(cartPatients, setFacetProgress, fetch, session).then(({ datasetFiles, datasets }) => {
                 setAllFiles(datasetFiles);
                 setRawdataFiles(datasetFiles.filter(datasetFile => !datasetFile.assembly));
                 setViewableDatasets(datasets);
             });
         }
-    }, [cartDatasets, fetch, session]);
+    }, [cartPatients, fetch, session]);
 
     // Use the file information to build the facets and its initial selections.
     React.useEffect(() => {
@@ -1509,18 +1509,18 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
 
     // Data changes or initial load need a total-page-count calculation.
     React.useEffect(() => {
-        const datasetPageCount = calcTotalPageCount(cartDatasets.length, PAGE_ELEMENT_COUNT);
+        const patientPageCount = calcTotalPageCount(cartPatients.length, PAGE_ELEMENT_COUNT);
         const browserPageCount = calcTotalPageCount(selectedVisualizableFiles.length, PAGE_TRACK_COUNT);
         const processedDataPageCount = calcTotalPageCount(selectedFiles.length, PAGE_FILE_COUNT);
         const rawdataPageCount = calcTotalPageCount(rawdataFiles.length, PAGE_FILE_COUNT);
-        dispatchTotalPageCounts({ tab: 'datasets', totalPageCount: datasetPageCount });
+        dispatchTotalPageCounts({ tab: 'patients', totalPageCount: patientPageCount });
         dispatchTotalPageCounts({ tab: 'browser', totalPageCount: browserPageCount });
         dispatchTotalPageCounts({ tab: 'processeddata', totalPageCount: processedDataPageCount });
         dispatchTotalPageCounts({ tab: 'rawdata', totalPageCount: rawdataPageCount });
 
         // Go to first page if current page number goes out of range of new page count.
-        if (pageNumbers.datasets >= datasetPageCount) {
-            dispatchPageNumbers({ tab: 'datasets', pageNumber: 0 });
+        if (pageNumbers.patients >= patientPageCount) {
+            dispatchPageNumbers({ tab: 'patients', pageNumber: 0 });
         }
         if (pageNumbers.browser >= browserPageCount) {
             dispatchPageNumbers({ tab: 'browser', pageNumber: 0 });
@@ -1531,7 +1531,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
         if (pageNumbers.rawdata >= rawdataPageCount) {
             dispatchPageNumbers({ tab: 'rawdata', pageNumber: 0 });
         }
-    }, [cartDatasets, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
+    }, [cartPatients, selectedVisualizableFiles, selectedFiles, rawdataFiles, pageNumbers.datasets, pageNumbers.browser, pageNumbers.processeddata, pageNumbers.rawdata]);
 
     return (
         <div className={itemClass(context, 'view-item')}>
@@ -1540,10 +1540,10 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
                 {cartType === 'OBJECT' ? <ItemAccessories item={context} /> : null}
             </header>
             <Panel addClasses="cart__result-table">
-                {cartDatasets.length > 0 ?
+                {cartPatients.length > 0 ?
                     <PanelHeading addClasses="cart__header">
                         <CartTools
-                            elements={cartDatasets}
+                            elements={cartPatients}
                             savedCartObj={savedCartObj}
                             selectedTerms={selectedTerms}
                             viewableDatasets={viewableDatasets}
@@ -1557,11 +1557,11 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
                     </PanelHeading>
                 : null}
                 <PanelBody>
-                    {cartDatasets.length > 0 ?
+                    {cartPatients.length > 0 ?
                         <div className="cart__display">
                             <FileFacets
                                 facets={facets}
-                                elements={cartDatasets}
+                                elements={cartPatients}
                                 selectedTerms={selectedTerms}
                                 termClickHandler={handleTermClick}
                                 selectedFileCount={selectedFiles.length}
@@ -1575,7 +1575,7 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
                                 tabPanelCss="cart__display-content"
                                 tabs={{ patients: 'Patient'}}
                                 tabDisplay={{
-                                    patient: <CounterTab title="Patients" count={cartDatasets.length} voice="datasets" />,
+                                    patient: <CounterTab title="Patients" count={cartPatients.length} voice="patients" />,
                                 }}
                                 handleTabClick={handleTabClick}
                             >
