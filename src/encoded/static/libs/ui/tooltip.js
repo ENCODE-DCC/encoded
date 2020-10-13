@@ -1,5 +1,39 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+
+// Render tooltips to the document body
+// This prevents cropping when the tooltips overflow their parent containers
+// Code modified from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
+class RenderInBody extends React.Component {
+    componentDidMount() {
+        this.popup = document.createElement('div');
+        document.body.appendChild(this.popup);
+        this._renderLayer();
+    }
+
+    componentDidUpdate() {
+        this._renderLayer();
+    }
+
+    componentWillUnmount() {
+        ReactDOM.unmountComponentAtNode(this.popup);
+        document.body.removeChild(this.popup);
+    }
+
+    _renderLayer() {
+        ReactDOM.render(this.props.children, this.popup);
+    }
+
+    render() {
+        // Render a placeholder
+        return <div />;
+    }
+}
+
+RenderInBody.propTypes = {
+    children: PropTypes.object.isRequired,
+};
 
 // This module lets you have a tooltip pop up when any component is hovered over or focused. The
 // general usage is:
@@ -16,7 +50,8 @@ import PropTypes from 'prop-types';
 const Tooltip = (props) => {
     const [showDefinition, setDefinition] = React.useState(false);
     const [isMobile, setIsMobile] = React.useState(false);
-    const [tooltipPosition, setTooltipPosition] = React.useState(0);
+    const [tooltipLeft, setTooltipLeft] = React.useState(0);
+    const [tooltipTop, setTooltipTop] = React.useState(0);
     const { trigger, position, tooltipId, css, innerCss, children, timerFlag, relativeTooltipFlag } = props;
     const wrapperCss = `tooltip-container${css ? ` ${css}` : ''}`;
     const tooltipCss = `${innerCss || `tooltip ${position}`}`;
@@ -27,13 +62,18 @@ const Tooltip = (props) => {
     // The tooltip bubble is assumed to be 250px wide and an update is required if that is no longer true
     // Code could determine the width of the tooltip upon load but then the tooltip will need to be rendered in an incorrect position -- or the mechanics of hiding/showing the tooltip would need to be changed
     const positionTooltip = React.useCallback(() => {
+        // Determining the position of the tooltip trigger
         const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-        const tooltipRight = buttonRef.current.getBoundingClientRect().right;
-        const tooltipLeft = buttonRef.current.getBoundingClientRect().left;
-        const rightOverlap = viewportWidth - (tooltipRight + 125);
-        const leftOverlap = tooltipLeft - 125;
+        const tooltipTriggerRight = buttonRef.current.getBoundingClientRect().right;
+        const tooltipTriggerLeft = buttonRef.current.getBoundingClientRect().left;
+        const tooltipTriggerTop = buttonRef.current.getBoundingClientRect().top;
+        // Ascertaining if tooltip bubble needs to be placed to the left or right to stay on document body
+        const rightOverlap = viewportWidth - (tooltipTriggerRight + 125);
+        const leftOverlap = tooltipTriggerLeft - 125;
         const tooltipOverlap = (rightOverlap < 0) ? rightOverlap : (leftOverlap < 0) ? -leftOverlap : 0;
-        setTooltipPosition(tooltipOverlap);
+        // Setting tooltip bubble parameters
+        setTooltipLeft(tooltipTriggerLeft + tooltipOverlap);
+        setTooltipTop(tooltipTriggerTop + 20);
     }, []);
 
     // Display or hide tooltip pop-up
@@ -106,19 +146,19 @@ const Tooltip = (props) => {
                 {trigger}
             </button>
             {showDefinition ?
-                <div
-                    className={tooltipCss}
-                    role="tooltip"
-                    id={tooltipId}
-                >
-                    <div className="tooltip-arrow" />
+                <RenderInBody>
                     <div
-                        className="tooltip-inner"
-                        style={(tooltipPosition < 0) ? ({ marginLeft: `${tooltipPosition * 2}px` }) : (tooltipPosition > 0) ? ({ marginLeft: `${tooltipPosition * 2}px` }) : ({})}
+                        className={tooltipCss}
+                        role="tooltip"
+                        id={tooltipId}
+                        style={{ left: `${tooltipLeft}px`, top: `${tooltipTop}px` }}
                     >
-                        {children}
+                        <div className="tooltip-arrow" />
+                        <div className="tooltip-inner">
+                            {children}
+                        </div>
                     </div>
-                </div>
+                </RenderInBody>
             : null}
         </div>
     );

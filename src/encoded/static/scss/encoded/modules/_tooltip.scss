@@ -59,10 +59,9 @@ $tooltip-color: #000;
     position: absolute;
     z-index: 1030;
     display: block;
-    visibility: hidden;
     line-height: 1.4;
     font-size: 0.8rem;
-    opacity: 0;
+    pointer-events: none;
     @media screen and (min-width: $screen-md-min) {
         font-size: 1rem;
         line-height: 1.2;
@@ -133,6 +132,7 @@ $tooltip-color: #000;
     white-space: pre-wrap;
     letter-spacing: 0;
     font-weight: 400;
+    pointer-events: none;
     &.sub-menu {
         margin-left: -45px;
         padding-left: 60px;
