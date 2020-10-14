@@ -29,13 +29,9 @@ def all_annotations(url):
                 species = ' (homo sapiens)'
             elif organism == 'Mus musculus':
                 species = ' (mus musculus)'
-            elif organism == 'Caenorhabditis elegans':
-                species = ' (caenorhabditis elegans)'
-            elif organism == 'Drosophila melanogaster':
-                species = ' (drosophila melanogaster)'
 
             if 'dbxrefs' in gene:
-                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:', 'WormBase:', 'FlyBase:'))]
+                identifier = [x for x in gene['dbxrefs'] if x.startswith(('HGNC:', 'MGI:'))]
                 if len(identifier) != 1:
                     continue
                 if len(identifier) == 1:
