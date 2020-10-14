@@ -36,8 +36,7 @@
         "status": "released",
         "gene_biotypes_included": [
             "protein_coding",
-            "lincRNA",
-            "antisense",
+            "lncRNA",
             "IG_LV_gene",
             "IG_V_gene",
             "IG_D_gene",
@@ -45,8 +44,8 @@
             "TR_J_gene",
             "TR_C_gene"
         ],
-        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest",
-        "md5sum": "1055135d5d9bcea7119a70e738975375"
+        "premrna_package": true,
+        "url": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
     },
     {
         "aliases": [
@@ -83,7 +82,7 @@
         "status": "released",
         "gene_biotypes_included": [
             "protein_coding",
-            "lincRNA",
+            "lncRNA",
             "IG_C_gene",
             "IG_D_gene",
             "IG_V_gene",

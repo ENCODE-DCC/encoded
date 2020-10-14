@@ -4,14 +4,7 @@
     "id": "/profiles/raw_sequence_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "anyOf": [
-        {
-            "required": ["dataset", "award", "file_format", "output_types", "derived_from", "md5sum"]
-        },
-        {
-            "required": ["dataset", "award", "file_format", "output_types", "derived_from", "no_file_available"]
-        }
-    ],
+    "required": ["dataset", "award", "file_format", "output_types", "derived_from"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -98,7 +91,6 @@
             "description": "Fastq file flowcell based unique signature to reference a file.",
             "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "permission": "import_items",
             "items": {
@@ -274,9 +266,6 @@
         },
         "date_created": {
             "title": "Date created"
-        },
-        "submitter_comment": {
-            "title": "Submitter comment"
         },
         "status": {
             "title": "Status"

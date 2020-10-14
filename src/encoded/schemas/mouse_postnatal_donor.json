@@ -44,6 +44,7 @@
             "default": "1"
         },
         "life_stage": {
+            "comment": "Based on the Mouse Development Stages ontology, newborn is birth to 4 d, premature is 4 d to 6 w, adult is 6 w and over.",
             "enum": [
                 "newborn",
                 "premature",

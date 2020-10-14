@@ -76,8 +76,7 @@
         "weight_unit": "oz",
         "sex": "unknown",
         "ethnicity": "HANCESTRO_0008",
-        "notes": "Test notes",
-        "submitter_comment": "Test comment"
+        "notes": "Test notes"
     },
     {
         "accession": "LATHD131BBB",
@@ -96,8 +95,7 @@
         "weight_unit": "oz",
         "sex": "unknown",
         "ethnicity": "HANCESTRO_0008",
-        "notes": "Test notes",
-        "submitter_comment": "Test comment"
+        "notes": "Test notes"
     },
     {
     	"accession": "LATHD123ABC",
@@ -123,8 +121,7 @@
     	"parents": [
     		"2db646f0-d910-11ea-87d0-0242ac130003"
     	],
-    	"notes": "Test notes",
-    	"submitter_comment": "Test comment"
+    	"notes": "Test notes"
     },
     {
     	"accession": "LATHD124ABC",
@@ -156,7 +153,6 @@
     	],
     	"twin": "9037d8f8-db7b-11ea-87d0-0242ac130003",
     	"twin_type": "monozygotic",
-    	"notes": "Test notes",
-    	"submitter_comment": "Test comment"
+    	"notes": "Test notes"
     }
 ]

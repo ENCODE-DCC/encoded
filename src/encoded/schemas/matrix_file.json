@@ -4,7 +4,7 @@
     "id": "/profiles/matrix_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "award", "file_format", "output_types", "md5sum", "derived_from", "normalized", "value_scale", "value_units", "derivation_process"],
+    "required": ["dataset", "award", "file_format", "output_types", "derived_from", "normalized", "value_scale", "value_units", "derivation_process"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -139,7 +139,8 @@
                 "linkTo": [
                     "RawSequenceFile",
                     "ReferenceFile",
-                    "MatrixFile"
+                    "MatrixFile",
+                    "Library"
                 ]
             }
         },
@@ -265,7 +266,6 @@
             "title": "Filtering cutoffs",
             "description": "The list of cutoffs that were used for filtering in generating the matrix.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Filtering cutoff",
                 "type": "object",
@@ -363,9 +363,6 @@
         },
         "software": {
             "title": "Software"
-        },
-        "submitter_comment": {
-            "title": "Submitter comment"
         },
         "status": {
             "title": "Status"

@@ -1038,5 +1038,26 @@
         "collection_to_dissociation_interval_units": "hour",
         "dissociation_time": 30,
         "dissociation_time_units": "minute"
+    },
+    {
+        "aliases": [
+            "peter-sims:unconsented_lung_susp"
+        ],      
+        "biosample_ontology": "UBERON_0002048",
+        "derived_from": [
+            "peter-sims:unconsented_lung"
+        ],
+        "derivation_process": [
+            "mechanical dissociation"
+        ],
+        "suspension_type": "cell",
+        "status": "released",
+        "cell_viability_method": "trypan blue staining",
+        "starting_quantity": 1200,
+        "starting_quantity_units": "cells/μl",
+        "single_cell_isolation_method": "10x",
+        "single_cell_isolation_method_version": 3,
+        "uuid": "0757a1a6-9ac8-474d-95de-cec87f6a6456",
+        "accession": "LATSU333CCC"
     }
 ]

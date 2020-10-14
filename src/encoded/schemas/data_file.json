@@ -22,11 +22,18 @@
                 "pattern": "^(LATDF\\d{3}[A-Z]{3})$"
             }
         },
+         "validated": {
+            "title": "Validated",
+            "description": "If true, then the metadata has been validated against the data file which it representes.",
+            "comment": "Do not submit. The field will default to 'false' and be updated by the validator.",
+            "type": "boolean",
+            "default": false,
+            "permission": "import_items"
+        },
         "no_file_available": {
             "title": "No file available",
             "permission":"import_items",
-            "description": "A flag to indicate whether this file is available to download. It may also not exist if it is the result of an unproductive analysis.",
-            "comment": "Do not submit. This value can only be set by admins.",
+            "description": "A flag to indicate whether this file is available to download.",
             "default": false,
             "type": "boolean"
         },

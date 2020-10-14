@@ -4,7 +4,7 @@
     "id": "/profiles/reference_file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["fileset", "file_format", "output_types", "md5sum", "reference_version"],
+    "required": ["fileset", "file_format", "output_types", "reference_version"],
     "identifyingProperties": ["uuid", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -202,25 +202,58 @@
                 "description": "A gene biotypes found in the filtered gtf file.",
                 "type": "string",
                 "enum": [
-                    "protein_coding",
-                    "lincRNA",
                     "antisense",
-                    "IG_LV_gene",
-                    "IG_V_gene",
-                    "IG_V_pseudogene",
+                    "IG_C_gene",
+                    "IG_C_pseudogene",
                     "IG_D_gene",
                     "IG_J_gene",
                     "IG_J_pseudogene",
-                    "IG_C_gene",
-                    "IG_C_pseudogene",
-                    "TR_V_gene",
-                    "TR_V_pseudogene",
-                    "TR__D_gene",
+                    "IG_LV_gene",
+                    "IG_pseudogene",
+                    "IG_V_gene",
+                    "IG_V_pseudogene",
+                    "lincRNA",
+                    "lncRNA",
+                    "miRNA",
+                    "misc_RNA",
+                    "Mt_rRNA",
+                    "Mt_tRNA",
+                    "polymorphic_pseudogene",
+                    "processed_pseudogene",
+                    "protein_coding",
+                    "pseudogene",
+                    "ribozyme",
+                    "rRNA",
+                    "rRNA_pseudogene",
+                    "scaRNA",
+                    "scRNA",
+                    "snoRNA",
+                    "snRNA",
+                    "sRNA",
+                    "TEC",
+                    "TR_C_gene",
+                    "TR_D_gene",
                     "TR_J_gene",
                     "TR_J_pseudogene",
-                    "TR_C_gene"
+                    "TR_V_gene",
+                    "TR_V_pseudogene",
+                    "transcribed_processed_pseudogene",
+                    "transcribed_unitary_pseudogene",
+                    "transcribed_unprocessed_pseudogene",
+                    "translated_processed_pseudogene",
+                    "translated_unprocessed_pseudogene",
+                    "unitary_pseudogene",
+                    "unprocessed_pseudogene",
+                    "vaultRNA"
                 ]
             }
+        },
+        "premrna_package": {
+            "title": "Pre-mRNA package",
+            "description": "If true, the reference allows for intronic reads to be included in the UMI counts for each gene and barcode.",
+            "comment": "https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#premrna",
+            "type": "boolean",
+            "default": false
         }
     },
     "facets": {
@@ -270,9 +303,6 @@
         },
         "date_created": {
             "title": "Date created"
-        },
-        "submitter_comment": {
-            "title": "Submitter comment"
         },
         "status": {
             "title": "Status"

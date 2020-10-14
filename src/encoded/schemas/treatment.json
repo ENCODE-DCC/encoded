@@ -115,7 +115,6 @@
              "title": "Biosamples",
              "description": "Biosamples used in this treatment.",
              "type": "array",
-             "default": [],
              "uniqueItems": true,
              "items": {
                  "title": "Treatment biosample",
@@ -129,7 +128,6 @@
              "title": "Antibodies used",
              "description": "Antibodies used in this treatment.",
              "type": "array",
-             "default": [],
              "uniqueItems": true,
              "items": {
                  "title": "Treatment antibody",

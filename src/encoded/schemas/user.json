@@ -47,7 +47,6 @@
             "title": "Submits for",
             "description": "The labs that the user is authorized to submit data for.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "permission": "import-items",
             "items": {
@@ -61,7 +60,6 @@
             "title": "Groups",
             "description": "Additional access control groups",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "permission": "import-items",
             "items": {

@@ -4,7 +4,7 @@
     "id": "/profiles/gene.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["gene_id", "gene_version", "ensembl_status", "symbol", "assembly"],
+    "required": ["gene_id", "gene_version", "gene_status", "symbol", "assembly", "gencode_version"],
     "identifyingProperties": ["uuid", "gene_id"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -22,23 +22,22 @@
             "title": "Ensembl gene ID",
             "description": "Ensembl gene ID, which starts with 'ENSG', for this gene, not including the gene version",
             "type": "string",
-            "pattern": "^ENSG[0-9]*\\d$",
+            "pattern": "^(ENSG|ENSMUSG)[0-9]*\\d$",
             "permission": "import_items",
             "uniqueKey": true
         },
         "gene_version": {
-            "title": "Ensembl gene version",
+            "title": "GENCODE gene version",
             "description": "The version of the gene as assigned by Ensembl.",
             "type": "integer"
         },
-        "ensembl_status": {
-            "title": "Ensembl gene status",
+        "gene_status": {
+            "title": "Gene status",
             "description": "The status of the Ensembl record for this gene.",
             "type": "string",
-            "default": "live",
             "enum": [
-                "live",
-                "discontinued"
+                "current",
+                "retired"
             ],
             "permission": "import_items"
         },
@@ -48,66 +47,46 @@
             "type": "string",
             "enum": [
                 "IG_C_gene",
+                "IG_C_pseudogene",
                 "IG_D_gene",
                 "IG_J_gene",
-                "IG_LV_gene",
-                "IG_V_gene",
-                "TR_C_gene",
-                "TR_J_gene",
-                "TR_V_gene",
-                "TR_D_gene",
-                "IG_pseudogene",
-                "IG_C_pseudogene",
                 "IG_J_pseudogene",
+                "IG_LV_gene",
+                "IG_pseudogene",
+                "IG_V_gene",
                 "IG_V_pseudogene",
-                "TR_V_pseudogene",
-                "TR_J_pseudogene",
-                "Mt_rRNA",
-                "Mt_tRNA",
+                "lncRNA",
                 "miRNA",
                 "misc_RNA",
-                "rRNA",
-                "scRNA",
-                "snRNA",
-                "snoRNA",
-                "ribozyme",
-                "sRNA",
-                "scaRNA",
-                "lncRNA",
-                "Mt_tRNA_pseudogene",
-                "tRNA_pseudogene",
-                "snoRNA_pseudogene",
-                "snRNA_pseudogene",
-                "scRNA_pseudogene",
-                "rRNA_pseudogene",
-                "misc_RNA_pseudogene",
-                "miRNA_pseudogene",
-                "TEC",
-                "nonsense_mediated_decay",
-                "retained_intron",
-                "protein_coding",
-                "non_coding",
-                "ambiguous_org",
-                "sense_intronic",
-                "sense_overlapping",
-                "known_ncrna",
-                "pseudogene",
-                "processed_pseudogene",
+                "Mt_rRNA",
+                "Mt_tRNA",
                 "polymorphic_pseudogene",
-                "retrotransposed",
+                "processed_pseudogene",
+                "protein_coding",
+                "pseudogene",
+                "ribozyme",
+                "rRNA",
+                "rRNA_pseudogene",
+                "scaRNA",
+                "scRNA",
+                "snoRNA",
+                "snRNA",
+                "sRNA",
+                "TEC",
+                "TR_C_gene",
+                "TR_D_gene",
+                "TR_J_gene",
+                "TR_J_pseudogene",
+                "TR_V_gene",
+                "TR_V_pseudogene",
                 "transcribed_processed_pseudogene",
-                "transcribed_unprocessed_pseudogene",
                 "transcribed_unitary_pseudogene",
+                "transcribed_unprocessed_pseudogene",
                 "translated_processed_pseudogene",
                 "translated_unprocessed_pseudogene",
                 "unitary_pseudogene",
                 "unprocessed_pseudogene",
-                "artifact",
-                "macro_lncRNA",
-                "3prime_overlapping_ncRNA",
-                "disrupted_domain",
-                "vaultRNA",
-                "bidirectional_promoter_lncRNA"
+                "vaultRNA"
             ] 
         },
         "strand": {
@@ -132,7 +111,7 @@
                 "description": "A unique identifier from the external resource HGNC",
                 "comment": "Submit as database_name:id. See changelog for potential databases.",
                 "type":  "string",
-                "pattern": "^(HGNC:\\d+)$"
+                "pattern": "^((HGNC|MGI):\\d+)$"
             },
             "permission": "import_items"
         },
@@ -145,9 +124,9 @@
             "properties": {
                 "chromosome": {
                     "title": "Chromosome",
-                    "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                    "description": "The number (or letter) designation for the chromosome (e.g. chr1 or chrX), or the contig identifier if the sequence is unlocalized.",
                     "type": "string",
-                    "pattern": "^(chr[0-9A-Za-z]+)$"
+                    "pattern": "^((chr|GL|KI)[0-9A-Za-z.]+)$"
                 },
                 "start": {
                     "title": "Start",
@@ -173,14 +152,34 @@
                 "hg19",
                 "mm10"
             ]
+        },
+        "gencode_version": {
+            "title": "GENCODE version",
+            "description": "The GENCODE annotation version that the gene .",
+            "type": "string",
+            "enum": [
+                "19",
+                "24",
+                "28",
+                "32",
+                "M9",
+                "M18",
+                "M23"
+            ]
         }
     },
     "facets": {
         "assembly": {
             "title": "Assembly"
         },
+        "gencode_version": {
+            "title": "GENCODE version"
+        },
         "gene_biotype": {
             "title": "Gene biotype"
+        },
+        "gene_status": {
+            "title": "Gene status"
         }
     },
     "columns": {

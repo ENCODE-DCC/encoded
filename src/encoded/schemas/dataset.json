@@ -87,19 +87,6 @@
             ],
             "permission": "import_items"
         },
-        "description": {
-            "elasticsearch_mapping_index_type": {
-                "title": "Field mapping index type",
-                "description": "Defines one of three types of indexing available",
-                "type": "string",
-                "default": "analyzed",
-                "enum": [
-                    "analyzed",
-                    "not_analyzed",
-                    "no"
-                ]
-            }
-        },
         "dbxrefs": {
             "items": {
                 "title": "External identifier",
@@ -115,7 +102,6 @@
             "title": "Supersedes" ,
             "description": "The datasets(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                     "comment": "See experiment.json for a list of available identifiers.",
@@ -127,7 +113,6 @@
             "title": "Additional data files",
             "description": "To be removed in a future release after data cleanup.",
             "type": "array",
-            "default": [],
             "permission": "import_items",
             "items": {
                 "title": "Data file",

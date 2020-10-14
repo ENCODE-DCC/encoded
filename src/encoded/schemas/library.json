@@ -92,7 +92,6 @@
             "description": "For single cell biosamples, the barcodes used to identify the biosamples.",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
             "items": {
                 "title": "Biosample barcode",
                 "type": "object",
@@ -169,7 +168,6 @@
             "title": "Spike-ins datasets used",
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items" : {
                 "title": "A spike-ins dataset.",

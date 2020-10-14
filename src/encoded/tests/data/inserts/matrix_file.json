@@ -48,7 +48,7 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "77d324e10b7dcbd06e53be5b8c2c31b7"
+        "validated": true
     },
     {
         "aliases": [
@@ -100,7 +100,8 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "md5sum": "30c7622f6007434c37f4c6d30e42d465"
+        "md5sum": "30c7622f6007434c37f4c6d30e42d465",
+        "validated": true
     },
     {
         "aliases": [
@@ -6356,5 +6357,44 @@
             "cellranger aggr 4.0"
         ],
         "md5sum": "2e883306013203954eb1b69ae063eef1"
+    },
+    {
+        "aliases": [
+            "peter-sims:unconsented_matrix"
+        ],
+        "uuid": "4f72ed00-38c1-468d-a29a-000a2eb14c70",
+        "award": "CZI004LIV",
+        "no_file_available": false,
+        "status": "released",
+        "file_format": "mtx",
+        "lab": "peter-sims",
+        "output_types": [
+            "gene quantifications"
+        ],
+        "file_size": 50000,
+        "feature_keys": [
+            "gene symbol"
+        ],
+        "feature_counts": [
+            {"feature_type": "gene", "feature_count": 23213}
+        ],
+        "observation_count": 50292,
+        "dataset": "peter-sims:scRNAseq_test_dataset",
+        "derived_from": [
+            "peter-sims:unconsented_lung_lib"
+        ],
+        "assembly": "GRCh38",
+        "genome_annotation": "GENCODE 32",
+        "value_scale": "natural log",
+        "value_units": "UMI",
+        "normalized": false,
+        "derivation_process": [
+            "alignment",
+            "quantification"
+        ],
+        "software": [
+            "cellranger aggr 4.0"
+        ],
+        "md5sum": "2d6c0e193103965fcbc1a4f938439f41"
     }
 ]

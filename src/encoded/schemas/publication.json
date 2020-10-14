@@ -17,6 +17,9 @@
         "schema_version": {
             "default": "1"
         },
+        "status": {
+            "default": "released"
+        },
         "title": {
             "title": "Title",
             "description": "Title of the publication or communication.",

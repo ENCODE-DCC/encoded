@@ -36,7 +36,6 @@
             "title": "External resources",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with Lattice objects",
             "type": "array",
-            "default": [],
             "uniqueItems": true
         }
     },
@@ -67,7 +66,6 @@
             "description": "Accessions previously assigned to objects that have been merged with this object.",
 	        "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
-            "default": [],
             "permission": "import_items"
         }
     },
@@ -139,13 +137,6 @@
             "linkTo": "User",
             "serverDefault": "userid",
             "permission": "import_items"
-        },
-        "submitter_comment": {
-            "title": "Submitter comment",
-            "description": "Additional information specified by the submitter to be displayed as a comment on the portal.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
-            "formInput": "textarea"
         }
     },
     "references": {
@@ -153,7 +144,6 @@
             "title": "References",
             "description": "The publications that provide more information about the object.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Reference",
@@ -275,7 +265,6 @@
             "title": "URLs",
             "description": "External resources with additional information.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "URL",
@@ -290,7 +279,6 @@
             "title": "Documents",
             "description": "Documents that provide additional information (not data file).",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Document",
@@ -305,7 +293,6 @@
         "treatments": {
             "title": "Treatments",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Treatment",
@@ -332,7 +319,6 @@
             "title": "Diseases",
             "comment": "See ontology_term.json for available identifiers.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Disease",
@@ -412,7 +398,6 @@
             "description": "Lab specific identifiers to reference an object.",
             "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "uniqueKey": "alias",
@@ -446,7 +431,7 @@
                     "sarah-teichmann|",
                     "sten-linnarsson|",
                     "lattice",
-                    "):[a-zA-ZÀ-ÿæœ\\d_$.+!*,()'-]+$"
+                    "):[a-zA-Z\u00C0-\u024F\u1E00-\u1EFFæœ\\d_$.+!*,()'-]+$"
                 ]
             }
         }
