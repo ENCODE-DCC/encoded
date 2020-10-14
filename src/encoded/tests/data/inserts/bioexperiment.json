@@ -1,5 +1,19 @@
 [
   {
+    "accession": "KCEBE001CTL",
+    "assay_term_name": "5C",
+    "biospecimen": "KCEBS708IJT",
+    "award": "Kidney-SPORE",
+    "experiment_description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
+    "lab": "thomas-gingeras",
+    "status": "released",
+    "date_submitted": "2015-08-20",
+    "date_released": "2016-01-01",
+    "submitted_by": "dignissim.euismod@amet.habitant",
+    "uuid": "4fe31962-4c61-4b17-883c-82ec6be02316",
+    "experiment_classification": "functional genomics assay"
+},
+  {
     "accession": "KCEBE000AER",
     "assay_term_name": "RAMPAGE",
     "biospecimen": "KCEBS708IJT",
@@ -12,7 +26,7 @@
     "submitted_by": "dignissim.euismod@amet.habitant",
     "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
     "documents": [
-      "9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
+      "dcf15d5e-40aa-43bc-b81c-32c70c9afb01"
     ],
     "references": [
       "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
@@ -24,6 +38,7 @@
     "aliases": [
       "James-Brugarolas:experiment_RB884_680_1"
     ],
+    "possible_controls":["KCESR001CTL"],
     "submitter_comment": "The lab tissue was FFPE fixed and be put in room temperature for 30min.",
     "experiment_classification": "functional genomics assay"
   },
@@ -40,7 +55,8 @@
     "submitted_by": "dignissim.euismod@amet.habitant",
     "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
     "documents": [
-      "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
+      "dcf15d5e-40aa-43bc-b81c-32c70c9afb01",
+      "6ab18a00-50aa-11e4-916c-0800200c9a66"
     ],
     "references": [
       "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd",

@@ -49,7 +49,7 @@ export const DocumentsPanel = (props) => {
         });
         allDocs = allDocs.concat(spec.documents);
     });
-
+    // console.log("documentSpecsMapped", documentSpecsMapped);
     // Sort documents by attachment download name.
     const sortedDocs = globals.sortDocs(allDocs);
 
@@ -89,11 +89,17 @@ DocumentsPanel.defaultProps = {
 // array of matching documents.
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
+    console.log("props-docsearch", props);
+
+    console.log("graph", documents)
+
     if (documents && documents.length) {
         return <DocumentsPanel documentSpecs={[{ documents }]} />;
     }
     return null;
 };
+// console.log('props', props);
+// console.log("docgraph", documents);
 // console.log('documentSpecs',documentSpecs);
 
 DocumentsPanelRenderer.propTypes = {
@@ -110,15 +116,20 @@ DocumentsPanelRenderer.defaultProps = {
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
     // console.log('this.documents', this.props.documents);
-    console.log('documents', documents);
+    console.log('documents', { documents });
     if (documents && documents.length) {
         return (
+
             <FetchedData>
+
                 <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
                 <DocumentsPanelRenderer />
             </FetchedData>
+
         );
     }
+    console.log('Param',param);
+    console.log('FetchedData',FetchedData);
     return null;
 };
 
@@ -174,8 +185,8 @@ export class Document extends React.Component {
 
     render() {
         const context = this.props.context;
-        console.log('context',context);
-        
+        console.log('context', context);
+
         // Set up rendering components
         const DocumentHeaderView = globals.documentViews.header.lookup(context);
         const DocumentCaptionView = globals.documentViews.caption.lookup(context);
@@ -247,7 +258,7 @@ export const DocumentCaption = (props) => {
                     <strong>{excerpt ? 'Description excerpt: ' : 'Description: '}</strong>
                     {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
                 </div>
-            : <em>No description</em>}
+                : <em>No description</em>}
         </div>
     );
 };
@@ -289,7 +300,7 @@ export const DocumentFile = (props) => {
                     <button data-trigger onClick={detailSwitch} className="document__file-detail-switch">
                         {collapseIcon(!detailOpen)}
                     </button>
-                : null}
+                    : null}
             </div>
         );
     }
@@ -322,14 +333,14 @@ const DocumentDetail = (props) => {
                         <dt>Description</dt>
                         <dd>{doc.description}</dd>
                     </div>
-                : null}
+                    : null}
 
                 {doc.submitted_by && doc.submitted_by.title ?
                     <div data-test="submitted-by">
                         <dt>Submitted by</dt>
                         <dd>{doc.submitted_by.title}</dd>
                     </div>
-                : null}
+                    : null}
 
                 <div data-test="lab">
                     <dt>Lab</dt>
@@ -341,7 +352,7 @@ const DocumentDetail = (props) => {
                         <dt>Grant</dt>
                         <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
-                : null}
+                    : null}
             </dl>
         </div>
     );

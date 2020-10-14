@@ -1,0 +1,188 @@
+{
+    "title": "BioDataset",
+    "description": "Schema for submitting metadata for a dataset.",
+    "id": "/profiles/biodataset.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "award", "lab"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
+    ],
+    "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
+        "accession": {
+            "accessionType": "BE"
+        },
+        "alternate_accessions": {
+            "title": "Alternate accessions",
+            "description": "Accessions previously assigned to objects that have been merged with this object.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(KCEBE\\d{3}[A-Z]{3})$|^(TSTBE\\d{6})$"
+            }
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the dataset.",
+            "type": "string",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            },
+            "formInput": "textarea"
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External resources",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+                "type":  "string",
+                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|IHEC:IHECRE\\d{8}\\.\\d)$"
+            }
+        },
+        "date_released": {
+            "title": "Date released",
+            "comment": "Do not submit, value is assigned whe the object is releaesd.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
+            "permission": "import_items"
+        },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some datasets are part of particular data collections",
+            "type": "array",
+            "permission": "import_items",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "ccre_inputv1",
+                    "ccre_inputv2",
+                    "dbGaP",
+                    "DREAM",
+                    "ENCYCLOPEDIAv3",
+                    "ENCYCLOPEDIAv4",
+                    "ENCYCLOPEDIAv5",
+                    "ENCORE",
+                    "ENTEx",
+                    "MouseDevSeries",
+                    "SESCC",
+                    "RegulomeDB"
+                ]
+            }
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "permission": "import_items",
+            "default": "in progress",
+            "enum" : [
+                "in progress",
+                "submitted",
+                "released",
+                "archived",
+                "deleted",
+                "replaced",
+                "revoked"
+            ]
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Dataset status"
+        },
+        "files.file_type": {
+            "title": "Available data"
+        },
+        "date_released": {
+            "title": "Date released"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "alternate_accessions": 1.0,
+        "aliases": 1.3,
+        "description": 1.0,
+        "dbxrefs": 1.0,
+        "award.title": 1.0,
+        "award.project": 1.0,
+        "submitted_by.email": 1.0,
+        "submitted_by.first_name": 1.0,
+        "submitted_by.last_name": 1.0,
+        "lab.institute_name": 1.1,
+        "lab.institute_label": 1.0,
+        "lab.title": 1.0,
+        "biofile.accession": 1.0,
+        "biofile.alternate_accessions": 1.0,
+        "biofile.file_format": 1.0,
+        "biofile.output_type": 1.0,
+        "biofile.md5sum": 1.0,
+        "references.title": 1.0,
+        "internal_tags": 1.0
+    },
+    "changelog": "/profiles/changelogs/dataset.md"
+}

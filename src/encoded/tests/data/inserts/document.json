@@ -158,6 +158,7 @@
         "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2. Isolation of mouse fetal liver cell subsets. Heart_STL003 general protocol.",
         "document_type": "general protocol",
         "lab": "richard-myers",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "71da87e2-92d0-418b-960b-0a30800172a0"
     },
@@ -359,6 +360,7 @@
         "award": "ENCODE2",
         "document_type": "other",
         "lab": "thomas-gingeras",
+        "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "34e684ee-8e9a-4b4e-9708-4a0bc5ae9811"
     },

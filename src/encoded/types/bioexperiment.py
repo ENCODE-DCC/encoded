@@ -36,7 +36,8 @@ class Bioexperiment(Item):
         'bioreplicate.biolibrary.documents',
         'bioreplicate.biolibrary.biospecimen',
         'bioreplicate.biolibrary.biospecimen.donor',
-
+        'bioreplicate.biolibrary.biospecimen.part_of',
+        'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',
         "references"  # link to Publication
 
@@ -44,7 +45,7 @@ class Bioexperiment(Item):
     ]
     rev = {
         'bioreplicate': ('Bioreplicate', 'bioexperiment'),
-
+        # 'possible_controls': ('Bioexperiment', 'possible_controls')
     }
 
     audit_inherit = [
@@ -54,6 +55,10 @@ class Bioexperiment(Item):
     ]
     set_status_down = [
     ]
+    rev.update({
+
+
+    })
 
     @calculated_property(
         schema={
@@ -110,7 +115,7 @@ class Bioexperiment(Item):
                             biolibraryObject['biospecimen'], '@@object')
                         if biospecimenObject['status'] == 'deleted':
                             continue
-                      
+
                         if 'accession' in biospecimenObject:
                             biospecimen_summary_dict['accession'] = biospecimenObject['accession']
                         if 'patient' in biospecimenObject:
@@ -146,9 +151,9 @@ class Bioexperiment(Item):
         # in replicate.libraries (ENCD-4251), should have collected all
         # possible technical replicates belong to the biological replicate.
         # TODO: change this once we remove technical_replicate_number.
-        #This is the easiest way to use looping save time.Shortcut.
+        # This is the easiest way to use looping save time.Shortcut.
         bio_rep_dict = {}
-        
+
         for rep in bioreplicate:
             replicate_object = request.embed(rep, '@@object')
             if replicate_object['status'] == 'deleted':
@@ -183,8 +188,8 @@ class Bioexperiment(Item):
                         replicate_object.get('biological_replicate_number')
                     )
                     biospecimen_species = biospecimen_object.get('species')
-                    biospecimen_type =biospecimen_object.get('sample_type'),
-                           
+                    biospecimen_type = biospecimen_object.get('sample_type'),
+
                 else:
                     # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
                     # untill we change our mind
@@ -222,3 +227,27 @@ class Bioexperiment(Item):
                 return 'isogenic'
 
         return 'anisogenic'
+
+    # @calculated_property(schema={
+    #     "title": "Superseded by",
+    #     "type": "array",
+    #     "items": {
+    #         "type": ['string', 'object'],
+    #         "linkFrom": "Experiment.supersedes",
+    #     },
+    #     "notSubmittable": True,
+    # })
+    # def superseded_by(self, request, superseded_by):
+    #     return paths_filtered_by_status(request, superseded_by)
+
+    # @calculated_property(schema={
+    #     "title": "Possible_controls",
+    #     "type": "array",
+    #     "items": {
+    #         "type": ['string', 'object'],
+    #         "linkFrom": "Bioexperiment.possible_controls",
+    #     },
+    #     "notSubmittable": True,
+    # })
+    # def possible_controls(self, request, possible_controls):
+    #     return paths_filtered_by_status(request, possible_controls)

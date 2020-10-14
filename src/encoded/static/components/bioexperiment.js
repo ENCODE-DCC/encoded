@@ -225,7 +225,7 @@ class Bioexperiment extends React.Component {
                 return null;
             }));
         }
-        console.log("libraryDoc",libraryDocs);
+        console.log("libraryDoc", libraryDocs);
         // Create platforms array from file platforms; ignore duplicate platforms.
         // const platforms = {};
         // if (context.files && context.files.length) {
@@ -294,22 +294,31 @@ class Bioexperiment extends React.Component {
         }
 
         // Collect biosample docs.
-          let biosampleDocs = [];
-          biosamples.forEach((biosample) => {
-              biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
-              if (biosample.part_of) {
-                  biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
-              }
-          });
-        // let biosampleDocs = [];
+        //   let biosampleDocs = [];
+        //   biosamples.forEach((biosample) => {
+        //       biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
+        //       if (biosample.part_of) {
+        //           biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
+        //       }
+        //   });
+        // -------------------------------
+        let biosampleDocs = [];
+        if(biosamples&&biosamples[0].documents){
+            biosampleDocs=biosampleDocs.concat(biosamples[0].documents);
+            if (biosamples[0].part_of){
+                biosamplesDocs=biosampleDocs.concat(biosamples[0].part_of)
+            }
+        }
+
         // biosamples.forEach((biospecimen) => {
         //     biosampleDocs = biosampleDocs.concat(biospecimen.documents);
         //     if (biospecimen.part_of) {
         //         biosampleDocs = biosampleDocs.concat(biosepcimen.part_of);
         //     }
-        //     biosampleDocs=[...new Set(biosampleDocs)];//get rid of the same document
+            // biosampleDocs=[...new Set(biosampleDocs)];//get rid of the same document
         // });
-console.log("biosampledoc",biosampleDocs);
+        console.log("biosampledoc", biosampleDocs);
+        // -------------------------
         // Collect pipeline-related documents.
         // let analysisStepDocs = [];
         // let pipelineDocs = [];
@@ -338,15 +347,17 @@ console.log("biosampledoc",biosampleDocs);
         // }
         // analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
         // pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
-        
+
         const combinedDocuments = _.uniq(documents.concat(
+            // const combinedDocuments = [...new Set(documents.concat(
             biosampleDocs,
-            libraryDocs,
+            libraryDocs
             // pipelineDocs,
             // analysisStepDocs
         ));
-        console.log("combineDoc",combinedDocuments);
+        console.log("combineDoc", combinedDocuments);
         // Determine this experiment's ENCODE version.
+        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
         const encodevers = globals.encodeVersion(context);
 
         // Make list of statuses.
@@ -364,10 +375,10 @@ console.log("biosampledoc",biosampleDocs);
         // if (context.related_series && context.related_series.length) {
         //     seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         // }
-        
 
-                // Make a list of reference links, if any.
-                const references = pubReferenceList(context.references);
+
+        // Make a list of reference links, if any.
+        const references = pubReferenceList(context.references);
 
         // Determine this experiment's ENCODE version.
         // const encodevers = globals.encodeVersion(context);
@@ -399,6 +410,12 @@ console.log("biosampledoc",biosampleDocs);
             <dd><strong>Anatomic Site: </strong>{biospecimen_summary[0].anatomic_site}</dd>
             <dd><strong>Primary Site: </strong>{biospecimen_summary[0].primary_site}</dd>
         </div>);
+        // let possible_controls = context.possible_controls;
+        // let possible_controls_list=[];
+        // // possible_controls.map(i => {return (<a href={i['@id]'}>{i.accession}</a>))};
+        // for(let i=0;i<=possible_controls.length;i++){
+        //     possible_controls_list.push(<li><a href={possible_controls[i]}></a>{possible_controls[i]}</li>)
+        // }
 
         return (
             <div className={itemClass}>
@@ -478,7 +495,7 @@ console.log("biosampledoc",biosampleDocs);
                                         </div>
                                     : null} */}
 
-                                    {/* {context.possible_controls && context.possible_controls.length ?
+                                    {context.possible_controls && context.possible_controls.length ?
                                         <div data-test="possible-controls">
                                             <dt>Controls</dt>
                                             <dd>
@@ -491,9 +508,10 @@ console.log("biosampledoc",biosampleDocs);
                                                         </li>
                                                     ))}
                                                 </ul>
+                                                {/* {possible_controls_list} */}
                                             </dd>
                                         </div>
-                                    : null} */}
+                                        : null}
                                 </dl>
                             </div>
 
@@ -556,9 +574,8 @@ console.log("biosampledoc",biosampleDocs);
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
-                                        : null} 
+                                        : null}
                                     {libSubmitterComments}
-                                    {/* {/*  */}
                                 </dl>
                             </div>
                         </div>
@@ -571,7 +588,7 @@ console.log("biosampledoc",biosampleDocs);
                 {/* Display the file widget with the facet, graph, and tables */}
                 {/* <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} /> */}
 
-                {/* <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} /> */}
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
             </div>
         )
     }

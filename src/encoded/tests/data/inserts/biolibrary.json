@@ -5,7 +5,7 @@
         "status": "released",
         "uuid": "e6f6c49d-89d4-4adb-baa4-38c103b1583c",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "encode:Myers_Methyl450_protocol"
         ],
         "accession": "KCELB012FAA",
         "submitter_comment":"One sample was failed when sequencing, and have to repeat and combine the half of the failed sample"
