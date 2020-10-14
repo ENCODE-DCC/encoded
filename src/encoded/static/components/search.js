@@ -349,8 +349,8 @@ const ExperimentComponent = (props, reactContext) => {
     }
 
     // Get SCREEN link and FactorBook link if they exist
-    const screenLink = (result.dbxrefs && result.dbxrefs.filter(dbxref => (dbxref.indexOf('SCREEN') > -1)).length > 0) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('SCREEN') > -1))[0] : null;
-    const motifsLink = (result.dbxrefs && result.dbxrefs.filter(dbxref => (dbxref.indexOf('FactorBook') > -1)).length > 0) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('FactorBook') > -1))[0] : null;
+    const screenLink = (result.dbxrefs && result.dbxrefs.some(dbxref => (dbxref.indexOf('SCREEN') > -1))) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('SCREEN') > -1))[0] : null;
+    const motifsLink = (result.dbxrefs && result.dbxrefs.some(dbxref => (dbxref.indexOf('FactorBook') > -1))) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('FactorBook') > -1))[0] : null;
     let screenSearch = '';
     let screenAssembly = '';
     if (screenLink) {
