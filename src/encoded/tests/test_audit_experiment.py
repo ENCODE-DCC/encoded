@@ -3982,3 +3982,21 @@ def test_audit_experiment_average_fragment_size(testapp, base_experiment, base_r
     assert any(error['category'] == 'missing spikeins'
                for error in res_errors)
     assert 'missing RNA fragment size' not in res_errors
+
+
+def test_audit_experiment_mixed_strand_specificity_libraries(
+        testapp, base_experiment, replicate_1_1, replicate_2_1,
+        library_1, library_2
+        ):
+    # https://encodedcc.atlassian.net/browse/ENCD-5554
+    testapp.patch_json(library_1['@id'], {'strand_specificity': 'reverse'})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'mixed strand specificities'
+               for error in collect_audit_errors(res))
+
+    testapp.patch_json(library_2['@id'], {'strand_specificity': 'strand-specific'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'mixed strand specificities'
+               for error in collect_audit_errors(res))
