@@ -13,7 +13,6 @@
         "surgery",
         "date",
         "report_source",
-        "tumor_sequence_number",
         "path_source_procedure"
     ],
     "additionalProperties": false,
@@ -41,8 +40,8 @@
         "tumor_size_units": [
             "tumor_size"
         ],
-        "sarcomatoid_percentage": [
-            "sarcomatoid"
+        "sarcomatoid_percentage" : [
+          "sarcomatoid"
         ]
     },
     "properties": {
@@ -89,12 +88,10 @@
             "description": "The laterality of tumor",
             "type": "string",
             "enum": [
-                "Bilateral",
-                "Bilateral, Asynchronous",
                 "Bilateral, Horseshoe",
-                "Bilateral, Synchronous",
                 "Left",
-                "Right"
+                "Right",
+                "Not Available"
             ]
         },
         "tumor_size": {
@@ -116,7 +113,8 @@
             "enum": [
                 "Unifocal",
                 "Multifocal",
-                "Not applicable"
+                "Not applicable",
+                "Not available"
             ]
         },
         "histology": {
@@ -134,21 +132,27 @@
                 "Cystic nephroma",
                 "HLRCC",
                 "Leiomyoma",
+                "Leiomyosarcoma",
                 "Metanephric adenoma",
                 "Mucinous tubular and spindle cell carcinoma",
                 "multilocular cystic renal neoplasm of low malignant potential",
-                "PRCC",
+                "PRCC, no type given",
+                "PRCC, type 1",
+                "PRCC, type 2",
+                "Poorly differentiated malignancy",
                 "Renal medullary carcinoma",
+                "Renal Cell Carcinoma, NOS",
                 "RO",
                 "RON",
-                "RON,favor ChRCC",
-                "RON,favor RO",
-                "Sarcomatoid,NOS",
+                "RON, favor ChRCC",
+                "RON, favor RO",
+                "Sarcomatoid, NOS",
                 "Sarcoma",
                 "MiT family translocation RCC",
                 "Tubulocystic RCC",
                 "Unclassified",
-                "Nephroblastoma(Wilms tumor)",
+                "Unclassified RCC",
+                "Nephroblastoma (Wilms tumor)",
                 "Soft tissue neoplasm, NOS",
                 "SDH deficient RCC"
             ]
@@ -210,7 +214,9 @@
             "type": "string",
             "enum": [
                 "Margins uninvolved by invasive carcinoma",
-                "Margins involved by invasive carcinoma"
+                "Margins involved by invasive carcinoma",
+                "Not available",
+                "Not applicable"
             ]
         },
         "lvi": {
@@ -321,7 +327,8 @@
                 "pT3b",
                 "pT3c",
                 "pT4",
-                "pTX"
+                "pTX",
+                "Not applicable"
             ]
         },
         "n_stage": {
@@ -364,7 +371,8 @@
             "type": "string",
             "enum": [
                 "6th edition",
-                "7th edition"
+                "7th edition",
+                "8th edition"
             ]
         },
         "ajcc_tnm_stage": {
@@ -375,7 +383,9 @@
                 "1",
                 "2",
                 "3",
-                "4"
+                "4",
+                "Not applicable",
+                "Not available"
             ]
         },
         "ajcc_p_stage": {
@@ -383,6 +393,7 @@
             "description": "TNM Stage",
             "type": "string",
             "enum": [
+                "1",
                 "1A",
                 "1B",
                 "2",
@@ -392,7 +403,9 @@
                 "3A",
                 "3B",
                 "3C",
-                "4"
+                "4",
+                "Not applicable",
+                "Not available"
             ]
         },
         "report_source": {
@@ -401,7 +414,7 @@
             "type": "string",
             "enum": [
                 "Pathology Report",
-                "Tumor Registery"
+                "Tumor Registry"
             ]
         },
         "tumor_sequence_number": {
@@ -445,88 +458,12 @@
             }
         }
     },
-    "oneOf": [
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_nephrectomy"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "Not applicable"
-                    ]
-                }
-            },
-            "allOf": [
-                {
-                    "not": {
-                        "required": [
-                            "metasis_details"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_metasis"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "pM1"
-                    ]
-                }
-            }
-        },
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_biopsy"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "pM0"
-                    ]
-                }
-            },
-            "allOf": [
-                {
-                    "not": {
-                        "required": [
-                            "metasis_details"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "properties": {
-                "path_source_procedure": {
-                    "enum": [
-                        "path_biopsy"
-                    ]
-                },
-                "m_stage": {
-                    "enum": [
-                        "pM1"
-                    ]
-                }
-            }
-        }
-    ],
     "facets": {
         "status": {
             "title": "Status"
         },
-        "tumor_size": {
-            "title": "Tumor Size"
+        "pathology_report_tumor_range": {
+            "title": "Tumor Range"
         },
         "ajcc_p_stage": {
             "title": "pT Stage"

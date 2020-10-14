@@ -45,7 +45,7 @@ class MedicationChart extends React.Component {
     let sortedDataPoints = dataPoints.sort((a, b) => (a[0] - b[0]));
     //Get xRange from dateRange.
     let sortedDateUnix = sortedDataPoints.map(i => { return [i[0], i[1]] }).flat();
-    let minDateUnix = Math.min(...sortedDateUnix);
+    let minDateUnix = new Date(this.props.first_treatment_date + ' 00:00:00');
     let maxDateUnix = Math.max(...sortedDateUnix);
 
     let minDate = this.unixToDate(minDateUnix);
@@ -81,61 +81,103 @@ class MedicationChart extends React.Component {
       yIndex += 1;
     };
     //for Diagnosis marker:
-    let trace2 = {};
-    trace2 = {
-      type: 'scatter',
-      x: [minDateUnix],
-      y: [0],
-      mode: 'markers+text',
-      marker: {
-        symbol: 'triangle-right',
-        color: 'red',
-        size: 16
-      },
-      text: 'Diagnosis date',
-      textfont: {
-        family: "Georgia",
-        size: 16,
-        color: "black"
-      },
-      textposition: 'right',
-      showlegend: false,
-      hovertemplate: "Diagnosis date: " + minDate + "<extra></extra>",
-      xaxis: 'x2',
-    };
+
+    if (this.props.diagnosis_date != "Not available") {
+      let diagnosisDate = new Date(this.props.diagnosis_date + ' 00:00:00' );
+     
+
+      let trace2 = {};
+      trace2 = {
+        type: 'scatter',
+        x: [diagnosisDate],
+        y: [0],
+        mode: 'markers+text',
+        marker: {
+          symbol: 'circle',
+          color: '#D31E1E',
+          size: 15
+        },
+        text: 'Date of diagnosis',
+        textfont: {
+          family:  'Raleway, sans-serif',
+          size: 15
+        },
+        textposition: 'right',
+        showlegend: false,
+        hovertemplate: "Date of diagnosis: " + this.props.diagnosis_date + "<extra></extra>",
+        xaxis: 'x2',
+      };
+      
+      traceData.push(trace2);
+    }
     //for deceaced marker:
     let trace3 = {};
-    trace3 = {
-      type: 'scatter',
-      x: [maxDateUnix],
-      y: [yIndex],
+    let deceasedDate;
+    let lastFollowUpDate;
 
-      mode: 'markers+text',
-      marker: {
-        symbol: 'triangle-left',
-        color: 'red',
-        size: 16
-      },
-      text: 'Deceaced date',
-      textfont: {
-        family: "Georgia",
-        size: 16,
-        color: "black"
-      },
-      textposition: 'left',
-      showlegend: false,
-      hovertemplate: 'Deceased date: ' + maxDate + '<extra></extra>',
-      xaxis: 'x2',
-    };
-    traceData.push(trace2);
-    traceData.push(trace3);
+    if (this.props.death_date != null){
+      deceasedDate = new Date(this.props.death_date + ' 00:00:00');
+      maxDateUnix = Date.parse(this.props.death_date + ' 00:00:00');
+      maxDate = this.unixToDate(maxDateUnix);
+      trace3 = {
+        type: 'scatter',
+        x: [maxDateUnix],
+        y: [yIndex],
+  
+        mode: 'markers+text',
+        marker: {
+          symbol: 'circle',
+          color: '#D31E1E',
+          size: 15
+        },
+        text: 'Deceaced date',
+        textfont: {
+          family:  'Raleway, sans-serif',
+          size: 15
+        },
+        textposition: 'left',
+        showlegend: false,
+        hovertemplate: 'Deceased date: ' + maxDate + '<extra></extra>',
+        xaxis: 'x2',
+      };
+      traceData.push(trace3);
+    } else if(this.props.last_follow_up_date != "Not available") {
+      lastFollowUpDate = new Date(this.props.last_follow_up_date + ' 00:00:00');
+      maxDateUnix = Date.parse(this.props.last_follow_up_date + ' 00:00:00');
+      maxDate = this.unixToDate(maxDateUnix);
+      trace3 = {
+        type: 'scatter',
+        x: [maxDateUnix],
+        y: [yIndex],
+  
+        mode: 'markers+text',
+        marker: {
+          symbol: 'circle',
+          color: '#D31E1E',
+          size: 15
+        },
+        text: 'Date of last follow up',
+        textfont: {
+          family:  'Raleway, sans-serif',
+          size: 15
+        },
+        textposition: 'left',
+        showlegend: false,
+        hovertemplate: 'Date of last follow up: ' + maxDate + '<extra></extra>',
+        xaxis: 'x2',
+      };
+      traceData.push(trace3);
+    }
+
+    
+    
     var layout = {
       autosize: true,
       height: yIndex*80,
 
       xaxis: {
         type: 'date',
-        range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
+        range: [minDateUnix - 1000 * 60 * 60 * 24 * 30, maxDateUnix + 1000 * 60 * 60 * 24 * 30],
         anchor: 'x1',
         side: 'bottom',
         showgrid: true,
@@ -153,22 +195,18 @@ class MedicationChart extends React.Component {
       },
       xaxis2: {
         type: 'date',
-        range: [minDateUnix - 1000 * 60 * 60 * 24 * 180, maxDateUnix + 1000 * 60 * 60 * 24 * 180],
+        range: [minDateUnix - 1000 * 60 * 60 * 24 * 30, maxDateUnix + 1000 * 60 * 60 * 24 * 30],
         overlaying: 'x1',
         anchor: 'x2',
         side: 'top',
         showline: true,
       },
-      font: {
-        family: "Georgia",
-        fontweight: "bold",
-        size: 16,
-      },
+
       margin: {
-        l: 150,
-        r: 40,
-        b: 50,
-        t: 50,
+        l: 120,
+        r: 20,
+        b: 30,
+        t: 60,
         pad: 4
       },
       hovermode: 'closest',
@@ -187,3 +225,5 @@ class MedicationChart extends React.Component {
   }
 }
 export default MedicationChart;
+
+

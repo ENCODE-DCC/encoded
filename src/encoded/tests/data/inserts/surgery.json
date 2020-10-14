@@ -2,7 +2,7 @@
   {
     "path_id":"PR359MHZ",
     "patient": "KCEPT359MHZ",
-    "date": "1860-06-03",
+    "date": "1855-05-03",
     "hospital_location": "UTSW",
     "status": "released",
     "accession": "KCESX359TRS",
@@ -110,7 +110,7 @@
   {
     "path_id":"PR396JUN",
     "patient": "KCEPT396JUN",
-    "date": "1870-06-11",
+    "date": "1870-04-11",
     "hospital_location": "UTSW",
     "accession": "KCESX396JUN",
     "status": "released",
@@ -119,10 +119,11 @@
   {
     "path_id":"PR318AXY",
     "patient": "KCEPT318AXY",
-    "date": "1859-08-01",
+    "date": "1859-05-01",
     "hospital_location": "UTSW",
     "accession": "KCESX318AXY",
     "status": "released",
     "uuid": "a3a0bc7e-63e0-49ad-953c-a7947dac7d62"
   }
 ]
+

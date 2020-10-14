@@ -32,13 +32,13 @@ ORDER = [
     'ihc',
     'medication',
     'supportive_medication',
-    # 'lab_results',
-    # 'vital_results',
     'germline',
     'consent',
     'radiation',
     'medical_imaging',
     'cart',
+    'lab_results',
+    'vital_results'
 ]
 
 IS_ATTACHMENT = [
