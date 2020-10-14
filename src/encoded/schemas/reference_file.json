@@ -202,6 +202,7 @@
                 "description": "A gene biotypes found in the filtered gtf file.",
                 "type": "string",
                 "enum": [
+                    "antisense",
                     "IG_C_gene",
                     "IG_C_pseudogene",
                     "IG_D_gene",
@@ -211,6 +212,7 @@
                     "IG_pseudogene",
                     "IG_V_gene",
                     "IG_V_pseudogene",
+                    "lincRNA",
                     "lncRNA",
                     "miRNA",
                     "misc_RNA",

@@ -72,7 +72,7 @@
             "HGNC:36404"
         ],
         "location": {
-            "chromosome": "chr2",
+            "chromosome": "GL000205.1",
             "start": 38481851,
             "end": 38482804
         },
@@ -112,7 +112,7 @@
             "MGI:98364"
         ],
         "location": {
-            "chromosome": "chr3",
+            "chromosome": "chrMT",
             "start": 34,
             "end": 650
         },

@@ -124,9 +124,9 @@
             "properties": {
                 "chromosome": {
                     "title": "Chromosome",
-                    "description": "The number (or letter) designation for the chromosome, e.g. chr1 or chrX",
+                    "description": "The number (or letter) designation for the chromosome (e.g. chr1 or chrX), or the contig identifier if the sequence is unlocalized.",
                     "type": "string",
-                    "pattern": "^(chr[0-9A-Za-z]+)$"
+                    "pattern": "^((chr|GL|KI)[0-9A-Za-z.]+)$"
                 },
                 "start": {
                     "title": "Start",
