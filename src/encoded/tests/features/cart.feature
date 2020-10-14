@@ -15,16 +15,16 @@ Feature: Cart
         When I press "Data"
         And I click the link with text that contains "High-throughput assays"
         And I wait for the content to load
-        Then I should see 10 elements with the css selector ".result-item__cart-control"
+        Then I should see 11 elements with the css selector ".result-item__cart-control"
 
         When I press "Add all items to cart"
-        Then I should see 10 elements with the css selector ".cart__toggle--in-cart"
+        Then I should see 11 elements with the css selector ".cart__toggle--in-cart"
 
     Scenario: Cart page load
         When I press "cart-control"
         And I click the link to "/cart-view/"
         And I wait for the content to load
-        Then I should see 14 elements with the css selector ".result-item"
+        Then I should see 15 elements with the css selector ".result-item"
         And I should see "5 files selected"
         When I click the link to "#processeddata"
         Then I should see 5 elements with the css selector ".cart-list-item"
