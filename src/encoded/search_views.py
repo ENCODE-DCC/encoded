@@ -55,7 +55,7 @@ DEFAULT_ITEM_TYPES = [
     'Dataset',
     'Page',
     'Publication',
-    'File',
+    'Biofile',
     'Patient',
     'Biospecimen',
     'Surgery',
