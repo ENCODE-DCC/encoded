@@ -169,7 +169,7 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "genomic alignments",
+                    "genome alignments",
                     "transcriptome alignments"
                 ]
             }

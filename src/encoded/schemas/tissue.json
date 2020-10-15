@@ -76,8 +76,8 @@
         "death_to_preservation_interval": {
             "title": "Death to preservation interval",
             "description": "The amount of time elapsed since death until the tissue was preserved.",
-            "type": "number",
-            "minimum": 1
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "death_to_preservation_interval_units": {
             "title": "Death to preservation interval units",

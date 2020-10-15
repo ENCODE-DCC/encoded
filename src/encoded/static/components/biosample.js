@@ -147,7 +147,7 @@ class BiosampleComponent extends React.Component {
                                 : null}
 
 
-                                {dbxrefs.length > 0 ?
+                                {dbxrefs ?
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
@@ -161,7 +161,7 @@ class BiosampleComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {context.aliases.length > 0 ?
+                                {context.aliases ?
                                     <div data-test="aliases">
                                         <dt>Aliases</dt>
                                         <dd>{aliasList}</dd>
@@ -172,7 +172,7 @@ class BiosampleComponent extends React.Component {
                         </div>
                     </PanelBody>
 
-                    {context.treatments.length > 0 ?
+                    {context.treatments ?
                         <PanelBody addClasses="panel__below-split">
                             <h4>Treatment details</h4>
                             {context.treatments.map(treatment => treatmentDisplay(treatment))}

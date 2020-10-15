@@ -551,7 +551,7 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 <dd>{context.award.name}</dd>
                             </div>
 
-                            {context.dbxrefs.length > 0 ?
+                            {context.dbxrefs ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -572,7 +572,7 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
                                 </div>
                             : null}
 
-                            {context.aliases.length > 0 ?
+                            {context.aliases ?
                                 <div data-test="aliases">
                                     <dt>Aliases</dt>
                                     <dd>{context.aliases.join(', ')}</dd>

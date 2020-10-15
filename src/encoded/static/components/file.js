@@ -420,7 +420,7 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {context.dbxrefs && context.dbxrefs.length > 0 ?
+                                {context.dbxrefs ?
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
