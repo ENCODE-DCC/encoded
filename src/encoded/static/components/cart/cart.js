@@ -11,7 +11,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal'
 import Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
-import GenomeBrowser, { annotationTypeMap } from '../genome_browser';
+import GenomeBrowser, { annotationTypeMap, sortLookUp, SortButtons } from '../genome_browser';
 import { itemClass, atIdToType } from '../globals';
 import { requestObjects, ItemAccessories, isFileVisualizable, computeAssemblyAnnotationValue, filterForVisualizableFiles } from '../objectutils';
 import { ResultTableList } from '../search';
@@ -169,28 +169,137 @@ CartSearchResults.defaultProps = {
     loggedIn: false,
 };
 
+// sortFiles(primarySort, sortDirection, sortIdx, toggleFlag) {
+// const sortAndRefresh = React.useCallback((newSort, sortDirection, sortIdx, toggleFlag) => {
+//     // Make sure that the sorting parameter "primarySort" is the last element in the sort array
+//     const orderedSortParam = [...sortParam];
+//     const fromIdx = orderedSortParam.indexOf(newSort);
+//     orderedSortParam.splice((orderedSortParam.length - 1), 0, orderedSortParam.splice(fromIdx, 1)[0]);
+//
+//     // The sort button for "Output type" is secretly also a sort button for "File type", so that all the bigWigs and bigBeds are grouped with each other
+//     // Here we add "File type" to the sort array if it's not already there and make sure that it is the sort parameter after "Output type"
+//     const fileIdx = orderedSortParam.indexOf('File type');
+//     const outputIdx = orderedSortParam.indexOf('Output type');
+//     if (fileIdx > -1) {
+//         orderedSortParam.splice((outputIdx + 1), 0, orderedSortParam.splice(fileIdx, 1)[0]);
+//     } else {
+//         orderedSortParam.splice((outputIdx + 1), 0, 'File type');
+//     }
+//     console.log('ordered sort param');
+//     console.log(orderedSortParam);
+//
+//     let inputFilesSorted = sortedFiles;
+//     orderedSortParam.forEach((param) => {
+//         inputFilesSorted = _.chain(inputFilesSorted)
+//             .sortBy(obj => sortLookUp(obj, param));
+//     });
+//     inputFilesSorted = inputFilesSorted.value();
+//
+//     // sortBy sorts in ascending order and sortDirection is true if descending
+//     // We want to reverse the sort order when the sort is toggled and ascending (to make it descending)
+//     if (sortDirection && toggleFlag) {
+//         inputFilesSorted = inputFilesSorted.reverse();
+//     }
+//     setSortedFiles(inputFilesSorted);
+//
+//     console.log('sorted files are');
+//     console.log(inputFilesSorted);
+//
+//     // Update state if function has been triggered by button click and sort and sort direction are new
+//     if (toggleFlag) {
+//         const newSortToggle = [...sortToggle];
+//         newSortToggle[sortIdx] = !newSortToggle[sortIdx];
+//         setSortToggle(newSortToggle);
+//         setPrimarySort(newSort);
+//     }
+// }, [sortParam, sortToggle, sortedFiles]);
+
 
 /**
  * Display browser tracks for the selected page of files.
  */
 const CartBrowser = ({ files, assembly, pageNumber }) => {
-    // Extract the current page of file objects.
-    const pageStartingIndex = pageNumber * PAGE_TRACK_COUNT;
-    const pageFiles = files.slice(pageStartingIndex, pageStartingIndex + PAGE_TRACK_COUNT);
+    const [sortParam, setSortParam] = React.useState(['Assay term name', 'Biosample term name', 'Output type']);
+    const [primarySort, setPrimarySort] = React.useState('Output type');
+    const [sortToggle, setSortToggle] = React.useState(sortParam.map(() => true));
 
-    // Shorten long annotation_type values for the Valis track label; fine to mutate `pageFiles` as
-    // it holds a copy of a segment of `files`.
-    pageFiles.forEach((file) => {
-        if (file.annotation_type) {
-            const mappedAnnotationType = annotationTypeMap[file.annotation_type];
-            if (mappedAnnotationType) {
-                file.annotation_type = mappedAnnotationType;
+    const [allFiles, setAllFiles] = React.useState(files);
+    const [sortedFiles, setSortedFiles] = React.useState(files);
+
+    const sortAndRefresh = React.useCallback((newSort, sortDirection, sortIdx, toggleFlag) => {
+        console.log(`new sort is ${newSort}`);
+        console.log(`sort direction is ${sortDirection}`);
+        console.log(`sort index is ${sortIdx}`);
+        console.log(`toggle flag is ${toggleFlag}`);
+
+        // Extract the current page of file objects.
+        const pageStartingIndex = pageNumber * PAGE_TRACK_COUNT;
+        // Get array of files for current page
+        const pageFiles = allFiles.slice(pageStartingIndex, pageStartingIndex + PAGE_TRACK_COUNT);
+
+        // Shorten long annotation_type values for the Valis track label; fine to mutate `pageFiles` as
+        // it holds a copy of a segment of `files`.
+        pageFiles.forEach((file) => {
+            if (file.annotation_type) {
+                const mappedAnnotationType = annotationTypeMap[file.annotation_type];
+                if (mappedAnnotationType) {
+                    file.annotation_type = mappedAnnotationType;
+                }
             }
-        }
-    });
+        });
 
-    const sortParam = ['Assay term name', 'Biosample term name', 'Output type'];
-    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded sortParam={sortParam} />;
+        // Make sure that the sorting parameter "primarySort" is the last element in the sort array
+        const orderedSortParam = [...sortParam];
+        const fromIdx = orderedSortParam.indexOf(newSort);
+        orderedSortParam.splice((orderedSortParam.length - 1), 0, orderedSortParam.splice(fromIdx, 1)[0]);
+        const fileIdx = orderedSortParam.indexOf('File type');
+        const outputIdx = orderedSortParam.indexOf('Output type');
+        if (fileIdx > -1) {
+            orderedSortParam.splice((outputIdx + 1), 0, orderedSortParam.splice(fileIdx, 1)[0]);
+        } else {
+            orderedSortParam.splice((outputIdx + 1), 0, 'File type');
+        }
+        console.log('ordered sort param');
+        console.log(orderedSortParam);
+
+        if (toggleFlag) {
+            console.log('we got here from clicking');
+            setPrimarySort(newSort);
+            // setSortParam(orderedSortParam);
+
+            const newSortToggle = [...sortToggle];
+            newSortToggle[sortIdx] = !newSortToggle[sortIdx];
+            setSortToggle(newSortToggle);
+        }
+
+        setSortedFiles(pageFiles);
+    }, [allFiles, pageNumber, sortParam, sortToggle]);
+
+    // Take all files and sort
+    React.useEffect(() => {
+        setAllFiles(files);
+        setTimeout(() => {
+            sortAndRefresh('Output type', sortToggle, 0, false);
+        }, 400);
+    }, [files, sortAndRefresh, sortToggle]);
+
+    return (
+        <React.Fragment>
+            <SortButtons
+                sortParam={sortParam}
+                primarySort={primarySort}
+                sortToggle={sortToggle}
+                sortAndRefresh={sortAndRefresh}
+            />
+            <GenomeBrowser
+                files={sortedFiles}
+                label={'cart'}
+                assembly={assembly}
+                expanded
+                sortParam={sortParam}
+            />
+        </React.Fragment>
+    );
 };
 
 CartBrowser.propTypes = {

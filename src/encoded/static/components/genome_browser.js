@@ -173,7 +173,7 @@ function mapGenome(inputAssembly) {
 // Map the name of a sort parameter to a file object property and convert to form that can be compared
 // Ordering by replicate is like this: 'Rep 1,2' -> 'Rep 1,3,...' -> 'Rep 2,3,...' -> 'Rep 1' -> 'Rep 2' -> 'Rep N'
 // Multiplication by 1000 orders the replicates with a single replicate at the end
-const sortLookUp = (obj, param) => {
+export const sortLookUp = (obj, param) => {
     switch (param) {
     case 'Replicates':
         return obj.biological_replicates.length > 1 ? +obj.biological_replicates.join('') : +obj.biological_replicates * 1000;
@@ -254,6 +254,26 @@ TrackLabel.propTypes = {
 
 TrackLabel.defaultProps = {
     long: false,
+};
+
+export const SortButtons = ({ sortParam, primarySort, sortToggle, sortAndRefresh }) => {
+    console.log(sortParam);
+    console.log(primarySort);
+    console.log(sortToggle);
+    console.log(sortAndRefresh);
+    return (
+        <div className="sort-control-container">
+            <div className="sort-label">Sort by: </div>
+            {sortParam.map((param, paramIdx) => <button className={`sort-button ${param === primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => sortAndRefresh(param, sortToggle[paramIdx], paramIdx, true)}><i className={sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
+        </div>
+    );
+};
+
+SortButtons.propTypes = {
+    sortParam: PropTypes.array.isRequired,
+    primarySort: PropTypes.string.isRequired,
+    sortToggle: PropTypes.array.isRequired,
+    sortAndRefresh: PropTypes.func.isRequired,
 };
 
 class GenomeBrowser extends React.Component {
@@ -507,7 +527,7 @@ class GenomeBrowser extends React.Component {
         let files = propsFiles;
 
         // Apply sort parameters
-        if (this.props.displaySort) {
+        if (this.props.internalSort) {
             orderedSortParam.forEach((param) => {
                 files = _.chain(files)
                     .sortBy(obj => sortLookUp(obj, param));
@@ -751,11 +771,13 @@ class GenomeBrowser extends React.Component {
                                 <button className="submit-gene-search btn btn-info" onClick={this.handleOnFocus}>Submit</button>
                             </div>
                         : null}
-                        {this.props.displaySort ?
-                            <div className="sort-control-container">
-                                <div className="sort-label">Sort by: </div>
-                                {this.props.sortParam.map((param, paramIdx) => <button className={`sort-button ${param === this.state.primarySort ? 'active' : ''}`} key={param.replace(/\s/g, '_')} onClick={() => this.sortAndRefresh(param, this.state.sortToggle[paramIdx], paramIdx, true)}><i className={this.state.sortToggle[paramIdx] ? 'tcell-desc' : 'tcell-asc'} /><div className="sort-label">{param}</div></button>)}
-                            </div>
+                        {this.props.internalSort ?
+                            <SortButtons
+                                sortParam={this.props.sortParam}
+                                primarySort={this.state.primarySort}
+                                sortToggle={this.state.sortToggle}
+                                sortAndRefresh={this.sortAndRefresh}
+                            />
                         : null}
                         <div className="browser-container">
                             <button className="reset-browser-button" onClick={this.resetLocation}>
@@ -785,13 +807,13 @@ GenomeBrowser.propTypes = {
     assembly: PropTypes.string,
     label: PropTypes.string.isRequired,
     sortParam: PropTypes.array,
-    displaySort: PropTypes.bool,
+    internalSort: PropTypes.bool,
 };
 
 GenomeBrowser.defaultProps = {
     assembly: '',
     sortParam: ['Replicates', 'Output type'], // Array of parameters for sorting file object
-    displaySort: false, // Determines if sort buttons should be displayed
+    internalSort: false, // Determines if sort buttons should be displayed and results should be sorted
 };
 
 GenomeBrowser.contextTypes = {
