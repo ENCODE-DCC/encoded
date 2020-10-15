@@ -395,7 +395,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     // collect biosample characterizations for TransgenicEnhancerExperiment only.
     const libraryDocs = [];
     let biosamples = [];
-    const biosampleCharacterizations = [];
+    let biosampleCharacterizations = [];
     const appliedModifications = [];
     if (isEnhancerExperiment) {
         if (context.biosamples) {
@@ -404,7 +404,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         if (biosamples.length > 0) {
             biosamples.forEach((biosample) => {
                 if (biosample.characterizations && biosample.characterizations.length > 0) {
-                    biosampleCharacterizations.push(...biosample.characterizations);
+                    biosampleCharacterizations = biosampleCharacterizations.concat(biosample.characterizations.map(bc => bc['@id']));
                 }
                 if (biosample.applied_modifications && biosample.applied_modifications.length > 0) {
                     appliedModifications.push(...biosample.applied_modifications);
@@ -904,16 +904,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
-                <div>
-                    <Panel>
-                        <PanelHeading>
-                            <h4>Characterizations</h4>
-                        </PanelHeading>
-                        <PanelBody addClasses="panel-body-doc-interior">
-                            <DocumentsSubpanels documentSpec={{ documents: biosampleCharacterizations }} />
-                        </PanelBody>
-                    </Panel>
-                </div>
+                    <DocumentsPanelReq documents={biosampleCharacterizations} title="Biosample characterizations" />
             : null}
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
