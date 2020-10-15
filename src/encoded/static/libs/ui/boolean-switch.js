@@ -36,7 +36,7 @@ const BooleanSwitch = ({ id, state, title, triggerHandler, options: { width, hei
         width: switchWidth,
         height: switchHeight,
         borderRadius: switchHeight / 2,
-        backgroundColor: state ? '#65afeb' : '#e9e9eb',
+        backgroundColor: state ? '#4183c4' : '#e9e9eb',
     };
     const actuatorStyles = {
         width: triggerSize,
