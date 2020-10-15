@@ -904,7 +904,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
             : null}
 
             {biosampleCharacterizations && biosampleCharacterizations.length > 0 ?
-                    <DocumentsPanelReq documents={biosampleCharacterizations} title="Biosample characterizations" />
+                    <DocumentsPanelReq documents={biosampleCharacterizations} title="Characterizations" />
             : null}
 
             <FetchedItems context={context} url={experimentsUrl} Component={ControllingExperiments} />
