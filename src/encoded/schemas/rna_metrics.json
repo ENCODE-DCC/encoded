@@ -126,11 +126,6 @@
             "description": "The antibody capture metrics that is also associated with the feature expression matrix from which this gene expression metrics was generated.",
             "type": "string",
             "linkTo": "AntibodyCaptureMetrics"
-        },
-        "doublet_rate": {
-            "title": "Doublet rate",
-            "description": "The rate that doublets were detected in the associated data",
-            "type": "integer"
         }
     },
     "changelog": "/profiles/changelogs/rna_metrics.md"
