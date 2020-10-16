@@ -560,6 +560,9 @@ class PublicationData(FileSet):
         'lab',
         'award.pi.lab'
     ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
+    ]
 
 
 @collection(
@@ -907,6 +910,7 @@ class ExperimentSeries(Series):
         'target.genes',
         'target.organism',
     ]
+    embedded_with_frame = []
 
     @calculated_property(schema={
         "title": "Assay type",
