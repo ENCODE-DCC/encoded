@@ -15,9 +15,9 @@ def external_tx():
 
 
 @pytest.fixture(scope='session')
-def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server):
     from encoded.tests.test_indexing import _app_settings
-    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server)
 
 
 @pytest.yield_fixture(scope='session')
