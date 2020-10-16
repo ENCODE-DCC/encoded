@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -80,7 +81,9 @@ class Dataset(Item):
         'submitted_by',
         'lab',
         'award.pi.lab',
-        'references'
+    ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
     ]
     audit_inherit = [
         'original_files',
@@ -555,8 +558,7 @@ class PublicationData(FileSet):
     embedded = [
         'submitted_by',
         'lab',
-        'award.pi.lab',
-        'references'
+        'award.pi.lab'
     ]
 
 
@@ -680,7 +682,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'target',
         'target.genes',
         'target.organism',
-        'references',
         'related_datasets.biosample_ontology',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',
@@ -710,7 +711,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
         'related_datasets.target.organism',
-        'related_datasets.references',
         'files.platform',
         'files.lab',
         'files.analysis_step_version.analysis_step',
@@ -725,6 +725,10 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'files.quality_metrics',
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+    ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
+        Path('related_datasets.references', exclude=['datasets', 'publication_data']),
     ]
 
     @calculated_property(schema={

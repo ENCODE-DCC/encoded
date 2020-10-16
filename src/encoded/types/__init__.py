@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from pyramid.traversal import find_root
 from .base import (
     Item,
@@ -302,8 +303,10 @@ class Software(Item):
     schema = load_schema('encoded:schemas/software.json')
     name_key = 'name'
     embedded = [
-        'references',
         'versions'
+    ]
+    embedded_with_frame = [
+        Path('references', exclue=['datasets', 'publication_data']),
     ]
     rev = {
         'versions': ('SoftwareVersion', 'software')
@@ -330,7 +333,10 @@ class Software(Item):
 class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('encoded:schemas/software_version.json')
-    embedded = ['software', 'software.references']
+    embedded = ['software']
+    embedded_with_frame = [
+        Path('software.references', exclude=['datasets', 'publication_data']),
+    ]
     set_status_up = [
         'software',
     ]

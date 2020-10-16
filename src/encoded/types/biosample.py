@@ -3,6 +3,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -40,7 +41,6 @@ class Biosample(Item):
         'donor.documents.award',
         'donor.documents.lab',
         'donor.documents.submitted_by',
-        'donor.references',
         'submitted_by',
         'lab',
         'award',
@@ -73,11 +73,14 @@ class Biosample(Item):
         'characterizations.lab',
         'characterizations.documents',
         'organism',
-        'references',
         'applied_modifications',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.modified_site_by_target_id.genes',
         'applied_modifications.treatments'
+    ]
+    embedded_with_frame = [
+        Path('donor.references', exclude=['datasets', 'publication_data']),
+        Path('references', exclude=['datasets', 'publication_data']),
     ]
     audit_inherit = [
         'biosample_ontology',
