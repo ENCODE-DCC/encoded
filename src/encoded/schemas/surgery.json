@@ -165,13 +165,13 @@
             "title": "Tumor Size"
         },
         "pathology_report.ajcc_p_stage": {
-            "title": "pT Stage at presentaion"
+            "title": "pT Stage at Presentaion"
         },
         "pathology_report.n_stage": {
-            "title": "pN Stage at presentaion"
+            "title": "pN Stage at Presentaion"
         },
         "pathology_report.m_stage": {
-            "title": "pM Stage at presentaion"
+            "title": "pM Stage at Presentaion"
         },
         "pathology_report.metasis_details.site": {
             "title": "Metastasis Site"
@@ -180,7 +180,7 @@
             "title": "Metastasis Type"
         },
         "pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at presentaion"
+            "title": "TNM Stage at Presentaion"
         },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"

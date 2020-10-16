@@ -209,16 +209,16 @@
             "title": "Genomics File Output Type"
         },
         "surgery.pathology_report.t_stage": {
-            "title": "pT Stage at presentaion"
+            "title": "pT Stage at Presentaion"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage at presentaion"
+            "title": "pN Stage at Presentaion"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage at presentaion"
+            "title": "pM Stage at Presentaion"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at presentaion"
+            "title": "TNM Stage at Presentaion"
         }
 
     },
