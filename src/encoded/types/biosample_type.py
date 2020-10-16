@@ -21,7 +21,7 @@ class BiosampleType(SharedItem):
     schema = load_schema('encoded:schemas/biosample_type.json')
     embedded = []
     embedded_with_frame = [
-        Path('references', exclude=['datasets', 'publication_data']
+        Path('references', exclude=['datasets', 'publication_data'])
     ]
 
     def unique_keys(self, properties):
