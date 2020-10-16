@@ -1,5 +1,39 @@
 Changes
 =======
+
+108.0 (released) snovault 1.0.50
+--------------------------------
+1. ENCD-5534 Allow annotations and FCCs in carts (#3574)
+2. ENCD-5574-update-snovault-version-1.0.50 (#3581)
+3. ENCD-5572-Add-jesse-engreitz-to-aliases-name-space (#3579)
+4. ENCD-5513-gm-doc-in-exp-page (#3568)
+5. ENCD-5374 tooltip improvements (#3546)
+6. ENCD-5531 adding h5ad file format (#3566)
+7. SNO-168-stream-heterogeneous-uuids (#3548)
+8. ENCD-5568-valis-deployment-09-28-2020 (#3576)
+9. ENCD-5545 adding Gene Silencing Series (#3567)
+10. ENCD-5347-show-strand-specificity (#3550)
+11. ENCD-5515-ucsc-visualization-fcc-files (#3563)
+12. ENCD-5555-Split-out-apache-indexer-config (#3561)
+13. ENCD-5541-linkers-library-property (#3551)
+14. ENCD-5551 Replace all instances of smoothed (#3565)
+15. ENCD-5529-add-SOP-for-adding-new-assay (#3560)
+16. ENCD-5550-fetch-origin-on-deploy (#3564)
+17. ENCD-5492-remove-cloud-config-dir
+18. ENCD-5491-remove-internal-deploy-docs
+19. ENCD-5497 Add missing reqs for python osx
+20. ENCD-5537 save browser position on sort (#3555)
+21. ENCD-5547-add-FDR-cut-rate-and-footprints-UCSC-tracks (#3559)
+22. ENCD-5487-tissue-organoid-expt-biosample-summary (#3538)
+23. ENCD-5532-polyA-plus-RNA-seq-bug (#3557)
+24. ENCD-5558-remove-redundant-analysis-file-audit (#3558)
+25. ENCD-5526-gm-geneid (#3556)
+26. ENCD-5542 Display average fragment size (#3547)
+27. ENCD-5501 update gemBS alignment QC (#3549)
+28. ENCD-5548 Remove duplicate line in DNase alignment quality metric changelog (#3544)
+29. ENCD-4780-raw-seq-data-not-showing (#3541)
+30. ENCD-5575-fce-bdd-test (#3582)
+
 107.0 (released) snovault 1.0.49
 --------------------------------------------------------------------
 1. ENCD-5538 fix mouse dev queries (#3539)
