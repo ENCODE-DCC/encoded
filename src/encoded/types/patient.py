@@ -781,9 +781,9 @@ class Patient(Item):
 
         for logic in array:
             if  logic is True:
-                robotic_assist.append("True")
+                robotic_assist.append("Yes")
             else:
-                robotic_assist.append("False")
+                robotic_assist.append("No")
         return robotic_assist
 
 

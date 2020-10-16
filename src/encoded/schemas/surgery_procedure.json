@@ -12,7 +12,49 @@
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/standard_status"}
     ],
-
+    "dependencies": {
+      "nephrectomy_details":  {
+          "comment":"Nephrectomy details required if procedure type is nephrectomy.",
+          "properties": {
+              "procedure_type": {
+                  "enum": ["Nephrectomy"]
+              }
+          }
+      },
+      "procedure_type":  {
+          "oneOf": [
+              {
+                  "properties": {
+                      "required": ["nephrectomy_details"],
+                      "procedure_type": {
+                          "enum": ["Nephrectomy"]
+                      }
+                  }
+              },
+              {
+                  "not": {
+                      "oneOf": [
+                          {
+                              "required": ["nephrectomy_details"],
+                              "properties": {
+                                  "procedure_type": {
+                                      "enum": ["Ablation", "Metastectomy"]
+                                  }
+                              }
+                          },
+                          {
+                              "properties": {
+                                  "procedure_type": {
+                                      "enum": ["Nephrectomy"]
+                                  }
+                              }
+                          }
+                      ]
+                  }
+              }
+          ]
+      }
+    },
     "properties": {
         "schema_version": {
             "default": "1"
@@ -25,7 +67,7 @@
         },
         "procedure_type": {
             "title": "Procedure",
-            "description": "The procedure conducted.'Nephrectomy details' is required if procedure_type is 'Nephrectomy'.",
+            "description": "The procedure conducted.",
             "type": "string",
             "enum": [
                     "Ablation",
@@ -33,9 +75,7 @@
                     "Metastectomy",
                     "Biopsy",
                     "Excision",
-                    "Fine needle aspiration",
-                    "Reamings",
-                    "Not available"
+                    "Fine needle aspiration"
                 ]
         },
         "nephrectomy_details": {
@@ -45,16 +85,16 @@
             "permission": "import_items",
             "required": [
                 "type",
-                "approach"
+                "approach",
+                "robotic_assist"
             ],
             "properties": {
                 "type": {
-                    "title": "Nephrectomy type",
+                    "title": "Neprhectomy type",
                     "type": "string",
                     "enum": [
                         "Partial",
-                        "Radical",
-                        "Not available"
+                        "Total"
                     ]
                 },
                 "approach": {
@@ -62,46 +102,16 @@
                     "type": "string",
                     "enum": [
                         "Laparoscopic",
-                        "Open",
-                        "Not available"
+                        "Open"
                     ]
                 },
                 "robotic_assist": {
-                    "title": "Robotic Assist",
-                    "type": "string",
-                    "enum": [
-                        "Yes",
-                        "No"
-                    ]
+                    "title": "Robotic Assit",
+                    "type": "boolean"
                 }
             }
         }
     },
-    "oneOf": [
-        {
-            "properties": {
-                "procedure_type": {
-                    "enum": ["Nephrectomy"]
-                }
-            },
-            "required": ["surgery", "procedure_type","nephrectomy_details"]
-        },
-        {
-            "properties": {
-                "procedure_type": {
-                    "enum": ["Ablation","Metastectomy","Biopsy","Excision","Fine needle aspiration", "Not available", "Reamings"]
-                }
-            },
-            "required": ["surgery","procedure_type"],
-            "allOf": [
-                {
-                    "not": {
-                        "required": ["nephrectomy_details"]
-                    }
-                }
-            ]
-        }
-    ],
     "facets": {
         "procedure_type": {
             "title": "Procedure"
