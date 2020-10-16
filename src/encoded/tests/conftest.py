@@ -6,6 +6,8 @@ import pkg_resources
 import pytest
 from pytest import fixture
 
+from snovault.tests.testappfixtures import _app_settings as sno_settings
+
 
 pytest_plugins = [
     'encoded.tests.fixtures.shared_fixtures',
@@ -126,10 +128,15 @@ _app_settings = {
     'retry.attempts': 3,
     'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
 }
+_app_settings['local_storage_host'] = sno_settings['local_storage_host']
+_app_settings['local_storage_port'] = sno_settings['local_storage_port']
+_app_settings['local_storage_redis_index'] = sno_settings['local_storage_redis_index']
+_app_settings['local_storage_timeout'] = sno_settings['local_storage_timeout']
+_app_settings['local_tz'] = sno_settings['local_tz']
 
 
 @fixture(scope='session')
-def app_settings(request, wsgi_server_host_port, conn, DBSession):
+def app_settings(request, wsgi_server_host_port, conn, DBSession, redis_server):
     from snovault import DBSESSION
     settings = _app_settings.copy()
     settings['auth0.audiences'] = 'http://%s:%s' % wsgi_server_host_port
