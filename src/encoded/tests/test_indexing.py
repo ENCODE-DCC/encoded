@@ -13,7 +13,7 @@ pytestmark = [
 ]
 
 
-def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
+def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['create_tables'] = True
@@ -38,8 +38,8 @@ def _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server
 
 
 @pytest.fixture(scope='session')
-def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
-    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
+def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server):
+    return _app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server, redis_server)
 
 
 def _app(app_settings):
