@@ -35,7 +35,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144225"
+            "GEO:SAMN144225"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0051_CD14",
@@ -82,7 +82,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM14426"
+            "GEO:SAMN14426"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0051_CD14",
@@ -129,7 +129,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144227"
+            "GEO:SAMN144227"
         ]
     },
     {
@@ -168,7 +168,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144228"
+            "GEO:SAMN144228"
         ]
     },
     {
@@ -202,7 +202,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144229"
+            "GEO:SAMN144229"
         ]
     },
     {
@@ -236,7 +236,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144230"
+            "GEO:SAMN144230"
         ]
     },
     {
@@ -270,7 +270,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144231"
+            "GEO:SAMN144231"
         ]
     },
     {
@@ -304,7 +304,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144232"
+            "GEO:SAMN144232"
         ]
     },
     {
@@ -338,7 +338,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144233"
+            "GEO:SAMN144233"
         ]
     },
     {
@@ -372,7 +372,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144234"
+            "GEO:SAMN144234"
         ]
     },
     {
@@ -406,7 +406,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144235"
+            "GEO:SAMN144235"
         ]
     },
     {
@@ -440,7 +440,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144236"
+            "GEO:SAMN144236"
         ]
     },
     {
@@ -477,7 +477,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144237"
+            "GEO:SAMN144237"
         ],
         "documents": [
             "anna-greka:mouse.wgEncodeSydhHist"
@@ -519,7 +519,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144242"
+            "GEO:SAMN144242"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0002_CD8a",
@@ -565,7 +565,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144243"
+            "GEO:SAMN144243"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0002_CD8a",
@@ -611,7 +611,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144244"
+            "GEO:SAMN144244"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0002_CD8a",
@@ -657,7 +657,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144245"
+            "GEO:SAMN144245"
         ],
         "feature_antibodies": [
             "lattice:totalseq_C0002_CD8a",
@@ -703,7 +703,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144246"
+            "GEO:SAMN144246"
         ]
     },
     {
@@ -742,7 +742,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144247"
+            "GEO:SAMN144247"
         ]
     },
     {
@@ -781,7 +781,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144248"
+            "GEO:SAMN144248"
         ]
     },
     {
@@ -820,7 +820,7 @@
         "dissociation_time_units": "minute",
         "red_blood_cell_lysis": true,
         "dbxrefs": [
-            "GEO:SAM144249"
+            "GEO:SAMN144249"
         ]
     },
     {

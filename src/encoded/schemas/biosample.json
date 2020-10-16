@@ -61,7 +61,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((GEO:SAM\\d+)|(SRA:SRS\\d+)|(ENA:(ERS|SAM)\\d+))$"
+                "pattern": "^((GEO:SAMN\\d+)|(SRA:SRS\\d+)|(ENA:(ERS|SAMN)\\d+))$"
             }
         },
         "date_obtained": {
