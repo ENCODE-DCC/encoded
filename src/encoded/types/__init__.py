@@ -306,7 +306,7 @@ class Software(Item):
         'versions'
     ]
     embedded_with_frame = [
-        Path('references', exclue=['datasets', 'publication_data']),
+        Path('references', exclude=['datasets', 'publication_data']),
     ]
     rev = {
         'versions': ('SoftwareVersion', 'software')
