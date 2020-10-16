@@ -41,73 +41,73 @@
             "description": "Total number of sequenced reads.",
             "type": "integer"
         },
-        "valid_barcodes": {
-            "title": "Valid barcodes",
+        "percent_valid_barcodes": {
+            "title": "Percent valid barcodes",
             "description": "Percentage of reads with cell barcodes that match the whitelist.",
             "type": "number"
         },
-        "reads_mapped_to_genome":{
-            "title": "Reads mapped to the genome",
+        "percent_reads_mapped_to_genome":{
+            "title": "Percent reads mapped to the genome",
             "description": "Percentage of reads that mapped to genome",
             "type": "number"
         },
-        "reads_mapped_confidently_to_genome": {
-            "title": "Reads mapped confidently to genome",
+        "percent_reads_mapped_confidently_to_genome": {
+            "title": "Percent rreads mapped confidently to genome",
             "description": "Percentage of reads that mapped confidently to genome",
             "type": "number"
         },
-        "reads_mapped_antisense_to_gene": {
-            "title": "Reads mapped antisense to a gene",
+        "percent_reads_mapped_antisense_to_gene": {
+            "title": "Percent reads mapped antisense to a gene",
             "description": "Percentage of reads that mapped antisense to a gene",
             "type": "number"
         },
-        "reads_mapped_confidently_to_transcriptome": {
-            "title": "Reads mapped confidently to the transcriptome",
+        "percent_reads_mapped_confidently_to_transcriptome": {
+            "title": "Percent reads mapped confidently to the transcriptome",
             "description": "Percentage of reads mapped to a unique gene in the transcriptome with high mapping quality score.",
             "type": "number"
         },
-        "reads_mapped_confidently_to_exonic_regions": {
-            "title": "Reads mapped confidently to exonic regions",
+        "percent_reads_mapped_confidently_to_exonic_regions": {
+            "title": "Percent reads mapped confidently to exonic regions",
             "description": "Percentage of reads that mapped to the exonic regions of the genome with high mapping quality score.",
             "type": "number"
         },
-        "reads_mapped_confidently_to_intronic_regions": {
-            "title": "Reads mapped confidently to intronic regions",
+        "percent_reads_mapped_confidently_to_intronic_regions": {
+            "title": "Percent reads mapped confidently to intronic regions",
             "description": "Percentage of reads that mapped to the intronic regions of genome with a high mapping quality score.",
             "type": "number"
         },
-        "reads_mapped_confidently_to_intergenic_regions": {
-            "title": "Reads mapped confidently to intergenic regions",
+        "percent_reads_mapped_confidently_to_intergenic_regions": {
+            "title": "Percent reads mapped confidently to intergenic regions",
             "description": "Percentage of reads that mapped to the intergenic regions of the genome with a high mapping quality score.",
             "type": "number"
         },
-        "sequencing_saturation": {
-            "title": "Sequencing saturation",
+        "percent_sequencing_saturation": {
+            "title": "Percent sequencing saturation",
             "description": "Percentage of reads originating from an already-observed UMI.",
             "type": "number"
         },
-        "q30_bases_in_barcode": {
-            "title": "Q30 bases in barcode",
+        "percent_q30_bases_in_barcode": {
+            "title": "Percent Q30 bases in barcode",
             "description": "Percentage of bases with Q-score of at least 30 in the cell barcode sequences.",
             "type": "number"
         },
-        "q30_bases_in_rna_read": {
-            "title": "Q30 bases in rna read",
+        "percent_q30_bases_in_rna_read": {
+            "title": "Percent Q30 bases in rna read",
             "description": "Percentage of bases with Q-score of at least 30 in the RNA read sequence",
             "type": "number"
         },
-        "q30_bases_in_sample_index": {
-            "title": "Q30 bases in sample index",
+        "percent_q30_bases_in_sample_index": {
+            "title": "Percent Q30 bases in sample index",
             "description": "Percentage of bases with Q-score of at least 30 in the sample index sequences.",
             "type": "number"
         },
-        "q30_bases_in_umi": {
-            "title": "Q30 bases in umi",
-            "description": "Fraction of bases with Q-score of at least 30 in the UMI sequences.",
+        "percent_q30_bases_in_umi": {
+            "title": "Percent Q30 bases in umi",
+            "description": "Percentage of bases with Q-score of at least 30 in the UMI sequences.",
             "type": "number"
         },
-        "fraction_reads_in_cells": {
-            "title": "Fraction reads in cells",
+        "percent_reads_in_cells": {
+            "title": "Percent reads in cells",
             "description": "Percentage of cell-barcoded, confidently mapped reasds with cell-associated barcodes.",
             "type": "number"
         },
