@@ -426,9 +426,9 @@ class Patient(Item):
         })
     def surgery_summary(self, request, surgery=None):
             if len(surgery) > 0:
-                surgery_summary = "Treatment Received"
+                surgery_summary = "Yes"
             else:
-                surgery_summary = "No Treatment Received"
+                surgery_summary = "No"
             return surgery_summary
 
 

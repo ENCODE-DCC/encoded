@@ -5,7 +5,7 @@
     "nephrectomy_details": {
       "type": "Partial",
       "approach": "Open",
-      "robotic_assist": true
+      "robotic_assist": "Yes"
     },
     "status": "released",
     "uuid": "41692393-f1f3-4797-9043-989c96a9621c"
@@ -14,9 +14,9 @@
     "surgery": "KCESX708FIJ",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Open",
-      "robotic_assist": true
+      "robotic_assist": "Yes"
     },
     "status": "released",
     "uuid": "717612f1-0fb7-411b-a8b3-b045e252d098"
@@ -34,7 +34,7 @@
     "nephrectomy_details": {
       "type": "Partial",
       "approach": "Laparoscopic",
-      "robotic_assist": false
+      "robotic_assist": "No"
     },
     "status": "released",
     "uuid": "4fbe65c9-ca7e-4f0c-a331-f08706d755bd"
@@ -51,7 +51,7 @@
     "nephrectomy_details": {
       "type": "Partial",
       "approach": "Laparoscopic",
-      "robotic_assist": false
+      "robotic_assist": "No"
     },
     "status": "released",
     "uuid": "7208400e-7f60-468a-a481-1c4a800af076"
@@ -72,9 +72,9 @@
     "surgery": "KCESX186NZW",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Open",
-      "robotic_assist": false
+      "robotic_assist": "No"
     },
     "status": "released",
     "uuid": "2e7e12db-a655-4d38-b1c0-8424f52de629"
@@ -85,9 +85,9 @@
     "surgery": "KCESX139SOR",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Laparoscopic",
-      "robotic_assist": false
+      "robotic_assist": "No"
     },
     "status": "released",
     "uuid": "b0524648-e2e1-4f3b-81bd-cad5c4cfe228"
@@ -104,7 +104,7 @@
     "nephrectomy_details": {
       "type": "Partial",
       "approach": "Open",
-      "robotic_assist": true
+      "robotic_assist": "Yes"
     },
     "status": "released",
     "uuid": "1bee6b5d-ecaf-48ee-bca5-45a27938f4f1"
@@ -121,7 +121,7 @@
     "nephrectomy_details": {
       "type": "Partial",
       "approach": "Laparoscopic",
-      "robotic_assist": false
+      "robotic_assist": "No"
     },
     "status": "released",
     "uuid": "2ce209cb-2ccf-49c1-9971-9c96414f42be"
@@ -137,9 +137,9 @@
     "surgery": "KCESX396JUN",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Laparoscopic",
-      "robotic_assist": true
+      "robotic_assist": "Yes"
     },
     "status": "released",
     "uuid": "6a256daa-f6ed-417a-8fef-eb59c7dd81a2"
@@ -150,7 +150,7 @@
     "nephrectomy_details": {
       "type": "Partial",
       "approach": "Laparoscopic",
-      "robotic_assist": true
+      "robotic_assist": "Yes"
     },
     "status": "released",
     "uuid": "215e5029-1325-4b12-af47-038cb5e9de54"

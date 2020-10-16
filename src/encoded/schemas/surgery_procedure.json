@@ -68,7 +68,11 @@
                 },
                 "robotic_assist": {
                     "title": "Robotic Assist",
-                    "type": "boolean"
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
                 }
             }
         }

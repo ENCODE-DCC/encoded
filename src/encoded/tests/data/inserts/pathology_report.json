@@ -115,7 +115,7 @@
     "status": "released",
     "ajcc_version": "8th edition",
     "ajcc_tnm_stage": "3",
-    "ajcc_p_stage": "1A",
+    "ajcc_p_stage": "1a",
     "report_source": "Pathology Report",
     "path_source_procedure": "path_biopsy",
     "uuid": "b5645964-46d7-11ea-b77f-2e728ce88125"
@@ -153,7 +153,7 @@
     "status": "released",
     "ajcc_version": "7th edition",
     "ajcc_tnm_stage": "3",
-    "ajcc_p_stage": "3C",
+    "ajcc_p_stage": "3c",
     "report_source": "Tumor Registry",
     "path_source_procedure": "path_biopsy",
     "metasis_details":{
