@@ -24,11 +24,6 @@ ORDER = [
     'surgery',
     'pathology_report',
     'surgery_procedure',
-    'organism',
-    'donor',
-    'human_donor',
-    'mouse_donor',
-    'donor_characterization',
     'biospecimen',
     'bioexperiment',
     'platform',
@@ -590,7 +585,10 @@ PHASE1_PIPELINES = {
     ],
     'biofile': [
         remove_keys('paired_with')
-    ]
+    ],
+    'bioexperiment': [
+        remove_keys('possible_controls'),
+    ],
 
 }
 
@@ -680,7 +678,10 @@ PHASE2_PIPELINES = {
     ],
     'biofile': [
         skip_rows_missing_all_keys('paired_with')
-    ]
+    ],
+    'bioexperiment': [
+        skip_rows_missing_all_keys('possible_controls'),
+    ],
 }
 
 

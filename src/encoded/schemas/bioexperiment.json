@@ -10,7 +10,6 @@
         "lab",
         "assay_term_name",
         "biospecimen",
-        "experiment_classification",
         "experiment_description"
     ],
     "identifyingProperties": [

@@ -28,7 +28,6 @@ class Biolibrary(Item):
     embedded = [
         'biospecimen',
         'biospecimen.documents',
-        'biospecimen.donor',
         'biofile',
         'bioreplicate',
         'documents'
@@ -36,7 +35,7 @@ class Biolibrary(Item):
     audit_inherit = [
     ]
     set_status_up = [
-      
+
     ]
     set_status_down = []
 
@@ -50,7 +49,7 @@ class Biolibrary(Item):
     })
     def biofile(self, request, biofile):
         return paths_filtered_by_status(request, biofile)
-    
+
     @calculated_property(schema={
         "title": "bioreplicate",
         "type": "array",

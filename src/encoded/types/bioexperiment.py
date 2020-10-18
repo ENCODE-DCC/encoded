@@ -35,7 +35,6 @@ class Bioexperiment(Item):
         'bioreplicate.biolibrary',
         'bioreplicate.biolibrary.documents',
         'bioreplicate.biolibrary.biospecimen',
-        'bioreplicate.biolibrary.biospecimen.donor',
         'bioreplicate.biolibrary.biospecimen.part_of',
         'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',

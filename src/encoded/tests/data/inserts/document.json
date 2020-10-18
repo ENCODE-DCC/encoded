@@ -1,5 +1,5 @@
 [
-    {       
+    {
         "award": "Kidney-SPORE",
         "description": "RNA extraction protocol from Qiagen",
         "document_type": "extraction protocol",
@@ -7,7 +7,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "9f365a06-3bc1-4f5f-8e4d-2cdf81147d39"
     },
-    {       
+    {
         "award": "Kidney-SPORE",
         "description": "RNA extraction protocol from Qiagen",
         "document_type": "general protocol",
@@ -15,7 +15,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e0376e86-79d2-4041-80c2-4c8dfef83371"
     },
-    {       
+    {
         "award": "Kidney-SPORE",
         "description": "Kidney biopsy collection from patient",
         "document_type": "general protocol",
@@ -23,7 +23,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ea0125c1-97c8-4921-ba7a-b7eeb75ec4bd"
     },
-    {       
+    {
         "award": "Kidney-SPORE",
         "description": "Chip-seq protocol",
         "document_type": "general protocol",
@@ -31,7 +31,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f8599a9f-4095-4b9a-b11a-ea022e2af1f7"
     },
-    {       
+    {
         "attachment": "PathologyImage_CMU-1.svs",
         "award": "ENCODE2",
         "description": "Example of high resolution pathology image in SVS format",
@@ -66,14 +66,14 @@
     },
     {
         "aliases": [
-            "encode:bedMethyl.as" 
+            "encode:bedMethyl.as"
         ],
         "attachment": "bedMethyl.txt",
         "award": "ENCODE2",
         "document_type": "file format specification",
         "lab": "richard-myers",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
+        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8"
     },
     {
         "aliases": [
@@ -230,12 +230,6 @@
         "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
         "document_type": "general protocol",
         "lab": "michael-snyder",
-        "references": [
-            "341bf550-be0c-11e4-bb52-0800200c9a66",
-            "cf890830-bdfc-11e4-bb52-0800200c9a66",
-            "4be68100-be0c-11e4-bb52-0800200c9a66",
-            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
-        ],
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
     },

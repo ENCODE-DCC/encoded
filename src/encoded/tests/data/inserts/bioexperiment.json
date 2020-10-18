@@ -1,7 +1,7 @@
 [
   {
     "accession": "KCEBE001CTL",
-    "assay_term_name": "5C",
+    "assay_term_name": "RNA-seq",
     "biospecimen": "KCEBS708IJT",
     "award": "Kidney-SPORE",
     "experiment_description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
@@ -10,12 +10,11 @@
     "date_submitted": "2015-08-20",
     "date_released": "2016-01-01",
     "submitted_by": "dignissim.euismod@amet.habitant",
-    "uuid": "4fe31962-4c61-4b17-883c-82ec6be02316",
-    "experiment_classification": "functional genomics assay"
-},
+    "uuid": "4fe31962-4c61-4b17-883c-82ec6be02316"
+  },
   {
     "accession": "KCEBE000AER",
-    "assay_term_name": "RAMPAGE",
+    "assay_term_name": "RNA-seq",
     "biospecimen": "KCEBS708IJT",
     "award": "Kidney-SPORE",
     "lab": "thomas-gingeras",
@@ -32,20 +31,18 @@
       "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
     ],
     "dbxrefs": [
-      "UCSC-ENCODE-hg19:wgEncodeEH001832",
       "GEO:GSM935375"
     ],
     "aliases": [
       "James-Brugarolas:experiment_RB884_680_1"
     ],
-    "possible_controls":["KCESR001CTL"],
-    "submitter_comment": "The lab tissue was FFPE fixed and be put in room temperature for 30min.",
-    "experiment_classification": "functional genomics assay"
+    "possible_controls":["KCEBE000AES"],
+    "submitter_comment": "The lab tissue was FFPE fixed and be put in room temperature for 30min."
   },
   {
     "accession": "KCEBE000AES",
     "assay_term_name": "RNA-seq",
-    "biospecimen": "KCEBS000AAA",
+    "biospecimen": "KCEBS000AAB",
     "award": "Kidney-SPORE",
     "lab": "thomas-gingeras",
     "experiment_description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
@@ -63,18 +60,16 @@
       "caa8db45-32e3-4fb5-8cc0-885325fb7fc8"
     ],
     "dbxrefs": [
-      "UCSC-ENCODE-hg19:wgEncodeEH003317",
       "GEO:GSM1010811"
     ],
     "aliases": [
       "Payal-Kapur:experiment_RB884_880_1"
     ],
-    "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing.",
-    "experiment_classification": "functional genomics assay"
+    "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing."
   },
   {
     "accession": "KCEBE000ADH",
-    "assay_term_name": "ChIP-seq",
+    "assay_term_name": "RNA-seq",
     "biospecimen": "KCEBS087RNA",
     "award": "Kidney-SPORE",
     "lab": "sherman-weissman",
@@ -85,7 +80,6 @@
     "submitted_by": "amet.fusce@est.fermentum",
     "uuid": "6cda9c90-9a41-47f3-bf20-665f57c92f07",
     "dbxrefs": [
-      "UCSC-ENCODE-mm9:wgEncodeEM002004",
       "GEO:GSM798327",
       "GEO:GSE32218"
     ],
@@ -94,7 +88,6 @@
     ],
     "aliases": [
       "James-Brugarolas:experiment_RB884_681_1"
-    ],
-    "experiment_classification": "functional genomics assay"
+    ]
   }
 ]

@@ -33,7 +33,7 @@
         "submitter_comment":"This is a test for submitter_comment"
     },
     {
-        "biospecimen": "KCEBS087RNB",
+        "biospecimen": "KCEBS087RNA",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "3245ac16-1d07-4360-bb5c-a7f6dff52885",
