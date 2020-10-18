@@ -233,9 +233,6 @@
         "assembly": {
             "title": "Genome assembly"
         },
-        "target.investigated_as": {
-            "title": "Target category"
-        },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",

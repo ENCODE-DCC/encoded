@@ -26,14 +26,14 @@ class Bioreplicate(Item):
         'biofile': ('Biofile', 'bioreplicate'),
 
     }
-   
+
     embedded = [
         # 'bioexperiment'
         'biolibrary',
         'biolibrary.biospecimen',
         'biolibrary.biospecimen.donor',
         'biofile'
-        
+
     ]
     audit_inherit = [
     ]
@@ -41,7 +41,7 @@ class Bioreplicate(Item):
 
     ]
     set_status_down = []
-    
+
     @calculated_property(
         schema={
             "title": "Biofile",

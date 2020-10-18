@@ -11,6 +11,7 @@ class GenomicsTable extends React.Component {
 
     transformData(data) {
         let biolibrary = [];
+        let index = 0;
         for (let i = 0; i < data.length; i++) {
             
             for (let j = 0; j < data[i].biofile.length; j++) {
@@ -29,7 +30,8 @@ class GenomicsTable extends React.Component {
                     file_id: data[i].biofile[j]['@id'],
                 };
                 
-                biolibrary[i+j] = obj;
+                biolibrary[index] = obj;
+                index++;
 
             }
         }

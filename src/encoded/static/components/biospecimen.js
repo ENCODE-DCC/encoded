@@ -104,14 +104,14 @@ class Biospecimen extends React.Component {
                                 <dt>Collection Date</dt>
                                 <dd>{context.collection_date}</dd>
                             </div>
-                            <div data-test="collection_type">
-                                <dt>Collection Type</dt>
-                                <dd>{context.collection_type}</dd>
+                            <div data-test="sample_type">
+                                <dt>Sample Type</dt>
+                                <dd>{context.sample_type}</dd>
                             </div>
 
-                            <div data-test="processing_type">
-                                <dt>Processing Type</dt>
-                                <dd>{context.processing_type}</dd>
+                            <div data-test="tissue_derivatives">
+                                <dt>Tissue Derivatives</dt>
+                                <dd>{context.tissue_derivatives}</dd>
                             </div>
                             <div data-test="host">
                                 <dt>Host</dt>

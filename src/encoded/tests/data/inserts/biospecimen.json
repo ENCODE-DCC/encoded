@@ -8,19 +8,19 @@
         "donor":"KCEDO017AAA",
         "sample_type":"Tissue",
         "collection_date":"1941-02-16",
-        "collection_type":"solid tissue",
-        "processing_type":"xenograft",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"TG(PDX)",
         "distributed":"Yes",
-        "tissue_type":"malignant primary",
-        "anatomic_site":"kidney",
+        "tissue_type":"Primary",
+        "anatomic_site":"Kidney",
         "uuid": "29bf20ad-7942-44d3-9d89-53febc8829fc",
         "status": "released",
         "host": "Mouse",
-        "primary_site": "kidney",
+        "primary_site": "Kidney",
         "surgery": "KCESX708FIJ"
     },
     {
-        "accession": "KCEBS000AAA",
+        "accession": "KCEBS000AAB",
         "internal_ID":"quiscillum",
         "award": "Kidney-SPORE",
         "openspecimen_ID":"minimcommodo",
@@ -29,11 +29,11 @@
         "sample_type":"Tissue",
 
         "collection_date":"1982-06-20",
-        "collection_type":"solid tissue",
-        "processing_type":"FFPE",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"FFPE",
         "distributed":"No",
-        "tissue_type":"normal",
-        "anatomic_site":"kidney",
+        "tissue_type":"Normal",
+        "anatomic_site":"Kidney",
         "uuid": "170be0f2-6b5c-4b93-ba65-bedadbfe917f",
         "status": "released",
         "host": "Human",
@@ -59,7 +59,7 @@
         "documents": [
             "encode:EPC_Stam_protocol"
         ],
-        
+
         "status": "released",
         "host": "Human",
         "primary_site": "kidney"
@@ -71,15 +71,15 @@
         "openspecimen_ID":"veniam",
         "patient":"KCEPT026PGS",
         "collection_date":"2003-11-09",
-        "collection_type":"blood",
-        "processing_type":"blood",
+        "sample_type":"Blood",
+        "tissue_derivatives":"Blood",
         "distributed":"No",
-        "tissue_type":"normal",
-        "anatomic_site":"hematopoietic system",
+        "tissue_type":"Normal",
+
         "uuid": "469ca496-315e-4364-b770-63018e0cf8f4",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
 
     },
     {
@@ -89,15 +89,15 @@
         "award": "Kidney-SPORE",
         "patient":"KCEPT925TMI",
         "collection_date":"1991-08-20",
-        "collection_type":"solid tissue",
-        "processing_type":"DMSO",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"DMSO",
         "distributed":"Yes",
-        "tissue_type":"malignant primary",
-        "anatomic_site":"kidney",
+        "tissue_type":"Primary",
+        "anatomic_site":"Kidney",
         "uuid": "b1cf3723-2791-4ac7-bb02-e5d49f66819c",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS026KCE",
@@ -106,15 +106,15 @@
         "openspecimen_ID":"inmagnaident",
         "patient":"KCEPT480NBU",
         "collection_date":"1990-01-13",
-        "collection_type":"blood",
-        "processing_type":"blood",
+        "sample_type":"Blood",
+        "tissue_derivatives":"Blood",
         "distributed":"Yes",
-        "tissue_type":"normal",
-        "anatomic_site":"hematopoietic system",
+        "tissue_type":"Normal",
+
         "uuid": "f6805b25-edcc-4704-bc95-dbb7d9269bed",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS026FDC",
@@ -123,15 +123,15 @@
         "openspecimen_ID":"Duissint",
         "patient":"KCEPT873QVK",
         "collection_date":"2012-06-15",
-        "collection_type":"solid tissue",
-        "processing_type":"DMSO",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"DMSO",
         "distributed":"Yes",
-        "tissue_type":"malignant primary",
-        "anatomic_site":"kidney",
+        "tissue_type":"Primary",
+        "anatomic_site":"Kidney",
         "uuid": "337a602b-9b40-4947-81e4-39e1e44f2388",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS039ENC",
@@ -140,15 +140,15 @@
         "openspecimen_ID":"sitani",
         "patient":"KCEPT802XRB",
         "collection_date":"2005-02-04",
-        "collection_type":"solid tissue",
-        "processing_type":"FF",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"FF",
         "distributed":"Yes",
-        "tissue_type":"malignant primary",
-        "anatomic_site":"kidney",
+        "tissue_type":"Primary",
+        "anatomic_site":"Kidney",
         "uuid": "4998b6fc-4730-4533-8061-4aba132763f2",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney",
+        "primary_site": "Kidney",
         "surgery": "KCESX802XRB"
     },
     {
@@ -158,16 +158,16 @@
         "openspecimen_ID":"exercitation",
         "patient":"KCEPT802XRB",
         "collection_date":"1980-03-15",
-        "collection_type":"solid tissue",
-        "processing_type":"xenograft",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"TG(PDX)",
         "originated_from": "KCEBS039ENC",
         "distributed":"No",
-        "tissue_type":"malignant primary",
-        "anatomic_site":"kidney",
+        "tissue_type":"Primary",
+        "anatomic_site":"Kidney",
         "uuid": "651493ea-8d40-41f3-911a-81ed25074af9",
         "status": "released",
         "host": "Mouse",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS057AAA",
@@ -176,17 +176,17 @@
         "openspecimen_ID":"dolore",
         "patient":"KCEPT186NZW",
         "collection_date":"1997-08-16",
-        "collection_type":"solid tissue",
-        "processing_type":"FF",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"FF",
         "distributed":"No",
-        "tissue_type":"benign",
-        "anatomic_site":"kidney",
+        "tissue_type":"Benign tumor",
+        "anatomic_site":"Kidney",
         "uuid": "ea1c3399-4def-46ad-a7e8-da48d2e73334",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
     },
-    
+
     {
         "accession": "KCEBS088RNA",
         "internal_ID":"officia consequat ut nisi",
@@ -194,17 +194,14 @@
         "openspecimen_ID":"qui",
         "patient":"KCEPT873QVK",
         "collection_date":"1976-03-28",
-        "collection_type":"solid tissue",
-        "processing_type":"FF",
+        "sample_type":"Tissue",
+        "tissue_derivatives":"FF",
         "distributed":"Yes",
-        "tissue_type":"malignant metastasis",
-        "anatomic_site":"lung",
+        "tissue_type":"Metastasis",
+        "anatomic_site":"Lung",
         "uuid": "3c7b123c-9e61-4e3e-a8ec-de49d8d2257f",
         "status": "released",
         "host": "Human",
-        "primary_site": "kidney"
+        "primary_site": "Kidney"
     }
 ]
-
-
-

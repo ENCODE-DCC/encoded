@@ -19,11 +19,11 @@ class BiospecimenTable extends React.Component {
                 openspecimen_ID: {
                     title: 'OpenSpecimen ID',
                 },
-                collection_type: {
-                    title: 'Collection type',
+                sample_type: {
+                    title: 'Sample type',
                 },
-                processing_type: {
-                    title: 'Processing type',
+                tissue_derivatives: {
+                    title: 'Tissue Derivatives',
                 },
                 tissue_type: {
                     title: 'Tissue type',

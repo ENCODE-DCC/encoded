@@ -21,7 +21,7 @@
 
     },
     {
-        "biospecimen": "KCEBS000AAA",
+        "biospecimen": "KCEBS000AAB",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "873440f2-13a2-4564-a127-3c88c9a33c8e",
@@ -33,7 +33,7 @@
         "submitter_comment":"This is a test for submitter_comment"
     },
     {
-        "biospecimen": "KCEBS087RNA",
+        "biospecimen": "KCEBS087RNB",
         "nucleic_acid_term_name": "RNA",
         "status": "released",
         "uuid": "3245ac16-1d07-4360-bb5c-a7f6dff52885",

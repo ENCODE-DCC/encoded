@@ -74,6 +74,67 @@ def supportive_med_frequency(request, supportive_medication):
     return supportive_meds
 
 
+def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
+
+        all_traced_dates=[]
+        if len(vitals) > 0:
+            for path in vitals:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                vital_dates=properties.get("date")
+                all_traced_dates.append(vital_dates)
+        if len(labs) > 0:
+            for path in labs:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                lab_dates=properties.get("date")
+                all_traced_dates.append(lab_dates)
+        if len(surgery) > 0:
+            for path in surgery:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                sur_dates=properties.get("date")
+                all_traced_dates.append(sur_dates)
+        if len(germline) > 0:
+            for path in germline:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                ger_dates=properties.get("service_date")
+                all_traced_dates.append(ger_dates)
+        if len(ihc) > 0:
+            for path in ihc:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                ihc_dates=properties.get("service_date")
+                all_traced_dates.append(ihc_dates)
+        if len(radiation) > 0:
+            for path in radiation:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                if 'end_date' in properties:
+                    rad_dates=properties.get("end_date")
+                else:
+                    rad_dates=properties.get("start_date")
+                all_traced_dates.append(rad_dates)
+        if len(medical_imaging) > 0:
+            for path in medical_imaging:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                med_img_dates=properties.get("procedure_date")
+                all_traced_dates.append(med_img_dates)
+        if len(medication) > 0:
+            for path in medication:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                med_dates=properties.get("end_date")
+                all_traced_dates.append(med_dates)
+        if len(supportive_medication) > 0:
+            for path in supportive_medication:
+                properties = request.embed(path, '@@object?skip_calculated=true')
+                sup_med_dates=properties.get("start_date")
+                all_traced_dates.append(sup_med_dates)
+
+        if len(all_traced_dates) > 0:
+            all_traced_dates.sort(key = lambda date: datetime.strptime(date, "%Y-%m-%d"))
+            last_follow_up_date = all_traced_dates[-1]
+        else:
+            last_follow_up_date = "Not available"
+
+        return last_follow_up_date
+
+
 @collection(
      name='patients',
      unique_key='accession',
@@ -114,6 +175,15 @@ class Patient(Item):
     }
     set_status_up = []
     set_status_down = []
+
+    @calculated_property(schema={
+        "title": "Last Follow-up Date",
+        "description": "Calculated last follow-up date,format as YYYY-MM-DD",
+        "type": "string",
+    })
+    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
+        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
+
 
     @calculated_property( schema={
         "title": "Labs",
@@ -201,45 +271,41 @@ class Patient(Item):
             radiation_summary = "No Treatment Received"
         return radiation_summary
 
-    @calculated_property(condition='radiation', schema={
-        "title": "Dose per Fraction",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
+    @calculated_property(define=True, schema={
+        "title": "Metastasis status ",
+        "type": "string",
     })
-    def dose_range(self, request, radiation):
-        dose_range = []
-        for treatment in radiation:
-            treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['dose']/treatment_object['fractions'] < 2000:
-                dose_range.append("200 - 2000")
-            elif treatment_object['dose']/treatment_object['fractions'] < 4000:
-                dose_range.append("2000 - 4000")
-            else:
-                dose_range.append("4000 - 6000")
-        return dose_range
+    def metastasis_status(self, request, radiation=None, surgery=None):
+        status = "No"
+        if len(radiation) > 0:
 
-    @calculated_property(condition='radiation', schema={
-        "title": "Radiation Fractions",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object')
+                #site mapping
+                if radiation_object['site_general'] != "Kidney, right" and radiation_object['site_general'] != "Kidney, thrombus" and radiation_object['site_general'] != "Kidney, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, left" and radiation_object['site_general'] != "Retroperitoneum / renal bed, right":
+                    status = "Yes"
+        else:
+            if len(surgery) > 0:
+                for surgery_record in surgery:
+                    surgery_object = request.embed(surgery_record, '@@object')
+                    path_reports = surgery_object['pathology_report']
+                    if len(path_reports) > 0:
+                        for path_report in path_reports:
+                            path_report_obj = request.embed(path_report, '@@object')
+                            if path_report_obj['path_source_procedure'] == 'path_metasis':
+                                status = "Yes"
+        return status
+
+    @calculated_property(define=True, schema={
+        "title": "Vital Status",
+        "type": "string",
     })
-    def fractions_range(self, request, radiation):
-        fractions_range = []
-        for treatment in radiation:
-            treatment_object = request.embed(treatment, '@@object')
-            if treatment_object['fractions'] < 5:
-                fractions_range.append("1 - 5")
-            elif treatment_object['fractions'] < 10:
-                fractions_range.append("5 - 10")
-            elif treatment_object['fractions'] < 15:
-                fractions_range.append("10 - 15")
-            else:
-                fractions_range.append("15 and up")
-        return fractions_range
+    def vital_status(self, request, death_date=None):
+        if death_date is None:
+            vital_status = "Alive"
+        else:
+            vital_status = "Deceased"
+        return vital_status
 
 
     @calculated_property(schema={
@@ -365,11 +431,271 @@ class Patient(Item):
                 surgery_summary = "No Treatment Received"
             return surgery_summary
 
+
+
+    @calculated_property(schema={
+        "title": "Diagnosis",
+        "description": "Infomation related to diagnosis",
+        "type": "object",
+        "additionalProperties": False,
+        "properties":{
+            "first_treatment_date": {
+                "title": "Date of First Treatment",
+                "type": "string",
+            },
+            "diagnosis_date": {
+                "title": "Diagnosis Date",
+                "description": "Date of Diagnosis",
+                "type": "string",
+            },
+            "diagnosis_source": {
+                "title": "Diagnosis Source",
+                "description": "The source of the diagnosis date",
+                "type": "string",
+            },
+            "age": {
+                "title": "Diagnosis age",
+                "description": "The age of diagnosis.",
+                "type": "string",
+                "pattern": "^((unknown)|([1-8]?\\d)|(90 or above))$"
+            },
+            "age_unit": {
+                "title": "Diagnosis age unit",
+                "type": "string",
+                "default": "year",
+                "enum": [
+                    "year"
+                ]
+            },
+            "age_range": {
+                "title": "Age at Diagnosis",
+                "type": "string"
+            },
+            "follow_up_duration_range": {
+                "title": "Follow Up Duration",
+                "type": "string"
+
+            }
+
+        },
+    })
+    def diagnosis(self, request, surgery, radiation, medication,labs, vitals,
+                    germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None):
+        nephrectomy_dates = []
+        non_nephrectomy_dates = []
+        surgery_dates = []
+        diagnosis_date = "Not available"
+        diagnosis_source = "Not applicable"
+
+        # Calculate
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_path_report = surgery_object['pathology_report']
+                for path_report in surgery_path_report:
+                    path_report_obj = request.embed(path_report, '@@object')
+                    if path_report_obj['path_source_procedure'] == "path_nephrectomy":
+                        nephrectomy_dates.append(surgery_object['date'])
+                    elif  path_report_obj['path_source_procedure'] == "path_biopsy" or path_report_obj['path_source_procedure'] == "path_metasis":
+                        non_nephrectomy_dates.append(surgery_object['date'])
+
+        if len(nephrectomy_dates) > 0 :
+                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                diagnosis_date = nephrectomy_dates[0]
+                surgery_dates.append(nephrectomy_dates[0])
+
+        if len(non_nephrectomy_dates) > 0:
+            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            # Check if Non-nephrectomy (Biopsy Kidney) comes before the nephrectomy
+            surgery_dates.append(non_nephrectomy_dates[0])
+
+        if len(surgery_dates) > 0:
+            surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = surgery_dates[0]
+            diagnosis_source = "Pathology Report"
+
+        elif diagnosis_date_tumor_registry is not None:
+             diagnosis_date = diagnosis_date_tumor_registry
+        elif len(medication) > 0:
+            diagnosis_source = "Medication"
+            for medication_record in medication:
+                medication_object = request.embed(medication_record, '@@object')
+                non_nephrectomy_dates.append(medication_object['start_date'])
+            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = non_nephrectomy_dates[0]
+
+        age_range = "Unknown"
+        ageString = "Unknown"
+        follow_up_duration_range = "Not available"
+
+        if diagnosis_date is not "Not available":
+            birth_date = datetime.strptime("1800-01-01", "%Y-%m-%d")
+            end_date = datetime.strptime(diagnosis_date, "%Y-%m-%d")
+            age = end_date.year - birth_date.year -  ((end_date.month, end_date.day) < (birth_date.month, birth_date.day))
+            ageString = str(age)
+
+            # For age of diagnosis if age is about 90
+            # we make this a string to represent
+            if age >= 90:
+                ageString = "90 or above"
+
+            if age >= 80:
+                age_range = "80+"
+            elif age >= 60:
+                age_range = "60 - 79"
+            elif age >= 40:
+                age_range = "40 - 59"
+            elif age >= 20:
+                age_range = "20 - 39"
+            else:
+                age_range = "0 - 19"
+
+            #Add follow up duration:
+            follow_up_start_date = datetime.strptime(diagnosis_date,"%Y-%m-%d")
+            last_follow_up_date = last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication, supportive_medication, surgery)
+            if last_follow_up_date != "Not available":
+                follow_up_end_date = datetime.strptime(last_follow_up_date,"%Y-%m-%d")
+                follow_up_duration = (follow_up_end_date-follow_up_start_date).days/365
+
+                if follow_up_duration >= 5:
+                    follow_up_duration_range = "> 5 year"
+                elif follow_up_duration >= 3:
+                    follow_up_duration_range = "3 - 5 year"
+                elif follow_up_duration >= 1.5:
+                    follow_up_duration_range = "1.5 - 3 year"
+                else:
+                    follow_up_duration_range = "0 - 1.5 year"
+
+
+        treatment_dates = []      
+        first_treatment_date = "Not available"
+        #Get the first_treatment_date
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                treatment_dates.append(surgery_object['date'])
+        if len(radiation) > 0:
+                # add radiation dates
+                for radiation_record in radiation:
+                    radiation_object = request.embed(radiation_record, '@@object')
+                    treatment_dates.append(radiation_object['start_date'])
+        if len(medication) > 0:
+            # add medication dates
+            for medication_record in medication:
+                medication_object = request.embed(medication_record, '@@object')
+                treatment_dates.append(medication_object['start_date'])
+        if len(treatment_dates) > 0:
+            treatment_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            first_treatment_date = treatment_dates[0]
+
+        diagnosis = dict()
+        diagnosis['diagnosis_date'] = diagnosis_date
+        diagnosis['diagnosis_source'] = diagnosis_source
+        diagnosis['age'] = ageString
+        diagnosis['age_unit'] = "year"
+        diagnosis['age_range'] = age_range
+        diagnosis['follow_up_duration_range'] = follow_up_duration_range
+        diagnosis['first_treatment_date'] = first_treatment_date
+
+        return diagnosis
+
+
+    @calculated_property(schema={
+        "title": "Metastasis",
+        "description": "Infomation related to Metastasis",
+        "type": "array",
+        "items": {
+            "title": "Metastasis Record",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "date": {
+                    "title": "Date of Metastasis Record",
+                    "description": "Date of Metastasis Record",
+                    "type": "string"
+                },
+                "histology_proven": {
+                    "title": "Histology Proven",
+                    "type": "string"
+                },
+                "source": {
+                    "title": "Source",
+                    "description": "Source of the record",
+                    "type": "string",
+                    "enum": [
+                        "Pathology report",
+                        "Radiation treatment"
+                    ]
+                },
+                "site": {
+                    "title": "Metastasis Site",
+                    "type": "string",
+                    "enum": [
+                        "Adrenal",
+                        "Bone",
+                        "Brain",
+                        "Liver",
+                        "Lung and pleura",
+                        "Lymph node",
+                        "Other"
+                    ]
+                }
+
+            },
+        }
+    })
+    def metastasis(self, request, surgery, radiation):
+        records = []
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                path_reports = surgery_object['pathology_report']
+                if len(path_reports) > 0:
+                    for path_report in path_reports:
+                        path_report_obj = request.embed(path_report, '@@object')
+                        if path_report_obj['path_source_procedure'] == 'path_metasis':
+                            record = {
+                                'date': path_report_obj['date'],
+                                'source': 'Pathology report',
+                                'site': path_report_obj['metasis_details']['site'],
+                                'histology_proven': 'Yes'
+                            }
+                            if record not in records:
+                                records.append(record)
+        if len(radiation) > 0 :
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object')
+                #site mapping
+                if radiation_object['site_general'] == "Adrenal gland, left" or radiation_object['site_general'] == "Adrenal gland, right":
+                    radiation_site = "Adrenal"
+                elif radiation_object['site_general'] == "Spine" or radiation_object['site_general'] == "Bone":
+                    radiation_site = "Bone"
+                elif radiation_object['site_general'] == "Brain" or radiation_object['site_general'] == "Liver":
+                    radiation_site = radiation_object['site_general']
+                elif radiation_object['site_general'] == "Connective, subcutaneous and other soft tissues, NOS" or radiation_object['site_general'] == "Retroperitoneum & peritoneum" or radiation_object['site_general'] == "Connective, subcutaneous and other soft tissue, abdomen" or radiation_object['site_general'] == "Gastrointestine/ digestive system & spleen" or radiation_object['site_general'] == "Salivary gland":
+                    radiation_site = "Other"
+                elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
+                    radiation_site = "Lung and pleura"
+                elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
+                    radiation_site = "Lymph Node"
+
+                record = {
+                    'date': radiation_object['start_date'],
+                    'source': 'Radiation treatment',
+                    'site': radiation_site,
+                    'histology_proven': 'No'
+                }
+                if record not in records:
+                    records.append(record)
+
+        return records
+
+
     matrix = {
         'y': {
             'facets': [
                 'status',
-                'gender',
+                'sex',
                 'race',
                 'ethnicity',
                 'surgery_summary',
@@ -377,7 +703,7 @@ class Patient(Item):
                 'medications.name',
                 'surgery.surgery_procedure.surgery_type',
                 'surgery.hospital_location',
-                'sur_path_tumor_size',
+                'surgery.pathology_report.tumor_size_range',
                 'surgery.pathology_report.ajcc_p_stage',
                 'surgery.pathology_report.n_stage',
                 'surgery.pathology_report.m_stage',
@@ -385,14 +711,13 @@ class Patient(Item):
                 'germline_summary',
                 'ihc.antibody',
                 'ihc.result',
-                
             ],
-            'group_by': ['race', 'gender'],
+            'group_by': ['race', 'sex'],
             'label': 'race',
         },
         'x': {
             'facets': [
-                
+
                 'surgery.pathology_report.histology',
             ],
             'group_by': 'surgery.pathology_report.histology',
@@ -405,13 +730,13 @@ class Patient(Item):
             'facets': [
 
                 'status',
-                'gender',
+                'sex',
                 'race',
                 'radiation_summary',
 
             ],
-            'group_by': ['gender', 'radiation_summary'],
-            'label': 'Gender',
+            'group_by': ['sex', 'radiation_summary'],
+            'label': 'Sex',
         },
         'x': {
             'facets': [
@@ -420,7 +745,7 @@ class Patient(Item):
             'group_by': 'race',
             'label': 'Race',
         },
-        'grouping': ['gender', 'status'],
+        'grouping': ['sex', 'status'],
     }
 
 
@@ -434,7 +759,6 @@ class Patient(Item):
     })
 
     def sur_nephr_robotic_assist(self, request, surgery):
-
 
         sp_obj_array = []
         array=[]
@@ -462,6 +786,7 @@ class Patient(Item):
                 robotic_assist.append("False")
         return robotic_assist
 
+
     @calculated_property(condition='surgery', schema={
         "title": "surgery pathology tumor size calculation",
         "type": "array",
@@ -471,8 +796,8 @@ class Patient(Item):
     })
 
     def sur_path_tumor_size(self, request, surgery):
-        
-        
+
+
         sp_obj_array = []
         array=[]
         if surgery is not None:
@@ -489,17 +814,17 @@ class Patient(Item):
 
         tumor_size_range = []
         for tumor_size in array:
-            if 0 <= tumor_size < 3:
-                tumor_size_range.append("0-3 cm")
-            elif 3 <= tumor_size < 7:
-                tumor_size_range.append("3-7 cm")
-            elif 7 <= tumor_size < 10:
-                tumor_size_range.append("7-10 cm")
-            else:
-                tumor_size_range.append("10+ cm")
-        return tumor_size_range                   
+            if tumor_size is not None:
+                if 0 <= tumor_size < 3:
+                    tumor_size_range.append("0-3 cm")
+                elif 3 <= tumor_size < 7:
+                    tumor_size_range.append("3-7 cm")
+                elif 7 <= tumor_size < 10:
+                    tumor_size_range.append("7-10 cm")
+                else:
+                    tumor_size_range.append("10+ cm")
+        return tumor_size_range
 
-   
 
 @collection(
     name='lab-results',
@@ -579,6 +904,38 @@ class Radiation(Item):
         dose_per_fraction = dose/fractions
         return dose_per_fraction
 
+    @calculated_property(condition='dose', schema={
+        "title": "Dosage range per fraction",
+        "type": "string",
+
+    })
+    def dose_range(self, request, dose, fractions):
+        dose_per_fraction = dose/fractions
+        if dose_per_fraction < 2000:
+            return "200 - 2000"
+        elif dose_per_fraction < 4000:
+            return "2000 - 4000"
+        else:
+            return "4000 - 6000"
+
+    @calculated_property(condition='fractions', schema={
+        "title": "Fractions range",
+        "type": "string",
+
+    })
+    def fractions_range(self, request, fractions):
+
+        if fractions < 5:
+            return "1 - 5"
+        elif fractions < 10:
+            return "5 - 10"
+        elif fractions < 15:
+            return "10 - 15"
+        else:
+            return "15 and up"
+
+
+
 
 @collection(
     name='medical_imaging',
@@ -638,11 +995,10 @@ def patient_page_view(context, request):
 def patient_basic_view(context, request):
     properties = item_view_object(context, request)
     filtered = {}
-    for key in ['@id', '@type', 'accession', 'uuid', 'gender', 'ethnicity', 'race', 'age', 'age_units', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'dose_range', 'fractions_range', 'medical_imaging',
+    for key in ['@id', '@type', 'accession', 'uuid', 'sex', 'ethnicity', 'race', 'diagnosis', 'last_follow_up_date', 'status',  'ihc','labs', 'vitals', 'germline', 'germline_summary','radiation', 'radiation_summary', 'vital_status', 'medical_imaging',
                 'medications','medication_range', 'supportive_medications', 'biospecimen', 'surgery_summary','sur_nephr_robotic_assist']:
         try:
             filtered[key] = properties[key]
         except KeyError:
             pass
     return filtered
-

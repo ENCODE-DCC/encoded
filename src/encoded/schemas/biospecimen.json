@@ -4,44 +4,17 @@
     "id": "/profiles/biospecimen.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [
-        "award",
-        "internal_ID",
-        "openspecimen_ID",
-        "patient",
-        "collection_date",
-        "collection_type",
-        "processing_type",
-        "host",
-        "distributed"
-    ],
-    "identifyingProperties": [
-        "uuid",
-        "accession"
-    ],
+    "required": [ "award", "internal_ID", "openspecimen_ID", "patient", "collection_date", "collection_type", "processing_type", "host", "distributed"],
+    "identifyingProperties": [ "uuid","accession" ],
     "additionalProperties": false,
     "mixinProperties": [
-        {
-            "$ref": "mixins.json#/submitted"
-        },
-        {
-            "$ref": "mixins.json#/accessioned_status"
-        },
-        {
-            "$ref": "mixins.json#/schema_version"
-        },
-        {
-            "$ref": "mixins.json#/accession"
-        },
-        {
-            "$ref": "mixins.json#/attribution"
-        },
-        {
-            "$ref": "mixins.json#/documents"
-        },
-        {
-            "$ref": "mixins.json#/uuid"
-        }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/uuid" }
     ],
     "properties": {
         "schema_version": {
@@ -87,26 +60,28 @@
             "type": "string",
             "format": "date"
         },
-        "collection_type": {
-            "title": "Collection Type",
+        "sample_type": {
+            "title": "Sample Type",
             "description": "The type of the biospecimen when it was taken.",
             "type": "string",
             "enum": [
-                "solid tissue",
-                "blood"
+                "Tissue",
+                "Blood",
+                "Stool",
+                "Molecule"
             ]
         },
-        "processing_type": {
-            "title": "Processing Type",
-            "description": "the type of the final product after processing.",
+        "tissue_derivatives": {
+            "title": "Tissue Derivatives",
+            "description": "the type of the final product after sample processing.",
             "type": "string",
             "enum": [
                 "FF",
                 "FFPE",
-                "xenograft",
+                "TG(PDX)",
                 "DMSO",
-                "blood",
-                "cell line"
+                "Blood",
+                "Primary cell line"
             ]
         },
         "host": {
@@ -131,55 +106,46 @@
             "title": "Tissue Type",
             "type": "string",
             "enum": [
-                "malignant primary",
-                "malignant metastasis",
-                "benign",
-                "normal"
+                "Primary",
+                "Metastasis",
+                "Benign tumor",
+                "Normal"
             ]
         },
         "anatomic_site": {
             "title": "Anatomic Site",
             "type": "string",
             "enum": [
-                "kidney",
-                "abdominal Wall",
-                "adrenal",
-                "bone",
-                "brain",
-                "liver",
-                "lung",
-                "lymph node",
-                "pancreas",
-                "peritoneum",
-                "retroperitoneal mass",
-                "thrombus",
-                "hematopoietic system"
+                "Kidney",
+                "Abdominal Wall",
+                "Adrenal",
+                "Bone",
+                "Brain",
+                "Liver",
+                "Lung",
+                "Lymph node",
+                "Pancreas",
+                "Peritoneum",
+                "Retroperitoneal mass",
+                "Thrombus"
             ]
         },
         "primary_site": {
             "title": "Primary Site",
             "type": "string",
             "enum": [
-                "kidney",
-                "abdominal Wall",
-                "adrenal",
-                "bone",
-                "brain",
-                "liver",
-                "lung",
-                "lymph node",
-                "pancreas",
-                "peritoneum",
+                "Kidney",
+                "Abdominal Wall",
+                "Adrenal",
+                "Bone",
+                "Brain",
+                "Liver",
+                "Lung",
+                "Lymph node",
+                "Pancreas",
+                "Peritoneum",
                 "Retroperitoneal mass",
-                "thrombus"
-            ]
-        },
-        "distributed": {
-            "title": "Distributed?",
-            "type": "string",
-            "enum": [
-                "Yes",
-                "No"
+                "Thrombus"
             ]
         },
         "documents": {
@@ -194,23 +160,6 @@
                 "Human",
                 "Mouse"
             ]
-        },
-        "sample_type": {
-            "title": "Sample Type",
-            "description": "The type of the biospecimen when it was taken.",
-            "type": "string",
-            "enum": [
-                "Blood",
-                "Fluid",
-                "Tissue",
-                "Molecule"
-            ]
-        },
-        "freeze_thaw_cycles": {
-            "title": "Freeze/Thaw Cycles",
-            "description": "Sample's freeze/thaw cycles",
-            "type": "integer",
-            "minimum": 0
         },
         "blood_related_field": {
             "title": "Blood Related Field",
@@ -250,7 +199,7 @@
             "description": "Tissue related fields",
             "type": "object",
             "properties": {
-                "tissue_typeOftissue": {
+                "type": {
                     "title": "Type of Tissue",
                     "description": "",
                     "comment": "",
@@ -439,13 +388,6 @@
                 "None"
             ]
         },
-        "donor": {
-            "title": "Donor",
-            "description": "The donor or strain the biosample was originated from.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Donor"
-        },
         "mouse_related_info": {
             "title": "Mouse Sample Related Information",
             "description": "Mouse Sample Related Information,mouse dependencies",
@@ -590,13 +532,6 @@
                 "hour"
             ]
         },
-        "host_biosample": {
-            "title": "Host biosample",
-            "description": "A biosample that was hosting this biosample.",
-            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation. See biosamples.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Biospecimen"
-        },
         "pooled_from": {
             "title": "Pooled from",
             "description": "The biosamples from which aliquots were pooled to form the biosample.",
@@ -648,11 +583,11 @@
         "status": {
             "title": "Status"
         },
-        "collection_type": {
-            "title": "Collection Type"
+        "sample_type": {
+            "title": "Sample Type"
         },
-        "processing_type": {
-            "title": "Product Type"
+        "tissue_derivatives": {
+            "title": "Tissue Derivatives"
         },
         "tissue_type": {
             "title": "Tissue Type"
@@ -812,11 +747,11 @@
         "openspecimen_ID": {
             "title": "OpenSpecimen ID"
         },
-        "collection_type": {
-            "title": "Collection Type"
+        "sample_type": {
+            "title": "Sample Type"
         },
-        "processing_type": {
-            "title": "Processing Type"
+        "tissue_derivatives": {
+            "title": "Tissue Derivatives"
         },
         "tissue_type": {
             "title": "Tissue Type"

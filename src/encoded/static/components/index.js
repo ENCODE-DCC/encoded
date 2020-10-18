@@ -46,9 +46,7 @@ require('./surgery');
 require('./pathology_report');
 require('./biospecimen');
 // require('./doc');
-
 require('./bioexperiment');
-
 require('./biofile');
 
 

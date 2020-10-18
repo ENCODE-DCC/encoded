@@ -21,10 +21,10 @@ import CartMergeShared from './merge_shared';
 const PAGE_ELEMENT_COUNT = 25;
 /** File facet fields to display in order of display */
 const displayedFacetFields = [
-    'output_type',
-    'file_type',
-    'assembly',
-    'lab.title',
+    'sample_type',
+    'tissue_derivatives',
+    'tissue_type',
+    'anatomic_site',
     'status',
 ];
 
@@ -56,14 +56,14 @@ class CartSearchResults extends React.Component {
     /**
      * Given the whole cart elements as a list of @ids as well as the currently displayed page
      * number, perform a search of a page of elements. If every element in the cart is an
-     * patient, add "?type=Patient" to the search query. For now, this condition is always
+     * experiment, add "?type=Experiment" to the search query. For now, this condition is always
      * true.
      */
     retrievePageElements() {
         const pageStartIndex = this.props.currentPage * PAGE_ELEMENT_COUNT;
         const currentPageElements = this.props.elements.slice(pageStartIndex, pageStartIndex + PAGE_ELEMENT_COUNT);
-        const patientTypeQuery = this.props.elements.every(element => element.match(/^\/patients\/.*?\/$/) !== null);
-        const cartQueryString = `/search/?limit=all${patientTypeQuery ? '&type=Patient' : ''}`;
+        const experimentTypeQuery = this.props.elements.every(element => element.match(/^\/patients\/.*?\/$/) !== null);
+        const cartQueryString = `/search/?limit=all${experimentTypeQuery ? '&type=Patient' : ''}`;
         requestObjects(currentPageElements, cartQueryString).then((searchResults) => {
             this.setState({ elementsForDisplay: searchResults });
         });
@@ -71,7 +71,7 @@ class CartSearchResults extends React.Component {
 
     render() {
         if (this.state.elementsForDisplay && this.state.elementsForDisplay.length === 0) {
-            return <div className="nav result-table cart__empty-message">No visible patient on this page.</div>;
+            return <div className="nav result-table cart__empty-message">No visible datasets on this page.</div>;
         }
         return <ResultTableList results={this.state.elementsForDisplay || []} cartControls={this.props.cartControls} />;
     }
@@ -135,9 +135,9 @@ class FileCount extends React.Component {
                 <div className="cart__facet-file-count">
                     {this.state.triggerEnabled ? <div className="cart__facet-file-count-changer" onAnimationEnd={this.handleAnimationEnd} /> : null}
                     {fileCount > 0 ?
-                        <span>{fileCountFormatted} {fileCount === 1 ? 'file' : 'files'} selected</span>
+                        <span>{fileCountFormatted} {fileCount === 1 ? 'biospecimen or file' : 'biospecimens or files'} selected</span>
                     :
-                        <span>No files selected for download</span>
+                        <span>No biospecimen or files selected for download</span>
                     }
                 </div>
             );
@@ -300,12 +300,12 @@ const requestFacet = (elements, fetch, queryString, session) => {
         sessionPromise = Promise.resolve(session._csrft);
     }
 
-    // We could have more patient @ids than the /search/ endpoint can handle in the query
+    // We could have more experiment @ids than the /search/ endpoint can handle in the query
     // string, so pass the @ids in a POST request payload instead to the /search_elements/
     // endpoint instead.
-    const fieldQuery = displayedFacetFields.reduce((query, field) => `${query}&field=files.${field}`, '');
+    const fieldQuery = displayedFacetFields.reduce((query, field) => `${query}&field=biospecimen.${field}`, '');
     return sessionPromise.then(csrfToken => (
-        fetch(`/search_elements/type=Patient{fieldQuery}&field=files.restricted&limit=all&filterresponse=off${queryString || ''}`, {
+        fetch(`/search_elements/type=Patient${fieldQuery}&limit=all&filterresponse=off${queryString || ''}`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -372,12 +372,12 @@ const addToAccumulatingFacets = (accumulatingResults, currentResults, facetField
             fileFacetsRefs[field] = fileResults.facets[matchingFacetIndex];
         });
 
-        // Go through each patient result to collect file information in the faked file results
+        // Go through each experiment result to collect file information in the faked file results
         // object.
         currentResults['@graph'].forEach((patient) => {
-            if (patient.files && patient.files.length > 0) {
-                patient.files.forEach((file) => {
-                    if (!file.restricted) {
+            if (patient.biospecimen && patient.biospecimen.length > 0) {
+                patient.biospecimen.forEach((file) => {
+                    if (file) {
                         // For each field we're collecting file information for, add its file facet
                         // count to the fake file facet we're putting together.
                         facetFields.forEach((field) => {
@@ -399,7 +399,7 @@ const addToAccumulatingFacets = (accumulatingResults, currentResults, facetField
                 });
 
                 // Collect files in the @graph of the fake file search results object.
-                fileResults['@graph'] = fileResults['@graph'].concat(patient.files.filter(file => !file.restricted));
+                fileResults['@graph'] = fileResults['@graph'].concat(patient.biospecimen.filter(biospecimen => biospecimen));
             }
         });
     }
@@ -542,11 +542,11 @@ Facet.defaultProps = {
 
 /**
  * Display the file facets. These display the number of files involved -- not the number of
- * patients with files matching a criteria. As the primary input to this component is currently
- * an array of patient IDs while these facets displays all the files involved with those
- * patients, this component begins by retrieving information about all relevant files from the
- * DB. Each time an patient is removed from the cart while viewing the cart page, this component
- * again retrieves all relevant files for the remaining patients.
+ * experiments with files matching a criteria. As the primary input to this component is currently
+ * an array of experiment IDs while these facets displays all the files involved with those
+ * experiments, this component begins by retrieving information about all relevant files from the
+ * DB. Each time an experiment is removed from the cart while viewing the cart page, this component
+ * again retrieves all relevant files for the remaining experiments.
  */
 class FileFacets extends React.Component {
     /**
@@ -617,7 +617,7 @@ class FileFacets extends React.Component {
      */
     retrieveFileFacetTemplate() {
         return this.context.fetch(
-            '/search/?type=File&limit=0',
+            '/search/?type=Biospecimen&limit=0',
             {
                 headers: {
                     Accept: 'application/json',
@@ -665,7 +665,7 @@ class FileFacets extends React.Component {
         let queryString = '';
         displayedFacetFields.forEach((field) => {
             if (this.props.selectedTerms[field].length > 0) {
-                const termQuery = this.props.selectedTerms[field].map(term => `files.${field}=${encodedURIComponent(term)}`).join('&');
+                const termQuery = this.props.selectedTerms[field].map(term => `biospecimen.${field}=${encodedURIComponent(term)}`).join('&');
                 queryString += `&${termQuery}`;
             }
         });
@@ -686,7 +686,7 @@ class FileFacets extends React.Component {
                     return addToAccumulatingFacets(accumulatingResults, currentResults, displayedFacetFields);
                 })
             )).catch((response) => {
-                parseAndLogError('Error reading file facets', response);
+                parseAndLogError('Error reading biospecimen facets', response);
             })
         ), this.retrieveFileFacetTemplate()).then((accumulatedResults) => {
             // All cart datasets in all chunks have been retrieved and their files extracted, and
@@ -706,7 +706,7 @@ class FileFacets extends React.Component {
 
     /**
      * Based on the currently selected facet terms and the files collected from the carted
-     * patients, generate a list of facets and corresponding counts. The length of the files
+     * experiments, generate a list of facets and corresponding counts. The length of the files
      * array could be in the hundreds of thousands, so this data has to be extracted by going
      * through this array only once per render.
      */
@@ -838,7 +838,7 @@ class FileFacets extends React.Component {
                             ))}
                         </div>
                     :
-                        <div className="cart__empty-message">No files available</div>
+                        <div className="cart__empty-message">No biospecimens or files available</div>
                     }
                 </div>
             </div>
@@ -961,7 +961,7 @@ const PagerArea = ({ currentPage, totalPageCount, updateCurrentPage }) => (
         {totalPageCount > 1 ?
             <div>
                 <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} />
-                <div className="cart__pager-note">pages of patients</div>
+                <div className="cart__pager-note">pages of datasets</div>
             </div>
         : null}
     </div>
@@ -1078,7 +1078,7 @@ class CartComponent extends React.Component {
                 cartElements = savedCartObj.elements;
             } else {
                 cartType = 'MEMORY';
-                cartName = 'Cart';
+                cartName = 'Cohort';
                 cartElements = elements;
             }
         } else {
@@ -1222,7 +1222,7 @@ class CartComponent extends React.Component {
                                 />
                             </div>
                         :
-                            <p className="cart__empty-message">Empty cart</p>
+                            <p className="cart__empty-message">Empty cohort</p>
                         }
                     </PanelBody>
                 </Panel>
