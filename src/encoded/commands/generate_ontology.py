@@ -214,7 +214,9 @@ preferred_name = {
     "OBI:0002571": "polyA plus RNA-seq",
     "OBI:0002572": "polyA minus RNA-seq",
     "OBI:0002631": "scRNA-seq",
-    "OBI:0002112": "small RNA-seq"
+    "OBI:0002112": "small RNA-seq",
+    "OBI:0002762": "snATAC-seq",
+    "OBI:0002764": "scATAC-seq"
 }
 
 category_slims = {

@@ -3,7 +3,9 @@ slim_shims = {
     'assay': {
         # DNA accessibility
         'OBI:0001924': ['DNA accessibility'],  # 'OBI:0000870' / MNase-seq
-        'OBI:0002039': ['DNA accessibility'],  # 'OBI:0000870', / ATAC-seq
+        'OBI:0002039': ['DNA accessibility'],  # 'OBI:0000870', / ATAC-seq,
+        'OBI:0002762': ['DNA accessibility'],  # 'OBI:0000870', / snATAC-seq,
+        'OBI:0002764': ['DNA accessibility'],  # 'OBI:0000870', / scATAC-seq,
         'OBI:0001853': ['DNA accessibility'],  # 'OBI:0000870', / DNase-seq
         'OBI:0001859': ['DNA accessibility'],  # 'OBI:0000870', / OBI:0000424  / FAIRE-seq
         'OBI:0002042': ['3D chromatin structure'],  # 'OBI:0000870' (Hi-C)
@@ -52,10 +54,6 @@ slim_shims = {
         'CLO:0034837': ['fibroblast'],
         'CLO:0018812': ['fibroblast'],
         'EFO:0000681': ['cancer cell'],
-        'EFO:0002074': ['cancer cell'],
-        'EFO:0002179': ['cancer cell'],
-        'EFO:0003971': ['cancer cell'],
-        'EFO:0004389': ['cancer cell'],
         'EFO:0009319': ['stem cell'],
         'EFO:0009320': ['stem cell'],
         'EFO:0004038': ['stem cell']
@@ -211,7 +209,11 @@ slim_shims = {
         'UBERON:0010754': ['mesoderm'],
         'UBERON:0011907': ['mesoderm'],
         'UBERON:0018117': ['mesoderm'],
-        'UBERON:0018118': ['mesoderm']
+        'UBERON:0018118': ['mesoderm'],
+        'UBERON:8300001': ['mesoderm'],
+        'UBERON:8300002': ['mesoderm'],
+        'UBERON:8300003': ['mesoderm'],
+        'UBERON:8300004': ['mesoderm']
     },
     'organ': {
         'CL:0002399': ['blood', 'bodily fluid'],
@@ -296,8 +298,6 @@ slim_shims = {
         'CLO:0034837': ['skin of body', 'connective tissue'],
         'CLO:0018812': ['skin of body', 'connective tissue'],
         'CLO:0007123': ['urinary bladder'],
-        'EFO:0005023': ['adipose tissue', 'connective tissue'],
-        'EFO:0001253': ['blood', 'bodily fluid'],
         'EFO:0005233': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
         'EFO:0005719': ['blood', 'bodily fluid', 'lymph node'], # 'lymph node' is ontology-based
         'EFO:0006283': ['blood', 'bodily fluid', 'lymph node'], # 'blood' & 'bodily fluid' are ontology-based
@@ -306,17 +306,17 @@ slim_shims = {
         'EFO:0005694': ['bone element'],
         'EFO:0009500': ['colon', 'intestine', 'large intestine'],
         'EFO:0000586': ['connective tissue'],
-        'EFO:0005723': ['connective tissue', 'limb', 'skin of body'], # 'connective tissue' & 'skin of body' are ontology-based
         'EFO:0004038': ['embryo'],
-        'EFO:0002055': ['embryo'],
-        'EFO:0002034': ['embryo'],
-        'EFO:0005441': ['epithelium', 'prostate gland'], # 'epithelium' is ontology-based
         'EFO:0005824': ['eye'],
         'EFO:0000681': ['kidney'],
         'EFO:0005650': ['limb'],
         'EFO:0005744': ['limb', 'epithelium', 'embryo'], # 'epithelium' & 'embryo' are ontology-based
         'EFO:0002787': ['lymphoid tissue'],
-        'EFO:0002779': ['skin of body', 'penis', 'connective tissue'] # 'connective tissue' & 'penis' are ontology-based
+        'EFO:0002779': ['skin of body', 'penis', 'connective tissue'], # 'connective tissue' & 'penis' are ontology-based
+        'UBERON:8300001': ['bone element', 'skeleton', 'limb'], # 'limb' is ontology-based
+        'UBERON:8300002': ['bone element', 'skeleton', 'limb'], # 'limb' is ontology-based
+        'UBERON:8300003': ['bone element', 'skeleton', 'limb'], # 'limb' is ontology-based
+        'UBERON:8300004': ['bone element', 'skeleton', 'limb'] # 'limb' is ontology-based
     },
     'system': {
         'CL:0000103': ['central nervous system'],
@@ -367,6 +367,10 @@ slim_shims = {
         'UBERON:0007650': ['digestive system'],
         'UBERON:0006566': ['musculature', 'circulatory system'], # 'circulatory system' is ontology-based
         'UBERON:0006567': ['musculature', 'circulatory system'], # 'circulatory system' is ontology-based
-        'UBERON:0002101': ['musculature', 'skeletal system']
+        'UBERON:0002101': ['musculature', 'skeletal system'],
+        'UBERON:8300001': ['skeletal system'],
+        'UBERON:8300002': ['skeletal system'],
+        'UBERON:8300003': ['skeletal system'],
+        'UBERON:8300004': ['skeletal system']
     }
 }

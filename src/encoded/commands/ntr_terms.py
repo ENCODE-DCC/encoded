@@ -91,19 +91,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000438": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "single-nucleus ATAC-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "snATAC-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000433": {
         "assay": ['RNA structure'],
         "category": [],
@@ -112,19 +99,6 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "icSHAPE",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000444": {
-        "assay": ['DNA accessibility'],
-        "category": [],
-        "developmental": [],
-        "name": "single-cell ATAC-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "scATAC-seq",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -190,19 +164,6 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "CRISPR screen",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0000536": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "PRO-cap",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "PRO-cap",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -339,58 +300,6 @@ ntr_biosamples = {
         "slims": [],
         "synonyms": [],
         "systems": ["circulatory system"],
-        "types": []
-    },
-    "NTR:0000528": {
-        "category": [],
-        "cells": [],
-        "developmental": ["mesoderm"],
-        "name": "left arm bone",
-        "objectives": [],
-        "organs": ["bone element", "skeleton", "limb"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["skeletal system"],
-        "types": []
-    },
-    "NTR:0000529": {
-        "category": [],
-        "cells": [],
-        "developmental": ["mesoderm"],
-        "name": "right arm bone",
-        "objectives": [],
-        "organs": ["bone element", "skeleton", "limb"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["skeletal system"],
-        "types": []
-    },
-    "NTR:0000530": {
-        "category": [],
-        "cells": [],
-        "developmental": ["mesoderm"],
-        "name": "left leg bone",
-        "objectives": [],
-        "organs": ["bone element", "skeleton", "limb"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["skeletal system"],
-        "types": []
-    },
-    "NTR:0000531": {
-        "category": [],
-        "cells": [],
-        "developmental": ["mesoderm"],
-        "name": "right leg bone",
-        "objectives": [],
-        "organs": ["bone element", "skeleton", "limb"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["skeletal system"],
         "types": []
     },
     "NTR:0001226": {
@@ -612,32 +521,6 @@ ntr_biosamples = {
         "slims": [],
         "synonyms": [],
         "systems": ["immune system"],
-        "types": []
-    },
-    "NTR:0000527": {
-        "category": [],
-        "cells": ["fibroblast"],
-        "developmental": ["ectoderm"],
-        "name": "fibroblast of skin of back",
-        "objectives": [],
-        "organs": ["skin of body"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["integumental system"],
-        "types": []
-    },
-    "NTR:0000526": {
-        "category": [],
-        "cells": ["fibroblast"],
-        "developmental": ["ectoderm"],
-        "name": "fibroblast of skin of upper back",
-        "objectives": [],
-        "organs": ["skin of body"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["integumental system"],
         "types": []
     },
     "NTR:0000525": {
@@ -965,19 +848,6 @@ ntr_biosamples = {
         "systems": ["central nervous system"],
         "types": []
     },
-    "NTR:0000533": {
-        "category": [],
-        "cells": ["epithelial cell"],
-        "developmental": ["mesoderm"],
-        "name": "epicardium (mesothelium) cells",
-        "objectives": [],
-        "organs": ["heart", "epithelium"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["circulatory system"],
-        "types": []
-    },
     "NTR:0000514": {
         "category": [],
         "cells": ["progenitor cell"],
@@ -1028,19 +898,6 @@ ntr_biosamples = {
         "slims": [],
         "synonyms": [],
         "systems": [],
-        "types": []
-    },
-        "NTR:0000553": {
-        "category": [],
-        "cells": ["hematopoietic cell", "leukocyte", "cancer cell"],
-        "developmental": ["mesoderm"],
-        "name": "HL-60/S4",
-        "objectives": [],
-        "organs": ["blood", "bodily fluid"],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": ["immune system"],
         "types": []
     }
 }
