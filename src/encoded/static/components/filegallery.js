@@ -336,7 +336,8 @@ FileTable.procTableColumns = {
             const selectable = visFileSelectable(item, meta.browserOptions.selectedBrowserFiles, meta.browserOptions.currentBrowser);
             return (
                 <div className="file-table-visualizer">
-                    <input name={item['@id']} type="checkbox" checked={!!selectedFile} disabled={!selectable && !selectedFile} onClick={meta.browserOptions.browserFileSelectHandler} />
+                    // https://stackoverflow.com/a/39020641/178550
+                    <input name={item['@id']} type="checkbox" checked={!!selectedFile} disabled={!selectable && !selectedFile} onClick={meta.browserOptions.browserFileSelectHandler} onChange={() => {}} />
                 </div>
             );
         },
