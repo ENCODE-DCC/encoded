@@ -47,17 +47,17 @@ class ReferenceFileSet(Item):
     ]
     name_key = 'accession'
     rev = {
-        'original_files': ('DataFile', 'dataset'),
+        'original_files': ('ReferenceFile', 'fileset'),
     }
 
     @calculated_property(schema={
         "title": "Original files",
-        "description": "The DataFiles belonging to this file set, regardless of status.",
+        "description": "The ReferenceFiles belonging to this file set, regardless of status.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "DataFile.dataset",
+            "linkFrom": "ReferenceFile.fileset",
         },
         "notSubmittable": True,
     })
@@ -67,12 +67,12 @@ class ReferenceFileSet(Item):
 
     @calculated_property(schema={
         "title": "Files",
-        "description": "The DataFiles belonging to this file set, filtered by status relative to the status of the file set.",
+        "description": "The ReferenceFiles belonging to this file set, filtered by status relative to the status of the file set.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "DataFile",
+            "linkTo": "ReferenceFile",
         },
     })
     def files(self, request, original_files, status):
@@ -89,12 +89,12 @@ class ReferenceFileSet(Item):
 
     @calculated_property(schema={
         "title": "Revoked files",
-        "description": "The DataFiles belonging to this file set that are of status revoked.",
+        "description": "The ReferenceFiles belonging to this file set that are of status revoked.",
         "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "DataFile",
+            "linkTo": "ReferenceFile",
         },
     })
     def revoked_files(self, request, original_files):
