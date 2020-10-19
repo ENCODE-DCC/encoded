@@ -214,6 +214,7 @@ class TabPanel extends React.Component {
                     </ul>
                     {decoration ? <div className={decorationClasses}>{decoration}</div> : null}
                     {tabFlange ? <div className="tab-flange" /> : null}
+                    <div className="tab-border" />
                 </div>
                 <div className="tab-content">
                     {children}

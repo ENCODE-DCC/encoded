@@ -542,7 +542,7 @@ class MatrixPresentation extends React.Component {
         const organisms = this.getAvailableOrganisms();
         const organismTabs = {};
         organismTerms.forEach((organismName) => {
-            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.png`} alt={organismName} /><span>{organismName}</span></div>;
+            organismTabs[organismName] = <div className={`organism-button ${organismName.replace(' ', '-')} ${this.initialSelectedTab === organismName ? 'active' : ''} ${!(organisms.includes(organismName)) ? 'disabled' : ''}`}><img src={`/static/img/bodyMap/organisms/${organismName.replace(' ', '-')}.svg`} alt={organismName} /><span>{organismName}</span></div>;
         });
         return organismTabs;
     }

@@ -355,53 +355,55 @@ class SummaryBody extends React.Component {
         const clearButton = nonPersistentQuery.queryCount() > 0 && query.queryCount('?type') > 0;
         return (
             <div className="summary-header">
-                <div className="summary-header__title_control">
-                    <div className="summary-header__title">
-                        <h1>{this.props.context.title}</h1>
-                    </div>
-                    <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
-                </div>
+                <h1>{this.props.context.title}</h1>
                 <div className="summary-controls">
-                    <div className="organism-button-instructions">Choose an organism:</div>
-                    <div className="organism-button-container">
-                        {organismTerms.map(term =>
-                            <button
-                                id={term}
-                                onClick={e => this.chooseOrganism(e)}
-                                className={`organism-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
-                                key={term}
-                            >
-                                <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.png`} alt={term} />
-                                <span>{term}</span>
-                            </button>
-                        )}
+                    <div className="outer-tab-container">
+                        <div className="tab-container body-map">
+                            {organismTerms.map(term =>
+                                <button
+                                    id={term}
+                                    onClick={e => this.chooseOrganism(e)}
+                                    className={`tab-button ${term.replace(' ', '-')} ${this.state.selectedOrganism === term ? 'active' : ''}`}
+                                    key={term}
+                                >
+                                    <div className="organism-button">
+                                        <img src={`/static/img/bodyMap/organisms/${term.replace(' ', '-')}.svg`} alt={term} />
+                                        {term}
+                                    </div>
+                                </button>
+                            )}
+                        </div>
+                        <div className="tab-border" />
                     </div>
-                    <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
-                        <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
-                        <div className="results-table-control results-table-control--centered">
-                            <div className="results-table-control__main">
-                                <ViewControls results={this.props.context} />
+                    <div className="tab-content">
+                        <div className={`results-controls ${this.state.selectedOrganism.length > 0 ? `${this.state.selectedOrganism.replace(' ', '-')}` : ''}`}>
+                            <div className="results-count">There {this.props.context.total > 1 ? 'are' : 'is'} <b className="bold-total">{this.props.context.total}</b> result{this.props.context.total > 1 ? 's' : ''}.</div>
+                            <ClearFilters searchUri={this.props.context.clear_filters} enableDisplay={!!clearButton} />
+                            <div className="results-table-control">
+                                <div className="results-table-control__main">
+                                    <ViewControls results={this.props.context} />
+                                </div>
                             </div>
                         </div>
+                        {(this.state.selectedOrganism === 'Homo sapiens') ?
+                            <React.Fragment>
+                                <div className="flex-container">
+                                    <BodyMap context={this.props.context} />
+                                    <SummaryData context={this.props.context} displayCharts={'donuts'} />
+                                </div>
+                                <div className="summary-content">
+                                    <SummaryData context={this.props.context} displayCharts={'area'} />
+                                </div>
+                            </React.Fragment>
+                        :
+                            <React.Fragment>
+                                <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
+                                <div className="summary-content">
+                                    <SummaryData context={this.props.context} displayCharts={'all'} />
+                                </div>
+                            </React.Fragment>
+                        }
                     </div>
-                    {(this.state.selectedOrganism === 'Homo sapiens') ?
-                        <React.Fragment>
-                            <div className="flex-container">
-                                <BodyMap context={this.props.context} />
-                                <SummaryData context={this.props.context} displayCharts={'donuts'} />
-                            </div>
-                            <div className="summary-content">
-                                <SummaryData context={this.props.context} displayCharts={'area'} />
-                            </div>
-                        </React.Fragment>
-                    :
-                        <React.Fragment>
-                            <SummaryHorizontalFacets context={this.props.context} facetList={'all'} />
-                            <div className="summary-content">
-                                <SummaryData context={this.props.context} displayCharts={'all'} />
-                            </div>
-                        </React.Fragment>
-                    }
                 </div>
             </div>
         );

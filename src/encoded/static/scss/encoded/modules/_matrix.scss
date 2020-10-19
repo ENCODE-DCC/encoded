@@ -3,6 +3,7 @@ $col-category-header-height: 200px;
 $row-category-cell-height: 22px;
 $row-data-header-width: 200px;
 $matrix-border-color: #f0f0f0;
+$tab-color: #a8a8a8;
 
 // Add a shadow to the right edge of the first column's cells.
 @mixin matrix-freeze-shadow {
@@ -59,68 +60,6 @@ $matrix-border-color: #f0f0f0;
         font-family: Mada;
         @media screen and (max-width: $screen-xs-min) {
             font-size: 0.8rem;
-        }
-    }
-    .tab-nav-Homosapiens {
-        border-bottom: 2px solid $Homo-sapiens;
-    }
-    .tab-nav-Musmusculus {
-        border-bottom: 2px solid $Mus-musculus;
-    }
-    .nav-tabs {
-        li {
-            margin-bottom: -1px;
-            &.active {
-                border-bottom: 0;
-                .organism-button {
-                    font-weight: 800;
-                }
-            }
-            .organism-button {
-                background-color: unset;
-                border: 0;
-                padding: 3px 10px;
-                margin: 0;
-                font-weight: 600;
-                &:hover {
-                    background-color: unset;
-                }
-            }
-            a[disabled] {
-                pointer-events: none;
-                cursor: unset;
-                opacity: 0.7;
-                .organism-button {
-                    color: #828282;
-                }
-                img {
-                    opacity: 0.5;
-                }
-            }
-        }
-        .Homosapiens-tab {
-            &.active {
-                a {
-                    border-right: 3px solid $Homo-sapiens;
-                    border-left: 3px solid $Homo-sapiens;
-                    border-top: 3px solid $Homo-sapiens;
-                }
-            }
-            .organism-button {
-                color: $Homo-sapiens;
-            }
-        }
-        .Musmusculus-tab {
-            &.active {
-                a {
-                    border-right: 3px solid $Mus-musculus;
-                    border-left: 3px solid $Mus-musculus;
-                    border-top: 3px solid $Mus-musculus;
-                }
-            }
-            .organism-button {
-                color: $Mus-musculus;
-            }
         }
     }
     .results-count {
@@ -974,11 +913,16 @@ table.matrix th.group-all-groups-cell {
     @extend .matrix__content--reference-epigenome;
 
     .chip_seq_matrix__data-wrapper {
-        border: 1px solid #eee;
+        .tab-content {
+            border-right: 1px solid $tab-color;
+            border-left: 1px solid $tab-color;
+            border-bottom: 1px solid $tab-color;
+        }
         overflow-x: auto;
         li {
             cursor: -webkit-grab;
             cursor: grab;
+            white-space: nowrap;
             a::after {
                 content: none !important;
             }
@@ -986,7 +930,12 @@ table.matrix th.group-all-groups-cell {
             img {
                 vertical-align: middle;
                 width: 30px;
+                height: 35px;
                 margin-right: 5px;
+                display: none;
+                @media screen and (min-width: $screen-md-min) {
+                    display: inline-block;
+                }
             }
         }
     }
