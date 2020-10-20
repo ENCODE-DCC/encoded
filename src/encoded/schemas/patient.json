@@ -151,13 +151,13 @@
             "title": "Tumor Histologic Subtypes"
         },
         "surgery.pathology_report.ajcc_p_stage": {
-            "title": "pT Stage at Presentaion"
+            "title": "pT Stage at Presentation"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage at Presentaion"
+            "title": "pN Stage at Presentation"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage at Presentaion"
+            "title": "pM Stage at Presentation"
         },
         "surgery.pathology_report.metasis_details.site": {
             "title": "Metastasis Site"
@@ -166,7 +166,7 @@
             "title": "Metastasis Type"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " TNM Stage at Presentaion"
+            "title": " TNM Stage at Presentation"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
