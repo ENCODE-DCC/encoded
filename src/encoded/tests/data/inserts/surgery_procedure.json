@@ -14,7 +14,7 @@
     "surgery": "KCESX708FIJ",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Open",
       "robotic_assist": true
     },
@@ -72,7 +72,7 @@
     "surgery": "KCESX186NZW",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Open",
       "robotic_assist": false
     },
@@ -85,7 +85,7 @@
     "surgery": "KCESX139SOR",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Laparoscopic",
       "robotic_assist": false
     },
@@ -137,7 +137,7 @@
     "surgery": "KCESX396JUN",
     "procedure_type": "Nephrectomy",
     "nephrectomy_details": {
-      "type": "Total",
+      "type": "Radical",
       "approach": "Laparoscopic",
       "robotic_assist": true
     },

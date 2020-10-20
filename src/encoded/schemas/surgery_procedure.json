@@ -53,7 +53,7 @@
                     "type": "string",
                     "enum": [
                         "Partial",
-                        "Total",
+                        "Radical",
                         "Not available"
                     ]
                 },
