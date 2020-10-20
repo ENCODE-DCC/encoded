@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import _ from 'underscore';
 import { auditDecor } from './audit';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import * as encoding from '../libs/query_encoding';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
-import { AlternateAccession, DisplayAsJson } from './objectutils';
-import { PickerActions } from './search';
+import { AlternateAccession, ItemAccessories } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
-import { ExperimentTable } from './typeutils';
+import { ExperimentTable, BiosampleCharacterizationTable } from './typeutils';
 
 
 // Order that antibody statuses should be displayed.
@@ -27,19 +28,30 @@ const antibodyStatusOrder = [
 ];
 
 
-const LotComponent = (props, reactContext) => {
-    const context = props.context;
-
+/**
+ * Retrieve, filter, and sort the antibody characterizations associated with an AntibodyLot object.
+ * @param {object} item AntibodyLot object containing characterizations to retrieve
+ * @param {object} reactContext React context from <App>; session and session_properties
+ *
+ * @return {array} AntibodyCharacterization objects ready for display
+ */
+const getAntibodyCharacterizations = (characterizations, reactContext) => {
     // Sort characterization arrays, filtering for the current logged-in and administrative status.
     const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
     const viewableStatuses = getObjectStatuses('AntibodyCharacterization', accessLevel);
-    let characterizations = context.characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
-    characterizations = _(characterizations).sortBy(characterization => ([
+    const filteredCharacterizations = characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
+    return _(filteredCharacterizations).sortBy(characterization => ([
         characterization.target.label,
         characterization.target.organism ? characterization.target.organism.name : characterization.target.investigated_as[0],
     ]));
+};
+
+
+const LotComponent = (props, reactContext) => {
+    const context = props.context;
 
     // Compile the document list
+    const characterizations = getAntibodyCharacterizations(context.characterizations, reactContext);
     const documentSpecs = [
         { documents: characterizations },
     ];
@@ -50,7 +62,7 @@ const LotComponent = (props, reactContext) => {
 
     // Make an array of targets with no falsy entries and no repeats
     const targets = {};
-    if (context.lot_reviews && context.lot_reviews.length) {
+    if (context.lot_reviews && context.lot_reviews.length > 0) {
         context.lot_reviews.forEach((lotReview) => {
             lotReview.targets.forEach((target) => {
                 targets[target['@id']] = target;
@@ -87,7 +99,11 @@ const LotComponent = (props, reactContext) => {
             const organismName = organism.noOrganism ? <span>{organism.name}</span> : <i>{organism.name}</i>;
             return <span key={organism.name}>{i > 0 ? <span> + {organismName}</span> : <span>{organismName}</span>}</span>;
         });
-        organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${globals.encodedURIComponent(organism.name)}`).join('&');
+        organismQuery = organisms.map(organism => `${organism.noOrganism ? 'targets.investigated_as' : 'targets.organism.scientific_name'}=${encoding.encodedURIComponentOLD(organism.name)}`).join('&');
+    } else if (context.control_type) {
+        organisms.push({ name: context.control_type });
+        organismComponents = <span>{context.control_type}</span>;
+        organismQuery = `control_type=${context.control_type}`;
     }
 
     // Build up the gene breadcrumb components.
@@ -96,7 +112,7 @@ const LotComponent = (props, reactContext) => {
     if (genes.length > 0) {
         genes = _.uniq(genes);
         geneComponents = genes.map((gene, i) => <span key={gene}>{i > 0 ? <span> + {gene}</span> : <span>{gene}</span>}</span>);
-        geneQuery = genes.map(gene => `targets.genes.symbol=${globals.encodedURIComponent(gene)}`).join('&');
+        geneQuery = genes.map(gene => `targets.genes.symbol=${encoding.encodedURIComponentOLD(gene)}`).join('&');
     }
 
     // Build the breadcrumb object with option gene component.
@@ -108,32 +124,35 @@ const LotComponent = (props, reactContext) => {
 
     const crumbsReleased = (context.status === 'released');
 
+    // ENCD-4608 ENCODE4 tag antibodies rely on linked biosample
+    // characterizations and antibody characterizations are ignored.
+    const isENCODE4tagAb = context.award.rfa === 'ENCODE4' && context.targets.some(target => target.investigated_as.includes('tag') || target.investigated_as.includes('synthetic tag'));
+
     return (
         <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                    <h2>{context.accession}</h2>
-                    <div className="replacement-accessions">
-                        <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
-                    <h3>
-                        {targetKeys.length ?
-                            <span>
-                                Antibody against {Object.keys(targets).map((target, i) => {
-                                    const targetObj = targets[target];
-                                    return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{` ${targetObj.label}`}</span>;
-                                })}
-                            </span>
-                        :
-                            <span>Antibody</span>
-                        }
-                    </h3>
-                    {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
-                    <DisplayAsJson />
+            <header>
+                <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>{context.accession}</h1>
+                <div className="replacement-accessions">
+                    <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
+                <h3>
+                    {targetKeys.length > 0 ?
+                        <span>
+                            Antibody against {Object.keys(targets).map((target, i) => {
+                                const targetObj = targets[target];
+                                return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.organism ? <i>{targetObj.organism.scientific_name}</i> : <span>{targetObj.investigated_as[0]}</span>}{` ${targetObj.label}`}</span>;
+                            })}
+                        </span>
+                    : context.control_type ?
+                        <span>Antibody {context.control_type} {context.host_organism.name} {context.isotype}</span>
+                    :
+                        <span>Antibody</span>
+                    }
+                </h3>
+                <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'antibody-audit' }} />
             </header>
-            {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}
+            {props.auditDetail(context.audit, 'antibody-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties })}
 
             <div className="antibody-statuses">
                 {antibodyStatuses}
@@ -162,7 +181,7 @@ const LotComponent = (props, reactContext) => {
                             <dd>{context.lot_id}</dd>
                         </div>
 
-                        {Object.keys(targets).length ?
+                        {Object.keys(targets).length > 0 ?
                             <div data-test="targets">
                                 <dt>Characterized targets</dt>
                                 <dd>
@@ -174,7 +193,7 @@ const LotComponent = (props, reactContext) => {
                             </div>
                         : null}
 
-                        {context.lot_id_alias && context.lot_id_alias.length ?
+                        {context.lot_id_alias && context.lot_id_alias.length > 0 ?
                             <div data-test="lotidalias">
                                 <dt>Lot ID aliases</dt>
                                 <dd>{context.lot_id_alias.join(', ')}</dd>
@@ -193,7 +212,7 @@ const LotComponent = (props, reactContext) => {
                             </div>
                         : null}
 
-                        {context.purifications && context.purifications.length ?
+                        {context.purifications && context.purifications.length > 0 ?
                             <div data-test="purifications">
                                 <dt>Purification</dt>
                                 <dd className="sentence-case">{context.purifications.join(', ')}</dd>
@@ -221,14 +240,14 @@ const LotComponent = (props, reactContext) => {
                             </div>
                         : null}
 
-                        {context.aliases && context.aliases.length ?
+                        {context.aliases && context.aliases.length > 0 ?
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.dbxrefs && context.dbxrefs.length ?
+                        {context.dbxrefs && context.dbxrefs.length > 0 ?
                             <div data-test="dbxrefs">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
@@ -239,12 +258,25 @@ const LotComponent = (props, reactContext) => {
             </Panel>
 
             <RelatedItems
-                title="Experiments using this antibody"
+                title="Functional genomics experiments using this antibody"
                 url={`/search/?type=Experiment&replicates.antibody.accession=${context.accession}`}
                 Component={ExperimentTable}
             />
 
-            <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />
+            <RelatedItems
+                title="Functional characterization experiments using this antibody"
+                url={`/search/?type=FunctionalCharacterizationExperiment&replicates.antibody.accession=${context.accession}`}
+                Component={ExperimentTable}
+            />
+
+            {isENCODE4tagAb ?
+                <RelatedItems
+                    title="Biosample characterizations using this antibody"
+                    url={`/search/?type=BiosampleCharacterization&antibody=/antibodies/${context.accession}/`}
+                    Component={BiosampleCharacterizationTable}
+                />
+            : <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />}
+
         </div>
     );
 };
@@ -291,7 +323,7 @@ const AntibodyStatus = (props) => {
             lotReview.organisms = [null];
         }
         lotReview.organisms.forEach((organism) => {
-            const source = organism ? organism.scientific_name : lotReview.targets[0].investigated_as[0];
+            const source = organism ? organism.scientific_name : lotReview.targets.length > 0 ? lotReview.targets[0].investigated_as[0] : context.control_type;
             // If haven’t seen this source (organism) with this status before, remember it
             if (!statusNode[source]) {
                 statusNode[source] = {};
@@ -323,7 +355,7 @@ const AntibodyStatus = (props) => {
                                             {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
                                         </div>
                                         <div className="antibody-status__status">
-                                            {i === 0 ? <Status item={status} inline /> : null}
+                                            <Status item={status} inline />
                                         </div>
                                     </div>
                                 );
@@ -356,7 +388,7 @@ const CharacterizationHeader = (props) => {
             <div className="document__header">
                 {doc.target.label} <span>{' ('}{doc.target.organism ? <i>{doc.target.organism.scientific_name}</i> : <span>{doc.target.investigated_as[0]}</span>}{')'}</span>
             </div>
-            {doc.characterization_reviews && doc.characterization_reviews.length ?
+            {doc.characterization_reviews && doc.characterization_reviews.length > 0 ?
                 <div className="document__characterization-reviews">
                     {doc.characterization_reviews.map(review => (
                         <span key={review.biosample_ontology.term_name} className="document__characterization-biosample-term">{review.biosample_ontology.term_name}</span>
@@ -489,7 +521,7 @@ const CharacterizationDetail = (props) => {
                     {download}
                 </div>
 
-                {doc.documents && doc.documents.length ?
+                {doc.documents && doc.documents.length > 0 ?
                     <div data-test="documents">
                         <dt>Documents</dt>
                         <CharacterizationDocuments docs={doc.documents} />
@@ -512,7 +544,24 @@ CharacterizationDetail.defaultProps = {
 };
 
 
+/**
+ * Display an antibody characterization object.
+ */
+const AntibodyCharacterization = ({ context }) => {
+    const documentSpecs = [
+        { documents: [context] },
+    ];
+    return <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />;
+};
+
+AntibodyCharacterization.propTypes = {
+    /** AntibodyCharacterization object (not inside AntibodyLot) */
+    context: PropTypes.object.isRequired,
+};
+
+
 // Parts of individual document panels
+globals.contentViews.register(AntibodyCharacterization, 'AntibodyCharacterization');
 globals.panelViews.register(Document, 'AntibodyCharacterization');
 globals.documentViews.header.register(CharacterizationHeader, 'AntibodyCharacterization');
 globals.documentViews.caption.register(CharacterizationCaption, 'AntibodyCharacterization');
@@ -634,55 +683,68 @@ const ListingComponent = (props, reactContext) => {
 
     // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
     const targetTree = {};
-    lotReviews.forEach((lotReview) => {
-        lotReview.targets.forEach((target) => {
-            // If we haven't seen this target, save it in targetTree along with the
-            // corresponding target and organism structures.
-            if (!targetTree[target.name]) {
-                targetTree[target.name] = { target };
-            }
-            const targetNode = targetTree[target.name];
+    if (result.control_type) {
+        // Control antibody would have only one lotReview with defined info
+        const lotReview = lotReviews[0];
+        targetTree.control = {};
+        targetTree.control.target = {};
+        targetTree.control.target.label = `${result.host_organism.name} ${result.isotype}`;
+        targetTree.control.target.clazz = <span>{result.control_type}</span>;
+        targetTree.control[lotReview.status] = [lotReview.biosample_term_name];
+    } else {
+        lotReviews.forEach((lotReview) => {
+            lotReview.targets.forEach((target) => {
+                // If we haven't seen this target, save it in targetTree along with the
+                // corresponding target and organism structures.
+                if (!targetTree[target.name]) {
+                    targetTree[target.name] = {};
+                    targetTree[target.name].target = {};
+                    targetTree[target.name].target.label = target.label;
+                    targetTree[target.name].target.clazz = target.organism ? <i>{target.organism.scientific_name}</i> : <span>{target.investigated_as[0]}</span>;
+                }
+                const targetNode = targetTree[target.name];
 
-            // If we haven't seen the status, save it in the targetTree target
-            if (!targetNode[lotReview.status]) {
-                targetNode[lotReview.status] = [];
-            }
-            const statusNode = targetNode[lotReview.status];
+                // If we haven't seen the status, save it in the targetTree target
+                if (!targetNode[lotReview.status]) {
+                    targetNode[lotReview.status] = [];
+                }
+                const statusNode = targetNode[lotReview.status];
 
-            // If we haven't seen the biosample term name, save it in the targetTree target status
-            if (statusNode.indexOf(lotReview.biosample_term_name) === -1) {
-                statusNode.push(lotReview.biosample_term_name);
-            }
+                // If we haven't seen the biosample term name, save it in the targetTree target status
+                if (statusNode.indexOf(lotReview.biosample_term_name) === -1) {
+                    statusNode.push(lotReview.biosample_term_name);
+                }
+            });
         });
-    });
+    }
 
     return (
-        <li>
-            <div className="clearfix">
-                <PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Antibody</p>
-                    <p className="type">{` ${result.accession}`}</p>
-                    <Status item={result.status} badgeSize="small" css="result-table__status" />
-                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
-                </div>
-                <div className="accession">
+        <li className={resultItemClass(result)}>
+            <div className="result-item">
+                <div className="result-item__data">
                     {Object.keys(targetTree).map(target =>
                         <div key={target}>
-                            <a href={result['@id']}>
+                            <a href={result['@id']} className="result-item__link">
                                 {targetTree[target].target.label}
-                                <span>{' ('}{targetTree[target].target.organism ? <i>{targetTree[target].target.organism.scientific_name}</i> : <span>{targetTree[target].target.investigated_as[0]}</span>}{')'}</span>
+                                <span>{' ('}{targetTree[target].target.clazz}{')'}</span>
                             </a>
                             <StatusIndicators targetTree={targetTree} target={target} />
                         </div>
                     )}
+                    <div className="result-item__data-row">
+                        <div><strong>Source: </strong>{result.source.title}</div>
+                        <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
+                    </div>
                 </div>
-                <div className="data-row">
-                    <div><strong>Source: </strong>{result.source.title}</div>
-                    <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
+                <div className="result-item__meta">
+                    <div className="result-item__meta-title">Antibody</div>
+                    <div className="result-item__meta-id">{` ${result.accession}`}</div>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
                 </div>
+                <PickerActions context={result} />
             </div>
-            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
         </li>
     );
 };
@@ -695,6 +757,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

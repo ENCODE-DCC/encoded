@@ -24,3 +24,19 @@ def software_2_3(value, system):
 
     if 'used_by' in value:
         value['used_by'] = list(set(value['used_by']))
+
+
+@upgrade_step('software', '5', '6')
+def software_5_6(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single-nuclei ATAC-seq':
+            value['purpose'][i] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('software', '6', '7')
+def software_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
+    for i, p in enumerate(value.get('purpose', [])):
+        if p == 'single cell isolation followed by RNA-seq':
+            value['purpose'][i] = 'single-cell RNA sequencing assay'

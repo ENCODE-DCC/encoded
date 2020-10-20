@@ -38,6 +38,8 @@
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "award.project": 5.0,
+        "description": 3.0
     }   
 }

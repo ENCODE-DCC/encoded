@@ -71,6 +71,11 @@ class DonorCharacterization(Characterization):
 class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
     schema = load_schema('encoded:schemas/biosample_characterization.json')
+    embedded = Characterization.embedded + [
+        'characterizes.biosample_ontology',
+        'lab',
+        'review.lab',
+    ]
 
 @collection(
     name='antibody-characterizations',

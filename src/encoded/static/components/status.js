@@ -110,6 +110,8 @@ const defaultObjectStatuses = {
             'archived',
             'revoked',
         ],
+        unprivileged: [
+        ],
         consortium: [
             'in progress',
             'uploading',
@@ -247,7 +249,7 @@ const statusIcons = {
 
 
 // Defines the order of the viewing access of the different logged-in states.
-const objectStatusLevels = ['external', 'consortium', 'administrator'];
+const objectStatusLevels = ['external', 'unprivileged', 'consortium', 'administrator'];
 
 
 /**
@@ -261,7 +263,17 @@ const objectStatusLevels = ['external', 'consortium', 'administrator'];
 export const sessionToAccessLevel = (session, sessionProperties) => {
     const loggedIn = !!(session && session['auth.userid']);
     const administrativeUser = loggedIn && !!(sessionProperties && sessionProperties.admin);
-    return loggedIn ? (administrativeUser ? 'administrator' : 'consortium') : 'external';
+    let accessLevel = '';
+    if (!loggedIn) {
+        accessLevel = 'external';
+    } else if (administrativeUser) {
+        accessLevel = 'administrator';
+    } else if (sessionProperties && sessionProperties.user && sessionProperties.user.lab && sessionProperties.user.submits_for.length > 0) {
+        accessLevel = 'consortium';
+    } else {
+        accessLevel = 'unprivileged';
+    }
+    return accessLevel;
 };
 
 

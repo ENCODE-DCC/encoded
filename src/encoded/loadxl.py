@@ -414,7 +414,7 @@ def attachment(path):
     filename = os.path.basename(path)
     mime_type, encoding = mimetypes.guess_type(path)
     major, minor = mime_type.split('/')
-    detected_type = magic.from_file(path, mime=True).decode('ascii')
+    detected_type = magic.from_file(path, mime=True)
 
     # XXX This validation logic should move server-side.
     if not (detected_type == mime_type or
@@ -512,19 +512,22 @@ PHASE1_PIPELINES = {
         remove_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
-        remove_keys('spikeins_used'),
+        remove_keys('spikeins_used', 'adapters'),
     ],
     'experiment': [
-        remove_keys('possible_controls', 'related_files', 'supersedes'),
+        remove_keys('possible_controls', 'related_files', 'supersedes', 'analyses'),
+    ],
+    'functional_characterization_experiment': [
+        remove_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'mouse_donor': [
-        remove_keys('parent_strains'),
+        remove_keys('parent_strains', 'genetic_modifications'),
     ],
     'fly_donor': [
-        remove_keys('parent_strains'),
+        remove_keys('parent_strains', 'genetic_modifications'),
     ],
     'worm_donor': [
-        remove_keys('outcrossed_strain', 'parent_strains'),
+        remove_keys('outcrossed_strain', 'parent_strains', 'genetic_modifications'),
     ],
     'human_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
@@ -544,8 +547,17 @@ PHASE1_PIPELINES = {
     'reference': [
         remove_keys('related_files', 'software_used'),
     ],
+    'computational_model': [
+        remove_keys('related_files', 'software_used'),
+    ],
     'ucsc_browser_composite': [
         remove_keys('related_files'),
+    ],
+    'functional_characterization_series': [
+        remove_keys('related_datasets'),
+    ],
+    'single_cell_rna_series': [
+        remove_keys('related_datasets'),
     ],
     'treatment_time_series': [
         remove_keys('related_datasets'),
@@ -583,7 +595,6 @@ PHASE1_PIPELINES = {
     'biofile': [
         remove_keys('paired_with')
     ]
-
 }
 
 
@@ -602,22 +613,25 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
-        skip_rows_missing_all_keys('spikeins_used'),
+        skip_rows_missing_all_keys('spikeins_used', 'adapters'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
+        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes', 'analyses'),
+    ],
+    'functional_characterization_experiment': [
+        skip_rows_missing_all_keys('possible_controls', 'supersedes', 'elements_mapping', 'elements_references'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
     ],
     'mouse_donor': [
-        skip_rows_missing_all_keys('parent_strains'),
+        skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'worm_donor': [
-        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains'),
+        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains', 'genetic_modifications'),
     ],
     'fly_donor': [
-        skip_rows_missing_all_keys('parent_strains'),
+        skip_rows_missing_all_keys('parent_strains', 'genetic_modifications'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
@@ -631,8 +645,17 @@ PHASE2_PIPELINES = {
     'reference': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
     ],
+    'computational_model': [
+        skip_rows_missing_all_keys('related_files', 'software_used'),
+    ],
     'ucsc_browser_composite': [
         skip_rows_missing_all_keys('related_files'),
+    ],
+    'functional_characterization_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'single_cell_rna_series': [
+        skip_rows_missing_all_keys('related_datasets'),
     ],
     'treatment_time_series': [
         skip_rows_missing_all_keys('related_datasets'),

@@ -2,7 +2,11 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-
+from .formatter import (
+    audit_link,
+    path_to_text,
+    space_in_words,
+)
 
 @audit_checker('Characterization', frame='object')
 def audit_characterization_review_lane(value, system):
@@ -34,12 +38,11 @@ def audit_characterization_review_lane(value, system):
                     'lane' not in review,
                 )
             ):
-                detail = (
-                    '{} {} of characterization method {} should have a lane specified in its '
-                    'review'
-                ).format(
-                    characterization_type,
-                    value['@id'],
-                    characterization_method,
+                detail = ('{} {} of characterization method {} should have a lane '
+                    'specified in its review.'.format(
+                        space_in_words(characterization_type).capitalize(),
+                        audit_link(path_to_text(value['@id']), value['@id']),
+                        characterization_method,
+                    )
                 )
                 yield AuditFailure('missing review lane', detail, level='NOT_COMPLIANT')

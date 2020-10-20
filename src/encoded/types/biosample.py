@@ -9,6 +9,8 @@ from .base import (
 )
 import re
 
+from snovault.validation import ValidationFailure
+
 
 @collection(
     name='biosamples',
@@ -141,7 +143,17 @@ class Biosample(Item):
     @calculated_property(define=True,
                          schema={"title": "Age",
                                  "type": "string"})
-    def age(self, request, donor=None, model_organism_age=None, organism=None):
+    def age(
+        self,
+        request,
+        donor=None,
+        model_organism_age=None,
+        organism=None,
+        sample_collection_age=None,
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5272
+        if sample_collection_age is not None:
+            return sample_collection_age
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -166,7 +178,17 @@ class Biosample(Item):
     @calculated_property(define=True,
                          schema={"title": "Age units",
                                  "type": "string"})
-    def age_units(self, request, donor=None, model_organism_age_units=None, organism=None):
+    def age_units(
+        self,
+        request,
+        donor=None,
+        model_organism_age_units=None,
+        organism=None,
+        sample_collection_age_units=None,
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5272
+        if sample_collection_age_units is not None:
+            return sample_collection_age_units
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
@@ -184,6 +206,24 @@ class Biosample(Item):
                 return None
         else:
             return model_organism_age_units
+
+    @calculated_property(define=True,
+                        schema={
+                            "title": "Disease term name",
+                            "description": "Ontology term describing the disease affecting the biosample.",
+                            "comment": "Calculated from disease_term_id",
+                            "type": "string",
+                            "notSubmittable": True,
+                        })
+    def disease_term_name(self, request, registry, disease_term_id=None):
+        if disease_term_id is not None:
+            if disease_term_id in registry['ontology']:
+                return registry['ontology'][disease_term_id]['name']
+            else:
+                msg = 'Disease term ID {} is not a valid ID'.format(
+                    disease_term_id
+                )
+                raise ValidationFailure('body', ['disease_term_id'], msg)
 
     @calculated_property(define=True,
                          schema={"title": "Health status",
@@ -249,13 +289,13 @@ class Biosample(Item):
             return request.embed(donor, '@@object').get('synchronization')
 
     @calculated_property(schema={
-        "title": "Genetic modifications",
+        "title": "Model organism genetic modifications",
         "description":
-            "Genetic modifications made in the donor organism of the biosample.",
+            "Genetic modifications made in the model organism of the biosample.",
         "type": "array",
         "items": {
             "title": "Model organism genetic modification",
-            "description": "Genetic modification made in the donor organism of the biosample.",
+            "description": "Genetic modification made in the model organism of the biosample.",
             "comment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
@@ -268,16 +308,16 @@ class Biosample(Item):
 
     @calculated_property(schema={
         "title": "Applied modifications",
-        "description": "All genetic modifications made in either the donor and/or biosample.",
+        "description": "All genetic modifications made in either the model organism and/or biosample.",
         "type": "array",
         "items": {
-            "title": "applied modification",
-            "description": "Genetic modification made in either the donor and/or biosample.",
-            "coment": "See genetic_modification.json for available identifiers.",
+            "title": "Applied modification",
+            "description": "Genetic modification made in either the model organism and/or biosample.",
+            "comment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
         }
-    })
+    }, define=True)
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
 
@@ -311,23 +351,40 @@ class Biosample(Item):
         "title": "Age display",
         "type": "string",
     })
-    def age_display(self, request, donor=None, model_organism_age=None,
-                    model_organism_age_units=None, post_synchronization_time=None,
-                    post_synchronization_time_units=None):
+    def age_display(
+        self,
+        request,
+        donor=None,
+        model_organism_age=None,
+        model_organism_age_units=None,
+        post_synchronization_time=None,
+        post_synchronization_time_units=None,
+        sample_collection_age=None,
+        sample_collection_age_units=None,
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5272
+        if sample_collection_age is not None:
+            if sample_collection_age == 'unknown':
+                return ''
+            if sample_collection_age_units is not None:
+                return u'{}'.format(
+                    pluralize(
+                        sample_collection_age, sample_collection_age_units
+                    )
+                )
         if post_synchronization_time is not None and post_synchronization_time_units is not None:
-            return u'{sync_time} {sync_time_units}'.format(
-                sync_time=post_synchronization_time,
-                sync_time_units=post_synchronization_time_units)
+            return u'{}'.format(
+                pluralize(post_synchronization_time, post_synchronization_time_units)
+                )
         if donor is not None:
             donor = request.embed(donor, '@@object')
             if 'age' in donor and 'age_units' in donor:
                 if donor['age'] == 'unknown':
                     return ''
-                return u'{age} {age_units}'.format(**donor)
+                return u'{}'.format(pluralize(donor['age'], donor['age_units']))
         if model_organism_age is not None and model_organism_age_units is not None:
-            return u'{age} {age_units}'.format(
-                age=model_organism_age,
-                age_units=model_organism_age_units,
+            return u'{}'.format(
+                pluralize(model_organism_age, model_organism_age_units)
             )
         return None
 
@@ -399,6 +456,7 @@ class Biosample(Item):
                 starting_amount=None,
                 starting_amount_units=None,
                 depleted_in_term_name=None,
+                disease_term_name=None,
                 phase=None,
                 synchronization=None,
                 subcellular_fraction_term_name=None,
@@ -406,6 +464,8 @@ class Biosample(Item):
                 post_synchronization_time_units=None,
                 post_treatment_time=None,
                 post_treatment_time_units=None,
+                post_nucleic_acid_delivery_time=None,
+                post_nucleic_acid_delivery_time_units=None,
                 treatments=None,
                 part_of=None,
                 originated_from=None,
@@ -423,7 +483,9 @@ class Biosample(Item):
             'term_phrase',
             'modifications_list',
             'originated_from',
+            'disease_term_name',
             'treatments_phrase',
+            'post_nucleic_acid_delivery_time',
             'preservation_method',
             'depleted_in',
             'phase',
@@ -497,6 +559,7 @@ class Biosample(Item):
             starting_amount,
             starting_amount_units,
             depleted_in_term_name,
+            disease_term_name,
             phase,
             subcellular_fraction_term_name,
             synchronization,
@@ -504,6 +567,8 @@ class Biosample(Item):
             post_synchronization_time_units,
             post_treatment_time,
             post_treatment_time_units,
+            post_nucleic_acid_delivery_time,
+            post_nucleic_acid_delivery_time_units,
             treatment_objects_list,
             preservation_method,
             part_of_object,
@@ -512,6 +577,25 @@ class Biosample(Item):
 
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
+
+    @calculated_property(schema={
+        "title": "Perturbed",
+        "description": "A flag to indicate whether the biosample has been perturbed with a treatment or genetic modification.",
+        "type": "boolean",
+        "notSubmittable": True,
+    })
+    def perturbed(
+        self,
+        request,
+        applied_modifications,
+        treatments=None,
+    ):
+        return bool(treatments) or any(
+            (
+                request.embed(m, '@@object').get('perturbation', False)
+                for m in applied_modifications
+            )
+        )
 
 
 def generate_summary_dictionary(
@@ -527,6 +611,7 @@ def generate_summary_dictionary(
         starting_amount=None,
         starting_amount_units=None,
         depleted_in_term_name=None,
+        disease_term_name=None,
         phase=None,
         subcellular_fraction_term_name=None,
         synchronization=None,
@@ -534,6 +619,8 @@ def generate_summary_dictionary(
         post_synchronization_time_units=None,
         post_treatment_time=None,
         post_treatment_time_units=None,
+        post_nucleic_acid_delivery_time=None,
+        post_nucleic_acid_delivery_time_units=None,
         treatment_objects_list=None,
         preservation_method=None,
         part_of_object=None,
@@ -545,11 +632,13 @@ def generate_summary_dictionary(
         'genotype_strain': '',
         'term_phrase': '',
         'phase': '',
+        'disease_term_name': '',
         'fractionated': '',
         'sex_stage_age': '',
         'synchronization': '',
         'originated_from': '',
         'treatments_phrase': '',
+        'post_nucleic_acid_delivery_time': '',
         'depleted_in': '',
         'modifications_list': '',
         'strain_background': '',
@@ -580,7 +669,7 @@ def generate_summary_dictionary(
                     else:
                         dict_of_phrases['strain_background'] = dict_of_phrases['genotype_strain']
     if age is not None and age_units is not None:
-        dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
+        dict_of_phrases['age_display'] = pluralize(age, age_units)
 
     if life_stage is not None and life_stage != 'unknown':
         dict_of_phrases['life_stage'] = life_stage
@@ -643,6 +732,9 @@ def generate_summary_dictionary(
             dict_of_phrases['sample_amount'] = str(starting_amount) + ' ' + \
                 str(starting_amount_units)
 
+    if disease_term_name is not None:
+        dict_of_phrases['disease_term_name'] = 'with ' + disease_term_name
+
     if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
         dict_of_phrases['depleted_in'] = 'depleted in ' + \
                                             str(depleted_in_term_name).replace('\'', '')[1:-1]
@@ -674,9 +766,9 @@ def generate_summary_dictionary(
 
     if post_synchronization_time is not None and \
         post_synchronization_time_units is not None:
-        dict_of_phrases['synchronization'] = (post_synchronization_time +
-                                                ' ' + post_synchronization_time_units +
-                                                's post synchronization')
+        dict_of_phrases['synchronization'] = '{} post synchronization'.format(
+            pluralize(post_synchronization_time, post_synchronization_time_units)
+            )
     if synchronization is not None:
         if synchronization.startswith('puff'):
             dict_of_phrases['synchronization'] += ' at ' + synchronization
@@ -687,9 +779,16 @@ def generate_summary_dictionary(
 
     if post_treatment_time is not None and \
         post_treatment_time_units is not None:
-        dict_of_phrases['post_treatment'] = (post_treatment_time +
-                                                ' ' + post_treatment_time_units +
-                                                's after the sample was ')
+        dict_of_phrases['post_treatment'] = '{} after the sample was '.format(
+            pluralize(post_treatment_time, post_treatment_time_units)
+            )
+
+    if post_nucleic_acid_delivery_time is not None and \
+        post_nucleic_acid_delivery_time_units is not None:
+        dict_of_phrases['post_nucleic_acid_delivery_time'] = '{} post-nucleic acid delivery time'.format(
+            pluralize(post_nucleic_acid_delivery_time, post_nucleic_acid_delivery_time_units)
+            )
+
 
     if ('sample_type' in dict_of_phrases and
         dict_of_phrases['sample_type'] != 'cell line') or \
@@ -716,17 +815,15 @@ def generate_summary_dictionary(
         treatments_list = []
         for treatment_object in treatment_objects_list:
             to_add = ''
-            amt = str(treatment_object.get('amount', ''))
+            amt = treatment_object.get('amount', '')
             amt_units = treatment_object.get('amount_units', '')
             treatment_term_name = treatment_object.get('treatment_term_name', '')
-            dur = str(treatment_object.get('duration', ''))
+            dur = treatment_object.get('duration', '')
             dur_units = treatment_object.get('duration_units', '')
-            if dur_units and dur_units[-1] != 's':
-                dur_units += 's'
             to_add = "{}{}{}".format(
-                (amt + ' ' + amt_units + ' ' if amt and amt_units else ''),
+                (str(amt) + ' ' + amt_units + ' ' if amt and amt_units else ''),
                 (treatment_term_name + ' ' if treatment_term_name else ''),
-                ('for ' + dur + ' ' + dur_units if dur and dur_units else '')
+                ('for ' + pluralize(dur, dur_units) if dur and dur_units else '')
             )
             if to_add != '':
                 treatments_list.append(to_add)
@@ -816,6 +913,9 @@ def generate_sentence(phrases_dict, values_list):
             if 'preservation_method' in key:
                 sentence = sentence.strip() + ', ' + \
                                     phrases_dict[key].strip() + ' '
+            elif 'post_nucleic_acid_delivery_time' in key:
+                sentence = sentence.strip() + ', ' + \
+                                    phrases_dict[key].strip() + ' '
             else:
                 sentence += phrases_dict[key].strip() + ' '
     return sentence.strip()
@@ -827,6 +927,16 @@ def is_identical(list_of_dicts, key):
         if d[key] != initial_value:
             return False
     return True
+
+
+def pluralize(value, value_units):
+    try:
+        if float(value) == 1:
+            return str(value) + ' ' + value_units
+        else:
+            return str(value) + ' ' + value_units + 's'
+    except:
+        return str(value) + ' ' + value_units + 's'
 
 
 def get_applied_modifications(genetic_modifications=None, model_organism_donor_modifications=None):
@@ -843,6 +953,7 @@ def get_applied_modifications(genetic_modifications=None, model_organism_donor_m
 def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
         'phase': 'unspecified phase',
+        'disease_term_name': 'without disease',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
         'treatments_phrase': 'not treated',
@@ -905,12 +1016,6 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
 
     rep = {
         ' percent': '%',
-        '1 hours': '1 hour',
-        '1 days': '1 day',
-        '1 minutes': '1 minute',
-        '1 months': '1 month',
-        '1 weeks': '1 week',
-        '1 years': '1 year',
         '.0 ': ' ',
     }
     rep = dict((re.escape(k), v) for k, v in rep.items())

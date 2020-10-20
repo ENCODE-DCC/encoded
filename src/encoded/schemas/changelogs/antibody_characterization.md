@@ -1,8 +1,8 @@
-## Change log for antibody_characterization.json
+## Changelog for antibody_characterization.json
 
 ### Schema version 16
 
-* Remove biosample_type, biosample_term_id and biosample_term_name.
+* Remove *biosample_type*, *biosample_term_id* and *biosample_term_name*.
 
 ### Schema version 15
 
@@ -10,7 +10,7 @@
 
 ### Schema version 14
 
-* Removed *induced pluripotent stem cell line* and *stem cell* from biosample_type enums in characterization_reviews.
+* Removed *induced pluripotent stem cell line* and *stem cell* from *biosample_type* enums in *characterization_reviews*.
 
 ### Minor changes since schema version 13
 
@@ -18,11 +18,11 @@
 
 ### Schema version 13
 
-* Added *organoid* to biosample_type enums in characterization_reviews.
+* Added *organoid* to *biosample_type* enums in *characterization_reviews*.
 
 ### Schema version 12
 
-* Replace *immortalized cell line* with *cell line* for biosample_type in characterization_reviews
+* Replace *immortalized cell line* with *cell line* for *biosample_type* in *characterization_reviews*
 
 ### Schema version 11
 

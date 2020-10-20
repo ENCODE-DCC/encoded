@@ -15,15 +15,368 @@ $row-data-header-width: 200px;
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.0));
 }
 
+.ReferenceEpigenomeMatrix {
+    .matrix-header__title {
+        padding-bottom: 5px;
+    }
+    // Flex styles for "body-image-thumbnail" and "matrix__presentation"
+    .matrix-facet-container {
+        display: flex;
+        border: 0;
+        @media screen and (max-width: $screen-sm-min) {
+            flex-wrap: wrap;
+        }
+        .matrix__presentation {
+            flex: 0 1 auto;
+        }
+    }
+    .test-project-selector {
+        label {
+            margin-left: 5px;
+        }
+    }
+    .matrix-header {
+        border-bottom: 0;
+    }
+    .header-clear-links {
+        margin-top: 20px;
+        @media screen and (max-width: $screen-sm-min) {
+            margin: 10px 5px;
+        }
+        button {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            @media screen and (max-width: $screen-sm-min) {
+                width: auto;
+            }
+        }
+    }
+    .filter-container {
+        font-family: Mada;
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+    }
+    .tab-nav-Homosapiens {
+        border-bottom: 2px solid $Homo-sapiens;
+    }
+    .tab-nav-Musmusculus {
+        border-bottom: 2px solid $Mus-musculus;
+    }
+    .nav-tabs {
+        li {
+            margin-bottom: -1px;
+            &.active {
+                border-bottom: 0;
+                .organism-button {
+                    font-weight: 800;
+                }
+            }
+            .organism-button {
+                background-color: unset;
+                border: 0;
+                padding: 3px 10px;
+                margin: 0;
+                font-weight: 600;
+                &:hover {
+                    background-color: unset;
+                }
+            }
+            a[disabled] {
+                pointer-events: none;
+                cursor: unset;
+                opacity: 0.7;
+                .organism-button {
+                    color: #828282;
+                }
+                img {
+                    opacity: 0.5;
+                }
+            }
+        }
+        .Homosapiens-tab {
+            &.active {
+                a {
+                    border-right: 3px solid $Homo-sapiens;
+                    border-left: 3px solid $Homo-sapiens;
+                    border-top: 3px solid $Homo-sapiens;
+                }
+            }
+            .organism-button {
+                color: $Homo-sapiens;
+            }
+        }
+        .Musmusculus-tab {
+            &.active {
+                a {
+                    border-right: 3px solid $Mus-musculus;
+                    border-left: 3px solid $Mus-musculus;
+                    border-top: 3px solid $Mus-musculus;
+                }
+            }
+            .organism-button {
+                color: $Mus-musculus;
+            }
+        }
+    }
+    .results-count {
+        font-family: Mada;
+        font-size: 1rem;
+        margin: 20px 0;
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+        }
+        .bold-total {
+            font-size: 1.1rem;
+            @media screen and (max-width: $screen-xs-min) {
+                font-size: 0.9rem;
+            }
+        }
+        text-align: left;
+    }
+    .matrix-header__filter-controls {
+        display: block;
+        flex: unset;
+        margin: 10px 0 0;
+    }
+    .matrix-general-search {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        text-align: left;
+        input[type="search"] {
+            font-size: 0.8rem;
+        }
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+        i {
+            padding: 5px;
+        }
+        p {
+            margin: 0;
+            margin-right: 5px;
+        }
+        .searchform {
+            margin-left: 5px;
+        }
+        .general-search-entry {
+            padding-right: 0;
+        }
+    }
+    .matrix-facet-container {
+        margin-top: 20px;
+        @media screen and (max-width: $screen-sm-min) {
+            margin-top: 10px;
+        }
+    }
+    .view-controls-container {
+        .btn {
+            margin: 0 2px;
+        }
+    }
+}
+
+.mouse-dev-legend {
+    p {
+        margin-bottom: 10px;
+    }
+    .outer-button-container {
+        display: inline-block;
+    }
+    .stage-container {
+        display: inline-block;
+    }
+    button {
+        font-size: 1rem;
+        line-height: 1.7;
+        padding: 2px;
+        font-family: Mada;
+        font-weight: 400;
+        margin: 1px;
+        background: linear-gradient(#DFDFDF, #F8F8F8);
+        border: 2px solid #DFDFDF;
+        border-radius: 3px;
+        &.embryo {
+            background: lighten(#FFE9C6, 5%);
+        }
+        &.postnatal {
+            background: lighten(#F2C782, 8%);
+        }
+        &.adult {
+            background: lighten(#E2AE53, 8%);
+        }
+        @media screen and (max-width: 500px) {
+            font-size: 0.9rem;
+        }
+    }
+    .active {
+        font-weight: 600;
+        border: 2px solid #000;
+        &.embryo {
+            background: darken(#FFE9C6, 8%);
+        }
+        &.postnatal {
+            background: darken(#F2C782, 5%);
+        }
+        &.adult {
+            background: darken(#E2AE53, 8%);
+        }
+    }
+}
+
+.type-MouseDevelopmentMatrix {
+    .matrix-header__filter-controls {
+        flex: 0 1 100%;
+    }
+    .matrix-general-search {
+        p {
+            margin-bottom: 5px;
+        }
+    }
+    .matrix__row-spacer {
+        height: 1px;
+    }
+    .matrix__row-category {
+        font-family: Mada;
+        > th {
+            > div {
+                font-weight: 500;
+            }
+        }
+    }
+    .matrix__content {
+        display: block;
+    }
+    .matrix-header {
+        border-bottom: 0;
+    }
+    .mouse-stage-selector-container {
+        margin: 5px 0;
+        label {
+            margin-right: 10px;
+        }
+    }
+    .Matrix-page-link {
+        display: none;
+    }
+    .clear-filters {
+        margin: 10px 5px 5px;
+        padding: 0;
+        font-size: 0.9rem;
+        border: none;
+        color: #428bca;
+        background: white;
+    }
+}
+
+.mouse-dev-matrix {
+    position: relative;
+    .matrix__data-wrapper {
+        border: none;
+        padding-left: 0;
+        .matrix__data {
+            padding-left: 0;
+        }
+    }
+    .matrix__col-category-header {
+        > th {
+            > a {
+                letter-spacing: 1px;
+                .sub {
+                    padding-top: 10px;
+                    color: #000;
+                }
+            }
+        }
+    }
+    .sub {
+        padding-top: 10px !important;
+        color: #000 !important;
+    }
+    .matrix__row-data {
+        td {
+            a {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+        }
+    }
+    .column-category {
+        letter-spacing: 0;
+        font-family: Mada;
+        background: #881600;
+        color: white;
+        padding: 7px 5px;
+    }
+    .matrix__clear-classifications {
+        margin-bottom: 5px;
+    }
+
+    .matrix__row-data > th {
+        padding: 0;
+    }
+}
+
+
+.subcategory-row-text-mouse {
+    @extend .subcategory-row-text;
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+
+    .label-stage {
+        font-family: Mada;
+        flex: 0 0 60%;
+        letter-spacing: 1px;
+        font-weight: 500;
+        padding: 6px 0;
+    }
+    .label-length {
+        flex: 0 0 40%;
+        font-size: 12px;
+    }
+}
+.embryo {
+    background-color: #fff3e0;
+}
+.postnatal {
+    background-color: #f6d8a7;
+}
+.adult {
+    background-color: #e8be76;
+}
+
+// Reusable styles for the left-most non-scrolling column.
+%sticky-column {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    background-color: #fff;
+    border-radius: 0;
+    z-index: 1;
+
+    &:after {
+        @include matrix-freeze-shadow;
+    }
+}
 
 // Applied to all matrix <table>
 .matrix {
     border-collapse: separate;
     max-width: none;
-	
-    @at-root #{&}__header {
-        border-bottom: 1px solid #eeeeee;
-    }
+    border-spacing: 0;
 
     // Holds vertical facets and matrix itself.
     @at-root #{&}__content {
@@ -47,7 +400,7 @@ $row-data-header-width: 200px;
         overflow: hidden;
 
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 80%;
+            flex: 0 1 75%;
             padding-left: 10px;
         }
 
@@ -59,14 +412,24 @@ $row-data-header-width: 200px;
     @at-root #{&}__data-wrapper {
         position: relative;
         padding-left: 10px;
-        flex: 0 1 auto;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: calc(100% - 20px);
+        width: calc(100% - 20px);
         border : 1px solid #eee;
         overflow: hidden;
+        min-width: 0;
     }
 
     @at-root #{&}__data {
         margin-right: 1px;
         overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    // Empty matrix needs some height to show axis label untruncated.
+    @at-root #{&}__data--empty {
+        height: 200px;
     }
 
     // Text/link rotation method from:
@@ -107,16 +470,7 @@ $row-data-header-width: 200px;
         }
 
         > td {
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
-            background-color: #fff;
-            border-radius: 0;
-            z-index: 1;
-
-            &:after {
-                @include matrix-freeze-shadow;
-            }
+            @extend %sticky-column;
         }
     }
 
@@ -127,12 +481,9 @@ $row-data-header-width: 200px;
             width: $row-data-header-width;
             text-align: right;
             border-left: 1px solid #f0f0f0;
-            background-color: #fff;
-            z-index: 1;
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
+            font-size: 1rem;
             border-bottom: 1px solid #fff;
+            @extend %sticky-column;
 
             &:after {
                 @include matrix-freeze-shadow;
@@ -146,6 +497,22 @@ $row-data-header-width: 200px;
                 font-weight: 400;
                 line-height: 1.15;
 
+                &.embryo {
+                    &:hover {
+                        background-color: darken(#FFE9C6, 8%);
+                    }
+                }
+                &.postnatal {
+                    &:hover {
+                        background-color: darken(#FFD491, 6%);
+                    }
+                }
+                &.adult {
+                    &:hover {
+                        background-color: darken(#E2AE53, 8%);
+                    }
+                }
+
                 &:hover {
                     background-color: #e0e0e0;
                 }
@@ -153,14 +520,17 @@ $row-data-header-width: 200px;
         }
 
         > td {
+            position: relative;
             width: $data-cell-width;
             padding: 0 !important;
             text-align: center;
             border-bottom: 1px solid #f0f0f0;
             border-left: 1px solid #f0f0f0;
+            font-size: 1rem;
 
             > a {
                 display: block;
+                text-decoration: none;
 
                 &:hover {
                     text-decoration: none;
@@ -188,12 +558,10 @@ $row-data-header-width: 200px;
             }
 
             &:first-child {
-                position: -webkit-sticky;
-                position: sticky;
-                left: 0;
+                @extend %sticky-column;
 
-                &:after {
-                    @include matrix-freeze-shadow;
+                button {
+                    margin-left: 5px;
                 }
             }
         }
@@ -221,20 +589,14 @@ $row-data-header-width: 200px;
     // Rows showing category
     @at-root #{&}__row-category {
         > th {
-            vertical-align: bottom;
             white-space: nowrap;
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
-            border-bottom: 1px solid #fff;
-            background-color: #fff;
-            z-index: 1;
+            @extend %sticky-column;
+            text-align: left;
+            font-size: 1.1rem;
 
-            &:after {
-                @include matrix-freeze-shadow();
-            }
-	
             > div {
+                display: flex;
+                align-items: center;
                 padding-left: 10px;
                 padding-right: 10px;
                 border-top-left-radius: 14px;
@@ -242,15 +604,17 @@ $row-data-header-width: 200px;
 
                 & > a {
                     flex: 0 1 auto;
-                    font-size: 1.1rem;
                     font-weight: bold;
+                    text-decoration: none;
                 }
             }
         }
 
         .matrix__category-expander {
-            margin-left: -9px;
             margin-right: 5px;
+            padding: 0;
+            flex: 0 0 auto;
+            height: 10px;
             border: none;
             background-color: transparent;
 
@@ -263,20 +627,19 @@ $row-data-header-width: 200px;
         > td {
             padding: 0 !important;
             border-left: 1px solid #f0f0f0;
-            border-bottom: 1px solid #fff;
+            font-size: 1rem;
 
             &:last-child > div, &:last-child > a {
                 border-top-right-radius: 14px;
             }
 
             > div, > a {
-                display: table-cell;
-                width: $data-cell-width;
+                display: block;
                 height: $row-category-cell-height;
+                line-height: $row-category-cell-height;
                 text-align: center;
-                vertical-align: middle;
                 font-weight: normal;
-                font-size: 0.9rem;
+                font-size: 1rem;
                 color: #fff;
                 text-decoration: none;
             }
@@ -355,6 +718,127 @@ $row-data-header-width: 200px;
         background-color: #f0f0f0;
         z-index: 1;
     }
+
+    @at-root #{&}__disabled-cell {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 30px;
+        width: 30px;
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg%20width%3D%226px%22%20height%3D%226px%22%20viewBox%3D%220%200%206%206%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%0A%20%20%20%20%3Ctitle%3EBackground%20fine%20diagonal%20lines%3C%2Ftitle%3E%0A%20%20%20%20%3Cg%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cg%20fill%3D%22%23808080%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%225%200%206%200%200%206%200%205%22%3E%3C%2Fpolygon%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%226%205%206%206%205%206%22%3E%3C%2Fpolygon%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+    }
+
+    @at-root #{&}__modal-header {
+        h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            border-bottom: none;
+        }
+    }
+
+    // Link to clear selected classifications (filters)
+    @at-root #{&}__clear-classifications {
+        text-align: center;
+        font-weight: normal;
+    }
+}
+
+
+.matrix-header {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+
+    @at-root #{&}__title {
+        margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        h1 {
+            flex: 0 1 auto;
+            margin: 0;
+        }
+
+        .matrix-tags {
+            margin: 20px 0;
+
+            @media screen and (min-width: $screen-sm-min) {
+                margin: 0;
+                flex: 0 1 40%;
+                text-align: right;
+            }
+
+            img {
+                display: inline-block;
+                margin-left: 5px;
+                height: 22px;
+            }
+
+            .matrix-description {
+                color: #606060;
+            }
+        }
+    }
+
+    @at-root #{&}__title-sescc-spacing {
+        margin-bottom: 15px;
+    }
+
+    @at-root #{&}__controls {
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            align-items: flex-end;
+        }
+    }
+
+    @at-root #{&}__filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 25%;
+            padding-right: 20px;
+        }
+    }
+
+    @at-root #{&}__search-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 75%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
+
+    @at-root #{&}__search-controls-sescc {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 100%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
+
+    @at-root #{&}__target-filter-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 65%;
+            padding-right: 20px;
+        }
+    }
+
+    @at-root #{&}__target-search-controls {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 65%;
+        }
+
+        .results-table-control {
+            margin-bottom: 0;
+        }
+    }
 }
 
 
@@ -422,35 +906,453 @@ table.matrix th.group-all-groups-cell {
     @extend .group-more-cell__button;
 }
 
-.matrix-general-search {
-    margin-top: 10px;
-    margin-bottom: 10px;
+
+/**
+ * Styles specific to the reference-epigenome matrix.
+ */
+.matrix__content--reference-epigenome {
+    display: block;
+
+    .matrix__data-wrapper {
+        padding-left: 0;
+        overflow: visible;
+
+        .tab-content {
+            padding-left: 10px;
+            overflow: hidden;
+            @media screen and (max-width: $screen-sm-min) {
+                padding-left: 0;
+            }
+        }
+    }
+
+    .matrix__col-category-header {
+        > th {
+            width: 25px;
+
+            > a {
+                width: 25px;
+                line-height: 25px;
+                font-weight: bold;
+
+                // Column subcategory links
+                &.sub {
+                    padding-top: 20px;
+                    font-weight: normal;
+                }
+            }
+        }
+
+        > td {
+            vertical-align: bottom;
+        }
+    }
+
+    .matrix__row-data {
+        > td {
+            position: relative;
+            width: 25px;
+            height: 19px;
+
+            // Reference epigenome cells have no content but have clickable links.
+            > a {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+        }
+    }
 }
 
-.matrix__header {
+.matrix__content--target {
+    @extend .matrix__content--reference-epigenome;
+
+    .chip_seq_matrix__data-wrapper {
+        border: 1px solid #eee;
+        overflow-x: auto;
+        li {
+            cursor: -webkit-grab;
+            cursor: grab;
+            a::after {
+                content: none !important;
+            }
+        }
+    }
+}
+
+.chip_seq_matrix__data-wrapper {
+    .tab-content {
+            overflow-x: auto;
+    }
+}
+
+.chip_seq_matrix-search {
     display: flex;
-    align-items: flex-end;
-    border-bottom: 1px solid #ccc;
-    h1 {
-        margin-top: 0;
-        margin-bottom: 5px;
-        padding-bottom: 5px;
-        font-size: 1.5rem;
-        flex: 0 1 30%;
-        border-bottom: 0;
-    }
-    .matrix-tag {
-        flex: 0 1 70%;
-        text-align: right;
+    flex-wrap: nowrap !important;
+    justify-content: space-between;
+
+    select {
+        margin-left: 5px;
     }
 }
 
-.matrix-tag {
-    float: right;
-    img {
-        height: 22px;
-        vertical-align: top;
-        padding-left: 10px;
-        margin-bottom: 5px;
+.chip_seq_matrix__data  {
+    table {
+        tr:nth-child(2) td:nth-child(2) {
+            border-top-left-radius: 14px;
+        }
+        tr:nth-child(2) td:last-child {
+            border-top-right-radius: 14px;
+        }
     }
+}
+
+
+// Contents of organism-selection modal.
+.matrix-reference-epigenome__organism-selector {
+    > div {
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    > .selectors {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+
+        .btn {
+            flex: 0 1 auto;
+            margin: 0 2px;
+        }
+    }
+}
+
+.chip_seq_matrix__organism-selector {
+    @extend .matrix-reference-epigenome__organism-selector;
+}
+
+.chip_seq_matrix__warning {
+    min-height: 40px;
+    margin: 10px;
+}
+
+/**
+ * Styles specific to the ENTEx matrix.
+ */
+$donor-cell-width: 30px;
+$donor-cell-height: 30px;
+$border-color: #e0e0e0;
+$donor-legend-short-string-width: 33px;
+
+/**
+ * Style info for each donor with format:
+ * css-suffix donor-color donor-text-color curve-direction
+ */
+$donor-styles:
+    male1 #e4bc52 #000 top-left,
+    female3 #879acd #fff top-right,
+    male2 #eed78c #000 bottom-left,
+    female4 #354b77 #fff bottom-right;
+
+$divider-color: #000; // Color of dividers between assays with targets
+
+.matrix__content--entex {
+    display: block;
+
+    .matrix__col-category-header {
+        > th {
+            width: $donor-cell-width;
+            padding: 0;
+
+            > a {
+                width: $donor-cell-width;
+                line-height: $donor-cell-width;
+                font-weight: bold;
+
+                // Column subcategory links
+                &.sub {
+                    font-weight: normal;
+                }
+
+                &:hover {
+                    background-color: transparent;
+                }
+            }
+
+            // Base of labels for assays with targets in header
+            &.category-base {
+                border-top: 3px solid $divider-color;
+            }
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+    }
+
+    // Header containing titles for assays with targets
+    .matrix__col-category-targetassay-header {
+        > th.matrix__col-category-targetassay {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+
+        // Left-most non-scrolling column
+        > td.matrix__col-category-targetassay-corner {
+            @extend %sticky-column;
+        }
+    }
+
+    .matrix__row-data {
+        > th {
+            width: $donor-cell-width;
+            padding: 0;
+            border-left: none;
+            text-align: right;
+
+            > a {
+                height: $donor-cell-height;
+                line-height: $donor-cell-height;
+            }
+
+            .subcategory-row-text {
+                white-space: nowrap;
+            }
+        }
+
+        > td {
+            width: $donor-cell-width - 1;
+            border-bottom: 1px solid $border-color;
+            border-left: 1px solid $border-color;
+
+            > a {
+                width: $donor-cell-width;
+                height: $donor-cell-height;
+            }
+
+            &:last-of-type {
+                border-right: 1px solid $border-color;
+            }
+
+            // Cells on the left-most target under a parent assay
+            &.cell-divider {
+                border-left-color: $divider-color;
+            }
+        }
+
+        @at-root #{&}--first {
+            > th {
+                border-top: 1px solid $border-color;
+            }
+
+            > td {
+                border-top: 1px solid $border-color;
+            }
+        }
+    }
+
+    // Displays donor-quadrant in the matrix itself.
+    .donor-cell {
+        display: flex;
+        flex-wrap: wrap;
+        width: $donor-cell-width;
+        height: $donor-cell-height;
+
+        .donor-quadrant {
+            flex: 0 0 50%;
+            height: 50%;
+        }
+    }
+
+    .matrix__entex-corner {
+        vertical-align: middle;
+    }
+
+    .donor-legend-row {
+        display: flex;
+        margin: 5px 10px;
+
+        @at-root #{&}__label {
+            flex: 1 0 auto;
+            margin-left: 5px;
+            line-height: $donor-cell-height;
+            white-space: nowrap;
+
+            > a {
+                display: inline-block;
+                width: calc(100% - #{$donor-legend-short-string-width});
+                padding-left: 10px;
+                padding-right: 10px;
+                line-height: $donor-cell-height;
+                text-align: center;
+                background-color: #f0f0f0;
+                border-top: 1px solid #e0e0e0;
+                border-right: 1px solid #e0e0e0;
+                border-bottom: 1px solid #e0e0e0;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
+            }
+        }
+
+        @at-root #{&}__short-string {
+            display: inline-block;
+            width: $donor-legend-short-string-width;
+            text-align: center;
+            line-height: $donor-cell-height;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+            font-family: Menlo, Courier, sans-serif;
+            letter-spacing: 0.2rem;
+
+            @each $donor, $color, $textcolor, $curve in $donor-styles {
+                @at-root #{&}--#{$donor} {
+                    color: $textcolor;
+                    background-color: $color;
+                }
+            }
+        }
+
+        .donor-cell {
+            flex: 0 0 $donor-cell-width;
+            width: $donor-cell-width;
+        }
+    }
+
+    // Each quadrant of a donor cell, both in the matrix and the legend.
+    .donor-quadrant {
+        @each $donor, $color, $textcolor, $curve in $donor-styles {
+            &.donor-quadrant--#{$donor} {
+                border-#{$curve}-radius: $donor-cell-height / 2;
+                background-color: $color;
+
+                &.blank {
+                    background-color: #f0f0f0;
+                }
+            }
+        }
+    }
+}
+
+
+// Dividers for assay/target header and table cells.
+.matrix__row-data > td,
+.matrix__row-data > td:last-of-type,
+.matrix__col-category-header > th {
+    // Dividers on left edge of targets with assays in header.
+    &.divider--start {
+        border-left: 1px solid $divider-color;
+    }
+
+    // Dividers on right edge of targets with assays in header. Only needed for targets
+    // at right edge of matrix, or before an assay column without targets.
+    &.divider--end {
+        border-right: 1px solid $divider-color;
+    }
+}
+
+.sescc_matrix {
+    @at-root #{&}__title-img {
+        @media screen and (max-width: $screen-xs-min) {
+            display: none;
+        }
+    }
+
+    @at-root #{&}__graph-region {
+        display: flex;
+        justify-content: center;
+
+        @media screen and (max-width: $screen-sm-min) {
+            display: block;
+        }
+    }
+
+    @at-root #{&}__graph {
+        display: flex;
+        justify-content: left;
+    }
+
+    @at-root #{&}__data {
+        overflow-x: auto;
+
+        a {
+            cursor: pointer;
+        }
+
+        table {
+            tr:nth-child(2) td:nth-child(2) {
+                border-top-left-radius: 14px;
+            }
+            tr:nth-child(2) td:last-child {
+                border-top-right-radius: 14px;
+            }
+        }
+    }
+
+    @at-root #{&}__show-all {
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+        .btn {
+            margin-right: 3px;
+        }
+    }
+
+    @at-root #{&}__germ-layer {
+        display:flex;
+        align-items: center;
+        font-weight: bold;
+
+        @at-root #{&}-title {
+            display:flex;
+            justify-content: center;
+        }
+
+        ul {
+            display: flex;
+            list-style: none;
+            margin-top: 0;
+            padding-top: 0;
+            flex-direction: column;
+            padding-left: 0;
+        }
+
+        li {
+            margin: 10px;
+        }
+
+        hr {
+            margin-bottom:0;
+        }
+
+        .endodermColor {
+            color: blue
+        }
+
+        .mesodermColor {
+            color: green;
+        }
+
+        .ectoDermColor {
+            color: purple;
+        }
+    }
+
+    @at-root #{&}__node {
+        text {
+            font-size: 1.15em;
+            font-weight: 500;
+        }
+    }
+
+    @at-root #{&}__link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
 }

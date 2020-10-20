@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "aligned_reads": {
             "title": "Aligned reads",

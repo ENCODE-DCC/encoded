@@ -5,7 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/bootstrap/modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
 
 /**
@@ -61,7 +61,7 @@ class CartShareComponent extends React.Component {
                     </p>
                     <div className="cart__share-url">
                         <input ref={(input) => { this.cartUrlBox = input; }} type="text" aria-label="Sharable cart URL" value={sharableUrl} readOnly />
-                        <button id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-info btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
+                        <button id="cart-share-url-trigger" aria-label="Copy shared cart URL" onClick={this.copyUrl} className="btn btn-sm"><i className="icon icon-clipboard" />&nbsp;Copy</button>
                     </div>
                 </ModalBody>
                 <ModalFooter

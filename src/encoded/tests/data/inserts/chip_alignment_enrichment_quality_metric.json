@@ -1,0 +1,35 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/j-michael-cherry/",
+        "award": "/awards/U24HG009397/",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "c91bd49f-c9ef-4df0-9110-b5f9ae5e1dce",
+        "assay_term_name": "ChIP-seq",
+        "quality_metric_of": [ "ENCFF000VUQ" ],
+
+        "subsampled_reads": 22429,
+        "estimated_fragment_len": 230,
+        "corr_estimated_fragment_len": 0.122400083983026,
+        "phantom_peak": 50,
+        "corr_phantom_peak": 0.06069059,
+        "argmin_corr": 1500,
+        "min_corr": 0.01408428,
+        "NSC": 8.690548,
+        "RSC": 2.324059,
+        "auc": 0.0262304647759,
+        "syn_auc": 0.477398342042,
+        "x_intercept": 0.863667746879,
+        "syn_x_intercept": 4.30787015506e-16,
+        "elbow_pt": 0.878380319913,
+        "syn_elbow_pt": 0.537885569677,
+        "jsd": 0.312176277152,
+        "syn_jsd": 0.485611511925,
+        "pct_genome_enrich": 0.23335886063,
+        "diff_enrich": 43.8291416928,
+        "ch_div": 0.499365041423,
+        "cross_correlation_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "jsd_plot": "ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "gc_bias_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png"
+    }
+]

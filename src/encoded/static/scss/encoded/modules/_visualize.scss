@@ -15,11 +15,6 @@
     display: flex;
     justify-content: center;
 
-    // Button to open the browser-selection modal.
-    @at-root #{&}__actuator {
-        display: inline;
-    }
-
     @at-root #{&}__inner {
         flex: 0 1 auto;
 
@@ -81,7 +76,7 @@
     }
 }
 
-.nav.nav-tabs.browser-tab-bg {
+.nav-tabs.browser-tab-bg {
     border-top: 1px solid #a0a0a0;
     border-right: 1px solid #a0a0a0;
     border-left: 1px solid #a0a0a0;

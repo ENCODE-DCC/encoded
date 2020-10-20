@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
+import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
-import { PanelLookup, DisplayAsJson } from './objectutils';
-import { PickerActions } from './search';
+import { PanelLookup, ItemAccessories, AlternateAccession } from './objectutils';
+import { PickerActions, resultItemClass } from './search';
 import { softwareVersionList } from './software';
 import Status from './status';
 
@@ -35,7 +35,7 @@ function AnalysisStep(step, node) {
             // Get the analysis_step_version array from the step for pipeline graph display.
             stepVersions = step.versions && _(step.versions).sortBy(version => version.minor_version);
             swStepVersions = _.compact(stepVersions.map((version) => {
-                if (version.software_versions && version.software_versions.length) {
+                if (version.software_versions && version.software_versions.length > 0) {
                     return (
                         <span className="sw-step-versions" key={version.uuid}><strong>Version {step.major_version}.{version.minor_version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
                     );
@@ -45,41 +45,41 @@ function AnalysisStep(step, node) {
         }
 
         header = (
-            <div className="details-view-info">
-                <h4>
-                    {swVersions && swVersions.length ?
+            <div className="graph-modal-header__content">
+                <h2>
+                    {swVersions && swVersions.length > 0 ?
                         <span>{`${step.title} — Version ${node.metadata.ref.major_version}.${node.metadata.stepVersion.minor_version}`}</span>
                     :
                         <span>{step.title} — Version {node.metadata.ref.major_version}</span>
                     }
-                </h4>
+                </h2>
             </div>
         );
         body = (
             <div>
                 <dl className="key-value">
-                    {(step.analysis_step_types && step.analysis_step_types.length) ?
+                    {(step.analysis_step_types && step.analysis_step_types.length > 0) ?
                         <div data-test="steptype">
                             <dt>Step type</dt>
                             <dd>{step.analysis_step_types.join(', ')}</dd>
                         </div>
                     : null}
 
-                    {step.aliases && step.aliases.length ?
+                    {step.aliases && step.aliases.length > 0 ?
                         <div data-test="stepname">
                             <dt>Step aliases</dt>
                             <dd>{step.aliases.join(', ')}</dd>
                         </div>
                     : null}
 
-                    {step.input_file_types && step.input_file_types.length ?
+                    {step.input_file_types && step.input_file_types.length > 0 ?
                         <div data-test="inputtypes">
                             <dt>Input</dt>
                             <dd>{step.input_file_types.join(', ')}</dd>
                         </div>
                     : null}
 
-                    {step.output_file_types && step.output_file_types.length ?
+                    {step.output_file_types && step.output_file_types.length > 0 ?
                         <div data-test="outputtypes">
                             <dt>Output</dt>
                             <dd>
@@ -93,7 +93,7 @@ function AnalysisStep(step, node) {
                         </div>
                     : null}
 
-                    {node && node.metadata.pipelines && node.metadata.pipelines.length ?
+                    {node && node.metadata.pipelines && node.metadata.pipelines.length > 0 ?
                         <div data-test="pipeline">
                             <dt>Pipeline</dt>
                             <dd>
@@ -107,7 +107,7 @@ function AnalysisStep(step, node) {
                         </div>
                     : null}
 
-                    {step.qa_stats_generated && step.qa_stats_generated.length ?
+                    {step.qa_stats_generated && step.qa_stats_generated.length > 0 ?
                         <div data-test="qastats">
                             <dt>QA statistics</dt>
                             <dd>
@@ -126,14 +126,14 @@ function AnalysisStep(step, node) {
                             <dt>Software</dt>
                             <dd>{softwareVersionList(swVersions)}</dd>
                         </div>
-                    : stepVersions && stepVersions.length ?
+                    : stepVersions && stepVersions.length > 0 ?
                         <div data-test="swstepversions">
                             <dt>Software</dt>
                             <dd>{swStepVersions}</dd>
                         </div>
                     : null}
 
-                    {step.documents && step.documents.length ?
+                    {step.documents && step.documents.length > 0 ?
                         <div data-test="documents">
                             <dt>Documents</dt>
                             <dd>
@@ -200,7 +200,7 @@ class PipelineComponent extends React.Component {
         let jsonGraph;
 
         // Only produce a graph if there's at least one analysis step.
-        if (analysisSteps && analysisSteps.length) {
+        if (analysisSteps && analysisSteps.length > 0) {
             // Make an object with all step UUIDs in the pipeline.
             const allSteps = {};
             analysisSteps.forEach((step) => {
@@ -218,14 +218,14 @@ class PipelineComponent extends React.Component {
                 let label;
 
                 // Collect software version titles.
-                if (step.current_version && step.current_version.software_versions && step.current_version.software_versions.length) {
+                if (step.current_version && step.current_version.software_versions && step.current_version.software_versions.length > 0) {
                     const softwareVersions = step.current_version.software_versions;
                     swVersionList = softwareVersions.map(version => version.software.title);
                 }
 
                 // Build the node label; both step types and sw version titles if available.
-                const stepTypes = (step.analysis_step_types && step.analysis_step_types.length) ? step.analysis_step_types.join(', ') : '';
-                if (swVersionList.length) {
+                const stepTypes = (step.analysis_step_types && step.analysis_step_types.length > 0) ? step.analysis_step_types.join(', ') : '';
+                if (swVersionList.length > 0) {
                     label = [stepTypes, swVersionList.join(', ')];
                 } else {
                     label = stepTypes;
@@ -242,7 +242,7 @@ class PipelineComponent extends React.Component {
 
                 // Add this step's `output_file_types` nodes to the graph, and connect edges from
                 // them to the current step.
-                if (step.output_file_types && step.output_file_types.length) {
+                if (step.output_file_types && step.output_file_types.length > 0) {
                     step.output_file_types.forEach((outputFile) => {
                         // Get the unique ID for the file type node. We can have repeats of the
                         // same output_file_type all over the graph, so we have to include the step
@@ -266,18 +266,18 @@ class PipelineComponent extends React.Component {
                 // output_file_types nodes. `parentlessInputs` tracks input file types that *don't*
                 // overlap with the parents' output file types.
                 let parentlessInputs = step.input_file_types || [];
-                if (step.parents && step.parents.length) {
+                if (step.parents && step.parents.length > 0) {
                     step.parents.forEach((parent) => {
                         // Get this step's parent object so we can look at its output_file_types array.
                         const parentId = PipelineComponent.genStepId(parent);
                         const parentStep = allSteps[parentId];
                         if (parentStep) {
-                            if (parentStep.output_file_types && parentStep.output_file_types.length) {
+                            if (parentStep.output_file_types && parentStep.output_file_types.length > 0) {
                                 // We have the parent analysis_step object and it has output_file_types.
                                 // Compare that array with this step's input_file_types elements.
                                 // Draw an edge to any that overlap.
                                 const overlaps = _.intersection(parentStep.output_file_types, step.input_file_types);
-                                if (overlaps.length) {
+                                if (overlaps.length > 0) {
                                     overlaps.forEach((overlappingFile) => {
                                         const overlappingFileId = PipelineComponent.genFileId(parentStep, overlappingFile);
                                         jsonGraph.addEdge(overlappingFileId, stepId);
@@ -306,7 +306,7 @@ class PipelineComponent extends React.Component {
                 // Render input file types not shared by a parent step. `parentlessInputs` is an
                 // array holding all the input file types for the current step that aren't shared
                 // with a parent's output file types.
-                if (parentlessInputs.length) {
+                if (parentlessInputs.length > 0) {
                     // The step doesn't have parents but it has input_file_types. Draw nodes for
                     // all its input_file_types.
                     parentlessInputs.forEach((fileType) => {
@@ -357,7 +357,7 @@ class PipelineComponent extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
 
         let crumbs;
-        const assayName = (context.assay_term_names && context.assay_term_names.length) ? context.assay_term_names.join(' + ') : null;
+        const assayName = (context.assay_term_names && context.assay_term_names.length > 0) ? context.assay_term_names.join(' + ') : null;
         if (assayName) {
             const query = context.assay_term_names.map(name => `assay_term_names=${name}`).join('&');
             crumbs = [
@@ -392,16 +392,16 @@ class PipelineComponent extends React.Component {
 
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
-                        <h2>{context.title}</h2>
-                        {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
-                        <DisplayAsJson />
+                <header>
+                    {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
+                    <h1>{context.title}</h1>
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
+                    <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'pipeline-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, except: context['@id'] })}
-                <Panel addClasses="data-display">
+                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, sessionProperties: this.context.session_properties })}
+                <Panel>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="status">
@@ -414,7 +414,7 @@ class PipelineComponent extends React.Component {
                                 <dd>{context.title}</dd>
                             </div>
 
-                            {context.assay_term_names && context.assay_term_names.length ?
+                            {context.assay_term_names && context.assay_term_names.length > 0 ?
                                 <div data-test="assay">
                                     <dt>Assays</dt>
                                     <dd>{context.assay_term_names.join(', ')}</dd>
@@ -447,6 +447,20 @@ class PipelineComponent extends React.Component {
                                 </div>
                             : null}
 
+                            {context.reference_filesets && context.reference_filesets.length > 0 ?
+                                <div data-test="referencefilesets">
+                                    <dt>Reference File Sets</dt>
+                                    <dd>
+                                        {context.reference_filesets.map((fileset, i) =>
+                                            <React.Fragment>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={fileset['@id']}>{fileset.accession}</a>
+                                            </React.Fragment>
+                                        )}
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.standards_page ?
                                 <div data-test="standardspage">
                                     <dt>Pipeline standards</dt>
@@ -467,13 +481,13 @@ class PipelineComponent extends React.Component {
                 {this.jsonGraph ?
                     <Panel>
                         <PanelHeading>
-                            <h3>Pipeline schematic</h3>
+                            <h4>Pipeline schematic</h4>
                         </PanelHeading>
                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} />
                     </Panel>
                 : null}
 
-                {context.documents && context.documents.length ?
+                {context.documents && context.documents.length > 0 ?
                     <DocumentsPanel documentSpecs={[{ documents: context.documents }]} />
                 : null}
 
@@ -501,6 +515,7 @@ PipelineComponent.propTypes = {
 
 PipelineComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Pipeline = auditDecor(PipelineComponent);
@@ -519,7 +534,11 @@ const StepDetailView = function StepDetailView(node) {
         return AnalysisStep(selectedStep, node);
     }
     return {
-        header: <h4>Software unknown</h4>,
+        header: (
+            <div className="graph-modal-header__content">
+                <h2>Software unknown</h2>
+            </div>
+        ),
         body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>,
         type: 'Step',
     };
@@ -536,16 +555,16 @@ class ListingComponent extends React.Component {
         let swTitle = [];
 
         // Collect up an array of published-by and software titles for all steps in this pipeline
-        if (result.analysis_steps && result.analysis_steps.length) {
+        if (result.analysis_steps && result.analysis_steps.length > 0) {
             result.analysis_steps.forEach((step) => {
-                if (step.versions && step.versions.length) {
+                if (step.versions && step.versions.length > 0) {
                     step.versions.forEach((version) => {
-                        if (version.software_versions && version.software_versions.length) {
+                        if (version.software_versions && version.software_versions.length > 0) {
                             version.software_versions.forEach((softwareVersion) => {
                                 swTitle.push(softwareVersion.software.title);
-                                if (softwareVersion.software.references && softwareVersion.software.references.length) {
+                                if (softwareVersion.software.references && softwareVersion.software.references.length > 0) {
                                     softwareVersion.software.references.forEach((reference) => {
-                                        if (reference.published_by && reference.published_by.length) {
+                                        if (reference.published_by && reference.published_by.length > 0) {
                                             publishedBy.push(...reference.published_by);
                                         }
                                     });
@@ -560,33 +579,33 @@ class ListingComponent extends React.Component {
         swTitle = _.uniq(swTitle);
 
         return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Pipeline</p>
-                        <p className="type">{` ${result.accession}`}</p>
+            <li className={resultItemClass(result)}>
+                <div className="result-item">
+                    <div className="result-item__data">
+                        <a href={result['@id']} className="result-item__link">{result.title}</a>
+                        <div className="result-item__data-row">
+                            {result.assay_term_names && result.assay_term_names.length ?
+                                <div><strong>Assays: </strong>{result.assay_term_names.join(', ')}</div>
+                            : null}
+
+                            {swTitle.length ?
+                                <div><strong>Software: </strong>{swTitle.join(', ')}</div>
+                            : null}
+
+                            {publishedBy.length ?
+                                <div><strong>References: </strong>{publishedBy.join(', ')}</div>
+                            : null}
+                        </div>
+                    </div>
+                    <div className="result-item__meta">
+                        <div className="result-item__meta-title">Pipeline</div>
+                        <div className="result-item__meta-id">{` ${result.accession}`}</div>
                         <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, search: true })}
                     </div>
-                    <div className="accession">
-                        <a href={result['@id']}>{result.title}</a>
-                    </div>
-                    <div className="data-row">
-                        {result.assay_term_names && result.assay_term_names.length ?
-                            <div><strong>Assays: </strong>{result.assay_term_names.join(', ')}</div>
-                        : null}
-
-                        {swTitle.length ?
-                            <div><strong>Software: </strong>{swTitle.join(', ')}</div>
-                        : null}
-
-                        {publishedBy.length ?
-                            <div><strong>References: </strong>{publishedBy.join(', ')}</div>
-                        : null}
-                    </div>
+                    <PickerActions context={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, sessionProperties: this.context.session_properties, forcedEditLink: true })}
             </li>
         );
     }
@@ -601,6 +620,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

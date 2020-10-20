@@ -9,16 +9,14 @@ const Footer = ({ version }, reactContext) => {
     let userActionRender;
 
     if (!(session && session['auth.userid'])) {
-        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign-in</a>;
+        userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Sign in</a>;
     } else {
         userActionRender = <a href="#" data-trigger="logout">Sign out</a>;
     }
     return (
-        <footer id="page-footer">
+        <footer>
             <div className="container">
-                <div className="row">
-                    <div className="app-version">{version}</div>
-                </div>
+                <div className="app-version">{version}</div>
             </div>
             <div className="page-footer">
                 <div className="container">
@@ -45,6 +43,7 @@ const Footer = ({ version }, reactContext) => {
                         </div>
                         <p className="copy-notice">&copy;{new Date().getFullYear()} The University of Texas Southwestern Medical Center</p>
                     </div>
+                    <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University</p>
                 </div>
             </div>
         </footer>
@@ -65,4 +64,3 @@ Footer.defaultProps = {
 };
 
 export default Footer;
-

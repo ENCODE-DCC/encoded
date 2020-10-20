@@ -21,6 +21,18 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
 IHEC_DEEP_DIG = True  # ihec requires pipeline and aligner information which is not easy to get
+IHEC_LIB_STRATEGY = {
+    'ATAC-seq': 'ATAC-seq',
+    'ChIP-seq': 'ChIP-Seq',
+    'DNase-seq': 'DNase-Hypersensitivity',
+    'MeDIP-seq': 'MeDIP-Seq',
+    'microRNA-seq': 'miRNA-Seq',
+    'microRNA counts': 'miRNA-Seq',
+    'MRE-seq': 'MRE-Seq',
+    'RNA-seq': 'RNA-Seq',
+    'RRBS': 'Bisulfite-Seq',
+    'whole-genome shotgun bisulfite sequencing': 'Bisulfite-Seq'
+}
 
 ASSEMBLY_DETAILS = {
     'GRCh38':         { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
@@ -336,8 +348,9 @@ OUTPUT_TYPE_8CHARS = {
     # "male genome reference":"XY ref",   # references not to be viewed
     # "male genome index":"XY rix",       # references not to be viewed
     # "spike-in sequence":"spike",        # references not to be viewed
-    "optimal idr thresholded peaks":        "oIDR pk",
-    "conservative idr thresholded peaks":   "cIDR pk",
+    "IDR thresholded peaks":                "IDRt pk",
+    "optimal IDR thresholded peaks":        "oIDR pk",
+    "conservative IDR thresholded peaks":   "cIDR pk",
     "enhancer validation":                  "enh val",
     "semi-automated genome annotation":     "saga"
     }
@@ -525,7 +538,7 @@ class VisDefines(object):
                      "shRNA knockdown followed by RNA-seq", \
                      "CRISPR genome editing followed by RNA-seq", \
                      "CRISPRi followed by RNA-seq", \
-                     "single cell isolation followed by RNA-seq", \
+                     "single-cell RNA sequencing assay", \
                      "siRNA knockdown followed by RNA-seq"]:
             reps = self.dataset.get("replicates", [])  # NOTE: overly cautious
             if len(reps) < 1:
@@ -660,7 +673,7 @@ class VisDefines(object):
         # Starting with a little cheat for rare cases where techreps are compared instead of bioreps
         if a_file.get("file_format_type", "none") in ["idr_peak"]:
             return "combined"
-        if a_file['output_type'].endswith("idr thresholded peaks"):
+        if a_file['output_type'].endswith("IDR thresholded peaks"):
             return "combined"
 
         bio_rep = 0
@@ -1093,31 +1106,38 @@ class IhecDefines(object):
         # Then either 'Histone <target.label>' or 'Transcription Factor <target.label>' (example: 'Histone H3K4me3')
 
         if vis_type in ["ChIP", "GGRChIP", "HIST"]:
-            target = dataset.get('target',{}).get('label','unknown')
             # Controls have no visualizable files so we shouldn't see them, however...
             # Chip-seq Controls would have target.investigated_as=Control
-            if target.lower() == 'control':
-                target = 'Input'
+            if dataset.get('control_type'):
+                return "ChIP-Seq Input"
+            target = dataset.get('target',{}).get('label','unknown')
             if vis_type == "HIST":
                 return "Histone " + target
             if target == "unknown":
                 return "ChIP-seq"
-            return "ChIP-seq " + target
-        if vis_type in ["LRNA", "scRNA", "tkRNA"]:
-            label_words = dataset['assay_title'].lower().split()
-            if 'total' in label_words:
-                return 'total-RNA-Seq'
-            return 'mRNA-Seq'
-        if vis_type == "SRNA":
-            return "smRNA-Seq"
-        if vis_type == "miRNA":  # TODO: have to ask them
-            return "smRNA-Seq"
+            return "ChIP-Seq Input: Transcription factor " + target
         if vis_type == "DNASE":
             return "Chromatin Accessibility"
         if vis_type == "ATAC":
             return "Chromatin Accessibility"  # TODO Confirm
         if vis_type == "WGBS":
             return "DNA Methylation"
+
+        # IHEC only allow smRNA for microRNA-seq which is different from our
+        # get_vis_type logic
+        if 'assay_term_name' not in dataset:
+            return None
+        assay = dataset['assay_term_name']
+        if assay == 'microRNA-seq':
+            return 'smRNA-Seq'
+        if assay == 'polyA plus RNA-seq':
+            return 'mRNA-Seq'
+        if assay == 'RNA-seq':
+            assay_title = dataset.get('assay_title')
+            if assay_title == 'total RNA-seq':
+                return 'total-RNA-Seq'
+            return 'RNA-Seq'
+
         #if vis_type == "ChIA":
         #    return "ChIA-pet"
         #if vis_type == "HiC":
@@ -1143,8 +1163,16 @@ class IhecDefines(object):
         assay_name = vis_dataset.get('assay_term_name')
         if assay_name:
             attributes["assay_type"] = assay_name
-        # "reference_registry_id": "..."     IHEC Reference Epigenome registry ID,
-        #                                     assigned after submitting to EpiRR
+        attributes['library_strategy'] = IHEC_LIB_STRATEGY[assay_name]
+        query = (
+            '/search/?type=ReferenceEpigenome&related_datasets.accession={}'
+            '&status=released&field=dbxrefs&limit=all'
+        ).format(vis_dataset['name'])
+        for ref_epi in self._request.embed(query)['@graph']:
+            for dbxref in ref_epi.get('dbxrefs', []):
+                if dbxref.startswith('IHEC:IHECRE'):
+                    attributes['reference_registry_id'] = dbxref[5:].split('.')[0]
+                    break
         return attributes
 
     def analysis_attributes(self, vis_dataset):
@@ -1220,18 +1248,20 @@ class IhecDefines(object):
             sample["donor_sex"] = sample["sex"]
             donor = biosample.get('donor')
             if donor is not None:
-                ids = [ donor['accession'] ]
-                if 'external_ids' in donor:
-                    ids.extend(donor['external_ids'])
-                    sample["donor_id"] = ','.join(ids)
+                sample["donor_id"] = donor['accession']
+                if donor.get('age', 'NA').isdigit():
+                    sample["donor_age"] = int(donor['age'])
+                elif donor.get('age', 'NA') == 'unknown':
+                    sample["donor_age"] = 'NA'
                 else:
-                    sample["donor_id"] = ids[0]
-                sample["donor_age"] = donor.get('age','NA')  # unknwn is not supported
+                    sample["donor_age"] = donor.get('age', 'NA')
                 sample["donor_age_unit"] = donor.get('age_units','year')  # unknwn is not supported
                 sample["donor_life_stage"] = donor.get('life_stage','unknown')
                 sample["donor_health_status"] = sample["disease"]
                 if donor.get('organism',{}).get('name','unknown') == 'human':
                     sample["donor_ethnicity"] = donor.get('ethnicity','unknown')
+                else:
+                    sample["donor_ethnicity"] = 'NA'
             if sample["biomaterial_type"] == "Primary Tissue":
                 sample["tissue_type"] = sample["line"]
                 sample["tissue_depot"] = biosample.get('source',{}).get('description','unknown')
@@ -1257,189 +1287,269 @@ class IhecDefines(object):
 
     def remodel_to_json(self, host_url, vis_datasets):
         '''Formats this collection of vis_datasets into IHEC hub json structure.'''
-        # TODO: make ihec json work!
+
         if not vis_datasets:
             return {}
 
+        # ihec_json = {
+        #     'hub_description': { ... }, similar to hub.txt/genome.txt
+        #     'datasets': { ... },        one per experiment for ChIP
+        #                                 and one per replicate for non-ChIP
+        #     'samples': { ... }          one per biosample
+        # }
+
+        self.samples = {}
         # {
-        # "hub_description": { ... },  similar to hub.txt/genome.txt
-        # "datasets": { ... },         one per experiment, contains "browser" objects, one per track
-        # "samples": { ... }           one per biosample
-        # }
-        ihec_json = {}
-
-        hub_description = {}
-        # "hub_description": {     similar to hub.txt/genome.txt
-        #     "taxon_id": ...,           Species taxonomy id. (e.g. human = 9606, Mus mus. 10090)
-        #     "assembly": "...",         UCSC: hg19, hg38
-        hub_description["publishing_group"] = "ENCODE"
-        hub_description["email"] = "encode-help@lists.stanford.edu"
-        hub_description["date"] = time.strftime('%Y-%m-%d', time.gmtime())
-        hub_description["description"] = "ENCODE: Encyclopedia of DNA Elements"  # (optional?)  # something better?
-        hub_description["description_url"] = host_url # "https://www.encodeproject.org/"
-        # }
-        ihec_json["hub_description"] = hub_description
-
-        self.samples = {}  # Start this empty, just in case it was used in making samples from datasets
-        # "samples": {             one per biosample
-        #     "sample_id_1": {                   biosample_term_name, molecule
-        #         "sample_ontology_uri": "...",  UBERON or CL
-        #         "molecule": "...",             ["total RNA", "polyA RNA", "cytoplasmic RNA",
-        #                                         "nuclear RNA", "genomic DNA", "protein", "other"]
-        #         "disease": "...",              optional?  # TODO
-        #         "disease_ontology_uri": "...", optional?  # TODO
-        #         "biomaterial_type": "...",     ["Cell Line", "Primary Cell", "Primary Cell Culture",
-        #                                         "Primary Tissue"]
-        #         "line":                        biosample_term_name
-        #         "lineage":                     ??? HELPME: Where do I get this?
-        #         "differentiation_stage":       ??? HELPME: Where do I get this?
-        #         "medium":                      ??? HELPME: Where do I get this?
-        #         "sex":                         experiment.replicate.library.biosample.sex
+        #     'sample_id_1': {  # one per biosample
+        #         'sample_ontology_uri': '...',  # UBERON or CL
+        #         'molecule': '...',
+        #         # [
+        #         #     'total RNA',
+        #         #     'polyA RNA',
+        #         #     'cytoplasmic RNA',
+        #         #     'nuclear RNA',
+        #         #     'genomic DNA',
+        #         #     'protein',
+        #         #     'other'
+        #         # ]
+        #         'disease': '...',  # TODO
+        #         'disease_ontology_uri': '...',  # TODO
+        #         'biomaterial_type': '...',
+        #         # [
+        #         #     'Cell Line',
+        #         #     'Primary Cell',
+        #         #     'Primary Cell Culture',
+        #         #     'Primary Tissue'
+        #         # ]
+        #         'line': '...',  # biosample_term_name
+        #         'lineage': '?',
+        #         'differentiation_stage': '?',
+        #         'medium': '?',
+        #         'sex': '...',  # experiment.replicate.library.biosample.sex
         #     },
-        #     "sample_id_2": { ... }
+        #     'sample_id_2': {...}
         # }
-        ihec_json["samples"] = self.samples
 
         datasets = {}
-        # "datasets": {
-        #    "experiment_1": {    one per experiment    accession
-        #        "sample_id": "...",                    biosample_term
-        #        "experiment_attributes": {
-        #            "experiment_type": "...",
-        #            "assay_type": "...",               assay_term_name  Match ontology URI
-        #                                                           (e.g. 'DNA Methylation')
-        #            "experiment_ontology_uri": "...",  assay_term_id (e.g. OBI:0000716)
-        #            "reference_registry_id": "..."     IHEC Reference Epigenome registry ID,
-        #                                                 assigned after submitting to EpiRR
-        #        },
-        #        "analysis_attributes": {
-        #            "analysis_software": "...",           pipeline
-        #            "analysis_software_version": "..."    pipeline version
-        #            "analysis_group": "...",              pipeline laboratory
-        #            "alignment_software": "...",          software ugly lookup. Single for whole experiment!
-        #            "alignment_software_version": "...",  software_version
-        #        },
-        #        "browser": {
-        #            "signal_forward": [               view
-        #                {
-        #                    "big_data_url": "...",    obvious
-        #                    "description_url": "...", Perhaps not
-        #                    "md5sum": "...",          Add this to metadata pairs?
-        #                    "subtype": "...",         More details?
-        #                    "sample_source": "...",   pooled,rep1,rep2
-        #                    "primary":                pooled or rep1 ?
-        #                },
-        #                { ... }
-        #            ],
-        #            "signal_reverse": [ { ... } ]
-        #        }
-        #    },
-        #    "experiment_2": {
-        #        ...
-        #    },
+        # {
+        #    'experiment_1': {
+        #         # one per experiment for ChIP and one per replicate for non-ChIP
+        #         'sample_id': '...',  # biosample accession
+        #         'experiment_attributes': {
+        #             'experiment_type': '...',
+        #             'assay_type': '...',  # assay_term_name (e.g. 'DNA Methylation')
+        #             'experiment_ontology_uri': '...',  # assay_term_id (e.g. OBI:0000716)
+        #             'reference_registry_id': '...',  # EpiRR ID
+        #         },
+        #         'analysis_attributes': {
+        #             'analysis_software': '...',  # pipeline
+        #             'analysis_software_version': '...',  # pipeline version
+        #             'analysis_group': '...',  # pipeline laboratory
+        #             'alignment_software': '...',  # software ugly lookup; one per experiment
+        #             'alignment_software_version': '...',  # software_version
+        #         },
+        #         'browser': {
+        #             'signal_forward': [  # view
+        #                 {
+        #                     'big_data_url': '...',
+        #                     'description_url': '...',
+        #                     'md5sum': '...',
+        #                     'subtype': '...',
+        #                     'sample_source': '...',
+        #                     'primary': '?',
+        #                 },
+        #                 {...}
+        #             ],
+        #             'signal_reverse': [{...}],
+        #         }
+        #     },
+        #    'experiment_2': {...},
         # }
-        ihec_json["datasets"] = datasets
 
         # TODO: If properties aren't found then warn and skip dataset!
-
+        assembly = ''
+        taxon_id = 0
+        included_accessions = []
         for accession in vis_datasets.keys():
             vis_dataset = vis_datasets[accession]
             if vis_dataset is None or len(vis_dataset) == 0:
-                continue  # wounded vis_datasets can be dropped OR retained for evidence
+                continue
 
             # From any vis_dataset, update these:
-            if "assembly" not in hub_description:
-                ucsc_assembly = vis_dataset.get('ucsc_assembly')
-                if ucsc_assembly:
-                    hub_description["assembly"] = ucsc_assembly
-                taxon_id = vis_dataset.get('taxon_id')
-                if taxon_id:
-                    hub_description["taxon_id"] = int(taxon_id)
+            assembly = vis_dataset.get('ucsc_assembly') or assembly
+            taxon_id = vis_dataset.get('taxon_id') or taxon_id
 
             dataset = {}
-            datasets[accession] = dataset
+
+            analysis_attributes = self.analysis_attributes(vis_dataset)
+            if analysis_attributes:
+                dataset['analysis_attributes'] = analysis_attributes
+            else:
+                log.warn('Could not determine IHEC analysis attributes for %s', accession)
 
             # Check if experiment is IHEC-able first
-            attributes = self.experiment_attributes(vis_dataset)
-            if attributes:
-                dataset["experiment_attributes"] = attributes
+            experiment_attributes = self.experiment_attributes(vis_dataset)
+            if experiment_attributes:
+                dataset['experiment_attributes'] = experiment_attributes
             else:
-                log.warn("Could not determine IHEC experiment attributes for %s", accession)
-                continue
+                log.warn('Could not determine IHEC experiment attributes for %s', accession)
 
             # Find/create sample:
             biosample_accession = vis_dataset.get('biosample_accession')
             if biosample_accession is None:
-                log.warn("vis_dataset %s is missing biosample", accession)
-                continue
-            sample_id = biosample_accession
-            if sample_id not in self.samples:
-                sample = vis_dataset.get('ihec_sample',{})
-                if not sample:
-                    log.warn("vis_dataset %s is missing sample", accession)
-                    continue
-                self.samples[sample_id] = sample
-            dataset["sample_id"] = sample_id
-
-            attributes = self.analysis_attributes(vis_dataset)
-            if attributes:
-                dataset["analysis_attributes"] = attributes
+                log.warn('vis_dataset %s is missing biosample', accession)
             else:
-                log.warn("Could not determine IHEC analysis attributes for %s", accession)
-                continue
+                dataset['sample_id'] = biosample_accession
+                if biosample_accession not in self.samples:
+                    sample = vis_dataset.get('ihec_sample', {})
+                    if not sample:
+                        log.warn('vis_dataset %s is missing sample', accession)
+                    else:
+                        self.samples[biosample_accession] = sample
 
-            # create browser, which holds views, which hold tracks:
+            # create browser, which hold tracks:
             browser = {}
-            dataset["browser"] = browser
-
-            # create views, which will hold tracks
-            # ihec_views = {}
-            views = vis_dataset.get("view", [])
-            for view_tag in views["group_order"]:
-                view = views["groups"][view_tag]
+            views = vis_dataset.get('view', [])
+            for view_tag in views['group_order']:
+                view = views['groups'][view_tag]
 
                 # Add tracks to views
-                tracks = view.get("tracks", [])
+                tracks = view.get('tracks', [])
                 if len(tracks) == 0:
                     continue
-                ihec_view = []
 
                 for track in tracks:
-                    ihec_track = {}
-                    ihec_track["big_data_url"] = host_url + track["bigDataUrl"]  # contains ?proxy=true
-                    path = '/experiments/%s/@@hub/%s/%s.html' % (accession, vis_dataset.get('ucsc_assembly'), accession)
-                    ihec_track["description_url"] = host_url + path
+                    ihec_track = {
+                        'big_data_url': track['bigDataUrl'],
+                        'description_url': '{}/experiments/{}/'.format(
+                            host_url, accession
+                        ),
+                        # "primary" is required;
+                        # default to False first and worry about it later
+                        'primary': False,
+                        'subtype': track['longLabel'],
+                    }
                     md5sum = track.get('md5sum')
                     if md5sum:
-                        ihec_track["md5sum"] = md5sum
-                    ihec_track["subtype"] = track["longLabel"]
-                    rep_membership = track.get("membership", {}).get("REP")
-                    rep_group = vis_dataset.get("groups", {}).get("REP")
-                    if rep_membership and rep_group:
-                        if rep_membership in rep_group:
-                            ihec_track["sample_source"] = rep_group[rep_membership]["title"]
-                            subgroup_order = sorted(rep_group["groups"].keys())
-                            ihec_track["primary"] = (rep_membership == subgroup_order[0])
+                        ihec_track['md5sum'] = md5sum
+
+                    # TODO: clean up the following logic
+                    # rep_membership = track.get('membership', {}).get('REP')
+                    # rep_group = vis_dataset.get('groups', {}).get('REP')
+                    # if rep_membership and rep_group:
+                    #     if rep_membership in rep_group:
+                    #         ihec_track['sample_source'] = rep_group[rep_membership]['title']
+                    #         subgroup_order = sorted(rep_group['groups'].keys())
+                    #         ihec_track['primary'] = (rep_membership == subgroup_order[0])
 
                     # extra fields
-                    for term in ["type", "color", "altColor"]:
+                    for term in ['type', 'color', 'altColor']:
                         if term in track:
                             ihec_track[term] = track[term]
-                    ihec_track["view"] = self.view_type(view,track)
-                    metadata_pairs = track.get("metadata_pairs", {})
+                    ihec_track['view'] = self.view_type(view, track)
+                    metadata_pairs = track.get('metadata_pairs', {})
                     for meta_key in metadata_pairs:
                         ihec_track[meta_key.replace('&#32;', ' ')] = metadata_pairs[meta_key][1:-1]
-                    # Could refine download link:
-                    # if metadata_pairs:
-                    #     file_download = metadata_pairs.get('file&#32;download')
-                    #     if file_download:
-                    #         file_download = file_download.split()[1][6:-1]
-                    #         ihec_track["file download"] = file_download
-                    if ihec_track["view"] not in browser.keys():
-                        browser[ihec_track["view"]] = []
-                    browser[ihec_track["view"]].append(ihec_track)
 
-        return ihec_json
+                    # Add IHEC tracks:
+                    # For ChIP-seq experiments, label the first track as
+                    # primary for each track type.
+                    # For non-ChIP-seq experiments, split experiments as one
+                    # dataset per replicate.
+                    if vis_dataset.get('assay_term_name', '') == 'ChIP-seq':
+                        if ihec_track['view'] not in browser.keys():
+                            browser[ihec_track['view']] = []
+                        browser[ihec_track['view']].append(ihec_track)
+                    else:
+                        rep = (
+                            ihec_track.get('replicate (bio_tech)')
+                            or ihec_track.get('replicate (bio_tech)', '')
+                        )
+                        experiment_key = '{}_rep{}'.format(accession, rep)
+                        if experiment_key not in datasets:
+                            datasets[experiment_key] = deepcopy(dataset)
+                            datasets[experiment_key]['browser'] = {}
+                        if ihec_track['view'] not in datasets[experiment_key][
+                            'browser'
+                        ]:
+                            # Tracks are sorted based on "group_order" in
+                            # vis_defs. So the first track for a certain track
+                            # type should be primary
+                            ihec_track['primary'] = True
+                            datasets[experiment_key]['browser'][
+                                ihec_track['view']
+                            ] = [ihec_track]
+                        else:
+                            datasets[experiment_key]['browser'][
+                                ihec_track['view']
+                            ].append(ihec_track)
+
+            # Add ChIP-seq tracks and assign one primary track
+            if vis_dataset.get('assay_term_name', '') == 'ChIP-seq':
+                # For experiment like ENCSR000ALI, there are no peak_calls but
+                # only singals according to vis_defs. In another word, there
+                # is no peak to guide selecting primary track. Thus simply
+                # select the first track.
+                primary_rep_val = ''
+                if 'peak_calls' in browser:
+                    browser['peak_calls'][0]['primary'] = True
+                    primary_rep_val = (
+                        browser['peak_calls'][0].get('replicate (bio_tech)')
+                        or browser['peak_calls'][0].get('replicates (bio_tech)')
+                        or ''
+                    )
+                for track_type in browser:
+                    for track in browser[track_type]:
+                        track_rep_val = (
+                            track.get('replicate (bio_tech)')
+                            or track.get('replicates (bio_tech)', '')
+                        )
+                        if (
+                            not primary_rep_val
+                            or track_rep_val == primary_rep_val
+                        ):
+                            track['primary'] = True
+                            break
+                dataset['browser'] = browser
+                datasets[accession] = dataset
+            included_accessions.append(accession)
+
+        hub_description = {  # similar to hub.txt/genome.txt
+            'publishing_group': 'ENCODE',
+            'name': 'ENCODE reference epigenomes',
+            'description': 'ENCODE reference epigenomes',
+            'description_url': '{}/search/?type=ReferenceEpigenome'.format(
+                host_url
+            ),
+            'email': 'encode-help@lists.stanford.edu',
+            'date': time.strftime('%Y-%m-%d', time.gmtime()),
+            # 'taxon_id': ...,  # Species taxonomy id. (human: 9606, mouse: 10090)
+            # 'assembly': '...',  # UCSC: hg19, hg38
+        }
+        if assembly:
+            hub_description['assembly'] = assembly
+        if taxon_id:
+            hub_description['taxon_id'] = int(taxon_id)
+        # Find corresponding reference epigenome
+        query = (
+            '/search/?type=ReferenceEpigenome'
+            '&{}&status=released&field=accession&limit=all'
+        ).format(
+            '&'.join(
+                'related_datasets.accession={}'.format(acc)
+                for acc in included_accessions
+            )
+        )
+        ref_epi_accs = [
+            ref_epi['accession']
+            for ref_epi in self._request.embed(query)['@graph']
+        ]
+
+        return {
+            'hub_description': hub_description,
+            'datasets': datasets,
+            'samples': self.samples,
+        }
 
 
 # TODO: move to separate vis_cache module?
@@ -1521,6 +1631,33 @@ def visualizable_assemblies(
             break  # Try not to go through the whole file list!
     return list(file_assemblies)
 
+def is_file_visualizable(file):
+    '''Determines whether a file can be visualized in a genome browser.
+    Needs to be kept in sync with isFileVisualizable in objectutils.js.
+
+    Keyword arguments:
+    file -- file object including props to test for visualizability
+    '''
+    conditions = [
+        file.get('file_format') in [
+            'bigWig',
+            'bigBed',
+        ],
+        file.get('file_format_type') not in [
+            'bedMethyl',
+            'bedLogR',
+            'idr_peak',
+            'tss_peak',
+            'pepMap',
+            'modPepMap',
+        ],
+        file.get('status') in [
+            'released',
+            'in progress',
+            'archived',
+        ],
+    ]
+    return all(conditions)
 
 def _file_to_format(process_file):
     '''Used with map to convert list of files to their types'''
@@ -1544,13 +1681,13 @@ def browsers_available(
     if "Dataset" not in types:
         return []
     if item_type is None:
-        visualizabe_types = set(VISIBLE_DATASET_TYPES)
-        if visualizabe_types.isdisjoint(types):
+        visualizable_types = set(VISIBLE_DATASET_TYPES)
+        if visualizable_types.isdisjoint(types):
             return []
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
     browsers = set()
-    full_set = {'ucsc', 'ensembl', 'quickview', 'hic'}
+    full_set = {'ucsc', 'ensembl', 'hic'}
     file_assemblies = None
     file_types = None
     if request is not None:
@@ -1582,16 +1719,6 @@ def browsers_available(
                 and not BROWSER_FILE_TYPES['ensembl'].isdisjoint(file_types)):
             if vis_blob or files is None or assembly in file_assemblies:
                 browsers.add('Ensembl')
-        if ('quickview' not in browsers
-                and 'quickview' in mapped_assembly.keys()
-                and not BROWSER_FILE_TYPES['quickview'].isdisjoint(file_types)):
-            # NOTE: quickview may not have vis_blob as 'in progress'
-            #   files can also be displayed
-            #       Ideally we would also look at files' statuses and formats.
-            #   However, the (calculated)files property only contains
-            #   'released' files so it doesn't really help for quickview!
-            if vis_blob is not None or status not in QUICKVIEW_STATUSES_BLOCKED:
-                browsers.add('Quick View')
         if ('hic' not in browsers
                 and 'hic' in mapped_assembly.keys()
                 and not BROWSER_FILE_TYPES['hic'].isdisjoint(file_types)):

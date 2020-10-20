@@ -1,7 +1,25 @@
 ## Changelog for genetic_modification.json
 
+### Minor changes since schema version 9
+
+* Added *disruption*, *inhibition*, and *knockout* as enums in *category* for use with CRISPR screen data.
+* Added *homologous recombination* as enum in *method*, to be used with the *category* of *knockout* and the *purpose* of *repression*.
+* Added *gRNAs and CRISPR machinery* to *introduced_elements* enum, to indicate the first step in a CRISPR screen.
+* Added *binding* and *transgene insertion* to *category* enum, *mouse pronuclear microinjection* to *method* enum, and *in vivo enhancer characterization* to *purpose* enum.
+* Modified the *identifier* regular expression for Thermo Fisher within *reagents* to accept identifiers with 7 digits.
+  * Thermo Fisher: '^thermo-fisher:[a-zA-Z]{1,3}\\d{5,7}$', ex. thermo-fisher:L3000008
+
+### Schema version 9
+
+* Several underused *purpose* enum were combined: *activation* and *overexpression* are remapped to *expression*, and *analysis* and *screening* are remapped to *characterization*.
+* A combination of method *CRISPR* with the category of *activation* or *interference* and purpose *characterization* may be submitted to specify a collective set of modifications intended for a CRISPRa or CRISPRi screen.
+
 ### Minor changes since schema version 8
+* *TagRFP* was added to the *introduced_tags* enum.
 * Added calculated property *perturbed* to indicate genetic modifications which cause genetic perturbations.
+* *donor* property was added to allow specification of the origin of the sheared genomic DNA elements or genomic DNA regions
+* *non-specific target control* was added to the *purpose* enum.
+* *genomic DNA regions* was added to the *introduced_elements* enum to describe selected regions derived from donor DNA
 
 ### Schema version 8
 
@@ -10,7 +28,7 @@
 * The *introduced_elements* property was added for characterization of groups of elements.
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
-* Zygosity is now required for modifications of *method* TALEN
+* *zygosity* is now required for modifications of *method* TALEN
 * The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 * *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
 * Within *reagents*, an *identifier* is no longer allowed to be free text and must conform to the pattern. Listed below are indivdual sources, their corresponding *identifier* regular expressions, and examples of allowed identifiers. Note that the
@@ -31,13 +49,12 @@ identifier is prefixed by 'source-name:'.
 
 * A minimum of 0 is set for *start* and *end* in *modified_site_by_coordinates*
 * The dependency of *method* on *reagents* specification was changed, *reagents* are no longer required to be specified for the relevant types of modification methods.
-* Zygosity is now required for modifications of *method* TALEN
 * The *introduced_gene* property was added, and can satisfy the *category* dependencies for modifications of *category* insertion.
 * *expression* was added to the *purpose* enum, and modifications with this *purpose* require *introduced_sequence* or *introduced_gene*.
 
 ### Schema version 7
 
-* *purpose* property "validation" was renamed to "characterization", and "screening" was also added to the list of enums
+* *purpose* property *validation* was renamed to *characterization*, and *screening* was also added to the list of enums
 
 ### Schema version 6
 

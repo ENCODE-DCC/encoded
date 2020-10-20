@@ -252,6 +252,33 @@ def test_public_restricted_file_does_not_have_s3_uri(testapp, file_with_external
     assert 's3_uri' not in res.json
 
 
+@pytest.mark.parametrize("file_status", [
+    status
+    for status in ['uploading','upload failed']
+])
+def test_encode_files_does_have_s3_uri(testapp, file_with_external_sheet, file_status):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': file_status
+        }
+    )
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' in res.json
+
+
+def test_encode_files_content_error_does_have_s3_uri(testapp, file_with_external_sheet):
+    testapp.patch_json(
+        file_with_external_sheet['@id'],
+        {
+            'status': 'content error',
+            'content_error_detail': "Required detail for content error"
+        }
+    )
+    res = testapp.get(file_with_external_sheet['@id'])
+    assert 's3_uri' in res.json
+
+    
 def test_file_update_bucket_as_admin(testapp, dummy_request, file_with_external_sheet):
     testapp.patch_json(
         file_with_external_sheet['@id'],

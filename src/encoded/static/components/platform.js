@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
+import { PanelBody } from '../libs/ui/panel';
 
 const Platform = (props) => {
     const context = props.context;
-    const itemClass = globals.itemClass(context, 'view-detail key-value');
+    const itemClass = globals.itemClass(context, 'key-value');
     return (
-        <div className="panel">
+        <PanelBody>
             <dl className={itemClass}>
                 <div data-test="name">
                     <dt>Platform name</dt>
@@ -22,13 +23,13 @@ const Platform = (props) => {
                 <div data-test="externalresources">
                     <dt>External resources</dt>
                     <dd>
-                        {context.dbxrefs.length ?
+                        {context.dbxrefs.length > 0 ?
                             <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                         : <em>None submitted</em> }
                     </dd>
                 </div>
             </dl>
-        </div>
+        </PanelBody>
     );
 };
 

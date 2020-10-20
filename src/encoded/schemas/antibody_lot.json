@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "targets"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -20,6 +20,14 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/notes" }
 
+    ],
+    "oneOf": [
+        {
+            "required": ["targets"]
+        },
+        {
+            "required": ["control_type", "isotype"]
+        }
     ],
     "properties": {
         "schema_version": {
@@ -167,6 +175,7 @@
         "targets": {
             "title": "Target",
             "type": "array",
+            "minItems": 1,
             "uniqueItems": true,
             "items": {
                 "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
@@ -174,14 +183,25 @@
                 "type": "string",
                 "linkTo": "Target"
             }
+        },
+        "control_type": {
+            "type": "string",
+            "title": "Control type",
+            "description": "The specific type of control if the experiment is a control.",
+            "enum": [
+                "isotype control"
+            ]
         }
    },
    "facets": {
         "lot_reviews.status": {
-            "title": "Eligibility status"
+            "title": "Eligibility status",
+            "length": "long",
+            "open_on_load": true
         },
         "targets.organism.scientific_name": {
-            "title": "Target organism"
+            "title": "Target organism",
+            "open_on_load": true
         },
         "targets.investigated_as": {
             "title": "Target category"
@@ -189,7 +209,8 @@
         "targets.label": {
             "title": "Target of antibody",
             "type": "typeahead",
-            "length": "long"
+            "length": "long",
+            "open_on_load": true
         },
         "characterizations.characterization_method": {
             "title": "Characterization method"
@@ -205,17 +226,17 @@
         },
         "characterizations.lab.title": {
             "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
         }
     },
     "columns": {
         "accession": {
             "title": "Accession"
+        },
+        "control_type": {
+            "title": "Control type"
+        },
+        "isotype": {
+            "title": "Isotype"
         },
         "lot_reviews.biosample_term_name": {
             "title": "Biosample name"
@@ -231,6 +252,9 @@
         },
         "lot_reviews.targets.label": {
             "title": "Target"
+        },
+        "lot_reviews.targets.name": {
+            "title": "Target name"
         },
         "lot_reviews.targets.organism.scientific_name": {
             "title": "Target organism"
@@ -268,7 +292,7 @@
         "host_organism.taxon_id": 1.0,
         "targets.genes.symbol": 1.0,
         "targets.label": 1.0,
-        "targets.dbxref": 1.0,
+        "targets.genes.dbxrefs": 1.0,
         "targets.aliases": 1.0,
         "targets.organism.name": 1.0,
         "targets.organism.scientific_name": 1.0,
@@ -285,7 +309,7 @@
         "characterizations.lab.title": 1.0,
         "characterizations.target.genes.symbol": 1.0,
         "characterizations.target.label": 1.0,
-        "characterizations.target.dbxref": 1.0,
+        "characterizations.target.genes.dbxrefs": 1.0,
         "characterizations.target.aliases": 1.0,
         "characterizations.target.organism.name": 1.0,
         "characterizations.target.organism.scientific_name": 1.0,

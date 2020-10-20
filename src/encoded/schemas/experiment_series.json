@@ -16,8 +16,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "series.json#/properties" }
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "status": {
@@ -44,18 +43,27 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "3"
         },
         "related_datasets": {
+            "title": "Additional datasets",
+            "description": "List of datasets to be associated with the series.",
+            "type": "array",
             "minItems": 1,
-            "permission": "import_items"
+            "uniqueItems": true,
+            "items": {
+                "title": "Dataset",
+                "comment": "See dataset.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Experiment"
+            }
         }
     },
     "facets": {
         "assay_slims": {
             "title": "Assay type"
         },
-        "assay_titles": {
+        "assay_title": {
             "title": "Assay title"
         },
         "biosample_ontology.cell_slims": {
@@ -105,6 +113,9 @@
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
+        },
+        "biosample_summary": {
+            "title": "Biosample summary"
         },
         "contributors.title": {
             "title": "Contributing Labs"
@@ -161,7 +172,7 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0
     },

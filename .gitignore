@@ -36,3 +36,13 @@
 .~*#
 
 .python-version
+
+# Due to deploy instances using repo as home directory
+.bash_history
+.npm/
+.python_history
+.pyvenv/
+.ssh/
+.config/
+initial-indexing-times*
+.viminfo

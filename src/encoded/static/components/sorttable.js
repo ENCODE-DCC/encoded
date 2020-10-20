@@ -30,7 +30,8 @@
 //     display -- (function): If the property to display has a more complicated display than just a single
 //                            value, this function returns JSX to display the property in any way it needs to.
 //                            It receives one parameter that's the single object of `list` being displayed in
-//                            a cell. If `display` is specified, the following `getValue` doesn't get called.
+//                            a cell. If `display` is specified, the following `getValue` doesn't get called
+//                            for displaying the value (however `getValue` can be called for sorting).
 //
 //     getValue -- (function): If the property to display can't be retrieved directly through item[columns.key],
 //                             this function retrieves and returns the value to be displayed in the cell. It
@@ -59,13 +60,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading } from '../libs/ui/panel';
 
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
 export const SortTablePanel = (props) => {
-    const { title, header, css, noDefaultClasses } = props;
+    const { title, header, subheader, css, noDefaultClasses } = props;
 
     return (
         <Panel addClasses={`table-sort${noDefaultClasses ? '' : ' table-panel'}${css ? ` ${css}` : ''}`} noDefaultClasses={noDefaultClasses}>
@@ -74,10 +75,12 @@ export const SortTablePanel = (props) => {
                     <h4>{title ? <span>{props.title}</span> : null}</h4>
                 </PanelHeading>
             : (header ?
-                <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
+                <PanelHeading key="heading">{props.header}</PanelHeading>
             : null)}
 
-            <div className="table-responsive" key="table">
+            {subheader ? <>{subheader}</> : null}
+
+            <div className="table__scrollarea" key="table">
                 {props.children}
             </div>
         </Panel>
@@ -88,13 +91,15 @@ SortTablePanel.propTypes = {
     /** Title to display in tabel panel header. `title` overrides `header` */
     title: PropTypes.oneOfType([
         PropTypes.string, // When title is a simple string
-        PropTypes.object, // When title is JSX
+        PropTypes.element, // When title is JSX
     ]),
     /** CSS class string to add to <Panel> classes */
     css: PropTypes.string,
     /** React component to render inside header */
-    header: PropTypes.object,
-    /** T to skip default <Panel> classes */
+    header: PropTypes.element,
+    /** React component to render above the table below the header */
+    subheader: PropTypes.element,
+    /** React component to render below the table inside the panel */
     noDefaultClasses: PropTypes.bool,
     /** Table components within a SortTablePanel */
     children: PropTypes.node,
@@ -104,6 +109,7 @@ SortTablePanel.defaultProps = {
     title: '',
     css: '',
     header: null,
+    subheader: null,
     noDefaultClasses: false,
     children: null,
 };
@@ -130,7 +136,9 @@ class ColumnSortDir extends React.Component {
 
         return (
             <th key={columnId} className={thClass} onClick={this.handleClick}>
-                <span>{title}<i className={columnClass} /></span>
+                <div className="tcell-sortable__column-header">
+                    {title}<i className={columnClass} />
+                </div>
             </th>
         );
     }
@@ -260,7 +268,7 @@ export class SortTable extends React.Component {
             const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;
 
             return (
-                <table className={`table table-sortable${css ? ` ${css}` : ''}`}>
+                <table className={`table table__sortable${css ? ` ${css}` : ''}`}>
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
 
@@ -316,13 +324,15 @@ export class SortTable extends React.Component {
                         </tbody>
                     : null}
 
-                    <tfoot>
-                        <tr>
-                            <td className={`file-table-footer${this.props.collapsed ? ' hiding' : ''}`} colSpan={colCount}>
-                                {this.props.footer}
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {this.props.footer ?
+                        <tfoot>
+                            <tr>
+                                <td className={this.props.collapsed ? 'hiding' : null} colSpan={colCount}>
+                                    {this.props.footer}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    : null}
                 </table>
             );
         }

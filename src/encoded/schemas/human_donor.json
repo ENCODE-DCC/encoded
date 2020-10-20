@@ -290,7 +290,9 @@
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
+        "accession": 1.0,
+        "internal_tags": 1.0,
+        "alternate_accessions": 1.0
     },
     "changelog": "/profiles/changelogs/human_donor.md"
 }

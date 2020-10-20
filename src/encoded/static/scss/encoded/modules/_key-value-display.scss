@@ -13,6 +13,10 @@ dd.h3, dd.h4 {
 dl.key-value, dl.key-value-doc {
     margin: 0;
 
+    .panel-body > & {
+        margin: -10px 0;
+    }
+
     dt, dd {
         display: block;
         float: none;
@@ -32,8 +36,8 @@ dl.key-value, dl.key-value-doc {
     }
 
     dt {
-        font-weight: bold;
-      
+        font-weight: 600;
+
         &:after {
             content: ":";
         }
@@ -192,11 +196,11 @@ dd ul, .multi-value-line {
     border: 1px solid #c0c0c0;
     color: #333;
     font-size: 0.9rem;
-    text-decoration: none;
 
     &:hover {
         color: #eee;
         background-color: #333;
+        text-decoration: none;
 
         .version {
             color: #fff;
@@ -227,6 +231,11 @@ dd ul, .multi-value-line {
     border-top: 1px solid #c0c0c0;
 
     &:first-child {
+        margin-top: -10px;
         border-top: none;
+    }
+
+    &:last-child {
+        margin-bottom: -10px;
     }
 }

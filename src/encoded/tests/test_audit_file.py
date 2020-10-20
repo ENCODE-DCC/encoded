@@ -1,242 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def file_exp(lab, award, testapp, experiment, ileum):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'assay_term_name': 'RAMPAGE',
-        'biosample_ontology': ileum['uuid'],
-        'possible_controls': [experiment['uuid']],
-        'status': 'released',
-        'date_released': '2016-01-01',
-        'experiment_classification': ['functional genomics assay']
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_rep(replicate, file_exp, testapp):
-    item = {
-        'experiment': file_exp['uuid'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_exp2(lab, award, testapp, ileum):
-    item = {
-        'lab': lab['uuid'],
-        'award': award['uuid'],
-        'assay_term_name': 'RAMPAGE',
-        'biosample_ontology': ileum['uuid'],
-        'status': 'released',
-        'date_released': '2016-01-01',
-        'experiment_classification': ['functional genomics assay']
-    }
-    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_rep2(replicate, file_exp2, testapp):
-    item = {
-        'experiment': file_exp2['uuid'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file_rep1_2(replicate, file_exp, testapp):
-    item = {
-        'experiment': file_exp['uuid'],
-        'biological_replicate_number': 2,
-        'technical_replicate_number': 1
-    }
-    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file1_2(file_exp, award, lab, file_rep1_2, platform1, testapp):
-    item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep1_2['uuid'],
-        'file_format': 'fastq',
-        'platform': platform1['@id'],
-        'md5sum': '91be74b6e11515393507f4ebfa66d58a',
-        'output_type': 'raw data',
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file2(file_exp2, award, lab, file_rep2, platform1, testapp):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'replicate': file_rep2['uuid'],
-        'file_format': 'fastq',
-        'md5sum': '91be74b6e11515393507f4ebfa66d58b',
-        'output_type': 'raw data',
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'platform': platform1['uuid'],
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
-    item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep['uuid'],
-        'file_format': 'fastq',
-        'md5sum': '91be74b6e11515393507f4ebfa66d58c',
-        'output_type': 'reads',
-        "read_length": 50,
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'platform': platform1['uuid'],
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released',
-        'controlled_by': [file2['uuid']]
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file3(file_exp, award, lab, file_rep, platform1, testapp):
-    item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep['uuid'],
-        'file_format': 'fastq',
-        'file_size': 34,
-        'md5sum': '91be74b6e11515393507f4ebfa56d78d',
-        'output_type': 'reads',
-        "read_length": 50,
-        'platform': platform1['uuid'],
-        'run_type': 'single-ended',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file4(file_exp2, award, lab, file_rep2, platform1, testapp):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'replicate': file_rep2['uuid'],
-        'file_format': 'fastq',
-        'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
-        'output_type': 'reads',
-        'platform': platform1['uuid'],
-        "read_length": 50,
-        'file_size': 34,
-        'run_type': 'single-ended',
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'file_format': 'bam',
-        'file_size': 3,
-        'md5sum': '91ce74b6e11515393507f4ebfa66d78a',
-        'output_type': 'alignments',
-        'award': award['uuid'],
-        'file_size': 34,
-        'assembly': 'hg19',
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'file_format': 'tsv',
-        'file_size': 3,
-        'md5sum': '91be74b6e11515394507f4ebfa66d78a',
-        'output_type': 'gene quantifications',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released',
-        'step_run': analysis_step_run_bam['uuid']
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file6['@id']],
-        'total': 20000000
-    }
-
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, award):
-    item = {
-        'step_run': analysis_step_run_bam['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'quality_metric_of': [file7['@id']],
-        'total': 20000000
-    }
-
-    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def analysis_step_bam(testapp):
-    item = {
-        'step_label': 'bamqc-step',
-        'title': 'bamqc step',
-        'major_version': 1,
-        'input_file_types': ['reads'],
-        'analysis_step_types': ['QA calculation']
-    }
-    return testapp.post_json('/analysis_step', item).json['@graph'][0]
-
-
-@pytest.fixture
-def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'title': "Small RNA-seq single-end pipeline",
-        'analysis_steps': [analysis_step_bam['@id']]
-    }
-    return testapp.post_json('/pipeline', item).json['@graph'][0]
-
-
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {
                        'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
@@ -247,6 +11,61 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
         errors_list.extend(errors[error_type])
     assert any(error['category'] ==
                'inconsistent paired_with' for error in errors_list)
+
+
+def test_audit_file_inconsistent_paired_with(testapp, file1, file3):
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '1', 'paired_with': file3['uuid']})
+    testapp.patch_json(file3['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '1'})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'inconsistent paired_with' for error in errors_list)
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file3['uuid']})
+    testapp.patch_json(file3['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file1['uuid']})
+    res2 = testapp.get(file1['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'inconsistent paired_with' for error in errors_list)
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended', 'paired_end': '1'})
+    res3 = testapp.get(file1['@id'] + '@@index-data')
+    errors = res3.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+               'inconsistent paired_with' for error in errors_list)
+
+
+def test_audit_missing_paired_with(testapp, file2, file4):
+    testapp.patch_json(file2['@id'], {
+                        'run_type': 'paired-ended', 'paired_end': '1'})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+                'missing paired_with' for error in errors_list)
+    testapp.patch_json(file2['@id'], {
+                        'paired_with': file4['uuid']})
+    res2  = testapp.get(file2['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+                'missing paired_with' for error in errors_list)
 
 
 def test_audit_paired_with_non_fastq(testapp, file1, file6, platform1):
@@ -902,7 +721,7 @@ def test_audit_private_file_in_public_bucket(testapp, dummy_request, file_with_e
 def test_audit_file_statuses_in_s3_statuses(testapp):
     # Make sure public_s3_statuses and private_s3_statuses lists in File item include
     # all statuses in File schema, except upload failed and content error.
-    from ..types.file import File
+    from encoded.types.file import File
     public_s3_statuses = File.public_s3_statuses
     private_s3_statuses = File.private_s3_statuses
     assert public_s3_statuses
@@ -991,3 +810,293 @@ def test_audit_incorrect_file_bucket_has_audit_no_file_available_false(testapp, 
     errors = res.json['audit']
     errors_list = [error for v in errors.values() for error in v if error['category'] == 'incorrect file bucket']
     assert errors_list
+
+
+def test_audit_read_structure(testapp, file1_2):
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': -5,
+                'end': -1
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert all(
+        error['category'] != 'invalid read_structure'
+        for error in errors
+    )
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': 0,
+                'end': 5
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert any(
+        error['category'] == 'invalid read_structure'
+        and error['detail'].startswith('The read_stucture is 1-based.')
+        for error in errors
+    )
+    testapp.patch_json(
+        file1_2['@id'],
+        {
+            'read_structure': [{
+                'sequence_element': 'adapter',
+                'start': 1,
+                'end': -1
+            }]
+        }
+    )
+    res = testapp.get(file1_2['@id'] + '@@index-data')
+    errors = [error for v in res.json['audit'].values() for error in v]
+    assert any(
+        error['category'] == 'invalid read_structure'
+        and error['detail'].startswith(
+            'The start coordinate is bigger than the end coordinate'
+        )
+        for error in errors
+    )
+
+
+def test_audit_matching_md5sum(testapp, file7, file6):
+    testapp.patch_json(
+        file7['@id'],
+        {
+            'matching_md5sum': [file6['@id']]
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent matching_md5sum'
+               for error in errors_list)
+
+    testapp.patch_json(
+        file6['@id'],
+        {
+            'lab': '/labs/encode-processing-pipeline/',
+            'md5sum': '91be74b6e11515394507f4ebfa66d78a',
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'matching md5 sums'
+               for error in errors_list)
+
+
+def test_audit_self_matching_md5sum(testapp, file7):
+    testapp.patch_json(
+        file7['@id'],
+        {
+            'matching_md5sum': [file7['@id']]
+        }
+    )
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent matching_md5sum'
+               for error in errors_list)
+
+
+def test_audit_correct_index(testapp, fastq_index,
+                             single_fastq_indexed,
+                             pacbio_fastq_indexed,
+                             second_fastq_indexed,
+                             correct_paired_fastq_indexed):
+
+    # One SE fastq is allowed (must belong to same dataset)
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert 'inconsistent index file' not in (error['category']
+            for error in errors_list)
+
+    # One PacBio or Oxford Nanopore fastq is allowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                pacbio_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert 'inconsistent index file' not in (error['category']
+        for error in errors_list)
+
+    # 2 PE fastq paired_with each other are allowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                second_fastq_indexed['@id'],
+                correct_paired_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert 'inconsistent index file' not in (error['category']
+        for error in errors_list)
+
+
+def test_audit_incorrect_index(testapp,
+                               fastq_index,
+                               single_fastq_indexed,
+                               second_fastq_indexed,
+                               incorrect_paired_fastq_indexed,
+                               pacbio_fastq_indexed,
+                               oxford_nanopore_fastq_indexed,
+                               bam_file, ATAC_experiment):
+    # One SE and one PE fastq together is disallowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                single_fastq_indexed['@id'],
+                second_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'both single- and paired-end fastq files' in error['detail']
+        for error in errors_list)
+
+    # Two PE fastq that aren't paired with each other is disallowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                incorrect_paired_fastq_indexed['@id'],
+                second_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'fastq that are not paired with each other' in error['detail']
+        for error in errors_list)
+
+    # A PE fastq without its mate is disallowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                incorrect_paired_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'index_of only one paired-end fastq file' in error['detail']
+        for error in errors_list)
+
+    # Any non-Illumina fastq with a Illumina fastq is disallowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                pacbio_fastq_indexed['@id'],
+                single_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'fastq files sequenced using different platforms' in error['detail']
+        and 'multiple non-Illumina fastq' not in error['detail']
+            for error in errors_list)
+
+    # Any non-fastq file is disallowed
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                bam_file['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'incorrectly specified for non-fastq file(s)' in error['detail']
+        for error in errors_list)
+
+    # Indexed files from other experiments are disallowed
+    testapp.patch_json(
+        single_fastq_indexed['@id'],
+        {
+            'dataset': ATAC_experiment['@id']
+        }
+    )
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                single_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'is from experiment' in error['detail']
+        for error in errors_list)
+
+    # Two non-Illumina fastq are disallowed (PacBio, Oxford Nanopore)
+    testapp.patch_json(
+        fastq_index['@id'],
+        {
+            'index_of': [
+                pacbio_fastq_indexed['@id'],
+                oxford_nanopore_fastq_indexed['@id']]
+        }
+    )
+    res = testapp.get(fastq_index['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent index file'
+        and 'multiple non-Illumina fastq' in error['detail']
+        for error in errors_list)

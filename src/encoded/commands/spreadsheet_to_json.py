@@ -5,7 +5,7 @@ Example:
 
 """
 
-from .. import loadxl
+from encoded import loadxl
 import json
 import os.path
 

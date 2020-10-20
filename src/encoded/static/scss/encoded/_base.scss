@@ -1,5 +1,5 @@
 /* Variables */
-$mainThemeColor: 			   #e8ecef; /* i.e. the background color ..for now */
+$mainThemeColor: 			   #fff; /* i.e. the background color ..for now */
 
 $nav-color-bg:                 #0a253d; // Navigation background color
 
@@ -13,9 +13,13 @@ $tableHeadFootBackgroundColor: #f5f5f5;
 
 $std-href-color:               #428bca;
 
-$mobile-font-factor:           1.2; // Amount text increases size on mobile
-$print-font-factor:            0.95; // Amount text decreases size when printing
+$site-font:                    'Mada', sans-serif;
+$brand-font:                   'Mada', sans-serif;
 
+$Homo-sapiens:                  #63326E;
+$Mus-musculus:                  #3D518C;
+$Caenorhabditis-elegans:        #77878B;
+$Drosophila-melanogaster:       #335C67;
 
 // Pass value with CSS units and get just the value back
 @function strip-units($value) {
@@ -59,7 +63,18 @@ html {
     }
 }
 
-body { background: $mainThemeColor; font-size: 1rem; }
+body {
+    margin: 0;
+    background: $mainThemeColor;
+    font-size: 1rem;
+    font-family: $site-font;
+    color: #000;
+
+    button {
+        cursor: pointer;
+        font-family: $site-font;
+    }
+}
 
 .float-wrap { overflow: hidden; }
 
@@ -72,9 +87,10 @@ body { background: $mainThemeColor; font-size: 1rem; }
 #application {
     min-height: 100%;
 
-    @media screen and (min-width: $screen-sm-min) {
+    @media screen and (min-width: $screen-md-min) {
         display: flex;
         flex-direction: column;
+        height: 0px;
     }
 }
 
@@ -82,6 +98,19 @@ body { background: $mainThemeColor; font-size: 1rem; }
     @media screen and (min-width: $screen-sm-min) {
         flex-shrink: 0;
     }
+}
+
+a {
+    text-decoration: none;
+    color: $brand-primary;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+b {
+    font-weight: 400 !important;
 }
 
 hr { clear: both; }
@@ -104,36 +133,142 @@ figure {
 .sentence-case:first-letter { text-transform: uppercase; } // older browser support
 
 // Replace Bootstrap's header sizes
-h1, .h1 { font-size: 2.6rem; }
-h2, .h2 { font-size: 2.1rem; }
+h1, .h1 { font-size: 2.1rem; }
+h2, .h2 { font-size: 1.9rem; }
 h3, .h3 { font-size: 1.7rem; }
 h4, .h4 { font-size: 1.3rem; }
 h5, .h5 { font-size: 1rem; }
 h6, .h6 { font-size: 0.85rem; }
+
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-family: Oswald;
+}
+
+h1, h2, h3, .h1, .h2, .h3 {
+    font-weight: 400;
+}
+
+h2, h3, .h2, .h3 {
+    border-bottom: 1px solid #d2d2d2;
+}
+
+center {
+    h2 {
+        border-bottom: 0;
+    }
+}
+
+h4, .h4 {
+    font-weight: 600;
+    a {
+        font-family: Mada;
+        font-weight: 400;
+    }
+}
+
+.h4, .h5, .h6, h4, h5, h6 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
 
 blockquote {
     font-size: 1rem;
 }
 
 
+/**
+ * Site-wide button styles
+ */
+@mixin button-size($padding-vertical, $padding-horizontal, $font-size, $btn-height, $border-radius) {
+    padding: 0 $padding-horizontal;
+    font-size: $font-size;
+    height: $btn-height;
+    border-radius: $border-radius;
+}
+
+$disabled-color-factor: 20%;
+
+.btn {
+    font-family: Quicksand;
+    flex: 0 1 auto;
+    height: $btn-height;
+    padding: 0 $padding-base-horizontal;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: $font-size-base;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    background-image: none;
+    white-space: nowrap;
+    border-radius: $border-radius-base;
+    border: 1px solid #c0c0c0;
+    line-height: 1;
+
+    &.btn-default { color: #000;    background-color: #f8f9fa; }
+    &.btn-primary { color: #fff;    background-color: $brand-primary; }
+    &.btn-success { color: #fff;    background-color: $brand-success; }
+    &.btn-info    { color: #fff;    background-color: $brand-info; }
+    &.btn-warning { color: #fff;    background-color: $brand-warning; }
+    &.btn-danger  { color: #fff;    background-color: $brand-danger; }
+
+    &:disabled, &[disabled] { pointer-events: none; }
+    &.btn-default:disabled, &.btn-default[disabled] { color: #000; background-color: lighten(#f8f9fa, $disabled-color-factor); }
+    &.btn-primary:disabled, &.btn-primary[disabled] { color: #fff; background-color: lighten($brand-primary, $disabled-color-factor); }
+    &.btn-success:disabled, &.btn-success[disabled] { color: #fff; background-color: lighten($brand-success, $disabled-color-factor); }
+    &.btn-info:disabled, &.btn-info[disabled]    { color: #fff; background-color: lighten($brand-info, $disabled-color-factor); }
+    &.btn-warning:disabled, &.btn-warning[disabled] { color: #fff; background-color: lighten($brand-warning, $disabled-color-factor); }
+    &.btn-danger:disabled , &.btn-danger[disabled] { color: #fff; background-color: lighten($brand-danger, $disabled-color-factor); }
+
+    &.btn-lg {
+        @include button-size($padding-large-vertical, $padding-large-horizontal, $font-size-large, $btn-height-lg, $border-radius-large);
+    }
+    &.btn-sm {
+        @include button-size($padding-small-vertical, $padding-small-horizontal, $font-size-small, $btn-height-sm, $border-radius-small);
+    }
+    &.btn-xs {
+        @include button-size($padding-xs-vertical, $padding-xs-horizontal, $font-size-small, $btn-height-xs, $border-radius-small);
+    }
+
+    @at-root a#{&} {
+        text-decoration: none;
+        display: flex;
+    }
+
+    &.btn-svgicon {
+        font-size: 0;
+    }
+
+    &.btn-inline {
+        margin-right: 5px;
+    }
+}
+
 .replacement-accessions {
     margin: -5px 0 10px;
     color: #808080;
 
     h4 {
-        margin: 0;
+        margin: 0 0 5px 0;
         font-size: 1rem;
         font-weight: normal;
         line-height: 1.3;
     }
+}
 
-    @at-root #{&}__superseded-by {
-        color: #000;
 
-        a {
-            font-weight: bold;
-        }
-    }
+// More generic style maybe eventually replacing .replacement-accessions.
+.supplemental-refs {
+    margin: -5px 0 10px;
+    line-height: 1.3;
+    color: #808080;
+    font-size: 1rem;
+    font-weight: normal;
 }
 
 
@@ -150,16 +285,23 @@ blockquote {
 
 
 .checkbox--right {
-	cursor: normal;
+	cursor: auto;
 
 	label {
 		cursor: default;
+        font-weight: bold;
 	}
 
 	input[type="checkbox"] {
 		float: none;
 		margin-left: 10px;
 	}
+}
+
+input[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 
@@ -186,4 +328,127 @@ blockquote {
 	$glin: de-gamma(green($c) / 255);
 	$blin: de-gamma(blue($c) / 255);
 	@return re-gamma(0.2126 * $rlin + 0.7152 * $glin + 0.0722 * $blin) * 100;
+}
+
+/**
+ * Utility class to hide content visually while keeping it screen reader-accessible.
+ * Source: https://www.scottohara.me/blog/2017/04/14/inclusively-hidden.html
+ */
+
+.sr-only:not(:focus):not(:active) {
+    clip: rect(0 0 0 0);
+    clip-path: inset(100%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+
+// Inline code
+code {
+    padding: 2px 4px;
+    font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+    font-size: 1rem;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    white-space: nowrap;
+    border-radius: 3px;
+}
+
+pre {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.42857;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+pre code {
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+    white-space: pre-wrap;
+    background-color: #0000;
+    border-radius: 0;
+}
+
+.dropdown-button {
+    position: relative;
+
+    & > &__composite {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    & > &__composite > &__composite-execute {
+        margin: 0;
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    & > &__composite > &__composite-trigger {
+        margin: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+
+        > svg {
+            width: 8px;
+            fill: white;
+        }
+    }
+
+    @at-root #{&}__content {
+        position: absolute;
+        top: 100%;
+        margin: 4px 0;
+        padding: 0;
+        width: 300px;
+        list-style: none;
+        border: 1px solid #c0c0c0;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.175);
+        z-index: 1000;
+
+        button {
+            height: auto;
+            white-space: normal;
+        }
+
+        // Default link/button styling
+        > li {
+            display: block;
+
+            > button, > a {
+                display: block;
+                width: 100%;
+                text-align: left;
+                padding: 5px 20px;
+                font-size: 0.9rem;
+                font-weight: bold;
+                border: none;
+                border-radius: 0;
+                color: #444;
+                background-color: #fff;
+                border-top: 1px solid transparent;
+                border-right: none;
+                border-bottom: 1px solid transparent;
+                border-left: none;
+
+                &:hover {
+                    color: #fff;
+                    background-color: #4E7294;
+                    border-top: 1px solid #2b3f51;
+                    border-bottom: 1px solid #2b3f51;
+                }
+            }
+        }
+    }
 }

@@ -1,4 +1,4 @@
-@advanced_query_search @usefixtures(workbook)
+@advanced_query_search @usefixtures(index_workbook)
 Feature: Search
     Background:
         When I visit "/search"
@@ -12,10 +12,10 @@ Feature: Search
     Scenario: Test advanced query search type
     When I visit "/search/?advancedQuery=@type:Experiment"
     And I wait for the content to load
-    Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
+    Then I should see at least 25 elements with the css selector "ul.result-table > li"
 
 
     Scenario: Test advanced query search date search
-    When I visit "/search/?advancedQuery=@type:Experiment date_created:[2015-01-01 TO 2019-12-31]"
+    When I visit "/search/?advancedQuery=@type:Experiment date_submitted:[2015-01-01 TO 2019-12-31]"
     And I wait for the content to load
-    Then I should see at least 25 elements with the css selector "ul.nav.result-table > li"
+    Then I should see at least 25 elements with the css selector "ul.result-table > li"

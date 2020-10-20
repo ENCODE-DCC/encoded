@@ -257,3 +257,20 @@ def genetic_modification_7_8(value, system):
                 new_notes = message + unmatched_reagents
             new_notes = new_notes.strip()
             value['notes'] = new_notes
+
+
+@upgrade_step('genetic_modification', '8', '9')
+def genetic_modification_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4997
+    remap1 = [
+        'analysis',
+        'screening',
+        ]
+    remap2 = [
+        'activation',
+        'overexpression',
+        ]
+    if value['purpose'] in remap1:
+        value['purpose'] = 'characterization'
+    elif value['purpose'] in remap2:
+        value['purpose'] = 'expression'

@@ -1,5 +1,5 @@
 import pytest
-from ..loadxl import ORDER
+from encoded.loadxl import ORDER
 
 
 @pytest.mark.parametrize('item_type', ORDER)

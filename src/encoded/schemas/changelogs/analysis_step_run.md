@@ -1,9 +1,8 @@
-## Change log for analysis_step_run.json
+## Changelog for analysis_step_run.json
 
 ### Schema version 5
 
-* Remove *virtual* as status and use standard_status mixin.
-
+* Remove *virtual* as status and use *standard_status* mixin.
 
 ### Schema version 4
 
@@ -12,7 +11,6 @@
 
 #### Fields with changed list of enum values:
 * *status* enum list was changed to ["virtual", in progress", "released", "deleted"]
-
 
 ### Schema version 3
 

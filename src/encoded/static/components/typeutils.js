@@ -1,9 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import Pager from '../libs/ui/pager';
 import * as globals from './globals';
-import { AlternateAccession } from './objectutils';
+import { requestFiles, AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
+import Status from './status';
+import { BatchDownloadControls } from './view_controls';
+
+
+// Maximum number of files before the user can't download them.
+const MAX_DOWNLOADABLE_FILES = 1000;
 
 
 // BIOSAMPLE UTILITIES
@@ -31,26 +38,26 @@ export function BiosampleOrganismNames(biosamples) {
 export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
-    if (biosample.documents && biosample.documents.length) {
+    if (biosample.documents && biosample.documents.length > 0) {
         protocolDocuments = _.uniq(biosample.documents);
     }
     let characterizations = [];
-    if (biosample.characterizations && biosample.characterizations.length) {
+    if (biosample.characterizations && biosample.characterizations.length > 0) {
         characterizations = _.uniq(biosample.characterizations);
     }
     let donorDocuments = [];
     let donorCharacterizations = [];
     if (biosample.donor) {
-        if (biosample.donor.characterizations && biosample.donor.characterizations.length) {
+        if (biosample.donor.characterizations && biosample.donor.characterizations.length > 0) {
             donorCharacterizations = biosample.donor.characterizations;
         }
-        if (biosample.donor.documents && biosample.donor.documents.length) {
+        if (biosample.donor.documents && biosample.donor.documents.length > 0) {
             donorDocuments = biosample.donor.documents;
         }
     }
     let treatmentDocuments = [];
-    if (biosample.treatments && biosample.treatments.length) {
-        treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length) ? allDocs.concat(treatment.documents) : allDocs), []);
+    if (biosample.treatments && biosample.treatments.length > 0) {
+        treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length > 0) ? allDocs.concat(treatment.documents) : allDocs), []);
     }
 
     // Put together the document list for rendering
@@ -126,9 +133,9 @@ export const BiosampleTableFooter = (props) => {
     const { items, total, url } = props;
 
     return (
-        <div>
-            <span>Displaying {items.length} of {total} </span>
-            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        <div className="table-panel__std-footer">
+            <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
         </div>
     );
 };
@@ -297,9 +304,9 @@ const DonorTableFooter = (props) => {
     const { items, total, url } = props;
 
     return (
-        <div>
-            <span>Displaying {items.length} of {total} </span>
-            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        <div className="table-panel__std-footer">
+            <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+            {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
         </div>
     );
 };
@@ -401,7 +408,7 @@ export const ReplacementAccessions = ({ context }) => {
             <div className="replacement-accessions">
                 <AlternateAccession altAcc={alternateAccessions} />
                 {supersededByAtIds.length > 0 ?
-                    <h4 className="replacement-accessions__superseded-by">
+                    <h4 className="replacement-accessions">
                         <span>Superseded by </span>
                         {supersededByAtIds.map((supersededByAtId, index) => (
                             <span key={supersededByAtId}>
@@ -412,7 +419,7 @@ export const ReplacementAccessions = ({ context }) => {
                     </h4>
                 : null}
                 {supersedes.length > 0 ?
-                    <h4 className="replacement-accessions__supersedes">Supersedes {supersedes.join(', ')}</h4>
+                    <h4 className="replacement-accessions">Supersedes {supersedes.join(', ')}</h4>
                 : null}
             </div>
         );
@@ -429,9 +436,9 @@ ReplacementAccessions.propTypes = {
  * Display a count of experiments in the footer, with a link to the corresponding search if needed.
  */
 const ExperimentTableFooter = ({ items, total, url }) => (
-    <div>
-        <span>Displaying {items.length} of {total} </span>
-        {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+    <div className="table-panel__std-footer">
+        <div className="table-panel__std-footer-count">Displaying {items.length} of {total}</div>
+        {items.length < total ? <a className="table-panel__std-footer-search" href={url}>View all</a> : null}
     </div>
 );
 
@@ -483,15 +490,18 @@ const experimentTableColumns = {
 export const ExperimentTable = ({ items, limit, total, url, title }) => {
     // If there's a limit on entries to display and the array is greater than that limit, then
     // clone the array with just that specified number of elements.
-    const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+    if (items.length > 0) {
+        const experiments = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
 
-    return (
-        <div>
-            <SortTablePanel title={title}>
-                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
-            </SortTablePanel>
-        </div>
-    );
+        return (
+            <div>
+                <SortTablePanel title={title}>
+                    <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={total} url={url} />} />
+                </SortTablePanel>
+            </div>
+        );
+    }
+    return null;
 };
 
 ExperimentTable.propTypes = {
@@ -517,11 +527,16 @@ ExperimentTable.defaultProps = {
 };
 
 
+const tableContentMap = {
+    Experiment: 'Experiments',
+    FunctionalCharacterizationExperiment: 'Functional characterization experiments',
+};
 /**
  * Display a table of experiments with the dataset in `context` as a possible_controls.
  */
 export const ControllingExperiments = ({ context, items, total, url }) => {
     if (items.length > 0) {
+        const tableContent = tableContentMap[context['@type'][0]] || 'Experiments';
         return (
             <div>
                 <ExperimentTable
@@ -529,7 +544,7 @@ export const ControllingExperiments = ({ context, items, total, url }) => {
                     limit={5}
                     total={total}
                     url={url}
-                    title={`Experiments with ${context.accession} as a control:`}
+                    title={`${tableContent} with ${context.accession} as a control:`}
                 />
             </div>
         );
@@ -552,4 +567,340 @@ ControllingExperiments.defaultProps = {
     items: [],
     total: 0,
     url: '',
+};
+
+/**
+ * Display a count of biosample characterizations in the footer, with a link to the corresponding search if needed.
+ */
+const BiosampleCharacterizationTableFooter = ({ items, total, url }) => (
+    <React.Fragment>
+        <span>Displaying {items.length} of {total} </span>
+        {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+    </React.Fragment>
+);
+
+BiosampleCharacterizationTableFooter.propTypes = {
+    /** Array of biosample characterizations that were displayed in the table */
+    items: PropTypes.array.isRequired,
+    /** Total number of biosample characterizations */
+    total: PropTypes.number,
+    /** URL to link to equivalent biosample characterization search results */
+    url: PropTypes.string.isRequired,
+};
+
+BiosampleCharacterizationTableFooter.defaultProps = {
+    total: 0,
+};
+
+
+const biosampleCharacterizationTableColumns = {
+    'characterizes.biosample_ontology.term_name': {
+        title: 'Biosample term',
+        display: char => <a href={char['@id']}>{char.characterizes.biosample_ontology.term_name}</a>,
+    },
+    characterization_method: {
+        title: 'Characterization method',
+        getValue: char => char.characterization_method && char.characterization_method.uppercaseFirstChar(),
+    },
+    'lab.title': {
+        title: 'Characterization lab',
+        getValue: char => char.lab.title,
+    },
+    'review.lab.title': {
+        title: 'Review lab',
+        getValue: char => char.review && char.review.lab.title,
+    },
+    'review.status': {
+        title: 'Review status',
+        display: char => char.review && char.review.status && <Status item={char.review.status} badgeSize="small" inline />,
+    },
+};
+
+
+export const BiosampleCharacterizationTable = ({ items, limit, total, url, title }) => {
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements.
+    const biosampleCharacterizations = limit > 0 && limit < items.length ? items.slice(0, limit) : items;
+
+    return (
+        <SortTablePanel title={title}>
+            <SortTable list={biosampleCharacterizations} columns={biosampleCharacterizationTableColumns} footer={<BiosampleCharacterizationTableFooter items={biosampleCharacterizations} total={total} url={url} />} />
+        </SortTablePanel>
+    );
+};
+
+BiosampleCharacterizationTable.propTypes = {
+    /** List of biosample characterizations to display in the table */
+    items: PropTypes.array.isRequired,
+    /** Maximum number of biosample characterizations to display in the table */
+    limit: PropTypes.number,
+    /** Total number of biosample characterizations */
+    total: PropTypes.number,
+    /** URI to go to equivalent search results */
+    url: PropTypes.string.isRequired,
+    /** Title for the table of biosample characterizations */
+    title: PropTypes.string,
+};
+
+BiosampleCharacterizationTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    title: '',
+};
+
+
+// Columns to display in Deriving/Derived From file tables.
+const derivingCols = {
+    accession: {
+        title: 'Accession',
+        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
+        sorter: false,
+    },
+    dataset: {
+        title: 'Dataset',
+        display: (file) => {
+            const datasetAccession = globals.atIdToAccession(file.dataset);
+            return <a href={file.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a>;
+        },
+        sorter: false,
+    },
+    file_format: { title: 'File format', sorter: false },
+    output_type: { title: 'Output type', sorter: false },
+    title: {
+        title: 'Lab',
+        getValue: file => (file.lab && file.lab.title ? file.lab.title : ''),
+        sorter: false,
+    },
+    assembly: { title: 'Mapping assembly', sorter: false },
+    status: {
+        title: 'File status',
+        display: item => <Status item={item} badgeSize="small" inline />,
+        sorter: false,
+    },
+};
+
+
+const PAGED_FILE_TABLE_MAX = 25; // Maximnum number of files per page
+const PAGED_FILE_CACHE_MAX = 10; // Maximum number of pages to cache
+
+
+/**
+ * Calculates the number of pages of files given the total number of files.
+ * @param {number} count Total number of files in array
+ *
+ * @return {number} Total number of pages to hold these files
+ */
+const getTotalPages = count => parseInt(count / PAGED_FILE_TABLE_MAX, 10) + (count % PAGED_FILE_TABLE_MAX ? 1 : 0);
+
+
+/**
+ * Calculate array of complete file objects or file @ids to be displayed on the current page of
+ * files, given the complete set of files and the current page number.
+ * @param {array} files File @ids or complete file objects
+ *
+ * @return {array} File @ids displayed on the current page
+ */
+const getPageFiles = (files, pageNo) => {
+    if (files.length > 0) {
+        const start = pageNo * PAGED_FILE_TABLE_MAX;
+        return files.slice(start, start + PAGED_FILE_TABLE_MAX);
+    }
+    return [];
+};
+
+
+/**
+ * Display the header for the file table, including the pager.
+ */
+const FileTableHeader = ({ title, currentPage, totalPageCount, control, updateCurrentPage }) => (
+    <div className="header-paged-sorttable">
+        {title}
+        <div className="header-paged-sorttable__controls">
+            {control}
+            {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
+        </div>
+    </div>
+);
+
+FileTableHeader.propTypes = {
+    /** Title of table */
+    title: PropTypes.oneOfType([
+        PropTypes.element, // Title is a React component
+        PropTypes.string, // Title is an unformatted string
+    ]).isRequired,
+    /** Current displayed page number, 0 based */
+    currentPage: PropTypes.number.isRequired,
+    /** Total number of pages */
+    totalPageCount: PropTypes.number.isRequired,
+    /** React component to render in the header next to the pager */
+    control: PropTypes.element,
+    /** Called with the new page number the user selected */
+    updateCurrentPage: PropTypes.func.isRequired,
+};
+
+FileTableHeader.defaultProps = {
+    control: null,
+};
+
+
+/**
+ * Alternate message for the batch-download modal, to indicate the PublicationData set has too many
+ * files to practically download.
+ */
+const AltModalMessage = () => (
+    <div>
+        <p>
+            This dataset is too large to automatically generate a manifest or metadata file. Please
+            see the documents attached on the previous page, files.txt and metadata.tsv. You can
+            save files.txt to any server and use the following command using cURL to download all
+            the files in the list:
+        </p>
+
+        <code>xargs -L 1 curl -O -J -L &lt; files.txt</code>
+
+        <p>Or you can directly access the files in AWS S3: <a href="https://registry.opendata.aws/encode-project/">https://registry.opendata.aws/encode-project/</a></p>
+    </div>
+);
+
+
+/**
+ * Display a panel containing a table of files given an array of file @ids or complete file
+ * objects, performing fetches of the complete file objects for the former. If the number of files
+ * exceeds PAGED_FILE_TABLE_MAX, the user can use a pager to scroll between pages of files.
+ */
+export const FileTablePaged = ({ context, fileIds, files, title }) => {
+    // Initialize or load the page cache. Keyed by `currentPageNum`.
+    const pageCache = React.useRef({});
+    // Calculate the total number of pages given the array of files.
+    const totalPages = React.useMemo(() => getTotalPages(fileIds ? fileIds.length : files.length), [fileIds, files]);
+    // Current page of a multi-page table, zero-based.
+    const [currentPageNum, setCurrentPageNum] = React.useState(0);
+    // Array of file objects displayed for the current page.
+    const [currentPageFiles, setCurrentPageFiles] = React.useState(files ? getPageFiles(files, currentPageNum) : []);
+
+    // Called when the user selects a new page of files using the pager.
+    const updateCurrentPage = React.useCallback((newCurrentPageNum) => {
+        // For fetched files, cache the current page of files to keep it from getting GC'd if it's
+        // not already cached.
+        if (fileIds) {
+            if (!pageCache.current[currentPageNum]) {
+                // Save the current page's array of fetched complete file objects to the cache.
+                pageCache.current[currentPageNum] = currentPageFiles;
+
+                // To save memory, see if we can lose a reference to a page so that it gets GC'd. Need
+                // to convert cache page number keys to strings because numeric keys always become
+                // strings.
+                const cachedPageNos = Object.keys(pageCache.current).map(pageNo => parseInt(pageNo, 10));
+                if (cachedPageNos.length > PAGED_FILE_CACHE_MAX) {
+                    // Our cache has filled. Find the cache entry with a page farthest from the current
+                    // and kick it out. A bit complicated because it finds both the maximum page-number
+                    // difference as well as its page number.
+                    let maxDiff = 0;
+                    let maxDiffPageNo;
+                    cachedPageNos.forEach((pageNo) => {
+                        const diff = Math.abs(currentPageNum - pageNo);
+                        if (diff > maxDiff) {
+                            maxDiff = diff;
+                            maxDiffPageNo = pageNo;
+                        }
+                    });
+
+                    // Dump a page from the cache.
+                    delete pageCache.current[maxDiffPageNo];
+                }
+            }
+
+            // Trigger a rerender if we get a cache hit for the new page of files.
+            if (pageCache.current[newCurrentPageNum]) {
+                setCurrentPageFiles(pageCache.current[newCurrentPageNum]);
+            }
+        } else {
+            // Extract the new current page of files from the existing array of file objects and
+            // immediately trigger a rerender.
+            setCurrentPageFiles(getPageFiles(files, newCurrentPageNum));
+        }
+
+        // Update the current page number for all cases.
+        setCurrentPageNum(newCurrentPageNum);
+    }, [currentPageNum, currentPageFiles, fileIds, files]);
+
+    React.useEffect(() => {
+        if (fileIds && !pageCache.current[currentPageNum]) {
+            // Send a request for the file objects for the current page and save the resulting full
+            // file objects in state for rendering in the table.
+            const pageFileIds = getPageFiles(fileIds, currentPageNum);
+            if (pageFileIds.length > 0) {
+                // Fetch the non-cached page's files and re-render once retrieved.
+                requestFiles(pageFileIds).then((pageFiles) => {
+                    setCurrentPageFiles(pageFiles || []);
+                });
+            }
+        }
+    }, [fileIds, currentPageNum]);
+
+    // Rendering portion of component.
+    if (currentPageFiles.length > 0) {
+        const headerTitle = typeof title === 'string' ? <h4>{title}</h4> : title;
+        const fileCount = fileIds ? fileIds.length : files.length;
+        const fileCountDisplay = <div className="table-paged__count">{`${fileCount} file${fileCount === 1 ? '' : 's'}`}</div>;
+
+        // Determine whether too many files exist to download.
+        const canDownload = fileCount <= MAX_DOWNLOADABLE_FILES;
+
+        return (
+            <SortTablePanel
+                header={
+                    <FileTableHeader
+                        title={headerTitle}
+                        currentPage={currentPageNum}
+                        totalPageCount={totalPages}
+                        control={context ? <BatchDownloadControls queryString={`type=${context['@type'][0]}&dataset=${context['@id']}`} modalText={!canDownload ? <AltModalMessage /> : null} canDownload={canDownload} /> : null}
+                        updateCurrentPage={updateCurrentPage}
+                    />
+                }
+                subheader={fileCountDisplay}
+                css="table-paged"
+            >
+                <SortTable
+                    list={currentPageFiles}
+                    columns={derivingCols}
+                />
+            </SortTablePanel>
+        );
+    }
+    return null;
+};
+
+/**
+ * Custom PropType validator to have either `fileIds` or `files` but not both, and either must be
+ * an array.
+ */
+const testFileTablePagedProps = (props, propName, componentName) => {
+    if (!(props.fileIds || props.files) || (props.fileIds && props.files)) {
+        return new Error(`Props 'fileIds' or 'files' but not both required in '${componentName}'.`);
+    }
+    if (props[propName] && (typeof props[propName] !== 'object' || !Array.isArray(props[propName]))) {
+        return new Error(`Prop '${propName}' in '${componentName}' must be an array.`);
+    }
+    return null;
+};
+
+FileTablePaged.propTypes = {
+    /** Object being displayed that includes the file table */
+    context: PropTypes.object,
+    /** Array of all file @ids to include in table on all pages */
+    fileIds: testFileTablePagedProps,
+    /** Alternative array of file objects to include in table on all pages */
+    files: testFileTablePagedProps,
+    /** Title for the panel containing the table of files */
+    title: PropTypes.oneOfType([
+        PropTypes.element, // Title is a React component
+        PropTypes.string, // Title is an unformatted string
+    ]).isRequired,
+};
+
+FileTablePaged.defaultProps = {
+    context: null,
+    fileIds: null,
+    files: null,
 };

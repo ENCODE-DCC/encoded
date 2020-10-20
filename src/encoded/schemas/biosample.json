@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "source", "organism", "biosample_ontology"],
-    "identifyingProperties": ["uuid","accession","aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         {"$ref": "mixins.json#/genetic_modifications"},
@@ -86,7 +86,7 @@
         },
         "post_treatment_time_units": {
             "required":["post_treatment_time", "treatments"],
-            "comment": "Biosample with a specified post_treatment_time_units requires requires non-empty treatments list post_treatment_time specification.",
+            "comment": "Biosample with a specified post_treatment_time_units requires non-empty treatments list post_treatment_time specification.",
             "properties":{
                 "treatments": {
                     "minItems": 1
@@ -100,6 +100,14 @@
         "post_differentiation_time_units": {
             "required":["post_differentiation_time"],
             "comment": "Biosample with a specified post_differentiation_time_units requires post_differentiation_time specification."
+        },
+        "post_nucleic_acid_delivery_time": {
+            "required":["post_nucleic_acid_delivery_time_units"],
+            "comment": "Biosample with a specified post_nucleic_acid_delivery_time requires post_nucleic_acid_delivery_time_units specification."
+        },
+        "post_nucleic_acid_delivery_time_units": {
+            "required":["post_nucleic_acid_delivery_time"],
+            "comment": "Biosample with a specified post_nucleic_acid_delivery_time_units requires post_nucleic_acid_delivery_time specification."
         },
         "pooled_from": {
             "comment": "Biosample with a specified pooled_from list requires at least two entries in the list.",
@@ -280,6 +288,63 @@
                     "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
                 }
             }
+        },
+        "sample_collection_age": {
+            "allOf": [
+                {
+                    "comment": "Only human biosamples can specify the age it was collected.",
+                    "properties": {
+                        "organism": {
+                            "linkTo": "Organism",
+                            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+                        }
+                    }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "sample_collection_age": {
+                                    "enum": ["unknown"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["sample_collection_age_units"],
+                            "properties": {
+                                "sample_collection_age_units": {
+                                    "enum": ["year"]
+                                },
+                                "sample_collection_age": {
+                                    "pattern": "^(([1-8]?\\d)|(90 or above))$"
+                                }
+                            }
+                        },
+                        {
+                            "required": ["sample_collection_age_units"],
+                            "properties": {
+                                "sample_collection_age_units": {
+                                    "enum": ["day", "week", "month"]
+                                },
+                                "sample_collection_age": {
+                                    "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)$"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "sample_collection_age_units":  {
+            "comment":"Age units is required if age is specified as anything but unknown.",
+            "required": ["sample_collection_age"],
+            "not": {
+                "properties": {
+                    "sample_collection_age": {
+                        "enum": ["unknown"]
+                    }
+                }
+            }
         }
     },
     "properties": {
@@ -371,6 +436,23 @@
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
+        },
+        "sample_collection_age": {
+            "title": "Sample collection age",
+            "description": "The age or age range of the donor when the biosample was collected.",
+            "comment": "This is designed specifically for cases where more than one biosamples are collected from the same human donor at different ages. Otherwise, you can considering using the age property of human donor.",
+            "type": "string",
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
+        },
+        "sample_collection_age_units": {
+            "title": "Sample collection age units",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "year"
+            ]
         },
         "passage_number": {
             "title": "Passage number",
@@ -587,9 +669,9 @@
             ]
         },
         "model_organism_sex": {
-            "title": "Sex",
+            "title": "Model organism sex",
             "type": "string",
-            "description": "The sex of the organism the biosample comes from.",
+            "description": "The sex of the model organism the biosample comes from.",
             "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
                 "female",
@@ -690,7 +772,7 @@
         "post_differentiation_time": {
             "title": "Post-differentiation time",
             "description": "The time that elapsed past the point when biosamples were differentiated.",
-            "comment": "Use in conjunction with post_differentiation_time_units to specify time elapsed post-differentiation. Use of this property requires post_treatment_time_units specification.",
+            "comment": "Use in conjunction with post_differentiation_time_units to specify time elapsed post-differentiation. Use of this property requires post_differentiation_time_units specification.",
             "type": "integer"
         },
         "post_differentiation_time_units": {
@@ -767,7 +849,7 @@
             ]
         },
         "model_organism_health_status": {
-            "title": "Health status",
+            "title": "Model organism health status",
             "type": "string",
             "description": "Health status of the model organism.",
             "comment": "model_organism_health_status is not valid for a human biosample."
@@ -778,6 +860,31 @@
             "description": "Institutional certification given by the NIH for human biosamples.",
             "comment": "Required for ENCODE4 human biosamples.",
             "pattern": "^NIC[A-Z0-9]+$"
+        },
+        "post_nucleic_acid_delivery_time": {
+            "title": "Post-nucleic acid delivery time",
+            "description": "The time that elapsed past the point when nucleic acid was introduced into the biosample.",
+            "comment": "Use in conjunction with post_nucleic_acid_delivery_time_units to specify time elapsed post-nucleic acid delivery. Use of this property requires post_nucleic_acid_delivery_time_units specification.",
+            "type": "integer"
+        },
+        "post_nucleic_acid_delivery_time_units": {
+            "title": "Post-nucleic acid delivery time units",
+            "description": "The units of time that elapsed past the point when nucleic acid was introduced into the biosample.",
+            "comment": "Use in conjunction with post_nucleic_acid_delivery_time to specify time elapsed post-nucleic acid delivery. Use of this property requires post_nucleic_acid_delivery_time specification.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month"
+            ]
+        },
+        "disease_term_id": {
+            "title": "Disease ontology ID",
+            "description": "An ontology identifier describing the disease affecting the biosample.",
+            "type": "string",
+            "pattern": "^DOID:[0-9]{2,7}$"
         }
     },
     "facets": {
@@ -823,6 +930,9 @@
         "award.rfa": {
             "title": "RFA"
         },
+        "perturbed": {
+            "title": "Perturbation"
+        },
         "nih_institutional_certification": {
             "type": "exists",
             "title": "Has NIH institutional certification"
@@ -840,6 +950,9 @@
         },
         "age_units": {
             "title": "Age units"
+        },
+        "age_display": {
+            "title": "Biosample age"
         },
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
@@ -897,15 +1010,17 @@
         }
     },
     "boost_values": {
-        "accession": 1.0,
+        "accession": 20.0,
+        "@type": 1.0,
         "aliases": 1.0,
         "alternate_accessions": 1.0,
         "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.term_name": 5.0,
         "biosample_ontology.organ_slims": 1.0,
         "biosample_ontology.cell_slims": 1.0,
         "biosample_ontology.developmental_slims": 1.0,
-        "biosample_ontology.synonyms": 1.0,
+        "biosample_ontology.synonyms": 5.0,
+        "biosample_ontology.classification": 5.0,
         "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
         "phase": 2.0,
@@ -933,7 +1048,7 @@
         "treatments.dbxrefs": 1.0,
         "treatments.aliases": 1.0,
         "applied_modifications.modified_site_by_target_id.label": 1.0,
-        "applied_modifications.modified_site_by_target_id.dbxref": 1.0,
+        "applied_modifications.modified_site_by_target_id.genes.dbxrefs": 1.0,
         "applied_modifications.modified_site_by_target_id.genes.symbol": 1.0,
         "applied_modifications.modified_site_by_target_id.aliases": 1.0,
         "originated_from.accession": 1.0,
@@ -945,14 +1060,20 @@
         "pooled_from.biosample_ontology.term_id": 1.0,
         "pooled_from.biosample_ontology.term_name": 1.0,
         "characterizations.characterization_method": 1.0,
-        "organism.name": 1.0,
+        "organism.name": 10.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "references.title": 1.0,
         "award.pi.title": 1.0,
         "notes": 1.0,
-        "internal_tags": 1.0,
-        "nih_institutional_certification": 1.0
+        "internal_tags": 2.0,
+        "nih_institutional_certification": 1.0,
+        "summary": 5.0,
+        "description": 3.0,
+        "age": 5.0,
+        "age_display": 5.0,
+        "age_units": 2.0,
+        "sex": 2.0
     },
     "changelog": "/profiles/changelogs/biosample.md"
 

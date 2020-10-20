@@ -139,7 +139,7 @@ const DataTable = ({ tableData }) => {
 
                                 // Cell's colSpan can be a specific number, 0 (full width), or
                                 // undefined (default of 1).
-                                let cellColSpan = (typeof cell === 'object') && cell.colSpan;
+                                let cellColSpan = (typeof cell === 'object' && cell !== null) && cell.colSpan;
                                 if (cellColSpan === 0) {
                                     // Request for colSpan to be whatever the maximum width of the
                                     // table. Use or get cached value.

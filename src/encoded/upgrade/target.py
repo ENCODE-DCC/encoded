@@ -201,3 +201,36 @@ def target_10_11(value, system):
     if 'chromatin remodeller' in value['investigated_as']:
         value['investigated_as'].remove('chromatin remodeller')
         value['investigated_as'].append('chromatin remodeler')
+
+
+@upgrade_step('target', '11', '12')
+def target_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4942
+    # investigated_as is required for target objects
+    if 'control' in value['investigated_as']:
+        value['investigated_as'].remove('control')
+        if not value['investigated_as']:
+            value['investigated_as'].append('other context')
+
+
+@upgrade_step('target', '12', '13')
+def target_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4655
+    # investigated_as is required for target objects
+    if 'recombinant protein' in value['investigated_as']:
+        value['investigated_as'].remove('recombinant protein')
+        if not value['investigated_as']:
+            value['investigated_as'].append('other context')
+
+
+@upgrade_step('target', '13', '14')
+def target_13_14(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4378
+    if 'dbxref' in value:
+        if 'genes' in value:
+            value.pop('dbxref', None)
+        elif len(value['dbxref']) == 0:
+            value.pop('dbxref', None)
+        else:
+            value['dbxrefs'] = value['dbxref']
+            value.pop('dbxref', None)

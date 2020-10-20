@@ -52,7 +52,7 @@ $large-font-size: 1.2rem;
 $standard-size: 12px;
 $standard-font-size: 1rem;
 $small-size: 10px;
-$small-font-size: 0.8rem;
+$small-font-size: 0.9rem;
 
 
 .status {
@@ -89,11 +89,16 @@ $small-font-size: 0.8rem;
         .status__icon {
             width: $small-size;
             height: $small-size;
+
+            svg {
+                margin-top: 0;
+            }
         }
 
         .status__label {
             font-size: $small-font-size;
             line-height: $small-size;
+            padding: 0;
         }
     }
 
@@ -104,6 +109,10 @@ $small-font-size: 0.8rem;
     @at-root #{&}__icon {
         display: inline-block;
 
+        svg {
+            margin-top: 1px;
+        }
+
         @at-root #{&}--spacer {
             margin-right: 5px;
         }
@@ -112,7 +121,9 @@ $small-font-size: 0.8rem;
     @at-root #{&}__label {
         display: inline-block;
         vertical-align: top;
-        font-weight: bold;
+        font-weight: 500;
+        line-height: 1;
+        padding: 2px 2px 0;
     }
 
     @at-root #{&}__table-cell {
@@ -164,6 +175,11 @@ $small-font-size: 0.8rem;
 
     &:first-child {
         border-top: none;
+        margin-top: -10px;
+    }
+
+    &:last-child {
+        margin-bottom: -10px;
     }
 
     @at-root #{&}__group {

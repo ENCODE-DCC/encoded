@@ -3,7 +3,7 @@ import pytest
 
 def _type_length():
     # Not a fixture as we need to parameterize tests on this
-    from ..loadxl import ORDER
+    from encoded.loadxl import ORDER
     from pkg_resources import resource_stream
     import codecs
     import json
@@ -11,6 +11,7 @@ def _type_length():
     return {
         name: len(json.load(utf8(resource_stream('encoded', 'tests/data/inserts/%s.json' % name))))
         for name in ORDER
+        if name != "access_key"
     }
 
 

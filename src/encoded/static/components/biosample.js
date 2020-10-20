@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
@@ -9,7 +9,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, DisplayAsJson, InternalTags } from './objectutils';
+import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
@@ -63,319 +63,315 @@ class BiosampleComponent extends React.Component {
 
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>
-                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_ontology.classification}</span>
-                        </h2>
-                        <div className="replacement-accessions">
-                            <AlternateAccession altAcc={context.alternate_accessions} />
-                        </div>
-                        {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
-                        <DisplayAsJson />
+                <header>
+                    <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h1>{context.accession}{' / '}<span className="sentence-case">{context.biosample_ontology.classification}</span></h1>
+                    <div className="replacement-accessions">
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                     </div>
+                    <ItemAccessories item={context} audit={{ auditIndicators: this.props.auditIndicators, auditId: 'biosample-audit' }} />
                 </header>
-                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
-                <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                                <dl className="key-value">
-                                    <div data-test="status">
-                                        <dt>Status</dt>
-                                        <dd><Status item={context} inline /></dd>
-                                    </div>
-
-                                    <div data-test="term-name">
-                                        <dt>Term name</dt>
-                                        <dd>{context.biosample_ontology.term_name}</dd>
-                                    </div>
-
-                                    <div data-test="term-id">
-                                        <dt>Term ID</dt>
-                                        <dd><BiosampleTermId termId={context.biosample_ontology.term_id} /></dd>
-                                    </div>
-
-                                    <div data-test="summary">
-                                        <dt>Summary</dt>
-                                        <dd>{BiosampleSummaryString(context)}</dd>
-                                    </div>
-
-                                    {context.description ?
-                                        <div data-test="description">
-                                            <dt>Description</dt>
-                                            <dd className="sentence-case">{context.description}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.donor && context.donor.organism.name !== 'human' && context.life_stage ?
-                                        <div data-test="life-stage">
-                                            <dt>Life stage</dt>
-                                            <dd className="sentence-case">{context.life_stage}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.donor && context.donor.organism.name !== 'human' && context.age ?
-                                        <div data-test="age">
-                                            <dt>Age</dt>
-                                            <dd className="sentence-case">
-                                                {formatMeasurement(context.age, context.age_units)}
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    {context.PMI ?
-                                        <div data-test="pmi">
-                                            <dt>Post-mortem interval</dt>
-                                            <dd>
-                                                {formatMeasurement(context.PMI, context.PMI_units)}
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    {synchText ?
-                                        <div data-test="biosample-synchronization">
-                                            <dt>Synchronization timepoint</dt>
-                                            <dd className="sentence-case">{synchText}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.post_differentiation_time && context.post_differentiation_time_units ?
-                                        <div data-test="postdifferentiationtime">
-                                            <dt>Post-differentiation time</dt>
-                                            <dd>
-                                                {formatMeasurement(context.post_differentiation_time, context.post_differentiation_time_units)}
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    {context.subcellular_fraction_term_name ?
-                                        <div data-test="subcellulartermname">
-                                            <dt>Subcellular fraction</dt>
-                                            <dd>{context.subcellular_fraction_term_name}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.subcellular_fraction_term_id ?
-                                        <div data-test="subcellularid">
-                                            <dt>Subcellular fraction ID</dt>
-                                            <dd>{context.subcellular_fraction_term_id}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.depleted_in_term_name && context.depleted_in_term_name.length ?
-                                        <div data-test="depletedin">
-                                            <dt>Depleted in</dt>
-                                            <dd>
-                                                {context.depleted_in_term_name.map((termName, i) => (
-                                                    <span key={i}>
-                                                        {i > 0 ? ', ' : ''}
-                                                        {termName}
-                                                    </span>
-                                                ))}
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    {context.product_id ?
-                                        <div data-test="productid">
-                                            <dt>Product ID</dt>
-                                            <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.lot_id ?
-                                        <div data-test="lotid">
-                                            <dt>Lot ID</dt>
-                                            <dd>{context.lot_id}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.note ?
-                                        <div data-test="note">
-                                            <dt>Note</dt>
-                                            <dd>{context.note}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.starting_amount ?
-                                        <div data-test="startingamount">
-                                            <dt>Starting amount</dt>
-                                            <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.culture_start_date ?
-                                        <div data-test="culturestartdate">
-                                            <dt>Culture start date</dt>
-                                            <dd>{context.culture_start_date}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.culture_harvest_date ?
-                                        <div data-test="cultureharvestdate">
-                                            <dt>Culture harvest date</dt>
-                                            <dd>{context.culture_harvest_date}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.passage_number ?
-                                        <div data-test="passagenumber">
-                                            <dt>Passage number</dt>
-                                            <dd>{context.passage_number}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.phase ?
-                                        <div data-test="phase">
-                                            <dt>Cell cycle</dt>
-                                            <dd>{context.phase}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.originated_from ?
-                                        <div data-test="originatedfrom">
-                                            <dt>Originated from biosample</dt>
-                                            <dd><a href={context.originated_from['@id']}>{context.originated_from.accession}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.part_of ?
-                                        <div data-test="separatedfrom">
-                                            <dt>Separated from biosample</dt>
-                                            <dd><a href={context.part_of['@id']}>{context.part_of.accession}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.parent_of && context.parent_of.length ?
-                                        <div data-test="parentof">
-                                            <dt>Parent of biosamples</dt>
-                                            <dd>
-                                                {context.parent_of.map((biosample, i) =>
-                                                    <span>
-                                                        {i > 0 ? <span>, </span> : null}
-                                                        <a href={biosample['@id']}>{biosample.accession}</a>
-                                                    </span>
-                                                )}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
+                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, sessionProperties: this.context.session_properties, except: context['@id'] })}
+                <Panel>
+                    <PanelBody addClasses="panel__split">
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--biosample">
+                                <h4>Summary</h4>
                             </div>
-
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Attribution</h4>
-                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                            <dl className="key-value">
+                                <div data-test="status">
+                                    <dt>Status</dt>
+                                    <dd><Status item={context} inline /></dd>
                                 </div>
-                                <dl className="key-value">
-                                    <div data-test="lab">
-                                        <dt>Lab</dt>
-                                        <dd>{context.lab.title}</dd>
+
+                                <div data-test="term-name">
+                                    <dt>Term name</dt>
+                                    <dd>{context.biosample_ontology.term_name}</dd>
+                                </div>
+
+                                <div data-test="term-id">
+                                    <dt>Term ID</dt>
+                                    <dd><BiosampleTermId termId={context.biosample_ontology.term_id} /></dd>
+                                </div>
+
+                                <div data-test="summary">
+                                    <dt>Summary</dt>
+                                    <dd>{BiosampleSummaryString(context)}</dd>
+                                </div>
+
+                                {context.description ?
+                                    <div data-test="description">
+                                        <dt>Description</dt>
+                                        <dd className="sentence-case">{context.description}</dd>
                                     </div>
+                                : null}
 
-                                    {context.award.pi && context.award.pi.lab ?
-                                        <div data-test="awardpi">
-                                            <dt>Award PI</dt>
-                                            <dd>{context.award.pi.lab.title}</dd>
-                                        </div>
-                                    : null}
-
-                                    <div data-test="submittedby">
-                                        <dt>Submitted by</dt>
-                                        <dd>{context.submitted_by.title}</dd>
+                                {context.donor && context.donor.organism.name !== 'human' && context.life_stage ?
+                                    <div data-test="life-stage">
+                                        <dt>Life stage</dt>
+                                        <dd className="sentence-case">{context.life_stage}</dd>
                                     </div>
+                                : null}
 
-                                    {context.source.title ?
-                                        <div data-test="sourcetitle">
-                                            <dt>Source</dt>
-                                            <dd>
-                                                {context.source.url ?
-                                                    <a href={context.source.url}>{context.source.title}</a>
-                                                :
-                                                    <span>{context.source.title}</span>
-                                                }
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    <div data-test="project">
-                                        <dt>Project</dt>
-                                        <dd>{context.award.project}</dd>
+                                {context.donor && context.donor.organism.name !== 'human' && context.age ?
+                                    <div data-test="age">
+                                        <dt>Age</dt>
+                                        <dd className="sentence-case">
+                                            {formatMeasurement(context.age, context.age_units)}
+                                        </dd>
                                     </div>
+                                : null}
 
-                                    {dbxrefs.length ?
-                                        <div data-test="externalresources">
-                                            <dt>External resources</dt>
-                                            <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
-                                        </div>
-                                    : null}
+                                {context.PMI ?
+                                    <div data-test="pmi">
+                                        <dt>Post-mortem interval</dt>
+                                        <dd>
+                                            {formatMeasurement(context.PMI, context.PMI_units)}
+                                        </dd>
+                                    </div>
+                                : null}
 
-                                    {references ?
-                                        <div data-test="references">
-                                            <dt>References</dt>
-                                            <dd>{references}</dd>
-                                        </div>
-                                    : null}
+                                {synchText ?
+                                    <div data-test="biosample-synchronization">
+                                        <dt>Synchronization timepoint</dt>
+                                        <dd className="sentence-case">{synchText}</dd>
+                                    </div>
+                                : null}
 
-                                    {context.date_obtained ?
-                                        <div data-test="dateobtained">
-                                            <dt>Date obtained</dt>
-                                            <dd>{context.date_obtained}</dd>
-                                        </div>
-                                    : null}
+                                {context.post_differentiation_time && context.post_differentiation_time_units ?
+                                    <div data-test="postdifferentiationtime">
+                                        <dt>Post-differentiation time</dt>
+                                        <dd>
+                                            {formatMeasurement(context.post_differentiation_time, context.post_differentiation_time_units)}
+                                        </dd>
+                                    </div>
+                                : null}
 
-                                    {context.aliases.length ?
-                                        <div data-test="aliases">
-                                            <dt>Aliases</dt>
-                                            <dd>{aliasList}</dd>
-                                        </div>
-                                    : null}
+                                {context.post_nucleic_acid_delivery_time && context.post_nucleic_acid_delivery_time_units ?
+                                    <div data-test="postnucleicaciddeliverytime">
+                                        <dt>Post-nucleic acid delivery time</dt>
+                                        <dd>
+                                            {formatMeasurement(context.post_nucleic_acid_delivery_time, context.post_nucleic_acid_delivery_time_units)}
+                                        </dd>
+                                    </div>
+                                : null}
 
-                                    {context.submitter_comment ?
-                                        <div data-test="submittercomment">
-                                            <dt>Submitter comment</dt>
-                                            <dd>{context.submitter_comment}</dd>
-                                        </div>
-                                    : null}
+                                {context.subcellular_fraction_term_name ?
+                                    <div data-test="subcellulartermname">
+                                        <dt>Subcellular fraction</dt>
+                                        <dd>{context.subcellular_fraction_term_name}</dd>
+                                    </div>
+                                : null}
 
-                                    {context.internal_tags && context.internal_tags.length > 0 ?
-                                        <div className="tag-badges" data-test="tags">
-                                            <dt>Tags</dt>
-                                            <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
-                                        </div>
-                                    : null}
-                                </dl>
-                            </div>
+                                {context.subcellular_fraction_term_id ?
+                                    <div data-test="subcellularid">
+                                        <dt>Subcellular fraction ID</dt>
+                                        <dd>{context.subcellular_fraction_term_id}</dd>
+                                    </div>
+                                : null}
+
+                                {context.depleted_in_term_name && context.depleted_in_term_name.length > 0 ?
+                                    <div data-test="depletedin">
+                                        <dt>Depleted in</dt>
+                                        <dd>
+                                            {context.depleted_in_term_name.map((termName, i) => (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    {termName}
+                                                </span>
+                                            ))}
+                                        </dd>
+                                    </div>
+                                : null}
+
+                                {context.product_id ?
+                                    <div data-test="productid">
+                                        <dt>Product ID</dt>
+                                        <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
+                                    </div>
+                                : null}
+
+                                {context.lot_id ?
+                                    <div data-test="lotid">
+                                        <dt>Lot ID</dt>
+                                        <dd>{context.lot_id}</dd>
+                                    </div>
+                                : null}
+
+                                {context.note ?
+                                    <div data-test="note">
+                                        <dt>Note</dt>
+                                        <dd>{context.note}</dd>
+                                    </div>
+                                : null}
+
+                                {context.starting_amount ?
+                                    <div data-test="startingamount">
+                                        <dt>Starting amount</dt>
+                                        <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
+                                    </div>
+                                : null}
+
+                                {context.culture_start_date ?
+                                    <div data-test="culturestartdate">
+                                        <dt>Culture start date</dt>
+                                        <dd>{context.culture_start_date}</dd>
+                                    </div>
+                                : null}
+
+                                {context.culture_harvest_date ?
+                                    <div data-test="cultureharvestdate">
+                                        <dt>Culture harvest date</dt>
+                                        <dd>{context.culture_harvest_date}</dd>
+                                    </div>
+                                : null}
+
+                                {context.passage_number ?
+                                    <div data-test="passagenumber">
+                                        <dt>Passage number</dt>
+                                        <dd>{context.passage_number}</dd>
+                                    </div>
+                                : null}
+
+                                {context.phase ?
+                                    <div data-test="phase">
+                                        <dt>Cell cycle</dt>
+                                        <dd>{context.phase}</dd>
+                                    </div>
+                                : null}
+
+                                {context.originated_from ?
+                                    <div data-test="originatedfrom">
+                                        <dt>Originated from biosample</dt>
+                                        <dd><a href={context.originated_from['@id']}>{context.originated_from.accession}</a></dd>
+                                    </div>
+                                : null}
+
+                                {context.part_of ?
+                                    <div data-test="separatedfrom">
+                                        <dt>Separated from biosample</dt>
+                                        <dd><a href={context.part_of['@id']}>{context.part_of.accession}</a></dd>
+                                    </div>
+                                : null}
+
+                                {context.parent_of && context.parent_of.length > 0 ?
+                                    <div data-test="parentof">
+                                        <dt>Parent of biosamples</dt>
+                                        <dd>
+                                            {context.parent_of.map((biosample, i) =>
+                                                <span>
+                                                    {i > 0 ? <span>, </span> : null}
+                                                    <a href={biosample['@id']}>{biosample.accession}</a>
+                                                </span>
+                                            )}
+                                        </dd>
+                                    </div>
+                                : null}
+                            </dl>
                         </div>
 
-                        {context.pooled_from && context.pooled_from.length ?
-                            <section data-test="pooledfrom">
-                                <hr />
-                                <h4>Pooled from biosamples</h4>
-                                <ul className="non-dl-list">
-                                    {context.pooled_from.map(biosample => (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </section>
-                        : null}
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--biosample">
+                                <h4>Attribution</h4>
+                                <ProjectBadge award={context.award} addClasses="badge-heading" />
+                            </div>
+                            <dl className="key-value">
+                                <div data-test="lab">
+                                    <dt>Lab</dt>
+                                    <dd>{context.lab.title}</dd>
+                                </div>
 
-                        {context.treatments.length ?
-                            <section>
-                                <hr />
-                                <h4>Treatment details</h4>
-                                {context.treatments.map(treatment => treatmentDisplay(treatment))}
-                            </section>
-                        : null}
+                                {context.award.pi && context.award.pi.lab ?
+                                    <div data-test="awardpi">
+                                        <dt>Award PI</dt>
+                                        <dd>{context.award.pi.lab.title}</dd>
+                                    </div>
+                                : null}
+
+                                <div data-test="submittedby">
+                                    <dt>Submitted by</dt>
+                                    <dd>{context.submitted_by.title}</dd>
+                                </div>
+
+                                {context.source.title ?
+                                    <div data-test="sourcetitle">
+                                        <dt>Source</dt>
+                                        <dd>
+                                            {context.source.url ?
+                                                <a href={context.source.url}>{context.source.title}</a>
+                                            :
+                                                <span>{context.source.title}</span>
+                                            }
+                                        </dd>
+                                    </div>
+                                : null}
+
+                                <div data-test="project">
+                                    <dt>Project</dt>
+                                    <dd>{context.award.project}</dd>
+                                </div>
+
+                                {dbxrefs.length > 0 ?
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
+                                        <dd><DbxrefList context={context} dbxrefs={dbxrefs} /></dd>
+                                    </div>
+                                : null}
+
+                                {references ?
+                                    <div data-test="references">
+                                        <dt>References</dt>
+                                        <dd>{references}</dd>
+                                    </div>
+                                : null}
+
+                                {context.date_obtained ?
+                                    <div data-test="dateobtained">
+                                        <dt>Date obtained</dt>
+                                        <dd>{context.date_obtained}</dd>
+                                    </div>
+                                : null}
+
+                                {context.aliases.length > 0 ?
+                                    <div data-test="aliases">
+                                        <dt>Aliases</dt>
+                                        <dd>{aliasList}</dd>
+                                    </div>
+                                : null}
+
+                                {context.submitter_comment ?
+                                    <div data-test="submittercomment">
+                                        <dt>Submitter comment</dt>
+                                        <dd>{context.submitter_comment}</dd>
+                                    </div>
+                                : null}
+
+                                {context.internal_tags && context.internal_tags.length > 0 ?
+                                    <div className="tag-badges" data-test="tags">
+                                        <dt>Tags</dt>
+                                        <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
+                                    </div>
+                                : null}
+                            </dl>
+                        </div>
                     </PanelBody>
-                </Panel>
 
-                {context.applied_modifications && context.applied_modifications.length ?
+                    {context.treatments.length > 0 ?
+                        <PanelBody addClasses="panel__below-split">
+                            <h4>Treatment details</h4>
+                            {context.treatments.map(treatment => treatmentDisplay(treatment))}
+                        </PanelBody>
+                    : null}
+                </Panel>
+                {context.pooled_from && context.pooled_from.length > 0 ?
+                    <BiosampleTable
+                        title="Pooled from biosamples"
+                        items={context.pooled_from}
+                        total={context.pooled_from.length}
+                    />
+                : null}
+
+                {context.applied_modifications && context.applied_modifications.length > 0 ?
                     <GeneticModificationSummary geneticModifications={context.applied_modifications} />
                 : null}
 
@@ -386,8 +382,14 @@ class BiosampleComponent extends React.Component {
                 : null}
 
                 <RelatedItems
-                    title="Experiments using this biosample"
+                    title="Functional genomics experiments using this biosample"
                     url={`/search/?type=Experiment&replicates.library.biosample.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
+
+                <RelatedItems
+                    title="Functional characterization experiments using this biosample"
+                    url={`/search/?type=FunctionalCharacterizationExperiment&replicates.library.biosample.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
 
@@ -409,7 +411,7 @@ class BiosampleComponent extends React.Component {
                     Component={BiosampleTable}
                 />
 
-                {combinedDocs.length ?
+                {combinedDocs.length > 0 ?
                     <DocumentsPanel documentSpecs={[{ documents: combinedDocs }]} />
                 : null}
             </div>
@@ -426,6 +428,7 @@ BiosampleComponent.propTypes = {
 
 BiosampleComponent.contextTypes = {
     session: PropTypes.object, // Login information
+    session_properties: PropTypes.object,
 };
 
 const Biosample = auditDecor(BiosampleComponent);
@@ -463,6 +466,7 @@ const urlMap = {
     EFO: 'http://www.ebi.ac.uk/efo/',
     UBERON: 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
     CL: 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/',
+    CLO: 'http://www.ontobee.org/ontology/CLO?iri=http://purl.obolibrary.org/obo/',
 };
 
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
@@ -527,6 +531,31 @@ Treatment.propTypes = {
 globals.panelViews.register(Treatment, 'Treatment');
 
 
+const TreatmentContent = ({ context }) => {
+    const itemClass = globals.itemClass(context, 'view-item');
+    return (
+        <div className={itemClass}>
+            <header>
+                <h1>{context.treatment_term_name}</h1>
+                <ItemAccessories item={context} />
+            </header>
+            <Panel>
+                <PanelBody>
+                    <Treatment context={context} />
+                </PanelBody>
+            </Panel>
+        </div>
+    );
+};
+
+TreatmentContent.propTypes = {
+    /** Treatment object to display on its own page */
+    context: PropTypes.object.isRequired,
+};
+
+globals.contentViews.register(TreatmentContent, 'Treatment');
+
+
 // Biosample and donor characterization documents
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
@@ -578,7 +607,7 @@ const CharacterizationDetail = (props) => {
 
     // See if we need a list of documents or not. Documents without attachments don't get
     // displayed.
-    const docs = characterization.documents && characterization.documents.length ?
+    const docs = characterization.documents && characterization.documents.length > 0 ?
         characterization.documents.filter(doc => !!(doc.attachment && doc.attachment.href && doc.attachment.download))
     : [];
 
@@ -618,7 +647,7 @@ const CharacterizationDetail = (props) => {
                     </div>
                 : null}
 
-                {docs.length ?
+                {docs.length > 0 ?
                     <div data-test="documents">
                         <dt>Documents</dt>
                         <CharacterizationDocuments docs={docs} />
@@ -640,7 +669,42 @@ CharacterizationDetail.defaultProps = {
 };
 
 
+/**
+ * Display an biosample characterization object.
+ */
+const BiosampleCharacterization = ({ context }) => {
+    const documentSpecs = [
+        { documents: [context] },
+    ];
+    return <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />;
+};
+
+BiosampleCharacterization.propTypes = {
+    /** BiosampleCharacterization object (not inside AntibodyLot) */
+    context: PropTypes.object.isRequired,
+};
+
+
+/**
+ * Display an biosample characterization object.
+ */
+const DonorCharacterization = ({ context }) => {
+    const documentSpecs = [
+        { documents: [context] },
+    ];
+    return <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />;
+};
+
+DonorCharacterization.propTypes = {
+    /** DonorCharacterization object */
+    context: PropTypes.object.isRequired,
+};
+
+
 // Parts of individual document panels
+globals.contentViews.register(BiosampleCharacterization, 'BiosampleCharacterization');
+globals.contentViews.register(DonorCharacterization, 'DonorCharacterization');
+
 globals.panelViews.register(Document, 'BiosampleCharacterization');
 globals.panelViews.register(Document, 'DonorCharacterization');
 

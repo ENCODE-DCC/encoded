@@ -124,6 +124,7 @@
         "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
     },
     {
+        "_test": "For ENTEx matrix testing, female 4",
         "accession": "KCEDO271OUW",
         "age": "51",
         "age_units": "year",
@@ -143,8 +144,118 @@
         ],
         "lab": "encode2-project",
         "life_stage": "adult",
-        "organism": "/organisms/human/",
+        "organism": "human",
         "sex": "female",
-        "status": "released"
+        "status": "released",
+        "uuid": "ed01347d-b5cc-4a63-bf4c-40aebdab5cd1"
+    },
+    {
+        "_test": "For ENTEx matrix testing, female 3",
+        "accession": "ENCDO793LXB",
+        "age": "53",
+        "age_units": "year",
+        "aliases": [
+            "gtex:ENC-MAC",
+            "gtex:ENC-003",
+            "gtex:PT-1LGRB",
+            "bradley-bernstein:Donor GTEX-1LGRB"
+        ],
+        "award": "ENCODE2",
+        "external_ids": [
+            "GEO:SAMN05897794"
+        ],
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "uuid": "28e5135a-6529-4f7a-8dad-41e0a216f46e"
+    },
+    {
+        "_test": "For ENTEx matrix testing, male 2",
+        "accession": "ENCDO451RUA",
+        "age": "54",
+        "age_units": "year",
+        "aliases": [
+            "gtex:PT-1K2DA",
+            "gtex:ENC-LQT",
+            "gtex:ENC-002",
+            "bradley-bernstein:Donor GTEX-1K2DA"
+        ],
+        "award": "ENCODE2",
+        "external_ids": [
+            "GEO:SAMN05897789"
+        ],
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "uuid": "d370683e-81e7-473f-8475-7716d027849b"
+    },
+    {
+        "_test": "For ENTEx matrix testing, male 1",
+        "accession": "ENCDO845WKR",
+        "age": "37",
+        "age_units": "year",
+        "aliases": [
+            "gtex:ENC-QWZ",
+            "gtex:ENC-001",
+            "gtex:PT-1JKYN",
+            "bradley-bernstein:Donor GTEX-1JKYN"
+        ],
+        "award": "ENCODE2",
+        "external_ids": [
+            "GEO:SAMN05897796"
+        ],
+        "internal_tags": [
+            "ENTEx"
+        ],
+        "lab": "encode2-project",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "male",
+        "status": "released",
+        "uuid": "845eda3c-7503-43e8-a65b-0d08e8d4674d"
+    },
+    {
+        "_test": "test external_ids",
+        "accession": "ENCDO516EPW",
+        "award": "/awards/UM1HG009411/",
+        "external_ids": [
+            "AllCells:10219"
+        ],
+        "lab": "/labs/j-michael-cherry/",
+        "organism": "/organisms/human/",
+        "sex": "unknown",
+        "status": "in progress",
+        "uuid": "97cc5ec8-178f-42bb-87fe-77cae5fb1b09"
+    },
+    {
+        "accession": "ENCDO575EGL",
+        "age": "16",
+        "age_units": "year",
+        "aliases": [
+            "michael-snyder:donor_W62"
+        ],
+        "award": "UM1HG009442",
+        "dbxrefs": [
+            "GEO:SAMN13691287"
+        ],
+        "ethnicity": "Caucasian",
+        "health_status": "DM: no; HTN: no; CAD: no",
+        "lab": "michael-snyder",
+        "life_stage": "child",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "5475b837-6ee9-47b9-ae70-dc292f4b936e"
     }
 ]

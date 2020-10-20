@@ -19,7 +19,8 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_ontology" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "file_set.json#/properties" }
+        { "$ref": "file_set.json#/properties" },
+        { "$ref": "mixins.json#/assay" }
     ],
     "dependencies": {
         "biosample_ontology": {
@@ -67,7 +68,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "25"
+            "default": "29"
         },
         "annotation_type": {
             "title": "Annotation type",
@@ -78,7 +79,9 @@
                 "blacklist",
                 "candidate Cis-Regulatory Elements",
                 "chromatin state",
+                "consensus DNase hypersensitivity sites",
                 "enhancer predictions",
+                "functional characterization elements",
                 "gene expression",
                 "imputation",
                 "in vivo enhancer evaluations",
@@ -86,18 +89,42 @@
                 "methylation summary",
                 "other",
                 "overlap",
-                "representative DNase hypersensitivity sites",
+                "representative DNase hypersensitivity sites (rDHSs)",
                 "transcript expression",
                 "transcription factor motifs",
+                "transcription start sites",
                 "validated enhancers",
                 "variant calls"
             ]
         },
         "encyclopedia_version": {
             "title": "Encyclopedia version",
-            "description": " The version of the ENCODE encyclopeida to which this annotation belongs.",
-            "comment": "The model should be something like version 1.0",
-            "type": "string"
+            "description": " The version of the ENCODE encyclopedia to which this annotation belongs.",
+            "type": "string",
+            "enum": [
+                "ENCODE v1",
+                "ENCODE v2",
+                "ENCODE v3",
+                "ENCODE v4",
+                "ENCODE v5",
+                "ENCODE v6",
+                "Roadmap"
+            ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External resources",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+                "type":  "string",
+                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|IHEC:IHECRE\\d{8})$"
+            }
         },
         "organism": {
             "title": "Organism",
@@ -120,8 +147,7 @@
                 "day",
                 "week",
                 "month",
-                "year",
-                "stage"
+                "year"
             ]
         },
         "relevant_life_stage": {
@@ -199,7 +225,56 @@
     },
     "facets": {
         "annotation_type": {
-            "title": "Annotation type"
+            "title": "Annotation type",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status",
+            "open_on_load": true
+        },
+        "organism.scientific_name": {
+            "title": "Organism",
+            "open_on_load": true
+        },
+        "targets.investigated_as": {
+            "title": "Target category"
+        },
+         "targets.label": {
+            "title": "Target",
+            "type": "typeahead",
+            "open_on_load": true
+        },
+        "biosample_ontology.classification": {
+            "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name" : {
+            "title": "Biosample term name",
+            "type": "typeahead",
+            "length": "long",
+            "open_on_load": true
+        },
+        "biosample_ontology.organ_slims": {
+            "title": "Organ"
+        },
+        "biosample_ontology.cell_slims": {
+            "title": "Cell"
+        },
+        "relevant_life_stage": {
+            "title": "Life stage"
+        },
+        "software_used.software.name": {
+            "title": "Software used"
+        },
+        "encyclopedia_version": {
+            "title": "Encyclopedia version"
+        },
+        "assembly": {
+            "title": "Genome assembly"
         },
         "files.file_type": {
             "title": "Available file types"
@@ -212,42 +287,6 @@
         },
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
-        },
-        "status": {
-            "title": "Status"
-        },
-        "assembly": {
-            "title": "Genome assembly"
-        },
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
-        "targets.investigated_as": {
-            "title": "Target category"
-        },
-         "targets.label": {
-            "title": "Target"
-        },
-       "biosample_ontology.classification": {
-            "title": "Biosample classification"
-        },
-        "biosample_ontology.organ_slims": {
-            "title": "Organ"
-        },
-        "biosample_ontology.cell_slims": {
-            "title": "Cell"
-        },
-        "relevant_life_stage": {
-            "title": "Life stage"
-        },
-        "month_released": {
-            "title": "Month released"
-        },
-        "software_used.software.name": {
-            "title": "Software used"
-        },
-        "encyclopedia_version": {
-            "title": "Encyclopedia version"
         },
         "lab.title": {
             "title": "Lab"
@@ -314,10 +353,11 @@
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "description": 3.0,
         "biosample_ontology.cell_slims": 1.0,
         "files.replicate.experiment.assay_term_name": 1.0,
         "biosample_ontology.term_id": 1.0,
-        "biosample_ontology.term_name": 1.0,
+        "biosample_ontology.term_name": 3.0,
         "biosample_ontology.classification": 1.0,
         "biosample_ontology.organ_slims": 1.0,
         "biosample_ontology.developmental_slims": 1.0,
@@ -326,7 +366,7 @@
         "relevant_timepoint": 1.0,
         "software_used.software.name": 1.0,
         "award.title": 1.0,
-        "award.project": 1.0,
+        "award.project": 5.0,
         "award.name": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,
@@ -337,7 +377,7 @@
         "targets.aliases": 1.0,
         "targets.genes.symbol": 1.0,
         "targets.label": 1.0,
-        "targets.dbxref": 1.0,
+        "targets.genes.dbxrefs": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,

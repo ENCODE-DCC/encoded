@@ -22,7 +22,7 @@ To make updates from a single tsv file
 """
 from webtest import TestApp
 from urllib.parse import urlparse
-from .. import loadxl
+from encoded import loadxl
 import logging
 import os.path
 

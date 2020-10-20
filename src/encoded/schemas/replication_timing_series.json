@@ -18,7 +18,6 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "dataset.json#/properties" },
         { "$ref": "series.json#/properties" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
@@ -70,7 +69,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "17"
         }
     },
     "facets": {
@@ -127,9 +126,6 @@
         },
         "related_datasets.replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment"
-        },
-        "month_released": {
-            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -290,7 +286,7 @@
         "target.aliases": 1.0,
         "target.genes.symbol": 1.0,
         "target.label": 1.0,
-        "target.dbxref": 1.0,
+        "target.genes.dbxrefs": 1.0,
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,

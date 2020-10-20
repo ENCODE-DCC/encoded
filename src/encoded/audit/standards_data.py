@@ -61,8 +61,7 @@ special_assays_with_read_depth = {
     'shRNA knockdown followed by RNA-seq': 10000000,
     'siRNA knockdown followed by RNA-seq': 10000000,
     'CRISPRi followed by RNA-seq': 10000000,
-    'CRISPR genome editing followed by RNA-seq': 10000000,
-    'single cell isolation followed by RNA-seq': 5000000
+    'CRISPR genome editing followed by RNA-seq': 10000000
     }
 
 
@@ -70,10 +69,10 @@ minimal_read_depth_requirements = {
     'DNase-seq': 20000000,
     'genetic modification followed by DNase-seq': 20000000,
     'ChIP-seq': 20000000,
+    'Mint-ChIP-seq': 20000000,
     'RAMPAGE': 10000000,
     'shRNA knockdown followed by RNA-seq': 10000000,
     'siRNA knockdown followed by RNA-seq': 10000000,
-    'single cell isolation followed by RNA-seq': 10000000,
     'CRISPR genome editing followed by RNA-seq': 10000000,
     'modENCODE-chip': 500000
 }

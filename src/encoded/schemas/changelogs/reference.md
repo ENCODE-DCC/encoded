@@ -1,7 +1,32 @@
 ## Changelog for reference.json
 
+### Minor changes since schema version 19
+
+* *reference_type* was updated to include the enum *sequence barcodes*
+
+### Schema version 19
+
+* Adjusted the default schema to not specify *examined_loci* property automatically.
+
+### Minor changes since schema version 18
+
+* *Examined_loci* property may now be specified in references that are *reference_type*: *functional elements*.
+* *Donor* property may now be specified in references that are *reference_type*: *genome*
+
+### Schema version 18
+
+* Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
+
+### Schema version 17
+
+* Update IHEC dbxref regex to remove version number
+
 ### Minor changes since schema version 16
-* Added MouseDevSeries to *internal_tags*
+
+* *functional elements* is added to the enums list of *reference_type* property
+* Added *MouseDevSeries* enum to *internal_tags*
+* *reference_type* was updated to include the enum *sequence adapters*
+* Removed *month_released* calculated property.
 
 ### Schema version 16
 
@@ -9,7 +34,7 @@
 
 ### Schema version 15
 
-* Replace started status with in progress.
+* Replace *started* enum in *status* with *in progress*.
 
 ### Schema version 14
 
@@ -17,9 +42,8 @@
 
 ### Schema version 13
 
-* Remove *proposed* from status enum (dataset mixin).
+* Remove *proposed* from *status* enum (*dataset* mixin).
 
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
-

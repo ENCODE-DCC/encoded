@@ -6,10 +6,13 @@
 // Applies to all block types, and specific news styles nest inside
 .block {
     margin-bottom: 10px;
-    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
 
     @media screen and (min-width: $screen-md-min) {
         margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-items: stretch;
     }
 
     &.richtextblock {
@@ -21,21 +24,33 @@
                 padding-top: 40px !important;
             }
         }
+
+        table {
+            border-collapse: collapse;
+
+            td {
+                padding: 10px 11px;
+
+                p {
+                    margin: 0;
+                }
+            }
+        }
     }
 
     &.richtextblock, .teaser .caption {
         padding: 20px;
         line-height: 1.6;
 
-        .col-md-12 & {
+        .layout__block--100 & {
             @media screen and (min-width: $screen-md-min) {
                 padding: 20px 10%;
             }
+        }
 
-            &.full-width {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
+        &.full-width {
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         pre {
@@ -48,6 +63,19 @@
             margin: 10px 0;
             white-space: pre;
             border: none;
+
+            @media screen and (min-width: $screen-md-min) {
+                width: 766px;
+            }
+
+
+            @media screen and (min-width: $screen-lg-min) {
+                width: 925px;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                width: 1372px;
+            }
         }
 
         code {
@@ -129,6 +157,7 @@
 
         cite {
             display: block;
+            font-style: normal;
             margin-top: -0.5em;
             margin-bottom: 0.5em;
             color: #808080;
@@ -152,10 +181,8 @@
             color: #000;
         }
 
-        .col-md-12 & {
-            @media screen and (min-width: $screen-md-min) {
-                padding: 20px;
-            }
+        @media screen and (min-width: $screen-md-min) {
+            padding: 20px;
         }
     }
 
@@ -197,7 +224,7 @@ a.url {
 
 
 // All figures get this class
-.fig {
+.richtextblock.img, figure {
     display: block;
     width: 100%;
     margin: 0 0 1em;
@@ -208,11 +235,6 @@ a.url {
         &.fig-width-50 { width: 50%; }
         &.fig-width-75 { width: 75%; }
         &.fig-width-100 { width: 100%; }
-    }
-
-    img {
-        display: block;
-        width: 100%;
     }
 
     &.fig-align-center {
@@ -245,16 +267,14 @@ img.fig-align-right {
     width: 100%;
     margin-bottom: 1em;
 
-    .col-md-12 & {
-        @media screen and (min-width: $screen-md-min) {
-            float: right;
-            margin-left: 10px;
-            width: auto;
+    @media screen and (min-width: $screen-md-min) {
+        float: right;
+        margin-left: 10px;
+        width: auto;
 
-            &.fig-width-25 { width: 25%; }
-            &.fig-width-50 { width: 50%; }
-            &.fig-width-75 { width: 75%; }
-        }
+        &.fig-width-25 { width: 25%; }
+        &.fig-width-50 { width: 50%; }
+        &.fig-width-75 { width: 75%; }
     }
 }
 
@@ -265,17 +285,15 @@ img.fig-align-left {
     width: 100%;
     margin-bottom: 1em;
 
-    .col-md-12 & {
-        @media screen and (min-width: $screen-md-min) {
-            float: left;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            width: 50%;
+    @media screen and (min-width: $screen-md-min) {
+        float: left;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        width: 50%;
 
-            &.fig-width-25 { width: 25%; }
-            &.fig-width-50 { width: 50%; }
-            &.fig-width-75 { width: 75%; }
-        }
+        &.fig-width-25 { width: 25%; }
+        &.fig-width-50 { width: 50%; }
+        &.fig-width-75 { width: 75%; }
     }
 }
 
@@ -284,9 +302,7 @@ img.fig-align-left {
 img.fig-align-center {
     display: block;
     width: 100%;
-    margin-bottom: 1em;
-
-    .col-md-12 & {
+    margin: 0 auto 1em;
 
         @media screen and (min-width: $screen-md-min) {
             width: auto;
@@ -297,7 +313,6 @@ img.fig-align-center {
             &.fig-width-75 { width: 75%; }
             &.fig-width-100 { width: 100%; }
         }
-    }
 }
 
 
@@ -327,24 +342,20 @@ img.fig-align-center {
     }
 
     .caption {
-        .col-md-12 & {
-            @media screen and (min-width: $screen-sm-min) {
-                float: right;
-                width: 33.33%;
-                padding: 0 20px !important;
-                line-height: 1.6;
-            }
+        @media screen and (min-width: $screen-sm-min) {
+            float: right;
+            width: 33.33%;
+            padding: 0 20px !important;
+            line-height: 1.6;
         }
     }
 
     figure {
         margin-bottom: 0;
 
-        .col-md-12 & {
-            @media screen and (min-width: $screen-sm-min) {
-                float: left;
-                width: 66.66%;
-            }
+        @media screen and (min-width: $screen-sm-min) {
+            float: left;
+            width: 66.66%;
         }
     }
 
