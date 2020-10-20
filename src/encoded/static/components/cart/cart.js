@@ -849,19 +849,21 @@ FileFacets.defaultProps = {
  * FCCs for now.
  */
 const MAX_SEARCHABLE_DATASETS = 125; // Maximum number of datasets for search-results links.
-const CartDatasetSearch = ({ elements }, reactContext) => {
+const CartDatasetSearch = ({ elements, usedDatasetTypes }, reactContext) => {
     const [isWarningVisible, setIsWarningVisible] = React.useState(false);
 
-    // * For now only include experiments. Might need to expand this in the future.
-    const experimentElements = elements.filter(element => element.includes('/experiments/'));
+    // Filter to the actual dataset types; not including 'all'.
+    const actualDatasetTypes = usedDatasetTypes.filter(type => type !== 'all');
 
     // Called when the user clicks the Dataset Search button.
     const handleButtonClick = () => {
-        if (experimentElements.length > MAX_SEARCHABLE_DATASETS) {
+        if (elements.length > MAX_SEARCHABLE_DATASETS) {
             setIsWarningVisible(true);
         } else {
-            const datasetsQuery = experimentElements.map(element => `@id=${encodedURIComponent(element)}`).join('&');
-            const query = `/search/?type=Experiment&${datasetsQuery}`;
+            // Build type= query based on the types of datasets in `elements`.
+            const typeQuery = actualDatasetTypes.map(type => `type=${datasetTypes[type].type}`).join('&');
+            const datasetsQuery = elements.map(element => `@id=${encodedURIComponent(element)}`).join('&');
+            const query = `/search/?${typeQuery}&${datasetsQuery}`;
             reactContext.navigate(query);
         }
     };
@@ -872,7 +874,7 @@ const CartDatasetSearch = ({ elements }, reactContext) => {
     };
 
     // Only display the Dataset Search button if we have at least one experiment in the cart.
-    if (experimentElements.length > 0) {
+    if (elements.length > 0) {
         return (
             <React.Fragment>
                 <button onClick={handleButtonClick} className="btn btn-sm btn-info btn-inline cart-dataset-search">Dataset search</button>
@@ -897,6 +899,8 @@ const CartDatasetSearch = ({ elements }, reactContext) => {
 CartDatasetSearch.propTypes = {
     /** Dataset @ids in the cart */
     elements: PropTypes.array.isRequired,
+    /** Types of datasets in `elements` as collection names e.g. "experiments" */
+    usedDatasetTypes: PropTypes.array.isRequired,
 };
 
 CartDatasetSearch.contextTypes = {
@@ -907,13 +911,7 @@ CartDatasetSearch.contextTypes = {
 /**
  * Selector menu to choose between dataset types to view and download.
  */
-const CartTypeSelector = ({ selectedDatasetType, elements, typeChangeHandler }) => {
-    // Make a list of all the dataset types currently in the cart.
-    const usedDatasetTypes = [Object.keys(defaultDatasetType)[0]].concat(elements.reduce((types, elementAtId) => {
-        const type = atIdToType(elementAtId);
-        return types.includes(type) ? types : types.concat(type);
-    }, []));
-
+const CartTypeSelector = ({ selectedDatasetType, usedDatasetTypes, typeChangeHandler }) => {
     // Add the "All datasets" option to the used dataset types.
     const displayedDatasets = Object.assign(defaultDatasetType, allowedDatasetTypes);
 
@@ -927,8 +925,8 @@ const CartTypeSelector = ({ selectedDatasetType, elements, typeChangeHandler }) 
 CartTypeSelector.propTypes = {
     /** Currently selected dataset type */
     selectedDatasetType: PropTypes.string.isRequired,
-    /** Cart elements */
-    elements: PropTypes.array.isRequired,
+    /** Types of datasets in `elements` as collection names e.g. "experiments" */
+    usedDatasetTypes: PropTypes.array.isRequired,
     /** Called when the user selects a new dataset type from the dropdown */
     typeChangeHandler: PropTypes.func.isRequired,
 };
@@ -943,9 +941,16 @@ const CartTools = ({ elements, selectedTerms, selectedDatasetType, typeChangeHan
     // datasets."
     const disabledMessage = selectedDatasetType === DEFAULT_DATASET_TYPE ? 'Select dataset type to download' : '';
     const selectedType = datasetTypes[selectedDatasetType].type;
+
+    // Make a list of all the dataset types currently in the cart.
+    const usedDatasetTypes = [Object.keys(defaultDatasetType)[0]].concat(elements.reduce((types, elementAtId) => {
+        const type = atIdToType(elementAtId);
+        return types.includes(type) ? types : types.concat(type);
+    }, []));
+
     return (
         <div className="cart-tools">
-            <CartTypeSelector selectedDatasetType={selectedDatasetType} elements={elements} typeChangeHandler={typeChangeHandler} />
+            <CartTypeSelector selectedDatasetType={selectedDatasetType} usedDatasetTypes={usedDatasetTypes} typeChangeHandler={typeChangeHandler} />
             {elements.length > 0 ?
                 <CartBatchDownload
                     elements={elements}
@@ -967,7 +972,7 @@ const CartTools = ({ elements, selectedTerms, selectedDatasetType, typeChangeHan
                     <CartClearButton />
                 </div>
             : null}
-            <CartDatasetSearch elements={elements} />
+            <CartDatasetSearch elements={elements} usedDatasetTypes={usedDatasetTypes} />
         </div>
     );
 };
