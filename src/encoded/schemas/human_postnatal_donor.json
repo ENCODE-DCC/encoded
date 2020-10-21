@@ -71,11 +71,9 @@
             "title": "Family history breast cancer",
             "description": "Familial relations with history of breast cancer.",
             "type":  "array",
-            "uniqueItems": true,
             "items": {
                 "title": "",
                 "description": "",
-                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "enum": [
                     "none",
