@@ -20,7 +20,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -67,7 +67,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -114,7 +114,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -153,7 +153,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -191,7 +191,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "nucleus shape",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -225,7 +225,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "nucleus shape",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -259,7 +259,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -293,7 +293,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -327,7 +327,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -361,7 +361,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -395,7 +395,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -429,7 +429,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -466,7 +466,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "single_cell_isolation_method": "10x",
         "single_cell_isolation_method_version": 1,
         "medium": "some kind of medium",
@@ -504,7 +504,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -550,7 +550,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -596,7 +596,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -642,7 +642,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "cells/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -688,7 +688,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -727,7 +727,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -766,7 +766,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -805,7 +805,7 @@
         "starting_quantity": 1000,
         "starting_quantity_units": "nuclei/μl",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "depleted_cell_types": [
             "CL_0002305"
         ],
@@ -840,7 +840,7 @@
         ],
         "suspension_type": "nucleus",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "starting_quantity": 1100,
         "starting_quantity_units": "nuclei/μl",
         "single_cell_isolation_method": "10x",
@@ -867,7 +867,7 @@
         ],
         "suspension_type": "nucleus",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "starting_quantity": 1100,
         "starting_quantity_units": "nuclei/μl",
         "single_cell_isolation_method": "10x",
@@ -894,7 +894,7 @@
         ],
         "suspension_type": "nucleus",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 95,
+        "percent_cell_viability": "95",
         "starting_quantity": 1100,
         "starting_quantity_units": "nuclei/μl",
         "single_cell_isolation_method": "10x",
@@ -921,7 +921,7 @@
         ],
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 90,
+        "percent_cell_viability": "90",
         "starting_quantity": 1100,
         "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
@@ -948,7 +948,7 @@
         ],
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 90,
+        "percent_cell_viability": "90",
         "starting_quantity": 1100,
         "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
@@ -975,7 +975,7 @@
         ],
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 90,
+        "percent_cell_viability": "90",
         "starting_quantity": 1100,
         "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
@@ -1002,7 +1002,7 @@
         ],
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 90,
+        "percent_cell_viability": "90",
         "starting_quantity": 1200,
         "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
@@ -1029,7 +1029,7 @@
         ],
         "suspension_type": "cell",
         "cell_viability_method": "trypan blue staining",
-        "percent_cell_viability": 90,
+        "percent_cell_viability": "90",
         "starting_quantity": 1200,
         "starting_quantity_units": "cells/μl",
         "single_cell_isolation_method": "10x",
