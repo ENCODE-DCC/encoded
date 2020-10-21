@@ -47,78 +47,6 @@
                     "enum": ["content error"]
                 }
             }
-        },
-        "status": {
-            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
-            "allOf": [
-                {
-                    "oneOf": [
-                        {
-                            "anyOf": [
-                                {
-                                    "required": ["no_file_available"],
-                                    "properties": {
-                                        "status": {
-                                            "enum": ["in progress",  "revoked", "archived", "released"]
-                                        },
-                                         "no_file_available": {
-                                            "enum": [true]
-                                        }
-                                    }
-                                },
-                                {
-                                    "required": ["file_size"],
-                                    "properties": {
-                                        "status": {
-                                            "enum": ["in progress",  "revoked", "archived", "released"]
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "properties": {
-                                "status": {
-                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "oneOf": [
-                        {
-                            "required": ["content_error_detail"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["content error"]
-                                }
-                            }
-                        },
-                        {
-                            "not": {
-                                "oneOf": [
-                                    {
-                                        "required": ["content_error_detail"],
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
-                                            }
-                                        }
-                                    },
-                                    {
-                                        "properties": {
-                                            "status": {
-                                                "enum": ["content error"]
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ]
         }
     },
     "properties": {
@@ -169,7 +97,7 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "genomic alignments",
+                    "genome alignments",
                     "transcriptome alignments"
                 ]
             }

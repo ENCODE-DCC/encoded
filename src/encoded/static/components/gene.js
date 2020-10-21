@@ -103,7 +103,7 @@ class Gene extends React.Component {
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
-                                {context.dbxrefs.length > 0 ?
+                                {context.dbxrefs ?
                                     <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                 : <em>None submitted</em> }
                             </dd>
@@ -142,7 +142,7 @@ const ListingComponent = (props, reactContext) => {
                     </a>
                     <div className="result-item__data-row">
                         <strong>External resources: </strong>
-                        {result.dbxrefs && result.dbxrefs.length ?
+                        {result.dbxrefs ?
                             <DbxrefList context={result} dbxrefs={result.dbxrefs} />
                         : <em>None submitted</em> }
                     </div>

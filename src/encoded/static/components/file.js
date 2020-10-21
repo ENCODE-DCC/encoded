@@ -269,16 +269,11 @@ class FileComponent extends React.Component {
         const { context, auditDetail, auditIndicators } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const aliasList = (context.aliases && context.aliases.length > 0) ? context.aliases.join(', ') : '';
-        const datasetAccession = globals.atIdToAccession(context.dataset);
+        const datasetAccession = (context.dataset) ? globals.atIdToAccession(context.dataset) : globals.atIdToAccession(context.fileset);
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!this.context.session_properties.admin;
 
-        // Collect up relevant pipelines and quality metrics.
-        let pipelines = [];
-        if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length > 0) {
-            pipelines = context.analysis_step_version.analysis_step.pipelines;
-        }
-        const qualityMetrics = context.quality_metrics.filter(qc => loggedIn || qc.status === 'released');
+        const qualityMetrics = (context.quality_metrics && context.quality_metrics.length > 0) ? context.quality_metrics.join(', ') : '';
 
         return (
             <div className={itemClass}>
@@ -387,15 +382,18 @@ class FileComponent extends React.Component {
                         <div className="panel__split-element">
                             <div className="panel__split-heading panel__split-heading--file">
                                 <h4>Attribution</h4>
+                                {context.award ?
                                 <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                : null}
                             </div>
                             <dl className="key-value">
+                                {context.lab ?
                                 <div data-test="lab">
                                     <dt>Lab</dt>
                                     <dd>{context.lab.title}</dd>
                                 </div>
-
-                                {context.award.project ?
+                                : null}
+                                {context.award ?
                                     <div data-test="project">
                                         <dt>Project</dt>
                                         <dd>{context.award.project}</dd>
@@ -420,7 +418,7 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                {context.dbxrefs && context.dbxrefs.length > 0 ?
+                                {context.dbxrefs ?
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>

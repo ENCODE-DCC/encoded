@@ -278,6 +278,9 @@
         }
     },
     "columns": {
+        "name": {
+            "title": "Name"
+        },
         "title": {
             "title": "Title"
         },

@@ -89,7 +89,7 @@ const Donor = (props) => {
                             </div>
                         : null}
 
-                        {context.dbxrefs && context.dbxrefs.length > 0 ?
+                        {context.dbxrefs ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>

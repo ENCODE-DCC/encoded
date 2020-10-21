@@ -15,7 +15,7 @@
             "percutaneous biopsy"
         ],
         "biosample_ontology": "UBERON_0001225",
-        "collection_to_preservation_interval": 5,
+        "collection_to_preservation_interval": "5",
         "collection_to_preservation_interval_units": "hour",
         "ischemic_temperature": "cold",
         "ischemic_time": 5,
@@ -44,7 +44,7 @@
             "dissection"
         ],
         "biosample_ontology": "UBERON_0001225",
-        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval": "6",
         "collection_to_preservation_interval_units": "hour",
         "ischemic_temperature": "cold",
         "ischemic_time": 5,
@@ -71,7 +71,7 @@
             "dissection"
         ],
         "biosample_ontology": "UBERON_0002113",
-        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval": "6",
         "collection_to_preservation_interval_units": "hour",
         "ischemic_temperature": "cold",
         "ischemic_time": 5,
@@ -97,7 +97,7 @@
             "dissection"
         ],
         "biosample_ontology": "UBERON_0002113",
-        "collection_to_preservation_interval":6,
+        "collection_to_preservation_interval": "6",
         "collection_to_preservation_interval_units": "hour",
         "ischemic_temperature": "cold",
         "ischemic_time": 5,

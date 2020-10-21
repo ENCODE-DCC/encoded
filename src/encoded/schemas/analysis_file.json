@@ -39,6 +39,19 @@
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with Lattice objects.",
                 "type":  "string"
             }
+        },
+        "cellranger_assay_chemistry": {
+            "title": "Cellranger assay chemistry",
+            "description": "The assay chemistry parameter used in cellranger count, often auto-detected by the software.",
+            "type":  "string",
+            "enum": [
+                "SC3Pv1",
+                "SC3Pv2",
+                "SC3Pv3",
+                "SC5P-PE",
+                "SC5P-R2",
+                "SC5P-R1"
+            ]
         }
     }
 }

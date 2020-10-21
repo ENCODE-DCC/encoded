@@ -76,8 +76,8 @@
         "death_to_preservation_interval": {
             "title": "Death to preservation interval",
             "description": "The amount of time elapsed since death until the tissue was preserved.",
-            "type": "number",
-            "minimum": 1
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "death_to_preservation_interval_units": {
             "title": "Death to preservation interval units",
@@ -94,7 +94,8 @@
         "collection_to_preservation_interval": {
             "title": "Collection to preservation interval",
             "description": "The amount of time elapsed from tissue collection from a donor to preservation.",
-            "type": "number"
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "collection_to_preservation_interval_units": {
             "title": "Collection to preservation interval units",
