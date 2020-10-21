@@ -1,18 +1,5 @@
 [
   {
-    "accession": "KCEBE001CTL",
-    "assay_term_name": "RNA-seq",
-    "biospecimen": "KCEBS708IJT",
-    "award": "Kidney-SPORE",
-    "experiment_description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
-    "lab": "thomas-gingeras",
-    "status": "released",
-    "date_submitted": "2015-08-20",
-    "date_released": "2016-01-01",
-    "submitted_by": "dignissim.euismod@amet.habitant",
-    "uuid": "4fe31962-4c61-4b17-883c-82ec6be02316"
-  },
-  {
     "accession": "KCEBE000AER",
     "assay_term_name": "RNA-seq",
     "biospecimen": "KCEBS708IJT",

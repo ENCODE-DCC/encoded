@@ -302,21 +302,17 @@ class Bioexperiment extends React.Component {
         //       }
         //   });
         // -------------------------------
-        let biosampleDocs = [];
-        if(biosamples&&biosamples[0].documents){
-            biosampleDocs=biosampleDocs.concat(biosamples[0].documents);
-            if (biosamples[0].part_of){
-                biosamplesDocs=biosampleDocs.concat(biosamples[0].part_of)
-            }
-        }
 
-        // biosamples.forEach((biospecimen) => {
-        //     biosampleDocs = biosampleDocs.concat(biospecimen.documents);
-        //     if (biospecimen.part_of) {
-        //         biosampleDocs = biosampleDocs.concat(biosepcimen.part_of);
-        //     }
-            // biosampleDocs=[...new Set(biosampleDocs)];//get rid of the same document
-        // });
+        // Collect biosample docs.
+        let biosampleDocs = [];
+        biosamples.forEach((biosample) => {
+            biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
+            if (biosample.part_of) {
+                biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
+            }
+        });
+
+
         console.log("biosampledoc", biosampleDocs);
         // -------------------------
         // Collect pipeline-related documents.
@@ -357,7 +353,7 @@ class Bioexperiment extends React.Component {
         ));
         console.log("combineDoc", combinedDocuments);
         // Determine this experiment's ENCODE version.
-        const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
+        const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
         const encodevers = globals.encodeVersion(context);
 
         // Make list of statuses.
@@ -421,7 +417,7 @@ class Bioexperiment extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                        <Breadcrumbs root="/search/?type=Bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Experiment summary for {context.accession}</h2>
                         <ReplacementAccessions context={context} />
                         {/* <div className="cart__toggle--header">
@@ -582,13 +578,13 @@ class Bioexperiment extends React.Component {
                     </PanelBody>
                 </Panel>
                 {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
-                {combinedDocuments.length ?
-                    <DocumentsPanelReq documents={combinedDocuments}></DocumentsPanelReq>
-                    : null}
                 {/* Display the file widget with the facet, graph, and tables */}
                 {/* <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} /> */}
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {combinedDocuments.length ?
+                    <DocumentsPanelReq documents={combinedDocuments} />
+                : null}
             </div>
         )
     }
