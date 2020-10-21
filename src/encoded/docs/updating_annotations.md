@@ -46,7 +46,7 @@ curl -o annotations.json https://s3-us-west-1.amazonaws.com/encoded-build/annota
 6. Update the following information
 
     Site release version: 109
-    annotations.json file: annotations-2020-10-12.json
+    annotations.json file: annotations-2020-10-21.json
     [GRCh38 gff assembly release date]: 2019-02-28
     [hg19 gff assembly release date]: 2013-06-28
     [mm10 gff assembly release date]: 2017-09-15
