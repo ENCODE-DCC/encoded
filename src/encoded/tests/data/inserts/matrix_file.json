@@ -48,7 +48,8 @@
         ],
         "assembly": "GRCh38",
         "genome_annotation": "GENCODE 32",
-        "validated": true
+        "validated": true,
+        "cellranger_assay_chemistry": "SC3Pv2"
     },
     {
         "aliases": [

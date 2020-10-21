@@ -34,7 +34,8 @@
         ],
         "award": "CZI001KID",
         "md5sum": "d710e450cdf4ced7ba333ae35bfafa97",
-        "validated": true
+        "validated": true,
+        "cellranger_assay_chemistry": "SC5P-R1"
     },
     {
         "aliases": [
