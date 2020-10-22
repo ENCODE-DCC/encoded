@@ -1,16 +1,29 @@
-
+from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
     load_schema,
 )
 from .base import (
+    ALLOW_SUBMITTER_ADD,
     Item,
-    # SharedItem,
     paths_filtered_by_status,
+    SharedItem
 )
-from pyramid.traversal import find_root, resource_path
-import re
+from .biodataset import Biodataset
+from .shared_calculated_properties import (
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedVisualize
+)
+
+# importing biosample function to allow calculation of experiment biosample property
+from .biosample import (
+    construct_biosample_summary,
+    generate_summary_dictionary
+)
+
+from .assay_data import assay_terms
 
 
 @collection(
@@ -21,11 +34,14 @@ import re
         'description': 'Bioexperiment information page',
     },
 )
-class Bioexperiment(Item):
+class Bioexperiment(Biodataset,
+                    CalculatedAssaySynonyms,
+                    CalculatedAssayTermID,
+                    CalculatedVisualize):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    name_key = 'accession'
-    embedded = [
+    # name_key = 'accession'
+    embedded = Biodataset.embedded + [
         'award',
         'lab',
         "submitted_by",  # link to User
@@ -38,16 +54,31 @@ class Bioexperiment(Item):
         'bioreplicate.biolibrary.biospecimen.part_of',
         'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',
-        "references"  # link to Publication
+        "references",
+        "files", # link to Publication
 
 
     ]
-    rev = {
+    rev = Biodataset.rev.copy()
+    rev.update({
+        # 'related_series': ('Series', 'related_datasets'),
         'bioreplicate': ('Bioreplicate', 'bioexperiment'),
-        # 'possible_controls': ('Bioexperiment', 'possible_controls')
-    }
+        # 'superseded_by': ('Experiment', 'supersedes')
+    })
+   
 
     audit_inherit = [
+        'original_files',
+        # 'original_files.replicate',
+        # 'original_files.platform',
+        # 'target',
+        # 'files.analysis_step_version.analysis_step.pipelines',
+        'revoked_files',
+        # 'revoked_files.replicate',
+        'submitted_by',
+        'lab',
+        'award',
+        'documents',
 
     ]
     set_status_up = [
@@ -78,7 +109,6 @@ class Bioexperiment(Item):
         "items": {
             "comment": "See experiment.json for a list of available identifiers.",
             "type": "object",
-                    # "linkTo": "Experiment"
         }
     })
     def biospecimen_summary(self,
@@ -149,8 +179,7 @@ class Bioexperiment(Item):
         # That replicate should have a libraries property which, as calculated
         # in replicate.libraries (ENCD-4251), should have collected all
         # possible technical replicates belong to the biological replicate.
-        # TODO: change this once we remove technical_replicate_number.
-        # This is the easiest way to use looping save time.Shortcut.
+      
         bio_rep_dict = {}
 
         for rep in bioreplicate:

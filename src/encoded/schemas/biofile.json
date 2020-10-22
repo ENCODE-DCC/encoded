@@ -617,6 +617,13 @@
             "type": "string",
             "linkTo": "Biolibrary"
         },
+        "biodataset": {
+            "title": "Biolibrary",
+            "description": "The nucleic acid dataset used in this replicate.",
+            "comment": "See bioexperiment.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biodataset"
+        },
         "bioreplicate": {
             "title": "Bioreplicate",
             "description": "The files produced in this bioreplicate.",
