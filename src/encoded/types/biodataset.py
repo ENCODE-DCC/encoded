@@ -30,16 +30,16 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object?skip_calculated=true').get('status') == 'revoked'
 
 
-# def calculate_assembly(request, files_list, status):
-#     assembly = set()
-#     viewable_file_status = ['released','in progress']
+def calculate_assembly(request, files_list, status):
+    assembly = set()
+    viewable_file_status = ['released','in progress']
 
-#     for path in files_list:
-#         properties = request.embed(path, '@@object?skip_calculated=true')
-#         if properties['status'] in viewable_file_status:
-#             if 'assembly' in properties:
-#                 assembly.add(properties['assembly'])
-#     return list(assembly)
+    for path in files_list:
+        properties = request.embed(path, '@@object?skip_calculated=true')
+        if properties['status'] in viewable_file_status:
+            if 'assembly' in properties:
+                assembly.add(properties['assembly'])
+    return list(assembly)
 
 
 @abstract_collection(
@@ -163,15 +163,15 @@ class Biodataset(Item):
             if item_is_revoked(request, path)
         ]
 
-    # @calculated_property(define=True, schema={
-    #     "title": "Genome assembly",
-    #     "type": "array",
-    #     "items": {
-    #         "type": "string",
-    #     },
-    # })
-    # def assembly(self, request, original_files, status):
-    #     return calculate_assembly(request, original_files, status)
+    @calculated_property(define=True, schema={
+        "title": "Genome assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, original_files, status):
+        return calculate_assembly(request, original_files, status)
 
     # @calculated_property(condition='assembly', schema={
     #     "title": "Hub",
@@ -186,3 +186,81 @@ class Biodataset(Item):
     })
     def month_released(self, date_released):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
+
+class FileSet(Biodataset):
+    item_type = 'file_set'
+    base_types = ['FileSet'] + Biodataset.base_types
+    schema = load_schema('encoded:schemas/file_set.json')
+    embedded = Biodataset.embedded
+
+    @calculated_property(schema={
+        "title": "Contributing files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biofile",
+        },
+    })
+    def contributing_files(self, request, original_files, related_files, status):
+        files = set(original_files + related_files)
+        derived_from = set()
+        for path in files:
+            properties = request.embed(path, '@@object?skip_calculated=true')
+            derived_from.update(
+                paths_filtered_by_status(request, properties.get('derived_from', []))
+            )
+        outside_files = list(derived_from.difference(files))
+        if status in ('released'):
+            return paths_filtered_by_status(
+                request, outside_files,
+                include=('released',),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, outside_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
+
+    @calculated_property(define=True, schema={
+        "title": "Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biofile",
+        },
+    })
+    def files(self, request, original_files, related_files, status):
+        if status in ('released'):
+            return paths_filtered_by_status(
+                request, chain(original_files, related_files),
+                include=('released',),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, chain(original_files, related_files),
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
+
+    @calculated_property(schema={
+        "title": "Revoked files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biofile",
+        },
+    })
+    def revoked_files(self, request, original_files, related_files):
+        return [
+            path for path in chain(original_files, related_files)
+            if item_is_revoked(request, path)
+        ]
+
+    @calculated_property(define=True, schema={
+        "title": "Genome assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, original_files, related_files, status):
+        return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)

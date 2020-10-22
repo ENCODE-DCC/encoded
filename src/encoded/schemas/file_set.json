@@ -31,9 +31,9 @@
             "uniqueItems": true,
             "items": {
                 "title": "Data file",
-                "comment": "See file.json for available identifiers.",
+                "comment": "See biofile.json for available identifiers.",
                 "type": "string",
-                "linkTo": "File"
+                "linkTo": "Biofile"
             }
         }
     },
