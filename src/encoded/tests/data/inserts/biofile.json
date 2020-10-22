@@ -77,7 +77,7 @@
         "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "biolibrary": "KCELB012FAA",
         "status": "released",
-        "assembly": "hg19",
+        "assembly": "GRCh38",
         "uuid": "016f5f73-ccd0-4b23-963d-1a41064e72ac"
     },
     {
@@ -90,8 +90,7 @@
         "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "biolibrary": "KCELB745FAA",
         "status": "released",
-        "assembly": "hg19",
+        "assembly": "GRCh38",
         "uuid": "52475ff9-ba44-4e5f-8fe8-6db1cfe45cdc"
     }
-    
 ]

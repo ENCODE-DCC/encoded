@@ -156,7 +156,7 @@
                             },
                             "properties": {
                                 "file_format": {
-                                    "enum": ["fastq", "fasta", "sra"]
+                                    "enum": ["fastq"]
                                 },
                                 "platform": {
                                     "linkTo": "Platform",
@@ -173,7 +173,7 @@
                             },
                             "properties": {
                                 "file_format": {
-                                    "enum": ["fastq", "fasta", "sra"]
+                                    "enum": ["fastq"]
                                 },
                                 "platform": {
                                     "linkTo": "Platform",
@@ -188,7 +188,7 @@
                             "required": ["read_length"],
                             "properties": {
                                 "file_format": {
-                                    "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
+                                    "enum": ["fastq"]
                                 },
                                 "not": {
                                     "platform": {
@@ -202,23 +202,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "required": ["restriction_enzymes"],
-                    "properties": {
-                        "output_type": {
-                            "enum": ["restriction enzyme site locations"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "output_type": {
-                                "enum": ["reads", "restriction enzyme site locations"]
-                            }
-                        }
-                    }
                 }
             ]
         },
@@ -299,8 +282,8 @@
                                     "enum": ["in progress",  "revoked", "archived", "released"]
                                  }
                             }
-                                    
-                            
+
+
                         },
 
                         {
@@ -348,14 +331,6 @@
                 }
             ]
         },
-        "restriction_enzymes": {
-            "comment": "Only files with output_type of restriction enzyme site locations can specify restriction_enzymes.",
-            "properties": {
-                "output_type": {
-                    "enum": ["restriction enzyme site locations"]
-                }
-            }
-        },
         "paired_end": {
             "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
             "oneOf": [
@@ -398,7 +373,7 @@
             ]
         },
         "file_format":{
-            "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
+            "comment": "Fastq files require run_type and replicate but should not have assembly. Raw data files require platform to be specified and require an output_category of raw data. Processed files require assembly to be specified and require an output_category that is not raw data.",
             "allOf": [
                 {
                     "oneOf": [
@@ -407,18 +382,14 @@
                             "properties": {
                                 "file_format": {
                                     "enum": [
-                                        "rcc",
                                         "idat",
-                                        "CEL",
-                                        "csfasta",
-                                        "csqual",
                                         "fastq",
                                         "sra"
                                     ]
                                 }
                             }
                         },
- 
+
                         {
                             "required": [
                                 "file_format_type",
@@ -427,9 +398,7 @@
                             "properties": {
                                 "file_format": {
                                     "enum": [
-                                        "gff",
-                                        "bed",
-                                        "bigBed"
+                                        "gff"
                                     ]
                                 }
                             }
@@ -442,7 +411,6 @@
                                         "bam",
                                         "sam",
                                         "gtf",
-                                        "bigWig",
                                         "idx"
                                     ]
                                 }
@@ -453,32 +421,15 @@
                                 "properties": {
                                     "file_format": {
                                         "enum": [
-                                            "rcc",
                                             "idat",
-                                            "CEL",
                                             "fastq",
                                             "gff",
                                             "gtf",
-                                            "bed",
-                                            "bigBed",
                                             "bam",
                                             "sam",
-                                            "sra",
-                                            "bigWig",
-                                            "csfasta",
-                                            "csqual",
-                                            "idx",
-                                            "database"
+                                            "idx"
                                         ]
                                     }
-                                }
-                            }
-                        },
-                        {
-                            "required": ["assembly", "genome_annotation"],
-                            "properties": {
-                                "file_format": {
-                                    "enum": ["database"]
                                 }
                             }
                         }
@@ -490,16 +441,10 @@
                             "properties": {
                                 "file_format": {
                                     "enum": [
-                                        "rcc",
                                         "idat",
-                                        "CEL",
-                                        "csfasta",
-                                        "csqual",
                                         "fastq",
-                                        "sra",
                                         "tsv",
-                                        "tar",
-                                        "fasta"
+                                        "tar"
                                     ]
                                 },
                                 "output_type": {
@@ -508,23 +453,7 @@
                                         "idat red channel",
                                         "intensity values",
                                         "reads",
-                                        "rejected reads",
-                                        "raw data",
-                                        "reporter code counts"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "file_format": {
-                                    "enum": [
-                                        "database"
-                                    ]
-                                },
-                                "output_type": {
-                                    "enum": [
-                                        "transcriptome index"
+                                        "rejected reads"
                                     ]
                                 }
                             }
@@ -534,56 +463,25 @@
                                 "file_format": {
                                     "enum": [
                                         "bam",
-                                        "bed",
-                                        "bedpe",
-                                        "bigBed",
-                                        "bigWig",
-                                        "chain",
                                         "csv",
-                                        "fasta",
                                         "gff",
                                         "gtf",
                                         "idx",
-                                        "hdf5",
-                                        "hic",
-                                        "PWM",
                                         "sam",
-                                        "tagAlign",
                                         "tar",
                                         "tsv",
-                                        "vcf",
-                                        "wig",
-                                        "2bit",
-                                        "btr"
+                                        "vcf"
                                     ]
                                 },
                                 "output_type": {
                                     "not": {
                                         "enum": [
                                             "idat green channel",
-                                            "idat red channel",
-                                            "intensity values",
-                                            "reads",
+                                            "idat red channel",                                            "reads",
                                             "rejected reads",
-                                            "raw data",
-                                            "reporter code counts",
-                                            "restriction enzyme site locations"
+                                            "raw data"
                                         ]
                                     }
-                                }
-                            }
-                        },
-                        {
-                            "properties": {
-                                "file_format": {
-                                    "enum": [
-                                        "txt"
-                                    ]
-                                },
-                                "output_type": {
-                                    "enum": [
-                                        "restriction enzyme site locations"
-                                    ]
                                 }
                             }
                         }
@@ -592,7 +490,7 @@
             ]
         }
     },
- 
+
     "properties": {
          "date_created": {
             "rdfs:subPropertyOf": "dc:created",
@@ -647,42 +545,17 @@
                     "comment": "This field is required.",
                     "enum": [
                         "bam",
-                        "bed",
-                        "bedpe",
-                        "bigBed",
-                        "bigWig",
-                        "CEL",
-                        "chain",
                         "csv",
-                        "database",
-                        "fasta",
                         "fastq",
                         "gff",
                         "gtf",
-                        "hdf5",
-                        "hic",
                         "idat",
-                        "PWM",
-                        "rcc",
                         "sam",
-                        "tagAlign",
                         "tar",
                         "tsv",
                         "vcf",
-                        "wig",
                         "idx",
                         "txt"
-                    ]
-                },
-                {
-                    "comment": "Historical file formats, not valid for new submissions.",
-                    "permission": "import_items",
-                    "enum": [
-                        "2bit",
-                        "btr",
-                        "csfasta",
-                        "csqual",
-                        "sra"
                     ]
                 }
             ]
@@ -694,42 +567,8 @@
             "oneOf": [
                 {
                     "enum": [
-                        "bed12",
-                        "bed3",
-                        "bed3+",
-                        "bed5",
-                        "bed6",
-                        "bed6+",
-                        "bed9",
-                        "bed9+",
-                        "bedGraph",
-                        "bedLogR",
-                        "bedMethyl",
-                        "broadPeak",
-                        "candidate enhancer predictions",
-                        "enhancer predictions",
-                        "enhancerAssay",
-                        "gappedPeak",
                         "gff2",
-                        "gff3",
-                        "idr_peak",
-                        "narrowPeak",
-                        "tss_peak"
-                    ]
-                },
-                {
-                    "comment": "Historical file formats, not valid for new submissions.",
-                    "permission": "import_items",
-                    "enum": [
-                        "bedExonScore",
-                        "bedRnaElements",
-                        "mango",
-                        "modPepMap",
-                        "openChromCombinedPeaks",
-                        "pepMap",
-                        "peptideMapping",
-                        "shortFrags",
-                        "unknown"
+                        "gff3"
                     ]
                 }
            ]
@@ -747,7 +586,7 @@
             "comment": "Although this is not required. It is highly recommended.",
             "type": "string"
         },
- 
+
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
@@ -948,140 +787,21 @@
                 {
                     "enum": [
                         "alignments",
-                        "blacklisted regions",
-                        "candidate Cis-Regulatory Elements",
-                        "candidate enhancers",
-                        "candidate promoters",
-                        "chromatin interactions",
-                        "mapping quality thresholded chromatin interactions",
-                        "conservative idr thresholded peaks",
-                        "control normalized signal",
-                        "DHS peaks",
-                        "differential expression quantifications",
-                        "differential splicing quantifications",
-                        "enhancer validation",
-                        "enrichment",
                         "exon quantifications",
-                        "female genome index",
-                        "female genome reference",
-                        "filtered indels",
-                        "filtered peaks",
-                        "filtered regions",
-                        "filtered SNPs",
-                        "fold change over control",
                         "gene alignments",
                         "gene quantifications",
-                        "genome compartments",
                         "genome index",
                         "genome reference",
-                        "hotspots",
-                        "idat green channel",
-                        "idat red channel",
-                        "intensity values",
-                        "library fraction",
-                        "long range chromatin interactions",
-                        "male genome index",
-                        "male genome reference",
-                        "maternal haplotype mapping",
-                        "maternal variant calls",
-                        "methylation state at CHG",
-                        "methylation state at CHH",
-                        "methylation state at CpG",
-                        "microRNA quantifications",
-                        "minus strand signal of all reads",
-                        "minus strand signal of unique reads",
-                        "mitochondria blacklisted regions",
-                        "motif model",
-                        "nested topologically associated domains",
-                        "normalized signal of all reads",
-                        "open chromatin regions",
-                        "optimal idr thresholded peaks",
-                        "paternal haplotype mapping",
-                        "paternal variant calls",
-                        "peaks",
-                        "peaks and background as input for IDR",
-                        "phased mapping",
-                        "phased variant calls",
-                        "plus strand signal of all reads",
-                        "plus strand signal of unique reads",
-                        "predicted enhancers",
-                        "pseudoreplicated idr thresholded peaks",
-                        "raw minus strand signal",
-                        "raw normalized signal",
-                        "raw plus strand signal",
-                        "raw signal",
-                        "read-depth normalized signal",
                         "reads",
                         "reference variants",
-                        "relative replication signal",
-                        "replicated peaks",
-                        "replication timing profile",
-                        "reporter code counts",
-                        "representative dnase hypersensitivity sites",
-                        "restriction enzyme site locations",
-                        "RNA-binding protein associated mRNAs",
-                        "rRNA reference",
-                        "semi-automated genome annotation",
-                        "signal of all reads",
-                        "signal of unique reads",
-                        "signal p-value",
                         "spike-in sequence",
                         "splice junctions",
-                        "stable peaks",
-                        "topologically associated domains",
                         "transcript quantifications",
-                        "transcription start sites",
                         "transcriptome alignments",
                         "transcriptome index",
                         "transcriptome reference",
-                        "TSS reference",
                         "unfiltered alignments",
                         "variant calls"
-                    ]
-                },
-                {
-                    "comment": "Historical output types, not valid for new submissions.",
-                    "permission": "import_items",
-                    "enum": [
-                        "base overlap signal",
-                        "clusters",
-                        "contigs",
-                        "copy number variation",
-                        "distal peaks",
-                        "filtered modified peptide quantification",
-                        "filtered peptide quantification",
-                        "filtered transcribed fragments",
-                        "HMM predicted chromatin state",
-                        "minus strand signal",
-                        "minus strand transcription start sites",
-                        "miRNA reference",
-                        "percentage normalized signal",
-                        "plus strand signal",
-                        "plus strand transcription start sites",
-                        "predicted forebrain enhancers",
-                        "predicted heart enhancers",
-                        "predicted transcription start sites",
-                        "predicted whole brain enhancers",
-                        "primer sequence",
-                        "proximal peaks",
-                        "raw data",
-                        "redacted alignments",
-                        "redacted unfiltered alignments",
-                        "reference",
-                        "rejected reads",
-                        "sequence alignability",
-                        "sequence uniqueness",
-                        "signal",
-                        "snRNA reference",
-                        "spike-in alignments",
-                        "summed densities signal",
-                        "transcribed fragments",
-                        "tRNA reference",
-                        "unfiltered modified peptide quantification",
-                        "unfiltered peptide quantification",
-                        "validation",
-                        "valleys",
-                        "wavelet-smoothed signal"
                     ]
                 }
             ]
@@ -1094,7 +814,7 @@
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "File"
+                    "linkTo": "Biofile"
                     }
         },
         "controlled_by": {
@@ -1106,7 +826,7 @@
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "File"
+                    "linkTo": "Biofile"
             }
         },
         "supersedes": {
@@ -1118,21 +838,16 @@
             "items": {
                     "comment": "The files in this list should be archived or revoked.",
                     "type": "string",
-                    "linkTo": "File"
+                    "linkTo": "Biofile"
             }
         },
-
-
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",
             "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
             "type": "string",
             "enum": [
-                "GRCh38-minimal",
-                "GRCh38",
-                "hg19"
-    
+                "GRCh38"
                 ]
         },
         "genome_annotation": {
@@ -1142,24 +857,7 @@
             "type": "string",
             "enum": [
                 "ENSEMBL V65",
-                "M2",
-                "M3",
-                "M4",
-                "M7",
-                "M14",
-                "M21",
-                "miRBase V21",
-                "None",
-                "V10",
-                "V19",
-                "V22",
-                "V24",
-                "V29",
-                "V30",
-                "V3c",
-                "V7",
-                "WS235",
-                "WS245"
+                "None"
                 ]
         },
         "status": {
@@ -1180,24 +878,6 @@
                 "revoked",
                 "content error"
                 ]
-        },
-        "restriction_enzymes": {
-            "title": "Restriction enzymes",
-            "description": "The restriction enzymes the restriction site locations file applies to.",
-            "type": "array",
-            "uniqueItems": true,
-            "minItems": 1,
-            "items": {
-                "title": "Restriction enzyme",
-                "description": "The name of a restriction enzyme",
-                "type": "string",
-                "enum": [
-                    "DpnII",
-                    "MboI",
-                    "HindIII"
-                ]
-            }
-
         },
         "content_error_detail": {
             "title": "Content error detail",
@@ -1235,9 +915,7 @@
         "accession": 1.0,
         "biolibrary.accession": 1.0
     },
-  
-   
+
+
     "changelog": "/profiles/changelogs/biofile.md"
 }
-
-
