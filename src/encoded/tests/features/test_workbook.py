@@ -13,5 +13,6 @@ scenarios(
     'search.feature',
     'advanced_query_search.feature',
     'targets.feature',
+    'no_at_type.feature',
     strict_gherkin=False,
 )

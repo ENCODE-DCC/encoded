@@ -779,7 +779,7 @@ DocTypeTitle.contextTypes = {
  * Display a block of accessory controls on object-display pages, e.g. the audit indicator button.
  */
 export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) => {
-    const isItemAllowedInCart = cartGetAllowedTypes().includes(item['@type'][0]);
+    const isItemAllowedInCart = item['@type'] && cartGetAllowedTypes().includes(item['@type'][0]);
     return (
         <div className="item-accessories">
             <div className="item-accessories--left">
