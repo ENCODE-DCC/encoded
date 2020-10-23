@@ -4620,6 +4620,35 @@ def check_experiment_atac_encode4_qc_standards(experiment, files_structure):
             yield AuditFailure('insufficient number of reproducible peaks', detail, level='NOT_COMPLIANT')
 
 
+def audit_experiment_mixed_strand_specific_libraries(value, system, excluded_types):
+    '''
+    Experiments should not have libraries with different strand specificities
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'replicates' not in value:
+        return
+
+    strand_specificities = set()
+
+    for rep in value['replicates']:
+        if rep.get('status') not in excluded_types and \
+           'library' in rep and rep['library'].get('status') not in excluded_types:
+            if 'strand_specificity' in rep['library']:
+                strand_specificities.add(rep['library']['strand_specificity'])
+            if 'strand_specificity' not in rep['library']:
+                strand_specificities.add('none')
+
+    if len(strand_specificities) > 1:
+        detail = (
+            f'Experiment {audit_link(path_to_text(value["@id"]),value["@id"])} contains '
+            f'libraries with mixed strand specificities {strand_specificities}.'
+            )
+        yield AuditFailure('mixed strand specificities', detail, level='ERROR')
+    return
+
+
 #######################
 # utilities
 #######################
@@ -5286,7 +5315,8 @@ function_dispatcher_without_files = {
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_experiment_eclip_queried_RNP_size_range': audit_experiment_eclip_queried_RNP_size_range,
     'audit_inconsistent_genetic_modifications': audit_experiment_inconsistent_genetic_modifications,
-    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed
+    'audit_biosample_perturbed_mixed': audit_biosample_perturbed_mixed,
+    'audit_mixed_strand_specificities': audit_experiment_mixed_strand_specific_libraries
 }
 
 function_dispatcher_with_files = {
