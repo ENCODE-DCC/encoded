@@ -264,3 +264,165 @@ class FileSet(Biodataset):
     })
     def assembly(self, request, original_files, related_files, status):
         return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
+
+@abstract_collection(
+    name='bioseries',
+    unique_key='accession',
+    properties={
+        'title': "Bioseries",
+        'description': 'Listing of all types of series datasets.',
+    })
+class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
+    item_type = 'bioseries'
+    base_types = ['Bioseries'] + Biodataset.base_types
+    schema = load_schema('encoded:schemas/bioseries.json')
+    embedded = Biodataset.embedded + [
+        # 'biosample_ontology',
+        # 'organism',
+        # 'target',
+        # 'target.genes',
+        # 'target.organism',
+        'references',
+        # 'related_datasets.biosample_ontology',
+        'related_datasets.files',
+        # 'related_datasets.files.analysis_step_version',
+        # 'related_datasets.files.analysis_step_version.analysis_step',
+        # 'related_datasets.files.analysis_step_version.analysis_step.pipelines',
+        'related_datasets.lab',
+        'related_datasets.submitted_by',
+        # 'related_datasets.award.pi.lab',
+        # 'related_datasets.replicates.antibody',
+        # 'related_datasets.replicates.antibody.targets',
+        'related_datasets.bioreplicate.biolibrary',
+        'related_datasets.bioreplicate.biolibrary.biospecimen.submitted_by',
+        # 'related_datasets.replicates.library.biosample.source',
+        'related_datasets.bioreplicate.biolibrary.biospecimen',
+        'related_datasets.bioreplicate.biolibrary.biospecimen.donor',
+        # 'related_datasets.replicates.library.biosample.treatments',
+        # 'related_datasets.replicates.library.spikeins_used',
+        # 'related_datasets.replicates.library.treatments',
+        # 'related_datasets.replicates.libraries',
+        # 'related_datasets.replicates.libraries.biosample.submitted_by',
+        # 'related_datasets.replicates.libraries.biosample.source',
+        # 'related_datasets.replicates.libraries.biosample.organism',
+        # 'related_datasets.replicates.libraries.biosample.donor.organism',
+        # 'related_datasets.replicates.libraries.biosample.treatments',
+        # 'related_datasets.replicates.libraries.spikeins_used',
+        # 'related_datasets.replicates.libraries.treatments',
+        # 'related_datasets.possible_controls',
+        # 'related_datasets.possible_controls.lab',
+        # 'related_datasets.target.organism',
+        'related_datasets.references',
+        'files.platform',
+        'files.lab',
+        # 'files.analysis_step_version.analysis_step',
+        # 'files.analysis_step_version.analysis_step.pipelines',
+        # 'files.analysis_step_version.analysis_step.versions',
+        # 'files.analysis_step_version.analysis_step.versions.software_versions',
+        # 'files.analysis_step_version.analysis_step.versions.software_versions.software',
+        # 'files.analysis_step_version.software_versions',
+        # 'files.analysis_step_version.software_versions.software',
+        'files.bioreplicate.biolibrary.biospecimen',
+        'files.biolibrary.biospecimen',
+        # 'files.quality_metrics',
+        # 'files.quality_metrics.step_run',
+        # 'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+    ]
+
+    @calculated_property(schema={
+        "title": "Revoked datasets",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "Biofile",
+        },
+    })
+    def revoked_datasets(self, request, related_datasets):
+        return [
+            path for path in related_datasets
+            if item_is_revoked(request, path)
+        ]
+
+    @calculated_property(define=True, schema={
+        "title": "Genome assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, original_files, related_datasets, status):
+        combined_assembly = set()
+        for assembly_from_original_files in calculate_assembly(request, original_files, status):
+            combined_assembly.add(assembly_from_original_files)
+        for biodataset in related_datasets:
+            properties = request.embed(biodataset, '@@object')
+            if properties['status'] not in ('deleted', 'replaced'):
+                for assembly_from_related_dataset in properties['assembly']:
+                    combined_assembly.add(assembly_from_related_dataset)
+        return list(combined_assembly)
+
+@collection(
+    name='bioexperiment-series',
+    unique_key='accession',
+    properties={
+        'title': "Bioxperiment series",
+        'description': 'A series that groups two or more experiments.',
+    })
+class BioexperimentSeries(Bioseries):
+    item_type = 'bioexperiment_series'
+    schema = load_schema('encoded:schemas/bioexperiment_series.json')
+    name_key = 'accession'
+    embedded = [
+        # 'biosample_ontology',
+        'contributing_awards',
+        'contributors',
+        # 'organism',
+        'related_datasets.lab',
+        'related_datasets.bioreplicate.biolibrary.biospecimen',
+        # 'related_datasets.target',
+        # 'target',
+        # 'target.genes',
+        # 'target.organism',
+    ]
+
+    # @calculated_property(schema={
+    #     "title": "Assay type",
+    #     "type": "array",
+    #     "items": {
+    #         "type": "string",
+    #     },
+    # })
+    # def assay_slims(self, request, related_datasets):
+    #     return request.select_distinct_values('assay_slims', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Assay title",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_title(self, request, related_datasets):
+        return request.select_distinct_values('assay_title', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Awards",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Award",
+        },
+    })
+    def contributing_awards(self, request, related_datasets):
+        return request.select_distinct_values('award', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Labs",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Lab",
+        },
+    })
+    def contributors(self, request, related_datasets):
+        return request.select_distinct_values('lab', *related_datasets)

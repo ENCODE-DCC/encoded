@@ -1,0 +1,110 @@
+{
+    "title": "Bioexperiment series",
+    "description": "Schema for submitting metadata for a group of experiments which are applying the same assay on the same type of biosample.",
+    "id": "/profiles/bioexperiment_series.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["award", "lab", "related_datasets"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "dataset.json#/properties" },
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" },
+        { "$ref": "bioseries.json#/properties" }
+    ],
+    "dependencies": {
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "related_datasets": {
+            "minItems": 1,
+            "permission": "import_items"
+        }
+    },
+    "facets": {
+       
+        "assay_titles": {
+            "title": "Assay title"
+        },
+       
+       
+        "contributors.title": {
+            "title": "Contributing Labs"
+        },
+        "date_released": {
+            "title": "Date released"
+        },
+        "status": {
+            "title": "Status"
+        }
+       
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+       
+        "assay_title": {
+            "title": "Assay title"
+        },
+        "contributors.title": {
+            "title": "Contributing Labs"
+        },
+        "contributing_awards.project": {
+            "title": "Project"
+        },
+        
+        "related_datasets.status": {
+            "title": "Related dataset status",
+            "type": "string"
+        },
+        
+        "status": {
+            "title": "Status"
+        }
+       
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "aliases": 1.0,
+        "contributing_awards.title": 1.0,
+        "contributing_awards.project": 1.0,
+        "contributing_awards.name": 1.0,
+        "contributors.institute_name": 1.0,
+        "contributors.institute_label": 1.0,
+        "contributors.title": 1.0,
+        "notes": 1.0
+       
+    },
+    "changelog": "/profiles/changelogs/bioexperiment_series.md"
+}

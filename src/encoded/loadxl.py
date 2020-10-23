@@ -30,6 +30,8 @@ ORDER = [
     'biolibrary',
     'bioreplicate',
     'biofile',
+    'bioexperiment_series',
+    # 'series',
     'ihc',
     'medication',
     'supportive_medication',
