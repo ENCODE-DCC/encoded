@@ -608,11 +608,9 @@ div.meta-status {
 }
 
 .facet--audit-warning {
-    .boolean-switch {
-        padding: 0 20px 0 8px;
-    }
-}
+    margin-right: 20px;
 
-.facet-audit-switch-title {
-    font-weight: bold;
+    select {
+        width: 100%;
+    }
 }
