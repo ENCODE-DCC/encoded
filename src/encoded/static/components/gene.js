@@ -119,6 +119,19 @@ class Gene extends React.Component {
                           </div>
                         : null}
 
+                        {context.locations && context.locations.length > 0 ?
+                            <div data-test="locations">
+                                <dt>Gene locations</dt>
+                                <dd>
+                                    <ul>
+                                        {context.locations.map((location, l) => (
+                                            <li key={l} className="multi-comma">{`${location.assembly} ${location.chromosome}:${location.start}-${location.end}`}</li>
+                                        ))}
+                                    </ul>
+                                </dd>
+                            </div>
+                        : null}
+
                         <div data-test="external">
                             <dt>External resources</dt>
                             <dd>
