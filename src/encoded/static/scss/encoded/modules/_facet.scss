@@ -609,6 +609,10 @@ div.meta-status {
 
 .facet--audit-warning {
     .boolean-switch {
-        padding: 0 20px 0 10px;
+        padding: 0 20px 0 8px;
     }
+}
+
+.facet-audit-switch-title {
+    font-weight: bold;
 }
