@@ -131,6 +131,66 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True, 'is_testing_full': True})
     assert res.json['updated']
     assert res.json['indexed']
+
+
+@pytest.mark.skip(reason='Vis indexing is timing out a lot')
+def test_indexing_workbook_vis(testapp, indexer_testapp):
+    # First post a single item so that subsequent indexing is incremental
+    testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json['indexed'] == 1
+
+    from encoded.loadxl import load_all
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    load_all(testapp, inserts, docsdir)
+    res = indexer_testapp.post_json('/index', {'record': True, 'is_testing_full': True})
+    assert res.json['updated']
+    assert res.json['indexed']
+    ### OPTIONAL: audit via 2-pass is coming...
+    #assert res.json['pass2_took']
+    ### OPTIONAL: audit via 2-pass is coming...
+
+    # NOTE: Both vis and region indexers are "followup" or secondary indexers
+    #       and must be staged by the primary indexer
+    res = indexer_testapp.post_json('/index_vis', {'record': True})
+    assert res.json['cycle_took']
+    assert res.json['title'] == 'vis_indexer'
+
+
+@pytest.mark.skip(reason='Vis indexing is timing out a lot')
+def test_indexer_vis_state(dummy_request):
+    from encoded.vis_indexer import VisIndexerState
+    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
+    es = dummy_request.registry['elasticsearch']
+    state = VisIndexerState(es,INDEX)
+    result = state.get_initial_state()
+    assert result['title'] == 'vis_indexer'
+    result = state.start_cycle(['1','2','3'], result)
+    assert result['cycle_count'] == 3
+    assert result['status'] == 'indexing'
+    cycles = result.get('cycles',0)
+    result = state.finish_cycle(result, [])
+    assert result['cycles'] == (cycles + 1)
+    assert result['status'] == 'done'
+
+
+@pytest.mark.skip(reason='Vis and region indexing is timing out a lot')
+def test_indexing_workbook_vis_region(testapp, indexer_testapp):
+    # First post a single item so that subsequent indexing is incremental
+    testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json['indexed'] == 1
+
+    from encoded.loadxl import load_all
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    load_all(testapp, inserts, docsdir)
+    res = indexer_testapp.post_json('/index', {'record': True, 'is_testing_full': True})
+    assert res.json['updated']
+    assert res.json['indexed']
     ### OPTIONAL: audit via 2-pass is coming...
     #assert res.json['pass2_took']
     ### OPTIONAL: audit via 2-pass is coming...
@@ -150,22 +210,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['total'] > 5
 
 
-def test_indexer_vis_state(dummy_request):
-    from encoded.vis_indexer import VisIndexerState
-    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
-    es = dummy_request.registry['elasticsearch']
-    state = VisIndexerState(es,INDEX)
-    result = state.get_initial_state()
-    assert result['title'] == 'vis_indexer'
-    result = state.start_cycle(['1','2','3'], result)
-    assert result['cycle_count'] == 3
-    assert result['status'] == 'indexing'
-    cycles = result.get('cycles',0)
-    result = state.finish_cycle(result, [])
-    assert result['cycles'] == (cycles + 1)
-    assert result['status'] == 'done'
-
-
+@pytest.mark.skip(reason='Vis and region indexing is timing out a lot')
 def test_indexer_region_state(dummy_request):
     from encoded.region_indexer import RegionIndexerState
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
