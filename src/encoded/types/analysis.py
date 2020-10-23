@@ -4,7 +4,10 @@ from snovault import (
     load_schema,
 )
 from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
-from .base import Item
+from .base import (
+    Item,
+    paths_filtered_by_status
+)
 
 
 @collection(
@@ -23,6 +26,10 @@ class Analysis(Item):
         'files.quality_metrics',
         'pipeline_labs',
     ]
+
+    rev = {
+        'superseded_by': ('Analysis', 'supersedes'),
+    }
 
     @calculated_property(schema={
         "title": "Datasets",
@@ -188,3 +195,17 @@ class Analysis(Item):
             ]
             if lab is not None
         })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The analyses that supersede this analysis (i.e. is more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of an analysis that supersedes.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Analysis.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)

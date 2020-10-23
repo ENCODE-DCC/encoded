@@ -66,6 +66,18 @@
                 "deleted",
                 "revoked"
             ]
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The analyses that this analysis supersedes.",
+            "comment": "The analyses in this list should be obsolete and the superseding analysis object should be used instead.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                    "comment": "The analyses in this list should be archived or revoked.",
+                    "type": "string",
+                    "linkTo": "Analysis"
+            }
         }
     },
     "facets": {

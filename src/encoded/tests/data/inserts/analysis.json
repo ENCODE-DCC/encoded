@@ -24,5 +24,12 @@
         "accession": "ENCAN914ASY",
         "files": ["ENCFF004MRN", "ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
         "pipeline_version": "1.1.2-prerelease+meta"
+    },
+    {
+        "uuid": "860f157c-e4da-a330-1f14-e5b89bf40423",
+        "accession": "ENCAN913ASY",
+        "files": ["ENCFF006MRN", "ENCFF807TRA", "ENCFF783YZT"],
+        "pipeline_version": "1.1.2-prerelease+meta",
+        "supersedes": ["ENCAN914ASY"]
     }
 ]
