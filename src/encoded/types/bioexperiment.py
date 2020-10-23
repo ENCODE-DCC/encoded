@@ -61,20 +61,21 @@ class Bioexperiment(Biodataset,
     ]
     rev = Biodataset.rev.copy()
     rev.update({
-        # 'related_series': ('Series', 'related_datasets'),
+        'related_series': ('Bioseries', 'related_datasets'),
         'bioreplicate': ('Bioreplicate', 'bioexperiment'),
-        # 'superseded_by': ('Experiment', 'supersedes')
+        'superseded_by': ('Bioexperiment', 'supersedes')
+
     })
    
 
     audit_inherit = [
         'original_files',
-        # 'original_files.replicate',
-        # 'original_files.platform',
+        'original_files.bioreplicate',
+        'original_files.platform',
         # 'target',
         # 'files.analysis_step_version.analysis_step.pipelines',
         'revoked_files',
-        # 'revoked_files.replicate',
+        'revoked_files.bioreplicate',
         'submitted_by',
         'lab',
         'award',
@@ -82,13 +83,15 @@ class Bioexperiment(Biodataset,
 
     ]
     set_status_up = [
+        'original_files',
+        'bioreplicate',
+        'documents',
     ]
     set_status_down = [
+        'original_files',
+        'bioreplicate',
     ]
-    rev.update({
-
-
-    })
+   
 
     @calculated_property(
         schema={
@@ -256,26 +259,26 @@ class Bioexperiment(Biodataset,
 
         return 'anisogenic'
 
-    # @calculated_property(schema={
-    #     "title": "Superseded by",
-    #     "type": "array",
-    #     "items": {
-    #         "type": ['string', 'object'],
-    #         "linkFrom": "Experiment.supersedes",
-    #     },
-    #     "notSubmittable": True,
-    # })
-    # def superseded_by(self, request, superseded_by):
-    #     return paths_filtered_by_status(request, superseded_by)
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Bioexperiment.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
-    # @calculated_property(schema={
-    #     "title": "Possible_controls",
-    #     "type": "array",
-    #     "items": {
-    #         "type": ['string', 'object'],
-    #         "linkFrom": "Bioexperiment.possible_controls",
-    #     },
-    #     "notSubmittable": True,
-    # })
-    # def possible_controls(self, request, possible_controls):
-    #     return paths_filtered_by_status(request, possible_controls)
+    @calculated_property(schema={
+        "title": "Biorelated series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Bioseries.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)

@@ -19,6 +19,8 @@ ORDER = [
     'image',
     'page',
     'publication',
+    # 'publication_data',
+
     'document',
     'patient',
     'surgery',

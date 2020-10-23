@@ -1,7 +1,7 @@
 {
-    "title": "File set",
+    "title": "Biofile set",
     "description": "Schema for submitting metadata for a file set.",
-    "id": "/profiles/file_set.json",
+    "id": "/profiles/biofile_set.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],
@@ -31,9 +31,9 @@
             "uniqueItems": true,
             "items": {
                 "title": "Data file",
-                "comment": "See file.json for available identifiers.",
+                "comment": "See biofile.json for available identifiers.",
                 "type": "string",
-                "linkTo": "File"
+                "linkTo": "Biofile"
             }
         }
     },

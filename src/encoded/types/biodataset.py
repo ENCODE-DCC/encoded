@@ -53,20 +53,20 @@ class Biodataset(Item):
     base_types = ['Biodataset'] + Item.base_types
     embedded = [
         'files',
-        # 'files.replicate',
-        # 'files.replicate.experiment',
-        # 'files.replicate.experiment.lab',
-        # 'files.replicate.experiment.target',
+        'files.bioreplicate',
+        'files.bioreplicate.bioexperiment',
+        'files.bioreplicate.bioexperiment.lab',
+        # 'files.bioreplicate.bioexperiment.target',
         # 'files.replicate.experiment.target.genes',
-        # 'files.submitted_by',
+        'files.submitted_by',
         # 'files.lab',
         'revoked_files',
-        # 'revoked_files.replicate',
-        # 'revoked_files.replicate.experiment',
-        # 'revoked_files.replicate.experiment.lab',
+        'revoked_files.bioreplicate',
+        'revoked_files.bioreplicate.bioexperiment',
+        # 'revoked_files.bioreplicate.bioexperiment.lab',
         # 'revoked_files.replicate.experiment.target',
         # 'revoked_files.replicate.experiment.target.genes',
-        # 'revoked_files.submitted_by',
+        'revoked_files.submitted_by',
         'submitted_by',
         'lab',
         # 'award.pi.lab',
@@ -173,12 +173,12 @@ class Biodataset(Item):
     def assembly(self, request, original_files, status):
         return calculate_assembly(request, original_files, status)
 
-    # @calculated_property(condition='assembly', schema={
-    #     "title": "Hub",
-    #     "type": "string",
-    # })
-    # def hub(self, request):
-    #     return request.resource_path(self, '@@hub', 'hub.txt')
+    @calculated_property(condition='assembly', schema={
+        "title": "Hub",
+        "type": "string",
+    })
+    def hub(self, request):
+        return request.resource_path(self, '@@hub', 'hub.txt')
 
     @calculated_property(condition='date_released', schema={
         "title": "Month released",
@@ -187,10 +187,10 @@ class Biodataset(Item):
     def month_released(self, date_released):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
-class FileSet(Biodataset):
-    item_type = 'file_set'
-    base_types = ['FileSet'] + Biodataset.base_types
-    schema = load_schema('encoded:schemas/file_set.json')
+class BiofileSet(Biodataset):
+    item_type = 'biofile_set'
+    base_types = ['BiofileSet'] + Biodataset.base_types
+    schema = load_schema('encoded:schemas/biofile_set.json')
     embedded = Biodataset.embedded
 
     @calculated_property(schema={
@@ -265,6 +265,108 @@ class FileSet(Biodataset):
     def assembly(self, request, original_files, related_files, status):
         return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
 
+
+# @collection(
+#     name='biopublication-data',
+#     unique_key='accession',
+#     properties={
+#         'title': "Biopublication file set",
+#         'description': 'A set of files that are described/analyzed in a publication.',
+#     })
+# class BiopublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedAssaySynonyms):
+#     item_type = 'biopublication_data'
+#     schema = load_schema('encoded:schemas/publication_data.json')
+#     embedded = [
+#         # 'biosample_ontology',
+#         # 'organism',
+#         'submitted_by',
+#         'lab',
+#         # 'award.pi.lab',
+#         # 'documents.lab',
+#         # 'documents.award',
+#         # 'documents.submitted_by',
+#         'references'
+#     ]
+
+
+# @collection(
+#     name='bioreferences',
+#     unique_key='accession',
+#     properties={
+#         'title': "Bioreference file set",
+#         'description': 'A set of reference files used by KCE.',
+#     })
+# class Bioreference(BiofileSet):
+#     item_type = 'reference'
+#     schema = load_schema('encoded:schemas/reference.json')
+#     embedded = BiofileSet.embedded + ['files.biodataset']
+
+
+# @collection(
+#     name='bioucsc-browser-composites',
+#     unique_key='accession',
+#     properties={
+#         'title': "BioUCSC browser composite file set",
+#         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
+#     })
+# class BioucscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynonyms):
+#     item_type = 'ucsc_browser_composite'
+#     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
+#     embedded = FileSet.embedded + [
+#         'organism',
+#         'files.biodataset',
+#         'files.bioreplicate.biolibrary',
+#         'files.biolibrary'
+#     ]
+
+#     @calculated_property(condition='files', schema={
+#         "title": "Organism",
+#         "type": "array",
+#         "items": {
+#             "type": 'string',
+#             # "linkTo": "Organism"
+#         },
+#     })
+#     def organism(self, request, files):
+#         organisms = []
+#         if files:
+#             for idx, path in enumerate(files):
+#                 # Need to cap this due to the large numbers of files in related_files
+#                 if idx < 100:
+#                     f = request.embed(path, '@@object')
+#                     if 'biolibrary' in f:
+#                         lib = request.embed(f['biolibrary'], '@@object?skip_calculated=true')
+#                         if 'biospecimen' in lib:
+#                             bio = request.embed(lib['biospecimen'], '@@object?skip_calculated=true')
+#                             if 'species' in bio:
+#                                 organisms.append(bio['species'])
+#             if organisms:
+#                 return paths_filtered_by_status(request, list(set(organisms)))
+#             else:
+#                 return organisms
+
+
+# @collection(
+#     name='bioprojects',
+#     unique_key='accession',
+#     properties={
+#         'title': "Bioproject file set",
+#         'description': 'A set of files that comprise a project.',
+#     })
+# class Bioproject(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedAssaySynonyms):
+#     item_type = 'bioproject'
+#     schema = load_schema('encoded:schemas/project.json')
+#     embedded = FileSet.embedded + [
+#         # 'biosample_ontology',
+#         'files.biodataset',
+#         'files.bioreplicate.biolibrary',
+#         'files.biolibrary',
+#         'files.bioreplicate.bioexperiment',
+#         # 'organism'
+#     ]
+
+
+
 @abstract_collection(
     name='bioseries',
     unique_key='accession',
@@ -272,6 +374,8 @@ class FileSet(Biodataset):
         'title': "Bioseries",
         'description': 'Listing of all types of series datasets.',
     })
+
+
 class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'bioseries'
     base_types = ['Bioseries'] + Biodataset.base_types
