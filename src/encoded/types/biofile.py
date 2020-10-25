@@ -38,6 +38,7 @@ import time
 
 from encoded.upload_credentials import UploadCredentials
 
+
 @collection(
     name='biofiles',
     unique_key='accession',
@@ -52,17 +53,45 @@ class Biofile(Item):
 
     rev = {
 
+        'paired_with': ('Biofile', 'paired_with'),
+        'superseded_by': ('Biofile', 'supersedes'),
+
     }
 
     embedded = [
         'biolibrary',
         'platform',
-
-        'paired_with',
+        'award',
+        # 'award.pi',
+        # 'award.pi.lab',
+        'bioreplicate',
+        'bioreplicate.bioexperiment',
+        'bioreplicate.bioexperiment.lab',
+        # 'bioreplicate.bioexperiment.target',
+        # 'bioreplicate.biolibrary',
+        'lab',
+        'submitted_by',
+        # 'analysis_step_version.analysis_step',
+        # 'analysis_step_version.analysis_step.pipelines',
+        # 'analysis_step_version.software_versions',
+        # 'analysis_step_version.software_versions.software',
+        # 'quality_metrics',
+        # 'step_run',
 
     ]
     audit_inherit = [
-
+        'bioreplicate',
+        'bioreplicate.experiment',
+        # 'bioreplicate.experiment.target',
+        # 'bioreplicate.biolibrary',
+        'biolibrary',
+        'lab',
+        'submitted_by',
+        # 'analysis_step_version.analysis_step',
+        # 'analysis_step_version.analysis_step.pipelines',
+        # 'analysis_step_version.analysis_step.versions',
+        # 'analysis_step_version.software_versions',
+        # 'analysis_step_version.software_versions.software'
     ]
     set_status_up = [
         'platform',
@@ -72,3 +101,25 @@ class Biofile(Item):
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a file that supersedes.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Biofile.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(
+        condition=lambda paired_end=None: paired_end == '1')
+    def paired_with(self, root, request):
+        paired_with = self.get_rev_links('paired_with')
+        if not paired_with:
+            return None
+        item = root.get_by_uuid(paired_with[0])
+        return request.resource_path(item)

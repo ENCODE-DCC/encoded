@@ -59,11 +59,11 @@ class Biodataset(Item):
         # 'files.bioreplicate.bioexperiment.target',
         # 'files.replicate.experiment.target.genes',
         'files.submitted_by',
-        # 'files.lab',
+        'files.lab',
         'revoked_files',
         'revoked_files.bioreplicate',
         'revoked_files.bioreplicate.bioexperiment',
-        # 'revoked_files.bioreplicate.bioexperiment.lab',
+        'revoked_files.bioreplicate.bioexperiment.lab',
         # 'revoked_files.replicate.experiment.target',
         # 'revoked_files.replicate.experiment.target.genes',
         'revoked_files.submitted_by',
@@ -266,84 +266,21 @@ class BiofileSet(Biodataset):
         return calculate_assembly(request, list(chain(original_files, related_files))[:101], status)
 
 
-# @collection(
-#     name='biopublication-data',
-#     unique_key='accession',
-#     properties={
-#         'title': "Biopublication file set",
-#         'description': 'A set of files that are described/analyzed in a publication.',
-#     })
-# class BiopublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedAssaySynonyms):
-#     item_type = 'biopublication_data'
-#     schema = load_schema('encoded:schemas/publication_data.json')
-#     embedded = [
-#         # 'biosample_ontology',
-#         # 'organism',
-#         'submitted_by',
-#         'lab',
-#         # 'award.pi.lab',
-#         # 'documents.lab',
-#         # 'documents.award',
-#         # 'documents.submitted_by',
-#         'references'
-#     ]
+
+@collection(
+    name='bioreferences',
+    unique_key='accession',
+    properties={
+        'title': "Bioreference file set",
+        'description': 'A set of reference files used by KCE.',
+    })
+class Bioreference(BiofileSet):
+    item_type = 'bioreference'
+    schema = load_schema('encoded:schemas/bioreference.json')
+    embedded = BiofileSet.embedded + ['files.biodataset']
 
 
-# @collection(
-#     name='bioreferences',
-#     unique_key='accession',
-#     properties={
-#         'title': "Bioreference file set",
-#         'description': 'A set of reference files used by KCE.',
-#     })
-# class Bioreference(BiofileSet):
-#     item_type = 'reference'
-#     schema = load_schema('encoded:schemas/reference.json')
-#     embedded = BiofileSet.embedded + ['files.biodataset']
 
-
-# @collection(
-#     name='bioucsc-browser-composites',
-#     unique_key='accession',
-#     properties={
-#         'title': "BioUCSC browser composite file set",
-#         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
-#     })
-# class BioucscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynonyms):
-#     item_type = 'ucsc_browser_composite'
-#     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-#     embedded = FileSet.embedded + [
-#         'organism',
-#         'files.biodataset',
-#         'files.bioreplicate.biolibrary',
-#         'files.biolibrary'
-#     ]
-
-#     @calculated_property(condition='files', schema={
-#         "title": "Organism",
-#         "type": "array",
-#         "items": {
-#             "type": 'string',
-#             # "linkTo": "Organism"
-#         },
-#     })
-#     def organism(self, request, files):
-#         organisms = []
-#         if files:
-#             for idx, path in enumerate(files):
-#                 # Need to cap this due to the large numbers of files in related_files
-#                 if idx < 100:
-#                     f = request.embed(path, '@@object')
-#                     if 'biolibrary' in f:
-#                         lib = request.embed(f['biolibrary'], '@@object?skip_calculated=true')
-#                         if 'biospecimen' in lib:
-#                             bio = request.embed(lib['biospecimen'], '@@object?skip_calculated=true')
-#                             if 'species' in bio:
-#                                 organisms.append(bio['species'])
-#             if organisms:
-#                 return paths_filtered_by_status(request, list(set(organisms)))
-#             else:
-#                 return organisms
 
 
 # @collection(
@@ -459,6 +396,8 @@ class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Ca
         for assembly_from_original_files in calculate_assembly(request, original_files, status):
             combined_assembly.add(assembly_from_original_files)
         for biodataset in related_datasets:
+        
+     
             properties = request.embed(biodataset, '@@object')
             if properties['status'] not in ('deleted', 'replaced'):
                 for assembly_from_related_dataset in properties['assembly']:

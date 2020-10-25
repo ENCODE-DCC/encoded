@@ -1,0 +1,125 @@
+{
+    "title": "Bioreference",
+    "description": "Schema for submitting metadata for a reference set.",
+    "id": "/profiles/bioreference.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "award"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "biodataset.json#/properties" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "biodataset.json#/properties" },
+        { "$ref": "biofile_set.json#/properties" }
+    ],
+    "dependencies": {
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "16"
+        },
+        "reference_type": {
+            "title": "Reference type",
+            "description": "The category that best describes the reference set.",
+            "type": "string",
+            "enum": [
+                "index",
+                "genome",
+                "mappability",
+                "spike-in"
+            ]
+        },
+        "organism": {
+            "title": "Organism",
+            "type": "string",
+           "enum":[
+               "human",
+               "mouse"
+           ]
+        }
+       
+    },
+    "facets": {
+        "reference_type": {
+            "title": "Reference type"
+        },
+        "status": {
+            "title": "Status"
+        },
+       
+        "month_released": {
+            "title": "Month released"
+        },
+        
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        }
+       
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "award.project": 1.0,
+        "lab.title": 1.0,
+        "reference_type": 1.0
+    },
+    "changelog": "/profiles/changelogs/bioreference.md"
+
+}
