@@ -10,6 +10,8 @@
 /aws-ip-ranges.json
 /bin/
 /develop/
+# For demo machines with editable snovault
+/snovault
 /develop-eggs/
 /downloads/
 /eggs/

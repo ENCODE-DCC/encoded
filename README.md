@@ -19,28 +19,34 @@ For issues see [Snovault OSX App Installation][] first.
     $ source encoded-venv/bin/activate
     ```
 
-1. Clone the repo and install requirements
+2. Clone the repo and `cd` into it
     ```
-    # Make sure you are in the encoded-venv
+    $ git clone git@github.com:ENCODE-DCC/encoded.git
     $ cd encoded
-    $ pip install -r requirements.osx.txt
     ```
 
-1. Build Application
+3. Build Application
     ```
-    $ make clean && buildout bootstrap && bin/buildout
+    $ make clean && pip install -e '.[dev]' && buildout
     ```
 
-1. Run Application
+If you need to develop `snovault` side by side you can use the following commands instead, assuming `encoded` and `snovault` are present at the same level in your filesystem and virtual environment is activated.
+
+```bash
+$ cd .. && pip install -e snovault
+$ cd encoded && make clean && pip install -e '.[dev]' && buildout
+```
+
+4. Run Application
     ```
-    $ bin/dev-servers development.ini --app-name app --clear --init --load
+    $ dev-servers development.ini --app-name app --clear --init --load
     # In a separate terminal, make sure you are in the encoded-venv
-    $ bin/pserve development.ini
+    $ pserve development.ini
     ```
 
-1. Browse to the interface at http://localhost:6543
+5. Browse to the interface at http://localhost:6543
 
-1. Run Tests
+6. Run Tests
     ```
     # Make sure you are in the encoded-venv
     $ ./circle-tests.sh bdd
@@ -49,6 +55,18 @@ For issues see [Snovault OSX App Installation][] first.
     $ ./circle-tests.sh not-bdd-non-indexing
     $ ./circle-tests.sh npm
     ```
+
+You can also invoke `pytest` directly if you need more granular control over which Python tests to run.
+
+```bash
+# Make sure you are in your venv
+# Run a specific test in a specific file
+$ pytest TEST_FILE_PATH::TEST_NAME
+# Run tests with a name matching the expression
+$ pytest -k $EXPRESSION
+# Run tests with the given mark
+$ pytest -m $PYTEST_MARK
+```
 
 ## Configuration Installation (In Progress)
     The configuration repo is set by 'conf_dir = ./cloud-config' in the 'demo-config.ini' file.  The

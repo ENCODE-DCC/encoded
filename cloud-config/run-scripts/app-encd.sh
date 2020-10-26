@@ -20,25 +20,33 @@ echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD PG_URI: $PG_URI"
 
 # Install App
 cd "$ENCD_HOME"
-
-# Run bootstrap
-sudo -H -u encoded "$ENCD_HOME/.pyvenv/bin/buildout" bootstrap
-bin_build_path="$ENCD_HOME/bin/buildout"
+source "${ENCD_VENV_DIR}/bin/activate"
+pip_install_cmd="$(which pip) install -e ."
+echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $pip_install_cmd"
+sudo -H -u encoded $pip_install_cmd
 if [ $? -gt 0 ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: bootstrap return error status"
-    # Build has failed
-    touch "$encd_failed_flag"
-    exit 1
-fi
-if [ ! -f "$bin_build_path" ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Bootstrap"
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: pip return error status"
     # Build has failed
     touch "$encd_failed_flag"
     exit 1
 fi
 
-# Run bin/buildout
-bin_build_cmd="$ENCD_HOME/bin/buildout -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT buildout:pg-uri=$PG_URI buildout:fe-ip=$ENCD_FE_IP buildout:remote_indexing=$ENCD_REMOTE_INDEXING buildout:index_procs=$ENCD_INDEX_PROCS buildout:index_chunk_size=$ENCD_INDEX_CHUNK_SIZE"
+# Install snovault editably if specified in deploy
+if [ "$ENCD_DEVELOP_SNOVAULT" == 'true' ]; then
+    source "${ENCD_VENV_DIR}/bin/activate"
+    SNOVAULT_DEP=$(grep "SNOVAULT_DEP =" setup.py | cut -d "=" -f 2 | tr -d '" ')
+    PIP_INSTALL_CMD="$(which pip) install -e ${SNOVAULT_DEP}#egg=snovault --src /srv/encoded"
+    sudo -H -u encoded ${PIP_INSTALL_CMD}
+    if [ $? -gt 0 ]; then
+        echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: pip return error status"
+        # Build has failed
+        touch "$encd_failed_flag"
+        exit 1
+    fi
+fi
+
+# Run buildout
+bin_build_cmd="$(which buildout) -c $ENCD_ROLE.cfg buildout:es-ip=$ENCD_ES_IP buildout:es-port=$ENCD_ES_PORT buildout:pg-uri=$PG_URI buildout:fe-ip=$ENCD_FE_IP buildout:remote_indexing=$ENCD_REMOTE_INDEXING buildout:index_procs=$ENCD_INDEX_PROCS buildout:index_chunk_size=$ENCD_INDEX_CHUNK_SIZE"
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $bin_build_cmd"
 sudo -H -u encoded LANG=en_US.UTF-8 $bin_build_cmd
 if [ $? -gt 0 ]; then
@@ -47,7 +55,7 @@ if [ $? -gt 0 ]; then
     touch "$encd_failed_flag"
     exit 1
 fi
-some_other_bin_path="$ENCD_HOME/bin/batchupgrade"
+some_other_bin_path="$(which batchupgrade)"
 if [ ! -f "$some_other_bin_path" ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: bin commands do not exist"
     # Build has failed
@@ -86,7 +94,7 @@ fi
 # Finished running post pg scripts
 sudo -H -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
-    sudo -H -u encoded "$ENCD_HOME/bin/create-mapping" "$ENCD_HOME/production.ini" --app-name app
+    sudo -H -u encoded "$(which create-mapping)" "$ENCD_HOME/production.ini" --app-name app
     if [ $? -gt 0 ]; then
         echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: create-mapping return error status"
         # Build has failed
@@ -96,7 +104,7 @@ if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
 fi
 
 if [ ! "$ENCD_BUILD_TYPE" == 'app' ]; then
-    sudo -H -u encoded "$ENCD_HOME/bin/index-annotations" "$ENCD_HOME/production.ini" --app-name app
+    sudo -H -u encoded "$(which index-annotations)" "$ENCD_HOME/production.ini" --app-name app
     if [ $? -gt 0 ]; then
         echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: index-annotations return error status"
         # Build has failed
