@@ -1,8 +1,0 @@
-boto3==1.11.9
-pip==20.0.2
-psycopg2==2.8.4
-redis==3.5.3
-redis-server==5.0.7
-setuptools==45.1.0
-zc.buildout==2.13.2
-urllib3==1.25.8

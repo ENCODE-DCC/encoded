@@ -19,28 +19,33 @@ For issues see [Snovault OSX App Installation][] first.
     $ source encoded-venv/bin/activate
     ```
 
-1. Clone the repo and install requirements
+2. Clone the repo and `cd` into it
     ```
-    # Make sure you are in the encoded-venv
+    $ git clone git@github.com:ENCODE-DCC/encoded.git
     $ cd encoded
-    $ pip install -r requirements.osx.txt
     ```
 
-1. Build Application
+3. Build Application
     ```
-    $ make clean && buildout bootstrap && bin/buildout
+    $ make clean && pip install -e '.[dev]' && buildout
     ```
 
-1. Run Application
+If you need to develop `snovault` side by side you can use the following commands instead, assuming `encoded` and `snovault` are present at the same level in your filesystem.
     ```
-    $ bin/dev-servers development.ini --app-name app --clear --init --load
+    $ cd .. && pip install -e snovault
+    $ cd encoded && make clean && pip install -e '.[dev]' && buildout
+    ```
+
+4. Run Application
+    ```
+    $ dev-servers development.ini --app-name app --clear --init --load
     # In a separate terminal, make sure you are in the encoded-venv
-    $ bin/pserve development.ini
+    $ pserve development.ini
     ```
 
-1. Browse to the interface at http://localhost:6543
+5. Browse to the interface at http://localhost:6543
 
-1. Run Tests
+6. Run Tests
     ```
     # Make sure you are in the encoded-venv
     $ ./circle-tests.sh bdd
