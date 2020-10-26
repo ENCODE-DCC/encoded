@@ -2,11 +2,16 @@
 
 http://pyramid.readthedocs.org/en/latest/narr/testing.html
 '''
+import tempfile
+
 import pkg_resources
 import pytest
 from pytest import fixture
 
 from snovault.tests.testappfixtures import _app_settings as sno_settings
+
+
+tempfile.tempdir = '/tmp'
 
 
 pytest_plugins = [

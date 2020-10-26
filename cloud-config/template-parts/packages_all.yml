@@ -16,6 +16,7 @@
 - libssl-dev
 - libsqlite3-dev
 - python3-dev
+- python3-pip
 - python3-venv
 - zlib1g-dev
 ## redis
