@@ -692,6 +692,7 @@
                                 "file_format": {
                                     "enum": [
                                         "bam",
+                                        "starch",
                                         "sam",
                                         "gtf",
                                         "bigWig",
