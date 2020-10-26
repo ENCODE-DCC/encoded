@@ -1,7 +1,7 @@
 [
     {
         "_test": "spikes",
-        "accession": "KCEBE000AER",
+        "accession": "KCEBE000REF",
         "award": "ENCODE2",
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset",
@@ -12,7 +12,7 @@
     },
     {
         "_test": "spikes2",
-        "accession": "KCEBE000AES",
+        "accession": "KCEBE001AES",
         "award": "ENCODE2",
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset 2",
@@ -23,7 +23,7 @@
     },
     {
         "_test": "RAMPAGE spike-ins",
-        "accession": "KCEBE000ADH",
+        "accession": "KCEBE001ADH",
         "award": "U54HG007005",
         "reference_type": "spike-in",
         "description": "Spike-ins used in RAMPAGE experiments from CSHL",

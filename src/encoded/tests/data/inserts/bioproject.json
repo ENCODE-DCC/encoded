@@ -1,0 +1,49 @@
+[
+    {
+        "_test": "ec3 dataset",
+        "accession": "KCEBE000AJW",
+        "award": "ENCODE2",
+        "project_type": "evaluation",
+        "description": "RNA Working Group Evaluation Dataset",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "1e55c9e0-a785-4783-938b-82f116eefa91",
+        "date_released": "2016-01-01"
+    },
+	{
+		"_test": "slushie dataset",
+		"project_type": "evaluation",
+		"award": "U54HG007004",
+		"description": "Uniformly processed ENCODE3 eCLIP October 2015",
+		"submitted_by": "facilisi.tristique@potenti.vivamus",
+		"lab": "j-michael-cherry",
+		"accession": "KCEBE636JNF",
+		"status": "in progress",
+		"uuid": "22cc1fe0-7da8-4f59-9386-00558fe35eb0"
+	},
+	{
+		"_test": "validation dataset",
+		"project_type": "validation",
+		"uuid": "65ad5b6e-37a9-4b9f-bc6d-bab73e0fd8f3",
+		"status": "released",
+		"award": "U54HG007004",
+		"lab": "j-michael-cherry",
+		"description": "Enhancer Validations for ENCODE3",
+		"submitted_by": "facilisi.tristique@potenti.vivamus",
+		"accession": "KCEBE554OJS",
+		"date_released": "1994-04-05"
+	},
+	{
+		"_test": "evaluation dataset",
+		"project_type": "evaluation",
+		"accession": "KCEBE860CMY",
+		"submitted_by": "facilisi.tristique@potenti.vivamus",
+		"status": "released",
+		"description": "The ENCODE3 TF ChIP-seq peak calling evaluation dataset. This dataset was used by members of the Binding Working Group to evaluate candiate TF peak callers for the defined processing pipeline.",
+		"award": "U54HG007004",
+		"lab": "j-michael-cherry",
+		"uuid": "4b088d63-26ac-4679-ac15-60129156064b",
+		"date_released": "2001-10-21"
+	}
+]

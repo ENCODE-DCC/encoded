@@ -283,24 +283,24 @@ class Bioreference(BiofileSet):
 
 
 
-# @collection(
-#     name='bioprojects',
-#     unique_key='accession',
-#     properties={
-#         'title': "Bioproject file set",
-#         'description': 'A set of files that comprise a project.',
-#     })
-# class Bioproject(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedAssaySynonyms):
-#     item_type = 'bioproject'
-#     schema = load_schema('encoded:schemas/project.json')
-#     embedded = FileSet.embedded + [
-#         # 'biosample_ontology',
-#         'files.biodataset',
-#         'files.bioreplicate.biolibrary',
-#         'files.biolibrary',
-#         'files.bioreplicate.bioexperiment',
-#         # 'organism'
-#     ]
+@collection(
+    name='bioprojects',
+    unique_key='accession',
+    properties={
+        'title': "Bioproject file set",
+        'description': 'A set of files that comprise a project.',
+    })
+class Bioproject(BiofileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedAssaySynonyms):
+    item_type = 'bioproject'
+    schema = load_schema('encoded:schemas/bioproject.json')
+    embedded = BiofileSet.embedded + [
+        # 'biosample_ontology',
+        'files.biodataset',
+        'files.bioreplicate.biolibrary',
+        'files.biolibrary',
+        'files.bioreplicate.bioexperiment',
+        # 'organism'
+    ]
 
 
 

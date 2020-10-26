@@ -1,10 +1,10 @@
 {
-    "title": "Bioreference",
-    "description": "Schema for submitting metadata for a reference set.",
-    "id": "/profiles/bioreference.json",
+    "title": "Bioproject",
+    "description": "Schema for submitting metadata for a project.",
+    "id": "/profiles/bioproject.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award"],
+    "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -16,8 +16,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "biodataset.json#/properties" },
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "biodataset.json#/properties" },
         { "$ref": "biofile_set.json#/properties" }
     ],
     "dependencies": {
@@ -45,36 +45,29 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "15"
         },
-        "reference_type": {
-            "title": "Reference type",
-            "description": "The category that best describes the reference set.",
+        "project_type": {
+            "title": "Project type",
+            "description": "The category that best describes the project.",
             "type": "string",
             "enum": [
-                "index",
-                "genome",
-                "mappability",
-                "spike-in"
+                "evaluation",
+                "validation"
             ]
-        },
-        "organism": {
-            "title": "Organism",
-            "type": "string",
-           "enum":[
-               "human",
-               "mouse"
-           ]
         }
-       
     },
     "facets": {
-        "reference_type": {
-            "title": "Reference type"
+        "project_type": {
+            "title": "Project type"
         },
+       
         "status": {
             "title": "Status"
         }
+       
+       
+       
        
     },
     "columns": {
@@ -83,16 +76,22 @@
             "type": "string"
         },
        
+       
+        
         "status": {
             "title": "Status",
             "type": "string"
         }
-       
+        
     },
     "boost_values": {
         "accession": 1.0,
-        "reference_type": 1.0
+        
+        
+       
+        
+        "project_type": 1.0
     },
-    "changelog": "/profiles/changelogs/bioreference.md"
+    "changelog": "/profiles/changelogs/bioproject.md"
 
 }

@@ -26,10 +26,9 @@ ORDER = [
     'pathology_report',
     'surgery_procedure',
     'biospecimen',
-    'biodataset',
-    'biofile_set',
-'bioreference',
-'bioseries',
+
+    'bioreference',
+    'bioproject',
 
     'bioexperiment',
     'platform',
@@ -360,7 +359,8 @@ def pipeline_logger(item_type, phase):
                     skipped += 1
                 elif _errors:
                     errors += 1
-                    logger.error('%s row %d: Error PROCESSING: %s\n%r\n' % (item_type, row_number, _errors, trim(row)))
+                    logger.error('%s row %d: Error PROCESSING: %s\n%r\n' %
+                                 (item_type, row_number, _errors, trim(row)))
                 yield row
                 continue
 
@@ -383,7 +383,8 @@ def pipeline_logger(item_type, phase):
 
             if res.status_int // 100 == 4:
                 errors += 1
-                logger.error('%s row %d: %s (%s)\n%r\n' % (item_type, row_number, res.status, url, trim(row['_value'])))
+                logger.error('%s row %d: %s (%s)\n%r\n' %
+                             (item_type, row_number, res.status, url, trim(row['_value'])))
 
             yield row
 
