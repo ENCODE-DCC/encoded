@@ -1,7 +1,7 @@
 ## Changelog for analysis_step.json
 
 ### Minor changes since schema version 12
-* * Added *gene stabilities* and *preprocessed alignments* to the enum list for *input_file_types* and *output_file_types*
+* Added *gene stabilities* and *preprocessed alignments* to the enum list for *input_file_types* and *output_file_types*
 
 ### Schema version 12
 * *input_file_types* and *output_file_types* *smoothed methylation stage at CpG* was updated to *smoothed methylation state at CpG*
