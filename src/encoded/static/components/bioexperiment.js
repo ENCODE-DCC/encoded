@@ -224,14 +224,14 @@ class Bioexperiment extends React.Component {
         }
         console.log("libraryDoc", libraryDocs);
         // Create platforms array from file platforms; ignore duplicate platforms.
-        // const platforms = {};
-        // if (context.files && context.files.length) {
-        //     context.files.forEach((file) => {
-        //         if (file.platform && file.dataset === context['@id']) {
-        //             platforms[file.platform['@id']] = file.platform;
-        //         }
-        //     });
-        // }
+        const platforms = {};
+        if (context.files && context.files.length) {
+            context.files.forEach((file) => {
+                if (file.platform && file.biodataset === context['@id']) {
+                    platforms[file.platform['@id']] = file.platform;
+                }
+            });
+        }
 
         // If we have replicates, handle what we used to call Assay Details -- display data about
         // each of the replicates, breaking out details
@@ -385,9 +385,9 @@ class Bioexperiment extends React.Component {
                         <Breadcrumbs root="/search/?type=Bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Experiment summary for {context.accession}</h2>
                         <ReplacementAccessions context={context} />
-                        {/* <div className="cart__toggle--header">
+                        <div className="cart__toggle--header">
                             <CartToggle element={context} />
-                        </div> */}
+                        </div>
                         <DisplayAsJson />
                         {/* {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })} */}
                     </div>
@@ -442,7 +442,7 @@ class Bioexperiment extends React.Component {
 
                                     {AssayDetails(replicates, this.libraryValues, librarySpecials, libraryComponents)}
 
-                                    {/* {Object.keys(platforms).length ?
+                                    {Object.keys(platforms).length ?
                                         <div data-test="platform">
                                             <dt>Platform</dt>
                                             <dd>
@@ -454,7 +454,7 @@ class Bioexperiment extends React.Component {
                                                 )}
                                             </dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
                                     {context.possible_controls && context.possible_controls.length ?
                                         <div data-test="possible-controls">
