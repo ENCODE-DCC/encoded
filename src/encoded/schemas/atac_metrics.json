@@ -8,159 +8,459 @@
 	"identifyingProperties": ["uuid", "aliases"],
 	"additionalProperties": false,
 	"mixinProperties": [
-        {"$ref": "mixins.json#/aliases"},
-        {"$ref": "mixins.json#/documents"},
-        {"$ref": "mixins.json#/notes"},
-        {"$ref": "mixins.json#/submitted"},
-        {"$ref": "mixins.json#/schema_version"},
-        {"$ref": "mixins.json#/uuid"},
-        {"$ref": "mixins.json#/standard_status"},
-        {"$ref": "mixins.json#/quality_metric_of"}
-    ],
-    "properties": {
-        "schema_version": {
-            "default": "1"
-        },
-        "median_fragments_per_cell": {
-        	"title": "Median fragments per cell",
-        	"description": "Among barcodes identified as cells, the median number of fragments per barcode.",
-        	"type": "integer"
-        },
-        "median_per_cell_total_library_complexity": {
-        	"title": "Median per cell total library complexity",
-        	"description": "Estimated median per cell library complexity",
-        	"type": "number"
-        },
-        "median_per_cell_unique_fragments_at_50000_RRPC": {
-        	"title": "Median per cell unique fragments at 50000 RRPC",
-        	"description": "Median unique fragments per cell after downsampling to 50K raw reads per cell",
-        	"type": "number"
-        },
-        "median_per_cell_unique_fragments_at_30000_RRPC": {
-        	"title": "Median per cell unique fragments at 30000 RRPC",
-        	"description": "Median unique fragments per cell after downsampling to 30K raw reads per cell",
-        	"type": "number"
-        },
-        "frac_cut_fragments_in_peaks": {
-        	"title": "Fraction of cut sites in peaks",
-        	"desciption": "Fraction of transposition events in peaks",
-        	"type": "number"
-        },
-        "frac_fragments_nfr": {
-        	"title": "Fraction of fragments nfr",
-        	"description": "Fraction of fragments in nucleosome-free regions (with size smaller than 147 basepairs)",
-        	"type": "number"
-        },
-        "frac_fragments_nuc": {
-        	"title": "Fraction of fragments nuc",
-        	"description": "Fraction of fragments flanking a single nucleosome (with size between 147 and 294 basepairs)",
-        	"type": "number"
-        },
-        "frac_fragments_nfr_or_nuc": {
-        	"title": "Fraction of fragments nfr or nuc",
-        	"description": "Fraction of fragments in nucleosome-free or single-nucleosome regions",
-        	"type": "number"
-        },
-        "frac_fragments_overlapping_targets": {
-        	"title": "Fraction of fragments overlapping targets",
-        	"description": "The fraction of fragments (that passed all filters) overlapping targeted regions (transcription start sites, DNase hypersensitive regions, enhancer or promoter regions, as present in the reference)",
-        	"type": "number"
-        },
-        "frac_fragments_overlapping_peaks": {
-        	"title": "Fraction of fragments overlapping peaks",
-        	"description": "The fraction of fragments (that passed all filters) overlapping the set of peaks called for the library.",
-        	"type": "number"
-        },
-        "tss_enrichment_score": {
-        	"title": "Tss enrichment score",
-        	"description": "The TSS profile is the summed accessibility signal (defined as number of cut sites per base) in a window of 2,000 bases around all the annotated TSSs, normalized by the minimum signal in the window. This metric reports the maximum value in the profile",
-        	"type": "number"
-        },
-        "bc_q30_bases_fract": {
-        	"title": "Fraction of barcode q30 bases",
-        	"description": "Fraction of Q30 bases in barcode read",
-        	"type": "number"
-        },
-        "r1_q30_bases_fract": {
-        	"title": "Fraction of R1 q30 bases",
-        	"desciption": "Fraction of Q30 bases in Read 1",
-        	"type": "number"
-        },
-        "r2_q30_bases_fract": {
-        	"title": "Fraction of R2 q30 bases", 
-        	"description": "Fraction of Q30 bases in Read 2", 
-        	"type": "number"
-        },
-        "si_q30_bases_fract": {
-        	"title": "Fraction of sample index q30 bases",
-        	"description": "Fraction of Q30 bases in Sample Index",
-        	"type": "number"
-        },
-        "frac_waste_no_barcode": {
-        	"title": "Fraction of invalid barcode read pairs",
-        	"description": "Fraction of read pairs with invalid barcodes",
-        	"type": "number"
-        },
-        "frac_waste_overall_nondup": {
-        	"title": "Fraction of overall nondup read pairs",
-        	"description": "Fraction of total read pairs that are non-duplicate and wasted read pairs",
-        	"type": "number"
-        },
-        "frac_waste_non_cell_barcode": {
-        	"title": "Fraction of non-cell barcode read pairs",
-        	"description": "Fraction of total read pairs in non-cell barcodes",
-        	"type": "number"
-        },
-        "frac_waste_chimeric": {
-        	"title": "Fraction of chimeric read pairs",
-        	"description": "Fraction of total read pairs that are improper pairs or map to a supplementary contig and are in cell barcodes",
-        	"type": "number"
-        },
-        "frac_waste_mitochondrial": {
-        	"title": "Fraction of mitochondrial read pairs",
-        	"description": "Fraction of all the sequenced read pairs that come from cell barcodes and map to the mitochondrial genome.",
-        	"type": "number"
-        },
-        "frac_waste_unmapped": {
-        	"title": "Fraction of unmapped read pairs",
-        	"description": "Fraction of all the sequenced read pairs that come from cell barcodes and could not be mapped to the genome with confidence.",
-        	"type": "number"
-        },
-        "frac_waste_lowmapq": {
-        	"title": "Fraction of lowmapq read pairs",
-        	"description": "Fraction of total read pairs that have low mapping quality and are in cell barcodes.",
-        	"type": "number"
-        },
-        "frac_waste_duplicate": {
-        	"title": "Fraction of duplicate read pairs",
-        	"description": "Fraction of all the sequenced read pairs that come from cell barcodes and are deemed to be PCR duplicates due to alignment to the same genomic position as another read pair in the library.",
-        	"type": "number"
-        },
-        "frac_waste_total": {
-        	"title": "Fraction of total wasted read pairs",
-        	"description": "Fraction of total read pairs wasted (either have invalid barcodes or in non cell barcodes, or did not pass filters).",
-        	"type": "number"
-        },
-        "total_usable_fragments": {
-        	"title": "Total usable fragments",
-        	"description": "Total number of read pairs in cell barcodes passing all filters.",
-        	"type": "number"
-        },
-        "frac_mapped_confidently": {
-        	"title": "Fraction of mapped confidently read pairs",
-        	"description": "Fraction of all the sequenced read pairs that mapped to the genome with high mapping quality (>30 mapq). Includes unique and duplicate read pairs from any barcode",
-        	"type": "number"
-        },
-        "num_fragments": {
-        	"title": "Number of fragments",
-        	"description": "Total number of read pairs that were assigned to this library in demultiplexing.",
-        	"type": "number"
-        },
-        "cells_detected": {
-        	"title": "Cells detected",
-        	"description": "The total number of barcodes identified as cells",
-        	"type": "number"
-        }
-    },
-    "changelog": "/profiles/changelogs/atac_metrics.md"
+		{"$ref": "mixins.json#/aliases"},
+		{"$ref": "mixins.json#/documents"},
+		{"$ref": "mixins.json#/notes"},
+		{"$ref": "mixins.json#/submitted"},
+		{"$ref": "mixins.json#/schema_version"},
+		{"$ref": "mixins.json#/uuid"},
+		{"$ref": "mixins.json#/standard_status"},
+		{"$ref": "mixins.json#/quality_metric_of"}
+	],
+	"properties": {
+		"schema_version": {
+			"default": "1"
+		},
+		"median_fragments_per_cell": {
+			"title": "Median fragments per cell",
+			"description": "Among barcodes identified as cells, the median number of fragments per barcode.",
+			"type": "number"
+		},
+		"median_per_cell_total_library_complexity": {
+			"title": "Median per cell total library complexity",
+			"description": "Estimated median per cell library complexity",
+			"type": "number"
+		},
+		"median_per_cell_unique_fragments_at_50000_RRPC": {
+			"title": "Median per cell unique fragments at 50000 RRPC",
+			"description": "Median unique fragments per cell after downsampling to 50K raw reads per cell",
+			"type": "number"
+		},
+		"median_per_cell_unique_fragments_at_30000_RRPC": {
+			"title": "Median per cell unique fragments at 30000 RRPC",
+			"description": "Median unique fragments per cell after downsampling to 30K raw reads per cell",
+			"type": "number"
+		},
+		"frac_cut_fragments_in_peaks": {
+			"title": "Fraction of cut sites in peaks",
+			"desciption": "Fraction of transposition events in peaks",
+			"type": "number"
+		},
+		"frac_fragments_nfr": {
+			"title": "Fraction of fragments nfr",
+			"description": "Fraction of fragments in nucleosome-free regions (with size smaller than 147 basepairs)",
+			"type": "number"
+		},
+		"frac_fragments_nuc": {
+			"title": "Fraction of fragments nuc",
+			"description": "Fraction of fragments flanking a single nucleosome (with size between 147 and 294 basepairs)",
+			"type": "number"
+		},
+		"frac_fragments_nfr_or_nuc": {
+			"title": "Fraction of fragments nfr or nuc",
+			"description": "Fraction of fragments in nucleosome-free or single-nucleosome regions",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_targets": {
+			"title": "Fraction of fragments overlapping targets",
+			"description": "The fraction of fragments (that passed all filters) overlapping targeted regions (transcription start sites, DNase hypersensitive regions, enhancer or promoter regions, as present in the reference)",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_peaks": {
+			"title": "Fraction of fragments overlapping peaks",
+			"description": "The fraction of fragments (that passed all filters) overlapping the set of peaks called for the library.",
+			"type": "number"
+		},
+		"tss_enrichment_score": {
+			"title": "Tss enrichment score",
+			"description": "The TSS profile is the summed accessibility signal (defined as number of cut sites per base) in a window of 2,000 bases around all the annotated TSSs, normalized by the minimum signal in the window. This metric reports the maximum value in the profile",
+			"type": "number"
+		},
+		"frac_q30_bases_in_barcode": {
+			"title": "Fraction of q30 bases in barcode",
+			"description": "Fraction of Q30 bases in barcode read",
+			"type": "number"
+		},
+		"frac_q30_bases_in_read1": {
+			"title": "Fraction of q30 bases in Read1",
+			"desciption": "Fraction of Q30 bases in Read 1",
+			"type": "number"
+		},
+		"frac_q30_bases_in_read2": {
+			"title": "Fraction of q30 bases in Read2",
+			"description": "Fraction of Q30 bases in Read 2",
+			"type": "number"
+		},
+		"frac_q30_bases_in_sample_index": {
+			"title": "Fraction of q30 bases in sample index",
+			"description": "Fraction of Q30 bases in Sample Index",
+			"type": "number"
+		},
+		"frac_waste_no_barcode": {
+			"title": "Fraction of invalid barcode read pairs",
+			"description": "Fraction of read pairs with invalid barcodes",
+			"type": "number"
+		},
+		"frac_waste_overall_nondup": {
+			"title": "Fraction of overall nondup read pairs",
+			"description": "Fraction of total read pairs that are non-duplicate and wasted read pairs",
+			"type": "number"
+		},
+		"frac_waste_noncell_barcode": {
+			"title": "Fraction of non-cell barcode read pairs",
+			"description": "Fraction of total read pairs in non-cell barcodes",
+			"type": "number"
+		},
+		"frac_waste_chimeric": {
+			"title": "Fraction of chimeric read pairs",
+			"description": "Fraction of total read pairs that are improper pairs or map to a supplementary contig and are in cell barcodes",
+			"type": "number"
+		},
+		"frac_waste_mito": {
+			"title": "Fraction of mitochondrial read pairs",
+			"description": "Fraction of all the sequenced read pairs that come from cell barcodes and map to the mitochondrial genome.",
+			"type": "number"
+		},
+		"frac_waste_unmapped": {
+			"title": "Fraction of unmapped read pairs",
+			"description": "Fraction of all the sequenced read pairs that come from cell barcodes and could not be mapped to the genome with confidence.",
+			"type": "number"
+		},
+		"frac_waste_lowmapq": {
+			"title": "Fraction of lowmapq read pairs",
+			"description": "Fraction of total read pairs that have low mapping quality and are in cell barcodes.",
+			"type": "number"
+		},
+		"frac_waste_dup": {
+			"title": "Fraction of duplicate read pairs",
+			"description": "Fraction of all the sequenced read pairs that come from cell barcodes and are deemed to be PCR duplicates due to alignment to the same genomic position as another read pair in the library.",
+			"type": "number"
+		},
+		"frac_waste_total": {
+			"title": "Fraction of total wasted read pairs",
+			"description": "Fraction of total read pairs wasted (either have invalid barcodes or in non cell barcodes, or did not pass filters).",
+			"type": "number"
+		},
+		"total_usable_fragments": {
+			"title": "Total usable fragments",
+			"description": "Total number of read pairs in cell barcodes passing all filters.",
+			"type": "number"
+		},
+		"frac_mapped_confidently": {
+			"title": "Fraction of mapped confidently read pairs",
+			"description": "Fraction of all the sequenced read pairs that mapped to the genome with high mapping quality (>30 mapq). Includes unique and duplicate read pairs from any barcode",
+			"type": "number"
+		},
+		"number_fragments": {
+			"title": "Number of fragments",
+			"description": "Total number of read pairs that were assigned to this library in demultiplexing.",
+			"type": "number"
+		},
+		"cells_detected": {
+			"title": "Cells detected",
+			"description": "The total number of barcodes identified as cells",
+			"type": "number"
+		},
+		"bases_in_peaks":{
+			"title": "Bases in peaks",
+			"type": "number"
+		},
+		"q30_bases_in_barcode":{
+			"title": "q30 bases in barcode",
+			"type": "number"
+		},
+		"total_bases_in_barcode":{
+			"title": "Total bases in barcode",
+			"type": "number"
+		},
+		"bulk_estimated_saturation":{
+			"title": "Bulk estimated saturation",
+			"type": "number"
+		},
+		"bulk_total_library_complexity":{
+			"title": "Bulk total library complexity",
+			"type": "number"
+		},
+		"bulk_unique_fragments_at_30000000_reads":{
+			"title": "Bulk unique fragments at 30000000 reads",
+			"type": "number"
+		},
+		"cell_threshold":{
+			"title": "Cell threshold",
+			"type": "number"
+		},
+		"ctcf_enrichment_score":{
+			"title": "CTCF enrichment score",
+			"type": "number"
+		},
+		"downsample_succeeded":{
+			"title": "Downsample succeeded",
+			"type": "boolean"
+		},
+		"estimated_cells_present":{
+			"title": "Estimated cells present",
+			"type": "number"
+		},
+		"estimated_frac_cells_annotated":{
+			"title": "Estimated fraction cells annotated",
+			"type": "number"
+		},
+		"estimated_gelbead_doublet_rate":{
+			"title": "Estimated gelbead doublet rate",
+			"type": "number"
+		},
+		"fitted_dispersion_noise":{
+			"title": "Fitted dispersion noise",
+			"type": "number"
+		},
+		"fitted_dispersion_signal":{
+			"title": "Fitted dispersion signal",
+			"type": "number"
+		},
+		"fitted_mean_noise":{
+			"title": "Fitted mean noise",
+			"type": "number"
+		},
+		"fitted_mean_signal":{
+			"title": "Fitted mean signal",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_blacklist":{
+			"title": "Fraction fragments overlapping blacklist",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_dnase":{
+			"title": "Fraction fragments overlapping dnase",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_enhancer":{
+			"title": "Fraction fragments overlapping enhancer",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_promoter":{
+			"title": "Fraction fragments overlapping promoter",
+			"type": "number"
+		},
+		"frac_fragments_overlapping_tss":{
+			"title": "Fraction fragments overlapping tss",
+			"type": "number"
+		},
+		"frac_valid_barcodes":{
+			"title": "Fraction valid barcodes",
+			"type": "number"
+		},
+		"frac_valid_noncells":{
+			"title": "Fraction valid noncells",
+			"type": "number"
+		},
+		"frac_waste_cell_nondup":{
+			"title": "Fraction waste cell nondup",
+			"type": "number"
+		},
+		"frac_cell_calling_noise":{
+			"title": "Fraction cell calling noise",
+			"type": "number"
+		},
+		"frac_gelbead_doublets_cells":{
+			"title": "Fraction gelbead doublets cells",
+			"type": "number"
+		},
+		"frac_of_genome_within_2000bp_of_peaks":{
+			"title": "Fraction of genome within 2000bp of peaks",
+			"type": "number"
+		},
+		"goodness_of_fit":{
+			"title": "Goodness of fit",
+			"type": "number"
+		},
+		"insert_nucleosome_period":{
+			"title": "Insert nucleosome period",
+			"type": "number"
+		},
+		"insert_twist_period":{
+			"title": "Insert twist period",
+			"type": "number"
+		},
+		"mean_fragments_per_cell":{
+			"title": "Mean fragments per cell",
+			"type": "number"
+		},
+		"mean_fragments_per_noncell":{
+			"title": "Mean fragments per noncell",
+			"type": "number"
+		},
+		"median_fragments_per_noncell":{
+			"title": "Median fragments per noncell",
+			"type": "number"
+		},
+		"median_fragments_overlapping_peaks_per_cell":{
+			"title": "Median fragments overlapping peaks per cell",
+			"type": "number"
+		},
+		"median_per_cell_estimated_saturation":{
+			"title": "Median per cell estimated saturation",
+			"type": "number"
+		},
+		"median_per_cell_unique_fragments_at_10000_HQ_RPC":{
+			"title": "Median per cell unique fragments at 10000 HQ RPC",
+			"type": "number"
+		},
+		"median_per_cell_unique_fragments_at_10000_RRPC":{
+			"title": "Median per cell unique fragments at 10000 RRPC",
+			"type": "number"
+		},
+		"median_per_cell_unique_fragments_at_30000_HQ_RPC":{
+			"title": "Median per cell unique fragments at 30000 HQ RPC",
+			"type": "number"
+		},
+		"min_fragments_per_cell":{
+			"title": "Minimum fragments per cell",
+			"type": "number"
+		},
+		"number_reads":{
+			"title": "Number of reads",
+			"type": "number"
+		},
+		"number_of_low_targeting_barcodes":{
+			"title": "Number of low targeting barcodes",
+			"type": "number"
+		},
+		"peakcaller_alpha_bg_noise":{
+			"title": "Peakcaller alpha bg noise",
+			"type": "number"
+		},
+		"peakcaller_frac_bg_noise":{
+			"title": "Peakcaller fraction bg noise",
+			"type": "number"
+		},
+		"peakcaller_frac_zero_noise":{
+			"title": "Peakcaller fraction zero noise",
+			"type": "number"
+		},
+		"peakcaller_mean_bg_noise":{
+			"title": "Peakcaller mean bg noise",
+			"type": "number"
+		},
+		"peakcaller_p_signal":{
+			"title": "Peakcaller p signal",
+			"type": "number"
+		},
+		"peakcaller_p_zero_noise":{
+			"title": "Peakcaller p zero noise",
+			"type": "number"
+		},
+		"peakcaller_threshold":{
+			"title": "Peakcaller threshold",
+			"type": "number"
+		},
+		"putative_barcode_multiplets_found":{
+			"title": "Putative barcode multiplets found",
+			"type": "number"
+		},
+		"putative_gelbead_doublets_found":{
+			"title": "Putative gelbead doublets found",
+			"type": "number"
+		},
+		"q30_bases_in_read1":{
+			"title": "q30 bases in Read1",
+			"type": "number"
+		},
+		"total_bases_in_read1":{
+			"title": "Total bases in Read1",
+			"type": "number"
+		},
+		"q30_bases_in_read2":{
+			"title": "q30 bases in Read2",
+			"type": "number"
+		},
+		"total_bases_in_read2":{
+			"title": "Total bases in Read2",
+			"type": "number"
+		},
+		"q30_bases_in_sample_index":{
+			"title": "q30 bases in sample index",
+			"type": "number"
+		},
+		"total_bases_in_sample_index":{
+			"title": "Total bases in sample index",
+			"type": "number"
+		},
+		"stdev_fragments_per_cell":{
+			"title": "Stdev fragments per cell",
+			"type": "number"
+		},
+		"total_passed_filter_fragments":{
+			"title": "Total passed filter fragments",
+			"type": "number"
+		},
+		"total_peaks_detected":{
+			"title": "Total peaks detected",
+			"type": "number"
+		},
+		"waste_chimeric_fragments":{
+			"title": "Waste chimeric fragments",
+			"type": "number"
+		},
+		"waste_dup_fragments":{
+			"title": "Waste duplicate fragments",
+			"type": "number"
+		},
+		"waste_lowmapq_fragments":{
+			"title": "Waste lowmapq fragments",
+			"type": "number"
+		},
+		"waste_mito_fragments":{
+			"title": "Waste mitochondrial fragments",
+			"type": "number"
+		},
+		"waste_no_barcode_fragments":{
+			"title": "Waste no barcode fragments",
+			"type": "number"
+		},
+		"waste_noncell_barcode_fragments":{
+			"title": "Waste non-cell barcode fragments",
+			"type": "number"
+		},
+		"waste_ratio_dup_cells":{
+			"title": "Waste ratio dup cells",
+			"type": "number"
+		},
+		"waste_ratio_dup_noncells":{
+			"title": "Waste ratio dup noncells",
+			"type": "number"
+		},
+		"waste_ratio_lowmapq_cells":{
+			"title": "Waste ratio lowmapq cells",
+			"type": "number"
+		},
+		"waste_ratio_lowmapq_noncells":{
+			"title": "Waste ratio lowmapq noncells",
+			"type": "number"
+		},
+		"waste_ratio_mito_cells":{
+			"title": "Waste ratio mitochondrial cells",
+			"type": "number"
+		},
+		"waste_ratio_mito_noncells":{
+			"title": "Waste ratio mitochondrial noncells",
+			"type": "number"
+		},
+		"waste_ratio_unmapped_cells":{
+			"title": "Waste ratio unmapped cells",
+			"type": "number"
+		},
+		"waste_ratio_unmapped_noncells":{
+			"title": "Waste ratio unmapped noncells",
+			"type": "number"
+		},
+		"waste_total_fragments":{
+			"title": "Waste total fragments",
+			"type": "number"
+		},
+		"waste_unmapped_fragments":{
+			"title": "Waste unmapped fragments",
+			"type": "number"
+		}
+	},
+	"changelog": "/profiles/changelogs/atac_metrics.md"
 }

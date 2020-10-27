@@ -96,6 +96,12 @@
             "description": "Percentage of bases with Q-score of at least 30 in the RNA read sequence",
             "type": "number"
         },
+        "percent_q30_bases_in_rna_read_2": {
+            "title": "Percent Q30 bases in rna read2",
+            "description": "Percentage of bases with Q-score of at least 30 in the RNA read2 sequence",
+            "comment": "Output only if cellranger assay chemistry is SC5P-PE, as a result of R1 being sequenced longer than 28 bases",
+            "type": "number"
+        },
         "percent_q30_bases_in_sample_index": {
             "title": "Percent Q30 bases in sample index",
             "description": "Percentage of bases with Q-score of at least 30 in the sample index sequences.",

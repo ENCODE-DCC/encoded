@@ -25,7 +25,8 @@
 		"percent_q30_bases_in_umi": 95.4,
 		"percent_reads_in_cells": 86.3,
 		"total_genes_detected": 21421,
-		"median_umi_counts_per_cell": 5676
+		"median_umi_counts_per_cell": 5676,
+		"percent_q30_bases_in_rna_read_2": 77.3
 	},
 	{
 		"aliases": [
