@@ -44,6 +44,41 @@
                     "enum": ["content error"]
                 }
             }
+        },
+        "genome_annotation": {
+            "required": ["assembly"],
+            "oneOf": [
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["hg19"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE 19"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["GRCh38"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE 32", "GENCODE 28", "GENCODE 24"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["mm10"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE M23", "GENCODE M18",  "GENCODE M9"]
+                        }
+                    }
+                }
+            ]
         }
     },
     "properties": {
