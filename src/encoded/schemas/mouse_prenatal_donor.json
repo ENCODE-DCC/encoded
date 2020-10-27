@@ -51,7 +51,31 @@
                 }
             }
         },
-        "carnegie_stage_basis": ["carnegie_stage"],
+        "theiler_stage": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "life_stage": {
+                            "enum": ["embryonic"]
+                        },
+                        "theiler_stage": {
+                            "maximum": 22
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "life_stage": {
+                            "enum": ["fetal"]
+                        },
+                        "theiler_stage": {
+                            "minimum": 23
+                        }
+                    }
+                }
+            ]
+        },
+        "theiler_stage_basis": ["theiler_stage"],
         "weight": ["weight_unit"],
         "weight_unit": ["weight"],
         "crown_rump_length": ["crown_rump_length_units"],
@@ -67,6 +91,18 @@
         },
         "life_stage": {
             "comment": "Based on the Mouse Development Stages ontology, embryonic is up to 15 d post-conception, fetal is 15 d post-conception to birth."
+        },
+        "theiler_stage": {
+            "title": "Theiler stage",
+            "description": "Embryo stage number as defined by Theiler stages.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 26
+        },
+        "theiler_stage_basis": {
+            "title": "Theiler stage basis",
+            "description": "Measurement or phenotype used to assign Theiler stage for a mouse prenatal donor.",
+            "type": "string"
         }
     },
     "facets": {
