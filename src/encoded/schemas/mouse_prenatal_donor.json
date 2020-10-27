@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_prenatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "sex", "strain_term_name"],
+    "required": ["life_stage", "gestational_age", "sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -27,9 +27,39 @@
         {"$ref": "prenatal_donor.json#/properties"}
     ],
     "dependencies": {
-        "carnegie_stage_basis": {
-            "required":["carnegie_stage"]
-        }
+        "gestational_age":  {
+            "oneOf": [
+                {
+                    "properties": {
+                        "gestational_age": {
+                            "enum": ["unknown"]
+                        }
+                    }
+                },
+                {
+                    "required": ["gestational_age_units"]
+                }
+            ]
+        },
+        "gestational_age_units":  {
+            "required": ["gestational_age"],
+            "not": {
+                "properties": {
+                    "gestational_age": {
+                        "enum": ["unknown"]
+                    }
+                }
+            }
+        },
+        "carnegie_stage_basis": ["carnegie_stage"],
+        "weight": ["weight_unit"],
+        "weight_unit": ["weight"],
+        "crown_rump_length": ["crown_rump_length_units"],
+        "crown_rump_length_units": ["crown_rump_length"],
+        "foot_length": ["foot_length_units"],
+        "foot_length_units": ["foot_length"],
+        "knee_heel_length": ["knee_heel_length_units"],
+        "knee_heel_length_units": ["knee_heel_length"]
     },
     "properties": {
         "schema_version": {

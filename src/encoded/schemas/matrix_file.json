@@ -26,13 +26,11 @@
     ],
     "dependencies": {
         "external_accession": {
-            "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
                 "required": ["accession"]
             }
         },
         "revoke_detail": {
-            "comment": "Only revoked files can have revoke_detail specified.",
             "properties": {
                 "status": {
                     "enum": ["revoked"]
@@ -40,7 +38,6 @@
             }
         },
         "content_error_detail":{
-            "comment": "Specification of status of content error is required if content_error_detail is specified",
             "required": ["status"],
             "properties": {
                 "status": {
@@ -195,6 +192,7 @@
             "items": {
                 "title": "Filtering cutoff",
                 "type": "object",
+                "required": ["cutoff_value", "cutoff_units", "cutoff_type"],
                 "additionalProperties": false,
                 "properties": {
                     "cutoff_value": {
