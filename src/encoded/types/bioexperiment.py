@@ -120,7 +120,7 @@ class Bioexperiment(Biodataset,
         biospecimen_summary_list = []
 
   # "species": "mouse_related_info", "patient","collection_date, "sample_type",detailed sample type, "anatomic_site", "initial_quantity", "initial_quantiy_units",
-  # "preservation_method":,  "donor", "host_biosample",   "pooled_from", "part_of",
+  # "preservation_method":,  "donor", "species_biosample",   "pooled_from", "part_of",
 
         biospecimen_summary_dict = {
             "accession": "",
@@ -130,7 +130,7 @@ class Bioexperiment(Biodataset,
             "processing_type": "",
             "tissue_type": "",
             "anatomic_site": "",
-            "host": "",
+            "species": "",
             "primary_site": "",
         }
         if bioreplicate is not None:
@@ -162,8 +162,8 @@ class Bioexperiment(Biodataset,
                             biospecimen_summary_dict['processing_type'] = biospecimenObject["processing_type"]
                         if 'tissue_type' in biospecimenObject:
                             biospecimen_summary_dict['tissue_type'] = biospecimenObject["tissue_type"]
-                        if 'host' in biospecimenObject:
-                            biospecimen_summary_dict['host'] = biospecimenObject["host"]
+                        if 'species' in biospecimenObject:
+                            biospecimen_summary_dict['species'] = biospecimenObject["species"]
                         if 'primary_site' in biospecimenObject:
                             biospecimen_summary_dict['primary_site'] = biospecimenObject["primary_site"]
 
