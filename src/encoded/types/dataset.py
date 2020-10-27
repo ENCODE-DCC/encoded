@@ -570,8 +570,15 @@ class PublicationData(FileSet):
 class Reference(FileSet):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/reference.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset', 'donor', 'examined_loci']
-
+    embedded = FileSet.embedded + [
+        'software_used',
+        'software_used.software',
+        'organism',
+        'files.dataset',
+        'donor',
+        'examined_loci',
+        'related_pipelines'
+    ]
 
 @collection(
     name='ucsc-browser-composites',

@@ -125,6 +125,9 @@
         "reference_type": "sequence barcodes",
         "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
         "status": "in progress",
-        "accession": "ENCSR063SBC"
+        "accession": "ENCSR063SBC",
+        "related_pipelines": [
+            "ENCPL001MRN"
+        ]
     }
 ]

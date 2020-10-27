@@ -686,6 +686,20 @@ const ReferenceComponent = (props, reactContext) => {
                                 </div>
                             : null}
 
+                            {context.related_pipelines && context.related_pipelines.length > 0 ?
+                                <div data-test="relatedpipelines">
+                                    <dt>Related Pipelines</dt>
+                                    <dd>
+                                        {context.related_pipelines.map((pipeline, i) =>
+                                            <React.Fragment>
+                                                {i > 0 ? <span>, </span> : null}
+                                                <a href={pipeline['@id']}>{pipeline.accession}</a>
+                                            </React.Fragment>
+                                        )}
+                                    </dd>
+                                </div>
+                            : null}
+
                             {context.software_used && context.software_used.length > 0 ?
                                 <div data-test="softwareused">
                                     <dt>Software used</dt>

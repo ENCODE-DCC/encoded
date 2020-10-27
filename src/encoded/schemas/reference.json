@@ -118,6 +118,18 @@
                 "type": "string",
                 "linkTo": "Gene"
             }
+        },
+        "related_pipelines": {
+            "title": "Related pipelines",
+            "description": "The pipelines this reference file set is used for",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Related pipeline",
+                "description": "A particular pipeline this reference file set is used for",
+                "type": "string",
+                "linkTo": "Pipeline"
+            }
         }
     },
     "facets": {

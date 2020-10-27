@@ -641,7 +641,7 @@ PHASE1_PIPELINES = {
         remove_keys('related_files'),
     ],
     'reference': [
-        remove_keys('related_files', 'software_used'),
+        remove_keys('related_files', 'software_used', 'related_pipelines'),
     ],
     'computational_model': [
         remove_keys('related_files', 'software_used'),
@@ -739,7 +739,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'reference': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
+        skip_rows_missing_all_keys('related_files', 'software_used', 'related_pipelines'),
     ],
     'computational_model': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
