@@ -22,29 +22,7 @@
         {"$ref": "mixins.json#/urls"},
         {"$ref": "mixins.json#/accessioned_status"}
     ],
-    "dependencies": {
-        "status": {
-            "oneOf": [
-                {
-                    "required": ["date_released"],
-                    "properties": {
-                        "status": {
-                            "enum": ["released", "revoked"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "status": {
-                                "enum": ["released", "revoked", "submitted"]
-                            }
-                        }
-                    }
-                }
-            ]
-        }
-    },
+    "dependencies": {},
     "properties": {
         "schema_version": {
             "default": "1"

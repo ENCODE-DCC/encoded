@@ -27,7 +27,16 @@
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],
-    "dependencies": {},
+    "dependencies": {
+        "post_treatment_time": ["post_treatment_time_units", "treatments"],
+        "post_treatment_time_units": ["post_treatment_time", "treatments"],
+        "preservation_time": ["preservation_time_units", "preservation_method"],
+        "preservation_time_units": ["preservation_time", "preservation_method"],
+        "post_differentiation_time": ["post_differentiation_time_units"],
+        "post_differentiation_time_units": ["post_differentiation_time"],
+        "starting_quantity": ["starting_quantity_units"],
+        "starting_quantity_units": ["starting_quantity"]
+    },
     "properties": {
         "schema_version": {
             "default": "1"
