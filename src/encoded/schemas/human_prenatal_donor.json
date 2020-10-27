@@ -50,8 +50,15 @@
                 }
             }
         },
-        "twin_type": ["twin"],
+        "carnegie_stage": {
+            "properties": {
+                "life_stage": {
+                    "enum": ["embryonic"]
+                }
+            }
+        },
         "carnegie_stage_basis": ["carnegie_stage"],
+        "twin_type": ["twin"],
         "weight": ["weight_unit"],
         "weight_unit": ["weight"],
         "crown_rump_length": ["crown_rump_length_units"],
@@ -67,6 +74,18 @@
         },
         "life_stage": {
             "comment": "Based on the Human Developmental Stages ontology, embryonic is up to 2 mo/8 w LMP, fetal is 2 mo/8 w LMP to birth."
+        },
+        "carnegie_stage": {
+            "title": "Carnegie stage",
+            "description": "Embryo stage number as defined by Carnegie stages.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 23
+        },
+        "carnegie_stage_basis": {
+            "title": "Carnegie stage basis",
+            "description": "Measurement or phenotype used to assign Cargnegie stage for a human embryonic donor.",
+            "type": "string"
         }
     },
     "facets": {

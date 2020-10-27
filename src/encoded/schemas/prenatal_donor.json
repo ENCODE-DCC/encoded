@@ -47,18 +47,6 @@
                 "fetal"
             ]
         },
-        "carnegie_stage": {
-            "title": "Carnegie stage",
-            "description": "Embryo stage number as defined by Carnegie stages.",
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 23
-        },
-        "carnegie_stage_basis": {
-            "title": "Carnegie stage basis",
-            "description": "Measurement or phenotype used to assign Cargnegie stage for a human embryonic donor.",
-            "type": "string"
-        },
         "foot_length": {
             "title": "Foot length",
             "description": "The length of the foot of the embryo or fetus.",
