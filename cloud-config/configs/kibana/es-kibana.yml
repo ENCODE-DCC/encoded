@@ -1,0 +1,3 @@
+xpack.security.enabled: false
+server.host: localhost
+elasticsearch.hosts: http://localhost:9201

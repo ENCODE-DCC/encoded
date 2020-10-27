@@ -1,6 +1,8 @@
 #!/bin/bash
 # Setup elasticsearch data node config
 # - should not be called from frontend build
+source $ENCD_SCRIPTS_DIR/ami-helpers.sh
+
 echo -e "\n$ENCD_INSTALL_TAG $(basename $0)"
 
 # Check previous failure flag
@@ -28,21 +30,6 @@ echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) Running"
 # Script Below
 opts_src="$ENCD_CC_DIR/configs/elasticsearch"
 opts_dest='/etc/elasticsearch'
-
-function copy_with_permission {
-    src_file="$1"
-    dest_file="$2"
-    sudo -u root cp "$src_file" "$dest_file"
-    sudo -u root chown root:elasticsearch "$dest_file"
-}
-
-function append_with_user {
-  line="$1"
-  user="$2"
-  dest="$3"
-  echo "$line" | sudo -u $user tee -a $dest
-}
-
 
 # Initial ES install on demos and es nodes
 # jvm options
@@ -72,8 +59,16 @@ if [ "$ENCD_PG_OPEN" == 'true' ]; then
 fi
 copy_with_permission "$opts_src/$es_opts_filename" "$opts_dest/elasticsearch.yml"
 
+
+# Set up permissions for elasticsearch user
+sudo chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/
+sudo chown -R elasticsearch:elasticsearch /var/log/elasticsearch/
+
+# Access Elasticsearch logs without elevated permissions
+sudo usermod -a -G elasticsearch ubuntu
+
 # Install discovery for clusters, maybe only needed for clusters
-sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
+yes | sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
 # Add es service and start
 sudo /bin/systemctl enable elasticsearch.service
 sudo systemctl start elasticsearch.service
@@ -87,4 +82,16 @@ if [ "$ENCD_BUILD_TYPE" == 'es-nodes' ]; then
     # For es builds we set the is installed flag here since this is the main app
     # We could have alternativily created an app-wrapper.sh for elasticsearch
     touch "$encd_is_installed_flag"
+fi
+
+# Enable monitoring settings
+if [ "$ENCD_MONITOR" == 'true' ]; then
+    curl -X PUT "localhost:9201/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+    {
+        "persistent": {
+            "xpack.monitoring.collection.enabled": true
+        }
+    }'
+    sudo python3 /home/ubuntu/encoded/src/encoded/commands/configure_monitoring.py
+    sudo systemctl restart elasticsearch.service
 fi
