@@ -1,6 +1,7 @@
 ## Changelog for file.json
 
 ### Minor changes since schema version 25
+* *file_format* was updated to include *starch*.
 * The *output_type* enum was updated to include *gene stabilities* and *preprocessed alignments*.
 
 ### Schema version 25
