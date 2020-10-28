@@ -391,7 +391,13 @@ const ExperimentComponent = (props, reactContext) => {
                     : null}
                     <div className="result-item__data-row">
                         {result.target && result.target.label ?
-                            <div><span className="result-item__property-title">Target: </span>{result.target.label}</div>
+                            <div><span className="result-item__property-title">Target: </span>
+                                {motifsLink ?
+                                    <a href={`https://factorbook.org/experiment/${motifsSearch}`}>{result.target.label} (Factorbook)</a>
+                                :
+                                    <span>{result.target.label}</span>
+                                }
+                            </div>
                         : null}
 
                         {mode !== 'cart-view' ?
@@ -426,9 +432,6 @@ const ExperimentComponent = (props, reactContext) => {
                                 )}
                                 {screenLink ?
                                     <div><span className="result-item__property-title">candidate Cis-Regulatory Elements (cCREs): </span><a href={`https://screen.encodeproject.org/search?q=${screenSearch}&assembly=${screenAssembly}`}>SCREEN</a></div>
-                                : null}
-                                {motifsLink ?
-                                    <div><span className="result-item__property-title">Target: </span><a href={`https://factorbook.org/experiment/${motifsSearch}`}>CTCF (Factorbook)</a></div>
                                 : null}
                             </React.Fragment>
                         : null}
