@@ -35,7 +35,8 @@
         "dissociation_time": ["dissociation_time_units"],
         "dissociation_time_units": ["dissociation_time"],
         "starting_quantity": ["starting_quantity_units"],
-        "starting_quantity_units": ["starting_quantity"]
+        "starting_quantity_units": ["starting_quantity"],
+        "single_cell_isolation_method_version": ["single_cell_isolation_method"]
     },
     "properties": {
         "schema_version": {

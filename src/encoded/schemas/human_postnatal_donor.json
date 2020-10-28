@@ -50,6 +50,20 @@
                 }
             }
         },
+        "cause_of_death": {
+            "properties": {
+                "living_at_sample_collection": {
+                    "enum": [false]
+                }
+            }
+        },
+        "times_pregnant": {
+            "properties": {
+                "sex": {
+                    "enum": ["female"]
+                }
+            }
+        },
         "twin_type": ["twin"],
         "weight": ["weight_unit"],
         "weight_unit": ["weight"],
