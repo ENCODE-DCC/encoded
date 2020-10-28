@@ -757,6 +757,7 @@
                                             "bigBed",
                                             "bam",
                                             "sam",
+                                            "starch",
                                             "sra",
                                             "bigWig",
                                             "csfasta",

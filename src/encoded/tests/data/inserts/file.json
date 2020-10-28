@@ -3709,6 +3709,7 @@
     {
         "_test": "DNase-seq starch peaks",
         "award": "/awards/U54HG007010/",
+        "assembly": "hg19",
         "lab": "/labs/john-stamatoyannopoulos/",
         "dataset": "ENCSR604DNT",
         "status": "released",
