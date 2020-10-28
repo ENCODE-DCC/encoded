@@ -3958,6 +3958,11 @@ def audit_library_RNA_size_range(value, system, excluded_types):
                                         ]:
         return
 
+    if value.get('assay_term_name') in ['BruChase-seq', 'Bru-seq', 'BruUV-seq']:
+        audit_severity = 'WARNING'
+    else:
+        audit_severity = 'NOT_COMPLIANT'
+
     RNAs = ['RNA',
             'polyadenylated mRNA',
             'miRNA']
@@ -3973,7 +3978,7 @@ def audit_library_RNA_size_range(value, system, excluded_types):
                     audit_link(path_to_text(rep['library']['@id']), rep['library']['@id'])
                 )
             )
-            yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing RNA fragment size', detail, level=audit_severity)
     return
 
 

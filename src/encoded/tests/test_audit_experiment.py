@@ -643,6 +643,20 @@ def test_audit_experiment_with_RNA_library_no_size_range_long_read_RNA(
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_with_RNA_library_no_size_range_Bru_seq(
+    testapp,
+    experiment_with_RNA_library,
+):
+    # https://encodedcc.atlassian.net/browse/ENCD-5457
+    testapp.patch_json(experiment_with_RNA_library.json['object']['@id'], {'assay_term_name': 'Bru-seq'})
+    res = testapp.get(experiment_with_RNA_library.json['object']['@id'] + '@@index-data')
+    assert any(error['category'] == 'missing RNA fragment size'
+               for error in collect_audit_errors(res, error_types=['WARNING']))
+
+    assert all(error['category'] != 'missing RNA fragment size'
+               for error in collect_audit_errors(res, error_types=['NOT_COMPLIANT']))
+
+
 def test_audit_experiment_with_RNA_library_missing_read_length_long_read_RNA_seq(
     testapp,
     experiment_no_read_length,
