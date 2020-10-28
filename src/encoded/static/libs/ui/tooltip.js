@@ -62,11 +62,12 @@ const Tooltip = (props) => {
     // The tooltip bubble is assumed to be 250px wide and an update is required if that is no longer true
     // Code could determine the width of the tooltip upon load but then the tooltip will need to be rendered in an incorrect position -- or the mechanics of hiding/showing the tooltip would need to be changed
     const positionTooltip = React.useCallback(() => {
-        // Determining the position of the tooltip trigger
+        // Determining the position of the tooltip trigger and accounting for vertical scroll
+        const scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
         const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
         const tooltipTriggerRight = buttonRef.current.getBoundingClientRect().right;
         const tooltipTriggerLeft = buttonRef.current.getBoundingClientRect().left;
-        const tooltipTriggerTop = buttonRef.current.getBoundingClientRect().top;
+        const tooltipTriggerTop = scrollTop + buttonRef.current.getBoundingClientRect().top;
         // Ascertaining if tooltip bubble needs to be placed to the left or right to stay on document body
         const rightOverlap = viewportWidth - (tooltipTriggerRight + 125);
         const leftOverlap = tooltipTriggerLeft - 125;
