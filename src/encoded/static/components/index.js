@@ -45,9 +45,12 @@ require('./experiment_series');
 require('./surgery');
 require('./pathology_report');
 require('./biospecimen');
-// require('./doc');
-require('./bioexperiment');
 require('./biofile');
+
+require('./biodataset');
+// require('./doc');
+// require('./filegallery');
+require('./bioexperiment');
 
 
 
