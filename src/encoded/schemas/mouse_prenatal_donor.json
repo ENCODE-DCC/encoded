@@ -83,7 +83,9 @@
         "foot_length": ["foot_length_units"],
         "foot_length_units": ["foot_length"],
         "knee_heel_length": ["knee_heel_length_units"],
-        "knee_heel_length_units": ["knee_heel_length"]
+        "knee_heel_length_units": ["knee_heel_length"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {

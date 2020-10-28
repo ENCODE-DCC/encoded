@@ -52,7 +52,9 @@
             }
         },
         "weight": ["weight_unit"],
-        "weight_unit": ["weight"]
+        "weight_unit": ["weight"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {

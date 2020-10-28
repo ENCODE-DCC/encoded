@@ -36,7 +36,9 @@
         "dissociation_time_units": ["dissociation_time"],
         "starting_quantity": ["starting_quantity_units"],
         "starting_quantity_units": ["starting_quantity"],
-        "single_cell_isolation_method_version": ["single_cell_isolation_method"]
+        "single_cell_isolation_method_version": ["single_cell_isolation_method"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {

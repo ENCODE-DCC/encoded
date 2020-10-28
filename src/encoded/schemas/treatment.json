@@ -24,7 +24,9 @@
         "amount": ["amount_units"],
         "amount_units": ["amount"],
         "duration": ["duration_units"],
-        "duration_units": ["duration"]
+        "duration_units": ["duration"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {

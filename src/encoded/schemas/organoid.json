@@ -35,7 +35,9 @@
         "post_differentiation_time": ["post_differentiation_time_units"],
         "post_differentiation_time_units": ["post_differentiation_time"],
         "starting_quantity": ["starting_quantity_units"],
-        "starting_quantity_units": ["starting_quantity"]
+        "starting_quantity_units": ["starting_quantity"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {
