@@ -213,7 +213,7 @@
 		"percent_reads_mapped_antisense_to_gene": 2.4,
 		"percent_reads_mapped_confidently_to_intergenic_regions": 5.9,
 		"percent_reads_mapped_confidently_to_transcriptome": 51.8,
-		"percent_reads_mapped_confidently_to_exonic_regions": 553.3,
+		"percent_reads_mapped_confidently_to_exonic_regions": 53.3,
 		"percent_reads_mapped_confidently_to_intronic_regions": 33.1,
 		"percent_sequencing_saturation": 54.8,
 		"percent_q30_bases_in_barcode": 95.3,
