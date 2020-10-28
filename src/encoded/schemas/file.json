@@ -1425,6 +1425,7 @@
                         "footprints",
                         "gene alignments",
                         "gene quantifications",
+                        "gene stabilities",
                         "genome compartments",
                         "genome index",
                         "genome reference",
@@ -1475,6 +1476,7 @@
                         "plus strand signal of unique reads",
                         "positive control regions",
                         "predicted enhancers",
+                        "preprocessed alignments",
                         "promoters reference",
                         "pseudo-replicated peaks",
                         "pseudoreplicated IDR thresholded peaks",
@@ -1936,6 +1938,7 @@
         "maternal haplotype mapping": "alignment",
         "paternal haplotype mapping": "alignment",
         "phased mapping": "alignment",
+        "preprocessed alignments": "alignment",
 
         "minus strand signal of all reads": "signal",
         "plus strand signal of all reads": "signal",
@@ -1990,6 +1993,7 @@
         "minus strand methylation state at CpG": "quantification",
         "UV enriched segment quantifications": "quantification",
         "sparse gene count matrix": "quantification",
+        "gene stabilities": "quantification",
 
         "hotspots": "annotation",
         "footprints": "annotation",

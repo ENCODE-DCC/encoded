@@ -4138,5 +4138,38 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "f74b8d29-7d3f-4a93-9994-0d359568606a"
+    },
+    {
+        "_test": "BruChase-seq gene stabilities",
+        "award": "/awards/U54HG006996/",
+        "lab": "encode-processing-pipeline",
+        "dataset": "ENCSR323SPR",
+        "status": "in progress",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "476511ae-8d94-4a4d-b7ba-d401c7b5a1af",
+        "accession": "ENCFF104GST",
+        "file_format": "tsv",
+        "output_type": "gene stabilities",
+        "file_size": 100,
+        "assembly": "GRCh38",
+        "md5sum": "6a204bd89f3c8348afd5c77c717a097a",
+        "derived_from": ["ENCFF324ATA"],
+        "step_run": "b3dd3a38-ad62-4f01-bd5b-0ae31e6f3024"
+    },
+    {
+        "_test": "preprocessed alignments",
+        "award": "/awards/U54HG006996/",
+        "lab": "encode-processing-pipeline",
+        "dataset": "ENCSR808ATA",
+        "status": "released",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "a86b1412-560b-4107-b9cc-eb0a06d07a08",
+        "accession": "ENCFF032PPA",
+        "file_format": "bam",
+        "output_type": "preprocessed alignments",
+        "file_size": 1000,
+        "assembly": "GRCh38",
+        "md5sum": "912ec803b2ce49e4a541068d495ab570",
+        "derived_from": ["ENCFF324ATA"]
     }
 ]

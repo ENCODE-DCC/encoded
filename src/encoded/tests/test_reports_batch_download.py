@@ -383,7 +383,7 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    assert len(batch_download_results) == len(metadata_results) == 10
+    assert len(batch_download_results) == len(metadata_results) == 11
 
     query_string = (
         '?type=Experiment&files.derived_from=*&files.file_type=bam&files.file_type=fastq'
@@ -391,7 +391,7 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    assert len(batch_download_results) == len(metadata_results) == 11
+    assert len(batch_download_results) == len(metadata_results) == 12
 
     query_string = (
         '?type=Experiment&files.file_type=bam&files.file_type=fastq'
@@ -399,7 +399,7 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    assert len(batch_download_results) == len(metadata_results) == 63
+    assert len(batch_download_results) == len(metadata_results) == 64
 
     query_string = (
         '?type=Experiment&files.derived_from=*&files.file_type=bam'
@@ -408,7 +408,7 @@ def test_reports_batch_download_and_metadata_specific_filters(index_workbook, te
     batch_download_results, metadata_results = get_batch_download_and_metadata_results(
         testapp, query_string
     )
-    assert len(batch_download_results) == len(metadata_results) == 18
+    assert len(batch_download_results) == len(metadata_results) == 19
 
     query_string = (
         '?type=Experiment&files.derived_from=*&files.file_type=bam'
