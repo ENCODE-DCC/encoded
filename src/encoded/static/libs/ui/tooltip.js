@@ -120,7 +120,7 @@ const Tooltip = (props) => {
                 >
                     {trigger}
                 </button>
-                {showDefinition ?
+                {(showDefinition && children) ?
                     <div
                         className={tooltipCss}
                         role="tooltip"
@@ -146,7 +146,7 @@ const Tooltip = (props) => {
             >
                 {trigger}
             </button>
-            {showDefinition ?
+            {(showDefinition && children) ?
                 <RenderInBody>
                     <div
                         className={tooltipCss}
