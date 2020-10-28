@@ -606,3 +606,11 @@ div.meta-status {
         display: block;
     }
 }
+
+.facet--audit-warning {
+    margin-right: 20px;
+
+    select {
+        width: 100%;
+    }
+}

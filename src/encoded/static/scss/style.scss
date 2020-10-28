@@ -220,6 +220,7 @@ $link-hover-color:                          darken($link-color, 15%);
 @import "encoded/math";
 @import "encoded/layout";
 @import "encoded/modules/common_item",
+        "encoded/modules/boolean_switch",
         "encoded/modules/breadcrumbs",
         "encoded/modules/pager",
         "encoded/modules/forms",
