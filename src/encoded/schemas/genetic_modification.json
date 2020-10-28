@@ -1091,7 +1091,7 @@
                         "title": "Identifier",
                         "description": "Identifier of the reagent (as assigned by the source) used to produce the describe genetic modification, if applicable.",
                         "type": "string",
-                        "pattern": "^((addgene:\\d{5,6})|(bacpac:([A-Z]{2,3}\\d{2,3}|[A-Z]{3})-\\d{1,4}[A-Z]\\d{1,2})|(dharmacon:[DL]-\\d{6}-\\d{2}(-\\d{2,4})?)|(hugo-bellen:MI\\d{5})|(human-orfeome:([A-Z]{2})?\\d{1,9})|(plasmid-repository:HsCD\\d{8})|(sigma:[A-Z]{3}\\d{3})|(source-bioscience:[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(_[A-Z]\\d{2})?)|(thermo-fisher:[a-zA-Z]{1,3}\\d{5,7})|(trc:TRCN\\d{10})|(brenton-graveley:BGC#\\d{7}))$"
+                        "pattern": "^((addgene:\\d{5,6})|(bacpac:([A-Z]{2,3}\\d{2,3}|[A-Z]{3})-\\d{1,4}[A-Z]\\d{1,2})|(dharmacon:[DL]-\\d{6}-\\d{2}(-\\d{2,4})?)|(hugo-bellen:MI\\d{5})|(human-orfeome:([A-Z]{2})?\\d{1,9})|(plasmid-repository:HsCD\\d{8})|(sigma:[A-Z]{3}\\d{3})|(source-bioscience:[A-Z]{3}\\d{3,4}[a-z][A-Z]\\d{2}(_[A-Z]\\d{2})?)|(thermo-fisher:[a-zA-Z]{1,3}\\d{5,7})|(trc:TRCN\\d{10})|(brenton-graveley:BGC#\\d{7})|(genbank:[A-Z]{1,2}\\d{5,6}\\.\\d{1}))$"
                     },
                     "url": {
                         "@type": "@id",

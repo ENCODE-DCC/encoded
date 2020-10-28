@@ -311,6 +311,12 @@
         "lab": "/labs/bing-ren/",
         "nucleic_acid_delivery_method": ["transduction"],
         "purpose": "expression",
+        "reagents": [
+            {
+            "source": "genbank",
+            "identifier": "genbank:AB000001.1"
+            }
+        ],
         "status": "released",
         "submitted_by": "/users/dignissim.euismod@amet.habitant/"
     },
