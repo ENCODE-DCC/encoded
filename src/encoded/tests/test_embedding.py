@@ -56,7 +56,11 @@ def test_updated_source(content, testapp):
 def test_updated_source_changed(content, testapp):
     url = '/testing-link-sources/' + sources[0]['uuid']
     res = testapp.patch_json(url, {'target': targets[1]['uuid']})
-    assert set(res.headers['X-Updated'].split(',')) == {sources[0]['uuid'], targets[1]['uuid']}
+    assert set(res.headers['X-Updated'].split(',')) == {
+        sources[0]['uuid'],
+        targets[0]['uuid'],
+        targets[1]['uuid'],
+    }
 
 
 def test_updated_target(content, testapp):
