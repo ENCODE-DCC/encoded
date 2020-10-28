@@ -224,7 +224,8 @@
         "collection_to_dissociation_interval": {
             "title": "Collection-to-dissociation interval",
             "description": "The amount of time elapsed between tissue collection and cell dissociation.",
-            "type": "number"
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "collection_to_dissociation_interval_units": {
             "title": "Collection-to-dissociation interval units",
@@ -239,7 +240,8 @@
         "death_to_dissociation_interval": {
             "title": "Death-to-dissociation interval",
             "description": "The amount of time elapsed between donor death and cell dissociation.",
-            "type": "number"
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "death_to_dissociation_interval_units": {
             "title": "Death-to-dissociation interval units",

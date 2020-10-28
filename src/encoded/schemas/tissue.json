@@ -162,7 +162,8 @@
         "ischemic_time": {
             "title": "Ischemic time",
             "description": "Duration of ischemia?",
-            "type": "integer"
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "ischemic_time_units": {
             "title": "Ischemic time units",

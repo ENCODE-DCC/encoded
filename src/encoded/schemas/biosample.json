@@ -79,7 +79,7 @@
             "description": "The time that elapsed past the point when biosamples were treated.",
             "comment": "Use in conjunction with treatment and post_treatment_time_units to specify time elapsed post-treatment. post_treatment_time specification requires non-empty treatments list and post_treatment_time_units specification.",
             "type": "string",
-            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "post_treatment_time_units": {
             "title": "Post-treatment time units",
@@ -110,7 +110,8 @@
         "preservation_time": {
             "title": "Preservation time",
             "description": "The length of time that the sample was preserved",
-            "type": "integer"
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "preservation_time_units": {
             "title": "Preservation time units",
