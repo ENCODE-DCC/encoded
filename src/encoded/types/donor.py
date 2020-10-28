@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from pyramid.security import Authenticated
 from .base import (
     Item,
@@ -72,11 +73,15 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references',
-                                 'genetic_modifications',
-                                 'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.modified_site_by_target_id.genes',
-                                 'genetic_modifications.treatments']
+    embedded = Donor.embedded + [
+        'genetic_modifications',
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.modified_site_by_target_id.genes',
+        'genetic_modifications.treatments'
+    ]
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
+    ]
     set_status_up = [
         'characterizations',
         'source',
@@ -152,7 +157,10 @@ class WormDonor(Donor):
 class HumanDonor(Donor):
     item_type = 'human_donor'
     schema = load_schema('encoded:schemas/human_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded
+    embedded_with_frame = [
+        Path('references', exclude=['datasets', 'publication_data']),
+    ]
     rev = {
         'children': ('HumanDonor', 'parents'),
         'characterizations': ('DonorCharacterization', 'characterizes')

@@ -3,6 +3,7 @@ from snovault import (
     calculated_property,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -33,15 +34,17 @@ class Pipeline(Item):
         'analysis_steps.pipelines',
         'analysis_steps.current_version.software_versions',
         'analysis_steps.current_version.software_versions.software',
-        'analysis_steps.current_version.software_versions.software.references',
         'analysis_steps.versions',
         'analysis_steps.versions.software_versions',
         'analysis_steps.versions.software_versions.software',
-        'analysis_steps.versions.software_versions.software.references',
         'lab',
         'award.pi.lab',
         'standards_page',
         'reference_filesets'
+    ]
+    embedded_with_frame = [
+        Path('analysis_steps.current_version.software_versions.software.references', exclude=['datasets', 'publication_data']),
+        Path('analysis_steps.versions.software_versions.software.references', exclude=['datasets', 'publication_data']),
     ]
     set_status_up = [
         'analysis_steps',

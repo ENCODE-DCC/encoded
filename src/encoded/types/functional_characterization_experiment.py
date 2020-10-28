@@ -84,7 +84,6 @@ class FunctionalCharacterizationExperiment(
         'possible_controls',
         'target.genes',
         'target.organism',
-        'references',
     ]
     audit_inherit = [
         'original_files',

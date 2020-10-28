@@ -4,6 +4,7 @@ from snovault import (
     collection,
     load_schema,
 )
+from snovault.util import Path
 from .base import (
     ALLOW_SUBMITTER_ADD,
     Item,
@@ -85,8 +86,7 @@ class Experiment(Dataset,
         'replicates.libraries.treatments',
         'possible_controls',
         'target.genes',
-        'target.organism',
-        'references',
+        'target.organism'
     ]
     audit_inherit = [
         'original_files',
