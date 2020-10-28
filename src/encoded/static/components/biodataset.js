@@ -27,7 +27,7 @@ function breakSetName(name) {
 }
 // Display Annotation page, a subtype of Dataset.
 /* eslint-disable react/prefer-stateless-function */
-export class BioreferenceComponent extends React.Component {
+class BioreferenceComponent extends React.Component {
     render() {
         const context = this.props.context;
         console.log(this.props.context);
@@ -113,7 +113,7 @@ export class BioreferenceComponent extends React.Component {
                             </div>
 
                             <div className="flexcol-sm-6">
-                                {/* <div className="flexcol-heading experiment-heading">
+                                <div className="flexcol-heading experiment-heading">
                                     <h4>Attribution</h4>
                                     <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
@@ -150,24 +150,24 @@ export class BioreferenceComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {/* {context.internal_tags && context.internal_tags.length > 0 ?
+                                    {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
                                             <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
-                                    : null} */}
-                                {/* </dl> */} 
+                                    : null}
+                                </dl> 
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                {/* <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
-                <DocumentsPanelReq documents={datasetDocuments} /> */}
+                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
         );
     }
@@ -192,7 +192,7 @@ globals.contentViews.register(Bioreference, 'Bioreference');
 
 // Display Annotation page, a subtype of Dataset.
 /* eslint-disable react/prefer-stateless-function */
-export class BioprojectComponent extends React.Component {
+class BioprojectComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
@@ -278,12 +278,12 @@ export class BioprojectComponent extends React.Component {
                                         {/* </div> */}
                                     {/* : null} */} 
 
-                                    {/* {context.assay_term_name ?
-                                        <div data-test="biosampletermame">
-                                            <dt>Biosample term name </dt>
+                                    {context.assay_term_name ?
+                                        <div data-test="assay_term_name">
+                                            <dt>Biospecimen term name </dt>
                                             <dd>{_.uniq(context.assay_term_name)}</dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
                                     {/* {organisms.length ?
                                         <div data-test="organism">
@@ -297,7 +297,7 @@ export class BioprojectComponent extends React.Component {
                             </div>
 
                             <div className="flexcol-sm-6">
-                                {/* <div className="flexcol-heading experiment-heading">
+                                <div className="flexcol-heading experiment-heading">
                                     <h4>Attribution</h4>
                                     <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
@@ -334,16 +334,16 @@ export class BioprojectComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                </dl> */}
+                                </dl> 
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                {/* <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph /> */}
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                {/* <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} /> */}
+                <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
