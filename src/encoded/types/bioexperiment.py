@@ -56,6 +56,9 @@ class Bioexperiment(Biodataset,
         'bioreplicate.biolibrary.biospecimen.documents',
         "references",
         "files", # link to Publication
+        "files.platform",
+        'related_series',
+         # link to Publication
 
 
     ]
