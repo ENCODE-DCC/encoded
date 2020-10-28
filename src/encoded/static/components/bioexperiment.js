@@ -573,3 +573,148 @@ Bioexperiment.defaultProps = {
 globals.contentViews.register(Bioexperiment, 'Bioexperiment');
 
 // export default Bioexperiment;
+
+// Display a list of datasets related to the experiment
+class RelatedSeriesList extends React.Component {
+    constructor() {
+        super();
+
+        // Initial component state.
+        this.state = {
+            currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
+            clicked: false, // True if info button was clicked (vs hovered)
+        };
+
+        this.handleInfoHover = this.handleInfoHover.bind(this);
+        this.handleInfoClick = this.handleInfoClick.bind(this);
+    }
+
+    // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
+    // been clicked. 'entering' is true if the mouse entered the icon, and false if exiting.
+    handleInfoHover(bioseries, entering) {
+        if (!this.state.clicked) {
+            this.setState({ currInfoItem: entering ? bioseries.accession : '' });
+        }
+    }
+
+    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display.
+    // If opening the tooltip, note that hover events should be ignored until the icon is clicked to close the tooltip.
+    handleInfoClick(bioseries, touch) {
+        let currTouchScreen = this.state.touchScreen;
+
+        // Remember if we know we've had a touch event
+        if (touch && !currTouchScreen) {
+            currTouchScreen = true;
+            this.setState({ touchScreen: true });
+        }
+
+        // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
+        if (!currTouchScreen || touch) {
+            if (this.state.currInfoItem === bioseries.accession && this.state.clicked) {
+                this.setState({ currInfoItem: '', clicked: false });
+            } else {
+                this.setState({ currInfoItem: bioseries.accession, clicked: true });
+            }
+        }
+    }
+
+    render() {
+        const seriesList = this.props.seriesList;
+
+        return (
+            <span>
+                {seriesList.map((bioseries, i) => (
+                    <span key={bioseries.uuid}>
+                        {i > 0 ? <span>, </span> : null}
+                        <RelatedSeriesItem
+                            bioseries={bioseries}
+                            detailOpen={this.state.currInfoItem === bioseries.accession}
+                            handleInfoHover={this.handleInfoHover}
+                            handleInfoClick={this.handleInfoClick}
+                        />
+                    </span>
+                ))}
+            </span>
+        );
+    }
+}
+
+RelatedSeriesList.propTypes = {
+    seriesList: PropTypes.array.isRequired, // Array of Series dataset objects to display
+};
+
+
+// Display a one dataset related to the experiment
+class RelatedSeriesItem extends React.Component {
+    constructor() {
+        super();
+
+        // Intialize component state.
+        this.state = {
+            touchOn: false, // True if icon has been touched
+        };
+
+        // Bind `this` to non-React methods.
+        this.touchStart = this.touchStart.bind(this);
+        this.handleInfoHoverIn = this.handleInfoHoverIn.bind(this);
+        this.handleInfoHoverOut = this.handleInfoHoverOut.bind(this);
+        this.handleInfoClick = this.handleInfoClick.bind(this);
+    }
+
+    // Touch screen
+    touchStart() {
+        this.setState({ touchOn: !this.state.touchOn });
+        this.props.handleInfoClick(this.props.bioseries, true);
+    }
+
+    handleInfoHoverIn() {
+        this.props.handleInfoHover(this.props.bioseries, true);
+    }
+
+    handleInfoHoverOut() {
+        this.props.handleInfoHover(this.props.bioseries, false);
+    }
+
+    handleInfoClick() {
+        this.props.handleInfoClick(this.props.bioseries, false);
+    }
+
+    render() {
+        const { bioseries, detailOpen } = this.props;
+
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+        return (
+            <span>
+                <a href={bioseries['@id']} title={`View page for series dataset ${bioseries.accession}`}>{bioseries.accession}</a>&nbsp;
+                <div className="tooltip-trigger">
+                    <i
+                        className="icon icon-info-circle"
+                        onMouseEnter={this.handleInfoHoverIn}
+                        onMouseLeave={this.handleInfoHoverOut}
+                        onClick={this.handleInfoClick}
+                        onTouchStart={this.touchStart}
+                    />
+                    <div className={`tooltip bottom${detailOpen ? ' tooltip-open' : ''}`}>
+                        <div className="tooltip-arrow" />
+                        <div className="tooltip-inner">
+                            {bioseries.description ? <span>{bioseries.description}</span> : <em>No description available</em>}
+                        </div>
+                    </div>
+                </div>
+            </span>
+        );
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
+    }
+}
+
+RelatedSeriesItem.propTypes = {
+    bioseries: PropTypes.object.isRequired, // Series object to display
+    detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
+    handleInfoClick: PropTypes.func.isRequired, // Function to call to handle click in info icon
+    handleInfoHover: PropTypes.func.isRequired, // Function to call when mouse enters or leaves info icon
+};
+
+RelatedSeriesItem.defaultProps = {
+    detailOpen: false,
+};
