@@ -156,7 +156,7 @@ export class BioreferenceComponent extends React.Component {
                                             <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
                                     : null} */}
-                                {/* </dl> */} */}
+                                {/* </dl> */} 
                             </div>
                         </div>
                     </PanelBody>
@@ -276,7 +276,7 @@ export class BioprojectComponent extends React.Component {
                                             <dd>{(context.biospecimen_summary[0].tissue_type)}</dd>
                                             {/* need to test */}
                                         {/* </div> */}
-                                    {/* : null} */} */}
+                                    {/* : null} */} 
 
                                     {/* {context.assay_term_name ?
                                         <div data-test="biosampletermame">
