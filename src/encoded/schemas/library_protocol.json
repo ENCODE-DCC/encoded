@@ -16,6 +16,15 @@
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/standard_status"}
     ],
+    "dependencies": {
+        "polyA_selection_method": {
+            "properties": {
+                "polyA_selection": {
+                    "enum": [true]
+                }
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "1"

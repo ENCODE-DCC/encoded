@@ -25,16 +25,21 @@
     ],
     "dependencies": {
         "external_accession": {
-            "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
                 "required": ["accession"]
             }
         },
         "revoke_detail": {
-            "comment": "Only revoked files can have revoke_detail specified.",
             "properties": {
                 "status": {
                     "enum": ["revoked"]
+                }
+            }
+        },
+        "content_error_detail":{
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
                 }
             }
         }

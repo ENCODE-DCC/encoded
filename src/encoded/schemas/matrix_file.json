@@ -26,13 +26,11 @@
     ],
     "dependencies": {
         "external_accession": {
-            "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
                 "required": ["accession"]
             }
         },
         "revoke_detail": {
-            "comment": "Only revoked files can have revoke_detail specified.",
             "properties": {
                 "status": {
                     "enum": ["revoked"]
@@ -40,13 +38,47 @@
             }
         },
         "content_error_detail":{
-            "comment": "Specification of status of content error is required if content_error_detail is specified",
             "required": ["status"],
             "properties": {
                 "status": {
                     "enum": ["content error"]
                 }
             }
+        },
+        "genome_annotation": {
+            "required": ["assembly"],
+            "oneOf": [
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["hg19"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE 19"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["GRCh38"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE 32", "GENCODE 28", "GENCODE 24"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "assembly": {
+                            "enum": ["mm10"]
+                        },
+                        "genome_annotation": {
+                            "enum": ["GENCODE M23", "GENCODE M18",  "GENCODE M9"]
+                        }
+                    }
+                }
+            ]
         }
     },
     "properties": {
@@ -195,6 +227,7 @@
             "items": {
                 "title": "Filtering cutoff",
                 "type": "object",
+                "required": ["cutoff_value", "cutoff_units", "cutoff_type"],
                 "additionalProperties": false,
                 "properties": {
                     "cutoff_value": {

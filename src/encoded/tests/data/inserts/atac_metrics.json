@@ -58,8 +58,8 @@
 		"total_peaks_detected": 122928,
 		"total_usable_fragments": 117707358,
 		"tss_enrichment_score": 5.5328204759584105,
-		"waste_chimeric_fragments": 2541875.0,
-		"waste_lowmapq_fragments": 27588418.0,
+		"waste_chimeric_fragments": 2541875,
+		"waste_lowmapq_fragments": 27588418,
 		"waste_no_barcode_fragments": 5713824,
 		"waste_ratio_dup_cells": 0.4736510694599058,
 		"waste_ratio_dup_noncells": 0.41964663188619794,
@@ -70,7 +70,7 @@
 		"waste_ratio_unmapped_cells": 0.009099601501384986,
 		"waste_ratio_unmapped_noncells": 0.02067308073952355,
 		"waste_total_fragments": 225980197,
-		"waste_unmapped_fragments": 1578413.0,
+		"waste_unmapped_fragments": 1578413,
 		"frac_q30_bases_in_barcode": 0.9011681129245428,
 		"total_bases_in_barcode": 5499000880,
 		"estimated_frac_cells_annotated": 0.8803202697008007,
@@ -91,8 +91,8 @@
 		"total_bases_in_read2": 16559367687,
 		"frac_q30_bases_in_sample_index": 0.9265221630588283,
 		"total_bases_in_sample_index": 2749500440,
-		"waste_dup_fragments": 55752216.0,
-		"waste_mito_fragments": 22735958.0,
+		"waste_dup_fragments": 55752216,
+		"waste_mito_fragments": 22735958,
 		"waste_noncell_barcode_fragments": 110069493,
 		"quality_metric_of": "jimmie-ye:filtered_peak_matrix_1a",
 		"uuid": "40079d9e-bb73-4cac-a2fc-1f464a1dfa01"
@@ -128,7 +128,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 3184572,
 		"cells_detected": 934
@@ -164,7 +164,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 6755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 34785952,
 		"cells_detected": 1247
@@ -200,7 +200,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 35824765,
 		"cells_detected": 742
@@ -236,7 +236,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 20375931,
 		"cells_detected": 2174
@@ -272,7 +272,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 29247842,
 		"cells_detected": 1124
@@ -308,7 +308,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 30623673,
 		"cells_detected": 2053
@@ -344,7 +344,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 5882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 23673576,
 		"cells_detected": 971
@@ -380,7 +380,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 32674243,
 		"cells_detected": 1032
@@ -416,7 +416,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 456
@@ -452,7 +452,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 599
@@ -488,7 +488,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 6755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 459
@@ -524,7 +524,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 756
@@ -560,7 +560,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 6755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 688
@@ -596,7 +596,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 695
@@ -632,7 +632,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 556
@@ -668,7 +668,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments":755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 837
@@ -704,7 +704,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 783
@@ -740,7 +740,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 984
@@ -776,7 +776,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 865
@@ -812,7 +812,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 775
@@ -848,7 +848,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 645
@@ -884,7 +884,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 755882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 855
@@ -920,7 +920,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 55882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 705
@@ -956,7 +956,7 @@
 		"frac_waste_lowmapq": 0.05444181475,
 		"frac_waste_dup": 0.5495514424,
 		"frac_waste_total": 0.7326755882,
-		"total_usable_fragments": 0.7326755882,
+		"total_usable_fragments": 5882,
 		"frac_mapped_confidently": 0.8899750386,
 		"number_fragments": 33535381,
 		"cells_detected": 694

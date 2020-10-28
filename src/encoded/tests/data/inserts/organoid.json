@@ -15,8 +15,8 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "post_treatment_time": "10",
-        "post_treatment_time_units": "day",
+        "post_differentiation_time": 10,
+        "post_differentiation_time_units": "day",
         "embedded_in_matrigel": true,
         "documents": [
             "anna-greka:C2C12_Wold_protocol"
@@ -38,8 +38,8 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "post_treatment_time": "10",
-        "post_treatment_time_units": "day",
+        "post_differentiation_time": 10,
+        "post_differentiation_time_units": "day",
         "embedded_in_matrigel": true,
         "documents": [
             "anna-greka:C2C12_Wold_protocol"
@@ -61,8 +61,8 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "post_treatment_time": "8",
-        "post_treatment_time_units": "day",
+        "post_differentiation_time": 8,
+        "post_differentiation_time_units": "day",
         "embedded_in_matrigel": true,
         "documents": [
             "anna-greka:C2C12_Wold_protocol"
@@ -84,8 +84,8 @@
         ],
         "biosample_ontology": "UBERON_0002113",
         "growth_medium": "STEMdiff",
-        "post_treatment_time": "8",
-        "post_treatment_time_units": "day",
+        "post_differentiation_time": 8,
+        "post_differentiation_time_units": "day",
         "embedded_in_matrigel": true,
         "documents": [
             "anna-greka:C2C12_Wold_protocol"

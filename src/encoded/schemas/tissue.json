@@ -27,12 +27,49 @@
         {"$ref": "biosample.json#/properties"}
     ],
     "dependencies": {
-        "death_to_preservation_interval":{
-            "required": ["death_to_preservation_interval_units"]
+        "post_treatment_time": {
+            "required":["post_treatment_time_units", "treatments"],
+            "properties":{
+                "treatments": {
+                    "minItems": 1
+                }
+            }
         },
-        "death_to_preservation_interval_units": {
-            "required":["death_to_preservation_interval"]
-        }
+        "post_treatment_time_units": {
+            "required":["post_treatment_time", "treatments"],
+            "properties":{
+                "treatments": {
+                    "minItems": 1
+                }
+            }
+        },
+        "ischemic_temperature": {
+            "oneOf": [
+                {
+                    "required": ["ischemic_temperature_units"]
+                },
+                {
+                    "properties": {
+                        "ischemic_temperature": {
+                            "enum": ["warm", "cold"]
+                        }
+                    }
+                }
+            ]
+        },
+        "ischemic_temperature_units": ["ischemic_temperature"],
+        "death_to_preservation_interval": ["death_to_preservation_interval_units"],
+        "death_to_preservation_interval_units": ["death_to_preservation_interval"],
+        "preservation_time": ["preservation_time_units", "preservation_method"],
+        "preservation_time_units": ["preservation_time", "preservation_method"],
+        "collection_to_preservation_interval": ["collection_to_preservation_interval_units"],
+        "collection_to_preservation_interval_units": ["collection_to_preservation_interval"],
+        "ischemic_time": ["ischemic_time_units"],
+        "ischemic_time_units": ["ischemic_time"],
+        "starting_quantity": ["starting_quantity_units"],
+        "starting_quantity_units": ["starting_quantity"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {
@@ -127,7 +164,8 @@
         "ischemic_time": {
             "title": "Ischemic time",
             "description": "Duration of ischemia?",
-            "type": "integer"
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "ischemic_time_units": {
             "title": "Ischemic time units",

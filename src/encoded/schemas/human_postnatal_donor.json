@@ -4,7 +4,7 @@
     "id": "/profiles/human_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "sex"],
+    "required": ["life_stage", "age", "sex"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -26,9 +26,22 @@
         {"$ref": "postnatal_donor.json#/properties"}
     ],
     "dependencies": {
+        "age":  {
+            "oneOf": [
+                {
+                    "properties": {
+                        "age": {
+                            "enum": ["unknown"]
+                        }
+                    }
+                },
+                {
+                    "required": ["age_units"]
+                }
+            ]
+        },
         "age_units":  {
-            "comment":"Age units is required if age is specified as anything but unknown.",
-            "required": ["age", "life_stage"],
+            "required": ["age"],
             "not": {
                 "properties": {
                     "age": {
@@ -37,10 +50,25 @@
                 }
             }
         },
-        "twin_type": {
-            "comment": "Twin type could be specified only if twin sibling is specified.",
-            "required": ["twin"]
-        }
+        "cause_of_death": {
+            "properties": {
+                "living_at_sample_collection": {
+                    "enum": [false]
+                }
+            }
+        },
+        "times_pregnant": {
+            "properties": {
+                "sex": {
+                    "enum": ["female"]
+                }
+            }
+        },
+        "twin_type": ["twin"],
+        "weight": ["weight_unit"],
+        "weight_unit": ["weight"],
+        "height": ["height_unit"],
+        "height_unit": ["height"]
     },
     "properties": {
         "schema_version": {

@@ -4,7 +4,7 @@
     "id": "/profiles/mouse_postnatal_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["life_stage", "sex", "strain_term_name"],
+    "required": ["life_stage", "age", "sex", "strain_term_name"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -27,9 +27,22 @@
         {"$ref": "postnatal_donor.json#/properties"}
     ],
     "dependencies": {
+        "age":  {
+            "oneOf": [
+                {
+                    "properties": {
+                        "age": {
+                            "enum": ["unknown"]
+                        }
+                    }
+                },
+                {
+                    "required": ["age_units"]
+                }
+            ]
+        },
         "age_units":  {
-            "comment":"Age units is required if age is specified as anything but unknown.",
-            "required": ["age", "life_stage"],
+            "required": ["age"],
             "not": {
                 "properties": {
                     "age": {
@@ -37,7 +50,11 @@
                     }
                 }
             }
-        }
+        },
+        "weight": ["weight_unit"],
+        "weight_unit": ["weight"],
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {
