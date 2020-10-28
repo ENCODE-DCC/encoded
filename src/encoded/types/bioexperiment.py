@@ -30,7 +30,7 @@ from .assay_data import assay_terms
     name='bioexperiments',
     unique_key='accession',
     properties={
-        'title': 'Bioxperiments',
+        'title': 'Bioexperiments',
         'description': 'Bioexperiment information page',
     },
 )

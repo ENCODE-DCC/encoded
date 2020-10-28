@@ -33,7 +33,7 @@ class BioreferenceComponent extends React.Component {
         console.log(this.props.context);
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        const experimentsUrl = `/search/?type=Bioxperiment&possible_controls.accession=${context.accession}`;
+        const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -197,7 +197,7 @@ class BioprojectComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        const experimentsUrl = `/search/?type=Bioxperiment&possible_controls.accession=${context.accession}`;
+        const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];

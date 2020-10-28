@@ -408,7 +408,7 @@ class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Ca
     name='bioexperiment-series',
     unique_key='accession',
     properties={
-        'title': "Bioxperiment series",
+        'title': "Bioexperiment series",
         'description': 'A series that groups two or more experiments.',
     })
 class BioexperimentSeries(Bioseries):
