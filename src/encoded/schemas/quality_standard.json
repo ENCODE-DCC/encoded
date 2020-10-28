@@ -1,0 +1,115 @@
+{
+    "title": "Quality report and standard",
+    "description": "Guidelines for quality reporting and quality standards",
+    "id": "/profiles/quality_standard.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["name", "definitions"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/standard_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of this standard.",
+            "permission": "import_items",
+            "type": "string",
+            "pattern": "^[a-zA-Z\\d_().,-]+(?:\\s[a-zA-Z\\d_().,-]+)*$"
+        },
+        "name": {
+            "title": "Quality standard name",
+            "description": "Unique name of this quality standard. Only lower case letter, numbers and dash are allowed",
+            "permission": "import_items",
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "definitions": {
+            "title": "Report definitions",
+            "description": "One or more definitions which describe how a quality metrics is extracted, reported and evaluated for quality levels.",
+            "permission": "import_items",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "title": "Report and stnadard definition for one quality metric",
+                "type": "object",
+                "required": [
+                    "report_name",
+                    "quality_metric_name"
+                ],
+                "properties": {
+                    "report_name": {
+                        "title": "Quality report name",
+                        "type": "string"
+                    },
+                    "file_filters": {
+                        "title": "File filters",
+                        "description": "Defines which file(s) should be used to look for this quality metric.",
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": {
+                            "oneOf": [
+                                { "type": "string" },
+                                {
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "uniqueItems": true,
+                                    "items": { "type": "string" }
+                                }
+                            ]
+                        }
+                    },
+                    "quality_metric_filters": {
+                        "title": "Quality metric object filters",
+                        "description": "Defines which quality metric(s) on the file(s) defined aboved should be used to look for this quality metric.",
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": {
+                            "oneOf": [
+                                { "type": "string" },
+                                {
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "uniqueItems": true,
+                                    "items": { "type": "string" }
+                                }
+                            ]
+                        }
+                    },
+                    "quality_metric_name": {
+                        "title": "Quality metric property name",
+                        "type": "string"
+                    },
+                    "standard": {
+                        "title": "One set of standards which define thresholds of different quality levels of this quality metric.",
+                        "type": "object",
+                        "properties": {
+                            "pass": {
+                                "type": ["number", "string"]
+                            },
+                            "warning": {
+                                "type": ["number", "string"]
+                            },
+                            "not_compliant": {
+                                "type": ["number", "string"]
+                            },
+                            "error": {
+                                "type": ["number", "string"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "changelog": "/profiles/changelogs/quality_standard.md"
+}

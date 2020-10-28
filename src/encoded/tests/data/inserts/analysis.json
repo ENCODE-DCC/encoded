@@ -15,6 +15,7 @@
     },
     {
         "uuid": "c334db96-ef24-461e-93c4-ba5f1f0f8d9b",
+        "quality_standard": "a05a6a79-024c-47b9-b507-1fa5e323044c",
         "accession": "ENCAN820ARO",
         "files": ["ENCFF003MRN", "ENCFF005MRN"],
         "pipeline_version": "10.20.30"

@@ -78,6 +78,13 @@
                     "type": "string",
                     "linkTo": "Analysis"
             }
+        },
+        "quality_standard": {
+            "title": "Quality standard",
+            "description": "One applicable quality standard",
+            "comment": "See quality_standard.json for available identifiers.",
+            "type": "string",
+            "linkTo": "QualityStandard"
         }
     },
     "facets": {
