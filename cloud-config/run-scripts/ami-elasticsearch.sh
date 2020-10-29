@@ -62,6 +62,12 @@ else
     # like single demos do not have cluster names
     cluster_name="cluster.name: $ENCD_CLUSTER_NAME"
     append_with_user "$cluster_name" ubuntu "$opts_src/$es_opts_filename"
+    initial_master_nodes="cluster.initial_master_nodes: $ENCD_CLUSTER_NAME-discovery"
+    append_with_user "$initial_master_nodes" ubuntu "$opts_src/$es_opts_filename"
+    if [ "$es_opts_filename" == 'es-cluster-head.yml' ]; then
+        node_name="node.name: $ENCD_CLUSTER_NAME-discovery"
+        append_with_user "$node_name" ubuntu "$opts_src/$es_opts_filename"
+    fi
 fi
 if [ "$ENCD_PG_OPEN" == 'true' ]; then
     # Open postgres has open elasticsearch
@@ -72,8 +78,15 @@ if [ "$ENCD_PG_OPEN" == 'true' ]; then
 fi
 copy_with_permission "$opts_src/$es_opts_filename" "$opts_dest/elasticsearch.yml"
 
+# Set up permissions for elasticsearch user
+sudo chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/
+sudo chown -R elasticsearch:elasticsearch /var/log/elasticsearch/
+
+# Access Elasticsearch logs without elevated permissions
+sudo usermod -a -G elasticsearch ubuntu
+
 # Install discovery for clusters, maybe only needed for clusters
-sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
+yes | sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
 # Add es service and start
 sudo /bin/systemctl enable elasticsearch.service
 sudo systemctl start elasticsearch.service

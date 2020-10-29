@@ -75,7 +75,6 @@ def all_annotations(url):
                     annotations.append({
                         'index': {
                             '_index': 'annotations',
-                            '_type': 'default',
                             '_id': doc['id']
                         }
                     })

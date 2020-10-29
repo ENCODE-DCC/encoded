@@ -22,7 +22,7 @@ def embeds_uuid(es, uuid, item_type):
     return {
         'uuid': uuid,
         'item_type': item_type,
-        'embeds': res['hits']['total'],
+        'embeds': res['hits']['total']['value'],
         'buckets': res['aggregations']['item_type']['buckets'],
     }
 
