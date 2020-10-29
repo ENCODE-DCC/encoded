@@ -50,7 +50,12 @@
                         "title": "Input Parameters",
                         "description": "The input parameters used for this run (could be extracted from dx_job)",
                         "type": "object",
-                        "properties": {},
+                        "properties": {
+                            "paired_end": {
+                                "title": "Paired end",
+                                "type": "string"
+                            }
+                        },
                         "additionalProperties": true
                     },
                     "started_running": {
