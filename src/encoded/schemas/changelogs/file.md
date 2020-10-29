@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 25
+* *file_format* was updated to include *starch*.
+
 ### Schema version 25
 * *output_type* *smoothed methylation stage at CpG* was updated to *smoothed methylation state at CpG*
 * *file_format* was updated to include *h5ad*.

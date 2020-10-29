@@ -3707,6 +3707,21 @@
         "md5sum": "d49c217e369df785177805b864542e88"
     },
     {
+        "_test": "DNase-seq starch peaks",
+        "award": "/awards/U54HG007010/",
+        "assembly": "hg19",
+        "lab": "/labs/john-stamatoyannopoulos/",
+        "dataset": "ENCSR604DNT",
+        "status": "released",
+        "submitted_by": "/users/76091563-a959-4a9c-929c-9acfa1a0a078/",
+        "uuid": "b91bdba5-615f-48f2-b532-1cf98122a1d1",
+        "accession": "ENCFF333STR",
+        "file_format": "starch",
+        "output_type": "peaks",
+        "file_size": 1311689,
+        "md5sum": "d19c217e369df185177805b864542e81"
+    },
+    {
         "_test": "DNase-seq rep1 alignment file",
         "award": "/awards/U54HG007010/",
         "lab": "/labs/john-stamatoyannopoulos/",

@@ -692,6 +692,7 @@
                                 "file_format": {
                                     "enum": [
                                         "bam",
+                                        "starch",
                                         "sam",
                                         "gtf",
                                         "bigWig",
@@ -756,6 +757,7 @@
                                             "bigBed",
                                             "bam",
                                             "sam",
+                                            "starch",
                                             "sra",
                                             "bigWig",
                                             "csfasta",
@@ -844,6 +846,7 @@
                                         "hic",
                                         "PWM",
                                         "sam",
+                                        "starch",
                                         "tagAlign",
                                         "tar",
                                         "tsv",
@@ -1060,6 +1063,7 @@
                         "PWM",
                         "rcc",
                         "sam",
+                        "starch",
                         "tagAlign",
                         "tar",
                         "tsv",
@@ -2127,7 +2131,8 @@
         "vcf": ".vcf.gz",
         "wig": ".wig.gz",
         "sam": ".sam.gz",
-        "txt": ".txt.gz"
+        "txt": ".txt.gz",
+        "starch": ".starch"
     },
      "boost_values": {
          "accession": 20.0,
