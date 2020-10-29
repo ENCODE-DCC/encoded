@@ -38,7 +38,8 @@ commands:
               graphviz \
               nodejs \
               openjdk-11-jdk \
-              postgresql-10
+              postgresql-10 \
+              redis-server
             sudo chown -R circleci /var/log/elasticsearch/ /var/lib/elasticsearch /etc/default/elasticsearch /etc/elasticsearch
             sudo cp /mnt/ramdisk/cloud-config/configs/elasticsearch/es-circleci.yml /etc/elasticsearch/elasticsearch.yml
             sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
