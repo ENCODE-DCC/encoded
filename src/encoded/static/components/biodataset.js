@@ -87,14 +87,14 @@ class BioreferenceComponent extends React.Component {
                                             <dt>Description</dt>
                                             <dd>{context.description}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.reference_type ?
                                         <div data-test="type">
                                             <dt>Reference type</dt>
                                             <dd>{context.reference_type}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {/* {context.biospeimen_summary[0].species ?
                                         <div data-test="organism">
@@ -123,7 +123,7 @@ class BioreferenceComponent extends React.Component {
                                             <dt>Lab</dt>
                                             <dd>{context.lab.title}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <AwardRef context={context} adminUser={adminUser} />
 
@@ -132,14 +132,14 @@ class BioreferenceComponent extends React.Component {
                                             <dt>Aliases</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
-                                            : <em>None submitted</em> }
+                                                : <em>None submitted</em>}
                                         </dd>
                                     </div>
 
@@ -148,15 +148,15 @@ class BioreferenceComponent extends React.Component {
                                             <dt>Publications</dt>
                                             <dd>{references}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
                                             <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
-                                    : null}
-                                </dl> 
+                                        : null}
+                                </dl>
                             </div>
                         </div>
                     </PanelBody>
@@ -249,7 +249,7 @@ class BioprojectComponent extends React.Component {
                                             <dt>Assay(s)</dt>
                                             <dd>{context.assay_term_name}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <div data-test="accession">
                                         <dt>Accession</dt>
@@ -261,29 +261,29 @@ class BioprojectComponent extends React.Component {
                                             <dt>Description</dt>
                                             <dd>{context.description}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.project_type ?
                                         <div data-test="type">
                                             <dt>Project type</dt>
                                             <dd className="sentence-case">{context.project_type}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {/* {context.biospecimen_summary[0].tissue_type ?
                                         <div data-test="biosampletype">
                                             <dt>Biosample type</dt>
                                             <dd>{(context.biospecimen_summary[0].tissue_type)}</dd>
                                             {/* need to test */}
-                                        {/* </div> */}
-                                    {/* : null} */} 
+                                    {/* </div> */}
+                                    {/* : null} */}
 
                                     {context.assay_term_name ?
                                         <div data-test="assay_term_name">
                                             <dt>Biospecimen term name </dt>
                                             <dd>{_.uniq(context.assay_term_name)}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {/* {organisms.length ?
                                         <div data-test="organism">
@@ -292,7 +292,7 @@ class BioprojectComponent extends React.Component {
                                         </div>
                                     : null} */}
 
-                                  
+
                                 </dl>
                             </div>
 
@@ -307,7 +307,7 @@ class BioprojectComponent extends React.Component {
                                             <dt>Lab</dt>
                                             <dd>{context.lab.title}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <AwardRef context={context} adminUser={adminUser} />
 
@@ -316,14 +316,14 @@ class BioprojectComponent extends React.Component {
                                             <dt>Aliases</dt>
                                             <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
-                                            : <em>None submitted</em> }
+                                                : <em>None submitted</em>}
                                         </dd>
                                     </div>
 
@@ -332,9 +332,9 @@ class BioprojectComponent extends React.Component {
                                             <dt>Publications</dt>
                                             <dd>{references}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
-                                </dl> 
+                                </dl>
                             </div>
                         </div>
                     </PanelBody>
@@ -390,7 +390,7 @@ export const FilePanelHeader = (props) => {
                         </DropdownMenu>
                     </DropdownButton>
                 </span>
-            : null}
+                : null}
             <h4>File summary</h4>
         </div>
     );
@@ -410,7 +410,7 @@ function displayPossibleControls(item, adminUser) {
                         {i > 0 ? <span>, </span> : null}
                         {adminUser || publicDataset(control) ?
                             <a href={control['@id']}>{control.accession}</a>
-                        :
+                            :
                             <span>{control.accession}</span>
                         }
                     </span>
@@ -429,7 +429,7 @@ const basicTableColumns = {
             <span>
                 {meta.adminUser || publicDataset(bioexperiment) ?
                     <a href={bioexperiment['@id']} title={`View page for experiment ${bioexperiment.accession}`}>{bioexperiment.accession}</a>
-                :
+                    :
                     <span>{bioexperiment.accession}</span>
                 }
             </span>,
@@ -468,7 +468,7 @@ const basicTableColumns = {
 
 // Map series @id to title and table columns
 const seriesComponents = {
-    
+
     BioexperimentSeries: { title: 'bioexperiment series', table: basicTableColumns },
 
     MatchedSet: { title: 'matched set series', table: basicTableColumns },
@@ -494,7 +494,7 @@ export class BioseriesComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-
+        console.log("datasetDoc", datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const seriesType = context['@type'][0];
@@ -528,7 +528,7 @@ export class BioseriesComponent extends React.Component {
         //         </span>
         //     );
         // }
-        const terms = (context.assay_term_name ) ? _.uniq(context.assay_term_name) : [];
+        const terms = (context.assay_term_name) ? _.uniq(context.assay_term_name) : [];
 
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);
@@ -576,19 +576,19 @@ export class BioseriesComponent extends React.Component {
                                             <dt>Description</dt>
                                             <dd>{context.description}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <div data-test="donordiversity">
                                         <dt>Donor diversity</dt>
                                         <dd>{diversity}</dd>
                                     </div>
 
-                                    {context.assay_term_name?
+                                    {context.assay_term_name ?
                                         <div data-test="description">
                                             <dt>Assay</dt>
                                             <dd>{context.assay_term_name}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {/* {terms.length || speciesRender ?
                                         <div data-test="biosamplesummary">
@@ -625,14 +625,14 @@ export class BioseriesComponent extends React.Component {
                                             <dt>Aliases</dt>
                                             <dd>{context.aliases.join(', ')}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     <div data-test="externalresources">
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
                                                 <DbxrefList context={context} dbxrefs={context.dbxrefs} />
-                                            : <em>None submitted</em> }
+                                                : <em>None submitted</em>}
                                         </dd>
                                     </div>
 
@@ -641,21 +641,21 @@ export class BioseriesComponent extends React.Component {
                                             <dt>References</dt>
                                             <dd>{references}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.submitter_comment ?
                                         <div data-test="submittercomment">
                                             <dt>Submitter comment</dt>
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.internal_tags && context.internal_tags.length > 0 ?
                                         <div className="tag-badges" data-test="tags">
                                             <dt>Tags</dt>
                                             <dd><InternalTags internalTags={context.internal_tags} objectType={context['@type'][0]} /></dd>
                                         </div>
-                                    : null}
+                                        : null}
                                 </dl>
                             </div>
                         </div>
@@ -672,7 +672,7 @@ export class BioseriesComponent extends React.Component {
                             />
                         </SortTablePanel>
                     </div>
-                : null}
+                    : null}
 
                 {/* Display list of released and unreleased files */}
                 <FetchedItems

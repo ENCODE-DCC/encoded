@@ -41,6 +41,7 @@ DEFAULT_DOC_TYPES = [
     'PathologyReport',
     'Surgery',
     'Biodataset',
+    'Document'
 ]
 
 
