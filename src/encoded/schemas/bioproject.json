@@ -1,0 +1,97 @@
+{
+    "title": "Bioproject",
+    "description": "Schema for submitting metadata for a project.",
+    "id": "/profiles/bioproject.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "award", "lab"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "biodataset.json#/properties" },
+        { "$ref": "biofile_set.json#/properties" }
+    ],
+    "dependencies": {
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "15"
+        },
+        "project_type": {
+            "title": "Project type",
+            "description": "The category that best describes the project.",
+            "type": "string",
+            "enum": [
+                "evaluation",
+                "validation"
+            ]
+        }
+    },
+    "facets": {
+        "project_type": {
+            "title": "Project type"
+        },
+       
+        "status": {
+            "title": "Status"
+        }
+       
+       
+       
+       
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+       
+       
+        
+        "status": {
+            "title": "Status",
+            "type": "string"
+        }
+        
+    },
+    "boost_values": {
+        "accession": 1.0,
+        
+        
+       
+        
+        "project_type": 1.0
+    },
+    "changelog": "/profiles/changelogs/bioproject.md"
+
+}

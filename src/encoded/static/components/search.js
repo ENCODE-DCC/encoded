@@ -14,7 +14,7 @@ import * as globals from './globals';
 import { Attachment } from './image';
 import {
     BrowserSelector,
-    DisplayAsJson,
+    DisplayAsJson,BiosampleType,
     requestSearch,
     DocTypeTitle,
     shadeOverflowOnScroll,
@@ -32,9 +32,11 @@ const types = {
     biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
     experiment: { title: 'Experiments' },
+    bioexperiment: { title: 'Bioexperiments' },
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
     dataset: { title: 'Datasets' },
+    biodataset: { title: 'Biodatasets' },
     image: { title: 'Images' },
     matched_set: { title: 'Matched set series' },
     aggregate_series: { title: 'Aggregate series' },
@@ -43,8 +45,10 @@ const types = {
     page: { title: 'Web page' },
     pipeline: { title: 'Pipeline' },
     project: { title: 'Project file set' },
+    bioproject: { title: 'Bioproject file set' },
     publication_data: { title: 'Publication file set' },
     reference: { title: 'Reference file set' },
+    bioreference: { title: 'Bioreference file set' },
     reference_epigenome: { title: 'Reference epigenome series' },
     replication_timing_series: { title: 'Replication timing series' },
     software: { title: 'Software' },
@@ -70,6 +74,14 @@ const datasetTypes = {
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
+const biodatasetTypes={
+    Biodataset: types.biodataset.title,
+    Bioproject: types.bioproject.title,
+    Bioreference: types.bioreference.title,
+
+
+
+}
 
 // You can use this function to render a listing view for the search results object with a couple
 // options:
@@ -848,6 +860,96 @@ BioexperimentComponent.contextTypes = {
 const Bioexperiment = auditDecor(BioexperimentComponent);
 
 globals.listingViews.register(Bioexperiment, 'Bioexperiment');
+
+const BiodatasetComponent = (props, reactContext) => {
+    const result = props.context;
+    let biosampleTerm;
+    let organism;
+    // let lifeSpec;
+    // let targets;
+    // let lifeStages = [];
+    // let ages = [];
+
+    // Determine whether the dataset is a series or not
+    const seriesDataset = result['@type'].indexOf('Bioseries') >= 0;
+
+    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+    if (seriesDataset) {
+        biosampleTerm = (result.assay_term_name) ? result.assay_term_name :  '';
+        const organisms = (result.biospecimen_summary&& result.biospecimen_summary.length) ? _.uniq(result.biospecimen_summary.map(i => i.species)) : [];
+        if (organisms.length === 1) {
+            organism = organisms[0];
+        }
+
+        // Dig through the biosample life stages and ages
+        // if (result.related_datasets && result.related_datasets.length) {
+        //     result.related_datasets.forEach((biodataset) => {
+        //         if (biodataset.bioreplicate && biodataset.bioreplicate.length) {
+        //             biodataset.bioreplicate.forEach((bioreplicate) => {
+        //                 if (bioreplicate.biolibrary && bioreplicate.biolibrary.biospecimen) {
+        //                     const biosample = replicate.biolibrary.biospecimen;
+        //                 }
+        //             });
+        //         }
+        //     });
+           
+        // }
+       
+    }
+
+    const haveSeries = result['@type'].indexOf('Bioseries') >= 0;
+    const haveFileSet = result['@type'].indexOf('BiofileSet') >= 0;
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {biodatasetTypes[result['@type'][0]]}
+                            {seriesDataset ?
+                                <span>
+                                    {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+               
+                                </span>
+                                :
+                                <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
+                            }
+                        </a>
+                    </div>
+                    {/* <div className="data-row">
+                        <div><strong>Lab: </strong>{result.lab.title}</div>
+                        <div><strong>Project: </strong>{result.award.project}</div>
+                    </div> */}
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
+
+BiodatasetComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiodatasetComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biodataset = auditDecor(BiodatasetComponent);
+
+globals.listingViews.register(Biodataset, 'Biodataset');
+
+
 /* eslint-disable react/prefer-stateless-function */
 /**
  *

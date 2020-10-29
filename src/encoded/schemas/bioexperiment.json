@@ -21,9 +21,10 @@
         { "$ref": "mixins.json#/schema_version"},
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accessioned_status"},
         { "$ref": "mixins.json#/references"},
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "biodataset.json#/properties" },
+
         { "$ref": "mixins.json#/attribution"},
         { "$ref": "mixins.json#/aliases"},
         { "$ref": "mixins.json#/submitted"},
@@ -36,9 +37,7 @@
             "default": "1"
         },
 
-        "accession": {
-            "accessionType": "BE"
-        },
+   
         "biospecimen": {
             "title": "Biospecimen",
             "description": "The biological specimen.",
@@ -74,9 +73,34 @@
             "items": {
                 "title": "Control",
                 "description": "A dataset that contains files that can serve as a scientific control for this experiment.",
-                "comment": "See bioexperiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
+                "comment": "See biodataset.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
                 "type": "string",
-                "linkTo": "Bioexperiment"
+                "linkTo": "Biodataset"
+            }
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See experiment.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "Bioexperiment"
+            }
+        },
+        "related_files": {
+            "title": "Additional data files",
+            "description": "To be removed in a future release after data cleanup.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Data file",
+                "comment": "See biofile.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Biofile"
             }
         },
         "dbxrefs": {

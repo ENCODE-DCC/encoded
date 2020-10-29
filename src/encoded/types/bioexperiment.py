@@ -1,31 +1,47 @@
-
+from pyramid.traversal import find_root
 from snovault import (
     calculated_property,
     collection,
     load_schema,
 )
 from .base import (
+    ALLOW_SUBMITTER_ADD,
     Item,
-    # SharedItem,
     paths_filtered_by_status,
+    SharedItem
 )
-from pyramid.traversal import find_root, resource_path
-import re
+from .biodataset import Biodataset
+from .shared_calculated_properties import (
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedVisualize
+)
+
+# importing biosample function to allow calculation of experiment biosample property
+from .biosample import (
+    construct_biosample_summary,
+    generate_summary_dictionary
+)
+
+from .assay_data import assay_terms
 
 
 @collection(
     name='bioexperiments',
     unique_key='accession',
     properties={
-        'title': 'Bioxperiments',
+        'title': 'Bioexperiments',
         'description': 'Bioexperiment information page',
     },
 )
-class Bioexperiment(Item):
+class Bioexperiment(Biodataset,
+                    CalculatedAssaySynonyms,
+                    CalculatedAssayTermID,
+                    CalculatedVisualize):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    name_key = 'accession'
-    embedded = [
+    # name_key = 'accession'
+    embedded = Biodataset.embedded + [
         'award',
         'lab',
         "submitted_by",  # link to User
@@ -38,26 +54,47 @@ class Bioexperiment(Item):
         'bioreplicate.biolibrary.biospecimen.part_of',
         'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',
-        "references"  # link to Publication
+        "references",
+        "files", # link to Publication
+        "files.platform",
+        'related_series',
+         # link to Publication
 
 
     ]
-    rev = {
+    rev = Biodataset.rev.copy()
+    rev.update({
+        'related_series': ('Bioseries', 'related_datasets'),
         'bioreplicate': ('Bioreplicate', 'bioexperiment'),
-        # 'possible_controls': ('Bioexperiment', 'possible_controls')
-    }
+        'superseded_by': ('Bioexperiment', 'supersedes')
+
+    })
+   
 
     audit_inherit = [
+        'original_files',
+        'original_files.bioreplicate',
+        'original_files.platform',
+        # 'target',
+        # 'files.analysis_step_version.analysis_step.pipelines',
+        'revoked_files',
+        'revoked_files.bioreplicate',
+        'submitted_by',
+        'lab',
+        'award',
+        'documents',
 
     ]
     set_status_up = [
+        'original_files',
+        'bioreplicate',
+        'documents',
     ]
     set_status_down = [
+        'original_files',
+        'bioreplicate',
     ]
-    rev.update({
-
-
-    })
+   
 
     @calculated_property(
         schema={
@@ -78,7 +115,6 @@ class Bioexperiment(Item):
         "items": {
             "comment": "See experiment.json for a list of available identifiers.",
             "type": "object",
-                    # "linkTo": "Experiment"
         }
     })
     def biospecimen_summary(self,
@@ -87,7 +123,7 @@ class Bioexperiment(Item):
         biospecimen_summary_list = []
 
   # "species": "mouse_related_info", "patient","collection_date, "sample_type",detailed sample type, "anatomic_site", "initial_quantity", "initial_quantiy_units",
-  # "preservation_method":,  "donor", "host_biosample",   "pooled_from", "part_of",
+  # "preservation_method":,  "donor", "species_biosample",   "pooled_from", "part_of",
 
         biospecimen_summary_dict = {
             "accession": "",
@@ -97,7 +133,7 @@ class Bioexperiment(Item):
             "processing_type": "",
             "tissue_type": "",
             "anatomic_site": "",
-            "host": "",
+            "species": "",
             "primary_site": "",
         }
         if bioreplicate is not None:
@@ -129,8 +165,8 @@ class Bioexperiment(Item):
                             biospecimen_summary_dict['processing_type'] = biospecimenObject["processing_type"]
                         if 'tissue_type' in biospecimenObject:
                             biospecimen_summary_dict['tissue_type'] = biospecimenObject["tissue_type"]
-                        if 'host' in biospecimenObject:
-                            biospecimen_summary_dict['host'] = biospecimenObject["host"]
+                        if 'species' in biospecimenObject:
+                            biospecimen_summary_dict['species'] = biospecimenObject["species"]
                         if 'primary_site' in biospecimenObject:
                             biospecimen_summary_dict['primary_site'] = biospecimenObject["primary_site"]
 
@@ -149,8 +185,7 @@ class Bioexperiment(Item):
         # That replicate should have a libraries property which, as calculated
         # in replicate.libraries (ENCD-4251), should have collected all
         # possible technical replicates belong to the biological replicate.
-        # TODO: change this once we remove technical_replicate_number.
-        # This is the easiest way to use looping save time.Shortcut.
+      
         bio_rep_dict = {}
 
         for rep in bioreplicate:
@@ -227,26 +262,26 @@ class Bioexperiment(Item):
 
         return 'anisogenic'
 
-    # @calculated_property(schema={
-    #     "title": "Superseded by",
-    #     "type": "array",
-    #     "items": {
-    #         "type": ['string', 'object'],
-    #         "linkFrom": "Experiment.supersedes",
-    #     },
-    #     "notSubmittable": True,
-    # })
-    # def superseded_by(self, request, superseded_by):
-    #     return paths_filtered_by_status(request, superseded_by)
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Bioexperiment.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
 
-    # @calculated_property(schema={
-    #     "title": "Possible_controls",
-    #     "type": "array",
-    #     "items": {
-    #         "type": ['string', 'object'],
-    #         "linkFrom": "Bioexperiment.possible_controls",
-    #     },
-    #     "notSubmittable": True,
-    # })
-    # def possible_controls(self, request, possible_controls):
-    #     return paths_filtered_by_status(request, possible_controls)
+    @calculated_property(schema={
+        "title": "Biorelated series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Bioseries.related_datasets",
+        },
+        "notSubmittable": True,
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)

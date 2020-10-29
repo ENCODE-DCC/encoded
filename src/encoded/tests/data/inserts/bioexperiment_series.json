@@ -1,0 +1,12 @@
+[
+    {
+        "uuid": "9549ec8e-0ead-4b66-b97b-3997e46c68b2",
+        "accession": "KCESE513DKU",
+        "award": "U24HG009397",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "date_released": "2019-06-03",
+        "related_datasets": ["KCEBE000ADH", "KCEBE000AES"]
+    }
+   
+]
