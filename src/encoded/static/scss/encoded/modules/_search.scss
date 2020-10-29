@@ -62,6 +62,10 @@ $form-bg: #f3f3f3;
         position: relative;
     }
 
+    @at-root #{&}__property-title {
+        font-weight: 700;
+    }
+
     @at-root #{&}__meta {
         flex: 0 1 auto;
         text-align: right;

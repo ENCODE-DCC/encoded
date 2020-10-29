@@ -235,16 +235,16 @@ class BiosampleComponent extends React.Component {
                             {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
                         <div className="result-item__data-row">
-                            <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
-                            {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                            {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
-                            {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
-                            {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                            {mutatedGenes.length > 0 ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
-                            {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
-                            {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
-                            {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
-                            <div><strong>Source: </strong>{result.source.title}</div>
+                            <div><span className="result-item__property-title">Type: </span>{result.biosample_ontology.classification}</div>
+                            {result.summary ? <div><span className="result-item__property-title">Summary: </span>{BiosampleSummaryString(result)}</div> : null}
+                            {rnais.length > 0 ? <div><span className="result-item__property-title">RNAi targets: </span>{rnais.join(', ')}</div> : null}
+                            {constructs.length > 0 ? <div><span className="result-item__property-title">Constructs: </span>{constructs.join(', ')}</div> : null}
+                            {treatment ? <div><span className="result-item__property-title">Treatment: </span>{treatment}</div> : null}
+                            {mutatedGenes.length > 0 ? <div><span className="result-item__property-title">Mutated genes: </span>{mutatedGenes.join(', ')}</div> : null}
+                            {result.culture_harvest_date ? <div><span className="result-item__property-title">Culture harvest date: </span>{result.culture_harvest_date}</div> : null}
+                            {result.date_obtained ? <div><span className="result-item__property-title">Date obtained: </span>{result.date_obtained}</div> : null}
+                            {synchText ? <div><span className="result-item__property-title">Synchronization timepoint: </span>{synchText}</div> : null}
+                            <div><span className="result-item__property-title">Source: </span>{result.source.title}</div>
                         </div>
                     </div>
                     <div className="result-item__meta">
@@ -348,6 +348,20 @@ const ExperimentComponent = (props, reactContext) => {
         );
     }
 
+    // Get SCREEN link and FactorBook link if they exist
+    const screenLink = (result.dbxrefs && result.dbxrefs.some(dbxref => (dbxref.indexOf('SCREEN') > -1))) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('SCREEN') > -1))[0] : null;
+    const motifsLink = (result.dbxrefs && result.dbxrefs.some(dbxref => (dbxref.indexOf('FactorBook') > -1))) ? result.dbxrefs.filter(dbxref => (dbxref.indexOf('FactorBook') > -1))[0] : null;
+    let screenSearch = '';
+    let screenAssembly = '';
+    if (screenLink) {
+        screenSearch = screenLink.split(':')[1];
+        screenAssembly = screenLink.split('-')[1].split(':')[0];
+    }
+    let motifsSearch = '';
+    if (motifsLink) {
+        motifsSearch = motifsLink.split(':')[1];
+    }
+
     return (
         <li className={resultItemClass(result)}>
             <div className="result-item">
@@ -377,19 +391,25 @@ const ExperimentComponent = (props, reactContext) => {
                     : null}
                     <div className="result-item__data-row">
                         {result.target && result.target.label ?
-                            <div><strong>Target: </strong>{result.target.label}</div>
+                            <div><span className="result-item__property-title">Target: </span>
+                                {motifsLink ?
+                                    <a href={`https://factorbook.org/experiment/${motifsSearch}`}>{result.target.label} (Factorbook)</a>
+                                :
+                                    <span>{result.target.label}</span>
+                                }
+                            </div>
                         : null}
 
                         {mode !== 'cart-view' ?
                             <React.Fragment>
                                 {synchronizations && synchronizations.length > 0 ?
-                                    <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
+                                    <div><span className="result-item__property-title">Synchronization timepoint: </span>{synchronizations.join(', ')}</div>
                                 : null}
 
-                                <div><strong>Lab: </strong>{result.lab.title}</div>
-                                <div><strong>Project: </strong>{result.award.project}</div>
+                                <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                                <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
                                 {treatments && treatments.length > 0 ?
-                                    <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                    <div><span className="result-item__property-title">Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </span>
                                         <span>
                                             {uniqueTreatments.join(', ')}
                                         </span>
@@ -397,7 +417,7 @@ const ExperimentComponent = (props, reactContext) => {
                                 : null}
                                 {Object.keys(seriesMap).map(seriesType =>
                                     <div key={seriesType}>
-                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
+                                        <span className="result-item__property-title">{seriesType.replace(/([A-Z])/g, ' $1')}: </span>
                                         {seriesMap[seriesType].map(
                                             (series, i) => (
                                                 <span key={series.accession}>
@@ -410,6 +430,9 @@ const ExperimentComponent = (props, reactContext) => {
                                         )}
                                     </div>
                                 )}
+                                {screenLink ?
+                                    <div><span className="result-item__property-title">candidate Cis-Regulatory Elements (cCREs): </span><a href={`https://screen.encodeproject.org/search?q=${screenSearch}&assembly=${screenAssembly}`}>SCREEN</a></div>
+                                : null}
                             </React.Fragment>
                         : null}
                     </div>
@@ -599,12 +622,12 @@ const DatasetComponent = (props, reactContext) => {
                         }
                     </a>
                     <div className="result-item__data-row">
-                        {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
+                        {result.dataset_type ? <div><span className="result-item__property-title">Dataset type: </span>{result.dataset_type}</div> : null}
+                        {targets && targets.length > 0 ? <div><span className="result-item__property-title">Targets: </span>{targets.join(', ')}</div> : null}
+                        <div><span className="result-item__property-title">Lab: </span>{result.lab.title}</div>
+                        <div><span className="result-item__property-title">Project: </span>{result.award.project}</div>
                         { treatments && treatments.length > 0 ?
-                                <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
+                                <div><span className="result-item__property-title">Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </span>
                                     <span>
                                         {uniqueTreatments.join(', ')}
                                     </span>
