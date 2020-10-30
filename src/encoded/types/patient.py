@@ -421,10 +421,201 @@ class Patient(Item):
 
 
     @calculated_property(define=True, schema={
+            "title": "Dominant Tumor",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "t_stage": {
+                    "title": "pT Stage",
+                    "description": "Pathological T stage, size primary tumor",
+                    "type": "string",
+                },
+                "n_stage": {
+                    "title": "pN Stage",
+                    "description": "Pathological N stage, nodal involvement",
+                    "type": "string",
+                },
+                "m_stage": {
+                    "title": "pM Stage",
+                    "description": "Pathological M stage, nodal involvement",
+                    "type": "string",
+                },
+                "histology": {
+                    "title": "Histology",
+                    "description": "The histology of tumor",
+                    "type": "string",
+                },
+                "tumor_size": {
+                    "title": "Tumor Size",
+                    "description": "Greatest dimension of tumor was recorded in cm. ",
+                    "type": "number"
+                },
+                "tumor_size_units": {
+                    "title": "Tumor Size units",
+                    "type": "string",
+                    "enum": [
+                        "cm"
+                    ]
+                },
+
+            },
+        })
+    def dominant_tumor(self, request, surgery=None):
+        dominant_tumor = dict()
+        tRanking = {"Not applicable": 0, "pTX": 1,"pT1": 2, "pT1a": 2, "pT1b": 2, "pT2": 3, "pT2a": 3, "pT2b": 3, "pT3": 4, "pT3a": 4, "pT3b": 4, "pT3c": 4, "pT4": 5}
+        nRanking = {"Not applicable": 0, "Not available": 1, "pNX": 1, "pN0": 2, "pN1": 3, "pN2": 4}
+        histologyRanking = {
+            "Acquired cystic disease-associated RCC": -14,
+            "Angiomyolipoma": -100,
+            "ccPRCC": -18,
+            "ccRCC": -4,
+            "ChRCC": -16,
+            "ChRCC, hybrid type": 100,
+            "collecting duct carcinoma(CDC)": -1,
+            "Cystic nephroma": 100,
+            "HLRCC": 100,
+            "Leiomyoma": 100,
+            "Leiomyosarcoma": 100,
+            "Metanephric adenoma": 100,
+            "Mucinous tubular and spindle cell carcinoma": -13,
+            "multilocular cystic renal neoplasm of low malignant potential": -17,
+            "PRCC, no type given": -11,
+            "PRCC, type 1": -12,
+            "PRCC, type 2": -6,
+            "Poorly differentiated malignancy": 100,
+            "Renal medullary carcinoma": -2,
+            "Renal Cell Carcinoma, NOS": -5,
+            "RO": 100,
+            "RON": 100,
+            "RON, favor ChRCC": 100,
+            "RON, favor RO": 100,
+            "Sarcomatoid, NOS": 100,
+            "Sarcoma": 100,
+            "MiT family translocation RCC": -7,
+            "Tubulocystic RCC": -10,
+            "Unclassified": -5,
+            "Unclassified RCC": -5,
+            "Nephroblastoma (Wilms tumor)": 100,
+            "Soft tissue neoplasm, NOS": 100,
+            "SDH deficient RCC": -15,
+        }
+        
+        tumors = []
+        #collect all tumors info to make a list
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_path_report = surgery_object['pathology_report']
+                if len(surgery_path_report) > 0:
+                    for path_report in surgery_path_report:
+                        path_report_obj = request.embed(path_report, '@@object')
+                        t_stage = path_report_obj.get('t_stage')
+                        n_stage = path_report_obj.get('n_stage')
+                        m_stage = path_report_obj.get('m_stage')
+                        histology = path_report_obj.get('histology')
+                        #handle missing data
+                        if t_stage:
+                            t_stage_rank =  tRanking[t_stage]
+                        else:
+                            t_stage_rank = -1
+                        if n_stage:
+                            n_stage_rank =  nRanking[n_stage]
+                        else:
+                            n_stage_rank = -1
+                        if histology: 
+                            histology_rank =  histologyRanking[histology]
+                        else:
+                            histology_rank = -1
+                        histology = path_report_obj.get('histology')
+                        tumor = {
+                            't_stage': t_stage,
+                            't_stage_rank': t_stage_rank,
+                            'n_stage': n_stage,
+                            'n_stage_rank': n_stage_rank,
+                            'm_stage': m_stage,
+                            'histology': histology,
+                            'histology_rank': histology_rank,
+                            'tumor_size': path_report_obj.get('tumor_size'),
+                            'tumor_size_units': path_report_obj.get('tumor_size_units'),
+                            'path_report': path_report_obj.get('accession'),
+                            'path_report_id': path_report_obj.get('@id'),
+                            'surgery': surgery_object.get('accession'),
+                            'surgery_id': surgery_object.get('@id')
+                        }
+                        
+                        tumors.append(tumor)
+            
+            if len(tumors) == 1:
+                dominant_tumor = tumors[0]
+            elif len(tumors) > 1:
+                #sort by pT stage
+                tumors.sort(key=lambda tumor: tumor['t_stage_rank'])
+                pt_stage_rank = tumors[-1]['t_stage_rank']
+                #no dominant tumor if all tumors has no stage info
+                if pt_stage_rank == -1:
+                    dominant_tumor = dict()
+                #calulate dominant tumors if highest pt ranking tumors have stage info
+                else:
+                    #remove low ranking tummors
+                    tumorsCopy = tumors.copy()
+                    for tumor in tumorsCopy:
+                        if tumor['t_stage_rank'] != pt_stage_rank:
+                            tumors.remove(tumor)
+                    if len(tumors) == 1:
+                        dominant_tumor = tumors[0]
+                    else:
+                        #compare the tumors that have highest pt stage when stage is pt1ab or pt2ab
+                        
+                        if pt_stage_rank == 2 or pt_stage_rank == 3:
+                            
+                            hasB = False
+                            for tumor in tumors:
+                                
+                                if tumor['t_stage'].endswith('b'):
+                                    hasB = True
+                                    break
+                            if hasB:
+                                #remove stage endswith a
+                                tumorsCopy = tumors.copy()
+                                for tumor in tumorsCopy:
+                                    if tumor['t_stage'].endswith('a'):
+                                        tumors.remove(tumor)
+                        #compare the tumors that have highest pt stage when stage is pt3abc
+                        elif pt_stage_rank == 4:
+                            hasC = False
+                            hasB = False
+                            for tumor in tumors:
+                                if tumor['t_stage'].endswith('b'):
+                                    hasB = True
+                                elif tumor['t_stage'].endswith('c'):
+                                    hasC = True
+                            if hasC:
+                                #remove stage endswith b and a:
+                                tumorsCopy = tumors.copy()
+                                for tumor in tumorsCopy:
+                                    if tumor['t_stage'].endswith('a'):
+                                        tumors.remove(tumor)
+                                    elif tumor['t_stage'].endswith('b'):
+                                        tumors.remove(tumor)
+                            elif hasB:
+                                #remove stage endswith a:
+                                tumorsCopy = tumors.copy()
+                                for tumor in tumorsCopy:
+                                    if tumor['t_stage'].endswith('a'):
+                                        tumors.remove(tumor)
+                        #now only turely highest pt ranking tumors left
+                        if len(tumors) == 1:
+                            dominant_tumor = tumors[0] 
+                        else:
+                            dominant_tumor = max(tumors, key=lambda tumor: (tumor['n_stage_rank'], tumor['histology_rank'], tumor['tumor_size']))
+                                    
+        return dominant_tumor
+
+    @calculated_property(define=True, schema={
             "title": "Surgery Treatment Summary",
             "type": "string",
         })
-    def surgery_summary(self, request, surgery=None):
+    def surgery_summary(self, request, surgery):
             if len(surgery) > 0:
                 surgery_summary = "Yes"
             else:
@@ -1002,3 +1193,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
