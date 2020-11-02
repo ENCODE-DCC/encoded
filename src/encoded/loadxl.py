@@ -19,25 +19,20 @@ ORDER = [
     'image',
     'page',
     'publication',
-    # 'publication_data',
     'document',
     'patient',
     'surgery',
     'pathology_report',
     'surgery_procedure',
     'biospecimen',
-
     'bioreference',
     'bioproject',
-
     'bioexperiment',
     'platform',
     'biolibrary',
     'bioreplicate',
     'biofile',
     'bioexperiment_series',
-
-    # 'series',
     'ihc',
     'medication',
     'supportive_medication',
@@ -46,8 +41,8 @@ ORDER = [
     'radiation',
     'medical_imaging',
     'cart',
-    # 'lab_results',
-    # 'vital_results'
+    'lab_results',
+    'vital_results'
 ]
 
 IS_ATTACHMENT = [
