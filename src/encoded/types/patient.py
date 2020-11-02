@@ -607,7 +607,13 @@ class Patient(Item):
                         if len(tumors) == 1:
                             dominant_tumor = tumors[0] 
                         else:
-                            dominant_tumor = max(tumors, key=lambda tumor: (tumor['n_stage_rank'], tumor['histology_rank'], tumor['tumor_size']))
+                            tumors.sort(key=lambda tumor: (tumor['n_stage_rank'], tumor['histology_rank'], tumor['tumor_size']))
+                            #check if there are duplicated highest rank tumors
+                            isDuplicated = False
+                            if tumors[-1]['n_stage_rank'] == tumors[-2]['n_stage_rank'] and tumors[-1]['t_stage_rank'] == tumors[-2]['t_stage_rank'] and tumors[-1]['histology_rank'] == tumors[-2]['histology_rank'] and tumors[-1]['tumor_size'] == tumors[-2]['tumor_size']:
+                                isDuplicated = True
+                            if not isDuplicated:   
+                                dominant_tumor = max(tumors, key=lambda tumor: (tumor['n_stage_rank'], tumor['histology_rank'], tumor['tumor_size']))
                                     
         return dominant_tumor
 
