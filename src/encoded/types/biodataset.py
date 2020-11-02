@@ -56,16 +56,12 @@ class Biodataset(Item):
         'files.bioreplicate',
         'files.bioreplicate.bioexperiment',
         'files.bioreplicate.bioexperiment.lab',
-        # 'files.bioreplicate.bioexperiment.target',
-        # 'files.replicate.experiment.target.genes',
         'files.submitted_by',
         'files.lab',
         'revoked_files',
         'revoked_files.bioreplicate',
         'revoked_files.bioreplicate.bioexperiment',
         'revoked_files.bioreplicate.bioexperiment.lab',
-        # 'revoked_files.replicate.experiment.target',
-        # 'revoked_files.replicate.experiment.target.genes',
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
@@ -318,56 +314,19 @@ class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Ca
     base_types = ['Bioseries'] + Biodataset.base_types
     schema = load_schema('encoded:schemas/bioseries.json')
     embedded = Biodataset.embedded + [
-        # 'biosample_ontology',
-        # 'organism',
-        # 'target',
-        # 'target.genes',
-        # 'target.organism',
         'references',
-        # 'related_datasets.biosample_ontology',
         'related_datasets.files',
-        # 'related_datasets.files.analysis_step_version',
-        # 'related_datasets.files.analysis_step_version.analysis_step',
-        # 'related_datasets.files.analysis_step_version.analysis_step.pipelines',
         'related_datasets.lab',
         'related_datasets.submitted_by',
-        # 'related_datasets.award.pi.lab',
-        # 'related_datasets.replicates.antibody',
-        # 'related_datasets.replicates.antibody.targets',
         'related_datasets.bioreplicate.biolibrary',
         'related_datasets.bioreplicate.biolibrary.biospecimen.submitted_by',
-        # 'related_datasets.replicates.library.biosample.source',
         'related_datasets.bioreplicate.biolibrary.biospecimen',
         'related_datasets.bioreplicate.biolibrary.biospecimen.donor',
-        # 'related_datasets.replicates.library.biosample.treatments',
-        # 'related_datasets.replicates.library.spikeins_used',
-        # 'related_datasets.replicates.library.treatments',
-        # 'related_datasets.replicates.libraries',
-        # 'related_datasets.replicates.libraries.biosample.submitted_by',
-        # 'related_datasets.replicates.libraries.biosample.source',
-        # 'related_datasets.replicates.libraries.biosample.organism',
-        # 'related_datasets.replicates.libraries.biosample.donor.organism',
-        # 'related_datasets.replicates.libraries.biosample.treatments',
-        # 'related_datasets.replicates.libraries.spikeins_used',
-        # 'related_datasets.replicates.libraries.treatments',
-        # 'related_datasets.possible_controls',
-        # 'related_datasets.possible_controls.lab',
-        # 'related_datasets.target.organism',
         'related_datasets.references',
         'files.platform',
         'files.lab',
-        # 'files.analysis_step_version.analysis_step',
-        # 'files.analysis_step_version.analysis_step.pipelines',
-        # 'files.analysis_step_version.analysis_step.versions',
-        # 'files.analysis_step_version.analysis_step.versions.software_versions',
-        # 'files.analysis_step_version.analysis_step.versions.software_versions.software',
-        # 'files.analysis_step_version.software_versions',
-        # 'files.analysis_step_version.software_versions.software',
         'files.bioreplicate.biolibrary.biospecimen',
-        'files.biolibrary.biospecimen',
-        # 'files.quality_metrics',
-        # 'files.quality_metrics.step_run',
-        # 'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'files.biolibrary.biospecimen'
     ]
 
     @calculated_property(schema={
@@ -396,8 +355,8 @@ class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Ca
         for assembly_from_original_files in calculate_assembly(request, original_files, status):
             combined_assembly.add(assembly_from_original_files)
         for biodataset in related_datasets:
-        
-     
+
+
             properties = request.embed(biodataset, '@@object')
             if properties['status'] not in ('deleted', 'replaced'):
                 for assembly_from_related_dataset in properties['assembly']:
@@ -416,27 +375,12 @@ class BioexperimentSeries(Bioseries):
     schema = load_schema('encoded:schemas/bioexperiment_series.json')
     name_key = 'accession'
     embedded = [
-        # 'biosample_ontology',
         'contributing_awards',
         'contributors',
-        # 'organism',
         'related_datasets.lab',
         'related_datasets.bioreplicate.biolibrary.biospecimen',
-        # 'related_datasets.target',
-        # 'target',
-        # 'target.genes',
-        # 'target.organism',
     ]
 
-    # @calculated_property(schema={
-    #     "title": "Assay type",
-    #     "type": "array",
-    #     "items": {
-    #         "type": "string",
-    #     },
-    # })
-    # def assay_slims(self, request, related_datasets):
-    #     return request.select_distinct_values('assay_slims', *related_datasets)
 
     @calculated_property(schema={
         "title": "Assay title",

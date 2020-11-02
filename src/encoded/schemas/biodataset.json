@@ -71,7 +71,7 @@
                 "title": "External identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|IHEC:IHECRE\\d{8}\\.\\d)$"
+                "pattern": "^(|GEO:(GSM|GSE)\\d+\)$"
             }
         },
         "date_released": {
@@ -83,31 +83,6 @@
                 {"format": "date"}
             ],
             "permission": "import_items"
-        },
-        "internal_tags": {
-            "title": "Internal tags",
-            "description": "Some datasets are part of particular data collections",
-            "type": "array",
-            "permission": "import_items",
-            "uniqueItems": true,
-            "default": [],
-            "items": {
-                "type": "string",
-                "enum": [
-                    "ccre_inputv1",
-                    "ccre_inputv2",
-                    "dbGaP",
-                    "DREAM",
-                    "ENCYCLOPEDIAv3",
-                    "ENCYCLOPEDIAv4",
-                    "ENCYCLOPEDIAv5",
-                    "ENCORE",
-                    "ENTEx",
-                    "MouseDevSeries",
-                    "SESCC",
-                    "RegulomeDB"
-                ]
-            }
         },
         "status": {
             "title": "Status",
