@@ -124,7 +124,7 @@ class Biofile(Item):
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
 
-    
+
     # @calculated_property(schema={
     #     "title": "Output category",
     #     "description": "The overall catagory of the file content.",

@@ -15,7 +15,7 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/submitter_comment" }
-        
+
     ],
     "facets": {
         "status": {
@@ -34,12 +34,6 @@
         },
         "accession": {
             "accessionType": "LB"
-        },
-        "internal_ID": {
-            "title": "Internal ID",
-            "description": "ID used internally to identify this biospecimen.",
-            "comment": "Only admins are allowed to set or update this value.",
-            "type": "string"
         },
         "biospecimen": {
             "title": "biospecimen",
@@ -118,10 +112,10 @@
         },
         "source": {
             "title": "Source",
-            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA).",
+            "description": "The vendor, sequencing.",
             "type": "string"
         },
-        
+
         "documents": {
             "description": "Protocols or other documents that describe library construction and sample treatment before sequencing."
         },
@@ -247,7 +241,7 @@
         "accession": {
             "title": "Accession"
         },
-        
+
         "biospecimen.sample_type": {
             "title": "Sample Type"
         },
