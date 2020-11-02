@@ -2192,7 +2192,10 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
             <div className="analyses-selector analyses-selector--file-gallery-facets">
                 <h4>Choose analysis</h4>
                 <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
-                    {analyses.map((analysis, index) => (
+                    // In ENCODE releases, release year is not in the data. To get around this, if you strip out the text and 
+                    // leave only numbers, you will consistently have a means to identify ealier releases from latter ones. This 
+                    // approached was used to sort.
+                    {analyses.sort((a,b) => parseInt(b.title.replace(/\D/g,'')) - parseInt(a.title.replace(/\D/g,''))).map((analysis, index) => (
                         <option key={analysis.title} value={index}>{analysis.title}</option>
                     ))}
                 </select>
