@@ -2,7 +2,6 @@
   {
     "accession": "KCEBE000AER",
     "assay_term_name": "RNA-seq",
-    "biospecimen": "KCEBS708IJT",
     "award": "Kidney-SPORE",
     "lab": "thomas-gingeras",
     "experiment_description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
@@ -29,7 +28,6 @@
   {
     "accession": "KCEBE000AES",
     "assay_term_name": "RNA-seq",
-    "biospecimen": "KCEBS000AAB",
     "award": "Kidney-SPORE",
     "lab": "thomas-gingeras",
     "experiment_description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
@@ -57,7 +55,6 @@
   {
     "accession": "KCEBE000ADH",
     "assay_term_name": "RNA-seq",
-    "biospecimen": "KCEBS087RNA",
     "award": "Kidney-SPORE",
     "lab": "sherman-weissman",
     "experiment_description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",

@@ -45,7 +45,6 @@ class Bioexperiment(Biodataset,
         'award',
         'lab',
         "submitted_by",  # link to User
-        # 'biospecimen',
         'documents',  # link to Document
         'bioreplicate',
         'bioreplicate.biolibrary',
@@ -58,7 +57,6 @@ class Bioexperiment(Biodataset,
         "files", # link to Publication
         "files.platform",
         'related_series',
-         # link to Publication
 
 
     ]
@@ -69,14 +67,12 @@ class Bioexperiment(Biodataset,
         'superseded_by': ('Bioexperiment', 'supersedes')
 
     })
-   
+
 
     audit_inherit = [
         'original_files',
         'original_files.bioreplicate',
         'original_files.platform',
-        # 'target',
-        # 'files.analysis_step_version.analysis_step.pipelines',
         'revoked_files',
         'revoked_files.bioreplicate',
         'submitted_by',
@@ -94,7 +90,7 @@ class Bioexperiment(Biodataset,
         'original_files',
         'bioreplicate',
     ]
-   
+
 
     @calculated_property(
         schema={
@@ -121,9 +117,6 @@ class Bioexperiment(Biodataset,
                             request,
                             bioreplicate=None):
         biospecimen_summary_list = []
-
-  # "species": "mouse_related_info", "patient","collection_date, "sample_type",detailed sample type, "anatomic_site", "initial_quantity", "initial_quantiy_units",
-  # "preservation_method":,  "donor", "species_biosample",   "pooled_from", "part_of",
 
         biospecimen_summary_dict = {
             "accession": "",
@@ -185,7 +178,7 @@ class Bioexperiment(Biodataset,
         # That replicate should have a libraries property which, as calculated
         # in replicate.libraries (ENCD-4251), should have collected all
         # possible technical replicates belong to the biological replicate.
-      
+
         bio_rep_dict = {}
 
         for rep in bioreplicate:

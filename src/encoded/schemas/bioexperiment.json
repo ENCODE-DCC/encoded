@@ -9,7 +9,6 @@
         "award",
         "lab",
         "assay_term_name",
-        "biospecimen",
         "experiment_description"
     ],
     "identifyingProperties": [
@@ -24,25 +23,16 @@
         { "$ref": "mixins.json#/references"},
         { "$ref": "mixins.json#/documents" },
         { "$ref": "biodataset.json#/properties" },
-
         { "$ref": "mixins.json#/attribution"},
         { "$ref": "mixins.json#/aliases"},
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/assay" },
-        {"$ref": "mixins.json#/submitter_comment"}
+        { "$ref": "mixins.json#/submitter_comment"}
 
     ],
     "properties": {
         "schema_version": {
             "default": "1"
-        },
-
-   
-        "biospecimen": {
-            "title": "Biospecimen",
-            "description": "The biological specimen.",
-            "type": "string",
-            "linkTo": "Biospecimen"
         },
         "date_released": {
             "title": "Date released",
@@ -88,19 +78,6 @@
                     "comment": "See experiment.json for a list of available identifiers.",
                     "type": "string",
                     "linkTo": "Bioexperiment"
-            }
-        },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "To be removed in a future release after data cleanup.",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
-            "items": {
-                "title": "Data file",
-                "comment": "See biofile.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Biofile"
             }
         },
         "dbxrefs": {
