@@ -19,12 +19,20 @@ class patientPathTable extends React.Component {
                 surgery_id: data[i]['@id'],
                 surgery_date: data[i].date,
             }
+            if (data[i].surgery_procedure.length > 0){
+                let procedure_type = data[i].surgery_procedure[0].procedure_type;
+                for (let j = 1; j < data[i].surgery_procedure.length; j++) {
+                    procedure_type += ", " + data[i].surgery_procedure[j].procedure_type;
+                }
+                obj1.procedure_type = procedure_type
+            }
             if (data[i].pathology_report.length > 0) {
                 for (let j = 0; j < data[i].pathology_report.length; j++) {
                     let obj2 = {
-                        surgery_accession: data[i].accession,
-                        surgery_id: data[i]['@id'],
-                        surgery_date: data[i].date,
+                        surgery_accession: obj1.surgery_accession,
+                        surgery_id: obj1.surgery_id,
+                        surgery_date: obj1.surgery_date,
+                        procedure_type: obj1.procedure_type,
                         path_accession: data[i].pathology_report[j].accession,
                         path_id: data[i].pathology_report[j]['@id'],
                         path_histology: data[i].pathology_report[j].histology,
@@ -54,28 +62,31 @@ class patientPathTable extends React.Component {
        
             const tableColumns = {
                 surgery_date: {
-                    title: 'Surgery date',
+                    title: 'Surgery Date',
                 },
                 surgery_accession: {
                     title: 'Surgery',
                     display: surgeryData => <a href={surgeryData.surgery_id}>{surgeryData.surgery_accession}</a>,
                 },
+                procedure_type: {
+                    title: 'Procedure Type',
+                },
 
                 path_accession: {
-                    title: 'Pathology report',
+                    title: 'Pathology Report',
                     display: surgeryData => <a href={surgeryData.path_id}>{surgeryData.path_accession}</a>,
                 },
                 path_histology: {
                     title: 'Histologic Subtype',
                 },
                 t_stage: {
-                    title: 'pT stage',
+                    title: 'pT Stage',
                 },
                 n_stage: {
-                    title: 'pN stage',
+                    title: 'pN Stage',
                 },
                 m_stage: {
-                    title: 'pM stage',
+                    title: 'pM Stage',
                 },
 
           
@@ -103,5 +114,6 @@ class patientPathTable extends React.Component {
 }
 
 export default patientPathTable;
+
 
 

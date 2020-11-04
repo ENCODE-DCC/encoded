@@ -1908,9 +1908,19 @@ ClearFilters.defaultProps = {
  * pages.
  */
 export const SearchControls = ({ context, visualizeDisabledTitle, showResultsToggle, onFilter, hideBrowserSelector, activeFilters, showDownloadButton }, reactContext) => {
-    const results = context['@graph'];
+    const results = context['total'];
     const searchBase = url.parse(reactContext.location_href).search || '';
-    const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+    let trimmedSearchBase = ''
+    if (searchBase.indexOf("&limit=") !== -1 || searchBase.indexOf("?limit=") !== -1 ) {
+        console.log("has limit")
+        if (searchBase.indexOf("limit=all") !== -1) {
+            trimmedSearchBase =searchBase.replace(/[?|&]limit=all/, '')
+        } else {
+            trimmedSearchBase =searchBase.replace(/[?|&]limit=\d*/, '')
+        }
+    }else{
+        trimmedSearchBase = searchBase
+    }
     const canDownload = context.total <= MAX_DOWNLOADABLE_RESULT;
     const modalText = canDownload ?
         <>
@@ -1937,34 +1947,57 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
         </>;
 
     let resultsToggle = null;
-    if (showResultsToggle) {
-        if (context.total > results.length && searchBase.indexOf('limit=all') === -1) {
-            resultsToggle = (
+    const buttonStyle = {
+        marginRight: '5px',
+    };
+    
+
+
+    resultsToggle = (
+            
+            <div className="btn-attached">
+                {results > 25 &&
                 <a
-                    rel="nofollow"
+                className="btn btn-info btn-sm"
+                style={buttonStyle}
+                href={trimmedSearchBase || '/search/'}
+                onClick={onFilter}
+                >
+                    View 25
+                </a>}
+                {results > 50 &&
+                <a
+                className="btn btn-info btn-sm"
+                style={buttonStyle}
+                href={trimmedSearchBase ? `${trimmedSearchBase}&limit=50` : '/search/?limit=50'}
+                onClick={onFilter}
+                >
+                    View 50
+                </a>}
+                {results > 100 &&
+                <a
                     className="btn btn-info btn-sm"
-                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                    style={buttonStyle}
+                    href={trimmedSearchBase ? `${trimmedSearchBase}&limit=100` : '/search/?limit=100'}
                     onClick={onFilter}
+                >
+                    View 100
+                </a>}
+                {results > 25 &&
+                <a
+                rel="nofollow"
+                className="btn btn-info btn-sm"
+                style={buttonStyle}
+                href={trimmedSearchBase ? `${trimmedSearchBase}&limit=all` : '?limit=all'}
+                onClick={onFilter}
                 >
                     View All
                 </a>
-            );
-        } else {
-            resultsToggle = (
-                <span>
-                    {results.length > 25 ?
-                        <a
-                            className="btn btn-info btn-sm"
-                            href={trimmedSearchBase || '/search/'}
-                            onClick={onFilter}
-                        >
-                            View 25
-                        </a>
-                        : null}
-                </span>
-            );
-        }
-    }
+                } 
+                
+            </div>
+
+    );   
 
     return (
         <div className="results-table-control">
@@ -2188,3 +2221,4 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
+
