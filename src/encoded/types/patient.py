@@ -481,48 +481,45 @@ class Patient(Item):
     })
     def diagnosis(self, request, surgery, radiation, medication,labs, vitals,
                     germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None):
-        nephrectomy_dates = []
-        non_nephrectomy_dates = []
-        surgery_dates = []
+        non_mets_dates = []
+        mets_dates = []
+        non_surgery_dates = []
         diagnosis_date = "Not available"
         diagnosis_source = "Not applicable"
 
-        # Calculate
+        # if there is Path report for Nephretomy or biopsy
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
                 surgery_path_report = surgery_object['pathology_report']
                 for path_report in surgery_path_report:
                     path_report_obj = request.embed(path_report, '@@object')
-                    if path_report_obj['path_source_procedure'] == "path_nephrectomy":
-                        nephrectomy_dates.append(surgery_object['date'])
-                    elif  path_report_obj['path_source_procedure'] == "path_biopsy" or path_report_obj['path_source_procedure'] == "path_metasis":
-                        non_nephrectomy_dates.append(surgery_object['date'])
+                    if path_report_obj['path_source_procedure'] == "path_nephrectomy" or path_report_obj['path_source_procedure'] == "path_biopsy":
+                        non_mets_dates.append(surgery_object['date'])
+                    elif  path_report_obj['path_source_procedure'] == "path_metasis":
+                        mets_dates.append(surgery_object['date'])
 
-        if len(nephrectomy_dates) > 0 :
-                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                diagnosis_date = nephrectomy_dates[0]
-                surgery_dates.append(nephrectomy_dates[0])
-
-        if len(non_nephrectomy_dates) > 0:
-            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            # Check if Non-nephrectomy (Biopsy Kidney) comes before the nephrectomy
-            surgery_dates.append(non_nephrectomy_dates[0])
-
-        if len(surgery_dates) > 0:
-            surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            diagnosis_date = surgery_dates[0]
-            diagnosis_source = "Pathology Report"
-
+        if len(non_mets_dates) > 0 :
+            non_mets_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = non_mets_dates[0]
+            diagnosis_source = "Pathology report"
         elif diagnosis_date_tumor_registry is not None:
-             diagnosis_date = diagnosis_date_tumor_registry
-        elif len(medication) > 0:
-            diagnosis_source = "Medication"
+            diagnosis_date = diagnosis_date_tumor_registry   
+            diagnosis_source = "Tumor registry "  
+        elif len(mets_dates) > 0:
+            mets_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = mets_dates[0]
+            diagnosis_source = "Pathology Report"
+        elif len(medication) > 0 or len(radiation) > 0:
+            diagnosis_source = "Medication or radiation"
             for medication_record in medication:
                 medication_object = request.embed(medication_record, '@@object')
-                non_nephrectomy_dates.append(medication_object['start_date'])
-            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            diagnosis_date = non_nephrectomy_dates[0]
+                non_surgery_dates.append(medication_object['start_date'])
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object')
+                non_surgery_dates.append(radiation_object['start_date'])
+            non_surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = non_surgery_dates[0]
 
         age_range = "Unknown"
         ageString = "Unknown"
@@ -1002,3 +999,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
