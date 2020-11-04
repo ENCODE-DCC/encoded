@@ -120,6 +120,9 @@
         "name": {
             "title": "Name"
         },
+        "principal_investigators.title": {
+            "title": "PIs"
+        },
         "focus": {
             "title": "Focus"
         },
