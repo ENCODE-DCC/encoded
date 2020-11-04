@@ -373,9 +373,11 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                <div className="file-download-section">
-                                    <RestrictedDownloadButton file={context} adminUser={adminUser} downloadComponent={<FileDownloadButton />} />
-                                </div>
+                                {context.s3_uri ?
+                                    <div className="file-download-section">
+                                        <RestrictedDownloadButton file={context} adminUser={adminUser} downloadComponent={<FileDownloadButton />} />
+                                    </div>
+                                : null}
                             </dl>
                         </div>
 
