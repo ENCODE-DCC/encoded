@@ -67,6 +67,7 @@ const portal = {
             id: 'wrangler-tools',
             title: 'Wrangling tools',
             children: [
+                { id: 'library-protocols', title: 'Library protocols', url: '/report/?type=LibraryProtocol' },
                 { id: 'ontology-terms', title: 'Ontology terms', url: '/report/?type=OntologyTerm' },
                 { id: 'test-results', title: 'Test results', url: '/report/?type=HumanPostnatalDonor&test_results=*&field=accession&field=test_results' },
             ],
