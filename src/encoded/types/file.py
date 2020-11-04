@@ -37,6 +37,8 @@ import json
 import pytz
 import time
 
+from urllib.parse import urlparse
+
 from encoded.upload_credentials import UploadCredentials
 from snovault.util import ensure_list_and_filter_none
 from snovault.util import take_one_or_return_none
@@ -366,21 +368,26 @@ def download(context, request):
         _filename, = request.subpath
         if filename != _filename:
             raise HTTPNotFound(_filename)
-    external = context.propsheets.get('external', {})
-    if external.get('service') == 's3':
+
+    if properties.get('s3_uri'):
         conn = boto3.client('s3')
+
+        parsed_href = urlparse(properties.get('s3_uri'), allow_fragments=False)
+        bucket = parsed_href.netloc
+        key    = parsed_href.path.lstrip('/')
+
         location = conn.generate_presigned_url(
             ClientMethod='get_object',
             Params={
-                'Bucket': external['bucket'],
-                'Key': external['key'],
+                'Bucket': bucket,
+                'Key': key,
                 'ResponseContentDisposition': 'attachment; filename=' + filename
             },
             ExpiresIn=36*60*60
         )
     else:
         raise HTTPNotFound(
-            detail='External service {} not expected'.format(external.get('service'))
+            detail='S3 URI not present'
         )
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
@@ -389,10 +396,6 @@ def download(context, request):
             'location': location,
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
-    proxy = asbool(request.params.get('proxy'))
-    accel_redirect_header = request.registry.settings.get('accel_redirect_header')
-    if proxy and accel_redirect_header:
-        return InternalRedirect(headers={accel_redirect_header: '/_proxy/' + str(location)})
     raise HTTPTemporaryRedirect(location=location)
 
 
