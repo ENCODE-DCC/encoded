@@ -74,8 +74,10 @@ def supportive_med_frequency(request, supportive_medication):
     return supportive_meds
 
 
-def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-
+def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery, death_date):
+    if death_date is not None:
+        last_follow_up_date = death_date
+    else:
         all_traced_dates=[]
         if len(vitals) > 0:
             for path in vitals:
@@ -132,7 +134,7 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
         else:
             last_follow_up_date = "Not available"
 
-        return last_follow_up_date
+    return last_follow_up_date
 
 
 @collection(
@@ -181,8 +183,8 @@ class Patient(Item):
         "description": "Calculated last follow-up date,format as YYYY-MM-DD",
         "type": "string",
     })
-    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
+    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery, death_date=None):
+        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery, death_date)
 
 
     @calculated_property( schema={
@@ -480,7 +482,7 @@ class Patient(Item):
         },
     })
     def diagnosis(self, request, surgery, radiation, medication,labs, vitals,
-                    germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None):
+                    germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None, death_date=None):
         non_mets_dates = []
         mets_dates = []
         non_surgery_dates = []
@@ -549,7 +551,7 @@ class Patient(Item):
 
             #Add follow up duration:
             follow_up_start_date = datetime.strptime(diagnosis_date,"%Y-%m-%d")
-            last_follow_up_date = last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication, supportive_medication, surgery)
+            last_follow_up_date = last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication, supportive_medication, surgery, death_date)
             if last_follow_up_date != "Not available":
                 follow_up_end_date = datetime.strptime(last_follow_up_date,"%Y-%m-%d")
                 follow_up_duration = (follow_up_end_date-follow_up_start_date).days/365
