@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
 
-    "required": ["file_format", "output_type", "md5sum", "biolibrary","bioreplicate"],
+    "required": ["biodataset","file_format", "output_type", "md5sum"],
 
     "identifyingProperties": ["uuid", "accession"],
     "additionalProperties": false,

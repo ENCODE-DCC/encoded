@@ -69,7 +69,9 @@ class Biodataset(Item):
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
-        'award.pi.lab',
+        'award',
+        # 'award.pi.lab',
+        # 'award.pi',
         'references'
     ]
     audit_inherit = [
