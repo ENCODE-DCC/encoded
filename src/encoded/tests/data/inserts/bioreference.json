@@ -6,7 +6,7 @@
         "award": "167abca8-43aa-4298-bdcf-b93b3d4db26e",
         "organism":"human",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "kevin-white:K562_BAC_transfection_White_protocol"
         ],
         "references": [
             "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"

@@ -37,7 +37,7 @@ class BioreferenceComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-
+console.log("datasetDocuments",datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const filesetType = context['@type'][0];
@@ -51,6 +51,7 @@ class BioreferenceComponent extends React.Component {
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
+        console.log("datasetReference",references);
 
         return (
             <div className={itemClass}>
@@ -103,12 +104,7 @@ class BioreferenceComponent extends React.Component {
                                         </div>
                                     : null} */}
 
-                                    {/* {context.software_used && context.software_used.length ?
-                                        <div data-test="softwareused">
-                                            <dt>Software used</dt>
-                                            <dd>{softwareVersionList(context.software_used)}</dd>
-                                        </div>
-                                    : null} */}
+                                   
                                 </dl>
                             </div>
 
@@ -167,7 +163,7 @@ class BioreferenceComponent extends React.Component {
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
-                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
