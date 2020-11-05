@@ -48,6 +48,7 @@ class FunctionalCharacterizationExperiment(
     schema = load_schema('encoded:schemas/functional_characterization_experiment.json')
     embedded = Dataset.embedded + [
         'biosample_ontology',
+        'examined_loci.gene',
         'files.platform',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.pipelines',
