@@ -505,7 +505,7 @@ class Patient(Item):
             diagnosis_source = "Pathology report"
         elif diagnosis_date_tumor_registry is not None:
             diagnosis_date = diagnosis_date_tumor_registry   
-            diagnosis_source = "Tumor registry "  
+            diagnosis_source = "Tumor registry"  
         elif len(mets_dates) > 0:
             mets_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
             diagnosis_date = mets_dates[0]
