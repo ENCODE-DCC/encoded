@@ -61,11 +61,41 @@
         "project_type": {
             "title": "Project type"
         },
-       
+        
         "status": {
             "title": "Status"
+        },
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "organism": {
+            "title": "Organism"
+        },
+        "files.file_format": {
+            "title": "Available file types"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
+        "month_released": {
+            "title": "Month released"
+        },
+        
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         }
-       
        
        
        

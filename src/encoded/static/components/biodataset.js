@@ -272,12 +272,12 @@ class BioprojectComponent extends React.Component {
                                     {/* </div> */}
                                     {/* : null} */}
 
-                                    {context.assay_term_name ?
+                                    {/* {context.assay_term_name ?
                                         <div data-test="assay_term_name">
                                             <dt>Biospecimen term name </dt>
                                             <dd>{_.uniq(context.assay_term_name)}</dd>
                                         </div>
-                                        : null}
+                                        : null} */}
 
                                     {/* {organisms.length ?
                                         <div data-test="organism">
@@ -338,8 +338,8 @@ class BioprojectComponent extends React.Component {
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {datasetDocuments.length>0?<DocumentsPanelReq documents={datasetDocuments} />:null}
 
-                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
         );
     }

@@ -123,6 +123,20 @@
         "status": "released",
         "assembly": "hg19",
         "uuid": "52475ff9-ba44-4e5f-8fe8-6db1cfe45cdc"
+    },
+    {
+        "accession": "KCEFF173MWA",
+        "bioreplicate": "KCERP708IJV",
+        "biodataset":"KCEBE000AJW",
+        "file_format": "bam",
+        "file_size": 20,
+        "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
+        "output_type": "alignments",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
+        "biolibrary": "KCELB745FAA",
+        "status": "released",
+        "assembly": "hg19",
+        "uuid": "d17a30c1-41fd-4d34-85b0-718c833019ad"
     }
     
 ]

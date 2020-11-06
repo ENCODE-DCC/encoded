@@ -1,16 +1,32 @@
 [
-    {
-        "_test": "ec3 dataset",
-        "accession": "KCEBE000AJW",
-        "award": "ENCODE2",
-        "project_type": "evaluation",
-        "description": "RNA Working Group Evaluation Dataset",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "1e55c9e0-a785-4783-938b-82f116eefa91",
-        "date_released": "2016-01-01"
-    },
+	{
+		"_test": "ec3 dataset",
+		"accession": "KCEBE000AJW",
+		"award": "ENCODE2",
+		"project_type": "evaluation",
+		"description": "RNA Working Group Evaluation Dataset",
+		"lab": "john-stamatoyannopoulos",
+		"status": "released",
+		"internal_tags": [
+			"Kidney SPORE"
+		],
+		"documents": [
+			"thomas-gingeras:ChIPSeq_protocol-Abcam",
+			"thomas-gingeras:RNA extraction protocol from Qiagen",
+			"kevin-white:K562_BAC_transfection_White_protocol",
+			"thomas-gingeras:Example of high resolution pathology image in SVS format"
+			
+		],
+		"references": [
+			"d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
+		],
+		"dbxrefs": [
+			"GEO:GSM1010811"
+		],
+		"submitted_by": "facilisi.tristique@potenti.vivamus",
+		"uuid": "1e55c9e0-a785-4783-938b-82f116eefa91",
+		"date_released": "2016-01-01"
+	},
 	{
 		"_test": "slushie dataset",
 		"project_type": "evaluation",
@@ -19,6 +35,13 @@
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
 		"lab": "j-michael-cherry",
 		"accession": "KCEBE636JNF",
+		"internal_tags": [
+			"dbGaP"
+		],
+		"dbxrefs": [
+			"GEO:GSM798327",
+			"GEO:GSE32218"
+		],
 		"status": "in progress",
 		"uuid": "22cc1fe0-7da8-4f59-9386-00558fe35eb0"
 	},
@@ -27,6 +50,18 @@
 		"project_type": "validation",
 		"uuid": "65ad5b6e-37a9-4b9f-bc6d-bab73e0fd8f3",
 		"status": "released",
+		"internal_tags": [
+			"dbGaP"
+		],
+		"dbxrefs": [
+			"GEO:GSM798327",
+			"GEO:GSE32218"
+		],
+		"documents": [
+			"thomas-gingeras:ChIPSeq_protocol-Abcam",
+			"thomas-gingeras:RNA extraction protocol from Qiagen",
+			"kevin-white:K562_BAC_transfection_White_protocol"
+		],
 		"award": "U54HG007004",
 		"lab": "j-michael-cherry",
 		"description": "Enhancer Validations for ENCODE3",
@@ -38,6 +73,16 @@
 		"_test": "evaluation dataset",
 		"project_type": "evaluation",
 		"accession": "KCEBE860CMY",
+		"internal_tags": [
+			"dbGaP"
+		],
+		"dbxrefs": [
+			"GEO:GSM798327",
+			"GEO:GSE32218"
+		],
+		"documents": [
+			"kevin-white:K562_BAC_transfection_White_protocol"
+		],
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
 		"status": "released",
 		"description": "The ENCODE3 TF ChIP-seq peak calling evaluation dataset. This dataset was used by members of the Binding Working Group to evaluate candiate TF peak callers for the defined processing pipeline.",
