@@ -1249,18 +1249,26 @@ def check_experiment_long_rna_standards(experiment,
                         pipelines[0],
                         standards_link)
 
-    if 'replication_type' not in experiment:
-        return
-
-    mad_metrics = get_metrics(gene_quantifications,
-                              'MadQualityMetric',
-                              desired_assembly,
-                              desired_annotation)
-
     if experiment['assay_term_name'] != 'single-cell RNA sequencing assay':
-        yield from check_spearman(
-            mad_metrics, experiment['replication_type'],
-            0.9, 0.8, pipeline_title)
+        mad_metrics = get_metrics(gene_quantifications,
+                                  'MadQualityMetric',
+                                  desired_assembly,
+                                  desired_annotation)
+
+        if 'replication_type' not in experiment & len(experiment['replicates']) > 1:
+            yield from check_spearman_technical_replicates(
+                mad_metrics, 0.9,
+                pipeline_title)
+
+            return
+
+        else:
+            yield from check_spearman(
+                mad_metrics, experiment['replication_type'],
+                0.9, 0.8, pipeline_title)
+
+            return
+
     # for failure in check_mad(mad_metrics, experiment['replication_type'],
     #                         0.2, pipeline_title):
     #    yield failure
@@ -1308,18 +1316,23 @@ def check_experiment_small_rna_standards(experiment,
                     pipelines[0],
                     standards_link)
 
-    if 'replication_type' not in experiment:
-        return
-
     mad_metrics = get_metrics(gene_quantifications,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
+    if 'replication_type' not in experiment & len(experiment['replicates']) > 1:
+        yield from check_spearman_technical_replicates(
+            mad_metrics, 0.9,
+            'Small RNA-seq single-end pipeline')
 
-    yield from check_spearman(
-        mad_metrics, experiment['replication_type'],
-        0.9, 0.8, 'Small RNA-seq single-end pipeline')
-    return
+        return
+
+    else:
+        yield from check_spearman(
+            mad_metrics, experiment['replication_type'],
+            0.9, 0.8, 'Small RNA-seq single-end pipeline')
+
+        return
 
 
 def check_experiment_cage_rampage_standards(experiment,
@@ -1366,18 +1379,24 @@ def check_experiment_cage_rampage_standards(experiment,
                     pipelines[0],
                     standards_link)
 
-    if 'replication_type' not in experiment:
-        return
-
     mad_metrics = get_metrics(gene_quantifications,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
 
-    yield from check_spearman(
-        mad_metrics, experiment['replication_type'],
-        0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
-    return
+    if 'replication_type' not in experiment & len(experiment['replicates']) > 1:
+        yield from check_spearman_technical_replicates(
+            mad_metrics, 0.9,
+            'RAMPAGE (paired-end, stranded)')
+
+        return
+
+    else:
+        yield from check_spearman(
+            mad_metrics, experiment['replication_type'],
+            0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
+
+        return
 
 
 def check_experiment_micro_rna_standards(
@@ -1755,6 +1774,30 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                         pipeline,
                         threshold
                     )
+                )
+                yield AuditFailure('low replicate concordance', detail,
+                                   level='WARNING')
+    return
+
+
+def check_spearman_technical_replicates(metrics, pipeline,
+                                        unreplicated_threshold):
+    for m in metrics:
+        if 'Spearman correlation' in m:
+            spearman_correlation = m['Spearman correlation']
+            if spearman_correlation < threshold:
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f)
+                file_names_links = ','.join((audit_link(path_to_text(f), f) for f in file_names))
+                detail = (
+                    f'Replicate concordance in RNA-seq experiments is measured by '
+                    f'calculating the Spearman correlation between gene quantifications '
+                    f'of the replicates. ENCODE processed gene quantification files '
+                    f'{file_names_links} have a Spearman correlation of '
+                    f'{spearman_correlation:.2f} comparing technical replicates. '
+                    f'For isogenic biological replicates analyzed using the {pipeline} pipeline, '
+                    f'ENCODE standards recommend a Spearman correlation value > 0.9.'
                 )
                 yield AuditFailure('low replicate concordance', detail,
                                    level='WARNING')
