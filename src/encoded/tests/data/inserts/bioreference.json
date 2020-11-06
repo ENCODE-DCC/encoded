@@ -4,7 +4,7 @@
         "accession": "KCEBE000REF",
         "lab":"828cd4fe-ebb0-4b36-a94a-d2e3a36cc987",
         "award": "167abca8-43aa-4298-bdcf-b93b3d4db26e",
-        "organism":"human",
+        "organism":"Human",
         "documents": [
             "kevin-white:K562_BAC_transfection_White_protocol"
         ],
@@ -14,6 +14,12 @@
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset",
         "status": "released",
+        "internal_tags":["dbGaP"],
+        "dbxrefs": [
+            "GEO:GSM798327",
+            "GEO:GSE32218"
+        ],
+        "aliases": ["robert-waterston:experiment_RB884_80_1"],
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b21ab921-03e0-436d-9aff-08f587cb632e",
         "date_released": "2016-01-01"
@@ -22,11 +28,18 @@
         "_test": "spikes2",
         "accession": "KCEBE001AES",
         "award": "ENCODE2",
-        "organism":"human",
-
+        "organism":"Human",
+        "documents": [
+            "thomas-gingeras:RNA extraction protocol from Qiagen"
+        ],
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset 2",
         "status": "released",
+        "internal_tags":["Kidney SPORE"],
+        "dbxrefs": [
+            "GEO:GSM1010811"
+          ],
+          
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "e8bad3e4-3126-4e30-8179-a8a22bf5ad82",
         "date_released": "2016-01-01"
@@ -35,11 +48,19 @@
         "_test": "RAMPAGE spike-ins",
         "accession": "KCEBE001ADH",
         "award": "U54HG007005",
-        "organism":"mouse",
-
+        "organism":"Mouse",
+        "documents": [
+            "thomas-gingeras:ChIPSeq_protocol-Abcam"
+        ],
         "reference_type": "spike-in",
+        "internal_tags":["Kidney SPORE"],
+
         "description": "Spike-ins used in RAMPAGE experiments from CSHL",
         "status": "released",
+        "dbxrefs": [
+            "GEO:GSM935375"
+          ],
+          
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "206094ab-66e8-42c8-9c19-9e4a694eaa7d",
         "date_released": "2015-04-21"

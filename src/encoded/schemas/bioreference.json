@@ -62,8 +62,8 @@
             "title": "Organism",
             "type": "string",
            "enum":[
-               "human",
-               "mouse"
+               "Human",
+               "Mouse"
            ]
         }
        

@@ -37,7 +37,6 @@ class BioreferenceComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-console.log("datasetDocuments",datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const filesetType = context['@type'][0];
@@ -51,7 +50,6 @@ console.log("datasetDocuments",datasetDocuments);
 
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
-        console.log("datasetReference",references);
 
         return (
             <div className={itemClass}>
@@ -97,12 +95,12 @@ console.log("datasetDocuments",datasetDocuments);
                                         </div>
                                         : null}
 
-                                    {/* {context.biospeimen_summary[0].species ?
+                                    {context.organism ?
                                         <div data-test="organism">
                                             <dt>Organism</dt>
-                                            <dd>{context.biospecimen_summary[0].species}</dd>
+                                            <dd>{context.organism}</dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
                                    
                                 </dl>
@@ -162,8 +160,8 @@ console.log("datasetDocuments",datasetDocuments);
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {datasetDocuments.length>0?<DocumentsPanelReq documents={datasetDocuments} />:null}
 
-                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
