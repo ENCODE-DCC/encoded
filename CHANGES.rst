@@ -1,5 +1,30 @@
 Changes
 =======
+109.0 (released) snovault 1.0.51
+--------------------------------
+1. update-snovault-1.0.51 (#3609)
+2. ENCD-5562 add screen links (#3577)
+3. SNO-174-add-local-storage-redis (#3599)
+4. ENCD-5274-QC-report (#3605)
+5. ENCD-5559 FCC processed data facet (#3584)
+6. SNO-176-invalidate-object-when-unlinked (#3607)
+7. ENCD-5590-add-starch-file-format (#3602)
+8. ENCD-5579-dataset-search (#3597)
+9. ENCD-5494-update-gene-annotations (#3514)
+10. ENCD-5457-lower-audit-severity-RNA-frag-size-for-Bru (#3604)
+11. ENCD-5584-file-output-types-gene-stabilities-preprocessed-alignments (#3600)
+12. SNO-177-add-view-with-specified-fields (#3592)
+13. ENCD-5589-allow-Genbank-reagents-in-GeneticModification-objects (#3606)
+14. SNO-178-dont-print-to-logs-during-ES-test (#3608)
+15. ENCD-5345-pipeline-prop-in-reference-fileset (#3593)
+16. ENCD-5546-use-terms-remove-slims-ontology (#3595)
+17. ENCD-5585-fix-views-with-no-at-type (#3594)
+18. ENCD-5576-matrix-arrows (#3585)
+19. ENCD-5567-analysis-supersedes (#3587)
+20. ENCD-5554-add-audit-mixed-strand-specific-libraries (#3590)
+21. ENCD-5571-display-location-Gene (#3596)
+22. ENCD-5569-biosample-char-doc-details (#3589)
+23. ENCD-4700-hide-checkbx-in-proceeded-data (#3586)
 
 108.0 (released) snovault 1.0.50
 --------------------------------
