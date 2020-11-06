@@ -1,5 +1,4 @@
 [
-    
     {
         "accession": "KCEFF398REF",
         "biodataset": "KCEBE000REF",
@@ -21,7 +20,6 @@
         "status": "released",
         "uuid": "bea0dc64-c96b-4a25-b5a4-7b2fc4b425bd"
     },
-    
     {
         "accession": "KCEFF398MYM",
         "bioreplicate": "KCERP708IJT",
@@ -45,8 +43,6 @@
         "status": "released",
         "uuid": "f6c125ca-2cc3-4c63-a62a-d326ccfa2f30"
     },
-  
-
     {
         "accession": "KCEFF287RDC",
         "bioreplicate": "KCERP139SOR",
@@ -75,7 +71,6 @@
         "accession": "KCEFF365RCT",
         "bioreplicate": "KCERP139SOS",
         "biodataset": "KCEBE000ADH",
-
         "file_size": 20,
         "file_format": "fastq",
         "flowcell_details": [
@@ -99,7 +94,7 @@
     {
         "accession": "KCEFF894MWZ",
         "bioreplicate": "KCERP708IJU",
-        "biodataset":"KCEBE000AER",
+        "biodataset": "KCEBE000AER",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "99be74b6e11515393507f4ebfa66d78d",
@@ -113,7 +108,7 @@
     {
         "accession": "KCEFF173MWZ",
         "bioreplicate": "KCERP708IJV",
-        "biodataset":"KCEBE000AER",
+        "biodataset": "KCEBE000AER",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
@@ -127,7 +122,7 @@
     {
         "accession": "KCEFF173MWA",
         "bioreplicate": "KCERP708IJV",
-        "biodataset":"KCEBE000AJW",
+        "biodataset": "KCEBE000AJW",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
@@ -137,6 +132,35 @@
         "status": "released",
         "assembly": "hg19",
         "uuid": "d17a30c1-41fd-4d34-85b0-718c833019ad"
+    },
+    {
+        "_test": "revoked file",
+        "accession": "KCEFF173MWB",
+        "bioreplicate": "KCERP708IJV",
+        "biodataset": "KCEBE000AJW",
+        "file_format": "bam",
+        "file_size": 20,
+        "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
+        "output_type": "alignments",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
+        "biolibrary": "KCELB745FAA",
+        "status": "revoked",
+        "assembly": "hg19",
+        "uuid": "7ddd59fe-7c2c-4dd0-8bb3-810243ab74b0"
+    },
+    {
+        "_test": "in progress file",
+        "accession": "KCEFF173MWC",
+        "bioreplicate": "KCERP708IJV",
+        "biodataset": "KCEBE000AJW",
+        "file_format": "bam",
+        "file_size": 20,
+        "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
+        "output_type": "alignments",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
+        "biolibrary": "KCELB745FAA",
+        "status": "in progress",
+        "assembly": "hg19",
+        "uuid": "2e9c28b5-0366-4649-b250-52809fb47724"
     }
-    
 ]
