@@ -1011,6 +1011,7 @@ def check_experiment_rna_seq_standards(value,
             transcript_quantifications,
             desired_assembly,
             desired_annotation,
+            pipeline_title,
             upper_limit_flnc=600000,
             lower_limit_flnc=400000,
             upper_limit_mapping_rate=0.9,
@@ -1249,16 +1250,19 @@ def check_experiment_long_rna_standards(experiment,
                         pipelines[0],
                         standards_link)
 
+    if 'replication_type' not in experiment:
+        return
+
     if experiment['assay_term_name'] != 'single-cell RNA sequencing assay':
         mad_metrics = get_metrics(gene_quantifications,
                                   'MadQualityMetric',
                                   desired_assembly,
                                   desired_annotation)
+        replicates = experiment.get('replicates')
 
-        if 'replication_type' not in experiment & len(experiment['replicates']) > 1:
+        if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
             yield from check_spearman_technical_replicates(
-                mad_metrics, 0.9,
-                pipeline_title)
+                mad_metrics, pipeline_title, 0.9)
 
             return
 
@@ -1316,14 +1320,19 @@ def check_experiment_small_rna_standards(experiment,
                     pipelines[0],
                     standards_link)
 
+    if 'replication_type' not in experiment:
+        return
+
     mad_metrics = get_metrics(gene_quantifications,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-    if 'replication_type' not in experiment & len(experiment['replicates']) > 1:
+    replicates = experiment.get('replicates')
+
+    if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
         yield from check_spearman_technical_replicates(
-            mad_metrics, 0.9,
-            'Small RNA-seq single-end pipeline')
+            mad_metrics, 'Small RNA-seq single-end pipeline',
+            0.9)
 
         return
 
@@ -1379,15 +1388,18 @@ def check_experiment_cage_rampage_standards(experiment,
                     pipelines[0],
                     standards_link)
 
+    if 'replication_type' not in experiment:
+        return
+
     mad_metrics = get_metrics(gene_quantifications,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
+    replicates = experiment.get('replicates')
 
-    if 'replication_type' not in experiment & len(experiment['replicates']) > 1:
+    if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
         yield from check_spearman_technical_replicates(
-            mad_metrics, 0.9,
-            'RAMPAGE (paired-end, stranded)')
+            mad_metrics, 'RAMPAGE (paired-end, stranded)', 0.9)
 
         return
 
@@ -1440,14 +1452,22 @@ def check_experiment_micro_rna_standards(
         desired_assembly,
         desired_annotation,
     )
+    replication_type = experiment.get('replication_type')
     # Audit Spearman correlations
-    yield from check_replicate_metric_dual_threshold(
-        correlation_metrics,
-        metric_name='Spearman correlation',
-        audit_name='replicate concordance',
-        upper_limit=upper_limit_spearman,
-        lower_limit=lower_limit_spearman,
-    )
+    if replication_type == 'unreplicated' and len(experiment['replicates']) > 1:
+        yield from check_spearman_technical_replicates(
+            correlation_metrics,
+            pipeline_title,
+            upper_limit_spearman
+            )
+    else:
+        yield from check_replicate_metric_dual_threshold(
+            correlation_metrics,
+            metric_name='Spearman correlation',
+            audit_name='replicate concordance',
+            upper_limit=upper_limit_spearman,
+            lower_limit=lower_limit_spearman,
+        )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
         alignment_metrics,
@@ -1473,6 +1493,7 @@ def check_experiment_long_read_rna_standards(
     transcript_quantifications,
     desired_assembly,
     desired_annotation,
+    pipeline_title,
     upper_limit_flnc,
     lower_limit_flnc,
     upper_limit_mapping_rate,
@@ -1480,7 +1501,7 @@ def check_experiment_long_read_rna_standards(
     upper_limit_spearman,
     lower_limit_spearman,
     upper_limit_genes_detected,
-    lower_limit_genes_detected,
+    lower_limit_genes_detected
 ):
     # Gather metrics
     quantification_metrics = get_metrics(
@@ -1501,14 +1522,22 @@ def check_experiment_long_read_rna_standards(
         desired_assembly,
         desired_annotation,
     )
+    replication_type = experiment.get('replication_type')
     # Audit Spearman correlations
-    yield from check_replicate_metric_dual_threshold(
-        correlation_metrics,
-        metric_name='Spearman correlation',
-        audit_name='replicate concordance',
-        upper_limit=upper_limit_spearman,
-        lower_limit=lower_limit_spearman,
-    )
+    if replication_type == 'unreplicated' and len(experiment['replicates']) > 1:
+        yield from check_spearman_technical_replicates(
+            correlation_metrics,
+            pipeline_title,
+            upper_limit_spearman
+            )
+    else:
+        yield from check_replicate_metric_dual_threshold(
+            correlation_metrics,
+            metric_name='Spearman correlation',
+            audit_name='replicate concordance',
+            upper_limit=upper_limit_spearman,
+            lower_limit=lower_limit_spearman,
+        )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
         unfiltered_alignment_metrics,
@@ -1785,7 +1814,7 @@ def check_spearman_technical_replicates(metrics, pipeline,
     for m in metrics:
         if 'Spearman correlation' in m:
             spearman_correlation = m['Spearman correlation']
-            if spearman_correlation < threshold:
+            if spearman_correlation < unreplicated_threshold:
                 file_names = []
                 for f in m['quality_metric_of']:
                     file_names.append(f)
