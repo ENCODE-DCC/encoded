@@ -87,6 +87,7 @@ DocumentsPanel.defaultProps = {
 
 // Called when a GET request for all the documents associated with a dataset returns with the
 // array of matching documents.
+
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
     console.log("props-docsearch", props);
@@ -116,7 +117,7 @@ DocumentsPanelRenderer.defaultProps = {
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
     // console.log('this.documents', this.props.documents);
-    console.log('documents', { documents });
+    console.log('documents', documents );
     if (documents && documents.length) {
         return (
 

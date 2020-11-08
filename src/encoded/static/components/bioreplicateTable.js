@@ -17,7 +17,7 @@ class BioreplicateTable extends React.Component {
             "Technical_replicate_number": i.technical_replicate_number,
             "Library summary": i.biolibrary.nucleic_acid_term_name,
             "Biospecimen accession": i.biolibrary.biospecimen.accession,
-            "library accession": i.biolibrary.accession,
+            "Library accession": i.biolibrary.accession,
 
         }));
         console.log("bioreplicateFilters",this.bioreplicateFilters);

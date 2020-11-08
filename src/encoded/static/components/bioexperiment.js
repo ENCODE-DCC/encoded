@@ -327,39 +327,40 @@ class Bioexperiment extends React.Component {
         const references = pubReferenceList(context.references);
 
         // Set up breadcrumbs
-         // Set up the breadcrumbs.
-         const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-         const assayName = context[assayTerm];
-         const assayQuery = `${assayTerm}=${assayName}`;
+        // Set up the breadcrumbs.
+        const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        const assayName = context[assayTerm];
+        const assayQuery = `${assayTerm}=${assayName}`;
 
         //  const organismNames = BiosampleOrganismNames(biosamples);
-         const organismNames = BiospecimenOrganismNames(biosamples);
-         console.log('organismName',organismNames);
-         let nameQuery = '';
-         let nameTip = '';
-         const names = organismNames.map((organismName, i) => {
-             nameTip += (nameTip.length ? ' + ' : '') + organismName;
-             nameQuery += `${nameQuery.length ? '&' : ''}replicates.biolibrary.biospecimen.donor.species=${organismName}`;
-             return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
-         });
-         const biosampleTermName = context.assay_term_name;
-         const biosampleTermQuery = biosampleTermName ? `assay_term_name=${biosampleTermName}` : '';
-         const crumbs = [
-             { id: 'Bioexperiments' },
-             { id: assayName, query: assayQuery, tip: assayName },
-             { id: names.length ? names : null, query: nameQuery, tip: nameTip },
-             { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
-         ];
-     
+        const organismNames = BiospecimenOrganismNames(biosamples);
+        console.log('organismName', organismNames);
+        let nameQuery = '';
+        let nameTip = '';
+        const names = organismNames.map((organismName, i) => {
+            nameTip += (nameTip.length ? ' + ' : '') + organismName;
+            nameQuery += `${nameQuery.length ? '&' : ''}replicates.biolibrary.biospecimen.donor.species=${organismName}`;
+            return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
+        });
+        const biosampleTermName = context.assay_term_name;
+        const biosampleTermQuery = biosampleTermName ? `assay_term_name=${biosampleTermName}` : '';
+        const crumbs = [
+            { id: 'Bioexperiments' },
+            { id: assayName, query: assayQuery, tip: assayName },
+            { id: names.length ? names : null, query: nameQuery, tip: nameTip },
+            { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
+        ];
+
 
         const crumbsReleased = (context.status === 'released');
 
         // Compile the document list.
-        const combinedDocuments = _.uniq(documents.concat(
+        let combinedDocuments = _.uniq(documents.concat(
             biosampleDocs,
             libraryDocs
         ));
-        console.log("combineDoc", combinedDocuments);
+        combinedDocuments=combinedDocuments.map(i=>i['@id']);
+        // console.log("combineDoc", combinedDocuments);
 
         const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
 
@@ -454,7 +455,7 @@ class Bioexperiment extends React.Component {
                                                 )}
                                             </dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.possible_controls && context.possible_controls.length ?
                                         <div data-test="possible-controls">

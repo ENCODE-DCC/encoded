@@ -37,6 +37,7 @@ class BioreferenceComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        console.log("referenceDoc",datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const filesetType = context['@type'][0];
