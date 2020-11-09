@@ -40,9 +40,13 @@ class BioreplicateTable extends React.Component {
                 },
                 "Biospecimen accession": {
                     title: 'Biospecimen',
+                    display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
+
                 },
                 "Library accession": {
                     title: 'Library',
+                    display: biolibrary => <a href={biolibrary['@id']}>{biolibrary.accession}</a>,
+
                 },
             };
             return (

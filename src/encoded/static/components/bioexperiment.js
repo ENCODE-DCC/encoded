@@ -169,17 +169,13 @@ class Bioexperiment extends React.Component {
 
         let librarySpecials = {};
         let libraryComponents = {};
-        // let condensedReplicates = [];
         let libSubmitterComments = [];
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const itemClass = globals.itemClass(context, 'view-item');
         const replicates = context.bioreplicate && context.bioreplicate.length ? context.bioreplicate : [];
         if (replicates.length) {
-            // const condensedReplicatesKeyed = _(replicates).groupBy(bioreplicate => (bioreplicate.biolibrary ? bioreplicate.biolibrary['@id'] : bioreplicate.uuid));
-            // if (Object.keys(condensedReplicatesKeyed).length) {
-            //     condensedReplicates = _.toArray(condensedReplicatesKeyed);
-            // }
+     
 
             // Collect all replicate libraries into one array of library objects.
             const libraries = replicates.reduce((libraryAcc, bioreplicate) => (bioreplicate.biolibrary ? libraryAcc.concat([bioreplicate.biolibrary]) : libraryAcc), []);
@@ -300,7 +296,6 @@ class Bioexperiment extends React.Component {
         });
 
 
-        console.log("biosampledoc", biosampleDocs);
 
 
         // Determine this experiment's ENCODE version.
@@ -360,7 +355,6 @@ class Bioexperiment extends React.Component {
             libraryDocs
         ));
         combinedDocuments=combinedDocuments.map(i=>i['@id']);
-        // console.log("combineDoc", combinedDocuments);
 
         const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
 
@@ -390,14 +384,11 @@ class Bioexperiment extends React.Component {
                             <CartToggle element={context} />
                         </div>
                         <DisplayAsJson />
-                        {/* {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })} */}
                     </div>
                 </header>
-                {/* {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })} */}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
-                            {/* for summary */}
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading">
                                     <h4>Summary</h4>
@@ -476,7 +467,6 @@ class Bioexperiment extends React.Component {
                                 </dl>
                             </div>
 
-                            {/* for attibution */}
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading">
                                     <h4>Attribution</h4>
@@ -488,7 +478,7 @@ class Bioexperiment extends React.Component {
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    {/* <AwardRef context={context} /> */}
+                                    <AwardRef context={context} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
