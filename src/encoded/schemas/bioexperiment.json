@@ -18,26 +18,44 @@
     ],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version"},
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/references"},
-        { "$ref": "mixins.json#/documents" },
-        { "$ref": "biodataset.json#/properties" },
-
-        { "$ref": "mixins.json#/attribution"},
-        { "$ref": "mixins.json#/aliases"},
-        { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/assay" },
-        {"$ref": "mixins.json#/submitter_comment"}
-
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        {
+            "$ref": "mixins.json#/accession"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        },
+        {
+            "$ref": "mixins.json#/references"
+        },
+        {
+            "$ref": "mixins.json#/documents"
+        },
+        {
+            "$ref": "biodataset.json#/properties"
+        },
+        {
+            "$ref": "mixins.json#/attribution"
+        },
+        {
+            "$ref": "mixins.json#/aliases"
+        },
+        {
+            "$ref": "mixins.json#/submitted"
+        },
+        {
+            "$ref": "mixins.json#/assay"
+        },
+        {
+            "$ref": "mixins.json#/submitter_comment"
+        }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-
-   
         "biospecimen": {
             "title": "Biospecimen",
             "description": "The biological specimen.",
@@ -79,15 +97,15 @@
             }
         },
         "supersedes": {
-            "title": "Supersedes" ,
+            "title": "Supersedes",
             "description": "The experiment(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
-                    "comment": "See experiment.json for a list of available identifiers.",
-                    "type": "string",
-                    "linkTo": "Bioexperiment"
+                "comment": "See experiment.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "Bioexperiment"
             }
         },
         "related_files": {
@@ -118,6 +136,25 @@
                 "pattern": "^(GEO:(GSM|GSE)\\d+)$"
             }
         },
+        "internal_status": {
+            "type": "string",
+            "description": "The status of an experiment in the DCC process.",
+            "comment": "unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
+            "default": "unreviewed",
+            "permission": "import_items",
+            "title": "Internal status",
+            "enum": [
+                "unreviewed",
+                "pipeline ready",
+                "processing",
+                "pipeline completed",
+                "release ready",
+                "requires lab review",
+                "no available pipeline",
+                "pipeline error",
+                "unrunnable"
+            ]
+        },
         "documents": {
             "description": "Protocols or other documents that describe the assay or the results (not data files)."
         }
@@ -126,23 +163,141 @@
         "status": {
             "title": "Status"
         },
+        "assay_term_name": {
+            "title": "Assay name"
+        },
         "award.project": {
             "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
         },
         "lab.title": {
             "title": "Lab"
         },
-        "award.rfa": {
-            "title": "RFA"
+        "assembly": {
+            "title": "Genome assembly"
+        },
+        "bioreplicate.biolibrary.biospecimen.donor.organism": {
+            "title": "Organism"
+        },
+        "biospecimen.sample_type": {
+            "title": "Biospecimen sample name",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "files.file_type": {
+            "title": "Available file types"
+        },
+        "files.platform.term_name": {
+            "title": "Platform"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
+        },
+        "bioreplicate.biolibrary.size_range": {
+            "title": "Library fragment size (nt)"
+        },
+        "bioreplicate.biolibrary.nucleic_acid_term_name": {
+            "title": "Library material"
+        },
+        "date_released": {
+            "title": "Date released"
+        },
+        "date_submitted": {
+            "title": "Date submitted"
+        },
+        "internal_status": {
+            "title": "Internal status"
+        },
+        "replication_type": {
+            "title": "Replication type"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "biospecimen_summary": {
+            "title": "Biospecimen summary"
+        },
+        "biospecimen.sample_type": {
+            "title": "Biospecimen sample name",
+            "type": "typeahead",
+            "length": "long"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "files.@id": {
+            "title": "Files"
+        },
+        "bioreplicate.biolibrary.biospecimen.accession": {
+            "title": "Biosample accession"
+        },
+        "bioreplicate.biological_replicate_number": {
+            "title": "Biological replicate"
+        },
+        "bioreplicate.technical_replicate_number": {
+            "title": "Technical replicate"
+        },
+        "bioreplicate.biolibrary.biospecimen.species": {
+            "title": "Species"
+        },
+        "bioreplicate.biolibrary.biospecimen.age": {
+            "title": "Age"
+        },
+        "bioreplicate.biolibrary.biospecimen.age_units": {
+            "title": "Age units"
+        },
+        "bioreplicate.@id": {
+            "title": "Bioreplicate"
         }
     },
     "boost_values": {
-        "status": 1.0,
         "accession": 1.0,
         "assay_term_name": 1.0,
+        "aliases": 1.0,
+        "award.title": 1.0,
+        "biospecimen.sample_type": 1.0,
+        "files.accession": 1.0,
+        "files.file_format": 1.0,
+        "files.output_type": 1.0,
+        "files.md5sum": 1.0,
+        "bioreplicate.biolibrary.accession": 1.0,
+        "bioreplicate.biolibrary.biospecimen.accession": 1.0,
+        "bioreplicate.biolibrary.biospecimen.donor.accession": 1.0,
+        "bioreplicate.biolibrary.nucleic_acid_term_name": 1.0,
         "award.project": 1.0,
-        "award.rfa": 1.0,
-        "lab.title": 1.0
+        "award.name": 1.0,
+        "submitted_by.email": 1.0,
+        "submitted_by.first_name": 1.0,
+        "submitted_by.last_name": 1.0,
+        "lab.institute_name": 1.0,
+        "lab.institute_label": 1.0,
+        "lab.title": 1.0,
+        "possible_controls.accession": 1.0,
+        "references.title": 1.0,
+        "internal_tags": 1.0
+      
     },
     "changelog": "/profiles/changelogs/bioexperiment.md"
 }

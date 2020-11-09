@@ -53,6 +53,13 @@
             "type": "string",
             "linkTo": "Surgery"
         },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the biosample was originated from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Donor"
+        },
         "collection_type": {
             "title": "Collection Type",
             "description": "The collection type of the biospecimen when it was taken.",
@@ -653,9 +660,7 @@
         "species": {
             "title": "Species"
         },
-        "sample_type": {
-            "title": "Sample Type"
-        },
+        
         "freeze_thaw_cycles": {
             "title": "Freeze/Thaw Cycles"
         },
