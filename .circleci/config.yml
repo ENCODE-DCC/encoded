@@ -33,7 +33,6 @@ commands:
           name: Install dependencies
           command: |
             sudo apt-get install -y \
-              bsdtar \
               elasticsearch \
               graphviz \
               nodejs \
