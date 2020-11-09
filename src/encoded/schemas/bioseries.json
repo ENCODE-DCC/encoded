@@ -1,7 +1,7 @@
 {
-    "title": "Series",
+    "title": "Bioseries",
     "description": "Schema for submitting metadata for a series.",
-    "id": "/profiles/series.json",
+    "id": "/profiles/bioseries.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],

@@ -674,7 +674,6 @@ class RelatedSeriesItem extends React.Component {
     render() {
         const { bioseries, detailOpen } = this.props;
 
-        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <span>
                 <a href={bioseries['@id']} title={`View page for series dataset ${bioseries.accession}`}>{bioseries.accession}</a>&nbsp;

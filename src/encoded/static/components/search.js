@@ -837,6 +837,11 @@ class BioexperimentComponent extends React.Component {
                     </div>
                     <div className="data-row">
                         <div><strong>assay_term_name: </strong>{result.assay_term_name}</div>
+                        {/* <div><strong>Description </strong>{result.description}</div>
+                        <div><strong>Lab </strong>{result.lab}</div>
+                        <div><strong>Project </strong>{result.award}</div> */}
+                
+
                         {/* <div><strong>Biospecimen: </strong>{result.biospecimen}</div> */}
                     </div>
                 </div>

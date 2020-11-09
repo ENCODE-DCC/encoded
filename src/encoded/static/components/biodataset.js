@@ -434,10 +434,6 @@ const basicTableColumns = {
         title: 'Assay',
     },
 
-    // target: {
-    //     title: 'Target',
-    //     getValue: experiment => (experiment.target ? experiment.target.label : null),
-    // },
 
     description: {
         title: 'Description',
@@ -467,7 +463,6 @@ const seriesComponents = {
     BioexperimentSeries: { title: 'bioexperiment series', table: basicTableColumns },
 
     MatchedSet: { title: 'matched set series', table: basicTableColumns },
-    // OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
     ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
 };
 
@@ -489,7 +484,6 @@ export class BioseriesComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-        console.log("datasetDoc", datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const seriesType = context['@type'][0];
@@ -508,22 +502,6 @@ export class BioseriesComponent extends React.Component {
         const seriesComponent = seriesComponents[seriesType];
         const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
-        // Calculate the biosample summary
-        // let speciesRender = null;
-        // if (context.organism && context.organism.length) {
-        //     const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
-        //     speciesRender = (
-        //         <span>
-        //             {speciesList.map((species, i) =>
-        //                 <span key={i}>
-        //                     {i > 0 ? <span> and </span> : null}
-        //                     <i>{species}</i>
-        //                 </span>
-        //             )}
-        //         </span>
-        //     );
-        // }
-        const terms = (context.assay_term_name) ? _.uniq(context.assay_term_name) : [];
 
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);
@@ -585,15 +563,7 @@ export class BioseriesComponent extends React.Component {
                                         </div>
                                         : null}
 
-                                    {/* {terms.length || speciesRender ?
-                                        <div data-test="biosamplesummary">
-                                            <dt>Biosample summary</dt>
-                                            <dd>
-                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
-                                                {speciesRender ? <span>({speciesRender})</span> : null}
-                                            </dd>
-                                        </div>
-                                    : null} */}
+                                   
                                 </dl>
                             </div>
 
@@ -680,8 +650,8 @@ export class BioseriesComponent extends React.Component {
                 />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {datasetDocuments.length>0?<DocumentsPanelReq documents={datasetDocuments} />:null}
 
-                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
         );
     }

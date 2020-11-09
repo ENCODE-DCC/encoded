@@ -17,7 +17,6 @@ from .shared_calculated_properties import (
     CalculatedVisualize
 )
 
-# importing biosample function to allow calculation of experiment biosample property
 from .biosample import (
     construct_biosample_summary,
     generate_summary_dictionary
@@ -40,13 +39,12 @@ class Bioexperiment(Biodataset,
                     CalculatedVisualize):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    # name_key = 'accession'
     embedded = Biodataset.embedded + [
         'award',
         'lab',
-        "submitted_by",  # link to User
+        "submitted_by",  
         'biospecimen',
-        'documents',  # link to Document
+        'documents',  
         'bioreplicate',
         'bioreplicate.biolibrary',
         'bioreplicate.biolibrary.documents',
@@ -59,10 +57,9 @@ class Bioexperiment(Biodataset,
         'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',
         "references",
-        "files", # link to Publication
+        "files", 
         "files.platform",
         'related_series',
-         # link to Publication
 
 
     ]
@@ -79,8 +76,6 @@ class Bioexperiment(Biodataset,
         'original_files',
         'original_files.bioreplicate',
         'original_files.platform',
-        # 'target',
-        # 'files.analysis_step_version.analysis_step.pipelines',
         'revoked_files',
         'revoked_files.bioreplicate',
         'submitted_by',
@@ -125,9 +120,6 @@ class Bioexperiment(Biodataset,
                             request,
                             bioreplicate=None):
         biospecimen_summary_list = []
-
-  # "species": "mouse_related_info", "patient","collection_date, "sample_type",detailed sample type, "anatomic_site", "initial_quantity", "initial_quantiy_units",
-  # "preservation_method":,  "donor", "species_biosample",   "pooled_from", "part_of",
 
         biospecimen_summary_dict = {
             "accession": "",
@@ -213,11 +205,8 @@ class Bioexperiment(Biodataset,
             if 'biolibrary' in replicate_object and replicate_object['biolibrary']:
                 biolibraryObject = request.embed(replicate_object['biolibrary'], '@@object')
 
-                # biospecimen = request.select_distinct_values(
-                #     'biosample', *replicate_object['biolibrary']
-                # )
+                
                 if 'biospecimen' in biolibraryObject:
-                    # for b in biospecimen:
                     biospecimen_object = request.embed(biolibraryObject['biospecimen'], '@@object')
                     biospecimen_donor_list.append(
                         biospecimen_object.get('donor')
