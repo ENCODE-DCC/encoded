@@ -293,7 +293,7 @@ describe('Cart manager while logged in as submitter', () => {
 
     test('the cart count is correct', () => {
         const tableCount = cartManager.find('.cart-counts');
-        expect(tableCount.text()).toEqual('3 carts (30 maximum)');
+        expect(tableCount.text()).toEqual('2 carts (30 maximum)');
     });
 
     test('the column count is correct', () => {
@@ -413,7 +413,7 @@ describe('Cart manager while logged in as admin', () => {
 
     test('the cart count is correct', () => {
         const tableCount = cartManager.find('.cart-counts');
-        expect(tableCount.text()).toEqual('3 carts (30 maximum)');
+        expect(tableCount.text()).toEqual('2 carts (30 maximum)');
     });
 
     test('the column count is correct', () => {
@@ -425,13 +425,12 @@ describe('Cart manager while logged in as admin', () => {
 
     test('the row count is correct', () => {
         const tableRows = cartManager.find('.table.table__sortable tbody tr');
-        expect(tableRows).toHaveLength(4);
+        expect(tableRows).toHaveLength(3);
     });
 
     test('the special row CSS classes are correct', () => {
         const tableRows = cartManager.find('.table.table__sortable tbody tr');
         expect(tableRows.at(0).find('.cart-manager-table__autosave-row')).toHaveLength(1);
-        expect(tableRows.at(2).find('.cart-manager-table__deleted-row')).toHaveLength(1);
-        expect(tableRows.at(3).find('.cart-manager-table__current-row')).toHaveLength(1);
+        expect(tableRows.at(2).find('.cart-manager-table__current-row')).toHaveLength(1);
     });
 });

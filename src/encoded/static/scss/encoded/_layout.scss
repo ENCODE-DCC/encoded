@@ -141,3 +141,14 @@
     margin: 10px 0 0 0;
     text-align: center;
 }
+
+// Styles for the top of the page with breadcrumbs.
+.top-accessories {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #c0c0c0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        justify-content: space-between;
+    }
+}

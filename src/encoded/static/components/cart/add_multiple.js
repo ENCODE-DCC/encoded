@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import url from 'url';
 import QueryString from '../../libs/query_string';
 import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
-import { atIdToType } from '../globals';
+import { atIdToType, truncateString } from '../globals';
 import { requestSearch } from '../objectutils';
 import {
     MaximumElementsLoggedoutModal,
@@ -86,7 +86,8 @@ class CartAddAllSearchComponent extends React.Component {
         const { savedCartObj, inProgress } = this.props;
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         return (
-            <React.Fragment>
+            <div className="cart-add-all">
+                {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
                 <button
                     disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
@@ -98,7 +99,7 @@ class CartAddAllSearchComponent extends React.Component {
                 {this.state.overMaximumError ?
                     <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
                 : null}
-            </React.Fragment>
+            </div>
         );
     }
 }
@@ -177,7 +178,8 @@ const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAl
 
     const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
     return (
-        <div className="cart__add-all-element-control">
+        <div className="cart-add-all">
+            {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
             <button
                 disabled={inProgress || savedCartObj.locked}
                 className="btn btn-info btn-sm"

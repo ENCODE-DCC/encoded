@@ -6,11 +6,10 @@ import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
 import { CartAddAllElements, CartToggle, cartGetAllowedTypes } from './cart';
 import { auditDecor } from './audit';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { PickerActions, resultItemClass } from './search';
 import Status from './status';
-import { ItemAccessories, requestObjects } from './objectutils';
+import { ItemAccessories, requestObjects, TopAccessories } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 
 
@@ -244,10 +243,9 @@ const PublicationComponent = (props, reactContext) => {
         },
     ];
 
-    const crumbsReleased = (context.status === 'released');
     return (
         <div className={itemClass}>
-            <Breadcrumbs root="/search/?type=Publication" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+            <TopAccessories context={context} crumbs={crumbs} />
             <h1>{context.title}</h1>
             <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'publication-audit' }} />
             {props.auditDetail(context.audit, 'publication-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}

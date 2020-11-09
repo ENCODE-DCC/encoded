@@ -2,16 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import _ from 'underscore';
-import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
-import { DocumentsPanelReq, DocumentsSubpanels } from './doc';
+import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { ProjectBadge } from './image';
-import { Breadcrumbs } from './navigation';
-import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
+import { singleTreatment, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
@@ -534,7 +533,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         const biosampleTermQuery = `biosample_ontology.term_name=${biosampleTermName}`;
         crumbs.push({ id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName });
     }
-    const crumbsReleased = (context.status === 'released');
 
     // Compile the document list.
     const combinedDocuments = _.uniq(documents.concat(
@@ -556,7 +554,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root={`/search/?type=${experimentType}`} crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{displayType} summary for {context.accession}</h1>
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />

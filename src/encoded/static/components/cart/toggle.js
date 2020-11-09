@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { svgIcon } from '../../libs/svg-icons';
 import { addToCartAndSave, removeFromCartAndSave } from './actions';
+import { truncateString } from '../globals';
 import { CART_MAXIMUM_ELEMENTS_LOGGEDOUT } from './util';
 
 
@@ -26,7 +27,7 @@ class CartToggleComponent extends React.Component {
     }
 
     render() {
-        const { elements, elementAtId, savedCartObj, css, loggedIn, inProgress } = this.props;
+        const { elements, elementAtId, savedCartObj, displayName, css, loggedIn, inProgress } = this.props;
         const inCart = elements.indexOf(elementAtId) > -1;
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         const cartAtLimit = !loggedIn && elements.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
@@ -37,17 +38,19 @@ class CartToggleComponent extends React.Component {
 
         // "name" attribute needed for BDD test targeting.
         return (
-            <button
-                className={`cart__toggle${inCart ? ' cart__toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}
-                onClick={this.handleClick}
-                disabled={inProgress || locked || (!loggedIn && !inCart && cartAtLimit)}
-                title={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
-                aria-pressed={inCart}
-                aria-label={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
-                name={elementAtId}
-            >
-                {svgIcon('cart')}
-            </button>
+            <div className={`cart-toggle${inCart ? ' cart-toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}>
+                {displayName && savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
+                <button
+                    onClick={this.handleClick}
+                    disabled={inProgress || locked || (!loggedIn && !inCart && cartAtLimit)}
+                    title={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
+                    aria-pressed={inCart}
+                    aria-label={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
+                    name={elementAtId}
+                >
+                    {svgIcon('cart')}
+                </button>
+            </div>
         );
     }
 }
@@ -59,8 +62,10 @@ CartToggleComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** @id of element being added to cart */
     elementAtId: PropTypes.string.isRequired,
+    /** True to display cart name */
+    displayName: PropTypes.bool.isRequired,
     /** CSS to add to toggle */
-    css: PropTypes.string,
+    css: PropTypes.string.isRequired,
     /** Function to call to add `elementAtId` to cart */
     onAddToCartClick: PropTypes.func.isRequired,
     /** Function to call to remove `elementAtId` from cart  */
@@ -74,7 +79,6 @@ CartToggleComponent.propTypes = {
 CartToggleComponent.defaultProps = {
     elements: [],
     savedCartObj: null,
-    css: '',
     loggedIn: false,
     inProgress: false,
 };
@@ -82,6 +86,7 @@ CartToggleComponent.defaultProps = {
 const mapStateToProps = (state, ownProps) => ({
     elements: state.elements,
     savedCartObj: state.savedCartObj,
+    displayName: ownProps.displayName,
     inProgress: state.inProgress,
     elementAtId: ownProps.element['@id'],
     css: ownProps.css,
@@ -99,6 +104,7 @@ const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartTogg
 const CartToggle = (props, reactContext) => (
     <CartToggleInternal
         element={props.element}
+        displayName={props.displayName}
         css={props.css}
         loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
         fetch={reactContext.fetch}
@@ -108,11 +114,14 @@ const CartToggle = (props, reactContext) => (
 CartToggle.propTypes = {
     /** Object being added */
     element: PropTypes.object.isRequired,
+    /** True to show cart name next to toggle */
+    displayName: PropTypes.bool,
     /** CSS to add to toggle */
     css: PropTypes.string,
 };
 
 CartToggle.defaultProps = {
+    displayName: false,
     css: '',
 };
 

@@ -387,28 +387,35 @@ export class Modal extends React.Component {
         this.state = {
             modalOpen: false, // True if modal is visible. Ignored if no actuator given
         };
-        this.handleEsc = this.handleEsc.bind(this);
+        this.handleKey = this.handleKey.bind(this);
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
     }
 
     componentDidMount() {
         // Have ESC key press close the modal.
-        document.addEventListener('keydown', this.handleEsc, false);
+        document.addEventListener('keydown', this.handleKey, false);
     }
 
     componentWillUnmount() {
-        document.removeEventListener('keydown', this.handleEsc, false);
+        document.removeEventListener('keydown', this.handleKey, false);
     }
 
     // Called when the user presses the ESC key.
-    handleEsc(e) {
-        if ((!this.props.actuator || this.state.modalOpen) && e.keyCode === 27) {
-            // User typed ESC.
-            if (this.props.closeModal) {
-                this.props.closeModal();
-            } else {
-                this.closeModal();
+    handleKey(e) {
+        if (!this.props.actuator || this.state.modalOpen) {
+            if (e.keyCode === 27) {
+                // User typed ESC.
+                if (this.props.closeModal) {
+                    this.props.closeModal();
+                } else {
+                    this.closeModal();
+                }
+            } else if (e.keyCode === 13) {
+                // User typed RETURN.
+                if (this.props.submitModal) {
+                    this.props.submitModal();
+                }
             }
         }
     }
@@ -424,9 +431,9 @@ export class Modal extends React.Component {
     }
 
     render() {
-        // We don't require/allow a click handler for the actuator, so we attach the one from
-        // ModalMixin here. You can't add attributes to an existing component in React, but React
-        // has no issue adding attributes while cloning a component.
+        // We don't require/allow a click handler for the actuator, so we attach the built-in one
+        // here. You can't add attributes to an existing component in React, but React has no issue
+        // adding attributes while cloning a component.
         const actuator = this.props.actuator ? React.cloneElement(this.props.actuator, { onClick: this.openModal }) : null;
 
         // Pass important Modal states and functions to child objects without the parent component
@@ -458,6 +465,7 @@ export class Modal extends React.Component {
 Modal.propTypes = {
     actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
     closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
+    submitModal: PropTypes.func, // Called to close the modal with a submit
     addClasses: PropTypes.string, // CSS classes to add to the default
     labelId: PropTypes.string, // id of modal label element
     descriptionId: PropTypes.string, // id of modal description element
@@ -468,6 +476,7 @@ Modal.propTypes = {
 Modal.defaultProps = {
     actuator: null,
     closeModal: null,
+    submitModal: null,
     addClasses: '',
     labelId: '',
     descriptionId: '',

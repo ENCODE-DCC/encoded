@@ -245,7 +245,7 @@ export class SortTable extends React.Component {
     }
 
     render() {
-        const { list, columns, css, rowClasses, meta } = this.props;
+        const { list, rowKeys, columns, css, rowClasses, meta } = this.props;
         const columnIds = Object.keys(columns);
         const hiddenColumns = {};
         let hiddenCount = 0;
@@ -300,8 +300,9 @@ export class SortTable extends React.Component {
                         <tbody>
                             {sortedList.map((item, i) => {
                                 const rowClassStr = rowClasses ? rowClasses(item, i) : '';
+                                const rowKey = rowKeys ? rowKeys[i] : i;
                                 return (
-                                    <tr key={i} className={rowClassStr}>
+                                    <tr key={rowKey} className={rowClassStr}>
                                         {columnIds.map((columnId) => {
                                             if (!hiddenColumns[columnId]) {
                                                 if (columns[columnId].display) {
@@ -352,6 +353,8 @@ SortTable.propTypes = {
     meta: PropTypes.object,
     /** Array of objects to display in the table */
     list: PropTypes.array,
+    /** Array of React row keys */
+    rowKeys: PropTypes.array,
     /** Defines the columns of the table */
     columns: PropTypes.object.isRequired,
     /** CSS classes to add to SortTable <table> tag */
@@ -373,6 +376,7 @@ SortTable.defaultProps = {
     title: null,
     meta: null,
     list: null,
+    rowKeys: null,
     css: '',
     rowClasses: null,
     sortColumn: '',

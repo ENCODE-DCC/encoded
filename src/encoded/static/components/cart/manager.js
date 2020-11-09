@@ -49,6 +49,7 @@ class CurrentCartButtonComponent extends React.Component {
                 value={cart['@id']}
                 onChange={this.handleRadioButtonChange}
                 checked={selected}
+                aria-label="Current cart"
                 className="cart-manager-table__current-button"
                 disabled={cart.status === 'deleted' || cart.status === 'disabled' || inProgress}
             />
@@ -93,41 +94,35 @@ const CurrentCartButton = connect(CurrentCartButtonComponent.mapStateToProps, Cu
  * gets its own mount event that lets us select the <input> contents when the modal appears. Uses a
  * controlled <input>, but the parent component tracks its contents.
  */
-class NameInput extends React.Component {
-    constructor() {
-        super();
-        this.inputField = null;
-    }
+const NameInput = ({ name, label, inputChangeHandler, nonValidMessage, inline }) => {
+    const inputField = React.useRef(null);
 
-    componentDidMount() {
+    React.useEffect(() => {
         // Make sure the user can type into this field as soon as the modal appears without having
         // to click in the field.
-        this.inputField.focus();
-        this.inputField.select();
-    }
+        inputField.current.focus();
+        inputField.current.select();
+    }, []);
 
-    render() {
-        const { name, label, inputChangeHandler, nonValidMessage, inline } = this.props;
-        return (
-            <div className={inline ? 'form-inline' : null}>
-                <div className="form-group">
-                    <label htmlFor="new-cart-name">{label}:&nbsp;</label>
-                    <div className="form-element-with-valid-message">
-                        <input
-                            type="text"
-                            id="new-cart-name"
-                            className="form-control cart-rename__input"
-                            ref={(input) => { this.inputField = input; }}
-                            value={name}
-                            onChange={inputChangeHandler}
-                        />
-                        <label htmlFor="new-cart-name" className="non-valid-label">{nonValidMessage}</label>
-                    </div>
+    return (
+        <div className={inline ? 'form-inline' : null}>
+            <div className="form-group">
+                <label htmlFor="new-cart-name">{label}:&nbsp;</label>
+                <div className="form-element-with-valid-message">
+                    <input
+                        type="text"
+                        id="new-cart-name"
+                        className="form-control cart-rename__input"
+                        ref={inputField}
+                        value={name}
+                        onChange={inputChangeHandler}
+                    />
+                    <label htmlFor="new-cart-name" className="non-valid-label">{nonValidMessage}</label>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 NameInput.propTypes = {
     /** Contents of the name <input>; changes as the user types */
@@ -293,17 +288,24 @@ class NameCartButtonComponent extends React.Component {
      * function to execute the operation depends on whether we're creating or renaming a cart.
      */
     handleSubmit() {
-        const { create, onCreate, onRename, updateCartManager } = this.props;
+        const { create, onCreate, onRename, onSwitchCart, updateCartManager, user } = this.props;
         const { newName, newIdentifier } = this.state;
         const submitFunc = create ? onCreate : onRename;
-        submitFunc(newName.trim(), newIdentifier).then(() => {
-            // Successfully changed the cart name/identifier. Indicate the cart manager needs
-            // reloading so it displays the new cart information.
+        submitFunc(newName.trim(), newIdentifier).then((cartAtId) => {
             this.handleClose();
+
+            // Successfully changed the cart name/identifier. Indicate the cart manager needs
+            // reloading so it displays the new cart information, and set the new cart as the
+            // current cart. Null user only on initial load, but make sure to handle a null user
+            // just in case.
+            if (create && user) {
+                cartSetSettingsCurrent(user, cartAtId);
+                onSwitchCart(cartAtId);
+            }
             updateCartManager();
         }, (err) => {
             if (err === 409) {
-                // The back end detected the identifer already exists in the database. Display the
+                // The back end detected the identifier already exists in the database. Display the
                 // error and let the user continue in the modal.
                 this.setState({ identifierConflict: true });
             }
@@ -341,7 +343,7 @@ class NameCartButtonComponent extends React.Component {
                     <button className={`btn btn-info btn-sm btn-inline${actuatorCss ? ` ${actuatorCss}` : ''}`} onClick={this.handleActuator} disabled={disabled}>{actuatorTitle}</button>
                 </div>
                 {this.state.modalOpen ?
-                    <Modal closeModal={this.handleClose} labelId="name-cart-label" descriptionId="name-cart-description">
+                    <Modal closeModal={this.handleClose} submitModal={this.handleSubmit} labelId="name-cart-label" descriptionId="name-cart-description">
                         <ModalHeader title={<h4>{modalTitle}</h4>} labelId="name-cart-label" closeModal={this.handleClose} />
                         <ModalBody addCss="cart-rename">
                             <div className="cart-rename__name-area">
@@ -402,6 +404,8 @@ NameCartButtonComponent.propTypes = {
     cartManager: PropTypes.object.isRequired,
     /** Cart object being renamed, unless making new cart */
     cart: PropTypes.object,
+    /** Current user from session props */
+    user: PropTypes.object,
     /** True if cart operation is in progress */
     inProgress: PropTypes.bool.isRequired,
     /** True to create a new cart; false to rename an existing cart */
@@ -416,12 +420,15 @@ NameCartButtonComponent.propTypes = {
     onRename: PropTypes.func.isRequired,
     /** Function to create a new cart; used if `create` is true */
     onCreate: PropTypes.func.isRequired,
+    /** Dispatch function for setting the current cart in the cart Redux store */
+    onSwitchCart: PropTypes.func.isRequired,
     /** Function to update the cart manager */
     updateCartManager: PropTypes.func.isRequired,
 };
 
 NameCartButtonComponent.defaultProps = {
     cart: null,
+    user: null,
     create: false,
     actuatorCss: '',
     disabled: false,
@@ -431,6 +438,7 @@ NameCartButtonComponent.defaultProps = {
 NameCartButtonComponent.mapStateToProps = (state, ownProps) => ({
     cartManager: ownProps.cartManager,
     cart: ownProps.cart,
+    user: ownProps.user,
     inProgress: state.inProgress,
     create: ownProps.create,
     actuatorCss: ownProps.actuatorCss,
@@ -444,6 +452,7 @@ NameCartButtonComponent.mapStateToProps = (state, ownProps) => ({
 NameCartButtonComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     onRename: (name, identifier) => dispatch(setCartNameIdentifierAndSave({ name, identifier }, ownProps.cart, ownProps.user, ownProps.fetch)),
     onCreate: (name, identifier) => cartCreate({ name, identifier }, ownProps.fetch),
+    onSwitchCart: cartAtId => dispatch(switchCart(cartAtId, ownProps.fetch)),
 });
 
 const NameCartButton = connect(NameCartButtonComponent.mapStateToProps, NameCartButtonComponent.mapDispatchToProps)(NameCartButtonComponent);
@@ -541,7 +550,7 @@ DeleteCartButtonComponent.propTypes = {
     setInProgress: PropTypes.func.isRequired,
     /** Function to call to update the cart manager page */
     updateCartManager: PropTypes.func.isRequired,
-    /** System function for xhr requests */
+    /** System function for XHR requests */
     fetch: PropTypes.func.isRequired,
 };
 
@@ -647,7 +656,7 @@ const cartTableColumns = {
     identifier: {
         title: 'Identifier',
         headerCss: 'cart-manager-table__name-header',
-        display: item => <a href={item['@id']} className="cart-manager-table__text-wrap">{item.identifier}</a>,
+        display: item => (item.identifier ? <a href={item['@id']} className="cart-manager-table__text-wrap">{item.identifier}</a> : null),
     },
     element_count: {
         title: 'Items',
@@ -706,30 +715,49 @@ const cartTableColumns = {
 /**
  * Display a count of the number of non-deleted carts, and the maximum possible number of carts.
  */
-const CartCounts = ({ cartManager }) => {
-    const cartCount = cartManager['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' ? sum + 1 : sum), 0);
-    return (
-        <div className="cart-counts">
-            {cartCount} cart{cartCount !== 1 ? 's' : ''} ({cartManager.cart_user_max} maximum)
-        </div>
-    );
-};
+const CartCounts = ({ cartManager, cartCount }) => (
+    <div className="cart-counts">
+        {cartCount} cart{cartCount !== 1 ? 's' : ''} ({cartManager.cart_user_max} maximum)
+    </div>
+);
 
 CartCounts.propTypes = {
     /** cart-manager object from database */
     cartManager: PropTypes.object.isRequired,
+    /** Number of carts not deleted and not auto save */
+    cartCount: PropTypes.number.isRequired,
 };
 
 
 /**
  * Display the cart manager table footer containing the legend.
  */
-const CartManagerFooter = () => (
-    <div className="cart-manager-table__legend">
-        <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--current" />Current</div>
-        <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--autosave" />Auto Save</div>
+const CartManagerFooter = ({ adminUser, isDeletedVisible, deletedVisibleChangeHandler }) => (
+    <div className="cart-manager-table__footer">
+        <div className="cart-manager-table__footer-item">
+            {adminUser ?
+                <React.Fragment>
+                    <input id="check-deleted-visible" type="checkbox" checked={isDeletedVisible} onChange={deletedVisibleChangeHandler} />
+                    <label htmlFor="check-deleted-visible">Show deleted carts</label>
+                </React.Fragment>
+            : null}
+        </div>
+        <div className="cart-manager-table__legend">
+            <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--current" />Current</div>
+            <div className="cart-manager-table__legend-item"><div className="cart-manager-table__chip--autosave" />Auto Save</div>
+        </div>
+        <div className="cart-manager-table__footer-item" />
     </div>
 );
+
+CartManagerFooter.propTypes = {
+    /** True if current user has admin privileges */
+    adminUser: PropTypes.bool.isRequired,
+    /** True if deleted carts are visible to admins */
+    isDeletedVisible: PropTypes.bool.isRequired,
+    /** Function to call when the admin user clicks the checkbox */
+    deletedVisibleChangeHandler: PropTypes.func.isRequired,
+};
 
 
 /**
@@ -742,8 +770,11 @@ class CartManagerComponent extends React.Component {
         this.state = {
             // /cart-manager/ object to render if we detected a possible update
             updatedContext: null,
+            // True if admin user has checked the Show Deleted Carts checkbox
+            isDeletedVisible: false,
         };
         this.retrieveUpdatedCart = this.retrieveUpdatedCart.bind(this);
+        this.handleDeletedVisibleChange = this.handleDeletedVisibleChange.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -764,11 +795,20 @@ class CartManagerComponent extends React.Component {
         });
     }
 
+    /**
+     * Called when the user clicks the "Show deleted carts" checkbox.
+     */
+    handleDeletedVisibleChange(e) {
+        this.setState({ isDeletedVisible: e.target.checked });
+    }
+
     render() {
         const { context, currentCart, inProgress, sessionProperties, fetch } = this.props;
+        const adminUser = !!(sessionProperties && sessionProperties.admin);
         const cartContext = this.state.updatedContext || context;
         const extantCartCount = cartContext['@graph'].reduce((sum, cart) => (cart.status !== 'deleted' && cart.status !== 'disabled' ? sum + 1 : sum), 0);
         const user = sessionProperties && sessionProperties.user;
+        const cartList = this.state.isDeletedVisible ? cartContext['@graph'] : cartContext['@graph'].filter(cart => cart.status !== 'deleted');
         const cartPanelHeader = (
             <div className="cart-manager-header">
                 <h4 className="cart-manager-header__title">Cart manager</h4>
@@ -786,18 +826,19 @@ class CartManagerComponent extends React.Component {
         return (
             <SortTablePanel header={cartPanelHeader}>
                 <SortTable
-                    list={cartContext['@graph']}
+                    list={cartList}
+                    rowKeys={cartContext['@graph'].map(cart => cart['@id'])}
                     columns={cartTableColumns}
                     meta={{
                         cartManager: cartContext,
                         current: currentCart,
                         operationInProgress: inProgress,
                         user: sessionProperties && sessionProperties.user,
-                        admin: !!(sessionProperties && sessionProperties.admin),
+                        admin: adminUser,
                         updateCartManager: this.retrieveUpdatedCart,
                         fetch,
                     }}
-                    title={<CartCounts cartManager={cartContext} />}
+                    title={<CartCounts cartManager={cartContext} cartCount={extantCartCount} />}
                     rowClasses={
                         (item) => {
                             if (item['@id'] === currentCart) {
@@ -812,7 +853,7 @@ class CartManagerComponent extends React.Component {
                             return '';
                         }
                     }
-                    footer={<CartManagerFooter />}
+                    footer={<CartManagerFooter adminUser={adminUser} isDeletedVisible={this.state.isDeletedVisible} deletedVisibleChangeHandler={this.handleDeletedVisibleChange} />}
                 />
             </SortTablePanel>
         );

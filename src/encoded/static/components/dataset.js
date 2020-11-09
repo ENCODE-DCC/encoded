@@ -11,7 +11,7 @@ import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import Status from './status';
 import pubReferenceList from './reference';
-import { donorDiversity, publicDataset, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
+import { donorDiversity, publicDataset, AlternateAccession, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
@@ -75,15 +75,13 @@ const AnnotationComponent = (props, reactContext) => {
         { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for annotation file set {context.accession}</h1>
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'annotation-audit' }} hasCartControls />
@@ -283,15 +281,13 @@ const PublicationDataComponent = ({ context, auditIndicators, auditDetail }, rea
         { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Render the publication links
     const referenceList = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for publication file set {context.accession}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
@@ -452,15 +448,13 @@ const ComputationalModelComponent = (props, reactContext) => {
         { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Render the publication links
     const referenceList = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for computational model file set {context.accession}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
@@ -608,15 +602,13 @@ const ReferenceComponent = (props, reactContext) => {
         { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for reference file set {context.accession}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
@@ -691,7 +683,7 @@ const ReferenceComponent = (props, reactContext) => {
                                     <dt>Related Pipelines</dt>
                                     <dd>
                                         {context.related_pipelines.map((pipeline, i) =>
-                                            <React.Fragment>
+                                            <React.Fragment key={pipeline['@id']}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={pipeline['@id']}>{pipeline.accession}</a>
                                             </React.Fragment>
@@ -808,15 +800,13 @@ const ProjectComponent = (props, reactContext) => {
         { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Get a list of reference links
     const references = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for project file set {context.accession}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
@@ -989,15 +979,13 @@ const UcscBrowserCompositeComponent = (props, reactContext) => {
         { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for UCSC browser composite file set {context.accession}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />
@@ -1472,8 +1460,6 @@ export const SeriesComponent = (props, reactContext) => {
         { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // Get a list of reference links, if any
     const references = pubReferenceList(context.references);
 
@@ -1520,7 +1506,7 @@ export const SeriesComponent = (props, reactContext) => {
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>Summary for {seriesTitle} {context.accession}</h1>
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} hasCartControls={seriesType === 'FunctionalCharacterizationSeries'} />

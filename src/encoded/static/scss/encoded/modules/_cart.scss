@@ -126,6 +126,8 @@
 
     // Checkbox block in search results
     @at-root #{&}__search-controls {
+        display: flex;
+        justify-content: flex-end;
         padding: 5px;
         text-align: right;
         border-width: 1px 1px 0 1px;
@@ -190,68 +192,6 @@
         border-bottom: 1px solid #ddd;
     }
 
-    // Cart add/remove toggle button
-    @at-root #{&}__toggle {
-        display: block;
-        width: 30px;
-        height: 30px;
-        padding: 6px;
-        border: 1px solid;
-        background-color: #fff;
-        border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
-        border-radius: 5px;
-        stroke: #000;
-        stroke-width: 0.5px;
-        fill: #000;
-        fill-opacity: 0;
-        -webkit-appearance: none; // Avoid apparent chrome bug
-
-        svg {
-            display: block;
-            height: 1.2rem;
-    
-            @media screen and (min-width: $screen-sm-min) {
-                height: 1.1rem;
-            }
-        }
-
-        &:hover {
-            background-color: #e0e0e0;
-
-            &:disabled {
-                background-color: #fff;
-            }
-        }
-
-        &:disabled {
-            cursor: default;
-            stroke: #a0a0a0;
-            fill: #a0a0a0;
-        }
-
-        @at-root #{&}--header {
-            float: right;
-            margin-left: 5px;
-        }
-
-        &--in-cart {
-            stroke-width: 0;
-            fill-opacity: 1;
-    
-            &:disabled {
-                stroke: #a0a0a0;
-                fill: #a0a0a0;
-            }
-        }
-
-        .item-accessories & {
-            display: inline-block;
-            margin-left: 5px;
-            height: 100%;
-            vertical-align: top;
-        }
-    }
-
     // Header of cart panel.
     @at-root #{&}__header {
         display: block;
@@ -296,6 +236,76 @@
             border-bottom-left-radius: 0;
         }
     }
+}
+
+// Cart add/remove toggle button
+.cart-toggle {
+    display: flex;
+    height: 30px;
+    align-items: center;
+    -webkit-appearance: none; // Avoid apparent chrome bug
+
+    button {
+        width: 30px;
+        height: 100%;
+        border: 1px solid;
+        border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
+        border-radius: 5px;
+        background-color: transparent;
+
+        &:hover {
+            background-color: #e0e0e0;
+    
+            &:disabled {
+                background-color: #fff;
+            }
+        }
+    }
+
+    svg {
+        display: block;
+        stroke: #000;
+        stroke-width: 0.5px;
+        fill: #000;
+        fill-opacity: 0;
+    }
+
+    &:disabled {
+        cursor: default;
+        stroke: #a0a0a0;
+        fill: #a0a0a0;
+    }
+
+    &--in-cart {
+        svg {
+            stroke-width: 0;
+            fill-opacity: 1;
+
+            &:disabled {
+                stroke: #a0a0a0;
+                fill: #a0a0a0;
+            }
+        }
+    }
+
+    &__name {
+        font-weight: bold;
+        margin-right: 5px;
+        color: #808080;
+    }
+
+    .item-accessories & {
+        display: inline-block;
+        margin-left: 5px;
+        height: 100%;
+        vertical-align: top;
+    }
+}
+
+// "Add all items to cart" button.
+.cart-add-all {
+    display: flex;
+    align-items: center;
 }
 
 .cart-tools {
@@ -622,12 +632,21 @@ $deleted-bg: #ffe0e0;
         overflow-wrap: break-word;
     }
 
+    @at-root #{&}__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    @at-root #{&}__footer-item {
+        flex: 1 0;
+    }
+
     @at-root #{&}__legend {
-        padding: 3px 5px;
-        text-align: center;
+        display: flex;
+        padding: 0 5px;
 
         @at-root #{&}-item {
-            display: inline-block;
             margin: 0 15px;
         }
     }
@@ -1090,17 +1109,12 @@ $file-type-colors: (
 .experiment-table {
     @at-root #{&}__header {
         display: flex;
+        justify-content: space-between;
 
-        .cart__add-all-element-control {
-            flex: 0 1 auto;
-            margin: -5px -5px -5px 10px;
+        .cart-add-all {
+            margin: -5px -5px -5px 0;
         }
     }
-
-    @at-root #{&}__title {
-        flex: 1 1 auto;
-    }
-
 }
 
 

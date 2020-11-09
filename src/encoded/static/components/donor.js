@@ -9,8 +9,7 @@ import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
-import { Breadcrumbs } from './navigation';
-import { requestObjects, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
+import { requestObjects, AlternateAccession, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -562,12 +561,10 @@ class DonorComponent extends React.Component {
             { id: <i>{context.organism.scientific_name}</i> },
         ];
 
-        const crumbsReleased = (context.status === 'released');
-
         return (
             <div className={itemClass}>
                 <header>
-                    <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <TopAccessories context={context} crumbs={crumbs} />
                     <h1>{context.accession}</h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />
