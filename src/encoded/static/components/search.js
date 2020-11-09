@@ -880,7 +880,9 @@ const BiodatasetComponent = (props, reactContext) => {
 
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
-        biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
+        // biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
+        biosampleTerm = (result.biospecimen && Array.isArray(result.biospecimen) && result.biospecimen.length === 1 && result.biospecimen[0].sample_type) ? result.biospecimen[0].sample_type : ((result.biospecimen && result.biospecimen.sample_type) ? result.biospecimen.sample_type : '');
+
        
     }
 
@@ -900,7 +902,7 @@ const BiodatasetComponent = (props, reactContext) => {
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {biodatasetTypes[result['@type'][1]]}
+                            {biodatasetTypes[result['@type'][0]]}
                             {seriesDataset ?
                                 <span>
                                     {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
