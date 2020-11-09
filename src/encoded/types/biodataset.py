@@ -325,6 +325,8 @@ class Bioseries(Biodataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Ca
         'files.lab',
         'files.bioreplicate.biolibrary.biospecimen',
         'files.biolibrary.biospecimen',
+        'award',
+        'lab'
     ]
 
     @calculated_property(schema={
@@ -375,7 +377,10 @@ class BioexperimentSeries(Bioseries):
     embedded = [
         'contributing_awards',
         'contributors',
+        'award',
+        'lab',
         'related_datasets.lab',
+        'related_datasets.award',
         'related_datasets.bioreplicate.biolibrary.biospecimen',
     ]
 
