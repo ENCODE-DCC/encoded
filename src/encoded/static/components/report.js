@@ -250,7 +250,7 @@ const reduceComplexValue = (rawValue) => {
                 .uniq()
                 .value();
 
-            // Take care of arrays by concatenting their elements into one string.
+            // Take care of arrays by concatenating their elements into one string.
             result = flattenedValue.map((item) => {
                 if (typeof item === 'object') {
                     // The array contains objects. If each object has an @id, display that.
@@ -424,7 +424,7 @@ const ReportData = ({ context, visibleFields, type }) => (
         {context['@graph'].map(item => (
             <tr key={item['@id']}>
                 {visibleFields.map((field) => {
-                    // Get the value of the property in `item` and see if the currenet field and
+                    // Get the value of the property in `item` and see if the current field and
                     // type have a registered renderer.
                     const value = getObjectPropValue(item, field);
                     const ReportCellRenderer = ReportDataRegistry.lookup(field, type);

@@ -101,7 +101,7 @@ export const sanitizeId = id => (id ? `${id.replace(/\s/g, '_')}` : '-');
 
 
 // Take an @id and return the corresponding accession. If no accession could be found in the @id,
-// the empty string is returned.
+// the unchanged @id is returned.
 export function atIdToAccession(atId) {
     const matched = atId.match(/^\/.+\/(.+)\/$/);
     if (matched && matched.length === 2) {

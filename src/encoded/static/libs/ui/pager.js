@@ -83,7 +83,7 @@ export const Multi = ({ currentPage, total, clickHandler }) => {
     } else {
         // With more than nine pages, build a cluster of pages around the current page, first by
         // determining the minimum and maximum page numbers for the cluster. Allow for filling in
-        // extra numbers in the cluster for cases where the current page number approches the ends
+        // extra numbers in the cluster for cases where the current page number approaches the ends
         // of the page range, and cutting off the page numbers when the current page is within two
         // pages of either end of the page range.
         const clusterMin = Math.min(Math.max(1, currentPage - 2), total - 6);
