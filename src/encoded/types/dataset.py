@@ -711,6 +711,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.libraries.biosample.treatments',
         'related_datasets.replicates.libraries.spikeins_used',
         'related_datasets.replicates.libraries.treatments',
+        'related_datasets.replicates.libraries.biosample.applied_modifications',
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
         'related_datasets.target.organism',
