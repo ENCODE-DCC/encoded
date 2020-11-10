@@ -86,24 +86,6 @@
         "related_datsets.files.run_type": {
             "title": "Run type"
         },
-        "related_datasets.files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "related_datasets.files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library fragment size (nt)"
-        },
-        "related_datasets.replicates.library.nucleic_acid_term_name": {
-            "title": "Library material"
-        },
-        "related_datasets.replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in"
-        },
-        "related_datasets.replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
-        },
         "lab.title": {
             "title": "Lab"
         },

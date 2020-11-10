@@ -1,5 +1,8 @@
 ## Changelog for treatment_time_series.json
 
+### Minor changes since schema version 18
+* Added *treatment_duration_range* and *treatment_duration_unit* calculated properties.
+
 ### Schema version 18
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
