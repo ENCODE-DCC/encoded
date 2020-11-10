@@ -2163,7 +2163,11 @@ export const compileAnalyses = (experiment, files) => {
             });
         }
     }
-    return _(compiledAnalyses).sortBy(compiledAnalysis => -compiledAnalysis.assemblyAnnotationValue);
+
+    // In ENCODE releases, release year is not in the data. To get around this, if you strip out the text and
+    // leave only numbers, you will consistently have a means to identify ealier releases from latter ones. This
+    // approached was used to sort. "Lab custom" appear at the bottom as intented
+    return _(compiledAnalyses).sortBy(a => parseInt(a.title.replace(/\D/g, ''), 10)).reverse();
 };
 
 
@@ -2192,11 +2196,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
             <div className="analyses-selector analyses-selector--file-gallery-facets">
                 <h4>Choose analysis</h4>
                 <select className="analyses-selector" value={selectedAnalysesIndex} onChange={handleSelection}>
-                    {/* In ENCODE releases, release year is not in the data. To get around this, if you strip out the text and
-                    // leave only numbers, you will consistently have a means to identify ealier releases from latter ones. This
-                     approached was used to sort.
-                    */}
-                    {analyses.sort((a, b) => parseInt(b.title.replace(/\D/g, ''), 10) - parseInt(a.title.replace(/\D/g, ''), 10)).map((analysis, index) => (
+                    {analyses.map((analysis, index) => (
                         <option key={analysis.title} value={index}>{analysis.title}</option>
                     ))}
                 </select>
