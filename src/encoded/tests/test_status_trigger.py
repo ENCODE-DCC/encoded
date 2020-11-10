@@ -675,3 +675,70 @@ def test_set_status_analysis_step_version(testapp, analysis_step_version, analys
     assert res.json['status'] == 'released'
     res = testapp.get(software['@id'])
     assert res.json['status'] == 'released'
+
+
+@mock_sts
+@mock_s3
+def test_set_status_analysis_files(testapp, base_analysis, file, dummy_request, root):
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Put mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress'})
+    testapp.patch_json(base_analysis['@id'], {'status': 'in progress', 'files':[file['@id']]})
+    # Release analysis.
+    testapp.patch_json(base_analysis['@id'] + '@@set_status?update=true', {'status': 'released'}, status=200)
+    res = testapp.get(base_analysis['@id'])
+    assert res.json['status'] == 'released'
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'released'
+    # Archive analysis.
+    testapp.patch_json(base_analysis['@id'] + '@@set_status?update=true', {'status': 'archived'}, status=200)
+    res = testapp.get(base_analysis['@id'])
+    assert res.json['status'] == 'archived'
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'archived'
+
+
+@mock_sts
+@mock_s3
+def test_set_status_experiment_analysis(testapp, root, experiment, file, base_analysis, dummy_request):
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Put mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress', 'dataset': experiment['@id']})
+    testapp.patch_json(base_analysis['@id'], {'status': 'in progress', 'files':[file['@id']]})
+    testapp.patch_json(experiment['@id'], {'analysis_objects': [base_analysis['@id']]})
+    for encode_item in [experiment, base_analysis]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'in progress'
+    # Release experiment.
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'released'})
+    for encode_item in [experiment, base_analysis, file]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'released'
+    # Archive experiment.
+    res = testapp.patch_json(experiment['@id'] + '@@set_status?force_audit=true&update=true', {'status': 'archived'})
+
+    for encode_item in [experiment, base_analysis, file]:
+        res = testapp.get(encode_item['@id'])
+        assert res.json['status'] == 'archived'
