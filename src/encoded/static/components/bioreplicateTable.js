@@ -16,11 +16,11 @@ class BioreplicateTable extends React.Component {
             "Biological_replicate_number": i.biological_replicate_number,
             "Technical_replicate_number": i.technical_replicate_number,
             "Library summary": i.biolibrary.nucleic_acid_term_name,
-            "Biospecimen accession": i.biolibrary.biospecimen.accession,
-            "library accession": i.biolibrary.accession,
+            "Biospecimen": i.biolibrary.biospecimen.accession,
+            "Biolibrary": i.biolibrary.accession,
 
         }));
-        console.log("bioreplicateFilters",this.bioreplicateFilters);
+        console.log("bioreplicateFilters", this.bioreplicateFilters);
 
     }
 
@@ -38,13 +38,17 @@ class BioreplicateTable extends React.Component {
                 "Library summary": {
                     title: 'Summary',
                 },
-                "Biospecimen accession": {
+                "Biospecimen": {
                     title: 'Biospecimen',
+
                 },
-                "Library accession": {
-                    title: 'Library',
+                "Biolibrary": {
+                    title: 'Biolibrary',
+
                 },
             };
+            console.log("biolibrary",this.bioreplicateFilters.biolibrary);
+
             return (
                 <SortTablePanel title={this.props.tableTitle}>
                     <SortTable list={this.bioreplicateFilters} columns={bioreplicateTableColumns} />

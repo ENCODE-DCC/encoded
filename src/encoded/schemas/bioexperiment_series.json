@@ -8,7 +8,7 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "dataset.json#/properties" },
+        { "$ref": "biodataset.json#/properties" },
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
@@ -53,17 +53,20 @@
     },
     "facets": {
        
+       
         "assay_titles": {
             "title": "Assay title"
         },
-       
-       
+        "assay_slims": {
+            "title": "Assay type"
+        },
         "contributors.title": {
             "title": "Contributing Labs"
         },
         "date_released": {
             "title": "Date released"
         },
+       
         "status": {
             "title": "Status"
         }
@@ -87,6 +90,14 @@
         "related_datasets.status": {
             "title": "Related dataset status",
             "type": "string"
+        },
+        "related_datasets.bioreplicate.biolibrary.biospecimen.species": {
+            "title": "Biospecimen species",
+            "type": "string"
+        },
+        "related_datasets.bioreplicate.biolibrary.biospecimen.sample_type": {
+            "title": "Sample Type",
+            "type": "array"
         },
         
         "status": {

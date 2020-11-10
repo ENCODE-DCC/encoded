@@ -7,7 +7,6 @@
         "patient":"KCEPT708IJT",
         "sample_type":"Tissue",
         "collection_date":"1941-02-16",
-        "sample_type":"Tissue",
         "tissue_derivatives":"TG(PDX)",
         "tissue_type":"Primary",
         "anatomic_site":"Kidney",
@@ -29,7 +28,6 @@
         "sample_type":"Tissue",
         "collection_type": "solid tissue",
         "collection_date":"1982-06-20",
-        "sample_type":"Tissue",
         "tissue_derivatives":"FFPE",
         "tissue_type":"Normal",
         "anatomic_site":"Kidney",
@@ -40,7 +38,7 @@
 
         "primary_site": "Kidney",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "kevin-white:K562_BAC_transfection_White_protocol"
         ],
         "surgery": "KCESX708FIJ"
     },

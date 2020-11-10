@@ -11,7 +11,7 @@
     "submitted_by": "dignissim.euismod@amet.habitant",
     "uuid": "6f70fc67-8589-4366-bd69-7e2007dd2901",
     "documents": [
-      "dcf15d5e-40aa-43bc-b81c-32c70c9afb01"
+      "thomas-gingeras:Chip-seq protocol-general"
     ],
     "references": [
       "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
@@ -37,8 +37,8 @@
     "submitted_by": "dignissim.euismod@amet.habitant",
     "uuid": "8351b819-40ef-4254-9bd9-43ec7e285ea8",
     "documents": [
-      "dcf15d5e-40aa-43bc-b81c-32c70c9afb01",
-      "6ab18a00-50aa-11e4-916c-0800200c9a66"
+      "thomas-gingeras:RNA extraction protocol from Qiagen",
+      "thomas-gingeras:ChIPSeq_protocol-Abcam"
     ],
     "references": [
       "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd",

@@ -169,17 +169,13 @@ class Bioexperiment extends React.Component {
 
         let librarySpecials = {};
         let libraryComponents = {};
-        // let condensedReplicates = [];
         let libSubmitterComments = [];
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const itemClass = globals.itemClass(context, 'view-item');
         const replicates = context.bioreplicate && context.bioreplicate.length ? context.bioreplicate : [];
         if (replicates.length) {
-            // const condensedReplicatesKeyed = _(replicates).groupBy(bioreplicate => (bioreplicate.biolibrary ? bioreplicate.biolibrary['@id'] : bioreplicate.uuid));
-            // if (Object.keys(condensedReplicatesKeyed).length) {
-            //     condensedReplicates = _.toArray(condensedReplicatesKeyed);
-            // }
+     
 
             // Collect all replicate libraries into one array of library objects.
             const libraries = replicates.reduce((libraryAcc, bioreplicate) => (bioreplicate.biolibrary ? libraryAcc.concat([bioreplicate.biolibrary]) : libraryAcc), []);
@@ -300,7 +296,6 @@ class Bioexperiment extends React.Component {
         });
 
 
-        console.log("biosampledoc", biosampleDocs);
 
 
         // Determine this experiment's ENCODE version.
@@ -327,39 +322,39 @@ class Bioexperiment extends React.Component {
         const references = pubReferenceList(context.references);
 
         // Set up breadcrumbs
-         // Set up the breadcrumbs.
-         const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-         const assayName = context[assayTerm];
-         const assayQuery = `${assayTerm}=${assayName}`;
+        // Set up the breadcrumbs.
+        const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        const assayName = context[assayTerm];
+        const assayQuery = `${assayTerm}=${assayName}`;
 
         //  const organismNames = BiosampleOrganismNames(biosamples);
-         const organismNames = BiospecimenOrganismNames(biosamples);
-         console.log('organismName',organismNames);
-         let nameQuery = '';
-         let nameTip = '';
-         const names = organismNames.map((organismName, i) => {
-             nameTip += (nameTip.length ? ' + ' : '') + organismName;
-             nameQuery += `${nameQuery.length ? '&' : ''}replicates.biolibrary.biospecimen.donor.species=${organismName}`;
-             return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
-         });
-         const biosampleTermName = context.assay_term_name;
-         const biosampleTermQuery = biosampleTermName ? `assay_term_name=${biosampleTermName}` : '';
-         const crumbs = [
-             { id: 'Bioexperiments' },
-             { id: assayName, query: assayQuery, tip: assayName },
-             { id: names.length ? names : null, query: nameQuery, tip: nameTip },
-             { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
-         ];
-     
+        const organismNames = BiospecimenOrganismNames(biosamples);
+        console.log('organismName', organismNames);
+        let nameQuery = '';
+        let nameTip = '';
+        const names = organismNames.map((organismName, i) => {
+            nameTip += (nameTip.length ? ' + ' : '') + organismName;
+            nameQuery += `${nameQuery.length ? '&' : ''}replicates.biolibrary.biospecimen.donor.species=${organismName}`;
+            return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
+        });
+        const biosampleTermName = context.assay_term_name;
+        const biosampleTermQuery = biosampleTermName ? `assay_term_name=${biosampleTermName}` : '';
+        const crumbs = [
+            { id: 'Bioexperiments' },
+            { id: assayName, query: assayQuery, tip: assayName },
+            { id: names.length ? names : null, query: nameQuery, tip: nameTip },
+            { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
+        ];
+
 
         const crumbsReleased = (context.status === 'released');
 
         // Compile the document list.
-        const combinedDocuments = _.uniq(documents.concat(
+        let combinedDocuments = _.uniq(documents.concat(
             biosampleDocs,
             libraryDocs
         ));
-        console.log("combineDoc", combinedDocuments);
+        combinedDocuments=combinedDocuments.map(i=>i['@id']);
 
         const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
 
@@ -389,14 +384,11 @@ class Bioexperiment extends React.Component {
                             <CartToggle element={context} />
                         </div>
                         <DisplayAsJson />
-                        {/* {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })} */}
                     </div>
                 </header>
-                {/* {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })} */}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
-                            {/* for summary */}
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading">
                                     <h4>Summary</h4>
@@ -454,7 +446,7 @@ class Bioexperiment extends React.Component {
                                                 )}
                                             </dd>
                                         </div>
-                                    : null}
+                                        : null}
 
                                     {context.possible_controls && context.possible_controls.length ?
                                         <div data-test="possible-controls">
@@ -475,7 +467,6 @@ class Bioexperiment extends React.Component {
                                 </dl>
                             </div>
 
-                            {/* for attibution */}
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading">
                                     <h4>Attribution</h4>
@@ -487,7 +478,7 @@ class Bioexperiment extends React.Component {
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    {/* <AwardRef context={context} /> */}
+                                    <AwardRef context={context} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
@@ -683,7 +674,6 @@ class RelatedSeriesItem extends React.Component {
     render() {
         const { bioseries, detailOpen } = this.props;
 
-        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <span>
                 <a href={bioseries['@id']} title={`View page for series dataset ${bioseries.accession}`}>{bioseries.accession}</a>&nbsp;

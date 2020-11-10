@@ -17,7 +17,6 @@ from .shared_calculated_properties import (
     CalculatedVisualize
 )
 
-# importing biosample function to allow calculation of experiment biosample property
 from .biosample import (
     construct_biosample_summary,
     generate_summary_dictionary
@@ -40,21 +39,24 @@ class Bioexperiment(Biodataset,
                     CalculatedVisualize):
     item_type = 'bioexperiment'
     schema = load_schema('encoded:schemas/bioexperiment.json')
-    # name_key = 'accession'
     embedded = Biodataset.embedded + [
         'award',
         'lab',
-        "submitted_by",  # link to User
-        'documents',  # link to Document
+        "submitted_by",
+        'documents',
         'bioreplicate',
         'bioreplicate.biolibrary',
         'bioreplicate.biolibrary.documents',
         'bioreplicate.biolibrary.biospecimen',
+        'bioreplicate.biolibrary.biospecimen.donor',
+        'bioreplicate.biolibrary.biospecimen.donor.organism',
         'bioreplicate.biolibrary.biospecimen.part_of',
+        'bioreplicate.biolibrary.biospecimen.part_of',
+        'bioreplicate.biolibrary.biospecimen.part_of.donor',
         'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',
         "references",
-        "files", # link to Publication
+        "files",
         "files.platform",
         'related_series',
 
@@ -202,11 +204,8 @@ class Bioexperiment(Biodataset,
             if 'biolibrary' in replicate_object and replicate_object['biolibrary']:
                 biolibraryObject = request.embed(replicate_object['biolibrary'], '@@object')
 
-                # biospecimen = request.select_distinct_values(
-                #     'biosample', *replicate_object['biolibrary']
-                # )
+
                 if 'biospecimen' in biolibraryObject:
-                    # for b in biospecimen:
                     biospecimen_object = request.embed(biolibraryObject['biospecimen'], '@@object')
                     biospecimen_donor_list.append(
                         biospecimen_object.get('donor')

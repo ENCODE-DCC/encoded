@@ -14,7 +14,7 @@ import * as globals from './globals';
 import { Attachment } from './image';
 import {
     BrowserSelector,
-    DisplayAsJson,BiosampleType,
+    DisplayAsJson, BiosampleType,
     requestSearch,
     DocTypeTitle,
     shadeOverflowOnScroll,
@@ -74,12 +74,10 @@ const datasetTypes = {
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
-const biodatasetTypes={
+const biodatasetTypes = {
     Biodataset: types.biodataset.title,
     Bioproject: types.bioproject.title,
     Bioreference: types.bioreference.title,
-
-
 
 }
 
@@ -560,7 +558,7 @@ class PatientComponent extends React.Component {
                     <div className="accession">
                         <a href={result['@id']}>
                             {`${result.accession}`}
-                            {hasAge &&`(${age}${ageUnit})`}
+                            {hasAge && `(${age}${ageUnit})`}
                         </a>
                     </div>
                     <div className="data-row">
@@ -815,42 +813,54 @@ Image.propTypes = {
 
 globals.listingViews.register(Image, 'Image');
 
-class BioexperimentComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        console.log('bioexperiment', result);
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
+
+
+const BioexperimentComponent = (props, reactContext) => {
+    const { cartControls } = props;
+    const result = props.context;
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Bioexperiment</p>
-                        <p className="type">{`${result.accession}`}</p>
-                        {/* <Status item={result.status} badgeSize="small" css="result-table__status"/> */}
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                            {`${result.accession}`}
-
+                            {result.assay_term_name ?
+                                <span>{result.assay_term_name}</span> : null
+                            }
                         </a>
                     </div>
-                    <div className="data-row">
-                        <div><strong>assay_term_name: </strong>{result.assay_term_name}</div>
-                        {/* <div><strong>Biospecimen: </strong>{result.biospecimen}</div> */}
-                    </div>
+                    <div><strong>Lab: </strong>{result.lab.title}</div>
+                    <div><strong>Project: </strong>{result.award.project}</div>
+                
+            </div>
+            {cartControls ?
+                <div className="result-item__cart-control">
+                    <CartToggle element={result} />
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+                : null}
+            </div>
+            { props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true }) }
+        </li >
+    );
+};
 
 BioexperimentComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Target search results
+    context: PropTypes.object.isRequired, // Experiment search results
+    cartControls: PropTypes.bool, // True if displayed in active cart
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired,
+};
+
+BioexperimentComponent.defaultProps = {
+    cartControls: false,
 };
 
 BioexperimentComponent.contextTypes = {
@@ -864,36 +874,15 @@ globals.listingViews.register(Bioexperiment, 'Bioexperiment');
 const BiodatasetComponent = (props, reactContext) => {
     const result = props.context;
     let biosampleTerm;
-    let organism;
-    // let lifeSpec;
-    // let targets;
-    // let lifeStages = [];
-    // let ages = [];
 
     // Determine whether the dataset is a series or not
     const seriesDataset = result['@type'].indexOf('Bioseries') >= 0;
 
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
-        biosampleTerm = (result.assay_term_name) ? result.assay_term_name :  '';
-        const organisms = (result.biospecimen_summary&& result.biospecimen_summary.length) ? _.uniq(result.biospecimen_summary.map(i => i.species)) : [];
-        if (organisms.length === 1) {
-            organism = organisms[0];
-        }
+        // biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
+        biosampleTerm = (result.biospecimen && Array.isArray(result.biospecimen) && result.biospecimen.length === 1 && result.biospecimen[0].sample_type) ? result.biospecimen[0].sample_type : ((result.biospecimen && result.biospecimen.sample_type) ? result.biospecimen.sample_type : '');
 
-        // Dig through the biosample life stages and ages
-        // if (result.related_datasets && result.related_datasets.length) {
-        //     result.related_datasets.forEach((biodataset) => {
-        //         if (biodataset.bioreplicate && biodataset.bioreplicate.length) {
-        //             biodataset.bioreplicate.forEach((bioreplicate) => {
-        //                 if (bioreplicate.biolibrary && bioreplicate.biolibrary.biospecimen) {
-        //                     const biosample = replicate.biolibrary.biospecimen;
-        //                 }
-        //             });
-        //         }
-        //     });
-           
-        // }
        
     }
 
@@ -917,17 +906,17 @@ const BiodatasetComponent = (props, reactContext) => {
                             {seriesDataset ?
                                 <span>
                                     {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
-               
+
                                 </span>
                                 :
                                 <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
                             }
                         </a>
                     </div>
-                    {/* <div className="data-row">
+                    <div className="data-row">
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
-                    </div> */}
+                    </div>
                 </div>
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
@@ -1610,7 +1599,7 @@ class Facet extends React.Component {
                             <div className="filter-hed">Selected filters:</div>
                             {selectedTerms.map(filter =>
                                 <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link">
-                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'}/> {filter.term}</div></a>
+                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'} /> {filter.term}</div></a>
                             )}
                         </div>
                         : null}

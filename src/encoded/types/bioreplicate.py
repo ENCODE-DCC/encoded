@@ -31,6 +31,8 @@ class Bioreplicate(Item):
         # 'bioexperiment'
         'biolibrary',
         'biolibrary.biospecimen',
+        "biolibrary.biospecimen.donor",
+        "biolibrary.biospecimen.donor.organism",
         'biofile'
 
     ]

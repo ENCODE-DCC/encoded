@@ -35,6 +35,8 @@ class Biospecimen(Item):
         'surgery.pathology_report',
         'surgery.surgery_procedure',
         'ihc',
+        'donor',
+        'donor.organism',
         'award',
         'documents'
     ]

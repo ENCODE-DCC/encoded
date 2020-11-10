@@ -88,9 +88,6 @@
         "assembly": {
             "title": "Genome assembly"
         },
-        "organism.scientific_name": {
-            "title": "Organism"
-        },
         "files.file_type": {
             "title": "Available file types"
         },
@@ -106,9 +103,7 @@
         "month_released": {
             "title": "Month released"
         },
-        "software_used.software.name": {
-            "title": "Software used"
-        },
+       
         "lab.title": {
             "title": "Lab"
         },

@@ -37,7 +37,7 @@ class BioreferenceComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-
+        console.log("referenceDoc",datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const filesetType = context['@type'][0];
@@ -96,19 +96,14 @@ class BioreferenceComponent extends React.Component {
                                         </div>
                                         : null}
 
-                                    {/* {context.biospeimen_summary[0].species ?
+                                    {context.organism ?
                                         <div data-test="organism">
                                             <dt>Organism</dt>
-                                            <dd>{context.biospecimen_summary[0].species}</dd>
+                                            <dd>{context.organism}</dd>
                                         </div>
-                                    : null} */}
+                                    : null}
 
-                                    {/* {context.software_used && context.software_used.length ?
-                                        <div data-test="softwareused">
-                                            <dt>Software used</dt>
-                                            <dd>{softwareVersionList(context.software_used)}</dd>
-                                        </div>
-                                    : null} */}
+                                   
                                 </dl>
                             </div>
 
@@ -166,8 +161,8 @@ class BioreferenceComponent extends React.Component {
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {datasetDocuments.length>0?<DocumentsPanelReq documents={datasetDocuments} />:null}
 
-                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
         );
     }
@@ -202,8 +197,7 @@ class BioprojectComponent extends React.Component {
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
-        // Collect organisms
-        // const organisms = (context.bispecimen_summary[0].species && context.biospecimen_summary[0].species.length) ? _.uniq(context.biospecimen_summary[0].species) : [];
+        
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -225,9 +219,7 @@ class BioprojectComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for project file set {context.accession}</h2>
-                        {/* <div className="replacement-accessions">
-                            <AlternateAccession altAcc={context.alternate_accessions} />
-                        </div> */}
+                        
                         {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
@@ -269,30 +261,12 @@ class BioprojectComponent extends React.Component {
                                             <dd className="sentence-case">{context.project_type}</dd>
                                         </div>
                                         : null}
-
-                                    {/* {context.biospecimen_summary[0].tissue_type ?
-                                        <div data-test="biosampletype">
-                                            <dt>Biosample type</dt>
-                                            <dd>{(context.biospecimen_summary[0].tissue_type)}</dd>
-                                            {/* need to test */}
-                                    {/* </div> */}
-                                    {/* : null} */}
-
                                     {context.assay_term_name ?
                                         <div data-test="assay_term_name">
                                             <dt>Biospecimen term name </dt>
                                             <dd>{_.uniq(context.assay_term_name)}</dd>
                                         </div>
                                         : null}
-
-                                    {/* {organisms.length ?
-                                        <div data-test="organism">
-                                            <dt>Organism</dt>
-                                            <dd>{organisms.join(', ')}</dd>
-                                        </div>
-                                    : null} */}
-
-
                                 </dl>
                             </div>
 
@@ -344,8 +318,8 @@ class BioprojectComponent extends React.Component {
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {datasetDocuments.length>0?<DocumentsPanelReq documents={datasetDocuments} />:null}
 
-                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
         );
     }
@@ -439,10 +413,6 @@ const basicTableColumns = {
         title: 'Assay',
     },
 
-    // target: {
-    //     title: 'Target',
-    //     getValue: experiment => (experiment.target ? experiment.target.label : null),
-    // },
 
     description: {
         title: 'Description',
@@ -472,7 +442,6 @@ const seriesComponents = {
     BioexperimentSeries: { title: 'bioexperiment series', table: basicTableColumns },
 
     MatchedSet: { title: 'matched set series', table: basicTableColumns },
-    // OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
     ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
 };
 
@@ -494,7 +463,6 @@ export class BioseriesComponent extends React.Component {
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-        console.log("datasetDoc", datasetDocuments);
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
         const seriesType = context['@type'][0];
@@ -513,22 +481,6 @@ export class BioseriesComponent extends React.Component {
         const seriesComponent = seriesComponents[seriesType];
         const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
-        // Calculate the biosample summary
-        // let speciesRender = null;
-        // if (context.organism && context.organism.length) {
-        //     const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
-        //     speciesRender = (
-        //         <span>
-        //             {speciesList.map((species, i) =>
-        //                 <span key={i}>
-        //                     {i > 0 ? <span> and </span> : null}
-        //                     <i>{species}</i>
-        //                 </span>
-        //             )}
-        //         </span>
-        //     );
-        // }
-        const terms = (context.assay_term_name) ? _.uniq(context.assay_term_name) : [];
 
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);
@@ -590,15 +542,7 @@ export class BioseriesComponent extends React.Component {
                                         </div>
                                         : null}
 
-                                    {/* {terms.length || speciesRender ?
-                                        <div data-test="biosamplesummary">
-                                            <dt>Biosample summary</dt>
-                                            <dd>
-                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
-                                                {speciesRender ? <span>({speciesRender})</span> : null}
-                                            </dd>
-                                        </div>
-                                    : null} */}
+                                   
                                 </dl>
                             </div>
 
@@ -685,8 +629,8 @@ export class BioseriesComponent extends React.Component {
                 />
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
+                {datasetDocuments.length>0?<DocumentsPanelReq documents={datasetDocuments} />:null}
 
-                {/* <DocumentsPanelReq documents={datasetDocuments} /> */}
             </div>
         );
     }
