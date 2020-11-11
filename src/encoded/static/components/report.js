@@ -200,80 +200,52 @@ ReportDataRegistry.register({ field: 'href', type: 'File' }, FileDownloadHref);
 
 
 /**
- * Extract the value of an object property based on a dotted-notation field,
- * e.g. { a: 1, b: { c: 5 }} you could retrieve the 5 by passing 'b.c' in `field`. Cannot use the
- * simple one in the cart code as this one has to handle more complicated objects in a way that
- * works for reports.
- * Based on https://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference#answer-6394168
- * @param {object} object Object containing the value you want to extract.
- * @param {string} field  Dotted notation for the property to extract.
- *
- * @return {value} Whatever value the dotted notation specifies, or undefined.
+ * Get the property specified by a field from the search results and return a string from that.
  */
-const getObjectPropValue = (object, field) => {
-    let rawValue;
+const lookupColumn = (result, column) => {
+    let nodes = [result];
+    const names = column.split('.');
 
-    // Break the specified property into its dot-separated components.
-    const propNameParts = field.split('.');
-    if (propNameParts.length > 1) {
-        // Extract from an embedded array or object. Use the property name parts to drill into
-        // `object`.
-        rawValue = propNameParts.reduce((extractedObject, propNamePart) => {
-            if (extractedObject && Array.isArray(extractedObject)) {
-                // Get the requested property out of each of the objects within the extracted array.
-                return extractedObject.map(partObjectElement => partObjectElement[propNamePart] || '');
-            }
-
-            // The requested property has a primitive type or an object.
-            return extractedObject && extractedObject[propNamePart];
-        }, object);
-    } else {
-        // Extract a top-level property.
-        rawValue = object[field];
-    }
-
-    return rawValue;
-};
-
-
-/**
- * Reduces an array, object, or array of objects into something generically displayable.
- * @param {value,object,array} rawValue Value to reduce to a displayable form.
- */
-const reduceComplexValue = (rawValue) => {
-    let result = rawValue;
-    if (typeof rawValue === 'object') {
-        if (Array.isArray(rawValue)) {
-            // Flatten and dedupe arrays.
-            const flattenedValue = _.chain(rawValue)
-                .flatten()
-                .uniq()
-                .value();
-
-            // Take care of arrays by concatenating their elements into one string.
-            result = flattenedValue.map((item) => {
-                if (typeof item === 'object') {
-                    // The array contains objects. If each object has an @id, display that.
-                    if (item['@id']) {
-                        return item['@id'];
-                    }
-
-                    // Objects don't contain an @id, so display a stringified object.
-                    return JSON.stringify(item);
-                }
-
-                // Item has a simple value.
-                return item;
-            }).join(', ');
-        } else if (rawValue['@id']) {
-            // For objects with @ids, just display the @id of that object.
-            result = rawValue['@id'];
-        } else {
-            // For objects without @ids, stringify the object.
-            result = JSON.stringify(rawValue);
+    // Get the column's custom display function and call it if it exists
+    const colViewer = globals.reportCell.lookup(result, column);
+    if (colViewer) {
+        const colViewResult = colViewer(result, column);
+        if (colViewResult) {
+            return <div>{colViewResult}</div>;
         }
     }
-    return result;
+
+    for (let i = 0, len = names.length; i < len && nodes.length > 0; i += 1) {
+        let nextnodes = [];
+        _.each(nodes.map(node => node[names[i]]), (v) => {
+            if (v === undefined) return;
+            if (Array.isArray(v)) {
+                nextnodes = nextnodes.concat(v);
+            } else {
+                nextnodes.push(v);
+            }
+        });
+        if (names[i + 1] === 'length' || names[i + 1] === 'uuid') {
+            // Displaying the length of an array. That's not a property of each array element so we
+            // can't get it that way. Just return the length of the array.
+            nodes = [nextnodes.length];
+            break;
+        } else {
+            // Moving on to the next node defined by the `names` array.
+            nodes = nextnodes;
+        }
+    }
+    // if we ended with an embedded object, show the @id
+    if (nodes.length > 0 && nodes[0]['@id'] !== undefined) {
+        nodes = nodes.map(node => node['@id']);
+    }
+
+    // Stringify any nodes that are objects or arrays. Objects and arrays have typeof `object`.
+    if (nodes.length > 0) {
+        nodes = nodes.map(item => (typeof item === 'object' ? JSON.stringify(item) : item));
+    }
+
+    return _.uniq(nodes).join(', ');
 };
 
 
@@ -359,9 +331,12 @@ const ReportHeader = ({ context, allColumns, visibleFields, tableRef }) => {
                         title = allColumns[field];
                     } else if (context.columns[field]) {
                         title = context.columns[field].title;
-                    } else {
-                        // Display no title until `allColumns` eventually loads.
-                        title = '';
+                    }
+
+                    // No title available because allColumns not loaded or no column defined in
+                    // schema (might be calculated property), then use field as title.
+                    if (!title) {
+                        title = field;
                     }
 
                     // Generate a sorting href for this column header.
@@ -426,7 +401,7 @@ const ReportData = ({ context, visibleFields, type }) => (
                 {visibleFields.map((field) => {
                     // Get the value of the property in `item` and see if the current field and
                     // type have a registered renderer.
-                    const value = getObjectPropValue(item, field);
+                    const value = lookupColumn(item, field, type);
                     const ReportCellRenderer = ReportDataRegistry.lookup(field, type);
                     if (ReportCellRenderer) {
                         // Registered renderer available, so use that to render the value of the
@@ -440,10 +415,9 @@ const ReportData = ({ context, visibleFields, type }) => (
 
                     // No registered renderer. Convert any complex values to a displayable string
                     // and display that.
-                    const reducedValue = reduceComplexValue(value);
                     return (
                         <td key={field}>
-                            {reducedValue}
+                            {value}
                         </td>
                     );
                 })}
