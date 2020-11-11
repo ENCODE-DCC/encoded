@@ -1251,27 +1251,21 @@ def check_experiment_long_rna_standards(experiment,
 
     if 'replication_type' not in experiment:
         return
-
     if experiment['assay_term_name'] != 'single-cell RNA sequencing assay':
         mad_metrics = get_metrics(gene_quantifications,
                                   'MadQualityMetric',
                                   desired_assembly,
                                   desired_annotation)
         replicates = experiment.get('replicates')
-
         if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
             yield from check_spearman_technical_replicates(
                 mad_metrics, pipeline_title, 0.9)
-
             return
-
         else:
             yield from check_spearman(
                 mad_metrics, experiment['replication_type'],
                 0.9, 0.8, pipeline_title)
-
             return
-
     return
 
 
