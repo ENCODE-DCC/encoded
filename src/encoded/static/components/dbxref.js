@@ -62,6 +62,9 @@ export const dbxrefPrefixMap = {
     UniProtKB: {
         pattern: 'http://www.uniprot.org/uniprot/{0}',
     },
+    BioProject: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/bioproject/{0}',
+    },
     HGNC: {
         pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
         preprocessor: (context) => {
