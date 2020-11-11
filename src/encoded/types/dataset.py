@@ -701,6 +701,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.library.biosample.organism',
         'related_datasets.replicates.library.biosample.donor.organism',
         'related_datasets.replicates.library.biosample.treatments',
+        'related_datasets.replicates.library.biosample.applied_modifications',
         'related_datasets.replicates.library.spikeins_used',
         'related_datasets.replicates.library.treatments',
         'related_datasets.replicates.libraries',
@@ -709,9 +710,9 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.libraries.biosample.organism',
         'related_datasets.replicates.libraries.biosample.donor.organism',
         'related_datasets.replicates.libraries.biosample.treatments',
+        'related_datasets.replicates.libraries.biosample.applied_modifications',
         'related_datasets.replicates.libraries.spikeins_used',
         'related_datasets.replicates.libraries.treatments',
-        'related_datasets.replicates.libraries.biosample.applied_modifications',
         'related_datasets.possible_controls',
         'related_datasets.possible_controls.lab',
         'related_datasets.target.organism',
@@ -854,6 +855,29 @@ class ReplicationTimingSeries(Series):
     item_type = 'replication_timing_series'
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded
+
+    @calculated_property(define=True, schema={
+        "title": "Cell cycle phases",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def cell_cycle_phases(self, request, related_datasets, status):
+        phases = set()
+        if related_datasets is not None:
+            for dataset in related_datasets:
+                properties = request.embed(dataset, '@@object')
+                if properties['status'] not in ('deleted', 'revoked'):
+                    for replicate in properties['replicates']:
+                        replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object?skip_calculated=true')
+                                if 'phase' in biosampleObject:
+                                    phases.add(biosampleObject['phase'])
+            return sorted(list(phases))
 
 
 @collection(
