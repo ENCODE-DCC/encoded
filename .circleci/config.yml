@@ -7,7 +7,7 @@ executors:
   encoded-executor:
     docker:
       - image: circleci/buildpack-deps:bionic
-    working_directory: /mnt/ramdisk
+    working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
       - ES_JAVA_OPTS: -Xms2g -Xmx3g
