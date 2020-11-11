@@ -322,7 +322,7 @@ $form-bg: #f3f3f3;
 
     // /report/ pagination controls
     @at-root #{&}__pager {
-        margin-bottom: 10px;
+        margin-bottom: 20px;
 
         @media screen and (min-width: $screen-lg-min) {
             display: flex;

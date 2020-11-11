@@ -12,16 +12,21 @@
         }
 
         thead {
-            background-color: #f5f5f5;
+            background-color: #e0e0e0;
 
             th {
-                padding: 5px;
-                border-left: 1px solid #e0e0e0;
+                padding: 0;
+                border-left: 1px solid #a0a0a0;
                 text-align: left;
 
                 a {
+                    padding: 10px 5px;
                     color: #000;
                     text-decoration: none;
+                }
+
+                .icon {
+                    margin-left: 5px;
                 }
 
                 &:first-child {
@@ -107,30 +112,6 @@
     }
 }
 
-
-.report__table {
-    .table {
-        height: 1px; // Allow cell <div>s to have cell full height
-
-        thead {
-            background-color: #f5f5f5;
-
-            tr {
-                height: 1px; // Allow cell <div>s to have cell full height
-
-                th, td {
-                    padding: 0;
-                }
-
-                th {
-                    .icon {
-                        margin-left: 5px;
-                    }
-                }
-            }
-        }
-    }
-}
 
 .report-header-cell {
     display: flex;
