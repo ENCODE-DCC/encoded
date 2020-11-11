@@ -1322,6 +1322,7 @@ def check_experiment_small_rna_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
+
     yield from check_spearman(
         mad_metrics, experiment['replication_type'],
         0.9, 0.8, 'Small RNA-seq single-end pipeline')
@@ -1383,7 +1384,6 @@ def check_experiment_cage_rampage_standards(experiment,
     yield from check_spearman(
         mad_metrics, experiment['replication_type'],
         0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
-
     return
 
 
