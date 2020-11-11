@@ -100,8 +100,10 @@ const Tooltip = (props) => {
                 positionTooltip();
             }, 400);
         } else {
-            setVisibility(placeholder);
-            positionTooltip();
+            timeoutRef.current = setTimeout(() => {
+                setVisibility(placeholder);
+                positionTooltip();
+            }, 200);
         }
     }, [eType, placeholder, positionTooltip, timerFlag, visibility]);
 
