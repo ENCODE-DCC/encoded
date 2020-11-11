@@ -1116,18 +1116,9 @@ def test_audit_experiment_small_rna_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    res_errors = collect_audit_errors(res)
     assert any(error['category'] ==
-               'low read depth' for error in res_errors)
-    assert any(error['category'] ==
-               'low replicate concordance' for error in res_errors)
+               'low read depth' for error in collect_audit_errors(res))
 
-    testapp.patch_json(replicate_2_1['@id'], {'biological_replicate_number': 1,
-                                              'technical_replicate_number': 2})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'low replicate concordance'
-               and 'comparing technical replicates' in error['detail']
-               for error in collect_audit_errors(res))
 
 def test_audit_experiment_MAD_long_rna_standards(testapp,
                                                  base_experiment,
@@ -1183,6 +1174,14 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'low replicate concordance' for error in collect_audit_errors(res))
+
+
+    testapp.patch_json(replicate_2_1['@id'], {'biological_replicate_number': 1,
+                                              'technical_replicate_number': 2})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'low replicate concordance'
+               and 'comparing technical replicates' in error['detail']
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
@@ -1432,13 +1431,7 @@ def test_audit_experiment_long_read_rna_standards(
             error['category'] == audit for error in errors
         )
 
-    testapp.patch_json(replicate_2_1['@id'], {'biological_replicate_number': 1,
-                                              'technical_replicate_number': 2})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'low replicate concordance'
-               and 'comparing technical replicates' in error['detail']
-               for error in collect_audit_errors(res))
- 
+
 def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol(testapp,
                                                    experiment_chip_H3K27me3,
                                                    experiment_mint_chip,

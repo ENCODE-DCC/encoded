@@ -1011,7 +1011,6 @@ def check_experiment_rna_seq_standards(value,
             transcript_quantifications,
             desired_assembly,
             desired_annotation,
-            pipeline_title,
             upper_limit_flnc=600000,
             lower_limit_flnc=400000,
             upper_limit_mapping_rate=0.9,
@@ -1273,10 +1272,6 @@ def check_experiment_long_rna_standards(experiment,
 
             return
 
-    # for failure in check_mad(mad_metrics, experiment['replication_type'],
-    #                         0.2, pipeline_title):
-    #    yield failure
-
     return
 
 
@@ -1327,21 +1322,11 @@ def check_experiment_small_rna_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-    replicates = experiment.get('replicates')
+    yield from check_spearman(
+         mad_metrics, experiment['replication_type'],
+         0.9, 0.8, 'Small RNA-seq single-end pipeline')
 
-    if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
-        yield from check_spearman_technical_replicates(
-            mad_metrics, 'Small RNA-seq single-end pipeline',
-            0.9)
-
-        return
-
-    else:
-        yield from check_spearman(
-            mad_metrics, experiment['replication_type'],
-            0.9, 0.8, 'Small RNA-seq single-end pipeline')
-
-        return
+    return
 
 
 def check_experiment_cage_rampage_standards(experiment,
@@ -1395,20 +1380,12 @@ def check_experiment_cage_rampage_standards(experiment,
                               'MadQualityMetric',
                               desired_assembly,
                               desired_annotation)
-    replicates = experiment.get('replicates')
 
-    if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
-        yield from check_spearman_technical_replicates(
-            mad_metrics, 'RAMPAGE (paired-end, stranded)', 0.9)
+    yield from check_spearman(
+        mad_metrics, experiment['replication_type'],
+        0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
 
-        return
-
-    else:
-        yield from check_spearman(
-            mad_metrics, experiment['replication_type'],
-            0.9, 0.8, 'RAMPAGE (paired-end, stranded)')
-
-        return
+    return
 
 
 def check_experiment_micro_rna_standards(
@@ -1452,22 +1429,14 @@ def check_experiment_micro_rna_standards(
         desired_assembly,
         desired_annotation,
     )
-    replication_type = experiment.get('replication_type')
     # Audit Spearman correlations
-    if replication_type == 'unreplicated' and len(experiment['replicates']) > 1:
-        yield from check_spearman_technical_replicates(
-            correlation_metrics,
-            pipeline_title,
-            upper_limit_spearman
-            )
-    else:
-        yield from check_replicate_metric_dual_threshold(
-            correlation_metrics,
-            metric_name='Spearman correlation',
-            audit_name='replicate concordance',
-            upper_limit=upper_limit_spearman,
-            lower_limit=lower_limit_spearman,
-        )
+    yield from check_replicate_metric_dual_threshold(
+        correlation_metrics,
+        metric_name='Spearman correlation',
+        audit_name='replicate concordance',
+        upper_limit=upper_limit_spearman,
+        lower_limit=lower_limit_spearman,
+    )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
         alignment_metrics,
@@ -1493,7 +1462,6 @@ def check_experiment_long_read_rna_standards(
     transcript_quantifications,
     desired_assembly,
     desired_annotation,
-    pipeline_title,
     upper_limit_flnc,
     lower_limit_flnc,
     upper_limit_mapping_rate,
@@ -1501,7 +1469,7 @@ def check_experiment_long_read_rna_standards(
     upper_limit_spearman,
     lower_limit_spearman,
     upper_limit_genes_detected,
-    lower_limit_genes_detected
+    lower_limit_genes_detected,
 ):
     # Gather metrics
     quantification_metrics = get_metrics(
@@ -1522,22 +1490,14 @@ def check_experiment_long_read_rna_standards(
         desired_assembly,
         desired_annotation,
     )
-    replication_type = experiment.get('replication_type')
     # Audit Spearman correlations
-    if replication_type == 'unreplicated' and len(experiment['replicates']) > 1:
-        yield from check_spearman_technical_replicates(
-            correlation_metrics,
-            pipeline_title,
-            upper_limit_spearman
-            )
-    else:
-        yield from check_replicate_metric_dual_threshold(
-            correlation_metrics,
-            metric_name='Spearman correlation',
-            audit_name='replicate concordance',
-            upper_limit=upper_limit_spearman,
-            lower_limit=lower_limit_spearman,
-        )
+    yield from check_replicate_metric_dual_threshold(
+        correlation_metrics,
+        metric_name='Spearman correlation',
+        audit_name='replicate concordance',
+        upper_limit=upper_limit_spearman,
+        lower_limit=lower_limit_spearman,
+    )
     # Audit flnc read counts
     yield from check_replicate_metric_dual_threshold(
         unfiltered_alignment_metrics,
@@ -1654,64 +1614,6 @@ def check_idr(metrics, rescue, self_consistency):
                 )
                 yield AuditFailure('borderline replicate concordance', detail,
                                    level='WARNING')
-    return
-
-
-def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type == 'anisogenic':
-        experiment_replication_type = 'anisogenic'
-    elif replication_type == 'isogenic':
-        experiment_replication_type = 'isogenic'
-    else:
-        return
-
-    mad_value = None
-    for m in metrics:
-        if 'MAD of log ratios' in m:
-            mad_value = m['MAD of log ratios']
-            if mad_value > 0.2:
-                file_list = []
-                for f in m['quality_metric_of']:
-                    file_list.append(f['@id'])
-                file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('ENCODE processed gene quantification files {} '
-                    'has Median-Average-Deviation (MAD) '
-                    'of replicate log ratios from quantification '
-                    'value of {}.'
-                    ' For gene quantification files from an {}'
-                    ' assay in the {} '
-                    'pipeline, a value <0.2 is recommended, but a value between '
-                    '0.2 and 0.5 is acceptable.'.format(
-                        ', '.join(file_names_links),
-                        mad_value,
-                        experiment_replication_type,
-                        pipeline
-                    )
-                )
-                if experiment_replication_type == 'isogenic':
-                    if mad_value < 0.5:
-                        yield AuditFailure('low replicate concordance', detail,
-                                           level='WARNING')
-                    else:
-                        yield AuditFailure('insufficient replicate concordance', detail,
-                                           level='NOT_COMPLIANT')
-                elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('ENCODE processed gene quantification files {} '
-                        'has Median-Average-Deviation (MAD) '
-                        'of replicate log ratios from quantification '
-                        'value of {}.'
-                        ' For gene quantification files from an {}'
-                        ' assay in the {} '
-                        'pipeline, a value <0.5 is recommended.'.format(
-                            ', '.join(file_names_links),
-                            mad_value,
-                            experiment_replication_type,
-                            pipeline
-                        )
-                    )
-                    yield AuditFailure('low replicate concordance', detail,
-                                       level='WARNING')
     return
 
 
