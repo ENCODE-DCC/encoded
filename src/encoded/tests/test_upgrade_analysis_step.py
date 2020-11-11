@@ -79,3 +79,12 @@ def test_analysis_step_10_11(upgrader, analysis_step_11):
     assert value['schema_version'] == '12'
     assert 'smoothed methylation state at CpG' in value['input_file_types']
     assert 'smoothed methylation state at CpG' in value['output_file_types']
+
+
+def test_analysis_step_12_13(upgrader, analysis_step_12):
+    value = upgrader.upgrade('analysis_step', analysis_step_12, current_version='12', target_version='13')
+    assert value['schema_version'] == '13'
+    assert 'consensus DNase hypersensitivity sites (cDHSs)' not in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' not in value['output_file_types']
+    assert 'consensus DNase hypersensitivity sites' in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites' in value['output_file_types']

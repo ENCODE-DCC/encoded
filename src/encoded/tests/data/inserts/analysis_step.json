@@ -404,11 +404,11 @@
         "date_created": "2020-01-16T15:56:52.458705+00:00",
         "input_file_types": [
             "reads",
-            "consensus DNase hypersensitivity sites (cDHSs)"
+            "consensus DNase hypersensitivity sites"
         ],
         "major_version": 1,
         "output_file_types": [
-            "consensus DNase hypersensitivity sites (cDHSs)"
+            "consensus DNase hypersensitivity sites"
         ],
         "status": "released",
         "step_label": "cdhss-step",

@@ -526,10 +526,10 @@ class Annotation(FileSet, CalculatedVisualize):
                                     derived_from_file_embedded = request.embed(derived_from_file,
                                                                                '@@object?skip_calculated=true')
                                     if derived_from_file_embedded['output_type'] == \
-                                            'representative DNase hypersensitivity sites (rDHSs)':
+                                            'representative DNase hypersensitivity sites':
                                         inputs_set.add('rDHS')
                                     if derived_from_file_embedded['output_type'] == \
-                                            'consensus DNase hypersensitivity sites (cDHSs)':
+                                            'consensus DNase hypersensitivity sites':
                                         inputs_set.add('cDHS')
                         else:
                             if file['dataset']:
