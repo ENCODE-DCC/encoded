@@ -53,29 +53,6 @@ def calculate_assembly(request, files_list, status):
     return list(assembly)
 
 
-def calculate_series_units(request, related_datasets, unit_property_name, property_location):
-    units = set()
-    for dataset in related_datasets:
-        properties = request.embed(dataset, '@@object')
-        for replicate in properties['replicates']:
-            replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
-            if 'library' in replicateObject:
-                libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                if 'biosample' in libraryObject:
-                    biosampleObject = request.embed(libraryObject['biosample'], '@@object?skip_calculated=true')
-                    if property_location == 'biosample':
-                        units.add(biosampleObject[unit_property_name])
-                        continue
-                    if property_location == 'treatment' and 'treatments' in biosampleObject:
-                        for treatment in biosampleObject['treatments']:
-                            treatmentObject = request.embed(treatment, '@@object?skip_calculated=true')
-                            units.add(treatmentObject[unit_property_name])
-    if len(units) == 1:
-        return next(iter(units))
-    else:
-        return None
-
-
 @abstract_collection(
     name='datasets',
     unique_key='accession',
@@ -839,35 +816,6 @@ class TreatmentTimeSeries(Series):
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded
 
-    @calculated_property(define=True, schema={
-        "title": "Treatment duration unit",
-        "type": "string"
-    })
-    def treatment_duration_unit(self, request, related_datasets, status):
-        return calculate_series_units(request, related_datasets, 'duration_units', 'treatment')
-
-
-    @calculated_property(define=True, schema={
-        "title": "Treatment duration range",
-        "type": "string"
-    })
-    def treatment_duration_range(self, request, related_datasets, status):
-        durations = []
-        if calculate_series_units(request, related_datasets, 'duration_units', 'treatment') is not None:
-            for dataset in related_datasets:
-                properties = request.embed(dataset, '@@object')
-                for replicate in properties['replicates']:
-                    replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
-                    if 'library' in replicateObject:
-                        libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                        if 'biosample' in libraryObject:
-                            biosampleObject = request.embed(libraryObject['biosample'], '@@object?skip_calculated=true')
-                            if 'treatments' in biosampleObject:
-                                for treatment in biosampleObject['treatments']:
-                                    treatmentObject = request.embed(treatment, '@@object?skip_calculated=true')
-                                    durations.append(treatmentObject['duration'])
-            return sorted(durations)
-
 
 @collection(
     name='treatment-concentration-series',
@@ -881,34 +829,6 @@ class TreatmentConcentrationSeries(Series):
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded
 
-    @calculated_property(define=True, schema={
-        "title": "Treatment concentration unit",
-        "type": "string"
-    })
-    def treatment_concentration_unit(self, request, related_datasets, status):
-        return calculate_series_units(request, related_datasets, 'amount_units', 'treatment')
-
-
-    @calculated_property(define=True, schema={
-        "title": "Treatment concentration range",
-        "type": "string"
-    })
-    def treatment_concentration_range(self, request, related_datasets, status):
-        concentrations = []
-        if calculate_series_units(request, related_datasets, 'amount_units', 'treatment') is not None:
-            for dataset in related_datasets:
-                properties = request.embed(dataset, '@@object')
-                for replicate in properties['replicates']:
-                    replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
-                    if 'library' in replicateObject:
-                        libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                        if 'biosample' in libraryObject:
-                            biosampleObject = request.embed(libraryObject['biosample'], '@@object?skip_calculated=true')
-                            if 'treatments' in biosampleObject:
-                                for treatment in biosampleObject['treatments']:
-                                    treatmentObject = request.embed(treatment, '@@object?skip_calculated=true')
-                                    concentrations.append(treatmentObject['amount'])
-            return sorted(concentrations)
 
 @collection(
     name='organism-development-series',
