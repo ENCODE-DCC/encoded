@@ -1,6 +1,6 @@
 {
     "title": "Treatment time series",
-    "description": "Schema for submitting metadata for a treatment time series.",
+    "description": "Experimental data investigating the effects of treatment application at varying durations.",
     "id": "/profiles/treatment_time_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -65,8 +65,14 @@
         "target.investigated_as": {
             "title": "Target category"
         },
+        "target.label": {
+            "title": "Target of assay"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -82,27 +88,6 @@
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
-        },
-        "related_datsets.files.run_type": {
-            "title": "Run type"
-        },
-        "related_datasets.files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "related_datasets.files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library fragment size (nt)"
-        },
-        "related_datasets.replicates.library.nucleic_acid_term_name": {
-            "title": "Library material"
-        },
-        "related_datasets.replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in"
-        },
-        "related_datasets.replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
         },
         "lab.title": {
             "title": "Lab"
