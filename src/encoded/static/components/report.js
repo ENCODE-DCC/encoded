@@ -174,11 +174,16 @@ ReportDataRegistry.register({ field: 'download_url', type: 'Image' }, ImageDownl
  * `files` renderer for type=Experiment. Displays a comma separated list of accessions that link to
  * the corresponding file page.
  */
-const ExperimentFilesRenderer = ({ value }) => {
-    if (value && typeof value === 'object' && Array.isArray(value) && value.length > 0) {
-        return value.map(file => <a key={file} href={file}>{globals.atIdToAccession(file)}</a>).reduce((prev, curr) => [prev, ', ', curr]);
+const ExperimentFilesRenderer = ({ item }) => {
+    if (item.files && item.files.length > 0) {
+        return item.files.map(file => <a key={file['@id']} href={file['@id']}>{globals.atIdToAccession(file['@id'])}</a>).reduce((prev, curr) => [prev, ', ', curr]);
     }
     return null;
+};
+
+ExperimentFilesRenderer.propTypes = {
+    /** Object (row) currently rendered */
+    item: PropTypes.object.isRequired,
 };
 
 ReportDataRegistry.register({ field: 'files.@id', type: 'Experiment' }, ExperimentFilesRenderer);
@@ -486,7 +491,7 @@ ColumnSelectorControls.propTypes = {
  *
  * @return (array) - List of column paths, optionally sorted.
  */
-function getColumnFields(columns, sorted) {
+const getColumnFields = (columns, sorted) => {
     const columnPaths = Object.keys(columns);
     if (sorted) {
         columnPaths.sort((aKey, bKey) => {
@@ -496,7 +501,24 @@ function getColumnFields(columns, sorted) {
         });
     }
     return columnPaths;
-}
+};
+
+
+/**
+ * Get any fields not in the schema for the displayed type, typically calculated fields.
+ * @param {object} allColumns Fields mapping to titles
+ * @param {array} visibleFields Fields included in the report query string
+ *
+ * @return {array} sorted array of fields not included in the schema
+ */
+const getExtraFields = (allColumns, visibleFields) => {
+    const schemaFields = Object.keys(allColumns);
+    const extraFields = visibleFields.filter(visibleField => !schemaFields.includes(visibleField));
+    if (extraFields.length > 0) {
+        return _.sortBy(extraFields);
+    }
+    return [];
+};
 
 
 /**
@@ -510,7 +532,7 @@ const ColumnItem = ({ field, title, selected, toggleColumn }) => {
     return (
         <div className="column-selector__selector-item">
             <input id={field} type="checkbox" onChange={handleChange} checked={selected} />
-            <label htmlFor={field}>{title}</label>
+            <label htmlFor={field}>{title || field}</label>
         </div>
     );
 };
@@ -519,11 +541,15 @@ ColumnItem.propTypes = {
     /** encoded field name for the column */
     field: PropTypes.string.isRequired,
     /** Title for the checkbox; same as column header title */
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     /** True for selected columns; i.e. checked checkboxes */
     selected: PropTypes.bool.isRequired,
     /** Parent function to call when item is clicked */
     toggleColumn: PropTypes.func.isRequired,
+};
+
+ColumnItem.defaultProps = {
+    title: null,
 };
 
 
@@ -540,6 +566,7 @@ const ColumnSelector = ({ allColumns, visibleFields, setVisibleFields, closeSele
     // Get all the the column field names, sorting them by the corresponding column title if the
     // user asked for that.
     const columnFields = getColumnFields(allColumns, sorted === 'alpha');
+    const extraFields = getExtraFields(allColumns, visibleFields);
 
     const toggleColumn = (clickedField) => {
         let updatedColumns;
@@ -600,6 +627,9 @@ const ColumnSelector = ({ allColumns, visibleFields, setVisibleFields, closeSele
             <ModalBody>
                 <div className="column-selector__selectors">
                     {columnFields.map(field => <ColumnItem key={field} field={field} title={allColumns[field]} selected={selectedFields.includes(field)} toggleColumn={toggleColumn} />)}
+                </div>
+                <div className="column-selector__selectors column-selector__selectors--extra">
+                    {extraFields.map(field => <ColumnItem key={field} field={field} selected={selectedFields.includes(field)} toggleColumn={toggleColumn} />)}
                 </div>
             </ModalBody>
             <ModalFooter
