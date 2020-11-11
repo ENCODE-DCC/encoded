@@ -8,8 +8,6 @@
 - ssl-cert
 - libapache2-mod-wsgi-py3
 - w3m
-## ckeditor
-- bsdtar
 ## Pillow
 - libjpeg8-dev
 - zlib1g-dev
