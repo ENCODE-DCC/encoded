@@ -211,15 +211,6 @@ const lookupColumn = (result, column) => {
     let nodes = [result];
     const names = column.split('.');
 
-    // Get the column's custom display function and call it if it exists
-    const colViewer = globals.reportCell.lookup(result, column);
-    if (colViewer) {
-        const colViewResult = colViewer(result, column);
-        if (colViewResult) {
-            return <div>{colViewResult}</div>;
-        }
-    }
-
     for (let i = 0, len = names.length; i < len && nodes.length > 0; i += 1) {
         let nextnodes = [];
         _.each(nodes.map(node => node[names[i]]), (v) => {
