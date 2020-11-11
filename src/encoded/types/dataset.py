@@ -843,6 +843,61 @@ class OrganismDevelopmentSeries(Series):
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded
 
+    @calculated_property(define=True, schema={
+        "title": "Biosamples age unit",
+        "type": "string"
+    })
+    def biosamples_age_unit(self, request, related_datasets, status):
+        return calculate_series_units(request, related_datasets, 'age_units', 'biosample')
+
+
+    @calculated_property(define=True, schema={
+        "title": "Biosamples ages",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def biosamples_ages(self, request, related_datasets, status, biosamples_age_unit):
+        ages = set()
+        if related_datasets and biosamples_age_unit is not None:
+            for dataset in related_datasets:
+                properties = request.embed(dataset, '@@object')
+                if properties['status'] not in ('deleted', 'revoked'):
+                    for replicate in properties['replicates']:
+                        replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if 'age' in biosampleObject:
+                                    ages.add(biosampleObject['age'])
+            return sorted(list(ages))
+
+
+    @calculated_property(define=True, schema={
+        "title": "Biosamples life stages",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def biosamples_life_stages(self, request, related_datasets, status):
+        stages = set()
+        if related_datasets is not None:
+            for dataset in related_datasets:
+                properties = request.embed(dataset, '@@object')
+                if properties['status'] not in ('deleted', 'revoked'):
+                    for replicate in properties['replicates']:
+                        replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
+                        if 'library' in replicateObject:
+                            libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
+                            if 'biosample' in libraryObject:
+                                biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                                if 'life_stage' in biosampleObject:
+                                    stages.add(biosampleObject['life_stage'])
+            return sorted(list(stages))
+
 
 @collection(
     name='replication-timing-series',

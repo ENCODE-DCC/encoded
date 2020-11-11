@@ -1,5 +1,9 @@
 ## Changelog for organism_development_series.json
 
+### Minor changes since schema version 17
+
+* Added *biosamples_ages*, *biosamples_age_unit*, and *biosamples_life_stages* calculated properties.
+
 ### Schema version 17
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
