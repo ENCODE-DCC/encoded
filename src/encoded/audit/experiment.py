@@ -1323,9 +1323,8 @@ def check_experiment_small_rna_standards(experiment,
                               desired_assembly,
                               desired_annotation)
     yield from check_spearman(
-         mad_metrics, experiment['replication_type'],
-         0.9, 0.8, 'Small RNA-seq single-end pipeline')
-
+        mad_metrics, experiment['replication_type'],
+        0.9, 0.8, 'Small RNA-seq single-end pipeline')
     return
 
 
