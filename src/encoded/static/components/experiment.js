@@ -17,6 +17,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
 import Tooltip from '../libs/ui/tooltip';
+import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 
 const anisogenicValues = [
@@ -658,6 +659,25 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="biosample-type">
                                     <dt>Biosample Type</dt>
                                     <dd>{context.biosample_ontology.classification}</dd>
+                                </div>
+                            : null}
+
+                            {context.examined_loci && context.examined_loci.length > 0 ?
+                                <div data-test="examined-loci">
+                                    <dt>Examined Loci</dt>
+                                    <dd>
+                                        {/* A user can have a loci repeat. Therefore, uuid alone is not sufficient as an identifier */}
+                                        {context.examined_loci.map((loci, i) => (
+                                            loci.gene ?
+                                                <span key={[loci.gene.uuid, i].join('')}>
+                                                    {i > 0 ? <span>, </span> : null}
+                                                    <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
+                                                    {loci.expression_percentile ? <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span> : null}
+                                                    {loci.expression_range_maximum && loci.expression_range_minimum ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
+                                                </span>
+                                            : null
+                                        ))}
+                                    </dd>
                                 </div>
                             : null}
 
