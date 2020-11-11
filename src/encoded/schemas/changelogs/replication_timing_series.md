@@ -1,9 +1,5 @@
 ## Changelog for replication_timing_series.json
 
-### Minor changes since schema version 17
-
-* Added *cell_cycle_phases* calculated property.
-
 ### Schema version 17
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects
