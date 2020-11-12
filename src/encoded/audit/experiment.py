@@ -65,6 +65,8 @@ seq_assays = [
     'ATAC-seq',
     'CUT&RUN',
     'CUT&Tag',
+    'Capture Hi-C',
+    'single-nucleus RNA-seq',
 ]
 
 

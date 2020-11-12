@@ -1,5 +1,8 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 31
+* Added *Capture Hi-C* and *single-nucleus RNA-seq* to *assay_term_name* enum
+
 ### Schema version 31
 
 * Removed the *analyses* property.
