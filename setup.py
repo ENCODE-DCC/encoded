@@ -25,7 +25,6 @@ INSTALL_REQUIRES = [
     "cffi==1.14.0",
     "chardet==3.0.4",
     "collective.recipe.cmd==0.11",
-    "collective.recipe.modwsgi==2.1",
     "collective.recipe.template==2.1",
     "cryptography==2.8",
     "ecdsa==0.15",
