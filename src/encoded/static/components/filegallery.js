@@ -2167,7 +2167,9 @@ export const compileAnalyses = (experiment, files) => {
     // In ENCODE releases, release year is not in the data. To get around this, if you strip out the text and
     // leave only numbers, you will consistently have a means to identify ealier releases from latter ones. This
     // approached was used to sort. "Lab custom" appear at the bottom as intented
-    return _(compiledAnalyses).sortBy(a => parseInt(a.title.replace(/\D/g, ''), 10)).reverse();
+    return _(compiledAnalyses)
+        .sortBy(compiledAnalysis => -compiledAnalysis.assemblyAnnotationValue)
+        .sortBy(a => parseInt(a.title.replace(/\D/g, ''), 10)).reverse();
 };
 
 
