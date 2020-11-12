@@ -171,6 +171,10 @@
             "title": "Biosample age",
             "type": "string"
         },
+        "related_datasets.replicates.library.biosample.phase": {
+            "title": "Cell cycle phase",
+            "type": "string"
+        },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment",
             "type": "string"
