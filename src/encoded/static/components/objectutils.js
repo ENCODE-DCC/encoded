@@ -6,6 +6,7 @@ import * as encoding from '../libs/query_encoding';
 import { CartToggle, cartGetAllowedTypes } from './cart';
 import * as globals from './globals';
 import { BrowserFeat } from './browserfeat';
+import Tooltip from '../libs/ui/tooltip';
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
@@ -349,126 +350,57 @@ FileInfoButton.propTypes = {
 
 // Render a download button for a file that reacts to login state and admin status to render a
 // tooltip about the restriction based on those things.
-export class RestrictedDownloadButton extends React.Component {
-    constructor() {
-        super();
+export const RestrictedDownloadButton = (props) => {
+    const file = props.file;
+    const buttonEnabled = !(file.restricted || file.no_file_available);
 
-        // Set initial object variable values.
-        this.timer = null;
-        this.tipHovering = false;
+    // Default icon
+    const icon = (
+        <i className="icon icon-download" style={!file.restricted ? {} : { opacity: '0.3' }}>
+            <span className="sr-only">Download</span>
+        </i>
+    );
 
-        // Set initial React state.
-        this.state = {
-            tip: false, // True if tip is visible
-        };
+    // If the user provided us with a component for downloading files, add the download
+    // properties to the component before rendering.
+    const downloadComponent = props.downloadComponent ? React.cloneElement(props.downloadComponent, {
+        file,
+        href: file.href,
+        download: file.href.substr(file.href.lastIndexOf('/') + 1),
+        hoverDL: null,
+        buttonEnabled,
+    }) : icon;
 
-        // Bind this to non-React methods.
-        this.hoverDL = this.hoverDL.bind(this);
-        this.hoverTip = this.hoverTip.bind(this);
-        this.hoverTipIn = this.hoverTipIn.bind(this);
-        this.hoverTipOut = this.hoverTipOut.bind(this);
-    }
-
-    hoverDL(hovering) {
-        if (hovering) {
-            // Started hovering over the DL button; show the tooltip.
-            this.setState({ tip: true });
-
-            // If we happen to have a running timer, clear it so we don't clear the tooltip while
-            // hovering over the DL button.
-            if (this.timer) {
-                clearTimeout(this.timer);
-                this.timer = null;
-            }
-        } else {
-            // No longer hovering over the DL button; start a timer that might hide the tooltip
-            // after a second passes. It won't hide the tooltip if they're now hovering over the
-            // tooltip itself.
-            this.timer = setTimeout(() => {
-                this.timer = null;
-                if (!this.tipHovering) {
-                    this.setState({ tip: false });
-                }
-            }, 1000);
-        }
-    }
-
-    hoverTip(hovering) {
-        if (hovering) {
-            // Started hovering over the tooltip. This prevents the timer from hiding the tooltip.
-            this.tipHovering = true;
-        } else {
-            // Stopped hovering over the tooltip. If the DL button hover time isn't running, hide
-            // the tooltip here.
-            this.tipHovering = false;
-            if (!this.timer) {
-                this.setState({ tip: false });
-            }
-        }
-    }
-
-    hoverTipIn() {
-        this.hoverTip(true);
-    }
-
-    hoverTipOut() {
-        this.hoverTip(false);
-    }
-
-    render() {
-        const { file } = this.props;
-        const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
-        const buttonEnabled = !(file.restricted || file.no_file_available);
-
-        // If the user provided us with a component for downloading files, add the download
-        // properties to the component before rendering.
-        const downloadComponent = this.props.downloadComponent ? React.cloneElement(this.props.downloadComponent, {
-            file,
-            href: file.href,
-            download: file.href.substr(file.href.lastIndexOf('/') + 1),
-            hoverDL: this.hoverDL,
-            buttonEnabled,
-        }) : null;
-
-        // Supply a default icon for the user to click to download, if the caller didn't supply one
-        // in downloadComponent.
-        const icon = (!downloadComponent ? <DownloadIcon file={file} hoverDL={this.hoverDL} /> : null);
-
-        return (
-            <div className="dl-tooltip-trigger">
-                {buttonEnabled ?
-                    <span>
-                        {downloadComponent ?
-                            <span>{downloadComponent}</span>
-                        :
+    return (
+        <Tooltip
+            trigger={
+                <div>
+                    {buttonEnabled ?
+                        <span>
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf('/') + 1)} data-bypass="true">
-                                {icon}
+                                {downloadComponent}
                             </a>
-                        }
-                    </span>
-                :
-                    <span>
-                        {downloadComponent ?
-                            <span>{downloadComponent}</span>
-                        :
-                            <span>{icon}</span>
-                        }
-                    </span>
-                }
-                {file.restricted ?
-                    <div className={`tooltip right${tooltipOpenClass}`} role="tooltip" onMouseEnter={this.hoverTipIn} onMouseLeave={this.hoverTipOut}>
-                        <div className="tooltip-arrow" />
-                        <div className="tooltip-inner">
-                            If you are a collaborator or owner of this file,<br />
-                            please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a><br />
-                            to receive a copy of this file
-                        </div>
-                    </div>
-                : null}
-            </div>
-        );
-    }
-}
+                        </span>
+                    :
+                        <span>
+                            {downloadComponent}
+                        </span>
+                    }
+                </div>
+            }
+            tooltipId={file['@id']}
+            css={'dl-tooltip-trigger'}
+        >
+            {file.restricted ?
+                <div>
+                    If you are a collaborator or owner of this file,<br />
+                    please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a><br />
+                    to receive a copy of this file
+                </div>
+            : null}
+        </Tooltip>
+    );
+};
 
 RestrictedDownloadButton.propTypes = {
     file: PropTypes.object.isRequired, // File containing `href` to use as download link
