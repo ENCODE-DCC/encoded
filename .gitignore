@@ -18,9 +18,6 @@
 /npm-shrinkwrap.json
 /ontology.json
 /parts/
-/base.ini
-/development.ini
-/production.ini
 /session-secret.b64
 /src/encoded/static/css/
 /src/encoded/static/scss/_variables.original.scss
@@ -48,3 +45,5 @@ initial-indexing-times*
 .viminfo
 
 .dev-config.ini
+development.ini
+production.ini
