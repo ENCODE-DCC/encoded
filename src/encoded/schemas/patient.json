@@ -141,6 +141,9 @@
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
+        "dominant_tumor.histology": {
+            "title": "Dominant Tumor"
+        },
         "surgery.pathology_report.tumor_size_range":{
             "title": "Tumor Size"
         },
@@ -253,6 +256,9 @@
         "status": {
             "title": "Status"
         },
+        "dominant_tumor.histology": {
+            "title": "Dominant Tumor"
+        },
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
@@ -311,3 +317,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
