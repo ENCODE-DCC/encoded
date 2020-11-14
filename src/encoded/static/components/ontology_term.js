@@ -10,13 +10,13 @@ import BiosampleTermId from './biosample';
 import { ItemAccessories } from './objectutils';
 
 
-const BiosampleTypeComponenet = (props, reactContext) => {
+const OntologyTermComponenet = (props, reactContext) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-item');
 
     // Set up breadcrumbs
     const crumbs = [
-        { id: 'BiosampleTypes' },
+        { id: 'OntologyTerms' },
         { id: context.classification, query: `classification=${context.classification}`, tip: context.classification },
         { id: context.term_name, query: `term_name=${context.term_name}`, tip: context.term_name },
     ];
@@ -29,7 +29,7 @@ const BiosampleTypeComponenet = (props, reactContext) => {
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root="/search/?type=BiosampleType" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <Breadcrumbs root="/search/?type=OntologyTerm" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h1>
                     <span className="sentence-case">
                         {context.term_name} / {context.classification}
@@ -76,20 +76,20 @@ const BiosampleTypeComponenet = (props, reactContext) => {
     );
 };
 
-BiosampleTypeComponenet.propTypes = {
+OntologyTermComponenet.propTypes = {
     context: PropTypes.object.isRequired,
     auditIndicators: PropTypes.func.isRequired, // Audit decorator function
     auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
-BiosampleTypeComponenet.contextTypes = {
+OntologyTermComponenet.contextTypes = {
     session: PropTypes.object, // Login information from <App>
     session_properties: PropTypes.object,
 };
 
-const BiosampleType = auditDecor(BiosampleTypeComponenet);
+const OntologyTerm = auditDecor(OntologyTermComponenet);
 
-globals.contentViews.register(BiosampleType, 'BiosampleType');
+globals.contentViews.register(OntologyTerm, 'OntologyTerm');
 
 
 const ListingComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
@@ -126,4 +126,4 @@ ListingComponent.contextTypes = {
 
 const Listing = auditDecor(ListingComponent);
 
-globals.listingViews.register(Listing, 'BiosampleType');
+globals.listingViews.register(Listing, 'OntologyTerm');

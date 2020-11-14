@@ -30,7 +30,11 @@
         "description": "A scATACseq test dataset with cell culture and organoids.",
         "award": "CZI021IMM",
         "dbxrefs": [
-            "SRA:SRP123457", "GEO:GSE126031"
+            "SRA:SRP123457",
+            "GEO:GSE126031",
+            "ArrayExpress:E-MTAB-8221",
+            "BioProject:PRJNA677895",
+            "BioStudies:S-EPMC310274"
         ],
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
@@ -54,7 +58,10 @@
         "description": "A scRNAseq test dataset with 6 prenatal and 4 postnatal libraries.",
         "award": "CZI004LIV",
         "dbxrefs": [
-            "SRA:SRP123456", "GEO:GSE126030"
+            "SRA:SRP123456",
+            "GEO:GSE126030",
+            "dbGaP:phs000671",
+            "EGA:EGAD00001004304"
         ],
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",
@@ -78,7 +85,9 @@
         "description": "A deleted test dataset",
         "award": "CZI025LYN",
         "dbxrefs": [
-            "SRA:SRP1232525", "GEO:GSE1278080"
+            "SRA:SRP1232525",
+            "GEO:GSE1278080",
+            "GEO-obsolete:GSM973234"
         ],
         "submitted_by": "jychien@stanford.edu",
         "date_released": "2020-08-07",

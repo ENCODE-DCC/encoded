@@ -323,16 +323,6 @@ class FileComponent extends React.Component {
                                     </div>
                                 : null}
 
-                                <div data-test="bioreplicate">
-                                    <dt>Biological replicate(s)</dt>
-                                    <dd>{`[${context.biological_replicates && context.biological_replicates.length > 0 ? context.biological_replicates.join(', ') : '-'}]`}</dd>
-                                </div>
-
-                                <div data-test="techreplicate">
-                                    <dt>Technical replicate(s)</dt>
-                                    <dd>{`[${context.technical_replicates && context.technical_replicates.length > 0 ? context.technical_replicates.join(', ') : '-'}]`}</dd>
-                                </div>
-
                                 <div data-test="md5sum">
                                     <dt>MD5sum</dt>
                                     <dd>{context.md5sum}</dd>
