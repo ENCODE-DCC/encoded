@@ -17,7 +17,6 @@ const OntologyTermComponenet = (props, reactContext) => {
     // Set up breadcrumbs
     const crumbs = [
         { id: 'OntologyTerms' },
-        { id: context.classification, query: `classification=${context.classification}`, tip: context.classification },
         { id: context.term_name, query: `term_name=${context.term_name}`, tip: context.term_name },
     ];
 
@@ -32,7 +31,7 @@ const OntologyTermComponenet = (props, reactContext) => {
                 <Breadcrumbs root="/search/?type=OntologyTerm" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h1>
                     <span className="sentence-case">
-                        {context.term_name} / {context.classification}
+                        {context.term_name}
                     </span>
                 </h1>
                 <ItemAccessories item={context} audit={{ auditIndicators: props.auditIndicators, auditId: 'biosample-type-audit' }} />
@@ -97,7 +96,7 @@ const ListingComponent = ({ context: result, auditIndicators, auditDetail }, rea
         <div className="result-item">
             <div className="result-item__data">
                 <a href={result['@id']} className="result-item__link">
-                    {result.term_name} ({result.classification})
+                    {result.term_name}
                 </a>
                 <div className="result-item__data-row">
                     <strong>Ontology ID: </strong><BiosampleTermId termId={result.term_id} />
