@@ -93,12 +93,6 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
-    GeneCards: {
-        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
-    },
-    GeneID: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
-    },
     GEO: {
         pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}',
         preprocessor: (context, dbxref) => {
@@ -111,26 +105,11 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
-    GO: {
-        pattern: 'http://amigo.geneontology.org/amigo/term/GO:{0}',
-    },
-    GOGene: {
-        pattern: 'http://amigo.geneontology.org/amigo/gene_product/{0}',
-    },
     HGNC: {
         pattern: 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id={0}',
     },
     MGI: {
         pattern: 'http://www.informatics.jax.org/marker/MGI:{0}',
-    },
-    'MGI.D': {
-        pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml',
-    },
-    NIH: {
-        pattern: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}',
-    },
-    PGP: {
-        pattern: 'https://my.pgp-hms.org/profile_public?hex={0}',
     },
     PMCID: {
         pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
@@ -142,10 +121,14 @@ export const dbxrefPrefixMap = {
         pattern: 'https://www.ncbi.nlm.nih.gov/nuccore/{0}',
     },
     SRA: {
-        pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
-    },
-    UniProtKB: {
-        pattern: 'http://www.uniprot.org/uniprot/{0}',
+        pattern: 'https://www.ncbi.nlm.nih.gov/sra?term={0}',
+        preprocessor: (context, dbxref) => {
+            const value = dbxref.split(':');
+            if (value[1] && value[1].substr(0, 3) === 'SRR') {
+                return { altUrlPattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}' };
+            }
+            return {};
+        },
     },
 };
 

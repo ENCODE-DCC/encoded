@@ -186,7 +186,10 @@
         "oligo_sequence": "ATCAGCCATGTCAGT",
         "url": "https://www.biolegend.com/en-us/products/totalseq-c0093-anti-mouse-cd19-antibody-18761",
         "target_organism": "mouse",
-        "clone_id": "6D5"
+        "clone_id": "6D5",
+        "dbxrefs": [
+            "AR:AB_2832392"
+        ]
     },
     {
         "aliases": [
