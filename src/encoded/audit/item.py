@@ -60,12 +60,6 @@ STATUS_LEVEL = {
     # public statuses
     'released': 100,
     'current': 100,
-    'compliant': 100,
-    'not compliant': 100,
-    'not reviewed': 100,
-    'not submitted for review by lab': 100,
-    'exempt from standards': 100,
-    'not pursued': 100,
 
     # 'discouraged for use' public statuses
     'archived': 40,
@@ -73,12 +67,8 @@ STATUS_LEVEL = {
 
     # private statuses (visible for consortium members only)
     'in progress': 50,
-    'pending dcc review': 50,
     'submitted': 50,
-    'uploading': 50,
-    'upload failed': 50,
     'content error': 50,
-    'pending dcc review': 50,
 
     # invisible statuses (visible for admins only)
     'deleted': 0,
@@ -131,14 +121,8 @@ def audit_item_relations_status(value, system):
                             detail,
                             level='INTERNAL_ACTION')
 
-        elif schema_path in ['derived_from',
-                             'controlled_by',
-                             'possible_controls']:
-            message = 'has a possible control'
-            if schema_path == 'derived_from':
-                message = 'is derived from'
-            elif schema_path == 'controlled_by':
-                message = 'is controlled by'
+        elif schema_path == 'derived_from':
+            message = 'is derived from'
             for path in simple_path_ids(value, schema_path):
                 linked_value = request.embed(path + '@@object')
                 if 'status' not in linked_value:
@@ -182,11 +166,7 @@ def audit_item_status(value, system):
 
     for schema_path in context.type_info.schema_links:
         if schema_path in ['supersedes',
-                           'step_run',
-                           'derived_from',
-                           'controlled_by',
-                           'possible_controls',
-                           'elements']:
+                           'derived_from']:
             continue
         else:
             linked.update(simple_path_ids(value, schema_path))
@@ -196,13 +176,6 @@ def audit_item_status(value, system):
         if 'status' not in linked_value:
             continue
         if linked_value['status'] == 'disabled':
-            continue
-        if (  # Special case: A revoked file can have a deleted replicate ticket #2938
-            'File' in value['@type'] and
-            value['status'] == 'revoked' and
-            'Replicate' in linked_value['@type'] and
-            linked_value['status'] == 'deleted'
-        ):
             continue
         linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
         if linked_value['status'] in ['revoked', 'archived']:
