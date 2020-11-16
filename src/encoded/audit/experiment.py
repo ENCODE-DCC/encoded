@@ -527,7 +527,7 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                 if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
                     assembly_detail = ' '
                     if bam_file.get('assembly'):
-                        assembly_detail = ' for {} assembly '.format(
+                        assembly_detail = ' {} assembly '.format(
                             bam_file['assembly'])
                     detail = ('Experiment {} '
                         '{} file {} mapped to {}'
