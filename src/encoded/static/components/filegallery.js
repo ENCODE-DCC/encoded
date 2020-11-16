@@ -2167,9 +2167,13 @@ export const compileAnalyses = (experiment, files) => {
     // In ENCODE releases, release year is not in the data. To get around this, if you strip out the text and
     // leave only numbers, you will consistently have a means to identify ealier releases from latter ones. This
     // approached was used to sort. "Lab custom" appear at the bottom as intented
-    return _(compiledAnalyses)
-        .sortBy(compiledAnalysis => -compiledAnalysis.assemblyAnnotationValue)
-        .sortBy(a => parseInt(a.title.replace(/\D/g, ''), 10)).reverse();
+
+    // Based off: https://janetriley.net/2014/12/sort-on-multiple-keys-with-underscores-sortby.html
+    // If we migrate to lodash, multi-key sort is built in
+    return _.sortBy(
+        _.sortBy(compiledAnalyses, 'assemblyAnnotationValue'),
+        compiledAnalysis => parseInt(compiledAnalysis.title.replace(/\D/g, ''), 10))
+        .reverse();
 };
 
 
