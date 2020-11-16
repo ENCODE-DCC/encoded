@@ -141,8 +141,8 @@
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "surgery.pathology_report.tumor_size_range":{
-            "title": "Tumor Size"
+        "surgery.pathology_report.pathology_report_tumor_range":{
+            "title": "Tumor Size Range"
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
@@ -160,13 +160,13 @@
             "title": "pM Stage at Presentation"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastasis Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " TNM Stage at Presentation"
+            "title": "TNM Stage at Presentation"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -275,13 +275,13 @@
             "title": "pM Stage"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
-            "title": "Metasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " AJCC TNM Stage"
+            "title": "TNM Stage at Presentation"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -311,3 +311,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+

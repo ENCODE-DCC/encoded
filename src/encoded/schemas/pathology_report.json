@@ -463,7 +463,7 @@
             "title": "Status"
         },
         "pathology_report_tumor_range": {
-            "title": "Tumor Range"
+            "title": "Tumor Size Range"
         },
         "ajcc_p_stage": {
             "title": "pT Stage"
@@ -514,10 +514,10 @@
             "title": "Perinephric Infiltration"
         },
         "micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
 
         "ihc.antibody": {
@@ -595,10 +595,10 @@
             "title": "Perinephric Infiltration"
         },
         "micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -634,3 +634,4 @@
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }
+

@@ -129,10 +129,10 @@
             "title": "Perinephric Infiltration"
         },
         "pathology_report.micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "pathology_report.micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
         "pathology_report.ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -213,10 +213,10 @@
             "title": "Perinephric Infiltration"
         },
         "pathology_report.micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "pathology_report.micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
         "pathology_report.ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
