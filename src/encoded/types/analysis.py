@@ -104,6 +104,13 @@ class Analysis(Item):
         'superseded_by': ('Analysis', 'supersedes'),
     }
 
+    set_status_up = [
+        'files',
+    ]
+    set_status_down = [
+        'files',
+    ]
+
     @calculated_property(schema={
         "title": "Datasets",
         "description": "Datasets the analysis belongs to.",
