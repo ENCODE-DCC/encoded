@@ -213,8 +213,8 @@
             "description": "Invasion seen at the margins or not",
             "type": "string",
             "enum": [
-                "Margins uninvolved by invasive carcinoma",
-                "Margins involved by invasive carcinoma",
+                "Positive/involved",
+                "Not involved",
                 "Not available",
                 "Not applicable"
             ]
@@ -634,4 +634,5 @@
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }
+
 

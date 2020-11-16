@@ -45,7 +45,7 @@
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "3",
-    "margins": "Margins uninvolved by invasive carcinoma",
+    "margins": "Not involved",
     "lvi": "Indeterminate",
     "micro_limited": "Not applicable",
     "micro_vein": "Not applicable",
@@ -98,7 +98,7 @@
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "Not available",
-    "margins": "Margins involved by invasive carcinoma",
+    "margins": "Positive/involved",
     "lvi": "Present",
     "micro_limited": "Not applicable",
     "micro_vein": "Not applicable",
@@ -136,7 +136,7 @@
     "rhabdoid": "Not applicable",
     "necrosis": "Not applicable",
     "grade": "1",
-    "margins": "Margins uninvolved by invasive carcinoma",
+    "margins": "Not involved",
     "lvi": "Not identified",
     "micro_limited": "Not applicable",
     "micro_vein": "Not applicable",
@@ -163,3 +163,4 @@
     "uuid": "b56466f2-46d7-11ea-b77f-2e728ce88125"
   }
 ]
+
