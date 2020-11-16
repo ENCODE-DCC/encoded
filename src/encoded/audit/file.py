@@ -58,13 +58,7 @@ function_dispatcher = {
 
 @audit_checker('File',
                frame=['derived_from',
-                      'library',
-                      'dataset',
-                      'dataset.award',
-                      'platform',
-                      'matching_md5sum',
-                      ]
-               )
+                      'libraries'])
 def audit_file(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):

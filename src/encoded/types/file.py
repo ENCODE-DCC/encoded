@@ -57,9 +57,9 @@ def show_cloud_metadata(status=None, md5sum=None, file_size=None, restricted=Non
     return True
 
 
-def property_closure(request, propname, root_uuid):
-    # Must avoid cycles
+def property_closure_by_prop(request, propname, root_uuid, defining_property):
     conn = request.registry[CONNECTION]
+    desired_list = set()
     seen = set()
     remaining = {str(root_uuid)}
     while remaining:
@@ -67,9 +67,16 @@ def property_closure(request, propname, root_uuid):
         next_remaining = set()
         for uuid in remaining:
             obj = conn.get_by_uuid(uuid)
-            next_remaining.update(obj.__json__(request).get(propname, ()))
+            if obj.__json__(request).get(defining_property, ()):
+                desired_list.add(obj.__json__(request).get('accession', ()))
+            else:
+                new_values = obj.__json__(request).get(propname, ())
+                if isinstance(new_values, list):
+                    next_remaining.update(new_values)
+                elif isinstance(new_values, str):
+                    next_remaining.add(new_values)
         remaining = next_remaining - seen
-    return seen
+    return desired_list
 
 
 ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
@@ -504,6 +511,26 @@ class AnalysisFile(DataFile):
     schema = load_schema('encoded:schemas/analysis_file.json')
     embedded = DataFile.embedded + ['lab', 'award']
 
+    @calculated_property(define=True,
+                         schema={"title": "Libraries",
+                                 "description": "The libraries the file was derived from.",
+                                 "comment": "Do not submit. This is a calculated property",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string",
+                                    "linkTo": "Library"
+                                    }
+                                })
+    def libraries(self, request, derived_from):
+        all_libs = set()
+        for f in derived_from:
+            obj = request.embed(f, '@@object')
+            if obj.get('libraries'):
+                all_libs.update(obj.get('libraries'))
+            elif obj.get('protocol'):
+                all_libs.add(obj.get('accession'))
+        return sorted(all_libs)
+
 
 @collection(
     name='sequence-alignment-files',
@@ -529,6 +556,20 @@ class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
     embedded = DataFile.embedded + ['lab', 'award']
+
+    @calculated_property(define=True,
+                         schema={"title": "Libraries",
+                                 "description": "The libraries the file was derived from.",
+                                 "comment": "Do not submit. This is a calculated property",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string",
+                                    "linkTo": "Library"
+                                    }
+                                })
+    def libraries(self, request):
+        all_libs = property_closure_by_prop(request, 'derived_from', self.uuid, 'protocol')
+        return sorted(all_libs)
 
 
 @collection(

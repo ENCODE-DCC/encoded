@@ -544,27 +544,17 @@ PHASE1_PIPELINES = {
     'user': [
         remove_keys('lab', 'submits_for'),
     ],
-    'library': [
-        remove_keys('spikeins_used', 'adapters'),
-    ],
     'dataset': [
-        remove_keys('possible_controls', 'related_files',
-                    'supersedes', 'analyses'),
+        remove_keys('related_files', 'supersedes'),
     ],
     'human_postnatal_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
     ],
-    'publication': [
-        remove_keys('datasets'),
-    ],
     'reference_file_set': [
-        remove_keys('related_files', 'software_used'),
+        remove_keys('related_files'),
     ],
     'file': [
-        remove_keys('derived_from', 'controlled_by', 'supersedes')
-    ],
-    'analysis_step': [
-        remove_keys('parents')
+        remove_keys('supersedes')
     ],
     'treatment': [
         remove_keys('biosamples_used')
@@ -592,28 +582,17 @@ PHASE2_PIPELINES = {
     'organoid': [
         skip_rows_missing_all_keys('derived_from'),
     ],
-    'library': [
-        skip_rows_missing_all_keys('spikeins_used', 'adapters'),
-    ],
     'dataset': [
-        skip_rows_missing_all_keys(
-            'related_files', 'possible_controls', 'supersedes', 'analyses'),
+        skip_rows_missing_all_keys('related_files', 'supersedes'),
     ],
     'human_postnatal_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
     ],
     'reference_file_set': [
-        skip_rows_missing_all_keys('related_files', 'software_used'),
-    ],
-    'publication': [
-        skip_rows_missing_all_keys('datasets'),
+        skip_rows_missing_all_keys('related_files'),
     ],
     'file': [
-        skip_rows_missing_all_keys(
-            'derived_from', 'controlled_by', 'supersedes')
-    ],
-    'analysis_step': [
-        skip_rows_missing_all_keys('parents')
+        skip_rows_missing_all_keys('supersedes')
     ],
     'treatment': [
         skip_rows_missing_all_keys('biosamples_used')

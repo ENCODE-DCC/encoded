@@ -26,25 +26,6 @@ def property_closure(request, propname, root_uuid):
     return seen
 
 
-def caclulate_donor_prop(self, request, donors, propname):
-    collected_values = []
-
-    if donors is not None:  # try to get the sex from the donor
-        for donor_id in donors:
-            donorObject = request.embed(donor_id, '@@object')
-            if propname in donorObject and donorObject[propname] not in collected_values:
-                if isinstance(donorObject[propname], str):
-                    collected_values.append(donorObject[propname])
-                elif isinstance(donorObject[propname], list):
-                    for i in donorObject[propname]:
-                        collected_values.append(i)
-
-    if not collected_values:
-        return ['']
-    else:
-        return collected_values
-
-
 @abstract_collection(
     name='biosamples',
     unique_key='accession',

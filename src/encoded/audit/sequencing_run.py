@@ -32,6 +32,7 @@ function_dispatcher = {
 
 @audit_checker('SequencingRun',
                frame=['object',
+                      'derived_from',
                       'files'])
 def audit_ontology_term(value, system):
     for function_name in function_dispatcher.keys():

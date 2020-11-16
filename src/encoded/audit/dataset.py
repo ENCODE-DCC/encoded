@@ -152,15 +152,9 @@ function_dispatcher_with_files = {
     'audit_released_with_unreleased_files': audit_experiment_released_with_unreleased_files
 }
 
-@audit_checker(
-    'Dataset',
-    frame=[
-        'biosample_ontology',
-        'award',
-        'contributing_files',
-        'original_files',
-        'original_files.award'
-    ])
+@audit_checker('Dataset',
+               frame=['contributing_files',
+                      'original_files'])
 def audit_experiment(value, system):
     excluded_files = ['revoked', 'archived']
     if value.get('status') == 'revoked':
