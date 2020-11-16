@@ -33,6 +33,9 @@ const types = {
     biosample: { title: 'Biosamples' },
     experiment: { title: 'Experiments' },
     bioexperiment: { title: 'Bioexperiments' },
+    bioseries: { title: 'Bioserieses' },
+    biofileSet: { title: 'BiofileSets' },
+    bioexperimentSeries:{title:'BioexperimentSereieses'},
     gene: { title: 'Genes' },
     target: { title: 'Targets' },
     dataset: { title: 'Datasets' },
@@ -78,6 +81,9 @@ const biodatasetTypes = {
     Biodataset: types.biodataset.title,
     Bioproject: types.bioproject.title,
     Bioreference: types.bioreference.title,
+    Bioseries: types.bioseries.title,
+    BiofileSet: types.biofileSet.title,
+    BioexperimentSeries:types.bioexperimentSeries.title
 
 }
 
@@ -880,8 +886,8 @@ const BiodatasetComponent = (props, reactContext) => {
 
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
-        // biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
-        biosampleTerm = (result.biospecimen && Array.isArray(result.biospecimen) && result.biospecimen.length === 1 && result.biospecimen[0].sample_type) ? result.biospecimen[0].sample_type : ((result.biospecimen && result.biospecimen.sample_type) ? result.biospecimen.sample_type : '');
+        biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
+        // biosampleTerm = (result.biospecimen && Array.isArray(result.biospecimen) && result.biospecimen.length === 1 && result.biospecimen[0].sample_type) ? result.biospecimen[0].sample_type : ((result.biospecimen && result.biospecimen.sample_type) ? result.biospecimen.sample_type : '');
 
        
     }

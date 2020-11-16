@@ -2,8 +2,8 @@
     {
         "_test": "spikes",
         "accession": "KCEBE000REF",
-        "lab": "828cd4fe-ebb0-4b36-a94a-d2e3a36cc987",
-        "award": "167abca8-43aa-4298-bdcf-b93b3d4db26e",
+        "lab": "thomas-gingeras",
+        "award": "U54HG006998",
         "organism": "Human",
         "documents": [
             "thomas-gingeras:ChIPSeq_protocol-Abcam",
@@ -35,6 +35,8 @@
     {
         "_test": "spikes2",
         "accession": "KCEBE001AES",
+        "lab": "thomas-gingeras",
+
         "award": "ENCODE2",
         "organism": "Human",
         "documents": [
@@ -58,6 +60,8 @@
     {
         "_test": "RAMPAGE spike-ins",
         "accession": "KCEBE001ADH",
+        "lab": "thomas-gingeras",
+
         "award": "U54HG007005",
         "organism": "Mouse",
         "documents": [
