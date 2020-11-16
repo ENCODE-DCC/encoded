@@ -43,7 +43,6 @@
             "type": "string",
             "enum": [
                 "UTSW",
-                "UTSWCopath",
                 "Parkland",
                 "Outside",
                 "Not available"
