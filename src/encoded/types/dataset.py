@@ -53,29 +53,6 @@ def calculate_assembly(request, files_list, status):
     return list(assembly)
 
 
-def calculate_series_units(request, related_datasets, unit_property_name, property_location):
-    units = set()
-    for dataset in related_datasets:
-        properties = request.embed(dataset, '@@object')
-        for replicate in properties['replicates']:
-            replicateObject = request.embed(replicate, '@@object?skip_calculated=true')
-            if 'library' in replicateObject:
-                libraryObject = request.embed(replicateObject['library'], '@@object?skip_calculated=true')
-                if 'biosample' in libraryObject:
-                    biosampleObject = request.embed(libraryObject['biosample'], '@@object?skip_calculated=true')
-                    if property_location == 'biosample':
-                        units.add(biosampleObject[unit_property_name])
-                        continue
-                    if property_location == 'treatment' and 'treatments' in biosampleObject:
-                        for treatment in biosampleObject['treatments']:
-                            treatmentObject = request.embed(treatment, '@@object?skip_calculated=true')
-                            units.add(treatmentObject[unit_property_name])
-    if len(units) == 1:
-        return next(iter(units))
-    else:
-        return None
-
-
 @abstract_collection(
     name='datasets',
     unique_key='accession',
