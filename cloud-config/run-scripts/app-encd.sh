@@ -11,13 +11,6 @@ echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) Running"
 
 # Script Below
 
-# Check remote postgres uri
-PG_URI='postgresql:///encoded'
-if [ "$ENCD_BUILD_TYPE" == 'app' ] || [ "$ENCD_BUILD_TYPE" == 'app-es' ]; then
-    PG_URI="postgresql://$ENCD_PG_IP/encoded"
-fi
-echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD PG_URI: $PG_URI"
-
 # Install App
 cd "$ENCD_HOME"
 source "${ENCD_VENV_DIR}/bin/activate"
@@ -32,7 +25,7 @@ if [ $? -gt 0 ]; then
 fi
 
 # Run buildout
-bin_build_cmd="$(which buildout) -c buildout-$ENCD_ROLE.cfg"
+bin_build_cmd="$(which buildout) -c $ENCD_ROLE.cfg"
 echo -e "\n\t$APP_WRAPPER$ENCD_INSTALL_TAG $(basename $0) CMD: $bin_build_cmd"
 sudo -H -u encoded LANG=en_US.UTF-8 $bin_build_cmd
 if [ $? -gt 0 ]; then

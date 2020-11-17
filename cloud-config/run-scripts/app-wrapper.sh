@@ -72,7 +72,7 @@ fix_repo "$ENCD_HOME" "$ENCD_GIT_REMOTE" "$ENCD_GIT_BRANCH" "encoded"
 
 # Run app install scripts
 $ENCD_SCRIPTS_DIR/app-es-status.sh
-if [ -z "$ENCD_PG_IP" ]; then
+if [ "$ENCD_PG_HOST" == 'postgresql:///encoded' ]; then
     $ENCD_SCRIPTS_DIR/app-pg.sh "$standby_mode"
 fi
 $ENCD_SCRIPTS_DIR/app-encd.sh
