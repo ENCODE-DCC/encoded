@@ -414,7 +414,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'PY3_PATH': '/usr/bin/python3.6',
         'REDIS_PORT': main_args.redis_port,
         'REMOTE_INDEXING': 'true' if main_args.remote_indexing else 'false',
-        'ROLE': main_args.role,
+        'ROLE': f"buildout-{main_args.role}",
         'S3_AUTH_KEYS': 'addedlater',
         'SCRIPTS_DIR': "{}/run-scripts".format(main_args.conf_dir_remote),
         "VENV_DIR": "{}/venv".format(home),
@@ -451,7 +451,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         data_insert.update({
             'APP_WORKERS': main_args.app_workers,
             'BATCHUPGRADE_VARS': ' '.join(main_args.batchupgrade_vars),
-            'ROLE': main_args.role,
+            'ROLE': f"buildout-{main_args.role}",
         })
         if build_type == 'app':
             data_insert.update({
