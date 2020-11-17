@@ -1176,6 +1176,14 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
                'low replicate concordance' for error in collect_audit_errors(res))
 
 
+    testapp.patch_json(replicate_2_1['@id'], {'biological_replicate_number': 1,
+                                              'technical_replicate_number': 2})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'low replicate concordance'
+               and 'comparing technical replicates' in error['detail']
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_long_rna_standards_crispr(testapp,
                                                     base_experiment,
                                                     replicate_1_1,
@@ -1423,7 +1431,7 @@ def test_audit_experiment_long_read_rna_standards(
             error['category'] == audit for error in errors
         )
 
- 
+
 def test_audit_experiment_chip_seq_standards_read_depth_encode4_wcontrol(testapp,
                                                    experiment_chip_H3K27me3,
                                                    experiment_mint_chip,

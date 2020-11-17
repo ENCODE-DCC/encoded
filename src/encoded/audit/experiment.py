@@ -1251,20 +1251,21 @@ def check_experiment_long_rna_standards(experiment,
 
     if 'replication_type' not in experiment:
         return
-
-    mad_metrics = get_metrics(gene_quantifications,
-                              'MadQualityMetric',
-                              desired_assembly,
-                              desired_annotation)
-
     if experiment['assay_term_name'] != 'single-cell RNA sequencing assay':
-        yield from check_spearman(
-            mad_metrics, experiment['replication_type'],
-            0.9, 0.8, pipeline_title)
-    # for failure in check_mad(mad_metrics, experiment['replication_type'],
-    #                         0.2, pipeline_title):
-    #    yield failure
-
+        mad_metrics = get_metrics(gene_quantifications,
+                                  'MadQualityMetric',
+                                  desired_assembly,
+                                  desired_annotation)
+        replicates = experiment.get('replicates')
+        if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
+            yield from check_spearman_technical_replicates(
+                mad_metrics, pipeline_title, 0.9)
+            return
+        else:
+            yield from check_spearman(
+                mad_metrics, experiment['replication_type'],
+                0.9, 0.8, pipeline_title)
+            return
     return
 
 
@@ -1609,64 +1610,6 @@ def check_idr(metrics, rescue, self_consistency):
     return
 
 
-def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type == 'anisogenic':
-        experiment_replication_type = 'anisogenic'
-    elif replication_type == 'isogenic':
-        experiment_replication_type = 'isogenic'
-    else:
-        return
-
-    mad_value = None
-    for m in metrics:
-        if 'MAD of log ratios' in m:
-            mad_value = m['MAD of log ratios']
-            if mad_value > 0.2:
-                file_list = []
-                for f in m['quality_metric_of']:
-                    file_list.append(f['@id'])
-                file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('ENCODE processed gene quantification files {} '
-                    'has Median-Average-Deviation (MAD) '
-                    'of replicate log ratios from quantification '
-                    'value of {}.'
-                    ' For gene quantification files from an {}'
-                    ' assay in the {} '
-                    'pipeline, a value <0.2 is recommended, but a value between '
-                    '0.2 and 0.5 is acceptable.'.format(
-                        ', '.join(file_names_links),
-                        mad_value,
-                        experiment_replication_type,
-                        pipeline
-                    )
-                )
-                if experiment_replication_type == 'isogenic':
-                    if mad_value < 0.5:
-                        yield AuditFailure('low replicate concordance', detail,
-                                           level='WARNING')
-                    else:
-                        yield AuditFailure('insufficient replicate concordance', detail,
-                                           level='NOT_COMPLIANT')
-                elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('ENCODE processed gene quantification files {} '
-                        'has Median-Average-Deviation (MAD) '
-                        'of replicate log ratios from quantification '
-                        'value of {}.'
-                        ' For gene quantification files from an {}'
-                        ' assay in the {} '
-                        'pipeline, a value <0.5 is recommended.'.format(
-                            ', '.join(file_names_links),
-                            mad_value,
-                            experiment_replication_type,
-                            pipeline
-                        )
-                    )
-                    yield AuditFailure('low replicate concordance', detail,
-                                       level='WARNING')
-    return
-
-
 def check_experiment_ERCC_spikeins(experiment, pipeline):
     '''
     The assumption in this functon is that the regular audit will catch anything without spikeins.
@@ -1755,6 +1698,30 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                         pipeline,
                         threshold
                     )
+                )
+                yield AuditFailure('low replicate concordance', detail,
+                                   level='WARNING')
+    return
+
+
+def check_spearman_technical_replicates(metrics, pipeline,
+                                        unreplicated_threshold):
+    for m in metrics:
+        if 'Spearman correlation' in m:
+            spearman_correlation = m['Spearman correlation']
+            if spearman_correlation < unreplicated_threshold:
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f)
+                file_names_links = ','.join((audit_link(path_to_text(f), f) for f in file_names))
+                detail = (
+                    f'Replicate concordance in RNA-seq experiments is measured by '
+                    f'calculating the Spearman correlation between gene quantifications '
+                    f'of the replicates. ENCODE processed gene quantification files '
+                    f'{file_names_links} have a Spearman correlation of '
+                    f'{spearman_correlation:.2f} comparing technical replicates. '
+                    f'For isogenic biological replicates analyzed using the {pipeline} pipeline, '
+                    f'ENCODE standards recommend a Spearman correlation value > 0.9.'
                 )
                 yield AuditFailure('low replicate concordance', detail,
                                    level='WARNING')
