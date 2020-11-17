@@ -523,8 +523,10 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                   'transcriptome_alignments']
     for file_type in file_types:
         for bam_file in files_structure.get(file_type).values():
-            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'):  
-                if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'): 
+                encode4_dnase_pipeline = scanFilesForPipelineTitle_not_chipseq(
+                    [bam_file],['GRCh38', 'mm10'],['DNase-seq pipeline'])
+                if is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dnase_pipeline):
                     assembly_detail = ' '
                     if bam_file.get('assembly'):
                         assembly_detail = ' {} assembly '.format(
@@ -5135,7 +5137,7 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+def is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dnase_pipeline):
     # if derived_from contains accessions that were not in
     # original_files and not in contributing files - it is outdated!    
     for file_id in bam_file.get('derived_from'):
@@ -5153,8 +5155,8 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
     # for ChIP-seq we should consider biological replicates
-    # for DNase we should consider technial replicates
-    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq']:
+    # for DNase (ENCODE3) we should consider technial replicates
+    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq'] and not encode4_dnase_pipeline:
         replicate_type = 'technical_replicates'
     else:
         replicate_type = 'biological_replicates'
