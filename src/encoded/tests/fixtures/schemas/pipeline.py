@@ -24,6 +24,17 @@ def pipeline_chip_encode4(testapp, lab, award, analysis_step_chip_encode4):
 
 
 @pytest.fixture
+def pipeline_dnase_encode4(testapp, lab, award, analysis_step_dnase_encode4):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "DNase-seq pipeline",
+        'analysis_steps': [analysis_step_dnase_encode4['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
 def pipeline_1():
     return {
         'schema_version': '1',

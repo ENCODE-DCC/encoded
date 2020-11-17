@@ -5161,7 +5161,6 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dn
     else:
         replicate_type = 'biological_replicates'
     rep = bam_file.get(replicate_type)
-    
     # number of replicates BAM file should belong to have to be one
     # in cases where it is more than one, there probably was replicates 
     # reorganization, that invalidates the analysis    
