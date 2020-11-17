@@ -21,7 +21,7 @@ const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
 /**
  * Returns Valis coordinates off the bar user inputs data in
  *
- * @param {string} scrollLocation, in format: "chr{contig} {x0}bp to {x1}bp, where contig, x0 and x2  and numbersp"
+ * @param {string} scrollLocation, in format: "chr{contig} {x0}bp to {x1}bp, where contig, x0 and x2 and numbers. Note, the unit can also be Mbp"
  * @returns {x0, x1, contig}
  */
 const readGenomeBrowserLabelCoordinates = () => {
@@ -40,9 +40,9 @@ const readGenomeBrowserLabelCoordinates = () => {
 };
 
 /**
- * Get default coordinats to the genome browser
+ * Get default coordinates to the genome browser
  *
- * @param {string} assemblyAnnotation Assemnly information
+ * @param {string} assemblyAnnotation Assembly information
  * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
  * @returns Default coordinates
  */
