@@ -20,6 +20,7 @@ INSTALL_REQUIRES = [
     "aws-xray-sdk==2.4.3",
     "boto3==1.11.9",
     "botocore==1.14.9",
+    "buildout.environ",
     "certifi==2019.11.28",
     "cffi==1.13.2",
     "cfn-lint==0.26.2",
