@@ -9,7 +9,7 @@ import url from 'url';
 import QueryString from '../../libs/query_string';
 import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
 import { atIdToType } from '../globals';
-import { requestSearch } from '../objectutils';
+import { requestSearch, Spinner } from '../objectutils';
 import {
     MaximumElementsLoggedoutModal,
     CART_MAXIMUM_ELEMENTS_LOGGEDOUT,
@@ -27,6 +27,8 @@ class CartAddAllSearchComponent extends React.Component {
         this.state = {
             /** True if search results total more than maximum # of elements while not logged in */
             overMaximumError: false,
+            /** True to show spinner, false to hide it */
+            showSpinner: false,
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
@@ -43,6 +45,7 @@ class CartAddAllSearchComponent extends React.Component {
         const query = new QueryString(parsedUrl.query);
         query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id');
         const searchQuery = query.format();
+        this.setState({ showSpinner: true });
 
         // With the updated query string, perform the search of all @ids matching the current
         // search.
@@ -72,7 +75,7 @@ class CartAddAllSearchComponent extends React.Component {
                     this.props.addAllResults(elementsForCart);
                 }
             }
-        });
+        }).finally(() => { this.setState({ showSpinner: false }); });
     }
 
     /**
@@ -87,6 +90,7 @@ class CartAddAllSearchComponent extends React.Component {
         const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
         return (
             <React.Fragment>
+                <Spinner isActive={this.state.showSpinner} />
                 <button
                     disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"

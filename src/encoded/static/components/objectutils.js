@@ -831,3 +831,23 @@ export const isFileVisualizable = file => (
 export function filterForVisualizableFiles(fileList) {
     return fileList.filter(file => isFileVisualizable(file));
 }
+
+export const Spinner = ({ isActive }) => (
+    <>
+        {isActive ?
+            <div className="communicating--centered">
+                <div className="loading-spinner--centered">
+                    <div className="loading-spinner-circle--centered" />
+                </div>
+            </div>
+        : null}
+    </>
+);
+
+Spinner.propTypes = {
+    isActive: PropTypes.bool,
+};
+
+Spinner.defaultProps = {
+    isActive: false,
+};

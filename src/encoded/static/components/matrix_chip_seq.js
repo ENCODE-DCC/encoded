@@ -9,7 +9,7 @@ import { Panel, PanelBody, TabPanelPane } from '../libs/ui/panel';
 import { Modal, ModalHeader, ModalBody } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { MatrixBadges, DisplayAsJson } from './objectutils';
+import { MatrixBadges, DisplayAsJson, Spinner } from './objectutils';
 import { SearchFilter } from './matrix';
 import { TextFilter } from './search';
 import DataTable from './datatable';
@@ -263,27 +263,6 @@ const assayTitlesOptions = tabLevel2.map(tab => tab.id);
  *  Files (Drosophila melanogaster) and worms (Caenorhabditis elegans) exclude the Histone tab
  */
 const organismsWithHiddenHistoneAssay = ['Drosophila melanogaster', 'Caenorhabditis elegans'];
-
-
-const Spinner = ({ isActive }) => (
-    <>
-        {isActive ?
-            <div className="communicating--centered">
-                <div className="loading-spinner--centered">
-                    <div className="loading-spinner-circle--centered" />
-                </div>
-            </div>
-        : null}
-    </>
-);
-
-Spinner.propTypes = {
-    isActive: PropTypes.bool,
-};
-
-Spinner.defaultProps = {
-    isActive: false,
-};
 
 
 /**
