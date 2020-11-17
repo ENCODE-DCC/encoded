@@ -1,5 +1,8 @@
 ## Changelog for treatment_concentration_series.json
 
+### Minor changes since schema version 17
+* Updated schema description.
+
 ### Schema version 17
 
 * Update the dbxref regex to remove IHEC; this is only allowed for Annotation and ReferenceEpigenome objects

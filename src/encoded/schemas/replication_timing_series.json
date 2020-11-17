@@ -1,6 +1,6 @@
 {
     "title": "Replication timing series",
-    "description": "Schema for submitting metadata for a replication timing series.",
+    "description": "Experimental data assessing replication timing phenomena at various phases of the cell cycle.",
     "id": "/profiles/replication_timing_series.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -88,8 +88,14 @@
         "target.investigated_as": {
             "title": "Target category"
         },
+        "target.label": {
+            "title": "Target of assay"
+        },
         "biosample_ontology.classification": {
             "title": "Biosample classification"
+        },
+        "biosample_ontology.term_name": {
+            "title": "Biosample term name"
         },
         "biosample_ontology.organ_slims": {
             "title": "Organ"
@@ -100,32 +106,11 @@
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage"
         },
-        "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment"
+        "related_datasets.replicates.library.biosample.phase": {
+            "title": "Cell cycle phase"
         },
         "related_datasets.files.file_type": {
             "title": "Available file types"
-        },
-        "related_datsets.files.run_type": {
-            "title": "Run type"
-        },
-        "related_datasets.files.read_length": {
-            "title": "Read length (nt)"
-        },
-        "related_datasets.files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "related_datasets.replicates.library.size_range": {
-            "title": "Library fragment size (nt)"
-        },
-        "related_datasets.replicates.library.nucleic_acid_term_name": {
-            "title": "Library material"
-        },
-        "related_datasets.replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in"
-        },
-        "related_datasets.replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment"
         },
         "lab.title": {
             "title": "Lab"
@@ -184,6 +169,10 @@
         },
         "related_datasets.replicates.library.biosample.age_display": {
             "title": "Biosample age",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.phase": {
+            "title": "Cell cycle phase",
             "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
