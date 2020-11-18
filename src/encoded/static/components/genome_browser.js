@@ -16,6 +16,145 @@ export const annotationTypeMap = {
     'representative DNase hypersensitivity sites (rDHSs)': 'rDHS',
 };
 
+const GV_COORDINATES_KEY = 'ENCODE-GV-coordinates';
+
+/**
+ * Returns Valis coordinates off the bar user inputs data in
+ *
+ * @param {string} scrollLocation, in format: "chr{contig} {x0}bp to {x1}bp, where contig, x0 and x2 and numbers. Note, the unit can also be Mbp"
+ * @returns {x0, x1, contig}
+ */
+const readGenomeBrowserLabelCoordinates = () => {
+    const scrollLocation = document.querySelector('.valis-browser .hpgv_panel-header span');
+
+    if (!scrollLocation || !scrollLocation.innerText) {
+        return {};
+    }
+
+    const splitScrollLocation = scrollLocation.innerText.split(' ');
+    const contig = splitScrollLocation[0];
+    const x0 = (splitScrollLocation[1].indexOf('Mbp') > -1) ? +splitScrollLocation[1].replace('Mbp', '') * 1e6 : +splitScrollLocation[1].replace('bp', '');
+    const x1 = (splitScrollLocation[3].indexOf('Mbp') > -1) ? +splitScrollLocation[3].replace('Mbp', '') * 1e6 : +splitScrollLocation[3].replace('bp', '');
+
+    return { x0, x1, contig };
+};
+
+/**
+ * Get default coordinates to the genome browser
+ *
+ * @param {string} assemblyAnnotation Assembly information
+ * @param {boolean} [ignoreCache=false] True to not look into cache, false to use cache
+ * @returns Default coordinates
+ */
+const getDefaultCoordinates = (assemblyAnnotation, ignoreCache = false) => {
+    const assembly = assemblyAnnotation.split(' ')[0];
+    // Files to be displayed on all genome browser results
+    let pinnedFiles = [];
+    let contig = null;
+    let x0 = null;
+    let x1 = null;
+    const gVState = ignoreCache ? null : window.sessionStorage.getItem(GV_COORDINATES_KEY);
+
+    if (gVState) {
+        const savedState = gVState ? JSON.parse(gVState) : {};
+        contig = savedState.contig;
+        x0 = savedState.x0;
+        x1 = savedState.x1;
+        pinnedFiles = savedState.pinnedFiles;
+    } else if (assembly === 'GRCh38') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
+                title: 'GENCODE V29',
+            },
+        ];
+        contig = 'chr1';
+        x0 = 11102837;
+        x1 = 11267747;
+    } else if (assembly === 'hg19' || assembly === 'GRCh37') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vgenes-dir',
+                title: 'GENCODE V29',
+            },
+        ];
+        contig = 'chr21';
+        x0 = 33031597;
+        x1 = 33041570;
+    } else if (assembly === 'mm10' || assembly === 'mm10-minimal' || assembly === 'GRCm38') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vdna-dir',
+            },
+            {
+                file_format: 'vgenes-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
+                title: 'GENCODE M21',
+            },
+        ];
+        contig = 'chr12';
+        x0 = 56694976;
+        x1 = 56714605;
+    } else if (assembly === 'mm9' || assembly === 'GRCm37') {
+        pinnedFiles = [];
+        contig = 'chr12';
+        x0 = 57795963;
+        x1 = 57815592;
+    } else if (assembly === 'dm6') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/dm6.vdna-dir',
+            },
+        ];
+        contig = 'chr2L';
+        x0 = 2420509;
+        x1 = 2467686;
+    } else if (assembly === 'dm3') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
+            },
+        ];
+        contig = 'chr2L';
+        x0 = 2428372;
+        x1 = 2459823;
+    } else if (assembly === 'ce11') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/ce11.vdna-dir',
+            },
+        ];
+        contig = 'chrII';
+        x0 = 232292;
+        x1 = 238909;
+    } else if (assembly === 'ce10') {
+        pinnedFiles = [
+            {
+                file_format: 'vdna-dir',
+                href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
+            },
+        ];
+        contig = 'chrII';
+        x0 = 232475;
+        x1 = 237997;
+    }
+
+    return { x0, x1, contig, pinnedFiles };
+};
 
 // Files to be displayed for local version of browser
 const dummyFiles = [
@@ -337,113 +476,25 @@ class GenomeBrowser extends React.Component {
         if (this.state.visualizer) {
             this.state.visualizer.appCanvasRef.componentWillUnmount();
         }
-    }
 
-    setBrowserDefaults(assemblyAnnotation, resolve) {
-        const assembly = assemblyAnnotation.split(' ')[0];
-        // Files to be displayed on all genome browser results
-        let pinnedFiles = [];
-        let contig = null;
-        let x0 = null;
-        let x1 = null;
-        if (assembly === 'GRCh38') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vdna-dir',
-                },
-                {
-                    file_format: 'vgenes-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/GRCh38/GRCh38.vgenes-dir',
-                    title: 'GENCODE V29',
-                },
-            ];
-            contig = 'chr1';
-            x0 = 11102837;
-            x1 = 11267747;
-        } else if (assembly === 'hg19' || assembly === 'GRCh37') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vdna-dir',
-                },
-                {
-                    file_format: 'vgenes-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/hg19/hg19.vgenes-dir',
-                    title: 'GENCODE V29',
-                },
-            ];
-            contig = 'chr21';
-            x0 = 33031597;
-            x1 = 33041570;
-        } else if (assembly === 'mm10' || assembly === 'mm10-minimal' || assembly === 'GRCm38') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vdna-dir',
-                },
-                {
-                    file_format: 'vgenes-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/mm10/mm10.vgenes-dir',
-                    title: 'GENCODE M21',
-                },
-            ];
-            contig = 'chr12';
-            x0 = 56694976;
-            x1 = 56714605;
-        } else if (assembly === 'mm9' || assembly === 'GRCm37') {
-            pinnedFiles = [];
-            contig = 'chr12';
-            x0 = 57795963;
-            x1 = 57815592;
-        } else if (assembly === 'dm6') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm6/dm6.vdna-dir',
-                },
-            ];
-            contig = 'chr2L';
-            x0 = 2420509;
-            x1 = 2467686;
-        } else if (assembly === 'dm3') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/dm3/dm3.vdna-dir',
-                },
-            ];
-            contig = 'chr2L';
-            x0 = 2428372;
-            x1 = 2459823;
-        } else if (assembly === 'ce11') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce11/ce11.vdna-dir',
-                },
-            ];
-            contig = 'chrII';
-            x0 = 232292;
-            x1 = 238909;
-        } else if (assembly === 'ce10') {
-            pinnedFiles = [
-                {
-                    file_format: 'vdna-dir',
-                    href: 'https://encoded-build.s3.amazonaws.com/browser/ce10/ce10.vdna-dir',
-                },
-            ];
-            contig = 'chrII';
-            x0 = 232475;
-            x1 = 237997;
-        }
-        this.setState({
+        // save co-ordinates to be used to restore location if user comes back to genome_browser tab/area
+        const { x0, x1, contig } = readGenomeBrowserLabelCoordinates();
+
+        window.sessionStorage.setItem(GV_COORDINATES_KEY, JSON.stringify({
             contig,
             x0,
             x1,
-            pinnedFiles,
-        }, () => {
-            resolve('success!');
+            pinnedFiles: this.state.pinnedFiles,
+        }));
+    }
+
+    setBrowserDefaults(assemblyAnnotation, resolve) {
+        const { contig, x0, x1, pinnedFiles } = getDefaultCoordinates(assemblyAnnotation);
+
+        this.setState({ contig, x0, x1, pinnedFiles }, () => {
+            if (resolve) {
+                resolve('success!');
+            }
         });
     }
 
@@ -549,11 +600,11 @@ class GenomeBrowser extends React.Component {
         let x0 = this.state.x0;
         let x1 = this.state.x1;
         if (this.chartdisplay) {
-            const scrollLocation = this.chartdisplay.getElementsByClassName('hpgv_panel-header')[0].getElementsByTagName('span')[0].innerText;
-            const splitScrollLocation = scrollLocation.split(' ');
-            contig = splitScrollLocation[0];
-            x0 = (splitScrollLocation[1].indexOf('Mbp') > -1) ? +splitScrollLocation[1].replace('Mbp', '') * 1e6 : +splitScrollLocation[1].replace('bp', '');
-            x1 = (splitScrollLocation[3].indexOf('Mbp') > -1) ? +splitScrollLocation[3].replace('Mbp', '') * 1e6 : +splitScrollLocation[3].replace('bp', '');
+            const coordinates = readGenomeBrowserLabelCoordinates();
+
+            x0 = coordinates.x0;
+            x1 = coordinates.x1;
+            contig = coordinates.contig;
         }
         this.setState({
             trackList: tracks,
@@ -719,7 +770,8 @@ class GenomeBrowser extends React.Component {
     }
 
     resetLocation() {
-        this.state.visualizer.setLocation({ contig: this.state.contig, x0: this.state.x0, x1: this.state.x1 });
+        const { contig, x0, x1 } = getDefaultCoordinates(this.state.genome, true);
+        this.state.visualizer.setLocation({ contig, x0, x1 });
     }
 
     render() {
