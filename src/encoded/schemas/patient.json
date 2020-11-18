@@ -144,11 +144,8 @@
         "surgery.pathology_report.pathology_report_tumor_range":{
             "title": "Tumor Size Range"
         },
-        "surgery.pathology_report.laterality": {
-            "title": "Tumor Laterality"
-        },
         "surgery.pathology_report.histology": {
-            "title": "Tumor Histologic Subtypes"
+            "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
             "title": "pT Stage at Presentation"
@@ -167,6 +164,9 @@
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage at Presentation"
+        },
+        "surgery.pathology_report.laterality": {
+            "title": "Tumor Laterality"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -250,20 +250,14 @@
         "race": {
             "title": "Race"
         },
-        "status": {
-            "title": "Status"
-        },
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "surgery.pathology_report.tumor_size_range":{
-            "title": "Tumor Size"
-        },
-        "surgery.pathology_report.laterality": {
-            "title": "Tumor Laterality"
+        "surgery.pathology_report.pathology_report_tumor_range":{
+            "title": "Tumor Size Range"
         },
         "surgery.pathology_report.histology": {
-            "title": "Tumor Histologic Subtypes"
+            "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
             "title": "pT Stage"
@@ -283,11 +277,17 @@
         "surgery.pathology_report.ajcc_tnm_stage": {
             "title": "TNM Stage at Presentation"
         },
+        "surgery.pathology_report.laterality": {
+            "title": "Tumor Laterality"
+        },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {
@@ -311,4 +311,5 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
 

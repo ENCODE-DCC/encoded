@@ -459,11 +459,14 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "pathology_report_tumor_range": {
             "title": "Tumor Size Range"
+        },
+        "histology": {
+            "title": "Histologic Subtype"
+        },
+        "grade": {
+            "title": "Tumor Grade"
         },
         "ajcc_p_stage": {
             "title": "pT Stage"
@@ -480,23 +483,17 @@
         "metasis_details.type": {
             "title": "Metastasis Type"
         },
-        "ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
-        },
         "ajcc_version": {
             "title": "AJCC Version"
+        },
+        "ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
         },
         "laterality": {
             "title": "Tumor Laterality"
         },
-        "histology": {
-            "title": "Tumor Histologic Subtypes"
-        },
         "focality": {
             "title": "Tumor Focality"
-        },
-        "grade": {
-            "title": "Tumor Grade"
         },
         "sarcomatoid": {
             "title": "Sarcomatoid Change"
@@ -525,6 +522,9 @@
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -537,14 +537,17 @@
         "patient": {
             "title": "Patient"
         },
-        "status": {
-            "title": "Status"
-        },
         "tumor_size": {
             "title": "Tumor Size"
         },
         "tumor_size_units": {
             "title": "Tumor Size Units"
+        },
+        "histology": {
+            "title": "Histologic Subtype"
+        },
+        "grade": {
+            "title": "Tumor Grade"
         },
         "ajcc_p_stage": {
             "title": "pT stage"
@@ -561,23 +564,17 @@
         "metasis_details.type": {
             "title": "Metastasis Type"
         },
-        "ajcc_tnm_stage": {
-            "title": "AJCC TNM Stage"
-        },
         "ajcc_version": {
             "title": "AJCC Version"
+        },
+        "ajcc_tnm_stage": {
+            "title": "AJCC TNM Stage"
         },
         "laterality": {
             "title": "Tumor Laterality"
         },
-        "histology": {
-            "title": "Tumor Histologic Subtypes"
-        },
         "focality": {
             "title": "Tumor Focality"
-        },
-        "grade": {
-            "title": "Tumor Grade"
         },
         "sarcomatoid": {
             "title": "Sarcomatoid Change"
@@ -605,6 +602,9 @@
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {
@@ -634,5 +634,6 @@
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }
+
 
 
