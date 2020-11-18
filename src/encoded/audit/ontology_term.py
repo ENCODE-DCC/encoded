@@ -41,7 +41,7 @@ def audit_term(value, system):
             )
         )
         yield AuditFailure('term_id not in ontology', detail,
-                           level='INTERNAL_ACTION')
+                           level='ERROR')
         return
 
     ontology_term_name = ontology[term_id]['name']

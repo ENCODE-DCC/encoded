@@ -10,44 +10,25 @@ from .formatter import (
 from .item import STATUS_LEVEL
 
 
-def audit_file_assembly(value, system):
+def audit_file_ref_info(value, system):
     if 'derived_from' not in value:
         return
     for f in value['derived_from']:
-        if f.get('assembly') and value.get('assembly') and \
-           f.get('assembly') != value.get('assembly'):
-            detail = ('Processed file {} assembly {} '
-                'does not match assembly {} of the file {} '
-                'it was derived from.'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    value['assembly'],
-                    f['assembly'],
-                    audit_link(path_to_text(f['@id']), f['@id'])
+        for ref_prop in ['assembly', 'genome_annotation']:
+            if f.get(ref_prop) and value.get(ref_prop) and \
+               f.get(ref_prop) != value.get(ref_prop):
+                detail = ('Processed file {} {} {} '
+                    'does not match {} {} of the file {} '
+                    'it was derived from.'.format(
+                        audit_link(path_to_text(value['@id']), value['@id']),
+                        ref_prop,
+                        value[ref_prop],
+                        ref_prop,
+                        f[ref_prop],
+                        audit_link(path_to_text(f['@id']), f['@id'])
+                    )
                 )
-            )
-            yield AuditFailure('inconsistent assembly',
-                               detail, level='WARNING')
-            return
-
-
-def audit_file_genome_annotation(value, system):
-    if 'derived_from' not in value:
-        return
-    for f in value['derived_from']:
-        if f.get('genome_annotation') and value.get('genome_annotation') and \
-           f.get('genome_annotation') != value.get('genome_annotation'):
-            detail = ('Processed file {} genome_annotation {} '
-                'does not match genome_annotation {} of the file {} '
-                'it was derived from.'.format(
-                    audit_link(path_to_text(value['@id']), value['@id']),
-                    value['genome_annotation'],
-                    f['genome_annotation'],
-                    audit_link(path_to_text(f['@id']), f['@id'])
-                )
-            )
-            yield AuditFailure('inconsistent genome_annotation',
-                               detail, level='WARNING')
-            return
+                yield AuditFailure('inconsistent reference', detail, level='ERROR')
 
 
 def audit_library_protocol_standards(value, system):
@@ -64,7 +45,7 @@ def audit_library_protocol_standards(value, system):
             lib_prots
             )
         )
-        yield AuditFailure('Variable library protocols', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('variable library protocols', detail, level='ERROR')
         return
     else:
         no_stds_flag = False
@@ -83,7 +64,7 @@ def audit_library_protocol_standards(value, system):
                     value.get('read_type')
                     )
                 )
-                yield AuditFailure('No standards', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('no protocol standards', detail, level='ERROR')
                 return
             for k in ['sequence_elements', 'demultiplexed_type']:
                 if my_standards[k] != value.get(k):
@@ -94,20 +75,20 @@ def audit_library_protocol_standards(value, system):
                         value.get(k)
                         )
                     )
-                    yield AuditFailure('Not aligned with library protocol', detail, level='INTERNAL_ACTION')
+                    yield AuditFailure('does not meet protocol standards', detail, level='INTERNAL_ACTION')
             if my_standards['read_length'] != value.get('read_length'):
                 std_flag = False
                 rl_spec = my_standards['read_length_specification']
                 if rl_spec == 'exact':
                     rl_spec = 'exactly'
-                    audit_level = 'WARNING'
+                    audit_level = 'ERROR'
                     std_flag = True
                 elif rl_spec == 'minimum' and value.get('read_length') < my_standards['read_length']:
-                    audit_level = 'WARNING'
+                    audit_level = 'ERROR'
                     std_flag = True
                 elif rl_spec == 'ideal':
                     rl_spec = 'ideally'
-                    audit_level = 'INTERNAL_ACTION'
+                    audit_level = 'WARNING'
                     std_flag = True
                 if std_flag == True:
                     detail = ('{} of file {} is {}, should be {} {} based on standards for {}'.format(
@@ -119,13 +100,11 @@ def audit_library_protocol_standards(value, system):
                         audit_link(path_to_text(value['libraries'][0]['protocol']['@id']), value['libraries'][0]['protocol']['@id'])
                         )
                     )
-                    yield AuditFailure('Not aligned with library protocol', detail, level=audit_level)
-
+                    yield AuditFailure('does not meet protocol standards', detail, level=audit_level)
 
 
 function_dispatcher = {
-    'audit_file_assembly': audit_file_assembly,
-    'audit_file_genome_annotation': audit_file_genome_annotation,
+    'audit_file_ref_info': audit_file_ref_info,
     'audit_library_protocol_standards': audit_library_protocol_standards
 }
 

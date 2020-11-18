@@ -21,7 +21,7 @@ def audit_read_counts(value, system):
             read_count_lib
             )
         )
-        yield AuditFailure('Variable read counts', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('Variable read counts', detail, level='ERROR')
         return
 
 
