@@ -16,7 +16,7 @@
 
 ### Schema version 6
 
-* Free-text fields *notes* and description are no longer allowed to have leading or trailing whitespace or contain just an empty string.
+* Free-text fields *notes* and *description* are no longer allowed to have leading or trailing whitespace or contain just an empty string.
 
 ### Schema version 5
 

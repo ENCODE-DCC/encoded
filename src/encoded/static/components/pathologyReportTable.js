@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 import IHCTable from './ihcTable';
@@ -155,7 +155,7 @@ class PathologyReportTable extends React.Component {
                                             <dd>{this.filteredData[i].positive_lymph_nodes}</dd>
                                         </div>}
 
-                                  
+
 
                                         {this.filteredData[i].ajcc_version && <div data-test="ajcc_version">
                                             <dt>AJCC Version</dt>

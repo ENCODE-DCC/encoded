@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "7"
         },
         "software_type": {
             "title": "Software type",
@@ -99,6 +99,7 @@
                     "CRISPR genome editing followed by RNA-seq",
                     "CRISPR screen",
                     "CRISPRi followed by RNA-seq",
+                    "CUT&RUN",
                     "data QC",
                     "direct RNA-seq",
                     "DNA methylation profiling by array assay",
@@ -111,6 +112,7 @@
                     "genotyping by high throughput sequencing assay",
                     "HiC",
                     "iCLIP",
+                    "icLASER",
                     "icSHAPE",
                     "integrative analysis",
                     "long read RNA-seq",
@@ -124,6 +126,7 @@
                     "PAS-seq",
                     "PLAC-seq",
                     "pooled clone sequencing",
+                    "PRO-cap",
                     "PRO-seq",
                     "protein sequencing by tandem mass spectrometry assay",
                     "RAMPAGE",
@@ -136,11 +139,12 @@
                     "RNA-seq",
                     "RRBS",
                     "shRNA knockdown followed by RNA-seq",
-                    "single cell isolation followed by RNA-seq",
                     "single-cell ATAC-seq",
-                    "single-nuclei ATAC-seq",
+                    "single-cell RNA sequencing assay",
+                    "single-nucleus ATAC-seq",
                     "siRNA knockdown followed by RNA-seq",
                     "small RNA-seq",
+                    "SPRITE",
                     "STARR-seq",
                     "Switchgear",
                     "TAB-seq",
@@ -222,7 +226,8 @@
         "used_by": 1.0,
         "software_type": 1.0,
         "references.title": 1.0,
-        "references.identifiers": 1.0
+        "references.identifiers": 1.0,
+        "description": 1.0
     },
     "changelog": "/profiles/changelogs/software.md"
 

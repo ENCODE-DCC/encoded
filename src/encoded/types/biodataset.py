@@ -275,7 +275,8 @@ class BiofileSet(Biodataset):
 class Bioreference(BiofileSet):
     item_type = 'bioreference'
     schema = load_schema('encoded:schemas/bioreference.json')
-    embedded = BiofileSet.embedded + ['files.biodataset']
+    embedded = BiofileSet.embedded + ['files.biodataset','award',
+        'lab']
 
 
 @collection(
@@ -293,6 +294,8 @@ class Bioproject(BiofileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample,
         'files.bioreplicate.biolibrary',
         'files.biolibrary',
         'files.bioreplicate.bioexperiment',
+        'award',
+        'lab'
     ]
 
 

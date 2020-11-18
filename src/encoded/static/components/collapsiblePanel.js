@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import PropTypes from 'prop-types';
 
 class CollapsiblePanel extends React.Component {

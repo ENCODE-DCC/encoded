@@ -2,7 +2,10 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-
+from .formatter import (
+    audit_link,
+    path_to_text,
+)
 
 @audit_checker('replicate', frame=['experiment'])
 def audit_status_replicate(value, system):
@@ -23,10 +26,11 @@ def audit_status_replicate(value, system):
             exp_status not in ['released', 'revoked']) or
             (exp_status in ['deleted'] and rep_status not in ['deleted'])):
         #  If any of the three cases exist, there is an error
-        detail = '{} replicate {} is in {} experiment'.format(
-            rep_status,
-            value['@id'],
+        detail = ('{} replicate {} is in {} experiment.'.format(
+            rep_status.capitalize(),
+            audit_link(path_to_text(value['@id']), value['@id']),
             exp_status
+            )
         )
         yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
     return
@@ -60,8 +64,7 @@ def audit_inconsistent_modifications_tag(value, system):
         if len(tags_names) > 0:
             antibody_targets = get_ab_targets(value)
             for ab_target in antibody_targets:
-                if 'recombinant protein' in ab_target['investigated_as'] or \
-                   'synthetic tag' in ab_target['investigated_as'] or \
+                if 'synthetic tag' in ab_target['investigated_as'] or \
                    'tag' in ab_target['investigated_as']:
                     if ab_target['label'] in tags_names:
                         matching_flag = True
@@ -70,15 +73,17 @@ def audit_inconsistent_modifications_tag(value, system):
                     matching_flag = True
                     break
             if len(antibody_targets) > 0 and not matching_flag:
-                detail = 'Replicate {}-{} in experiment {} '.format(
-                    value['biological_replicate_number'],
-                    value['technical_replicate_number'],
-                    value['experiment']['@id']) + \
-                    'specifies antibody {} that is inconsistent '.format(
-                        value['antibody']['@id']) + \
+                detail = ('Replicate {}-{} in experiment {} '
+                    'specifies antibody {} that is inconsistent '
                     'with biosample {} modification tags {}.'.format(
-                    value['library']['biosample']['@id'],
-                    tags_names)
+                        value['biological_replicate_number'],
+                        value['technical_replicate_number'],
+                        audit_link(path_to_text(value['experiment']['@id']), value['experiment']['@id']),
+                        audit_link(path_to_text(value['antibody']['@id']), value['antibody']['@id']),
+                        audit_link(path_to_text(value['library']['biosample']['@id']), value['library']['biosample']['@id']),
+                        tags_names
+                    )
+                )
                 yield AuditFailure('inconsistent modification tag', detail, level='INTERNAL_ACTION')
     return
 

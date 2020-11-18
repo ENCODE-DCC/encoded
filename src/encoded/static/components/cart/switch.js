@@ -2,6 +2,7 @@ import {
     cacheSavedCart,
     replaceCart,
     setCartIdentifier,
+    setCartLocked,
     setCartName,
     setCartStatus,
     setCurrentCart,
@@ -25,6 +26,7 @@ const switchCart = (currentCartAtId, fetch) => (
                 dispatch(replaceCart(savedCartObj.elements));
                 dispatch(setCartName(savedCartObj.name));
                 dispatch(setCartIdentifier(savedCartObj.identifier));
+                dispatch(setCartLocked(savedCartObj.locked));
                 dispatch(setCartStatus(savedCartObj.status));
                 dispatch(cacheSavedCart(savedCartObj));
                 cartSetOperationInProgress(false, dispatch);

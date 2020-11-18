@@ -1,45 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def platform():
-    return{
-        'term_name': 'ChIP-seq',
-        'term_id': 'OBI:0000716'
-    }
-
-
-@pytest.fixture
-def platform_1(platform):
-    item = platform.copy()
-    item.update({
-        'schema_version': '1',
-        'encode2_dbxrefs': ['AB_SOLiD_3.5'],
-        'geo_dbxrefs': ['GPL9442'],
-    })
-    return item
-
-
-@pytest.fixture
-def platform_2(platform):
-    item = platform.copy()
-    item.update({
-        'schema_version': '2',
-        'status': "CURRENT",
-    })
-    return item
-
-
-@pytest.fixture
-def platform_6(platform):
-    item = platform.copy()
-    item.update({
-        'schema_version': '6',
-        'status': "current",
-    })
-    return item
-
-
 def test_platform_upgrade(upgrader, platform_1):
     value = upgrader.upgrade('platform', platform_1, target_version='2')
     assert value['schema_version'] == '2'

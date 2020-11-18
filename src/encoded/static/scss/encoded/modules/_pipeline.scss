@@ -20,19 +20,21 @@ $pipeline-node-types:
     // Audit icons
     g.pipeline-node-#{$node-type} {
         fill: $color;
-
-        &.active {
-            fill: desaturate(darken($color, 20%), 30%);
-
+        
+        &.highlight {
             > rect, > ellipse {
-                stroke: #606060;
+                stroke: #F4442E;
                 stroke-width: 3px;
             }
 
             line {
-                stroke: #606060;
+                stroke: #F4442E;
                 stroke-width: 1px;
             }
+        }
+
+        &.active {
+            fill: desaturate(darken($color, 20%), 30%);
         }
 
         &.error, &.restricted {
@@ -60,7 +62,7 @@ $pipeline-node-types:
         }
     }
 
-    .graph-modal-#{$node-type} {
+    .graph-modal--#{$node-type} {
         background-color: $color;
     }
 }
@@ -71,7 +73,6 @@ g.pipeline-node-file-type {
 
 g.label {
     font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: bold;
     fill: #000;
 }
@@ -139,9 +140,9 @@ g.edgePath {
 }
 
 .graph-dl {
+    display: flex;
     margin: 0;
     padding: 5px;
-    border-bottom: 1px solid #e8e8e8;
 }
 
 .step-info {
@@ -160,12 +161,8 @@ g.edgePath {
     }
 }
 
-.btn-orient {
-    margin: 2px 4px;
-    padding: 5px 10px;
-    line-height: 0.9;
-    overflow: hidden;
-    fill: white;
+.btn.btn-orient {
+    margin-right: 5px;
 }
 
 g.pipeline-node-qc-metric {
@@ -176,15 +173,23 @@ g.pipeline-node-qc-metric {
     }
 
     > text {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: bold;
         fill: #000;
     }
 
     &.active {
         > circle {
-            stroke: #404040;
             fill: darken(#80ffc0, 50%);
+        }
+
+        > text {
+            fill: #fff;
+        }
+    }
+    
+    &.highlight {
+        > circle {
+            stroke: #F4442E;
         }
 
         > text {
@@ -228,6 +233,28 @@ g.pipeline-node-qc-metric {
         font-size: 1rem;
         font-weight: normal;
         color: #808080;
+    }
+}
+
+.quality-metrics-modal {
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+    }
+
+    @at-root #{&}__data {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 33.33%;
+        }
+    }
+
+    @at-root #{&}__attachments {
+        h5 {
+            margin: 0 0 10px;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 66.66%;
+        }
     }
 }
 
@@ -275,6 +302,15 @@ g.pipeline-node-qc-metric {
 .zoom-indicator {
     width: 15%;
     text-align: center;
+
+    button {
+        background-color: white;
+        border: none;
+    }
+
+    button:focus {
+        outline:none;
+    }
 }
 
 .zoom-decoration {
@@ -282,6 +318,24 @@ g.pipeline-node-qc-metric {
     font-size: 1.5rem;
     font-weight: bold;
     vertical-align: middle;
+}
+
+.graph-modal-header {
+    @at-root #{&}__content {
+        flex: 1 1 auto;
+
+        h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            border-bottom: none;
+        }
+
+        h5 {
+            margin: 0;
+            font-size: 1rem;
+            color: #808080;
+        }
+    }
 }
 
 .graph-modal-audits {
@@ -326,5 +380,16 @@ $color-unknown: #ffc0c0;
         fill: label-color($color-unknown);
         background-color: $color-unknown;
         box-shadow: inset 0 0 0 1px lighten($color-unknown, 20%);
+    }
+}
+
+
+.analyses-selector {
+    @at-root #{&}--file-gallery-facets {
+        margin-bottom: 25px;
+    }
+
+    .file-gallery-facets.collapsed & {
+        display: none;
     }
 }

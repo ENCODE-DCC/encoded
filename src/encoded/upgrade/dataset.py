@@ -483,3 +483,160 @@ def annotation_24_25(value, system):
     if value.get('annotation_type') == 'candidate regulatory elements':
         value['annotation_type'] = 'candidate Cis-Regulatory Elements'
     return
+
+
+@upgrade_step('experiment', '26', '27')
+def experiment_26_27(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
+    if value.get('assay_term_name') == 'single-nuclei ATAC-seq':
+        value['assay_term_name'] = 'single-nucleus ATAC-seq'
+
+@upgrade_step('experiment', '27', '28')
+def experiment_27_28(value, system):
+    #https://encodedcc.atlassian.net/browse/ENCD-4838
+    value.pop('experiment_classification', None)
+
+
+@upgrade_step('annotation', '25', '26')
+def annotation_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4488
+    enc_ver = value.get('encyclopedia_version')
+    ver_dict = {
+        '1': 'ENCODE v1',
+        '2': 'ENCODE v2',
+        'ENCODE2': 'ENCODE v2',
+        '3': 'ENCODE v3',
+        '4': 'ENCODE v4',
+        '5': 'ENCODE v5',
+        'ROADMAP': 'Roadmap',
+    }
+    if enc_ver in ver_dict:
+        value['encyclopedia_version'] = ver_dict[enc_ver]
+    elif enc_ver == 'Blacklists':
+        value.pop('encyclopedia_version', None)
+    return
+
+
+@upgrade_step('aggregate_series', '1', '2')
+@upgrade_step('annotation', '26', '27')
+@upgrade_step('experiment_series', '1', '2')
+@upgrade_step('functional_characterization_experiment', '1', '2')
+@upgrade_step('functional_characterization_series', '1', '2')
+@upgrade_step('matched_set', '15', '16')
+@upgrade_step('organism_development_series', '15', '16')
+@upgrade_step('project', '15', '16')
+@upgrade_step('publication_data', '15', '16')
+@upgrade_step('reference_epigenome', '16', '17')
+@upgrade_step('reference', '16', '17')
+@upgrade_step('replication_timing_series', '15', '16')
+@upgrade_step('single_cell_rna_series', '1', '2')
+@upgrade_step('treatment_concentration_series', '15', '16')
+@upgrade_step('treatment_time_series', '16', '17')
+@upgrade_step('ucsc_browser_composite', '15', '16')
+def dataset_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5068
+    if not value.get('dbxrefs'):
+        return
+    new_dbxrefs = set()
+    for dbxref in value['dbxrefs']:
+        if not dbxref.startswith('IHEC:IHECRE'):
+            new_dbxrefs.add(dbxref)
+            continue
+        new_dbxrefs.add(dbxref.rsplit('.', 1)[0])
+    value['dbxrefs'] = sorted(new_dbxrefs)
+
+
+@upgrade_step('aggregate_series', '2', '3')
+@upgrade_step('experiment_series', '2', '3')
+@upgrade_step('functional_characterization_experiment', '3', '4')
+@upgrade_step('functional_characterization_series', '2', '3')
+@upgrade_step('matched_set', '16', '17')
+@upgrade_step('organism_development_series', '16', '17')
+@upgrade_step('project', '16', '17')
+@upgrade_step('publication_data', '16', '17')
+@upgrade_step('reference', '17', '18')
+@upgrade_step('replication_timing_series', '16', '17')
+@upgrade_step('single_cell_rna_series', '2', '3')
+@upgrade_step('treatment_concentration_series', '16', '17')
+@upgrade_step('treatment_time_series', '17', '18')
+@upgrade_step('ucsc_browser_composite', '16', '17')
+def dataset_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5083
+    if not value.get('dbxrefs'):
+        return
+    new_dbxrefs = set()
+    for dbxref in value['dbxrefs']:
+        if not dbxref.startswith('IHEC:IHECRE'):
+            new_dbxrefs.add(dbxref)
+            continue
+        else:
+            if 'notes' in value:
+                value['notes'] += '\t' + dbxref
+            else:
+                value['notes'] = dbxref
+    if len(new_dbxrefs) == 0:
+        value.pop('dbxrefs', None)
+    else:
+        value['dbxrefs'] = sorted(new_dbxrefs)
+
+
+@upgrade_step('annotation', '27', '28')
+def annotation_27_28(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5232
+    annotation_type = value.get('annotation_type', None)
+
+    if annotation_type == "representative DNase hypersensitivity sites":
+        value['annotation_type'] = 'representative DNase hypersensitivity sites (rDHSs)'
+    return
+
+
+@upgrade_step('reference', '18', '19')
+def reference_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5259
+    if 'examined_loci' in value:
+        examined_loci = value.get('examined_loci', None)
+        if examined_loci == []:
+            value.pop('examined_loci', None)
+
+
+@upgrade_step('annotation', '28', '29')
+def annotation_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4438
+    units = value.get('relevant_timepoint_units')
+    if units == 'stage':
+        info = f'{value.get("relevant_timepoint")} {units}'
+        value.pop('relevant_timepoint', None)
+        value.pop('relevant_timepoint_units', None)
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. Removed timepoint metadata: {info}'
+        else:
+            value['notes'] = info
+    return
+
+
+@upgrade_step('experiment', '28', '29')
+def experiment_28_29(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5343
+    unrunnable = f'Previous internal_status claimed this experiment was unrunnable on a pipeline'
+    if 'pipeline_error_detail' in value:
+        error_detail = f'Previous internal_status claimed a pipeline error: {value.get("pipeline_error_detail")}'
+        value.pop('pipeline_error_detail')
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {error_detail}'
+        else:
+            value['notes'] = error_detail
+    if value.get('internal_status') == 'unrunnable':
+        if 'notes' in value:
+            value['notes'] = f'{value.get("notes")}. {unrunnable}'
+        else:
+            value['notes'] = unrunnable
+
+    value['internal_status'] = 'unreviewed'
+    return
+
+
+@upgrade_step('experiment', '29', '30')
+def experiment_29_30(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq':
+        value['assay_term_name'] = 'single-cell RNA sequencing assay'

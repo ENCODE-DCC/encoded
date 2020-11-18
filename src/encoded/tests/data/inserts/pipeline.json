@@ -77,7 +77,7 @@
         ],
         "status": "released",
         "title": "Graveley RNA-seq Analysis",
-        "lab": "brenton-graveley",
+        "lab": "encode-processing-pipeline",
         "award": "U54HG007005",
         "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
     },
@@ -177,6 +177,22 @@
         "title": "microRNA-seq pipeline",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
+        "reference_filesets": [
+            "ENCSR156CIL",
+            "ENCSR704RSS"
+        ],
         "uuid": "cd340a00-50aa-11e4-916c-0800200c9a66"
+    },
+    {
+        "accession": "ENCPL001ATA",
+        "assay_term_names": ["ATAC-seq"],
+        "analysis_steps": [
+            "atac-seq-alignment-step-v-1"
+        ],
+        "status": "released",
+        "title": "ATAC-seq (replicated)",
+        "lab": "encode-processing-pipeline",
+        "award": "U54HG007005",
+        "uuid": "bc780a00-50aa-11e4-916c-0800200c9a66"
     }
 ]

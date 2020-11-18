@@ -58,7 +58,8 @@
                 "standards document",
                 "strain generation protocol",
                 "transfection protocol",
-                "treatment protocol"
+                "treatment protocol",
+                "workflow metadata"
            ]
         },
         "description": {
@@ -119,6 +120,9 @@
         },
         "award.name": {
             "title": "Award"
+        },
+        "award.@id": {
+            "title": "@id"
         },
         "lab.title": {
             "title": "Lab"

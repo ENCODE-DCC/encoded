@@ -1,46 +1,74 @@
 .cart {
     // Cart navigation menu
     @at-root #{&}__nav {
-        position: relative;
-        display: table-cell;
-        vertical-align: bottom;
-        width: 34px;
+        display: flex;
+        justify-content: flex-start;
         height: 24px;
         fill: white;
 
+        @media screen and (min-width: $screen-md-min) {
+            justify-content: space-between;
+        }
+
         &-icon {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 16px;
-            vertical-align: top;
+            flex: 0 0 24px;
+            width: 24px;
+            height: 24px;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 16px;
+                width: 16px;
+                height: 16px;
+            }
 
             &--empty {
+                flex: 0 0 24px;
                 width: 24px;
+                height: 24px;
             }
         }
 
         &-count {
-            display: inline-block;
-            position: relative;
-            padding: 0 5px;
+            flex: 0 1 24px;
+            margin-left: 5px;
+            text-align: center;
+            padding: 0 4px;
             font-size: 0.8rem;
             font-weight: bold;
             border-radius: 1.4rem;
             background-color: green;
-            height: 16px;
-            line-height: 16px;
+            height: 24px;
+            line-height: 24px;
+            animation: none;
+            align-self: flex-end;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex: 1 0 16px;
+                margin-left: -5px;
+                height: 16px;
+                line-height: 16px;
+            }
         }
 
         &-spinner {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            bottom: 0;
-            left: 10px;
+            flex: 0 0 24px;
+            margin-left: 5px;
+            height: 24px;
+            animation: none;
+            align-self: flex-end;
             background-color: #ff8800;
             border-radius: 1.4rem;
             animation: rotating 600ms linear infinite;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 16px;
+                margin-left: -5px;
+                height: 16px;
+            }
+
+            .svg-icon-spinner {
+                position: absolute;
+            }
         }
 
         @keyframes rotating {
@@ -63,14 +91,6 @@
         svg {
             display: block;
             fill: #cc0700;
-        }
-    }
-
-    // Cart contents list
-    @at-root #{&}__result-table {
-        .result-table {
-            padding: 0;
-            border: none;
         }
     }
 
@@ -109,11 +129,12 @@
         padding: 5px;
         text-align: right;
         border-width: 1px 1px 0 1px;
-        border-color: #a0a0a0;
+        border-color: #ccc;
         border-style: solid;
         background-color: #d8d8d8;
 
-        button {
+        > button {
+            display: inline-block;
             margin-left: 5px;
         }
     }
@@ -169,25 +190,11 @@
         border-bottom: 1px solid #ddd;
     }
 
-    // Cart result table pager control area.
-    @at-root #{&}__pager {
-        flex: 0 1 auto;
-
-        @at-root #{&}-note {
-            display: none;
-            margin-left: 5px;
-            font-size: 0.9rem;
-            color: #606060;
-
-            @media screen and (min-width: $screen-sm-min) {
-                display: inline-block;
-            }
-        }
-    }
-
     // Cart add/remove toggle button
     @at-root #{&}__toggle {
         display: block;
+        width: 30px;
+        height: 30px;
         padding: 6px;
         border: 1px solid;
         background-color: #fff;
@@ -210,9 +217,14 @@
 
         &:hover {
             background-color: #e0e0e0;
+
+            &:disabled {
+                background-color: #fff;
+            }
         }
 
         &:disabled {
+            cursor: default;
             stroke: #a0a0a0;
             fill: #a0a0a0;
         }
@@ -231,14 +243,18 @@
                 fill: #a0a0a0;
             }
         }
+
+        .item-accessories & {
+            display: inline-block;
+            margin-left: 5px;
+            height: 100%;
+            vertical-align: top;
+        }
     }
 
     @at-root #{&}__tools {
+        display: flex;
         flex: 0 1 auto;
-
-        button {
-            margin-left: 5px;
-        }
     }
 
     // Header of cart panel.
@@ -247,7 +263,7 @@
         justify-content: space-between;
     }
 
-    @at-root #{&}__facet-progress-overlay {
+    @at-root #{&}__facet-disabled-overlay {
         position: absolute;
         top: 0;
         right: 0;
@@ -274,16 +290,27 @@
             flex: 1 1 auto;
         }
 
-        > button {
+        > .btn {
             flex: 0 1 auto;
+            border-left: none;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
     }
 }
 
+.cart-assembly-indicator {
+    display: flex;
+    padding: 0 10px;
+    align-items: center;
+    border: 1px solid #a0a0a0;
+    color: #606060;
+    font-weight: bold;
+}
+
 // Cart button in navigation bar
-.navbar-inverse .nav > li > button.cart__nav-button {
-    padding-top: 8px;
-    padding-bottom: 8px;
+.navbar__nav .dropdown .dropdown__toggle.cart__nav-button {
+    padding: 8px 15px;
 }
 
 
@@ -295,37 +322,54 @@
         display: flex;
     }
 
-    .box.facets {
+    &-facets {
         @media screen and (min-width: $screen-sm-min) {
             flex: 0 0 300px;
             margin-right: 20px;
         }
 
         position: relative;
-        padding-bottom: 23px;
+        padding: 0 10px 23px;
         z-index: 0;
-
-        // <button> specific to cart file facets
-        button {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            border: none;
-            background-color: transparent;
-        }
+        border: 1px solid #ccc;
 
         progress {
             width: 100%;
         }
     }
 
-    .result-table {
-        flex: 0 1 75%;
+    &-content {
+        overflow: hidden;
+        border: 1px solid #ccc;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 1 1 auto;
+        }
+
+        .result-table {
+            border: none;
+        }
     }
 }
 
 
+// Defines check boxes and radio button on the cart facets.
+$cart-facet-check-box-size: 18px;
+%facet-term-control {
+    display: flex;
+    flex: 0 0 $cart-facet-check-box-size;
+    width: $cart-facet-check-box-size;
+    height: $cart-facet-check-box-size;
+    border: 1px solid #c0c0c0;
+    justify-content: center;
+    align-items: center;
+}
+
+
 // Facets for the cart-view page.
+$icon-visualizable-color: #396492;
+$cart-facet-visualizable-size: 18px;
+$cart-facet-visualizable-padding: 2px;
 .cart-facet {
     padding: 0;
 
@@ -367,16 +411,9 @@
         }
 
         // Checkbox for a facet term
-        $cart-facet-check-box-size: 18px;
         @at-root #{&}__check {
-            display: flex;
-            flex: 0 0 $cart-facet-check-box-size;
-            width: $cart-facet-check-box-size;
-            height: $cart-facet-check-box-size;
-            border: 1px solid #c0c0c0;
+            @extend %facet-term-control;
             border-radius: 3px;
-            justify-content: center;
-            align-items: center;
 
             $cart-facet-check-size: 16px;
             .icon {
@@ -390,31 +427,56 @@
             color: #fff;
         }
 
+        @at-root #{&}__radio {
+            @extend %facet-term-control;
+            border-radius: $cart-facet-check-box-size / 2;
+            text-align: center;
+
+            $cart-facet-radio-size: 8px;
+            .icon {
+                flex: 0 0 $cart-facet-radio-size;
+                font-size: $cart-facet-radio-size;
+                line-height: $cart-facet-check-box-size;
+            }
+        }
+
+        @at-root #{&}__radio--checked {
+            background-color: #008000;
+            color: #fff;
+        }
+
         // Text of the facet term
         @at-root #{&}__text {
             padding: 0 5px;
-            flex: 0 1 60%;
-            font-size: 0.95rem;
-        }
-
-        // Count of items facet term represents
-        @at-root #{&}__count {
-            flex: 0 1 20%;
-            padding-right: 5px;
-            text-align: right;
+            flex: 1 0 60%;
             font-size: 0.95rem;
         }
 
         // Circle whose tint reflects the count
         $cart-facet-magnitude-size: 18px;
         @at-root #{&}__magnitude {
-            flex: 0 0 $cart-facet-magnitude-size;
-            width: $cart-facet-magnitude-size;
+            flex: 0 1 auto;
+            padding: 0 5px 0;
+            width: auto;
             height: $cart-facet-magnitude-size;
+            border-radius: $cart-facet-magnitude-size / 2;
 
-            .icon {
-                font-size: $cart-facet-magnitude-size;
+            > span {
+                font-size: 0.8rem;
                 line-height: $cart-facet-magnitude-size;
+            }
+        }
+
+        // Icon indicating file visualizability
+        @at-root #{&}__visualizable {
+            flex: 0 0 $cart-facet-visualizable-size;
+            width: $cart-facet-visualizable-size;
+            height: $cart-facet-visualizable-size;
+            padding: $cart-facet-visualizable-padding;
+
+            svg {
+                height: $cart-facet-visualizable-size - (2 * $cart-facet-visualizable-padding); // IE11
+                fill: $icon-visualizable-color;
             }
         }
     }
@@ -425,7 +487,7 @@
 .cart__facet-file-count {
     position: relative;
     padding: 5px;
-    margin: -10px -10px 20px -10px;
+    margin: 0 -10px 10px;
     background-color: #d8d8d8;
     text-align: center;
     font-size: 1rem;
@@ -508,16 +570,6 @@ $deleted-bg: #ffe0e0;
         margin: -5px;
     }
 
-    @at-root #{&}__action-button {
-        display: inline-block;
-        position: relative;
-        margin-left: 5px;
-
-        &:first-child {
-            margin-left: 0;
-        }
-    }
-
     @at-root #{&}__name-header {
         width: 50%;
     }
@@ -542,7 +594,7 @@ $deleted-bg: #ffe0e0;
         background-color: $autosave-bg;
     }
 
-    @at-root #{&}__delete-group {
+    @at-root #{&}__tooltip-group {
         position: relative;
     }
 
@@ -559,6 +611,7 @@ $deleted-bg: #ffe0e0;
     }
 
     @at-root #{&}__legend {
+        padding: 3px 5px;
         text-align: center;
 
         @at-root #{&}-item {
@@ -610,21 +663,21 @@ $deleted-bg: #ffe0e0;
 
     @at-root #{&}__control-area {
         text-align: center;
-        font-size: 1.9rem;
 
         @media screen and (min-width: $screen-sm-min) {
             flex: 0 0 20%;
-            margin-top: 1.5rem;
+            margin-top: 1.15rem;
         }
 
         button {
             @extend .icon;
             @extend .icon-arrow-circle-down;
-            padding: 4px 8px;
+            padding: 2px 8px;
             color: #606060;
             background-color: transparent;
             border: 1px solid #808080;
             border-radius: 5px;
+            font-size: 1.5rem;
 
             @media screen and (min-width: $screen-sm-min) {
                 &:before {
@@ -675,6 +728,352 @@ $deleted-bg: #ffe0e0;
 }
 
 
+// Checkbox for filtering out facet terms not included in visualizable files.
+.cart-viz-toggle {
+    margin: 0 0 10px;
+    padding: 0;
+
+    > button {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        border: none;
+        background: none;
+
+        > label {
+            display: flex;
+            cursor: pointer;
+        }
+    }
+
+    @at-root #{&}__check {
+        @extend %facet-term-control;
+        flex: 0 0 18px;
+        border-radius: 3px;
+
+        $cart-viz-toggle-size: 16px;
+        .icon {
+            flex: 0 0 $cart-viz-toggle-size;
+            font-size: $cart-viz-toggle-size;
+        }
+
+        @at-root #{&}--checked {
+            background-color: #008000;
+            color: #fff;
+        }
+    }
+
+    @at-root #{&}__label-text {
+        flex: 0 1 auto;
+        padding: 0 5px;
+        font-size: 1rem;
+        line-height: $cart-facet-visualizable-size;
+    }
+
+    @at-root #{&}__icon {
+        flex: 0 0 18px;
+        padding: 2px;
+        width: $cart-facet-visualizable-size;
+        height: $cart-facet-visualizable-size;
+
+        svg {
+            display: block;
+            fill: $icon-visualizable-color;
+        }
+    }
+}
+
+
+.cart-tab {
+    display: flex;
+    align-items: center;
+    line-height: 1.1;
+
+    @at-root #{&}__count {
+        display: none;
+        padding: 0 5px;
+        margin-left: 6px;
+        font-size: 0.8rem;
+        color: #fff;
+        background-color: green;
+        border-radius: 20px;
+        line-height: 1.4;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: block;
+        }
+    }
+}
+
+
+// Defines cart-list identifier colors based on `file_format`
+$file-type-colors: (
+    (bam, #9De89b, #000000),
+    (bed, #ffe062, #000000),
+    (bedpe, #e8917c, #000000),
+    (bigBed, #4cc7ff, #000000),
+    (bigWig, #d5bafb, #000000),
+    (CEL, #a0eeff, #000000),
+    (chain, #ffa677, #000000),
+    (csv, #Bc50ff, #ffffff),
+    (database, #ffd86d, #000000),
+    (fasta, #99e8cd, #000000),
+    (fastq, #e8adb9, #000000),
+    (gff, #f9cbff, #000000),
+    (gtf, #cfc3b8, #000000),
+    (hdf5, #c1ceff, #000000),
+    (hic, #8886b2, #ffffff),
+    (idat, #ffdfcd, #000000),
+    (PWM, #c8c6ff, #000000),
+    (rcc, #acccbe, #000000),
+    (sam, #8eb2b2, #000000),
+    (tagAlign, #b0ff8c, #000000),
+    (tar, #e8ce95, #000000),
+    (tsv, #ff9a99, #000000),
+    (vcf, #a08ce8, #ffffff),
+    (wig, #a3fff2, #000000),
+    (idx, #ffd6ba, #000000),
+    (txt, #e897dc, #000000),
+);
+
+// Contains list of cart-related objects, sort of like search results.
+.cart-list {
+    // Contains one item in the cart list.
+    @at-root #{&}-item {
+        display: flex;
+        position: relative;
+        border-bottom: 1px solid #ccc;
+        color: #000;
+
+        &:hover {
+            text-decoration: none;
+        }
+
+        @at-root #{&}__hover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            &:hover {
+                background-color: rgba(0,0,0,0.07);
+            }
+        }
+
+        // To allow last item's bottom border to sit on top of tab area bottom border.
+        &:last-child {
+            margin-bottom: -1px;
+        }
+
+        @at-root #{&}__file-type {
+            display: flex;
+            flex: 0 0 25%;
+            align-items: center;
+            padding: 0 10px 5px;
+            background-color: #ccccff;
+            box-shadow: 0 0 12px inset rgba(0,0,0,0.07);
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 20%;
+            }
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 15%;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex-basis: 10%;
+            }
+        }
+
+        @each $file-type, $back-color, $fore-color in $file-type-colors {
+            @at-root #{&}__file-type--#{$file-type} {
+                background-color: $back-color;
+                color: $fore-color;
+            }
+        }
+
+        @at-root #{&}__props {
+            display: flex;
+            flex: 0 0 75%;
+            flex-wrap: wrap;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 80%;
+            }
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 85%;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex-basis: 90%;
+            }
+        }
+
+        @at-root #{&}__format {
+            flex-basis: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+
+            @media screen and (min-width: $screen-md-min) {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @at-root #{&}__details {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 0 0 100%;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 100%;
+            }
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 80%;
+            }
+        }
+
+        @at-root #{&}__identifier {
+            display: flex;
+            flex: 0 0 100%;
+            background-color: #f0f0f0;
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 20%;
+                flex-wrap: wrap;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex-wrap: nowrap;
+            }
+        }
+
+        @at-root #{&}__status {
+            display: flex;
+            flex: 0 0 50%;
+            padding: 5px 10px;
+            align-items: center;
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 100%;
+                align-items: flex-end;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex-basis: 50%;
+                align-items: center;
+            }
+        }
+
+        @at-root #{&}__title {
+            display: flex;
+            flex: 0 0 50%;
+            padding: 5px 10px;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 0.9rem;
+
+            @media screen and (min-width: $screen-lg-min) {
+                font-size: 1rem;
+                flex-basis: 100%;
+                align-items: flex-start;
+                justify-content: flex-start;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex-basis: 50%;
+                align-items: center;
+            }
+        }
+    }
+
+    // File details section of each item
+    @at-root #{&}-details {
+        @at-root #{&}__output-type {
+            flex-basis: 100%;
+            padding: 2px 10px 5px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        @at-root #{&}__type {
+            flex: 0 0 50%;
+            padding: 0px 10px 5px;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 25%;
+            }
+        }
+
+        @at-root #{&}__target {
+            flex: 0 0 50%;
+            padding: 0px 10px 5px;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 25%;
+            }
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 15%;
+            }
+        }
+
+        @at-root #{&}__assay {
+            flex: 0 0 50%;
+            padding: 0px 10px 5px;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 25%;
+            }
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 30%;
+            }
+        }
+
+        @at-root #{&}__biosample {
+            flex: 0 0 50%;
+            padding: 0px 10px 5px;
+
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 25%;
+            }
+
+            @media screen and (min-width: $screen-lg-min) {
+                flex-basis: 30%;
+            }
+        }
+
+        @at-root #{&}__label {
+            color: #808080;
+            font-size: 0.8rem;
+        }
+    }
+}
+
+
+.cart-pager-area {
+    display: flex;
+    padding: 3px;
+    justify-content: flex-end;
+    border-bottom: 1px solid #ccc;
+}
+
+
+.nav {
+    &.result-table {
+        &.cart__empty-message {
+            padding: 30px 20px;
+            font-style: normal;
+            text-align: left;
+        }
+    }
+}
+
+
 // Experiment tables with a cart control in the header.
 .experiment-table {
     @at-root #{&}__header {
@@ -690,4 +1089,70 @@ $deleted-bg: #ffe0e0;
         flex: 1 1 auto;
     }
 
+}
+
+
+// Control to batch download cart files.
+.cart-download {
+    margin-right: 5px;
+
+    button {
+        @extend .btn;
+        @extend .btn-info;
+        @extend .btn-sm;
+    }
+
+    @at-root #{&}__option-title {
+        margin: 5px 0;
+        font-size: 1rem;
+        font-weight: bold;
+        pointer-events: none;
+    }
+
+    @at-root #{&}__option-description {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        font-weight: normal;
+        pointer-events: none;
+    }
+
+    .dropdown-button__content {
+        button {
+            font-family: $site-font;
+            color: #000;
+            line-height: 1.2;
+
+            &:hover {
+                color: #fff;
+                
+                background-color: #4f689e;
+            }
+        }
+    }
+}
+
+// Button to lock/unlock cart
+.btn.cart-lock-trigger {
+    width: 85px;
+    color: #000;
+
+    &:disabled {
+        color: #000;
+    }
+
+    .svg-icon {
+        fill: #000;
+    }
+}
+
+// Lock icon in the menu.
+.cart-nav-lock {
+    display: inline-block;
+    margin-left: 10px;
+    width: 13px;
+    height: 13px;
+
+    > svg {
+        fill: #000;
+    }
 }

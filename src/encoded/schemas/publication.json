@@ -12,11 +12,13 @@
         {"$ref": "mixins.json#/uuid"},
         {"$ref": "mixins.json#/submitted"},
         {"$ref": "mixins.json#/attribution"},
-        {"$ref": "mixins.json#/standard_status"}
+        {"$ref": "mixins.json#/standard_status"},
+        {"$ref": "mixins.json#/notes"},
+        {"$ref": "mixins.json#/documents"}
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "9"
         },
         "title": {
             "title": "Title",
@@ -36,7 +38,18 @@
         },
         "date_published": {
             "title": "Publication date",
-            "type": "string"
+            "description": "The date the publication or communication was published; must be in YYYY-MM-DD format.",
+            "type": "string",
+            "oneOf": [
+                {
+                    "format": "date"
+                },
+                {
+                    "comment": "Historical date formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "pattern": "^[0-9]{4}[^-]*$"
+                }
+            ]
         },
         "date_revised": {
             "title": "Date revised",
@@ -77,19 +90,6 @@
                 "type": "string",
                 "uniqueKey":  "publication:identifier",
                 "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
-            }
-        },
-        "datasets": {
-            "title": "Dataset",
-            "description": "The datasets referred to by the publication.",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Datasets",
-                "description": "A datasets referred to by the publication.",
-                "comment": "See dataset.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "Dataset"
             }
         },
         "supplementary_data": {
@@ -213,9 +213,13 @@
         "published_by": {
             "title": "Published by"
         },
-        "datasets.accession": {
+        "datasets": {
             "type": "exists",
             "title": "Associated dataset"
+        },
+        "publication_data": {
+            "type": "exists",
+            "title": "Publication file data"
         }
     },
     "columns": {
@@ -266,10 +270,11 @@
         }
     },
     "boost_values": {
-        "title": 1.0,
+        "title": 5.0,
         "authors": 1.0,
         "identifiers": 1.0,
-        "abstract": 1.0
+        "abstract": 1.0,
+        "journal": 1.0
     },
     "sort_by": {
         "publication_year": {

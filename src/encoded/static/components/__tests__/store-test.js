@@ -132,7 +132,7 @@ describe('ItemStore', () => {
 
     describe('Reporting errors', () => {
         it('calls the view onError callback in case of HTTP errors', () => {
-            view.onError = jest.genMockFunction();
+            view.onError = jest.fn();
             fetch.mockResponse({ message: 'failure' }, { status: 500, headers: new Headers({ 'Content-Type': 'application/json' }) });
 
             const store = new ItemStore(items, view, 'items');

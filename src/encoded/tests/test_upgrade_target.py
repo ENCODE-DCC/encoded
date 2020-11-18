@@ -1,199 +1,43 @@
 import pytest
 
 
-@pytest.fixture
-def target(organism):
-    return{
-        'organism': organism['uuid'],
-        'label': 'TEST'
-    }
-
-
-@pytest.fixture
-def target_1(target):
-    item = target.copy()
-    item.update({
-        'schema_version': '1',
-        'status': 'CURRENT',
-    })
-    return item
-
-
-@pytest.fixture
-def target_2(target):
-    item = target.copy()
-    item.update({
-        'schema_version': '2',
-    })
-    return item
-
-
-@pytest.fixture
-def target_5(target):
-    item = target.copy()
-    item.update({
-        'schema_version': '5',
-        'status': 'proposed'
-    })
-    return item
-
-
-@pytest.fixture
-def target_6(target):
-    item = target.copy()
-    item.update({
-        'schema_version': '6',
-        'status': 'current',
-        'investigated_as': ['histone modification', 'histone']
-    })
-    return item
-
-
-@pytest.fixture
-def target_8_no_genes(target):
-    item = target.copy()
-    item.update({
-        'schema_version': '8',
-        'dbxref': [
-            'UniProtKB:P04908'
-        ]
-    })
-    return item
-
-
-@pytest.fixture
-def target_8_one_gene(target_8_no_genes):
-    item = target_8_no_genes.copy()
-    item.update({
-        'gene_name': 'HIST1H2AE',
-        'dbxref': [
-            'GeneID:3012',
-            'UniProtKB:P04908'
-        ]
-    })
-    return item
-
-
-@pytest.fixture
-def target_8_two_genes(target_8_one_gene):
-    item = target_8_one_gene.copy()
-    item.update({
-        'gene_name': 'Histone H2A',
-        'dbxref': [
-            'GeneID:8335',
-            'GeneID:3012',
-            'UniProtKB:P04908'
-        ]
-    })
-    return item
-
-
-@pytest.fixture
-def target_9_empty_modifications(target_8_one_gene):
-    item = {
-        'investigated_as': ['other context'],
-        'modifications': [],
-        'label': 'empty-modifications'
-    }
-    return item
-
-
-@pytest.fixture
-def target_9_real_modifications(target_8_one_gene):
-    item = {
-        'investigated_as': ['other context'],
-        'modifications': [{'modification': '3xFLAG'}],
-        'label': 'empty-modifications'
-    }
-    return item
-
-
-@pytest.fixture
-def gene3012(testapp, organism):
-    item = {
-        'dbxrefs': ['HGNC:4724'],
-        'organism': organism['uuid'],
-        'symbol': 'HIST1H2AE',
-        'ncbi_entrez_status': 'live',
-        'geneid': '3012',
-    }
-    return testapp.post_json('/gene', item).json['@graph'][0]
-
-
-@pytest.fixture
-def gene8335(testapp, organism):
-    item = {
-        'dbxrefs': ['HGNC:4734'],
-        'organism': organism['uuid'],
-        'symbol': 'HIST1H2AB',
-        'ncbi_entrez_status': 'live',
-        'geneid': '8335',
-    }
-    return testapp.post_json('/gene', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target_10_nt_mod(organism):
-    item = {
-        'investigated_as': ['nucleotide modification'],
-        'target_organism': organism['uuid'],
-        'label': 'nucleotide-modification-target'
-    }
-    return item
-
-
-@pytest.fixture
-def target_10_other_ptm(gene8335):
-    item = {
-        'investigated_as': [
-            'other post-translational modification',
-            'chromatin remodeller',
-            'RNA binding protein'
-        ],
-        'genes': [gene8335['uuid']],
-        'modifications': [{'modification': 'Phosphorylation'}],
-        'label': 'nucleotide-modification-target'
-    }
-    return item
-
-
-def test_target_upgrade(upgrader, target_1):
-    value = upgrader.upgrade('target', target_1, target_version='2')
+def test_target_upgrade(upgrader, target_1_0):
+    value = upgrader.upgrade('target', target_1_0, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-def test_target_investigated_as_upgrade(upgrader, target_2):
-    value = upgrader.upgrade('target', target_2, target_version='3')
+def test_target_investigated_as_upgrade(upgrader, target_2_0):
+    value = upgrader.upgrade('target', target_2_0, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['transcription factor']
 
 
-def test_target_investigated_as_upgrade_tag(upgrader, target_2):
-    target_2['label'] = 'eGFP'
-    value = upgrader.upgrade('target', target_2, target_version='3')
+def test_target_investigated_as_upgrade_tag(upgrader, target_2_0):
+    target_2_0['label'] = 'eGFP'
+    value = upgrader.upgrade('target', target_2_0, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['tag']
 
 
-def test_target_investigated_as_upgrade_recombinant(upgrader, target_2):
-    target_2['label'] = 'eGFP-test'
-    value = upgrader.upgrade('target', target_2, target_version='3')
+def test_target_investigated_as_upgrade_recombinant(upgrader, target_2_0):
+    target_2_0['label'] = 'eGFP-test'
+    value = upgrader.upgrade('target', target_2_0, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == [
         'recombinant protein', 'transcription factor']
 
 
-def test_target_upgrade_status_5_6(upgrader, target_5):
+def test_target_upgrade_status_5_6(upgrader, target_5_0):
     value = upgrader.upgrade(
-        'target', target_5, current_version='5', target_version='6')
+        'target', target_5_0, current_version='5', target_version='6')
     assert value['schema_version'] == '6'
     assert value['status'] == 'current'
 
 
-def test_target_upgrade_remove_histone_modification_6_7(upgrader, target_6):
+def test_target_upgrade_remove_histone_modification_6_7(upgrader, target_6_0):
     value = upgrader.upgrade(
-        'target', target_6, current_version='6', target_version='7')
+        'target', target_6_0, current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert value['investigated_as'] == ['histone']
 
@@ -223,10 +67,10 @@ def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgr
     assert value['status'] == new_status
 
 
-def test_target_upgrade_link_to_gene(root, upgrader, target_control,
+def test_target_upgrade_link_to_gene(root, upgrader, target_H3K27ac,
                                      target_8_no_genes, target_8_one_gene,
                                      target_8_two_genes, gene3012, gene8335):
-    context = root.get_by_uuid(target_control['uuid'])
+    context = root.get_by_uuid(target_H3K27ac['uuid'])
     no_genes = upgrader.upgrade(
         'target', target_8_no_genes, current_version='8', target_version='9',
         context=context)
@@ -286,3 +130,44 @@ def test_target_upgrade_categories(upgrader,
         'RNA binding protein',
         'chromatin remodeler',
     ]
+
+
+def test_target_upgrade_remove_control(
+    upgrader,
+    target_11_control,
+):
+    new_target = upgrader.upgrade(
+        'target', target_11_control, current_version='11', target_version='12'
+    )
+    assert new_target['schema_version'] == '12'
+    assert new_target['investigated_as'] == ['other context']
+
+
+def test_target_upgrade_remove_recombinant(
+    upgrader,
+    target_12_recombinant,
+):
+    new_target = upgrader.upgrade(
+        'target', target_12_recombinant, current_version='12', target_version='13'
+    )
+    assert new_target['schema_version'] == '13'
+    assert 'recombinant protein' not in new_target['investigated_as']
+    assert len(new_target['investigated_as']) != 0
+
+
+def test_target_upgrade_restrict_dbxrefs(upgrader, target_13_one_gene, target_13_no_genes, target_synthetic_tag):
+    target_with_genes = upgrader.upgrade('target', target_13_one_gene, current_version='13', target_version='14')
+    assert target_with_genes['schema_version'] == '14'
+    assert 'dbxref' not in target_with_genes
+    assert 'dbxrefs' not in target_with_genes
+
+    target_no_genes = upgrader.upgrade('target', target_13_no_genes, current_version='13', target_version='14')
+    assert target_no_genes['schema_version'] == '14'
+    assert 'dbxref' not in target_no_genes
+    assert 'dbxrefs' in target_no_genes
+
+    # target no gene and dbxref = []
+    target_synthetic_tag = upgrader.upgrade('target', target_synthetic_tag, current_version='13', target_version='14')
+    assert target_synthetic_tag['schema_version'] == '14'
+    assert 'dbxref' not in target_synthetic_tag
+    assert 'dbxrefs' not in target_synthetic_tag

@@ -2,35 +2,16 @@
 
 $file-restricted-bg: #ffdcda; // Background color of restricted files
 
-table {
+.table {
+    position: relative;
+    width: 100%;
     font-size: 0.9rem;
-}
+    border-spacing: 0;
 
-thead, tfoot {
-    background: none repeat scroll 0 0 #f5f5f5;
-}
-
-table>thead>tr>th {
-    border-top: none !important;
-    border-bottom: 2px solid #fff !important;
-    border-left: 2px solid #fff !important;
-    padding: 8px 11px 9px 11px !important;
-
-    &:first-child {
-        border-left: none !important;
+    @at-root #{&}__scrollarea {
+        overflow-x: auto;
+        overflow-y: hidden;
     }
-}
-
-table>tbody>tr>td {
-    padding: 10px 11px !important;
-}
-
-// round table corners
-thead:first-child tr:first-child th:first-child, tbody:first-child tr:first-child td:first-child {
-    border-radius: 3px 3px 0 0;
-}
-thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td:first-child {
-    border-radius: 0 0 0 3px;
 }
 
 .table-panel {
@@ -46,6 +27,21 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 
     tr:last-child td:last-child {
         border-bottom-right-radius: $border-radius-base;
+    }
+
+    // Standard footer for sortable table, including count and optional search link.
+    @at-root #{&}__std-footer {
+        display: flex;
+        align-items: center;
+        padding: 3px 5px;
+
+        @at-root #{&}-count {
+            flex: 1 1 auto;
+        }
+
+        @at-root #{&}-search {
+            flex: 0 1 auto;
+        }
     }
 }
 
@@ -64,31 +60,6 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
             }
         }
     }
-}
-
-@media (max-width: $screen-xs-max) {
-    .table-responsive {
-        th,
-        td {
-            max-width: 250px !important;
-            white-space: normal !important;
-        }
-    }
-}
-
-
-/* Table Controls */
-.table-responsive {
-    position: relative;
-    overflow-x: auto;
-}
-
-.results-table-control {
-    margin: 10px 0 20px;
-}
-
-table thead tr th button {
-    float: left;
 }
 
 form.table-filter {
@@ -115,16 +86,20 @@ form.table-filter {
     background-position: 7px 9px;
 }
 
-.table-meta-data {
-    height: $input-height-base;
-    display: block;
-    float: left;
-}
-
 .table-actions {
     margin-left: 1em;
     button {
         float: none;
+    }
+}
+
+.tcell-thumbnail {
+    display: flex;
+    justify-content: center;
+
+    img {
+        height: 100px;
+        width: 120px;
     }
 }
 
@@ -138,52 +113,55 @@ form.table-filter {
     display: block;
 }
 
-.col-headers th:hover {
-    cursor: pointer;
-    background-color: darken($tableHeadFootBackgroundColor, 5%);
-}
-
-.col-headers th.non-sortable:hover {
-    cursor: default;
-    background-color: $tableHeadFootBackgroundColor;
+.collection-table {
+    > tbody {
+        > tr {
+            > td {
+                vertical-align: top;
+            }
+        }
+    }
 }
 
 .tcell-sortable {
     cursor: pointer;
 }
 
-.table-sort {
-    .table {
-        margin-bottom: 0;
-    }
+.table__sortable {
+    border-collapse: collapse;
+    overflow-x: auto;
 
-    .table-responsive {
-        background-image: inline-image("../img/checker.svg");
-        background-size: 16px 16px;
-    }
-}
+    thead, tfoot {
+        background-color: #f5f5f5;
 
-.table-sortable {
-    thead {
         tr {
-            border-bottom: 1px solid #e0e0e0;
-
             th {
                 position: relative;
                 height: 4em;
+                padding: 5px;
                 vertical-align: middle;
-                border-left: 1px solid #e0e0e0 !important;
-                border-bottom: 1px solid #e0e0e0 !important;
+                border-left: 1px solid #e0e0e0;
+                text-align: left;
+                font-weight: 600;
 
                 &:first-child {
-                    border-left: none !important;
+                    border-left: none;
                 }
             }
         }
     }
 
+    tfoot {
+        border-top: 1px solid #ddd;
+    }
+
     tbody {
         tr {
+            td {
+                padding: 8px 11px 9px 11px;
+                border-top: 1px solid #ddd;
+            }
+
             &.file-restricted {
                 td {
                     background-color: $file-restricted-bg;
@@ -206,10 +184,19 @@ form.table-filter {
     th {
         padding: 0 !important;
         height: auto !important;
+        font-weight: 600;
     }
 }
 
 .tcell-sortable {
+    &__column-header {
+        display: flex;
+        height: 100%;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+
     &:hover {
         background-color: #e0e0e0;
     }
@@ -217,9 +204,9 @@ form.table-filter {
 
 %tcell-template {
     @extend .icon;
-    position: absolute;
-    right: 5px;
-    top: 1.6em;
+    display: block;
+    padding: 0 0 0 5px;
+    flex: 0 0 10px;
 }
 
 .tcell-sort {
@@ -241,7 +228,7 @@ form.table-filter {
     td {
         background-color: #606060 !important;
         color: #fff;
-        font-weight: bold;
+        font-weight: 400;
 
         a {
             color: #fff !important;
@@ -250,34 +237,8 @@ form.table-filter {
 }
 
 .file-table-footer {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: auto 40%;
-
-    &.hiding {
-        background-image: inline-image('../img/hiding-dots.svg');
-    }
-}
-
-// Table style for Raw file tables
-table.table-raw {
-    background-color: #fff;
-
-    >tbody>tr>td {
-        vertical-align: middle;
-    }
-
-    >tbody>tr>td.align-pair1 {
-        vertical-align: bottom;
-    }
-
-    >tbody>tr>td.align-pair2 {
-        vertical-align: top;
-    }
-}
-
-.table-raw-separator {
-    border-top: 2px solid #606060;
+    padding: 4px 8px;
+    border-top: 1px solid #e0e0e0;
 }
 
 .table-raw-biorep {
@@ -287,15 +248,6 @@ table.table-raw {
 
 .merge-bottom {
     border-bottom: 2px solid #606060;
-}
-
-.group-bottom,
-.pair-bottom {
-    border-bottom: 2px solid #606060;
-}
-
-.merge-right {
-    border-right: 1px solid #ddd;
 }
 
 .file-audit-status {
@@ -332,7 +284,7 @@ table.table-raw {
 }
 
 .coalesced-table {
-    margin: -20px -20px -55px -20px;
+    margin: -10px;
 }
 
 
@@ -342,9 +294,68 @@ table.table-raw {
 
  // Experiment series tables; might need to expand name if needed for similar object tables.
 .table-experiment-series {
-    .file-table-footer {
-        padding-top: 4px;
-        padding-bottom: 4px;
+    > tfoot > tr > td {
+        padding: 3px 5px;
         text-align: right;
+    }
+}
+
+
+// Raw file tables.
+.table-raw {
+    background-color: #fff;
+
+    > tbody {
+        > tr {
+            > td {
+                padding: 10px 11px;
+                vertical-align: middle;
+
+                &.merge-right {
+                    border-right: 1px solid #ddd;
+                }
+
+                &.align-pair1 {
+                    vertical-align: bottom;
+                }
+
+                &.align-pair2 {
+                    vertical-align: top;
+                }
+
+                &.group-bottom,
+                &.pair-bottom {
+                    border-bottom: 2px solid #606060;
+                }
+
+                &.index-reads {
+                    padding-top: 2px;
+                    padding-bottom: 2px;
+                    background-color: #f0f0f0;
+                }
+            }
+        }
+    }
+}
+
+.table-raw-separator td {
+    border-top: 2px solid #606060;
+}
+
+
+// Header for a SortTable including a pager.
+.header-paged-sorttable {
+    display: flex;
+    justify-content: space-between;
+
+    @at-root #{&}__controls {
+        display: flex;
+        margin-top: -3px;
+        margin-right: -3px;
+        margin-bottom: -3px;
+
+        .pager {
+            margin-left: 5px;
+        }
     }
 }

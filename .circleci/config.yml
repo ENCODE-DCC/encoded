@@ -1,16 +1,16 @@
 version: 2.1
 
 orbs:
-    browser-tools: circleci/browser-tools@0.1.0
+    browser-tools: circleci/browser-tools@0.1.4
 
 executors:
   pandiseased-executor:
     docker:
-      - image: circleci/buildpack-deps:trusty
+      - image: circleci/buildpack-deps:bionic
     working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
-      - ES_JAVA_OPTS: -Xms2g -Xmx2g
+      - ES_JAVA_OPTS: -Xms4g -Xmx4g
       - JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
 
 commands:
@@ -22,7 +22,7 @@ commands:
       - run:
           name: Add apt repositories
           command: |
-            sudo apt-get install apt-transport-https software-properties-common
+            sudo apt-get update && sudo apt-get install apt-transport-https software-properties-common
             wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
             echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list
             curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
@@ -38,55 +38,79 @@ commands:
               graphviz \
               nodejs \
               openjdk-11-jdk \
-              postgresql-9.3
+              postgresql-10
             sudo chown -R circleci /etc/elasticsearch
-            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH\n;' $BASH_ENV
-            sudo apt-get install -y python3.4-dev python3-pip
+            sed -i '1s;^;export PATH=/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH\n;' $BASH_ENV
+            sudo apt-get install -y python3.7-dev python3-pip
+            sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 0
             sed -i '1s;^;alias python=python3\n;' $BASH_ENV
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-dev_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic1_5.38-4_amd64.deb
+            wget http://archive.ubuntu.com/ubuntu/pool/main/f/file/libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-mgc_5.38-4_amd64.deb
+            sudo dpkg -i libmagic1_5.38-4_amd64.deb
+            sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
+            sudo apt-get install -f
       - run:
           name: Run buildout
           command: |
-            sudo pip3 install -U zc.buildout setuptools
+            sudo pip3 install --upgrade pip setuptools
+            sudo pip3 install zc.buildout
             buildout bootstrap
             bin/buildout
 jobs:
-  npm-non-bdd-tests:
+  bdd:
     executor: pandiseased-executor
-    # indexing tests fail using default medium resource_class
-    resource_class: medium
-    parallelism: 2
+    resource_class: large
     steps:
       - buildout
-      - run:
-          name: NPM and non BDD tests
-          command: |
-            npm test
-            bin/test -m "not bdd" --collect-only -qq |
-              while read test; do
-                [ -z "$test" ] && break
-                echo ${test%:*}
-              done | sort | circleci tests split | xargs -n 1 -t bin/test -v -v --timeout=400 -k
-  bdd-tests:
-    executor: pandiseased-executor
-    resource_class: medium
-    steps:
-      - buildout
+      # orb dependencies
+      - run: sudo apt-get update -y && sudo apt-get install -y libgbm1
       # Use install tasks from the orb
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:
           name: Run bdd tests
           command: |
-            bin/test -v -v --timeout=400 -m "bdd" --tb=short \
+            bin/test -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait 10 \
               --splinter-webdriver chrome \
               --splinter-socket-timeout 300 \
-              --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips"
+              --chrome-options "--headless --disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
           no_output_timeout: 30m
+  not-bdd-indexing:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: non bdd indexing tests
+          command: |
+            bin/test -s -vv -m "indexing"
+  not-bdd-non-indexing:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: non bdd non indexing tests
+          command: |
+            bin/test -s -vv -m "not bdd and not indexing"
+  npm:
+    executor: encoded-executor
+    resource_class: large
+    steps:
+      - buildout
+      - run:
+          name: npm tests
+          command: |
+            npm run circleci-test
 
 workflows:
   version: 2
   encoded-tests:
     jobs:
-      - bdd-tests
-      - npm-non-bdd-tests
+      - bdd
+      - not-bdd-indexing
+      - not-bdd-non-indexing
+      - npm

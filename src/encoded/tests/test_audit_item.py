@@ -72,7 +72,7 @@ def test_audit_item_schema_permission(testapp, file, embed_testapp):
 
 def test_audit_item_status_level_dict_contains_all_statuses_in_schema(testapp):
     # This checks that STATUS_LEVEL dict contains all statuses enumerated in schema.
-    from ..audit.item import STATUS_LEVEL
+    from encoded.audit.item import STATUS_LEVEL
     status_level_keys = STATUS_LEVEL.keys()
     schemas = testapp.get('/profiles/').json
     for title, schema in schemas.items():

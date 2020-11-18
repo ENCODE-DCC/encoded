@@ -1,0 +1,566 @@
+// The BodyMap component is comprised of several different elements (with the wrapper "body-facet-container")
+// The elements are:
+// (1) Centered list of system slims ("central nervous system", "skeletal system", "digestive system") ("body-list body-list-top")
+// (2) Combined body map, organ list, inset images, and inset images terms list (with wrapper "body-facet")
+//      (a) Diagram of body in svg format with selectable organs ("body-image-container")
+//      (b) List of organ slims selectable on body diagram ("adrenal gland", "bone element") ("body-list")
+//      (c) Inset images representing organ slims difficult to represent on a body diagram ("adipose tissue") ("body-inset-container")
+//      (d) List of organ slims represented by inset images ("body-list body-list-narrow")
+// (3) A button to clear organ and system slims selected on BodyMap ("clear-organs")
+
+// The thumbnail version of the BodyMap component has a thumbnail button and a pop-up with the selectable body map diagram and terms
+// An extra "clear-organs" button can be placed outside of the BodyMap component
+
+// The thumbnail "body-image-thumbnail" is a button with a couple different components
+// (1) Label ("body-map-expander")
+// (2) Expand icon ("expand-arrows")
+// (3) Small diagram of body in svg format (organs are not clickable) ("#BodyMap")
+// (4) Small container with inset images ("body-list body-list-narrow")
+
+// When the thumbnail is expanded, there are a couple of extra wrapper styles
+// These are the pop-up components:
+// (1) Encode modal styles ("modal")
+// (2) Wrapper with body map pop-up specific styles ("epigenome-body-map-container expanded")
+// (3) Button to close pop-up ("collapse-body-map") with label ("body-map-collapser") and collapse icon ("collapse-arrows")
+// (4) Regular body map component (see above) ("body-facet-container" with all its usual child components and classes)
+
+// "body-image-container" is the wrapper for the body map SVG "BodyMap"
+// Within the body map, we want to highlight all the different SVG shapes
+.body-image-container {
+    path, polyline, circle, ellipse, rect, polygon {
+        &:hover:not(.cls-5):not(.cls-nervebackground):not(.active) {
+            fill: lighten($Homo-sapiens, 45%);
+            stroke: $Homo-sapiens;
+            cursor: pointer;
+        }
+        &.highlight:not(.cls-5):not(.cls-nervebackground):not(.active) {
+            fill: lighten($Homo-sapiens, 45%);
+            stroke: lighten($Homo-sapiens, 20%);
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
+}
+
+// We need a couple special cases for highlighting specific elements on the body map
+// For "skin of body" (cls-5), entire body map should not turn light purple on hover so it is excluded from highlight styles
+// However, we do want the outline to be highlighted and we need it to appear clickable
+.cls-5 {
+    &:hover {
+        stroke: lighten($Homo-sapiens, 20%);
+        cursor: pointer;
+    }
+    &.highlight {
+        stroke: lighten($Homo-sapiens, 20%);
+        cursor: pointer;
+    }
+}
+// Similarly, "cls-nervebackground" should not turn light purple on hover so it is excluded from highlight styles
+// However, we do want it to appear clickable
+.cls-nervebackground {
+    &:hover {
+        cursor: pointer;
+    }
+    &.highlight {
+        cursor: pointer;
+    }
+}
+
+// Button to clear body map selections
+.clear-organs {
+    font-family: Mada;
+    border: 0;
+    padding: 3px 10px;
+    font-size: 1rem;
+    color: $Homo-sapiens;
+    border-radius: 3px;
+    background: #e0e0e0;
+    position: absolute;
+    bottom: -50px;
+    right: 10px;
+    .icon {
+        margin-right: 3px;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: lighten($Homo-sapiens, 45%);
+    }
+    @media screen and (max-width: $screen-md-min) {
+        left: 10px;
+        bottom: -60px;
+    }
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 0.8rem;
+        bottom: -80px;
+        left: 10px;
+        width: 100px;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        bottom: -90px;
+    }
+}
+
+// Styles for lists of terms (systems list, organs lists, inset images terms list)
+// Also used for thumbnail inset images on pop-up version of body map
+.body-list {
+    @media screen and (max-width: $screen-sm-min) {
+        padding: 0;
+        font-size: 0.8rem;
+    }
+    .body-list-inner {
+        padding: 10px;
+        text-align: left;
+        position: relative;
+        line-height: 1.8;
+    }
+    .body-list-element {
+        display: inline-block;
+        line-height: 1;
+        padding: 2px 5px;
+        width: calc(50% - 4px);
+        text-align: left;
+        background: none;
+        border-radius: 3px;
+        font-family: Mada;
+        border: none;
+        font-size: 1rem;
+        margin-bottom: 4px;
+        @media screen and (max-width: $screen-sm-min) {
+            font-size: 0.8rem;
+        }
+        &:hover {
+            cursor: pointer;
+        }
+        &.active {
+            background-color: $Homo-sapiens;
+            color: white;
+        }
+        &:hover:not(.active) {
+            background-color: lighten($Homo-sapiens, 45%);
+        }
+        &.highlight:not(.active) {
+            background-color: lighten($Homo-sapiens, 45%);
+        }
+    }
+}
+
+// Special styles for the pop-up modal version of the body map component
+.body-map-thumbnail-and-modal {
+    max-width: min-content;
+    .body-list {
+        .body-list-element {
+            display: inline;
+        }
+    }
+}
+
+// Extra styles for systems list, which is full-width
+.body-list-top {
+    max-width: 1000px;
+    margin: auto;
+    border-bottom: 2px solid #d2d2d2;
+    border-top: 2px solid #d2d2d2;
+    .body-list-element {
+        width: calc(20% - 4px);
+        @media screen and (max-width: $screen-xs-min) {
+            width: calc(50% - 4px);
+        }
+    }
+}
+
+// The container "body-facet" contains 4 body map components
+// (1) Body SVG ("body-image-container")
+// (2) Organ list ("body-list")
+// (3) Inset images ("body-inset-conatiner")
+// (4) Inset image terms list ("body-list body-list-narrow")
+.body-facet {
+    display: flex;
+    padding: 20px 0 0 20px;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    @media screen and (max-width: $screen-sm-min) {
+        padding: 0;
+    }
+    .body-image-container {
+        flex: 0 1 33%;
+        max-width: 600px;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 50%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+        svg {
+            margin-right: -25px;
+        }
+    }
+    .body-inset-container {
+        flex: 0 1 150px;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 60%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+        .tissue-container {
+            width: 65px;
+        }
+        .body-inset {
+            position: relative;
+            background: none;
+            padding: 0;
+            margin: 0;
+            margin-right: 9px;
+            border: 0;
+            img {
+                width: $inset-size;
+                @media screen and (max-width: $screen-md-min) {
+                    width: $smallest-inset-size;
+                }
+                @media screen and (max-width: $screen-md-min) {
+                    width: $small-inset-size;
+                }
+            }
+            margin-bottom: 10px;
+            &:hover:not(.active):after {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+            &.highlight:not(.active):after {
+                cursor: pointer;
+                opacity: 0.5;
+            }
+        }
+        .body-inset:after {
+            content: '\A';
+            position: absolute;
+            width: $inset-size;
+            height: $inset-size;
+            @media screen and (max-width: $screen-md-min) {
+                width: $smallest-inset-size;
+                height: $smallest-inset-size;
+            }
+            @media screen and (max-width: $screen-md-min) {
+                width: $small-inset-size;
+                height: $small-inset-size;
+            }
+            top:0;
+            left:0;
+            background: #63326E;
+            opacity: 0;
+            transition: all 200ms;
+            -webkit-transition: all 200ms;
+            border-radius: 50%;
+        }
+    }
+    .body-list {
+        flex: 0 1 calc(33% - 65px);
+        text-align: left;
+        margin-left: -30px;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 50%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+            margin-left: 0;
+        }
+    }
+    .body-list-narrow {
+        flex: 0 1 calc(18% - 65px);
+        margin-left: 0;
+        .body-list-element {
+            width: calc(100% - 4px);
+            @media screen and (max-width: $screen-sm-min) {
+                width: calc(50% - 4px);
+            }
+        }
+        @media screen and (max-width: $screen-sm-min) {
+            flex: 0 1 40%;
+        }
+        @media screen and (max-width: $screen-xs-min) {
+            flex: 0 1 100%;
+        }
+    }
+}
+
+// We want to rearrange the four "body-facet" components on tablet and mobile
+// On tablet, we want to swap components (3) and (4) and on mobile we want to swap them back
+.body-facet :nth-child(1) {
+    order: 1;
+    -webkit-order: 1;
+}
+.body-facet :nth-child(2) {
+    order: 2;
+    -webkit-order: 2;
+}
+.body-facet :nth-child(3) {
+    order: 3;
+    -webkit-order: 3;
+    @media screen and (max-width: $screen-sm-min) {
+        order: 4;
+        -webkit-order: 4;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        order: 3;
+        -webkit-order: 3;
+    }
+}
+.body-facet :nth-child(4) {
+    order: 4;
+    -webkit-order: 4;
+    @media screen and (max-width: $screen-sm-min) {
+        order: 3;
+        -webkit-order: 3;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        order: 4;
+        -webkit-order: 4;
+    }
+}
+
+// We do not want list styles on full version of the body map facet
+.body-list-inner {
+    li {
+        list-style: none;
+        display: inline;
+    }
+}
+
+// Expanded thumbnail (body map facet as a pop-up) styles
+.body-map-container-pop-up {
+    border: 2px solid $Homo-sapiens;
+    position: relative;
+    .body-list-top {
+        border-top: 0;
+    }
+    &.expanded {
+        max-width: 690px;
+        position: absolute;
+        z-index: 9999;
+        background: white;
+        left: 0;
+        right: 0;
+        margin: auto;
+        top: 120px;
+        margin: auto auto 30px;
+        @media screen and (max-width: $screen-sm-min) {
+            width: 95%;
+        }
+    }
+    &.collapsed {
+        width: 0;
+        height: 0;
+        border: 0;
+        overflow: hidden;
+    }
+    .collapse-body-map {
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        font-size: 1rem;
+        border: 0;
+    }
+    .body-list {
+        .body-list-inner {
+            text-align: center;
+        }
+    }
+    // On the pop-up facet, we have term names clustered together and separated by bullets instead of in columns
+    // (This is more condensed space-wise)
+    .body-list-inner {
+        li {
+            display: inline;
+            &:after {
+                content: " ";
+                word-spacing: 0;
+                letter-spacing: 1em;
+                background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMkMEa+wAAAAnSURBVBhXY/Dz89MA4sNA/B9Ka4AEYQIwfBgkiCwAxjhVopnppwEApxQqhnyQ+VkAAAAASUVORK5CYII=) center center no-repeat;
+            }
+        }
+        button {
+            margin-right: 0;
+            padding: 2px 5px;
+        }
+    }
+    .body-facet {
+        .body-image-container {
+            flex: 0 1 50%;
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 1 100%;
+            }
+        }
+        .body-list {
+            flex: 0 1 50%;
+            @media screen and (max-width: $screen-xs-min) {
+                flex: 0 1 100%;
+            }
+        }
+        .body-inset-container {
+            flex: 0 1 60%;
+            text-align: center;
+            .body-inset {
+                img {
+                    width: 55px;
+                    height: 55px;
+                }
+            }
+            .body-inset:after {
+                width: 55px;
+                height: 55px;
+            }
+        }
+        .body-list-narrow {
+            flex: 0 1 40%;
+        }
+    }
+    // For the pop-up, we want the "body-facet" elements swapped on desktop not just on tablet
+    .body-facet :nth-child(1) {
+        order: 1;
+        -webkit-order: 1;
+    }
+    .body-facet :nth-child(2) {
+        order: 2;
+        -webkit-order: 2;
+    }
+    .body-facet :nth-child(3) {
+        order: 4;
+        -webkit-order: 4;
+    }
+    .body-facet :nth-child(4) {
+        order: 3;
+        -webkit-order: 3;
+    }
+    .clickable-diagram-container {
+        .body-list-inner {
+            .body-list-element {
+                width: auto;
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+// Icon styles for the thumbnail version of the body map facet
+.expand-arrows, .collapse-arrows {
+    height: 30px;
+    width: 30px;
+    position: absolute;
+    top: 68px;
+    left: 5px;
+}
+
+.expand-arrows {
+    fill: $Homo-sapiens;
+    @media screen and (max-width: $screen-sm-min) {
+        top: 8px;
+        fill: white;
+        height: 20px;
+        width: 20px;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        top: 3px;
+    }
+}
+
+.collapse-arrows {
+    fill: white;
+    top: 2px;
+    z-index: 999;
+    @media screen and (max-width: $screen-sm-min) {
+        top: 8px;
+        height: 20px;
+        width: 20px;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        top: 3px;
+    }
+}
+
+// Instructions for expanding or collapsing the body map facet pop-up
+.body-map-expander, .body-map-collapser {
+    background: $Homo-sapiens;
+    text-align: center;
+    font-family: Mada;
+    padding: 10px;
+    color: white;
+    font-weight: 400;
+    cursor: pointer;
+    position: relative;
+    &:hover {
+        background: darken($Homo-sapiens, 10%);
+        font-weight: 600;
+    }
+    @media screen and (max-width: $screen-sm-min) {
+        font-size: 1rem;
+    }
+    @media screen and (max-width: $screen-xs-min) {
+        padding: 5px;
+        font-size: 0.8rem;
+    }
+}
+
+// Thumbnail styles
+.body-image-thumbnail {
+    flex: 0 1 220px;
+    min-width: 220px;
+    border: 1px solid #d2d2d2;
+    border-radius: 2px;
+    background: linear-gradient(#E6E6E6, #fff);
+    position: relative;
+    border: 2px solid $Homo-sapiens;
+    font-size: 1rem;
+    margin: 0 0 10px 0;
+    padding: 0;
+    height: min-content;
+    @media screen and (max-width: $screen-sm-min) {
+        flex: 0 1 100%;
+        margin: 0 5px 10px 5px;
+    }
+    #BodyMap {
+        pointer-events: none;
+        @media screen and (max-width: $screen-sm-min) {
+            height: 0;
+            display: block;
+        }
+    }
+    .body-list {
+        @media screen and (max-width: $screen-sm-min) {
+            display: none;
+        }
+    }
+    .body-list-inner {
+        text-align: center;
+        margin: 0 0 10px;
+        padding: 0;
+        .body-inset {
+            display: inline-block;
+            width: 30px;
+            margin: 3px;
+            &.active {
+                .inactive-image {
+                    display: none;
+                }
+                .active-image {
+                    display: block;
+                }
+            }
+            .inactive-image {
+                display: block;
+            }
+            .active-image {
+                display: none;
+            }
+        }
+    }
+    &:hover {
+        cursor: pointer;
+        border: 2px solid $Homo-sapiens;
+        background: linear-gradient(#B3B3B3, #fff);
+        .body-map-expander {
+            background: darken($Homo-sapiens, 10%);
+            font-weight: 600;
+        }
+    }
+}

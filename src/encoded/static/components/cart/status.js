@@ -5,8 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { DropdownMenu, DropdownMenuSep } from '../../libs/bootstrap/dropdown-menu';
-import { Nav, NavItem } from '../../libs/bootstrap/navbar';
+import { DropdownMenu, DropdownMenuSep } from '../../libs/ui/dropdown-menu';
+import { NavItem } from '../../libs/ui/navbar';
 import { svgIcon } from '../../libs/svg-icons';
 import { truncateString } from '../globals';
 import { CartClearModal } from './clear';
@@ -16,22 +16,23 @@ import CartShare from './share';
 /**
  * Renders the cart icon menu and count or in-progress spinner in the nav bar.
  */
-const CartNavTitle = ({ elements, inProgress }) => {
+const CartNavTitle = ({ elements, inProgress, locked }) => {
     let status;
+    let iconClass = '';
 
     if (inProgress) {
-        // Get the proper spinner icon based on whether the browser supports SVG animations or not.
-        const spinnerIcon = svgIcon('spinner');
-        status = <div className="cart__nav-spinner">{spinnerIcon}</div>;
+        status = svgIcon('spinner');
+        iconClass = 'cart__nav-spinner';
     } else if (elements.length > 0) {
-        status = <div className="cart__nav-count">{elements.length}</div>;
+        status = elements.length;
+        iconClass = 'cart__nav-count';
     }
     return (
         <div className="cart__nav">
             <div className={`cart__nav-icon${status ? '' : ' cart__nav-icon--empty'}`}>
-                {svgIcon('cart')}
+                {svgIcon('cart', { fill: locked ? '#e59545' : '#fff' })}
             </div>
-            {status ? <div>{status}</div> : null}
+            {status ? <div className={iconClass}>{status}</div> : null}
         </div>
     );
 };
@@ -41,6 +42,8 @@ CartNavTitle.propTypes = {
     elements: PropTypes.array.isRequired,
     /** True if global cart operation in progress */
     inProgress: PropTypes.bool.isRequired,
+    /** True if cart is locked */
+    locked: PropTypes.bool.isRequired,
 };
 
 
@@ -91,6 +94,7 @@ class CartStatusComponent extends React.Component {
 
     render() {
         const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
+        const locked = !!(savedCartObj && savedCartObj.locked);
 
         if (loggedIn || elements.length > 0 || inProgress) {
             // Define the menu items for the Cart Status menu.
@@ -98,8 +102,16 @@ class CartStatusComponent extends React.Component {
             const menuItems = [];
             const viewCartItem = <a key="view" href="/cohort-view/">View cohort</a>;
             const clearCartItem = <button key="clear" onClick={this.clearCartClick}>Clear cohort</button>;
+            const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
             if (loggedIn) {
-                menuItems.push(<span key="name" className="disabled-menu-item">{`Current: ${cartName}`}</span>, <DropdownMenuSep key="sep-1" />);
+                // The href is just to quiet ESLint for the bad href. This code shouldn't do this
+                // but the CSS looks difficult to fix after the tooltip updates.
+                menuItems.push(
+                    <span key="name" className="disabled-menu-item">
+                        {`Current: ${cartName}`}{lockIcon}
+                    </span>,
+                    <DropdownMenuSep key="sep-1" />
+                );
                 if (elements.length > 0) {
                     menuItems.push(
                         viewCartItem,
@@ -114,22 +126,20 @@ class CartStatusComponent extends React.Component {
             }
 
             return (
-                <Nav>
-                    <NavItem
-                        dropdownId="cart-control"
-                        dropdownTitle={<CartNavTitle elements={elements} inProgress={inProgress} />}
-                        openDropdown={openDropdown}
-                        dropdownClick={dropdownClick}
-                        label={`Cohort containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
-                        buttonCss="cart__nav-button"
-                    >
-                        <DropdownMenu label="cohort-control">
-                            {menuItems}
-                        </DropdownMenu>
-                    </NavItem>
+                <NavItem
+                    dropdownId="cart-control"
+                    dropdownTitle={<CartNavTitle elements={elements} locked={locked} inProgress={inProgress} />}
+                    openDropdown={openDropdown}
+                    dropdownClick={dropdownClick}
+                    label={`${locked ? 'locked' : ''} cohort containing ${elements.length} ${elements.length > 1 ? 'items' : 'item'}`}
+                    buttonCss="cart__nav-button"
+                >
+                    <DropdownMenu label="cart-control">
+                        {menuItems}
+                    </DropdownMenu>
                     {this.state.shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
                     {this.state.clearModalOpen ? <CartClearModal closeClickHandler={this.closeClearCart} /> : null}
-                </Nav>
+                </NavItem>
             );
         }
         return null;

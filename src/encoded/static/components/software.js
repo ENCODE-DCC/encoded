@@ -2,64 +2,61 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import pubReferenceList from './reference';
-import { PickerActions } from './search';
+import { PickerActions, resultItemClass } from './search';
 import Status from './status';
 import { auditDecor } from './audit';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
+import { SortTablePanel, SortTable } from './sorttable';
 
 
-/* eslint-disable react/prefer-stateless-function */
-class SoftwareComponent extends React.Component {
-    render() {
-        const { context } = this.props;
-        const itemClass = globals.itemClass(context, 'view-item');
+const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactContext) => {
+    const itemClass = globals.itemClass(context, 'view-item');
 
-        // Set up breadcrumbs.
-        const typeTerms = context.software_type && context.software_type.map(type => `software_type=${type}`);
-        const crumbs = [
-            { id: 'Software' },
-            {
-                id: context.software_type ? context.software_type.join(' + ') : null,
-                query: typeTerms && typeTerms.join('&'),
-                tip: context.software_type && context.software_type.join(' + '),
-            },
-        ];
+    // Set up breadcrumbs.
+    const typeTerms = context.software_type && context.software_type.map(type => `software_type=${type}`);
+    const crumbs = [
+        { id: 'Software' },
+        {
+            id: context.software_type ? context.software_type.join(' + ') : null,
+            query: typeTerms && typeTerms.join('&'),
+            tip: context.software_type && context.software_type.join(' + '),
+        },
+    ];
 
-        const crumbsReleased = (context.status === 'released');
+    const crumbsReleased = (context.status === 'released');
 
-        // See if there’s a version number to highlight
-        let highlightVersion;
-        const queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
-        if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'version' query string item, if any
-            const versionKey = _(Object.keys(queryParsed)).find(key => key === 'version');
-            if (versionKey) {
-                highlightVersion = queryParsed[versionKey];
-                if (typeof highlightVersion === 'object') {
-                    highlightVersion = highlightVersion[0];
-                }
+    // See if there’s a version number to highlight
+    let highlightVersion;
+    const queryParsed = reactContext.location_href && url.parse(reactContext.location_href, true).query;
+    if (queryParsed && Object.keys(queryParsed).length > 0) {
+        // Find the first 'version' query string item, if any
+        const versionKey = _(Object.keys(queryParsed)).find(key => key === 'version');
+        if (versionKey) {
+            highlightVersion = queryParsed[versionKey];
+            if (typeof highlightVersion === 'object') {
+                highlightVersion = highlightVersion[0];
             }
         }
+    }
 
-        // Get a list of reference links, if any
-        const references = pubReferenceList(context.references);
+    // Get a list of reference links, if any
+    const references = pubReferenceList(context.references);
 
-        return (
-            <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>{context.title}</h2>
-                        {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
-                        <DisplayAsJson />
-                    </div>
-                </header>
-                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}
+    return (
+        <div className={itemClass}>
+            <header>
+                <Breadcrumbs root="/search/?type=Software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <h1>{context.title}</h1>
+                <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'software-audit' }} />
+            </header>
+            {auditDetail(context.audit, 'software-audit', { session: reactContext.session, sessionProperties: reactContext.session_properties, except: context['@id'] })}
 
-                <div className="panel">
+            <Panel>
+                <PanelBody>
                     <dl className="key-value">
                         <div data-test="status">
                             <dt>Status</dt>
@@ -79,14 +76,14 @@ class SoftwareComponent extends React.Component {
                             <dd>{context.description}</dd>
                         </div>
 
-                        {context.software_type && context.software_type.length ?
+                        {context.software_type && context.software_type.length > 0 ?
                             <div data-test="type">
                                 <dt>Software type</dt>
                                 <dd>{context.software_type.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.purpose && context.purpose.length ?
+                        {context.purpose && context.purpose.length > 0 ?
                             <div data-test="purpose">
                                 <dt>Used for</dt>
                                 <dd>{context.purpose.join(', ')}</dd>
@@ -100,19 +97,15 @@ class SoftwareComponent extends React.Component {
                             </div>
                         : null}
                     </dl>
-                </div>
+                </PanelBody>
+            </Panel>
 
-                {context.versions && context.versions.length ?
-                    <div>
-                        <h3>Software Versions</h3>
-                        <SoftwareVersionTable items={context.versions} highlightVersion={highlightVersion} />
-                    </div>
-                : null}
-            </div>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+            {context.versions && context.versions.length > 0 ?
+                <SoftwareVersionTable items={context.versions} highlightVersion={highlightVersion} />
+            : null}
+        </div>
+    );
+};
 
 SoftwareComponent.propTypes = {
     context: PropTypes.object.isRequired, // Software object being rendered
@@ -123,6 +116,7 @@ SoftwareComponent.propTypes = {
 SoftwareComponent.contextTypes = {
     location_href: PropTypes.string,
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
@@ -132,36 +126,30 @@ export const Software = auditDecor(SoftwareComponent);
 globals.contentViews.register(Software, 'Software');
 
 
+const softwareVersionColumns = {
+    version: {
+        display: version => (version.downloaded_url ? <a href={version.downloaded_url}>{version.version}</a> : <span>{version.version}</span>),
+        title: 'Version',
+    },
+    download_checksum: {
+        title: 'Download checksum',
+        sorter: false,
+    },
+};
+
+
 const SoftwareVersionTable = (props) => {
     // Dedupe items list.
     const items = _(props.items).uniq(version => version['@id']);
 
     return (
-        <div className="table-responsive">
-            <table className="table table-panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Version</th>
-                        <th>Download checksum</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {items.map(version =>
-                        <tr key={version.uuid} className={props.highlightVersion === version.version ? 'highlight-row' : null}>
-                            <td>
-                                {version.downloaded_url ?
-                                    <a href={version.downloaded_url}>{version.version}</a>
-                                :
-                                    <span>{version.version}</span>
-                                }
-                            </td>
-                            <td>{version.download_checksum}</td>
-                        </tr>
-                    )}
-                </tbody>
-                <tfoot />
-            </table>
-        </div>
+        <SortTablePanel title="Software versions">
+            <SortTable
+                list={items}
+                columns={softwareVersionColumns}
+                rowClasses={item => (item.version === props.highlightVersion ? 'highlight-row' : '')}
+            />
+        </SortTablePanel>
     );
 };
 
@@ -175,39 +163,32 @@ SoftwareVersionTable.defaultProps = {
 };
 
 
-/* eslint-disable react/prefer-stateless-function */
-class ListingComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Software</p>
-                        <Status item={result.status} badgeSize="small" css="result-table__status" />
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>{result.title}</a>
-                        {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
-                    </div>
-                    <div className="data-row">
-                        <div>{result.description}</div>
-                        {result.software_type && result.software_type.length ?
-                            <div>
-                                <strong>Software type: </strong>
-                                {result.software_type.join(', ')}
-                            </div>
-                        : null}
-                    </div>
+const ListingComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
+    <li className={resultItemClass(result)}>
+        <div className="result-item">
+            <div className="result-item__data">
+                <a href={result['@id']} className="result-item__link">{result.title}</a>
+                {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
+                <div className="result-item__data-row">
+                    <div>{result.description}</div>
+                    {result.software_type && result.software_type.length > 0 ?
+                        <React.Fragment>
+                            <strong>Software type: </strong>
+                            {result.software_type.join(', ')}
+                        </React.Fragment>
+                    : null}
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+            </div>
+            <div className="result-item__meta">
+                <div className="result-item__meta-title">Software</div>
+                <Status item={result.status} badgeSize="small" css="result-table__status" />
+                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
+            </div>
+            <PickerActions context={result} />
+        </div>
+        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
+    </li>
+);
 
 ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Software object being rendered as a search result.
@@ -217,6 +198,7 @@ ListingComponent.propTypes = {
 
 ListingComponent.contextTypes = {
     session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

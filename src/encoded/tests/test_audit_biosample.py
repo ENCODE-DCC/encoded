@@ -1,116 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def base_biosample(testapp, lab, award, source, organism, heart):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_mouse_biosample(testapp, lab, award, source, mouse, liver):
-    item = {
-        'award': award['uuid'],
-        'biosample_ontology': liver['uuid'],
-        'lab': lab['uuid'],
-        'organism': mouse['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_human_donor(testapp, lab, award, organism):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid']
-    }
-    return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_chipmunk(testapp):
-    item = {
-        'name': 'chimpmunk',
-        'taxon_id': '12345',
-        'scientific_name': 'Chip chipmunicus'
-    }
-    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def ontology():
-    ontology = {
-        'UBERON:0002469': {
-            'part_of': [
-                'UBERON:0001043',
-                'UBERON:0001096',
-                'UBERON:1111111'
-            ]
-        },
-        'UBERON:1111111': {
-            'part_of': []
-        },
-        'UBERON:0001096': {
-            'part_of': []
-        },
-        'UBERON:0001043': {
-            'part_of': [
-                'UBERON:0001007',
-                'UBERON:0004908'
-            ]
-        },
-        'UBERON:0001007': {
-            'part_of': []
-        },
-        'UBERON:0004908': {
-            'part_of': [
-                'UBERON:0001043',
-                'UBERON:1234567'
-            ]
-        },
-        'UBERON:1234567': {
-            'part_of': [
-                'UBERON:0006920'
-            ]
-        },
-        'UBERON:0006920': {
-            'part_of': []
-        },
-        'UBERON:1231231': {
-            'name': 'liver'
-        }
-    }
-    return ontology
-
-
-@pytest.fixture
-def purkinje_cell(testapp):
-    item = {
-            'term_id': "CL:0000121",
-            'term_name': 'Purkinje cell',
-            'classification': 'primary cell'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def cerebellum(testapp):
-    item = {
-            'term_id': "UBERON:0002037",
-            'term_name': 'cerebellum',
-            'classification': 'tissue'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
 def test_audit_biosample_modifications_whole_organism(
         testapp, base_biosample,
         fly_donor, fly, construct_genetic_modification,
@@ -145,7 +35,7 @@ def test_audit_biosample_modifications_whole_organism_duplicated(
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] != 'duplicated genetic modifications' for error in errors_list)
+    assert any(error['category'] == 'duplicated genetic modifications' for error in errors_list)
 
 
 def test_audit_biosample_term_ntr(testapp, base_biosample, cell_free):
@@ -396,3 +286,18 @@ def test_is_part_of_empty_part_of_in_ontology(ontology):
 def test_is_part_of_parent(ontology):
     from encoded.audit.biosample import is_part_of
     assert is_part_of('UBERON:0002469', 'UBERON:0001043', ontology)
+
+
+def test_audit_biosample_CRISPR_modifications(
+        testapp, base_biosample,
+        activation_genetic_modification, disruption_genetic_modification):
+    testapp.patch_json(base_biosample['@id'], {
+        'genetic_modifications': [activation_genetic_modification['@id'], disruption_genetic_modification['@id']]
+        })
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'multiple CRISPR characterization genetic modifications' for error in errors_list)
+

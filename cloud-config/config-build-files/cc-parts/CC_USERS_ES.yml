@@ -1,6 +1,0 @@
-users:
-- default
-- name: build
-  gecos: Build user
-  inactive: true
-  system: true

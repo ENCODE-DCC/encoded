@@ -1,3 +1,7 @@
+$panel-heading-inset: 10px; // Number of pixels padding inside panel heading
+$panel-body-inset:    10px; // Number of pixels padding inside panel body
+
+
 /* Panels */
 .panel {
     background-color: #fff;
@@ -25,13 +29,34 @@
     }
 }
 
+.antibody-statuses {
+    .panel {
+        border: 0;
+    }
+}
+
+.Page, .Search, .Matrix, .ChipSeqMatrix, .Summary, .EntexMatrix, .SESCCStemCellMatrix, .ReferenceEpigenomeMatrix, .MouseDevelopmentMatrix {
+    .panel {
+        border: 0;
+    }
+}
+
+.view-item {
+    &.type-Experiment {
+        .panel {
+            border: 1px solid #a0a0a0;
+            border-radius: $border-radius-base;
+        }
+    }
+}
+
 .panel-heading {
     position: relative;
-    padding: 10px;
+    padding: $panel-heading-inset;
 }
 
 .panel-body {
-    padding: 10px;
+    padding: $panel-body-inset;
 }
 
 .panel-body-with-header {
@@ -56,7 +81,6 @@
     background-color: #4284d8;
     border: 1px solid #3276ca;
     border-radius: $border-radius-base;
-    box-shadow: 0 0 6px rgba(195, 202, 211, 0.5);
     margin: 10px 0 20px;
     padding: 15px 30px;
     overflow: hidden;
@@ -70,7 +94,19 @@
 
 .panel h3, .panel h4 {color: #0A253D;}
 
-.view-detail h3 {line-height: 24.5px;}
+.view-detail {
+    overflow: hidden;
+
+    h3 {
+        line-height: 24.5px;
+    }
+
+    // Any JSON object output.
+    pre {
+        margin: 20px;
+        white-space: pre-wrap;
+    }
+}
 
 /* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
 .panel a[href^="http"]:after, td a[href^="http"]:after      {
@@ -102,45 +138,49 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 
-.split-panel {
+.panel__split {
     display: block;
+    padding: 0;
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
         flex-wrap: nowrap;
     }
 
-    @at-root #{&}__part {
+    @at-root #{&}-element {
         padding-left: 10px;
         padding-right: 10px;
 
         @media screen and (min-width: $screen-md-min) {
-            flex-grow: 0;
-            flex-shrink: 1;
+            flex: 0 1 50%;
             border-left: 1px solid #c0c0c0;
 
             &:first-child {
                 border-left: 0;
             }
         }
-
-        @at-root #{&}--p50 {
-            @media screen and (min-width: $screen-md-min) {
-                flex-basis: 50%;
-            }
-        }
     }
 
-    @at-root #{&}__heading {
+    @at-root #{&}-heading {
         position: relative;
-        margin-right: -10px;
-        margin-left: -10px;
+        margin-left: -$panel-body-inset;
+        margin-right: -$panel-body-inset;
         padding: 10px;
         background-color: #d8d8d8;
 
         h4 {
             margin: 0;
         }
+    }
+}
+
+
+// <PanelBody> class for below split panel area.
+.panel__below-split {
+    border-top: 1px solid #c0c0c0;
+
+    h4 {
+        margin: 0px 0px 10px;
     }
 }
 
@@ -235,6 +275,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             display: flex;
             flex-wrap: wrap;
         }
+
+        .document {
+            @media screen and (min-width: $screen-sm-min) {
+                flex: 0 1 50%;
+            }
+
+            @media screen and (min-width: $screen-md-min) {
+                flex: 0 1 33.33%;
+            }
+
+            @media screen and (min-width: $screen-xl-min) {
+                flex: 0 1 25%;
+            }
+        }
     }
 }
 
@@ -244,16 +298,6 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .attachment-panel-outer {
     padding: 3px 6px;
-}
-
-.attachment-panel-inner {
-    padding: 0 5px;
-    flex-wrap: wrap;
-}
-
-.attachment-panel {
-    flex: 0 1 48%;
-    margin: 5px;
 }
 
 .type-QualityMetric.view-detail {
@@ -272,6 +316,134 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     position: relative;
 }
 
+.file-gallery-controls {
+    justify-content: flex-end;
+    border-bottom: 1px solid #c0c0c0;
+    select {
+        border: 2px solid #4f689e !important;
+        color: #4f689e !important;
+        font-weight: 600;
+        border-radius: 5px;
+    }
+}
+
+.file-gallery-container {
+    display: flex;
+    @media screen and (max-width: $screen-md-min) {
+        flex-wrap: wrap;
+    }
+    .disabled-checkbox {
+        color: #6D6D6D;
+    }
+    .clear-file-facets {
+        background: white;
+        border: 0;
+        padding: 0;
+        color: #e50400;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    .facet {
+        padding-bottom: 10px;
+    }
+    .file-gallery-facets {
+        position: relative;
+        -webkit-transition: flex-basis .1s ease-in-out;
+        -moz-transition: flex-basis .1s ease-in-out;
+        -o-transition: flex-basis .1s ease-in-out;
+        transition: flex-basis .1s ease-in-out;
+        .show-hide-facets {
+            position: absolute;
+            padding: 5px 7px;
+            top: 10px;
+            cursor: pointer;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            -webkit-transition: right .1s ease-in-out;
+            -moz-transition: right .1s ease-in-out;
+            -o-transition: right .1s ease-in-out;
+            transition: right .1s ease-in-out;
+            background: white;
+            @media screen and (max-width: $screen-md-min) {
+                display: none;
+            }
+        }
+
+        &.collapsed {
+            flex: 0 1 30px;
+            @media screen and (max-width: $screen-md-min) {
+                flex: 0 1 100%;
+            }
+            padding: 0;
+            .show-hide-facets {
+                right: -26px;
+                border-top-right-radius: 5px;
+                border-bottom-right-radius: 5px;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                background: white;
+                z-index: 1000;
+                border-top: 2px solid #d2d2d2;
+                border-bottom: 2px solid #d2d2d2;
+                border-right: 2px solid #d2d2d2;
+                border-left: 0;
+            }
+            .facet {
+                display: none;
+            }
+            h4, .clear-file-facets, .facet {
+                display: none;
+            }
+        }
+        &.expanded {
+            flex: 0 1 20%;
+            padding: 20px;
+            padding-top: 40px;
+            @media screen and (max-width: $screen-md-min) {
+                flex: 0 1 100%;
+                padding-top: 20px;
+            }
+            .show-hide-facets {
+                right: -2px;
+                border-top: 2px solid #d2d2d2;
+                border-bottom: 2px solid #d2d2d2;
+                border-left: 2px solid #d2d2d2;
+                border-right: 2px solid white;
+            }
+        }
+        border-right: 2px solid #d2d2d2;
+        .facet-term {
+            margin-bottom: 2px;
+            cursor: pointer;
+            z-index: 0;
+            .facet-term__bar {
+                z-index: -1;
+            }
+            &.selected {
+                .facet-term__bar {
+                    visibility: hidden;
+                }
+            }
+        }
+    }
+    .file-gallery-tab-bar {
+        flex: 0 1 80%;
+        overflow: hidden;
+        @media screen and (max-width: $screen-md-min) {
+            flex: 0 1 100%;
+        }
+        &.expanded {
+            flex: 0 1 calc(100% - 30px);
+            @media screen and (max-width: $screen-md-min) {
+                flex: 0 1 100%;
+            }
+        }
+    }
+}
+
 .file-gallery-visualize {
     margin-top: 5px;
 
@@ -284,33 +456,44 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 }
 
+.file-gallery-instructions {
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+$file-gallery-controls-height: 34px; // Heit of controls inside file-gallery-controls
+
 .file-gallery-controls {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 5px;
-    background-color: #c0c0c0;
-    border-top: 1px solid #a0a0a0;
-    border-bottom: 1px solid #a0a0a0;
+
+    @media screen and (max-width: $screen-sm-min) {
+        display: block;
+        select {
+            margin-bottom: 3px;
+        }
+    }
 
     @at-root #{&}__assembly-selector {
         flex: 0 1 auto;
-        vertical-align: bottom;
         margin-right: 5px;
+
+        select {
+            height: $file-gallery-controls-height;
+        }
     }
 
     @at-root #{&}__visualization-selector {
-        flex: 0 1 auto;
-
         select {
             display: inline-block;
+            height: $file-gallery-controls-height;
             width: auto;
             margin-right: 5px;
-            vertical-align: top;
         }
 
         button {
-            height: 34px;
+            height: $file-gallery-controls-height;
             vertical-align: top;
         }
     }
@@ -426,6 +609,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     h4 {
         margin: 0 0 0 40px;
+        text-align: left;
     }
 
     h5 {
@@ -517,21 +701,32 @@ $nav-tab-border-radius: 4px;
     position: relative;
     background-color: #f0f0f0;
     border-bottom: 1px solid #a0a0a0;
+    @media screen and (max-width: $screen-md-min) {
+        overflow: scroll;
+    }
 }
 
-.nav.nav-tabs {
+.nav-tabs {
     display: flex;
+    margin: 0;
+    padding: 5px 5px 0;
     align-items: flex-end;
     position: relative;
-    padding: 5px 5px 0;
+    list-style: none;
     z-index: 1;
     top: 1px;
     border: none;
+    @media screen and (max-width: $screen-md-min) {
+        padding: 5px 5px 0;
+    }
 
     > li {
+        display: block;
         flex: 0 1 auto;
 
         a, a:focus {
+            display: block;
+            text-decoration: none;
             margin: 0;
             padding: 5px 20px;
             border-top: 3px solid transparent;
@@ -569,4 +764,21 @@ $nav-tab-border-radius: 4px;
     border-right: $nav-tab-border-style;
     border-bottom: 0;
     border-left: $nav-tab-border-style;
+}
+
+.BETA {
+    background-color: #B24342;
+    padding: 2px 7px;
+    color: white;
+    font-weight: 500;
+    margin-left: 7px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
+
+.table-paged {
+    @at-root #{&}__count {
+        @extend .file-gallery-counts;
+        border-top: 1px solid #a0a0a0;
+    }
 }

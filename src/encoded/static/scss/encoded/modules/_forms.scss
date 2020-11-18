@@ -4,18 +4,24 @@ $inputBorder: darken(#fff, 20%) !default;
 $inputFocusBgColor: darken(#fff, 2%) !default;
 $inputFocusBorderColor: darken(#fff, 26%) !default;
 
-#content form {
+form {
 	margin-bottom: 1em;
-	@include clearfix;
-}
 
-.form-control {
-	padding: 4px 6px;
+	fieldset {
+		border: none;
+		padding: 0;
+	}
+
+	label {
+		display: block;
+
+		&.label--inline {
+			display: inline-block;
+		}
+	}
 }
 
 .form-control--select {
-	@extend .form-control;
-
 	select {
 		position: relative;
 		height: 30px;
@@ -42,13 +48,13 @@ $inputFocusBorderColor: darken(#fff, 26%) !default;
 }
 
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select {
+	padding: 5px;
 	font-family: inherit;
 	font-size: 1rem;
 	font-weight: normal;
 	border: 1px solid $inputBorder;
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.1);
 	// resets bootrap form-control changes-effect on input
-	transition: all 0s 0s ease !important;
 		&:focus {
 			background: $inputFocusBgColor;
 			border-color: $inputFocusBorderColor;
@@ -61,24 +67,14 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	}
 }
 
-// Navbar search
-#navbar-search {
-	width: 180px;
-	border-radius: 14px;
-	height: 27px;
-	padding: 3px 26px 4px 14px;
-	padding-top: 3px;
-	padding-bottom: 4px;
-	margin-top: 3px;
-	-ms-transition: width 0.3s ease-out;
-	-moz-transition: width 0.3s ease-out;
-	-webkit-transition: width 0.3s ease-out;
-	transition: width 0.3s ease-out;
+input[type="search"] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+}
 
-	&:focus {
-		width: 230px;
-		transition: width 0.3s ease-out;
-	}
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+    display: none;
 }
 
 .form-inline,
@@ -90,10 +86,12 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 .search-wrapper {
 	position: 0;
+	background-color: white;
+	border-radius: 20px;
+	padding: 2px;
 
 	&:after {
 		font-family: "FontAwesome";
-		content: "\f002";
 		position: relative;
 		top: 0;
 		left: -24px;
@@ -103,6 +101,12 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 			top: 2px;
 		}
 	}
+}
+
+.navbar-search-form {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
 }
 
 // large text inputBorder
@@ -140,7 +144,6 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 }
 
 .dropzone {
-	@extend .form-control;
 	height: auto;
 	text-align: center;
 	.drop {
@@ -151,30 +154,40 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	}
 	&.disabled {
 	    cursor: not-allowed;
-	    background-color: $input-bg-disabled;
+	    background-color: #fff;
 	}
 }
 
 .item-picker {
-	@include clearfix;
-	@extend .form-control;
+	display: flex;
 	height: auto;
-	.item-picker-preview {
+	padding: 4px 6px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+
+	&__preview {
+		flex: 1 1 auto;
 		overflow: hidden;		
-		.result-table > li {
-			margin: 4px 6px;
-			border: none;
-		}
-		.clear {
-			float: right;
+		.result-table {
+			background-color: #fff;
+			> li {
+				margin: 4px 6px;
+				border: none;
+			}
 		}
 	}
+
 	> .btn {
 		margin-left: 1em;
 	}
+
 	&.disabled {
 	    cursor: not-allowed;
-	    background-color: $input-bg-disabled;
+	    background-color: #fff;
+	}
+
+	&__browse {
+		flex: 0 1 auto;
 	}
 }
 
@@ -193,8 +206,8 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 // 'x' button to clear form entries.
 .clear-button {
-	display: inline;
-	padding: 0;
+	display: inline-block;
+	padding: 0 3px 0 5px;
 	border: none;
 	background: transparent;
 	color: #428bca;
@@ -222,5 +235,163 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 		position: absolute;
 		top: 100%;
 		left: 0;
+	}
+}
+
+
+.form-edit {
+	@at-root #{&}__save-controls {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 10px;
+		text-align: right;
+
+		button, a {
+			flex: 0 1 auto;
+			margin-left: 5px;
+		}
+	}
+}
+
+.rf-RepeatingFieldset__item {
+	display: flex;
+    background: #fbfbfb;
+	position: relative;
+	border: 1px solid #ccc;
+	border-radius: $border-radius-base;
+	padding: 5px 30px 5px 10px;
+	margin-bottom: 10px;
+  
+	> .rf-Field {
+		width: 100%;
+	}
+
+	> .rf-Fieldset {
+		flex: 1 1 auto;
+		padding: 0;
+		border: none;
+		border-radius: none;
+		margin-bottom: 0;
+	}
+
+	> .rf-RepeatingFieldset__remove {
+		flex: 0 0 16px;
+		padding: 0;
+		height: 34px;
+		border: none;
+		background: transparent;
+		font-size: 1.3rem;
+	}
+}
+  
+.rf-Fieldset {
+	border: 1px solid #ccc;
+	border-radius: $border-radius-base;
+	padding: 5px 10px;
+	margin-bottom: 10px;
+
+	@at-root #{&}__label {
+		&.rf-Label {
+			> .rf-Label__label {
+				font-size: 1.5rem;
+			}
+		}
+	}
+}
+
+.rf-Label {
+	display: inline-block;
+	padding-right: 10px;
+	margin-bottom: 5px;
+	font-weight: 700;
+}
+
+// Mark required fields.
+.required .rf-Label__label:after {
+	content: " *";
+    color: #f00;
+}
+
+.rf-Field {
+    margin-bottom: 10px;
+
+	label {
+		margin-bottom: 5px;
+		font-weight: 700;
+	}
+
+	textarea {
+		width: 100%;
+		padding: 4px 6px;
+	}
+
+	select {
+		width: 100%;
+		height: 34px;
+	}
+
+	input[type="text"],
+	input[type="number"] {
+		width: 100%;
+		height: 34px;
+		padding: 4px 6px;
+	}
+}
+
+.rf-RepeatingFieldset {
+	margin-bottom: 15px;
+
+	label {
+		margin-bottom: 5px;
+		font-weight: 700;
+	}
+
+	.rf-RepeatingFieldset__add {
+		@extend .btn;
+		@extend .btn-success;
+		@extend .btn-sm;
+	}
+}
+
+.rf-Hint {
+	font-size: 70%;
+	font-weight: 400;
+	display: block;
+}
+
+.rf-Message {
+	display: block;
+	color: #f00;
+}
+
+.rf-Field--invalid {
+	border-color: $brand-danger;
+
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="color"],
+	.item-picker {
+		border-color: $brand-danger;
+
+		&:focus {
+			border-color: darken($brand-danger, 10%);
+			$shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten($brand-danger, 20%);
+		}
+	}
+
+	.rf-Label {
+		color: darken($brand-danger, 10%);
 	}
 }

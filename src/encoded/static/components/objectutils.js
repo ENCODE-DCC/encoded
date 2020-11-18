@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import * as encoding from '../libs/query_encoding';
+import { CartToggle } from './cart';
 import * as globals from './globals';
+import { BrowserFeat } from './browserfeat';
 
 // Display information on page as JSON formatted data
 export class DisplayAsJson extends React.Component {
@@ -25,7 +27,7 @@ export class DisplayAsJson extends React.Component {
 
     render() {
         return (
-            <button className="convert-to-json" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
+            <button className="btn btn-info btn-sm" title="Convert page to JSON-formatted data" aria-label="Convert page to JSON-formatted data" onClick={this.onClick}>&#123; ; &#125;</button>
         );
     }
 }
@@ -66,7 +68,11 @@ export function singleTreatment(treatment) {
     }
     treatmentText += `${treatment.treatment_term_name}${treatment.treatment_term_id ? ` (${treatment.treatment_term_id})` : ''} `;
     if (treatment.duration) {
-        treatmentText += `for ${treatment.duration} ${treatment.duration_units ? treatment.duration_units : ''}`;
+        let units = '';
+        if (treatment.duration_units) {
+            units = `${treatment.duration_units}${treatment.duration !== 1 ? 's' : ''}`;
+        }
+        treatmentText += `for ${treatment.duration}${units ? ` ${units}` : ''}`;
     }
     return treatmentText;
 }
@@ -135,7 +141,7 @@ export function requestObjects(atIds, uri, filteringObjects) {
     let filteredObjectIds = {}; // @ids of files we need to retrieve
 
     // Make a searchable object of file IDs for files to filter out of our list.
-    if (filteringObjects && filteringObjects.length) {
+    if (filteringObjects && filteringObjects.length > 0) {
         filteringObjects.forEach((filteringObject) => {
             filteringFileIds[filteringObject['@id']] = filteringObject;
         });
@@ -160,7 +166,7 @@ export function requestObjects(atIds, uri, filteringObjects) {
     // complete.
     return Promise.all(objectChunks.map((objectChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
-        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${globals.encodedURIComponent('@id')}=${globals.encodedURIComponent(current)}`, ''));
+        const objectUrl = uri.concat(objectChunk.reduce((combined, current) => `${combined}&${encoding.encodedURIComponentOLD('@id')}=${encoding.encodedURIComponentOLD(current)}`, ''));
         return fetch(objectUrl, {
             method: 'GET',
             headers: {
@@ -177,8 +183,8 @@ export function requestObjects(atIds, uri, filteringObjects) {
         // All search chunks have resolved or errored. We get an array of search results in
         // `chunks` -- one per chunk. Now collect their files from their @graphs into one array of
         // files and return them as the promise result.
-        if (chunks && chunks.length) {
-            return chunks.reduce((objects, chunk) => (chunk && chunk['@graph'].length ? objects.concat(chunk['@graph']) : objects), []);
+        if (chunks && chunks.length > 0) {
+            return chunks.reduce((objects, chunk) => (chunk && chunk['@graph'].length > 0 ? objects.concat(chunk['@graph']) : objects), []);
         }
 
         // Didn't get any good chucks back, so just return no results.
@@ -209,17 +215,17 @@ export function requestFiles(fileIds, filteringFiles) {
 export function donorDiversity(dataset) {
     let diversity = 'none';
 
-    if (dataset.related_datasets && dataset.related_datasets.length) {
+    if (dataset.related_datasets && dataset.related_datasets.length > 0) {
         // Get all non-deleted related experiments; empty array if none.
         const experiments = dataset.related_datasets.filter(experiment => experiment.status !== 'deleted');
 
         // From list list of non-deleted experiments, get all non-deleted replicates into one
         // array.
-        if (experiments.length) {
+        if (experiments.length > 0) {
             // Make an array of replicate arrays, one replicate array per experiment. Only include
             // non-deleted replicates.
             const replicatesByExperiment = experiments.map(experiment => (
-                (experiment.replicates && experiment.replicates.length) ?
+                (experiment.replicates && experiment.replicates.length > 0) ?
                     experiment.replicates.filter(replicate => replicate.status !== 'deleted')
                 : [])
             );
@@ -230,7 +236,7 @@ export function donorDiversity(dataset) {
             // Look at the donors in each replicate's biosample. If we see at least two different
             // donors, we know we have a composite. If only one unique donor after examining all
             // donors, we have a single. "None" if no donors found in all replicates.
-            if (replicates.length) {
+            if (replicates.length > 0) {
                 const donorAtIdCollection = [];
                 replicates.every((replicate) => {
                     if (replicate.library && replicate.library.status !== 'deleted' &&
@@ -504,102 +510,6 @@ export function publicDataset(dataset) {
 }
 
 
-// Display a Visualize button that brings up a modal that lets you choose an assembly and a browser
-// in which to display the visualization.
-export class BrowserSelector extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React state.
-        this.state = { selectorOpen: false };
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    // Called to open the browser-selection modal.
-    openModal() {
-        this.setState({ selectorOpen: true });
-    }
-
-    // Called to close the browser-seletino modal.
-    closeModal() {
-        this.setState({ selectorOpen: false });
-    }
-
-    // When the link to open a browser gets clicked, this gets called to close the modal in
-    // addition to going to the link.
-    handleClick() {
-        this.closeModal();
-    }
-
-    render() {
-        const { visualizeCfg, disabled, title } = this.props;
-        const assemblyList = _(Object.keys(visualizeCfg)).sortBy(assembly => _(globals.assemblyPriority).indexOf(assembly));
-
-        return (
-            <div className="browser-selector__actuator">
-                <button onClick={this.openModal} disabled={disabled} className="btn btn-info btn-sm" data-test="visualize">{title ? <span>{title}</span> : <span>Visualize</span>}</button>
-                {this.state.selectorOpen ?
-                    <Modal closeModal={this.closeModal} addClasses="browser-selector__modal">
-                        <ModalHeader title="Open visualization browser" closeModal={this.closeModal} />
-                        <ModalBody>
-                            <div className="browser-selector">
-                                <div className="browser-selector__inner">
-                                    <div className="browser-selector__title">
-                                        <div className="browser-selector__assembly-title">
-                                            Assembly
-                                        </div>
-                                        <div className="browser-selector__browsers-title">
-                                            Visualize with browser…
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    {assemblyList.map((assembly) => {
-                                        const assemblyBrowsers = visualizeCfg[assembly];
-                                        const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
-
-                                        return (
-                                            <div key={assembly} className="browser-selector__assembly-option">
-                                                <div className="browser-selector__assembly">
-                                                    {assembly}:
-                                                </div>
-                                                <div className="browser-selector__browsers">
-                                                    {browserList.map(browser =>
-                                                        <div key={browser} className="browser-selector__browser">
-                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
-                                                                {browser}
-                                                                {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </ModalBody>
-                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
-                    </Modal>
-                : null}
-            </div>
-        );
-    }
-}
-
-BrowserSelector.propTypes = {
-    visualizeCfg: PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
-    disabled: PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
-    title: PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
-};
-
-BrowserSelector.defaultProps = {
-    disabled: false,
-    title: '',
-};
-
-
 // You can use this function to render a panel view for a context object with a couple options:
 //   1. Pass an ENCODE context object (e.g. Biosample or Experiment) directly in props. PanelLookup
 //      returns a React component that you can render directly.
@@ -633,7 +543,7 @@ export function PanelLookup(properties) {
 export const AlternateAccession = (props) => {
     const { altAcc } = props;
 
-    if (altAcc && altAcc.length) {
+    if (altAcc && altAcc.length > 0) {
         return (
             <h4 className="replacement-accessions__alternate">
                 {altAcc.length === 1 ?
@@ -665,7 +575,7 @@ AlternateAccession.defaultProps = {
  */
 export const InternalTags = ({ internalTags, objectType, css }) => {
     const tagBadges = internalTags.map((tag) => {
-        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${globals.encodedURIComponent(tag)}&status=released`;
+        const tagSearchUrl = `/search/?type=${objectType}&internal_tags=${encoding.encodedURIComponentOLD(tag)}&status=released`;
         return <a href={tagSearchUrl} key={tag}><img src={`/static/img/tag-${tag}.png`} alt={`Search for all ${objectType} with internal tag ${tag}`} /></a>;
     });
     return <span className={css}>{tagBadges}</span>;
@@ -709,11 +619,20 @@ export class ImageWithFallback extends React.Component {
         });
     }
 
-    // Display default "not found" image for non-existent image src
     onError() {
+        // IE11 has an issue where it frequently throws a "Permission denied" exception, when the image
+        // exist. This workaround makes IE11 show either the image if it exist or the browser's
+        // inbuilt no-image display
+        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+            return;
+        }
+
+        const imageUrl = '/static/img/brokenImage.png';
+        const imageAlt = 'Not found';
+
         this.setState({
-            imageUrl: '/static/img/brokenImage.png',
-            imageAlt: 'Not found',
+            imageUrl,
+            imageAlt,
         });
     }
 
@@ -733,27 +652,25 @@ ImageWithFallback.propTypes = {
     imageAlt: PropTypes.string.isRequired,
 };
 
+
 /**
- * Display internal tag badges for collection pages
+ * Display internal tag badges from search results.
  */
 export const MatrixInternalTags = ({ context }) => {
-    // Collect internal tags that are filters
-    const internalTags = [];
-    context.filters.forEach((filter) => {
-        if (filter.field === 'internal_tags') {
-            if ((filter.term !== '*') && !internalTags.includes(filter.term)) {
-                internalTags.push(filter.term);
-            }
-        }
-    });
-    const tagBadges = internalTags.map(tag => (<ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />));
-    return <div className="matrix-tag">{tagBadges}</div>;
+    // Collect filters that are internal_tags.
+    const internalTags = _.uniq(context.filters.filter(filter => (
+        filter.field === 'internal_tags' && filter.term !== '*'
+    )).map(filter => filter.term));
+    return internalTags.map(tag => (
+        <ImageWithFallback imageUrl={`/static/img/tag-${tag}.png`} imageAlt={`${tag} collection logo`} key={tag} />
+    ));
 };
 
 MatrixInternalTags.propTypes = {
-    /** encode object being displayed */
+    /** encode search-results object being displayed */
     context: PropTypes.object.isRequired,
 };
+
 
 /**
  * Given a search results object, extract the type of object that was requested in the query
@@ -793,3 +710,126 @@ DocTypeTitle.defaultProps = {
 DocTypeTitle.contextTypes = {
     profilesTitles: PropTypes.object,
 };
+
+
+/**
+ * Display a block of accessory controls on object-display pages, e.g. the audit indicator button.
+ */
+export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) => (
+    <div className="item-accessories">
+        <div className="item-accessories--left">
+            {audit ?
+                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
+            : null}
+        </div>
+        <div className="item-accessories--right">
+            <DisplayAsJson />
+            {hasCartControls ?
+                <CartToggle element={item} />
+            : null}
+        </div>
+    </div>
+);
+
+ItemAccessories.propTypes = {
+    /** Object being displayed that needs these accessories */
+    item: PropTypes.object.isRequired,
+    /** Audit information */
+    audit: PropTypes.shape({
+        auditIndicators: PropTypes.func, // Function to display audit indicators
+        auditId: PropTypes.string, // Audit HTML ID to use for a11y
+        except: PropTypes.string, // Don't link any references to this @id
+    }),
+    /** True if object has cart controls */
+    hasCartControls: PropTypes.bool,
+};
+
+ItemAccessories.defaultProps = {
+    audit: null,
+    hasCartControls: false,
+};
+
+ItemAccessories.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
+
+
+// Convert assembly and annotation to a single value
+// Values computed such that assembly and annotations that are the most recent have the highest value
+// The correct sorting is as follows:
+// Genome mm9 or mm10
+//                 "ENSEMBL V65",
+//                 "M2",
+//                 "M3",
+//                 "M4",
+//                 "M7",
+//                 "M14",
+//                 "M21",
+// Genome hg19
+//                 "V3c",
+//                 "V7",
+//                 "V10",
+//                 "V19",
+//                 "miRBase V21",
+//                 "V22",
+// Genome GRCh38
+//                 "V24",
+//                 "V29",
+//                 "V30"
+// Genome ce10 or ce11
+//                 "WS235",
+//                 "WS245"
+// outlier:
+//                 "None"
+export function computeAssemblyAnnotationValue(assembly, annotation) {
+    // There are three levels of sorting
+    // First level of sorting: most recent assemblies are ordered first (represented by numerical component of assembly)
+    // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimial')
+    // Third level of sorting: Annotations within an assembly are ordered with most recent first, with more recent annotations having a higher annotation number (with the exception of "ENSEMBL V65") (represented by the annotation number divided by 10,000, or, the three decimal places after the tenths place)
+    let assemblyNumber = +assembly.match(/[0-9]+/g)[0];
+    if (assembly.indexOf('minimal') === -1) {
+        // If there is no '-minimal', add 0.5 which will order this assembly ahead of any assembly with '-minimal' and the same numerical component
+        assemblyNumber += 0.5;
+    }
+    if (annotation) {
+        const annotationNumber = +annotation.match(/[0-9]+/g)[0];
+        let annotationDecimal = 0;
+        // All of the annotations are in order numerically except for "ENSEMBL V65" which should be ordered behind "M2"
+        // We divide by 10000 because the highest annotation number (for now) is 245
+        if (+annotationNumber === 65) {
+            annotationDecimal = (+annotationNumber / 1000000);
+        } else {
+            annotationDecimal = (+annotationNumber / 10000);
+        }
+        assemblyNumber += annotationDecimal;
+        return assemblyNumber;
+    }
+    return assemblyNumber;
+}
+
+
+/**
+ * Determine whether the given file is visualizable or not. Needs to be kept in sync with
+ * is_file_visualizable in batch_download.py.
+ * @param {object} file File object to test for visualizability
+ *
+ * @return {bool} True if file is visualizable
+ */
+export const isFileVisualizable = file => (
+    (file.file_format === 'bigWig' || file.file_format === 'bigBed')
+        && (file.file_format_type !== 'bedMethyl')
+        && (file.file_format_type !== 'bedLogR')
+        && (file.file_format_type !== 'idr_peak')
+        && (file.file_format_type !== 'tss_peak')
+        && (file.file_format_type !== 'pepMap')
+        && (file.file_format_type !== 'modPepMap')
+        && ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+);
+
+
+// Not all files can be visualized on the Valis genome browser
+// Some of these files should be visualizable later, after updates to browser
+export function filterForVisualizableFiles(fileList) {
+    return fileList.filter(file => isFileVisualizable(file));
+}

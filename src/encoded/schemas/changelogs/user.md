@@ -1,12 +1,21 @@
 ## Changelog for user.json
 
+### Schema version 9
+
+* *groups* property was restricted to one of  
+    "enum" : [
+        "admin",
+        "read-only-admin",
+        "verified"
+    ]
+
 ### Schema version 8
 
-* all users were upgraded to include *community* in their viewing_groups property
+* All users were upgraded to include *community* in their *viewing_groups* property
 
 ### Schema version 7
 
-* unused/detailed user properties *phone1*, *phone2*, *fax*, *skype*, and *google* were removed
+* Unused/detailed user properties *phone1*, *phone2*, *fax*, *skype*, and *google* were removed
 
 ### Schema version 6
 
@@ -24,7 +33,7 @@
 
 ### Schema version 4
 
-* *viewing_group* enum value ENCODE was split into ENCODE3 and ENCODE4. Existing ENCODE users were assigned to ENCODE3.
+* *viewing_group* enum value *ENCODE* was split into *ENCODE3* and *ENCODE4*. Existing ENCODE users were assigned to *ENCODE3*.
 
 ### Schema version 3
 

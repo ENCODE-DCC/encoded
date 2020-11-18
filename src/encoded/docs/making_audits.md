@@ -54,9 +54,12 @@ objects referred to by an identifier:
         RNAs = ['SO:0000356', 'SO:0000871']
     
         if (value['nucleic_acid_term_id'] in RNAs) and ('size_range' not in value):
-            detail = 'RNA library {} requires a value for size_range'.format(value['accession'])
+            detail = 'RNA library {} requires a value for size_range'.format(audit_link(value['accession'], value['@id']))
             raise AuditFailure('missing size_range', detail, level='ERROR')
-        
+
+    Use ```audit_link``` to format links so that the front end can find and present them. The first parameter is the text to display for the link, while the second is the link path. You must import ```audit_link``` from the .formatter library.
+
+    The .formatter library also includes a ```path_to_text``` utility to help generate link text if all you have is the ```@id```. Pass this ```@id``` to ```path_to_text``` and it returns just the accession portion as text that you can use as link text.
 
 4. In the **tests** directory add audit test to an existing/new python file named ```test_audit_{metadata_object}.py```. This example shows the basic structure of setting up ```pytest.fixture``` and test that ```property_1``` is present if ```property_2``` is RNA:
 

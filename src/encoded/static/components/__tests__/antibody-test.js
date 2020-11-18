@@ -35,7 +35,7 @@ describe('Antibody', () => {
         });
 
         test('has a good header', () => {
-            let headerLine = antibody.find('h2');
+            let headerLine = antibody.find('h1');
             expect(headerLine.text()).toEqual('ENCAB000AUZ');
             headerLine = antibody.find('h3');
             expect(headerLine.text()).toEqual('Antibody against Homo sapiens HNRNPA1');

@@ -1,5 +1,19 @@
 ## Changelog for award.json
 
+### Minor changes since schema version 8
+* Added *CUT&RUN* to *milestones.assay_term_name* enum
+
+### Schema version 8
+
+* *assay_term_name* enum *single cell isolation followed by RNA-seq* was changed to *single-cell RNA sequencing assay*
+
+### Schema version 7
+
+* *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
+
+### Schema version 6
+* *title* is now a required property
+
 ### Minor changes since schema version 5
 * *component* was added to enable denoting functional characterization awards
 
@@ -19,7 +33,7 @@
 
 ### Schema version 3
 
-* Broke out enum value "ENCODE" in viewing_group to ENCODE3 and ENCODE4
+* Broke out enum value *ENCODE* in *viewing_group* to *ENCODE3* and *ENCODE4*
 
 ### Schema version 2
 

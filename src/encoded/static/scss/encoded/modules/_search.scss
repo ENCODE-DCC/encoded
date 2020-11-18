@@ -1,6 +1,169 @@
 $form-element-height: 26px;
 $form-bg: #f3f3f3;
 
+// Contains all search result elements.
+.search-results {
+    @at-root #{&}__facets {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 0 25%;
+        }
+    }
+
+    display: block;
+    margin-top: 5px;
+
+    h4 {
+        margin: 0 0 10px;
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+    }
+
+    .box.facets {
+        @media screen and (min-width: $screen-md-min) {
+            margin-right: 10px;
+        }
+    }
+
+    @at-root #{&}__result-list {
+        margin-top: 20px;
+
+        @media screen and (min-width: $screen-md-min) {
+            margin-top: 0;
+            flex: 0 0 75%;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    @at-root #{&}__report-list {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 75%;
+            overflow: hidden;
+        }
+    }
+}
+
+// Styles for each search result item.
+.result-item {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 10px 0;
+
+    @at-root #{&}__link {
+        text-decoration: none;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    @at-root #{&}__data {
+        flex: 1 1 auto;
+        position: relative;
+    }
+
+    @at-root #{&}__meta {
+        flex: 0 1 auto;
+        text-align: right;
+
+        @at-root #{&}-title {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #606060;
+            padding-bottom: 3px;
+        }
+
+        @at-root #{&}-id {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #909090;
+            padding-bottom: 3px;
+        }
+
+        .audit-indicators {
+            margin-top: 5px;
+        }
+    }
+
+    @at-root #{&}__picker {
+        flex: 0 1 auto;
+        margin-left: 5px;
+    }
+
+    // Cart control in search results
+    @at-root #{&}__cart-control {
+        flex: 0 0 35px;
+
+        .cart__toggle {
+            margin-left: auto;
+        }
+    }
+
+    @at-root #{&}__data-row {
+        margin-left: 25px;
+        line-height: 1.4;
+        word-break: break-all;
+
+        ul {
+            text-decoration: none;
+            list-style-type: none;
+            padding: 0px;
+            margin-left: 25px;
+
+            li {
+                display: inline;
+                list-style-type: none;
+                border: none;
+                margin-right: 5px;
+
+                a {
+                    display: inline;
+                }
+            }
+        }
+
+        img {
+            max-width: 128px;
+            height: auto;
+            margin: auto;
+            display: block;
+        }
+    }
+
+    @at-root #{&}__highlight-row {
+        font-size: 1rem;
+        font-weight: 400;
+        padding-bottom: 5px;
+        color: #6C6C6C;
+    }
+
+    @at-root #{&}__target-external-resources {
+        margin: 0 0 0 25px;
+
+        p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        > ul {
+            margin: 0 0 0 25px;
+            padding: 0;
+            list-style: none;
+            line-height: 1.3;
+
+            > li {
+                display: inline-block;
+                margin: 0 10px 0 0;
+                padding: 0;
+            }
+        }
+
+        > em {
+            margin: 0 0 0 25px;
+        }
+    }
+}
+
 .search-list {
     position: relative;
     z-index: 0;
@@ -33,16 +196,38 @@ $form-bg: #f3f3f3;
 }
 
 .adv-search-form {
-    margin-bottom: 0 !important;
+    margin: 5px 0;
 
-    .form-inline.pull-right {
-        input, select {
-            margin-left: 5px;
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    @at-root #{&}__input {
+        display: flex;
+        position: relative;
+
+        input[type="text"] {
+            flex: 1 1 auto;
+            margin-right: 5px;
+            line-height: 1.5;
         }
 
         select {
-            height: 30px;
+            flex: 0 1 auto;
         }
+    }
+
+    @at-root #{&}__notification {
+        margin: 0;
+        font-weight: 600;
+        color: #808080;
+        margin-top: 10px;
+    }
+
+    @at-root #{&}__submit {
+        text-align: right;
     }
 }
 
@@ -50,19 +235,10 @@ $form-bg: #f3f3f3;
     position: relative;
 }
 
-.input-region-error {
-    position: absolute;
-    top: 36px;
-    left: 0;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #808080;
-}
-
 .adv-search-autocomplete {
     position: absolute;
     z-index: 10;
-    top: 33px;
+    top: 18px;
     left: 0;
     padding: 0;
     max-height: 300px;
@@ -95,8 +271,48 @@ $form-bg: #f3f3f3;
 }
 
 .results-table-control {
-    .btn {
-        margin-right: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    justify-content: space-between;
+
+    @at-root #{&}__main {
+        display: flex;
+        flex: 0 1 auto;
+        flex-wrap: wrap;
+
+        .btn {
+            flex: 0 1 auto;
+            margin-right: 5px;
+        }
+
+        .btn-attached {
+            display: flex;
+            flex: 0 1 auto;
+            margin-right: 5px;
+
+            svg {
+                display: block;
+            }
+
+            .btn {
+                flex: 0 1 auto;
+                border-radius: 0;
+                margin-left: 0;
+                margin-right: 0;
+                border-right: none;
+            }
+
+            .btn:first-child {
+                border-top-left-radius: $border-radius-base;
+                border-bottom-left-radius: $border-radius-base;
+            }
+            .btn:last-child {
+                border-top-right-radius: $border-radius-base;
+                border-bottom-right-radius: $border-radius-base;
+                border-right: 1px solid #c0c0c0;
+            }
+        }
     }
 
     .dropdown-menu {
@@ -109,10 +325,13 @@ $form-bg: #f3f3f3;
         }
     }
 
-    // Contains buttons horizontally attached to each other -- indicates peer options
-    .btn-attached {
-        display: inline-block;
-        margin-right: 5px;
+    @at-root #{&}__json {
+        display: none;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: block;
+            flex: 0 1 auto;
+        }
     }
 }
 
@@ -121,16 +340,17 @@ $form-bg: #f3f3f3;
 }
 
 .page-listing-date {
+    font-weight: bold;
     font-size: 1rem;
 }
 
-// Genome rowser assembly chooser menu 
+// Genome rowser assembly chooser menu
 .browser-assembly-chooser {
     display: block;
     padding-left: 5px;
     padding-right: 5px;
-    border-left: 1px solid #a0a0a0;
-    border-right: 1px solid #a0a0a0;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
@@ -161,12 +381,44 @@ $form-bg: #f3f3f3;
 }
 
 
-// Object stats for each search result table entry.
-.result-table__status {
-    text-align: right;
+.result-table {
+    position: relative;
+    z-index: 10;
+    list-style-type: none;
+    margin: 0;
+    padding: 0 10px;
+    overflow: hidden;
+    border: 1px solid #ccc;
 
-    .status {
-        display: inline-block;
+    @media screen and (min-width: $screen-md-min) {
+        flex: 1 1 auto;
+    }
+
+    > li {
+        border-bottom: 1px solid #E8E8E8;
+    }
+
+    &:before {
+        content: none;
+        display: block;
+    }
+
+    .pull-right {
+        position: relative;
+        z-index: 2;
+    }
+
+    &.result-table-tabbed {
+        border-top: 0;
+    }
+
+    // Object stats for each search result table entry.
+    @at-root #{&}__status {
+        text-align: right;
+
+        .status {
+            display: inline-block;
+        }
     }
 }
 

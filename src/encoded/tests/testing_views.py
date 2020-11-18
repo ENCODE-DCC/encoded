@@ -7,7 +7,7 @@ from snovault import (
     calculated_property,
     collection,
 )
-from ..types.base import paths_filtered_by_status
+from encoded.types.base import paths_filtered_by_status
 from snovault.attachment import ItemWithAttachment
 from encoded.types.base import Item as EncodedItem
 
@@ -27,13 +27,10 @@ def user(request):
 
 @view_config(name='testing-allowed', request_method='GET')
 def allowed(context, request):
-    from pyramid.security import (
-        has_permission,
-        principals_allowed_by_permission,
-    )
+    from pyramid.security import principals_allowed_by_permission
     permission = request.params.get('permission', 'view')
     return {
-        'has_permission': bool(has_permission(permission, context, request)),
+        'has_permission': bool(request.has_permission(permission, context)),
         'principals_allowed_by_permission': principals_allowed_by_permission(context, permission),
     }
 
@@ -283,13 +280,13 @@ def testing_retry(context, request):
     from transaction.interfaces import TransientError
 
     model = context.model
-    request._attempt = getattr(request, '_attempt', 0) + 1
+    attempt = request.environ.get('retry.attempts')
 
-    if request._attempt == 1:
+    if attempt == 0:
         raise TransientError()
 
     return {
-        'attempt': request._attempt,
+        'retry.attempts': attempt,
         'detached': inspect(model).detached,
     }
 

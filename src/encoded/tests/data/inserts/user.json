@@ -102,7 +102,8 @@
         "lab": "/labs/j-michael-cherry/",
         "status": "current",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "uuid": "6667a92a-d202-493a-8c7d-7a56d1380356"
     },
@@ -112,6 +113,9 @@
         "job_title": "PI",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Cherry",
+        "groups": [
+            "verified"
+        ],
         "submits_for": [
             "J. Michael Cherry, Stanford",
             "W. James Kent, UCSC"
@@ -123,7 +127,7 @@
         "first_name": "Elit",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
@@ -150,7 +154,7 @@
         "first_name": "Inceptos",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
@@ -199,7 +203,7 @@
         "first_name": "Bibendum",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
@@ -214,7 +218,7 @@
         "first_name": "Euismod",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Project Manager",
         "lab": "J. Michael Cherry, Stanford",
@@ -301,7 +305,7 @@
         "first_name": "Parturient",
         "groups": [
             "admin",
-            "programmer"
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "J. Michael Cherry, Stanford",
@@ -316,7 +320,7 @@
         "first_name": "Justo",
         "groups": [
             "admin",
-            "programmer"
+            "verified"
         ],
         "job_title": "Group Leader, Software",
         "lab": "J. Michael Cherry, Stanford",
@@ -442,7 +446,7 @@
         "first_name": "Faucibus",
         "groups": [
             "admin",
-            "programmer"
+            "verified"
         ],
         "job_title": "Senior software engineer",
         "lab": "J. Michael Cherry, Stanford",
@@ -483,7 +487,7 @@
         "first_name": "Maecenas",
         "groups": [
             "admin",
-            "programmer"
+            "verified"
         ],
         "job_title": "Senior software engineer",
         "lab": "J. Michael Cherry, Stanford",
@@ -644,7 +648,7 @@
         "first_name": "Tortor",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
@@ -714,7 +718,8 @@
         "email": "david@glicksoftware.com",
         "first_name": "David",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Glick",
@@ -727,7 +732,8 @@
         "email": "fytanaka@stanford.edu",
         "first_name": "Forrest",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
@@ -742,7 +748,7 @@
         "first_name": "Venkat",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/venkat-malladi/",
@@ -758,7 +764,7 @@
         "first_name": "J. Seth",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -774,7 +780,7 @@
         "first_name": "Mingzhu",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/venkat-malladi/",
@@ -790,7 +796,7 @@
         "first_name": "Guillaume",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/venkat-malladi/",
@@ -806,7 +812,7 @@
         "first_name": "Mingjie",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/venkat-malladi/",
@@ -822,7 +828,7 @@
         "first_name": "Idan",
         "groups": [
             "admin",
-            "wrangler"
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -837,7 +843,8 @@
         "email": "ulugbek@stanford.edu",
         "first_name": "Ulugbek",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
@@ -852,7 +859,8 @@
         "email": "hitz@stanford.edu",
         "first_name": "Ben",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
@@ -867,7 +875,8 @@
         "email": "tdreszer@stanford.edu",
         "first_name": "Tim",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
@@ -882,7 +891,8 @@
         "email": "ksgraham@stanford.edu",
         "first_name": "Keenan",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Research Data Analyst",
         "lab": "/labs/j-michael-cherry/",
@@ -897,7 +907,8 @@
         "email": "toyunhai@gmail.com",
         "first_name": "Yunhai",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -912,7 +923,8 @@
         "email": "kritijn21@gmail.com",
         "first_name": "Kriti",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
@@ -927,7 +939,8 @@
         "email": "zoldello@stanford.edu",
         "first_name": "Philip",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
@@ -942,7 +955,8 @@
         "email": "weiwei.zhong@stanford.edu",
         "first_name": "Weiwei",
          "groups": [
-             "admin"
+             "admin",
+             "verified"
          ],
          "job_title": "Data Wrangler",
          "lab": "/labs/j-michael-cherry/",
@@ -957,7 +971,8 @@
         "email": "zackm23@stanford.edu",
         "first_name": "Zachary",
          "groups": [
-             "admin"
+             "admin",
+             "verified"
          ],
          "job_title": "Data Insert Updater",
          "lab": "/labs/j-michael-cherry/",
@@ -972,7 +987,8 @@
         "email": "jahilton@stanford.edu",
         "first_name": "Jason",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -995,7 +1011,8 @@
         "email": "clitton@stanford.edu",
         "first_name": "Casey",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "lab": "/labs/j-michael-cherry/",
         "last_name": "Litton",
@@ -1017,7 +1034,8 @@
         "email": "2paulsud@gmail.com",
         "first_name": "Paul",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Associate Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -1041,7 +1059,8 @@
         "email": "emmao@stanford.edu",
         "first_name": "Emma",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Software Developer",
         "lab": "/labs/j-michael-cherry/",
@@ -1064,7 +1083,8 @@
         "email": "jenjou168@gmail.com",
         "first_name": "Jennifer",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Associate Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -1088,7 +1108,8 @@
         "email": "jlz@stanford.edu",
         "first_name": "Jennifer",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",
@@ -1112,7 +1133,8 @@
         "email": "mkagd001@ucr.edu",
         "first_name": "Meenakshi",
         "groups": [
-            "admin"
+            "admin",
+            "verified"
         ],
         "job_title": "Data Wrangler",
         "lab": "/labs/j-michael-cherry/",

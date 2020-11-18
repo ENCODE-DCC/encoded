@@ -2,11 +2,40 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Navbar, Nav, NavItem } from '../libs/bootstrap/navbar';
-import { DropdownMenu, DropdownMenuSep } from '../libs/bootstrap/dropdown-menu';
+import { Navbar, Nav, NavItem } from '../libs/ui/navbar';
+import { DropdownMenu, DropdownMenuSep } from '../libs/ui/dropdown-menu';
 import { CartStatus } from './cart';
-import { productionHost } from './globals';
+import { isProductionHost } from './globals';
+import Tooltip from '../libs/ui/tooltip';
+import { BrowserFeat } from './browserfeat';
 
+/**
+ * Navigation bar home-page button.
+ */
+class HomeBrand extends React.Component {
+    constructor() {
+        super();
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        this.context.navigate('/');
+    }
+
+    render() {
+        return (
+            <button className="home-brand" onClick={this.handleClick}>
+                {this.context.portal.portal_title}
+                <span className="sr-only">Home</span>
+            </button>
+        );
+    }
+}
+
+HomeBrand.contextTypes = {
+    navigate: PropTypes.func,
+    portal: PropTypes.object,
+};
 
 export default class Navigation extends React.Component {
     constructor(props, context) {
@@ -14,8 +43,10 @@ export default class Navigation extends React.Component {
 
         // Set initial React state.
         this.state = {
-            testWarning: !productionHost[url.parse(context.location_href).hostname],
+            /** ID of the currently dropped-down main navigation menu; '' if none */
             openDropdown: '',
+            /** True if test warning banner visible; default depends on domain */
+            testWarning: !isProductionHost(context.location_href),
         };
 
         // Bind this to non-React methods.
@@ -34,29 +65,86 @@ export default class Navigation extends React.Component {
 
     componentDidMount() {
         // Add a click handler to the DOM document -- the entire page
-        document.addEventListener('click', this.documentClickHandler);
+        document.addEventListener('click', e => this.documentClickHandler(e));
     }
 
     componentWillUnmount() {
         // Remove the DOM document click handler now that the DropdownButton is going away.
-        document.removeEventListener('click', this.documentClickHandler);
+        document.removeEventListener('click', e => this.documentClickHandler(e));
     }
 
-    documentClickHandler() {
-        // A click outside the DropdownButton closes the dropdown
-        this.setState({ openDropdown: '' });
+    /**
+     * A click outside the DropdownButton closes the dropdown.
+     */
+    documentClickHandler(e) {
+        const className = e.target.className;
+        // Only close navigation hamburger when user does not click on tooltip icon
+        // Note: "toString" is required for hamburger SVG on mobile which does not have a className that is a string
+        // Elements with validClassName and validTagName should not close the menu when clicked on
+        let validClassName = false;
+        if (className) {
+            validClassName = (className.toString().indexOf('icon-question-circle') > -1) || (className.toString().indexOf('tooltip-container__trigger') > -1);
+        }
+        const validTagName = e.target.tagName === 'LI' || e.target.tagName === 'I';
+        if (!(validClassName || validTagName)) {
+            this.setState({ openDropdown: '' });
+        }
     }
 
+    /**
+     * Called when the user clicks a main navigation drop-down menu.
+     * @param {string} dropdownId ID of the clicked menu, if any
+     * @param {object} e React synthetic event
+     */
     dropdownClick(dropdownId, e) {
-        // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
-        e.nativeEvent.stopImmediatePropagation();
-        this.setState(prevState => ({
-            openDropdown: dropdownId === prevState.openDropdown ? '' : dropdownId,
-        }));
+        // Clicks and mouseover actions do not behave the same way (clicks should toggle activation whereas hovering should maintain activation)
+        // so depending on the device we want user actions have different results
+        // We do enable clicks on non-touch devices so that menus are available by keyboard (tab)
+        let activateMenuItem = false;
+        const isMobile = BrowserFeat.getBrowserCaps('touchEnabled');
+        const dropdownIdIsString = typeof dropdownId === 'string';
+        if (e) {
+            // After clicking the dropdown trigger button, don't allow the event to bubble to the rest of the DOM.
+            e.nativeEvent.stopImmediatePropagation();
+            // On touch devices, activate menu item if new one chosen or deactivate menu item if old one chosen
+            if (e.type === 'click' && isMobile) {
+                activateMenuItem = dropdownId !== this.state.openDropdown;
+                this.setState(prevState => ({
+                    openDropdown: ((dropdownId !== prevState.openDropdown) && dropdownIdIsString) ? dropdownId : '',
+                }));
+            // On non-touch devices, a click functions like a hover would, it only activates and cannot deactivate
+            // This is primarily useful for accessibility
+            } else if (e.type === 'click') {
+                activateMenuItem = true;
+                this.setState({
+                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
+                });
+            // On non-touch devices, activate menu item on mouseenter or deactivate on mouseleave
+            // Note that mouseenter and mouseleave are not available on touch devices
+            } else if ((e.type === 'mouseenter' || e.type === 'mouseleave') && !isMobile) {
+                // On mousenter, activate menu item
+                if (e.type === 'mouseenter') {
+                    activateMenuItem = true;
+                }
+                // On mouseleave, de-activate menu item
+                if (e.type === 'mouseleave') {
+                    activateMenuItem = false;
+                }
+                this.setState({
+                    openDropdown: (activateMenuItem && dropdownIdIsString) ? dropdownId : '',
+                });
+            }
+        // If there is no event trigger, user's cursor has left dropdown so we want to close it
+        } else if (!isMobile) {
+            this.setState({ openDropdown: '' });
+        }
     }
 
+    /**
+     * Handle a click in the close box of the test-data warning.
+     * @param {object} e React synthetic event
+     */
     handleClickWarning(e) {
-        // Handle a click in the close box of the test-data warning
         e.preventDefault();
         e.stopPropagation();
 
@@ -66,34 +154,34 @@ export default class Navigation extends React.Component {
         // If collection with .sticky-header on page, jiggle scroll position
         // to force the sticky header to jump to the top of the page.
         const hdrs = document.getElementsByClassName('sticky-header');
-        if (hdrs.length) {
+        if (hdrs.length > 0) {
             window.scrollBy(0, -1);
             window.scrollBy(0, 1);
         }
     }
 
     render() {
-        const portal = this.context.portal;
         return (
-            <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
-                <div className="container">
-                    <Navbar brand={portal.portal_title} brandlink="/" label="main" navClasses="navbar-main" openDropdown={this.state.openDropdown} dropdownClick={this.dropdownClick}>
-                        <GlobalSections />
-                        <CartStatus />
-                        <UserActions />
-                        {this.props.isHomePage ? null : <ContextActions />}
-                        <Search />
-                    </Navbar>
-                </div>
+            <div id="navbar" className="navbar__wrapper">
+                <Navbar
+                    brand={<HomeBrand />}
+                    brandlink="/"
+                    label="main"
+                    dropdownClick={this.dropdownClick}
+                    openDropdown={this.state.openDropdown}
+                    navClasses="navbar-main"
+                >
+                    <GlobalSections />
+                    <SecondarySections isHomePage={this.props.isHomePage} />
+                </Navbar>
                 {this.state.testWarning ?
                     <div className="test-warning">
-                        <div className="container">
-                            <p>
-                                The data displayed on this page is not official and only for testing purposes.
-                                <button className="test-warning-close icon icon-times-circle-o" onClick={this.handleClickWarning}>
-                                    <span className="sr-only">Close test warning banner</span>
-                                </button>
-                            </p>
+                        <div className="container test-warning__content">
+                            <div className="test-warning__text">The data displayed on this page is not official and only for testing purposes.</div>
+                            <button className="test-warning__close" onClick={this.handleClickWarning}>
+                                <i className="icon icon-times-circle-o" />
+                                <span className="sr-only">Close test warning banner</span>
+                            </button>
                         </div>
                     </div>
                 : null}
@@ -112,7 +200,6 @@ Navigation.defaultProps = {
 
 Navigation.contextTypes = {
     location_href: PropTypes.string,
-    portal: PropTypes.object,
 };
 
 Navigation.childContextTypes = {
@@ -120,9 +207,9 @@ Navigation.childContextTypes = {
     dropdownClick: PropTypes.func, // Called when a dropdown title gets clicked
 };
 
-
 // Main navigation menus
 const GlobalSections = (props, context) => {
+    const glossary = require('./glossary/glossary.json');
     const actions = context.listActionsFor('global_sections').map(action =>
         <NavItem key={action.id} dropdownId={action.id} dropdownTitle={action.title} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} >
             {action.children ?
@@ -132,7 +219,28 @@ const GlobalSections = (props, context) => {
                         if (childAction.id.substring(0, 4) === 'sep-') {
                             return <DropdownMenuSep key={childAction.id} />;
                         }
-
+                        const glossaryMatch = glossary.find(def => def.term === childAction.title);
+                        if (glossaryMatch) {
+                            return (
+                                <div
+                                    key={childAction.id}
+                                    className={`${childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'} ${childAction.url ? 'hoverable' : ''}`}
+                                >
+                                    <a href={childAction.url || ''}>
+                                        {childAction.title}
+                                    </a>
+                                    <Tooltip
+                                        trigger={<i className="icon icon-question-circle" />}
+                                        tooltipId={childAction.id}
+                                        timerFlag={false}
+                                        innerCss={`menu-tooltip ${childAction.tag ? 'sub-menu' : ''}`}
+                                        relativeTooltipFlag
+                                    >
+                                        {glossaryMatch.definition}
+                                    </Tooltip>
+                                </div>
+                            );
+                        }
                         // Render any regular linked items in the dropdown
                         return (
                             <a href={childAction.url || ''} key={childAction.id} className={childAction.tag ? 'sub-menu' : childAction.url ? '' : 'disabled-menu-item'}>
@@ -143,13 +251,15 @@ const GlobalSections = (props, context) => {
                 </DropdownMenu>
             : null}
         </NavItem>
-    );
+    ).concat(<CartStatus key="cart-control" openDropdown={props.openDropdown} dropdownClick={props.dropdownClick} />);
     return <Nav>{actions}</Nav>;
 };
 
 GlobalSections.propTypes = {
-    openDropdown: PropTypes.string, // ID of the dropdown currently visible
-    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
 };
 
 GlobalSections.defaultProps = {
@@ -159,6 +269,30 @@ GlobalSections.defaultProps = {
 
 GlobalSections.contextTypes = {
     listActionsFor: PropTypes.func.isRequired,
+};
+
+
+const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }) => (
+    <Nav>
+        <Search />
+        {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
+        <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
+    </Nav>
+);
+
+SecondarySections.propTypes = {
+    /** True if current page is home page */
+    isHomePage: PropTypes.bool,
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
+};
+
+SecondarySections.defaultProps = {
+    isHomePage: false,
+    openDropdown: '',
+    dropdownClick: null,
 };
 
 
@@ -178,23 +312,23 @@ const ContextActions = (props, context) => {
     // Action menu with editing dropdown menu
     if (actions.length > 1) {
         return (
-            <Nav right>
-                <NavItem dropdownId="context" dropdownTitle={<i className="icon icon-gear" />} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
-                    <DropdownMenu label="context">
-                        {actions}
-                    </DropdownMenu>
-                </NavItem>
-            </Nav>
+            <NavItem dropdownId="actions" label="Actions" dropdownTitle={<i className="icon icon-gear" />} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
+                <DropdownMenu label="actions">
+                    {actions}
+                </DropdownMenu>
+            </NavItem>
         );
     }
 
     // Action menu without a dropdown menu
-    return <Nav right><NavItem>{actions}</NavItem></Nav>;
+    return <NavItem>{actions}</NavItem>;
 };
 
 ContextActions.propTypes = {
-    openDropdown: PropTypes.string, // ID of the dropdown currently visible
-    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
 };
 
 ContextActions.defaultProps = {
@@ -211,19 +345,22 @@ const Search = (props, context) => {
     const id = url.parse(context.location_href, true);
     const searchTerm = id.query.searchTerm || '';
     return (
-        <form className="navbar-form navbar-right" action="/search/">
-            <div className="search-wrapper">
+        <li className="navbar__item navbar__item--search">
+            <form className="navbar__search" action="/search/">
                 <input
-                    className="form-control search-query"
-                    id="navbar-search"
+                    aria-label="Search"
                     type="text"
                     placeholder="Search, e.g. patient, bone"
                     name="searchTerm"
                     defaultValue={searchTerm}
                     key={searchTerm}
                 />
-            </div>
-        </form>
+                <button type="submit" className="search-button">
+                    <i className="icon icon-search" />
+                    <span className="sr-only">Search</span>
+                </button>
+            </form>
+        </li>
     );
 };
 
@@ -246,19 +383,19 @@ const UserActions = (props, context) => {
     const user = sessionProperties.user;
     const fullname = (user && user.title) || 'unknown';
     return (
-        <Nav right>
-            <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
-                <DropdownMenu label="useractions">
-                    {actions}
-                </DropdownMenu>
-            </NavItem>
-        </Nav>
+        <NavItem dropdownId="useractions" dropdownTitle={fullname} openDropdown={props.openDropdown} dropdownClick={props.dropdownClick}>
+            <DropdownMenu label="useractions">
+                {actions}
+            </DropdownMenu>
+        </NavItem>
     );
 };
 
 UserActions.propTypes = {
-    openDropdown: PropTypes.string, // ID of the dropdown currently visible
-    dropdownClick: PropTypes.func, // Function to call when dropdown clicked
+    /** ID of the dropdown currently visible */
+    openDropdown: PropTypes.string,
+    /** Function to call when dropdown clicked */
+    dropdownClick: PropTypes.func,
 };
 
 UserActions.defaultProps = {
@@ -298,7 +435,7 @@ export const Breadcrumbs = (props) => {
 
                 // Build up tooltip if not specified completely
                 if (!crumb.wholeTip) {
-                    accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
+                    accretingTip += crumb.tip ? (accretingTip.length > 0 ? ' and ' : '') + crumb.tip : '';
                 }
 
                 // Append released tag to link and link title if the object is released itself

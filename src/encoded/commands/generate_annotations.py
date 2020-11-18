@@ -7,7 +7,7 @@ import multiprocessing as mp
 
 EPILOG = __doc__
 
-_HGNC_FILE = 'https://www.encodeproject.org/files/ENCFF277WZC/@@download/ENCFF277WZC.tsv'
+_HGNC_FILE = 'https://www.encodeproject.org/files/ENCFF623FUK/@@download/ENCFF623FUK.tsv'
 _MOUSE_FILE = 'https://www.encodeproject.org/files/ENCFF097CIT/@@download/ENCFF097CIT.tsv'
 _DM_FILE = 'https://www.encodeproject.org/files/ENCFF311QAL/@@download/ENCFF311QAL.tsv'
 _CE_FILE = 'https://www.encodeproject.org/files/ENCFF324UJT/@@download/ENCFF324UJT.tsv'
@@ -189,7 +189,9 @@ def get_rows_from_file(file_name, row_delimiter):
     response = requests.get(file_name)
     rows = response.content.decode('utf-8').split(row_delimiter)
     header = rows[0].split('\t')
-    zipped_rows = [dict(zip(header, row.split('\t'))) for row in rows[1:]]
+    # remove the leading and ending double-quote string 
+    # that sometimes is present in source-file fields
+    zipped_rows = [dict(zip(header, [r.strip('\"') for r in row.split('\t')])) for row in rows[1:]]
     return zipped_rows
 
 
@@ -206,9 +208,9 @@ def human_annotations(human_file):
     """
     Generates JSON from TSV files
     """
-    zipped_rows = get_rows_from_file(human_file, '\r')
+    zipped_rows = get_rows_from_file(human_file, '\n')
     # Too many processes causes the http requests causes the remote to respond with error
-    pool = mp.Pool(processes=1)
+    pool = mp.Pool(processes=10)
     annotations = pool.map(human_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
 
@@ -219,7 +221,7 @@ def mouse_annotations(mouse_file):
     """
     zipped_rows = get_rows_from_file(mouse_file, '\n')
     # Too many processes causes the http requests causes the remote to respond with error
-    pool = mp.Pool(processes=1)
+    pool = mp.Pool(processes=10)
     annotations = pool.map(mouse_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
 

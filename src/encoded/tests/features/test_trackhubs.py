@@ -1,19 +1,19 @@
 import pytest
 
+pytestmark = [pytest.mark.indexing]
 
 @pytest.mark.parametrize('expected', [
-    "# http://localhost/batch_hub/type%3Dexperiment/hub.txt",
+    "# http://localhost/batch_hub/type=Experiment/hub.txt",
     "hub ENCODE_DCC_search",
     "shortLabel Hub (search:)",
     "longLabel ENCODE Data Coordination Center Data Hub",
     "genomesFile genomes.txt",
-    "email encode-help@lists.stanford.edu",
+    "email encode-help@lists.stanford.edu"
 ])
-def test_hub(testapp, workbook, expected):
-    res = testapp.get("/batch_hub/type%3Dexperiment/hub.txt")
-    if expected not in res.text:
-        expected = expected.replace('%3D', '=')
+def test_hub(testapp, index_workbook, expected):
+    res = testapp.get("/batch_hub/type=Experiment/hub.txt")
     assert expected in res.text
+
 
 @pytest.mark.parametrize('expected', [
     "genome mm9",
@@ -23,8 +23,8 @@ def test_hub(testapp, workbook, expected):
     "genome hg19",
     "trackDb hg19/trackDb.txt",
 ])
-def test_genomes(testapp, workbook, expected):
-    res = testapp.get("/batch_hub/type%3Dexperiment/genomes.txt")
+def test_genomes(testapp, index_workbook, expected):
+    res = testapp.get("/batch_hub/type=Experiment/genomes.txt")
     assert expected in res.text
 
 
@@ -67,7 +67,7 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "shortLabel ENCODE ChIP-seq",
     "visibility full",
     "html ChIP",
-    "subGroup1 view Views aOIDR=Optimal_IDR_thresholded_peaks bCIDR=Conservative_IDR_thresholded_peaks cRPKS=Pseudoreplicated_IDR_thresholded_peaks dPKS=Peaks eFCOC=Fold_change_over_control fSPV=Signal_p-value gSIG=Signal",
+    "subGroup1 view Views aOIDR=Optimal_IDR_thresholded_peaks bIDRT=IDR_thresholded_peaks cCIDR=Conservative_IDR_thresholded_peaks dRPKS=Pseudoreplicated_IDR_thresholded_peaks ePKS=Peaks gSPV=Signal_p-value fFCOC=Fold_change_over_control hSIG=Signal",
     "subGroup2 BS Biosample GM12878=GM12878",
     "subGroup3 EXP Experiment KCESR000DZQ=KCESR000DZQ",
     "subGroup4 REP Replicates pool=Pooled",
@@ -75,40 +75,50 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "sortOrder BS=+ TARG=+ REP=+ view=+ EXP=+",
     "dimensions dimA=REP",
     "dimensionAchecked pool",
-    "    track chip_aOIDR_view",
+    "    track chip_bIDRT_view",
     "    parent chip on",
-    "    view aOIDR",
+    "    view bIDRT",
     "    type bigNarrowPeak",
     "    visibility dense",
     "    spectrum on",
     "        track KCEFF003COS",
-    "        parent chip_aOIDR_view on",
+    "        parent chip_bIDRT_view on",
     "        bigDataUrl /files/KCEFF003COS/@@download/KCEFF003COS.bigBed?proxy=true",
-    "        longLabel EBF1 ChIP-seq of GM12878 optimal idr thresholded peaks pool KCESR000DZQ - KCEFF003COS",
-    "        shortLabel pool oIDR pk",
+    "        longLabel EBF1 TF ChIP-seq of GM12878 IDR thresholded peaks pool KCESR000DZQ - KCEFF003COS",
+    "        shortLabel pool IDRt pk",
     "        type bigNarrowPeak",
     "        color 153,38,0",
     "        altColor 115,31,0",
-    "        subGroups BS=GM12878 EXP=KCESR000DZQ REP=pool TARG=EBF1 view=aOIDR",
+    "        subGroups BS=GM12878 EXP=ENCSR000DZQ REP=pool TARG=EBF1 view=bIDRT",
 ])
 def test_genomes(testapp, workbook, expected):
-    res = testapp.get("/batch_hub/type%3Dexperiment%2C%2caccession%3DKCESR000DZQ%2C%2caccession%3DKCESRKCESR575ZXX/hg19/trackDb.txt")
+    res = testapp.get("/batch_hub/type=Experiment%2C%2caccession%3DKCESR000DZQ%2C%2caccession%3DKCESRENCSR575ZXX/hg19/trackDb.txt")
     assert expected in res.text
 
 
 @pytest.mark.parametrize('expected', [
     ""
 ])
+<<<<<<< HEAD
 def test_fileset_files_trackDb(testapp, workbook, expected):
     res = testapp.get("/publication-data/KCESR727WCB/@@hub/hg19/trackDb.txt")
+=======
+def test_fileset_files_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/publication-data/ENCSR727WCB/@@hub/hg19/trackDb.txt")
+>>>>>>> dev-encoded
     assert expected in res.text
 
 
 @pytest.mark.parametrize('expected', [
     "# Empty composite for KCESR000ACY.  It cannot be visualized at this time.",
 ])
+<<<<<<< HEAD
 def test_experiment_trackDb(testapp, workbook, expected):
     res = testapp.get("/experiments/KCESR000ACY/@@hub/trackDb.txt")
+=======
+def test_experiment_trackDb(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR000ACY/@@hub/trackDb.txt")
+>>>>>>> dev-encoded
     assert expected in res.text
 
 
@@ -116,7 +126,7 @@ def test_experiment_trackDb(testapp, workbook, expected):
     "genome hg38",
     "trackDb hg38/trackDb.txt",
 ])
-def test_genome_txt(testapp, workbook, expected):
+def test_genome_txt(testapp, index_workbook, expected):
     res = testapp.get("/batch_hub/type=Experiment&assembly=GRCh38/genomes.txt")
     assert expected in res.text
 
@@ -124,28 +134,36 @@ def test_genome_txt(testapp, workbook, expected):
     "GRCh38",
     "hg19"
 ])
+<<<<<<< HEAD
 def test_assembly(testapp, workbook, expected):
     res = testapp.get("/experiments/KCESR000AEN/")
+=======
+def test_assembly(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR000AEN/")
+>>>>>>> dev-encoded
     assert expected in res.json['assembly']
 
 
 @pytest.mark.parametrize('expected', [
     "/experiments/KCESR000AEN/@@hub/hub.txt",
 ])
+<<<<<<< HEAD
 def test_hub_field(testapp, workbook, expected):
     res = testapp.get("/experiments/KCESR000AEN/")
+=======
+def test_hub_field(testapp, index_workbook, expected):
+    res = testapp.get("/experiments/ENCSR000AEN/")
+>>>>>>> dev-encoded
     assert expected in res.json['hub']
 
 
-def test_visualize(submitter_testapp, workbook):
+def test_visualize(submitter_testapp, index_workbook):
     expected = {
         'GRCh38': [
             "Ensembl",
-            "Quick View",
             "UCSC",
         ],
         'hg19': [
-            "Quick View",
             "UCSC"
         ]
     }

@@ -1,0 +1,38 @@
+## JVM configuration: 
+#
+# For details see
+# -defaults/encoded-jvm.options.20190930
+# -defaults/default-jvm.options.20190930
+#
+## 
+
+# Standard default jvm.options as of 20190930
+# -Xms2g
+# -Xmx2g
+-XX:+UseConcMarkSweepGC
+-XX:CMSInitiatingOccupancyFraction=75
+-XX:+UseCMSInitiatingOccupancyOnly
+-XX:+AlwaysPreTouch
+-server
+-Xss1m
+-Djava.awt.headless=true
+-Dfile.encoding=UTF-8
+-Djna.nosys=true
+-Djdk.io.permissionsUseCanonicalPath=true
+-Dio.netty.noUnsafe=true
+-Dio.netty.noKeySetOptimization=true
+-Dio.netty.recycler.maxCapacityPerThread=0
+-Dlog4j.shutdownHookEnabled=false
+-Dlog4j2.disable.jmx=true
+-Dlog4j.skipJansi=true
+-XX:+HeapDumpOnOutOfMemoryError
+
+## Non default settings below
+
+# Probably doesn't matter: https://gist.github.com/mrflip/5366376
+# "prevents anyone from forcing GC. There should be no difference 
+# of this on or off; check that it's so, then leave it out 
+# (i.e. do not disable explicit GC)"
+-XX:+DisableExplicitGC
+
+# Xms/Xmx update added on deploy

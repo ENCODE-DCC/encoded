@@ -1,69 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def base_analysis_step(testapp, software_version):
-    item = {
-        'name': 'lrna-pe-star-alignment-step-v-2-0',
-        'title': 'Long RNA-seq STAR paired-ended alignment step v2.0',
-        'analysis_step_types': ['alignments'],
-        'input_file_types': ['reads'],
-        'software_versions': [
-            software_version['@id'],
-        ]
-    }
-    return item
-
-
-@pytest.fixture
-def analysis_step_1(base_analysis_step):
-
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '2',
-        'output_file_types': ['signal of multi-mapped reads']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_3(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '3',
-        'analysis_step_types': ['alignment', 'alignment'],
-        'input_file_types': ['reads', 'reads'],
-        'output_file_types': ['transcriptome alignments', 'transcriptome alignments']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_5(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '5',
-        'aliases': ["dnanexus:align-star-se-v-2"],
-        'uuid': '8eda9dfa-b9f1-4d58-9e80-535a5e4aaab1',
-        'status': 'in progress',
-        'analysis_step_types': ['pooling', 'signal generation', 'file format conversion', 'quantification'],
-        'input_file_types': ['alignments'],
-        'output_file_types': ['methylation state at CHG', 'methylation state at CHH', 'raw signal', 'methylation state at CpG']
-    })
-    return item
-
-
-@pytest.fixture
-def analysis_step_6(base_analysis_step):
-    item = base_analysis_step.copy()
-    item.update({
-        'schema_version': '6',
-        'input_file_types': ['alignments', 'candidate regulatory elements'],
-        'output_file_types': ['raw signal', 'candidate regulatory elements']
-    })
-    return item
-
-
 def test_analysis_step_2_3(registry, upgrader, analysis_step_1, threadlocals):
     value = upgrader.upgrade('analysis_step', analysis_step_1, current_version='2', target_version='3', registry=registry)
     assert 'signal of all reads' in value['output_file_types']
@@ -94,3 +31,30 @@ def test_analysis_step_6_7(upgrader, analysis_step_6):
     assert 'candidate regulatory elements' not in value['output_file_types']
     assert 'candidate Cis-Regulatory Elements' in value['input_file_types']
     assert 'candidate Cis-Regulatory Elements' in value['output_file_types']
+
+
+def test_analysis_step_7_8(upgrader, analysis_step_7):
+    expectation = sorted([
+        'peaks',
+        'optimal IDR thresholded peaks',
+        'conservative IDR thresholded peaks',
+        'pseudoreplicated IDR thresholded peaks'
+    ])
+    value = upgrader.upgrade(
+        'analysis_step',
+        analysis_step_7,
+        current_version='7',
+        target_version='8'
+    )
+    assert value['schema_version'] == '8'
+    assert sorted(value['input_file_types']) == expectation
+    assert sorted(value['output_file_types']) == expectation
+
+
+def test_analysis_step_8_9(upgrader, analysis_step_8):
+    value = upgrader.upgrade('analysis_step', analysis_step_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert 'representative dnase hypersensitivity sites' not in value['input_file_types']
+    assert 'representative dnase hypersensitivity sites' not in value['output_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' in value['input_file_types']
+    assert 'representative DNase hypersensitivity sites (rDHSs)' in value['output_file_types']

@@ -1,18 +1,5 @@
 import pytest
-
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
-
-@pytest.fixture
-def antibody_characterization(submitter, award, lab, antibody_lot, target):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'target': target['uuid'],
-        'characterizes': antibody_lot['uuid']
-    }
+from .constants import RED_DOT
 
 
 def test_antibody_characterization_reviews(testapp, antibody_characterization, k562):

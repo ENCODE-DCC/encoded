@@ -208,5 +208,426 @@
         "status": "released",
         "uuid": "e67924b2-6b7c-423f-b62b-fc6f145c0822",
         "mrn": "88"
+    },
+    {
+        "accession": "KCEPT389MHZ",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "16c8de4d-ae77-44cf-b4d7-c1d5b67199b7",
+        "death_date": "1861-06-03",
+        "death_source": "Tumor Registry",
+        "mrn": "9342"
+    },
+    {
+        "accession": "KCEPT108IJT",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "Black",
+        "status": "released",
+        "uuid": "764717ee-54a8-4d2b-8d58-def1d53fbac4",
+        "death_date": "1860-05-05",
+        "death_source": "Tumor Registry",
+        "mrn": "3131"
+    },
+    {
+        "accession": "KCEPT046PGS",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "Black",
+        "status": "released",
+        "uuid": "f4a669c6-19cb-43f7-9882-7aa252139f8b",
+        "mrn": "3981"
+    },
+    {
+        "accession": "KCEPT935TMI",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "96dec266-7d0e-4991-bc45-860fa7856ed1",
+        "mrn": "2151"
+    },
+    {
+        "accession": "KCEPT410NBU",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "c86e1471-6da5-4a16-a896-b52d6408ce49",
+        "death_date": "1840-05-08",
+        "death_source": "Parkland Hospital",
+        "mrn": "9041"
+    },
+    {
+        "accession": "KCEPT843QVK",
+        "alternate_accessions": [],
+        "ethnicity": "Unknown",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "bc65ad0f-6e88-4e99-b62f-5106f7e122f7",
+        "mrn": "4111",
+        "diagnosis_date_tumor_registry": "1878-04-02"
+    },
+    {
+        "accession": "KCEPT202XRB",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "5341e7e5-5637-410e-8728-21b17640caeb",
+        "death_date": "1870-02-03",
+        "death_source": "UTSouthwestern Hospital",
+        "mrn": "2661"
+    },
+    {
+        "accession": "KCEPT250HMN",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "American Indian",
+        "status": "released",
+        "uuid": "23cbb67c-7f0a-4d2f-a56d-1054ec2b0626",
+        "mrn": "7071"
+    },
+    {
+        "accession": "KCEPT146NZW",
+        "alternate_accessions": [],
+        "ethnicity": "Unknown",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "9efb8cd0-b394-4502-8793-6724e8f3f203",
+        "mrn": "3501",
+        "diagnosis_date_tumor_registry": "1827-07-02"
+    },
+    {
+        "accession": "KCEPT149SOR",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "Asian",
+        "status": "released",
+        "uuid": "63580e44-6a7a-459d-acea-7cbc0c58640d",
+        "mrn": "3991"
+    },
+    {
+        "accession": "KCEPT051XWS",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "7e59c2cf-135d-4dcf-a373-07d18a90d5dc",
+        "mrn": "9031"
+    },
+    {
+        "accession": "KCEPT704LAK",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "65ff28d2-a423-4161-a6f8-1c38d2e34f77",
+        "mrn": "6281"
+    },
+    {
+        "accession": "KCEPT205NRD",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "823782a0-ee9f-417f-9d37-3b5a7c5bff82",
+        "mrn": "5581"
+    },
+    {
+        "accession": "KCEPT612UHR",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "560fef55-de16-4b1b-a5fb-53ff83b41237",
+        "mrn": "5901"
+    },
+    {
+        "accession": "KCEPT214KIZ",
+        "alternate_accessions": [],
+        "ethnicity": "Unknown",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "dbce2492-4e90-45f5-8cb3-374104df0940",
+        "mrn": "8221"
+    },
+    {
+        "accession": "KCEPT328JLK",
+        "alternate_accessions": [],
+        "ethnicity": "Declined",
+        "sex": "Male",
+        "race": "Declined",
+        "status": "released",
+        "uuid": "fd566e0c-b068-48d5-9495-2464d207e489",
+        "mrn": "5321"
+    },
+    {
+        "accession": "KCEPT156AEN",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "0a4ffe26-4807-4181-8c78-f6e9746dfd61",
+        "mrn": "6871"
+    },
+    {
+        "accession": "KCEPT596JUN",
+        "alternate_accessions": [],
+        "ethnicity": "Declined",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "6efbccae-d567-4db9-9d76-d1ee91d3d5ac",
+        "mrn": "4231"
+    },
+    {
+        "accession": "KCEPT678DUA",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "Asian",
+        "status": "released",
+        "uuid": "771ec73b-82f4-4079-9306-a79ed1116aee",
+        "mrn": "3378"
+    },
+    {
+        "accession": "KCEPT418AXY",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "Hawaiian Pacific Islander",
+        "status": "released",
+        "uuid": "1fa05f83-f37d-4d40-b196-edc3b36baa50",
+        "mrn": "8834"
+    },
+    {
+        "accession": "KCEPT329MHZ",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "3e5572d6-9626-4007-a23e-caa2c0af0a25",
+        "death_date": "1861-06-03",
+        "death_source": "Tumor Registry",
+        "mrn": "9341"
+    },
+    {
+        "accession": "KCEPT208IJT",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "Black",
+        "status": "released",
+        "uuid": "3cf980df-c26d-41b9-b210-65e88fe92c9b",
+        "death_date": "1860-05-05",
+        "death_source": "Tumor Registry",
+        "mrn": "3132"
+    },
+    {
+        "accession": "KCEPT025PGS",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "Black",
+        "status": "released",
+        "uuid": "2f15aede-bbb8-4cd8-bb13-16dfd3d0dd08",
+        "mrn": "3982"
+    },
+    {
+        "accession": "KCEPT945TMI",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "af980b23-09eb-47f3-8184-8fb572349235",
+        "mrn": "2152"
+    },
+    {
+        "accession": "KCEPT400NBU",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "fa38e0a7-b2ad-4148-a301-16006e3e06ec",
+        "death_date": "1840-05-08",
+        "death_source": "Parkland Hospital",
+        "mrn": "9042"
+    },
+    {
+        "accession": "KCEPT813QVK",
+        "alternate_accessions": [],
+        "ethnicity": "Unknown",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "06c57d91-90d9-457b-b332-e129f5210481",
+        "mrn": "4121",
+        "diagnosis_date_tumor_registry": "1878-04-02"
+    },
+    {
+        "accession": "KCEPT302XRB",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "0a97c227-2bf1-4f13-8cb0-1a05231f7722",
+        "death_date": "1870-02-03",
+        "death_source": "UTSouthwestern Hospital",
+        "mrn": "2662"
+    },
+    {
+        "accession": "KCEPT270HMN",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "American Indian",
+        "status": "released",
+        "uuid": "bca7c317-18cc-4b4d-aaad-3dccc470e867",
+        "mrn": "7072"
+    },
+    {
+        "accession": "KCEPT156NZW",
+        "alternate_accessions": [],
+        "ethnicity": "Unknown",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "9b392197-1170-4eca-bd8c-cea25168facd",
+        "mrn": "3520",
+        "diagnosis_date_tumor_registry": "1827-07-02"
+    },
+    {
+        "accession": "KCEPT119SOR",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "Asian",
+        "status": "released",
+        "uuid": "ab724e06-b978-447e-8995-91205d62904d",
+        "mrn": "3992"
+    },
+    {
+        "accession": "KCEPT061XWS",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "c909d0ee-327e-47dd-99cb-aca5286858ef",
+        "mrn": "9032"
+    },
+    {
+        "accession": "KCEPT804LAK",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "d8c781d4-f871-48f0-bea1-7216d1035bf1",
+        "mrn": "6282"
+    },
+    {
+        "accession": "KCEPT835NRD",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "88d32652-d8a1-404b-a0a0-1d66e57eda2b",
+        "mrn": "5582"
+    },
+    {
+        "accession": "KCEPT292UHR",
+        "alternate_accessions": [],
+        "ethnicity": "Hispanic",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "73ba50de-7c75-4780-87df-b4acbb3298a6",
+        "mrn": "5902"
+    },
+    {
+        "accession": "KCEPT224KIZ",
+        "alternate_accessions": [],
+        "ethnicity": "Unknown",
+        "sex": "Female",
+        "race": "Other",
+        "status": "released",
+        "uuid": "d3a3d501-fddc-4589-8e94-6b03533fee5c",
+        "mrn": "8222"
+    },
+    {
+        "accession": "KCEPT338JLK",
+        "alternate_accessions": [],
+        "ethnicity": "Declined",
+        "sex": "Male",
+        "race": "Declined",
+        "status": "released",
+        "uuid": "4e4efb4b-a0ba-446c-936f-2b1e5afeaf15",
+        "mrn": "5322"
+    },
+    {
+        "accession": "KCEPT256AEN",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "White",
+        "status": "released",
+        "uuid": "d3ff2d1b-2709-4883-8f70-77892aa56e66",
+        "mrn": "6872"
+    },
+    {
+        "accession": "KCEPT696JUN",
+        "alternate_accessions": [],
+        "ethnicity": "Declined",
+        "sex": "Female",
+        "race": "White",
+        "status": "released",
+        "uuid": "f203e860-eaff-49ac-9338-0ab43d64312e",
+        "mrn": "4232"
+    },
+    {
+        "accession": "KCEPT778DUA",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Male",
+        "race": "Asian",
+        "status": "released",
+        "uuid": "a0fe64da-d5db-4f35-93f1-9ecc39aae517",
+        "mrn": "3325"
+    },
+    {
+        "accession": "KCEPT718AXY",
+        "alternate_accessions": [],
+        "ethnicity": "Non-hispanic",
+        "sex": "Female",
+        "race": "Hawaiian Pacific Islander",
+        "status": "released",
+        "uuid": "aa0e8859-8057-4876-b168-1e9c695f5f3e",
+        "mrn": "8817"
     }
 ]
+

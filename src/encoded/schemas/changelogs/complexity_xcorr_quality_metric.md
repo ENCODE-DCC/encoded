@@ -1,5 +1,13 @@
 ## Changelog for complexity_xcorr_quality_metric.json
 
+### Minor changes since schema version 8
+
+* *quality_metric_of* was added as a required field
+
+### Schema version 8
+
+* *assay_term_name* enum *single-nuclei ATAC-seq* was changed to *single-nucleus ATAC-seq*
+
 ### Minor changes since schema version 7
 
 * *size* in *cross_correlation_plot* was set to have a minimum of 0.
@@ -21,5 +29,5 @@
 
 ### Schema version 5
 
-* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
+* *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the *term_name*
 * *notes* field is no longer allowed to have leading or trailing whitespace or contain just an empty string.

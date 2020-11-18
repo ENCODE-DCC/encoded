@@ -1,60 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def biosample(submitter, lab, award, source, organism, heart):
-    return {
-        'award': award['uuid'],
-        'biosample_ontology': heart['uuid'],
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid'],
-    }
-
-
-@pytest.fixture
-def biosample_depleted_in(mouse_biosample, whole_organism):
-    item = mouse_biosample.copy()
-    item.update({
-        'depleted_in_term_name': ['head'],
-        'biosample_ontology': whole_organism['uuid'],
-    })
-    return item
-
-
-@pytest.fixture
-def biosample_starting_amount(biosample):
-    item = biosample.copy()
-    item.update({
-        'starting_amount': 20
-    })
-    return item
-
-
-@pytest.fixture
-def mouse_biosample(biosample, mouse):
-    item = biosample.copy()
-    item.update({
-        'organism': mouse['uuid'],
-        'model_organism_age': '8',
-        'model_organism_age_units': 'day',
-        'model_organism_sex': 'female',
-        'model_organism_health_status': 'apparently healthy',
-        'model_organism_mating_status': 'virgin'
-    })
-    return item
-
-
-@pytest.fixture
-def organoid(testapp):
-    item = {
-            'term_id': 'UBERON:0000955',
-            'term_name': 'brain',
-            'classification': 'organoid'
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
 def test_biosample_depleted_in(testapp, biosample_depleted_in):
     testapp.post_json('/biosample', biosample_depleted_in)
 
@@ -79,9 +25,9 @@ def test_biosample_mouse_life_stage(testapp, mouse_biosample):
     testapp.post_json('/biosample', mouse_biosample)
 
 
-def test_biosample_mouse_life_stage_fail(testapp, biosample):
-    biosample['mouse_life_stage'] = 'adult'
-    testapp.post_json('/biosample', biosample, status=422)
+def test_biosample_mouse_life_stage_fail(testapp, biosample_data):
+    biosample_data['mouse_life_stage'] = 'adult'
+    testapp.post_json('/biosample', biosample_data, status=422)
 
 
 def test_biosample_model_organism_props_on_human_fail(testapp, mouse_biosample, human):
@@ -89,10 +35,10 @@ def test_biosample_model_organism_props_on_human_fail(testapp, mouse_biosample, 
     testapp.post_json('/biosample', mouse_biosample, status=422)
 
 
-def test_biosample_human_post_synchronization_fail(testapp, biosample):
-    biosample['post_synchronization_time'] = '10'
-    biosample['post_synchronization_time_units'] = 'hour'
-    testapp.post_json('/biosample', biosample, status=422)
+def test_biosample_human_post_synchronization_fail(testapp, biosample_data):
+    biosample_data['post_synchronization_time'] = '10'
+    biosample_data['post_synchronization_time_units'] = 'hour'
+    testapp.post_json('/biosample', biosample_data, status=422)
 
 
 def test_biosample_mouse_post_synchronization_fail(testapp, mouse_biosample):
@@ -113,13 +59,13 @@ def test_biosmple_post_synchronization_no_unit_fail(testapp, mouse_biosample, fl
     testapp.post_json('/biosample', mouse_biosample, status=422)
 
 
-def test_biosample_human_whole_organism_fail(testapp, biosample, whole_organism):
-    biosample['biosample_ontology'] = whole_organism['uuid']
-    testapp.post_json('/biosample', biosample, status=422)
+def test_biosample_human_whole_organism_fail(testapp, biosample_data, whole_organism):
+    biosample_data['biosample_ontology'] = whole_organism['uuid']
+    testapp.post_json('/biosample', biosample_data, status=422)
 
 
-def test_alt_accession_KCEBS_regex(testapp, biosample):
-    bio = testapp.post_json('/biosample', biosample).json['@graph'][0]
+def test_alt_accession_KCEBS_regex(testapp, biosample_data):
+    bio = testapp.post_json('/biosample', biosample_data).json['@graph'][0]
     res = testapp.patch_json(
         bio['@id'],
         {'status': 'replaced', 'alternate_accessions': ['KCEFF123ABC']}, expect_errors=True)
@@ -130,14 +76,14 @@ def test_alt_accession_KCEBS_regex(testapp, biosample):
     assert res.status_code == 200
 
 
-def test_biosample_organoid_success(testapp, biosample, organoid):
-    biosample['biosample_ontology'] = organoid['uuid']
-    testapp.post_json('/biosample', biosample, status=201)
+def test_biosample_organoid_success(testapp, biosample_data, organoid):
+    biosample_data['biosample_ontology'] = organoid['uuid']
+    testapp.post_json('/biosample', biosample_data, status=201)
 
 
-def test_biosample_post_diffentiation_props(testapp, biosample, organoid):
-    biosample['biosample_ontology'] = organoid['uuid']
-    bio = testapp.post_json('/biosample', biosample).json['@graph'][0]
+def test_biosample_post_diffentiation_props(testapp, biosample_data, organoid):
+    biosample_data['biosample_ontology'] = organoid['uuid']
+    bio = testapp.post_json('/biosample', biosample_data).json['@graph'][0]
     res = testapp.patch_json(
         bio['@id'],
         {'post_differentiation_time': 20},
@@ -158,3 +104,34 @@ def test_biosample_post_diffentiation_props(testapp, biosample, organoid):
         }
     )
     assert res.status_code == 200
+
+
+def test_biosample_post_nucleic_acid_delivery_props(testapp, biosample_data):
+    bio = testapp.post_json('/biosample', biosample_data).json['@graph'][0]
+    res = testapp.patch_json(
+        bio['@id'],
+        {'post_nucleic_acid_delivery_time': 10},
+        expect_errors=True
+    )
+    assert res.status_code == 422
+    res = testapp.patch_json(
+        bio['@id'],
+        {'post_nucleic_acid_delivery_time_units': 'hour'},
+        expect_errors=True
+    )
+    assert res.status_code == 422
+    res = testapp.patch_json(
+        bio['@id'],
+        {
+            'post_nucleic_acid_delivery_time': 10,
+            'post_nucleic_acid_delivery_time_units': 'hour'
+        }
+    )
+    assert res.status_code == 200
+
+
+def test_biosample_disease_term_id(testapp, biosample_data):
+    biosample_data.update({'disease_term_id': 'DOID:002'})
+    testapp.post_json('/biosample', biosample_data, status=422)
+    biosample_data.update({'disease_term_id': 'DOID:0080600'})
+    testapp.post_json('/biosample', biosample_data, status=201)

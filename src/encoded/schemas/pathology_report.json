@@ -394,15 +394,15 @@
             "type": "string",
             "enum": [
                 "1",
-                "1A",
-                "1B",
+                "1a",
+                "1b",
                 "2",
-                "2A",
-                "2B",
+                "2a",
+                "2b",
                 "3",
-                "3A",
-                "3B",
-                "3C",
+                "3a",
+                "3b",
+                "3c",
                 "4",
                 "Not applicable",
                 "Not available"
@@ -425,8 +425,8 @@
             "minimum": 1
         },
         "metasis_details": {
-            "title": "Metasis details",
-            "description": "Further details of Metasis pathology report",
+            "title": "Metastasis details",
+            "description": "Further details of metastasis pathology report",
             "type": "object",
             "permission": "import_items",
             "required": [
@@ -435,7 +435,7 @@
             ],
             "properties": {
                 "site": {
-                    "title": "Metasis site",
+                    "title": "Metastasis site",
                     "type": "string",
                     "enum": [
                         "Adrenal",
@@ -448,7 +448,7 @@
                     ]
                 },
                 "type": {
-                    "title": "Metasis type",
+                    "title": "Metastasis type",
                     "type": "string",
                     "enum": [
                         "Distant",
@@ -475,10 +475,10 @@
             "title": "pM Stage"
         },
         "metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site"
         },
         "metasis_details.type": {
-            "title": "Metasis Type"
+            "title": "Metastasis Type"
         },
         "ajcc_tnm_stage": {
             "title": "AJCC TNM Stage"
@@ -556,10 +556,10 @@
             "title": "pM stage"
         },
         "metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site"
         },
         "metasis_details.type": {
-            "title": "Metasis Type"
+            "title": "Metastasis Type"
         },
         "ajcc_tnm_stage": {
             "title": "AJCC TNM Stage"

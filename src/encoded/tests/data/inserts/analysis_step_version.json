@@ -190,5 +190,11 @@
         ],
         "status": "released",
         "uuid": "b75af1ff-b3ab-443f-a134-2b00cd318cd9"
+    },
+    {
+        "analysis_step": "atac-seq-alignment-step-v-1",
+        "software_versions": ["8369c9b0-50ad-11e4-916c-0800200c9a66"],
+        "uuid": "5c4042c6-27b0-42c5-b608-9061005e32ab",
+        "minor_version": 1
     }
 ]

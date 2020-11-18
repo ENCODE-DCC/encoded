@@ -1,0 +1,21 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/j-michael-cherry/",
+        "award": "/awards/U24HG009397/",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "876238cd-4602-4aef-88e6-0db28e130e47",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "quality_metric_of": [ "286d858b-b49c-44cb-b7aa-684f4ceb7f73"],
+        "sequenced_reads": 1130527650,
+        "unmapped_reads": 15142521,
+        "pct_unmapped_reads": 1.34, 
+        "conversion_rate": 0.9858446516064621,
+        "bisulfite_reads_c2t": 563751420,
+        "pct_bisulfite_reads_c2t": 49.87, 
+        "bisulfite_reads_g2a": 551633709,
+        "pct_bisulfite_reads_g2a": 48.79,
+        "insert_size_plot":"ENCFF002DSJ.raw.srt.filt.nodup.srt.filt.nodup.sample.15.SE.tagAlign.gz.cc.plot.pdf",
+        "mapq_plot": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png"
+    }
+]

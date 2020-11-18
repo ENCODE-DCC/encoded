@@ -89,7 +89,10 @@ class GeneticModification(Item):
         "notSubmittable": True
     })
     def perturbation(self, category, purpose):
-        if category == 'insertion' and purpose == 'tagging':
+        if (
+            (category == 'insertion' and purpose == 'tagging')
+            or purpose == 'non-specific target control'
+        ):
             return False
         else:
             return True

@@ -1,0 +1,69 @@
+/**
+ * For layouts on type=Page objects.
+ */
+
+.layout {
+    @at-root #{&}__section {
+        position: relative;
+        margin: 20px 0;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            flex-flow: row wrap;
+        }
+
+        .layout__block > & {
+            margin: 0;
+        }
+
+        .editable & {
+            padding: 5px 0;
+            outline: 1px dashed #f66;
+        }
+    }
+
+    @at-root #{&}__block {
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            flex-flow: column;
+
+            @at-root #{&}--100 {
+                flex: 0 0 100%;
+
+                .editable & {
+                    outline: 1px dashed #00f;
+                }
+            }
+
+            @at-root #{&}--50 {
+                flex: 0 0 49%;
+
+                .editable & {
+                    outline: 1px dashed #00f;
+                }
+            }
+
+            @at-root #{&}--33 {
+                flex: 0 0 32%;
+
+                .editable & {
+                    outline: 1px dashed #00f;
+                }
+            }
+
+            @at-root #{&}--25 {
+                flex: 0 0 24%;
+
+                .editable & {
+                    outline: 1px dashed #00f;
+                }
+            }
+        }
+
+        .editable & {
+            padding: 5px;
+        }
+    }
+}

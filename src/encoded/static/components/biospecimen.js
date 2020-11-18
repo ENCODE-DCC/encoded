@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import Status from './status';
@@ -33,7 +33,7 @@ class Biospecimen extends React.Component {
         const context = this.props.context;
         let list = []
         if (context.surgery && context.surgery.pathology_report) {
-            
+
             for(let i = 0; i < context.surgery.pathology_report.length; i++){
                 list.push(<div className="row" style={{ borderTop: "1px solid #151313" }}></div>)
                 list.push(<div data-test="surgery.pathology_report"><dt>Pathology Report</dt><dd><a href={context.surgery.pathology_report[i]['@id']}>{context.surgery.pathology_report[i].accession}</a></dd> </div>)
@@ -46,7 +46,7 @@ class Biospecimen extends React.Component {
 
         return list
       }
-    
+
 
     render() {
         const context = this.props.context;
@@ -75,13 +75,13 @@ class Biospecimen extends React.Component {
                     </div>
 
                 </header>
-          
+
                 <Panel addClasses="data-display">
 
                     <PanelBody addClasses="panel-body-with-header">
                     <div className="flexrow">
                         <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading"><h4>Biospecimen Infomation</h4></div>   
+                            <div className="flexcol-heading experiment-heading"><h4>Biospecimen Infomation</h4></div>
                             <dl className="key-value">
                             <div data-test="status">
                                 <dt>Status</dt>
@@ -142,19 +142,19 @@ class Biospecimen extends React.Component {
                                 <dt>Distributed</dt>
                                 <dd>{context.distributed}</dd>
                             </div>
-                        
+
                             </dl>
                         </div>
                         {context.surgery && <div className="flexcol-sm-6">
                             <div className="flexcol-heading experiment-heading"><h4>Case Infomation</h4></div>
-                            <dl className="key-value">   
+                            <dl className="key-value">
                             {context.surgery && <div data-test="surgery">
                                 <dt>Surgery</dt>
                                 <dd><a href={context.surgery['@id']}>{context.surgery.accession}</a></dd>
                             </div>}
                             {this.createSurgeryTable()}
                             {this.createPathTable()}
-                        
+
                             </dl>
                         </div>}
                     </div>
@@ -163,7 +163,7 @@ class Biospecimen extends React.Component {
                 { hasGenomics && <GenomicsTable data={context.biolibrary} tableTitle="Genomics for this specimen"></GenomicsTable>}
                 {hasIHC&&<IHCTable data={context.ihc} tableTitle="IHC Assay Staining Results"></IHCTable>}
 
-                {false && 
+                {false &&
                     <div>
                         {PanelLookup({ context: context.patient, biospecimen: context })}
                     </div>}
@@ -175,5 +175,3 @@ class Biospecimen extends React.Component {
 }
 
 globals.contentViews.register(Biospecimen, 'Biospecimen');
-
-
