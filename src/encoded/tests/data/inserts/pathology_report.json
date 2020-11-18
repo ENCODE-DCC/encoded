@@ -111,7 +111,7 @@
     "n_stage": "Not applicable",
     "examined_lymph_nodes": 10,
     "positive_lymph_nodes": 1,
-    "m_stage": "pM0",
+    "m_stage": "Not applicable",
     "status": "released",
     "ajcc_version": "8th edition",
     "ajcc_tnm_stage": "3",
@@ -163,4 +163,5 @@
     "uuid": "b56466f2-46d7-11ea-b77f-2e728ce88125"
   }
 ]
+
 

@@ -359,7 +359,6 @@
             "description": "Pathological M stage, nodal involvement",
             "type": "string",
             "enum": [
-                "pM0",
                 "pM1",
                 "Not applicable",
                 "Not available"
