@@ -25,7 +25,7 @@ def test_treatment_time_series_mixed_units(
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed duration units in treatment time series' for error in errors_list)
+    assert any(error['category'] == 'inconsistent treatment units' for error in errors_list)
 
 
 def test_treatment_concentration_series_mixed_units(
@@ -52,4 +52,4 @@ def test_treatment_concentration_series_mixed_units(
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed amount units in treatment concentration series' for error in errors_list)
+    assert any(error['category'] == 'inconsistent treatment units' for error in errors_list)

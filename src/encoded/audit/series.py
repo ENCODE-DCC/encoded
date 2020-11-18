@@ -33,12 +33,10 @@ def audit_treatment_time_series_mixed_units(value, system):
                                 for t in biosample_object['treatments']:
                                     treatment_duration_units.add(t['duration_units'])
     if len(treatment_duration_units) > 1:
-        detail = ('Treatments associated with series {} '
-            ' use inconsistent duration units.'.format(
-                audit_link(path_to_text(value['@id']), value['@id'])
-            )
+        detail = (f"Treatments associated with series {audit_link(path_to_text(value['@id']), value['@id'])} "
+            "use inconsistent duration units."
         )
-        yield AuditFailure('mixed duration units in treatment time series',
+        yield AuditFailure('inconsistent treatment units',
                            detail, level='WARNING')
         return
 
@@ -68,11 +66,9 @@ def audit_treatment_concentration_series_mixed_units(value, system):
                                 for t in biosample_object['treatments']:
                                     treatment_amount_units.add(t['amount_units'])
     if len(treatment_amount_units) > 1:
-        detail = ('Treatments associated with series {} '
-            ' use inconsistent amount units.'.format(
-                audit_link(path_to_text(value['@id']), value['@id']),
-            )
+        detail = (f"Treatments associated with series {audit_link(path_to_text(value['@id']), value['@id'])} "
+            "use inconsistent amount units."
         )
-        yield AuditFailure('mixed amount units in treatment concentration series',
+        yield AuditFailure('inconsistent treatment units',
                            detail, level='WARNING')
         return
