@@ -182,3 +182,9 @@ def test_file_upgrade_24_to_25(root, testapp, upgrader, registry, file_24):
     )
     assert value['schema_version'] == '25'
     assert value['output_type'] == 'smoothed methylation state at CpG'
+
+
+def test_file_upgrade_25_to_26(upgrader, file_25):
+    value = upgrader.upgrade('file', file_25, current_version='25', target_version='26')
+    assert value['schema_version'] == '26'
+    assert value['output_type'] == 'representative DNase hypersensitivity sites'

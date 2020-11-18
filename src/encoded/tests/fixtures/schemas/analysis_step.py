@@ -226,3 +226,17 @@ def analysis_step_11(testapp):
         'output_file_types': ['smoothed methylation stage at CpG']
     }
     return item
+
+
+@pytest.fixture
+def analysis_step_12(testapp):
+    item = {
+        'schema_version': '12',
+        'step_label': 'rdhs-step',
+        'title': 'rdhs step',
+        'major_version': 1,
+        'analysis_step_types': ['QA calculation'],
+        'input_file_types': ['consensus DNase hypersensitivity sites (cDHSs)'],
+        'output_file_types': ['representative DNase hypersensitivity sites (rDHSs)']
+    }
+    return item

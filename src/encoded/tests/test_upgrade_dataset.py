@@ -438,3 +438,11 @@ def test_upgrade_experiment_30_to_31(upgrader, experiment_30):
     assert value['schema_version'] == '31'
     assert 'analyses' not in value
     assert value['notes'] == 'Previous notes.. [Experiment.analyses] /files/ENCFF282TIA/,/files/ENCFF910JDS/;/files/ENCFF674HJF/,/files/ENCFF881NAX/'
+
+
+def test_upgrade_annotation_29_to_30(upgrader, annotation_29):
+    value = upgrader.upgrade(
+        'annotation', annotation_29, current_version='29', target_version='30'
+    )
+    assert value['schema_version'] == '30'
+    assert value['annotation_type'] == 'representative DNase hypersensitivity sites'

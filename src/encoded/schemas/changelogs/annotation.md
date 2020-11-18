@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 30
+* Updated *representative DNase hypersensitivity sites (rDHSs)*  to *representative DNase hypersensitivity sites* in enum for *annotation_type*
+
 ### Minor changes since schema version 29
 * The *biochemical_inputs* calculated property now lists the biochemical signal inputs used to generate a candidate Cis-Regulatory Elements (cCRE) annotation.
 
