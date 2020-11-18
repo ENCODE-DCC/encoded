@@ -274,12 +274,12 @@
                 "adapter"
             ]
         },
-        "standards": {
-            "title": "Standards",
-            "description": "",
+        "sequence_file_standards": {
+            "title": "Sequence file standards",
+            "description": "The expected raw sequencing metrics based on the library protocol",
             "type": "array",
             "items": {
-                "title": "",
+                "title": "Standards",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {

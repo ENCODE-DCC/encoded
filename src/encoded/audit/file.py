@@ -68,11 +68,11 @@ def audit_library_protocol_standards(value, system):
         return
     else:
         no_stds_flag = False
-        if not value['libraries'][0]['protocol'].get('standards'):
+        if not value['libraries'][0]['protocol'].get('sequence_file_standards'):
             no_stds_flag = True
         else:
             my_standards = ''
-            for standard in value['libraries'][0]['protocol'].get('standards'):
+            for standard in value['libraries'][0]['protocol'].get('sequence_file_standards'):
                 if standard['read_type'] == value.get('read_type'):
                     my_standards = standard
                     break

@@ -35,7 +35,7 @@
                 "end": 26
             }
         ],
-        "standards": [
+        "sequence_file_standards": [
             {
               "read_type": "Read 1",
               "sequence_elements": ["cell barcode","UMI"],
@@ -94,7 +94,7 @@
                 "end": 25   
             }
         ],
-        "standards": [
+        "sequence_file_standards": [
             {
                 "read_type": "Read 1",
                 "sequence_elements": ["cell barcode","UMI"],
@@ -145,7 +145,7 @@
                 "end": 16
             }
         ],
-        "standards": [
+        "sequence_file_standards": [
             {
                 "read_type": "Read 1N",
                 "sequence_elements": ["fragment"],
@@ -212,7 +212,7 @@
                 "end": 28
             }
         ],
-        "standards": [
+        "sequence_file_standards": [
             {
                 "read_type": "Read 1",
                 "sequence_elements": ["cell barcode","UMI"],
