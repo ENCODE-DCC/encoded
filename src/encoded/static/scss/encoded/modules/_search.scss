@@ -320,6 +320,17 @@ $form-bg: #f3f3f3;
         }
     }
 
+    // /report/ pagination controls
+    @at-root #{&}__pager {
+        margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-lg-min) {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+    }
+
     &--centered {
         justify-content: center;
     }

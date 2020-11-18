@@ -186,17 +186,12 @@ const SummaryHorizontalFacets = ({ context, facetList }, reactContext) => {
         horizFacets = context.facets.filter(f => ['assay_title', 'biosample_ontology.term_name', 'date_released', 'date_submitted'].includes(f.field));
     }
 
-    // Calculate the searchBase, which is the current search query string fragment that can have
-    // terms added to it.
-    const searchBase = `${url.parse(reactContext.location_href).search}&` || '?';
-
     // Note: we subtract one from the horizontal facet length because "date-released" and "date-submitted" are collapsed into one facet
     return (
         <FacetList
             context={context}
             facets={horizFacets}
             filters={context.filters}
-            searchBase={searchBase}
             addClasses={`summary-horizontal-facets facet-num-${horizFacets.length - 1} ${facetList}`}
             supressTitle
             orientation="horizontal"

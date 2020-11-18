@@ -296,12 +296,11 @@ MatrixHeader.propTypes = {
 /**
  * Render the vertical facets.
  */
-const MatrixVerticalFacets = ({ context }, reactContext) => (
+const MatrixVerticalFacets = ({ context }) => (
     <FacetList
         context={context}
         facets={context.facets}
         filters={context.filters}
-        searchBase={`${url.parse(reactContext.location_href).search}&` || '?'}
         addClasses="matrix-facets"
         supressTitle
     />
@@ -310,10 +309,6 @@ const MatrixVerticalFacets = ({ context }, reactContext) => (
 MatrixVerticalFacets.propTypes = {
     /** Matrix search result object */
     context: PropTypes.object.isRequired,
-};
-
-MatrixVerticalFacets.contextTypes = {
-    location_href: PropTypes.string,
 };
 
 
