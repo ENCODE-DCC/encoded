@@ -1,0 +1,587 @@
+.cls-nervebackground {
+    opacity: 0;
+}
+
+.cls-1{
+    fill:url(#linear-gradient);
+}
+.cls-2{
+    fill:url(#linear-gradient-2);
+}
+.cls-3,.cls-4,.cls-50,.cls-51,.cls-55,.cls-56,.cls-60,.cls-61,.cls-62,.cls-64,.cls-69,.cls-70,.cls-71,.cls-78,.cls-89,.cls-90,.cls-91,.cls-96,.cls-99{
+    fill:none;
+}
+.cls-4,.cls-71{
+    stroke: #4b7da7;
+    &.active {
+        stroke: #764134;
+    }
+}
+.cls-101,.cls-29,.cls-4,.cls-50,.cls-51,.cls-55,.cls-56,.cls-60,.cls-61,.cls-62,.cls-64,.cls-69,.cls-70,.cls-71,.cls-78,.cls-79,.cls-81,.cls-89,.cls-90,.cls-91,.cls-94,.cls-96,.cls-97,.cls-98,.cls-99{
+    stroke-miterlimit:10;
+}
+.cls-4{
+    stroke-width:0.58px;
+}
+.cls-breast{
+    fill:#c7d9e7;
+    &.active {
+        fill: #c77f37;
+    }
+}
+.cls-5 {
+    fill:#c7d9e7;
+}
+.cls-5, .cls-limb-skin {
+    &.active {
+        stroke: #ab6a2a;
+        stroke-width: 2px;
+    }
+}
+
+.cls-limb-skin {
+    fill:#dee8f1;
+}
+
+.cls-6 {
+    fill: #e7ecf1;
+    &.active {
+        fill: #fcd9ca;
+    }
+}
+
+.cls-limb{
+    fill: #e7ecf1;
+    &.active {
+        fill: #d6a371;
+    }
+}
+
+.cls-nose {
+    fill: #13578e;
+    &.active {
+        fill: #b54d18;
+    }
+}
+
+.cls-7{
+    fill:#005091;
+    &.active {
+        fill: #cc1e1e;
+    }
+}
+.cls-37, .cls-8, .cls-stomach{
+    fill: #3f77a5;
+    opacity: 0.75;
+    &.active {
+        fill: #ec621c;
+    }
+}
+.cls-9{
+    mask:url(#mask);
+}
+.cls-vein {
+    fill:#4d85b2;
+    &.active {
+        fill: #63326E;
+    }
+}
+.cls-10 {
+    display: none;
+}
+.cls-11{
+    fill:#2e70a5;
+    &.active {
+        fill: #e90006;
+    }
+}
+.cls-11new {
+    display: none;
+}
+.cls-12{
+    fill:#3b79aa;
+}
+.cls-13{
+    fill:#5c8fb9;
+}
+.cls-14{
+    fill:#3877a9;
+}
+.cls-15{
+    fill:#80a8c8;
+}
+.cls-16,.cls-31{
+    fill: #71a1c7;
+    &.active {
+        fill: #a63128;
+    }
+}
+.cls-17{
+    fill:#99b9d3;
+}
+.cls-18{
+    fill:#4a83b1;
+}
+.cls-19{
+    fill:#c2d5e5;
+}
+.cls-20{
+    mask:url(#mask-2);
+}
+.cls-21{
+    fill: #fbfbfb;
+    &.active {
+        fill:#fffc45;
+    }
+}
+.cls-22,.cls-59{
+    fill:#d9e5ef;
+}
+.cls-22,.cls-24,.cls-25,.cls-26,.cls-27,.cls-28,.cls-29,.cls-30,.cls-31,.cls-32,.cls-33,.cls-34,.cls-35,.cls-36,.cls-37,.cls-39,.cls-thymus,.cls-42,.cls-43,.cls-44,.cls-45,.cls-46,.cls-47,.cls-48,.cls-49,.cls-lg-intestine{
+    fill-rule:evenodd;
+}
+.cls-23{
+    fill: #9cbfdc;
+    &.active {
+        fill: #F2C57C;
+        stroke: #efef5f;
+    }
+}
+.cls-24 {
+    fill: #3c77a7;
+    &.active {
+        fill: #f2c57c;
+    }
+}
+
+.cls-95 {
+    fill: #8cb5d6;
+    &.active {
+        fill: #f55f66;
+    }
+}
+
+.cls-lg-intestine {
+    fill: #1f659e;
+    &.active {
+        fill: #c10000;
+    }
+}
+.cls-25{
+    fill:#055493;
+    &.active {
+        fill: #710000;
+    }
+}
+.cls-27{
+    fill:#e8eff5;
+    &.active {
+        fill: #ffe4d4;
+    }
+}
+.cls-28{
+    fill:#17609b;
+    &.active {
+        fill: #7f1500;
+    }
+}
+.cls-29,.cls-30{
+    fill: #4785b7;
+    &.active {
+        fill: #de5757;
+    }
+}
+.cls-101,.cls-29{
+    stroke:#1f659e;
+    &.active {
+        stroke: #c47a57;
+    }
+}
+.cls-29{
+    stroke-width:0.72px;
+}
+.cls-32{
+    fill:#c4d7e6;
+    &.active {
+        fill: #fabf85;
+    }
+}
+.cls-gallbladder {
+    fill: #f3f5f7;
+    opacity: 0.9;
+    &.active {
+        fill: #44bf4b;
+        stroke: #81e225;
+        stroke-width: 1px;
+    }
+}
+.cls-uterus {
+    fill: #255a8c;
+    &.active {
+        fill: #b7281b;
+    }
+}
+.cls-33 {
+    fill: #255a8c;
+    &.active {
+        fill: #fb1500;
+    }
+}
+
+.cls-kidney {
+    fill: #2d6396;
+    &.active {
+        fill: #f79d9d;
+    }
+}
+
+.cls-41 {
+    fill: #4386bb;
+    &.active {
+        fill: #ad5f0f;
+    }
+}
+
+.cls-34{
+    fill: #acc4d8;
+    &.active {
+        fill: #FFE0B5;
+    }
+}
+.cls-35{
+    fill: #7da2c1;
+    &.active {
+        fill:#ba6a47;
+    }
+}
+.cls-36{
+    fill:#87adcb;
+    &.active {
+        fill: #774614;
+    }
+}
+.cls-38,.cls-43{
+    fill: #e5ebf1;
+    &.active {
+        fill: #efcd7a;
+    }
+}
+.cls-39, .cls-thymus{
+    fill:#85abca;
+    &.active {
+        fill: #e29f49;
+    }
+}
+.cls-40{
+    fill:#cfdeea;
+    &.active {
+        fill: #f5e0be;
+    }
+}
+.cls-42{
+    fill:#4580af;
+}
+.cls-44{
+    fill:#145e9a;
+    &.active {
+        fill: #fb1500;
+    }
+}
+.cls-45{
+    fill: #0a2235;
+    &.active {
+        fill: #b7281b;
+    }
+}
+.cls-46,.cls-47,.cls-48,.cls-49,.cls-81{
+    fill:#ccdce9;
+    &.active {
+        fill: #ddcece;
+    }
+}
+.cls-46{
+    opacity: 0.35;
+}
+.cls-47{
+    opacity:0.65;
+}
+.cls-48{
+    opacity:0.86;
+}
+.cls-50,.cls-51{
+    stroke:#fff;
+}
+.cls-50,.cls-51,.cls-62{
+    stroke-width:1.48px;
+}
+.cls-51 {
+    display: none;
+}
+.cls-51{
+    stroke-dasharray:4.45 4.45;
+}
+.cls-52{
+    clip-path:url(#clip-path);
+}
+.cls-53 {
+    fill: #99bbd6;
+    &.active {
+        fill: #f1c3bc;
+    }
+}
+.cls-ovary, .cls-testis{
+    fill: #6fa3cc;
+    &.active {
+        fill: #ffa092;
+    }
+}
+.cls-54{
+    fill:#bdd2e2;
+    &.active {
+        fill: #fcb871;
+    }
+}
+.cls-55,.cls-56{
+    stroke:#bdd2e2;
+}
+.cls-55,.cls-60{
+    stroke-width:1.42px;
+}
+.cls-56,.cls-61{
+    stroke-width:0.85px;
+}
+.cls-57{
+    fill:#f7fafc;
+    stroke: #f7fafc;
+    stroke-width: 2px;
+    &.active {
+        fill: #fdfed2;
+        stroke: #fdfed2;
+        stroke-width: 2px;
+    }
+}
+.cls-58{
+    fill:#598db8;
+}
+.cls-60,.cls-61{
+    stroke:#b3cbde;
+}
+.cls-62{
+    fill: #3e76a2;
+    stroke: #194669;
+    &.active {
+        stroke: #900909;
+        fill: #cc6b6b;
+    }
+}
+.cls-63{
+    clip-path:url(#clip-path-2);
+}
+.cls-64{
+    stroke:#7da6c7;
+    stroke-width:2.4px;
+}
+.cls-65, .cls-epiglottis, .cls-vagina {
+    fill: #3a709c;
+    &.active {
+        fill:#f55f66;
+    }
+}
+
+.cls-epiglottis {
+    display: none;
+}
+
+.cls-vagina2 {
+    fill: #639dcc;
+    &.active {
+        fill: #ea979b;
+    }
+}
+
+.cls-66{
+    fill: #4f86b3;
+    &.active {
+        fill: #a04c41;
+    }
+}
+.cls-67{
+    clip-path:url(#clip-path-3);
+}
+.cls-68{
+    fill:#b8cee0;
+    &.active {
+        fill: #d9b7b3;
+    }
+}
+.cls-69{
+    stroke: #6393b9;
+    &.active {
+        stroke: #b78c87;
+    }
+}
+.cls-69,.cls-70{
+    stroke-linecap:round;
+    stroke-width:1.22px;
+}
+.cls-70{
+    stroke:#6193bb;
+    &.active {
+        stroke: #8c6a66;
+    }
+}
+.cls-71{
+    stroke-width:0.39px;
+}
+.cls-72{
+    clip-path:url(#clip-path-4);
+}
+.cls-73{
+    fill:#fff;
+}
+.cls-74{
+    fill:#82a9c9;
+    &.active {
+        fill: #764134;
+    }
+}
+.cls-75{
+    fill:#085694;
+    &.active {
+        fill: #222525;
+    }
+}
+.cls-76{
+    clip-path:url(#clip-path-5);
+}
+.cls-77{
+    fill:#f2f6fa;
+    &.active {
+        fill: #fdf6d6;
+    }
+}
+.cls-78,.cls-79,.cls-81{
+    stroke:#abc5db;
+    &.active {
+        stroke: #d1ae88;
+    }
+}
+.cls-78,.cls-79,.cls-81,.cls-94{
+    stroke-width:1.39px;
+}
+.cls-79{
+    fill:#91b4d0;
+}
+.cls-80{
+    fill:#f0f5f8;
+    &.active {
+        fill: #ffece9;
+    }
+}
+.cls-82{
+    clip-path:url(#clip-path-7);
+}
+.cls-83{
+    fill: #4f84af;
+    &.active {
+        fill: #d05959;
+    }
+}
+.cls-84{
+    fill:#3272a7;
+    &.active {
+        fill: #ab2025;
+    }
+}
+.cls-85{
+    fill:url(#linear-gradient-3);
+    &.active {
+        fill: #d05959;
+    }
+}
+.cls-86{
+    fill:url(#linear-gradient-4);
+}
+.cls-87{
+    fill:url(#linear-gradient-5);
+}
+.cls-88{
+    fill:#035292;
+    &.active {
+        fill: #6d0005;
+    }
+}
+.cls-89,.cls-90{
+    stroke:#035292;
+    &.active {
+        stroke: #6d0005;
+    }
+}
+.cls-89{
+    stroke-width:0.78px;
+}
+.cls-90{
+    stroke-width:0.91px;
+}
+.cls-91{
+    stroke:#f0f5f8;
+    stroke-width:2.97px;
+}
+.cls-92{
+    fill:#ebf1f6;
+}
+.cls-93{
+    clip-path:url(#clip-path-8);
+}
+.cls-94{
+    fill:#a8c3d9;
+}
+.cls-94,.cls-96{
+    stroke:#6d9bc0;
+}
+.cls-96{
+    stroke-width:3px;
+}
+.cls-97{
+    fill:#5b8fb8;
+    &.active {
+        fill: #710000;
+    }
+}
+.cls-97,.cls-98{
+    stroke:#cbdce9;
+    &.active {
+        stroke: #b36440;
+    }
+}
+.cls-101,.cls-97{
+    stroke-width:0.37px;
+}
+.cls-98{
+    fill: #9bbfda;
+    &.active {
+        fill: #a5522c;
+        stroke: #b36440;
+    }
+}
+.cls-98,.cls-99{
+    stroke-width:0.38px;
+}
+.cls-99{
+    stroke:#5b8fb8;
+    &.active {
+        stroke: #bea59a;
+    }
+}
+.cls-100{
+    fill:#457fae;
+    &.active {
+        fill: #9a370a;
+    }
+}
+.cls-101{
+    fill:#21679f;
+    &.active {
+        fill: #710000;
+    }
+}

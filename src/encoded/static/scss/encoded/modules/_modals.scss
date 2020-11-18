@@ -1,7 +1,78 @@
+.modal {
+    display: none;
+    overflow: auto;
+    overflow-y: scroll;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+
+    @at-root #{&}__header {
+        display: flex;
+        padding: 10px;
+        border-bottom: 1px solid #a0a0a0;
+        background-color: #d8d8d8;
+
+        @at-root #{&}-title {
+            flex: 1 1 auto;
+
+            h2 {
+                font-size: 1.3rem;
+                margin: 0;
+            }
+        }
+
+        @at-root #{&}-close {
+            flex: 0 1 32px;
+            padding: 0;
+            cursor: pointer;
+            font-size: 1.3rem;
+            background: #0000;
+            border: 0;
+            -webkit-appearance: none;
+        }
+    }
+
+    @at-root #{&}__body {
+        padding: 10px;
+    }
+
+    @at-root #{&}__footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px;
+        border-top: 1px solid #e5e5e5;
+
+        @at-root #{&}-controls {
+            display: flex;
+            flex: 0 1 auto;
+
+            .btn {
+                margin-left: 5px;
+            }
+        }
+    }
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #999;
+    border: 1px solid #0003;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);
+    box-shadow: 0 3px 9px rgba(0,0,0,.5);
+    background-clip: padding-box;
+    outline: none;
+}
+
 .modal-dialog {
     width: 95%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 30px auto;
 
     @media screen and (min-width: $screen-sm-min) {
         width: 600px;
@@ -14,18 +85,23 @@
     }
 }
 
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background-color: #000;
 
-.modal-header {
-    padding: 10px;
-    border-bottom: 1px solid #a0a0a0;
-    background-color: #d8d8d8;
-
-    h4 {
-        margin: 0;
+    &.in {
+        opacity: 0.3;
     }
 }
 
 
-.modal-footer {
-    padding: 10px;
+.modal-batch-download {
+    @at-root #{&}__footer-note {
+        align-self: center;
+    }
 }

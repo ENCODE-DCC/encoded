@@ -426,9 +426,9 @@ class Patient(Item):
         })
     def surgery_summary(self, request, surgery=None):
             if len(surgery) > 0:
-                surgery_summary = "Treatment Received"
+                surgery_summary = "Yes"
             else:
-                surgery_summary = "No Treatment Received"
+                surgery_summary = "No"
             return surgery_summary
 
 
@@ -781,9 +781,9 @@ class Patient(Item):
 
         for logic in array:
             if  logic is True:
-                robotic_assist.append("True")
+                robotic_assist.append("Yes")
             else:
-                robotic_assist.append("False")
+                robotic_assist.append("No")
         return robotic_assist
 
 

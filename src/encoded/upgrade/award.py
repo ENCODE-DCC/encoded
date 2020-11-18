@@ -1,6 +1,5 @@
 from snovault import upgrade_step
 
-
 @upgrade_step('award', '', '2')
 def award_0_2(value, system):
     # http://redmine.encodedcc.org/issues/1295
@@ -24,3 +23,28 @@ def award_2_3(value, system):
 
     if value['viewing_group'] == 'ENCODE':
         value['viewing_group'] = 'ENCODE3'
+
+
+@upgrade_step('award', '5', '6')
+def award_5_6(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4682
+    if 'title' not in value:
+        value['title'] = value['name']
+
+
+@upgrade_step('award', '6', '7')
+def award_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4711
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'single-nuclei ATAC-seq':
+            milestone['assay_term_name'] = 'single-nucleus ATAC-seq'
+
+
+@upgrade_step('award', '7', '8')
+def award_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5304
+    for milestone in value.get('milestones', []):
+        assay_term_name = milestone.get('assay_term_name', '')
+        if assay_term_name == 'single cell isolation followed by RNA-seq':
+            milestone['assay_term_name'] = 'single-cell RNA sequencing assay'

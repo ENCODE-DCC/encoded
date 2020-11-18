@@ -71,5 +71,60 @@
         "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b",
         "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
         "date_released": "2016-01-01"
+    },
+    {
+        "_test": "elements reference",
+        "accession": "ENCSR500ELM",
+        "award": "U54HG007005",
+        "reference_type": "functional elements",
+        "description": "Elements DNA sequences",
+        "lab": "thomas-gingeras",
+        "status": "archived",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "84c2c840-4146-4c93-90cf-67a11a4fc108",
+        "date_released": "2018-04-21"
+    },
+    {
+        "_test": "microRNA-seq adapters",
+        "award": "/awards/U54HG006998/",
+        "date_created": "2019-07-01T22:14:15.601240+00:00",
+        "lab": "/labs/ali-mortazavi/",
+        "reference_type": "sequence adapters",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "in progress",
+        "accession": "ENCSR819DEL"
+    },
+    {
+        "_test": "reference genome dataset",
+        "accession": "ENCSR001GEN",
+        "award": "ENCODE2",
+        "reference_type": "genome",
+        "description": "Dataset for Reference Genome (linked to Donor)",
+        "lab": "/labs/j-michael-cherry/",
+        "status": "released",
+        "date_released": "2020-03-11",
+        "uuid": "9bd36e84-f20e-48d3-8c03-c99df8be7c3c",
+        "donor": "ENCDO845WKR"
+    },
+    {
+        "_test": "fcc examined_loci reference dataset",
+        "accession": "ENCSR580ZYI",
+        "award": "/awards/U54HG007010/",
+        "examined_loci": [
+            "/genes/677792/",
+            "/genes/126961/"
+        ],
+        "lab": "/labs/greg-cooper/",
+        "reference_type": "functional elements",
+        "status": "in progress"
+    },
+    {
+        "_test": "sequence barcodes",
+        "award": "/awards/U54HG006998/",
+        "lab": "/labs/ali-mortazavi/",
+        "reference_type": "sequence barcodes",
+        "submitted_by": "/users/7e944358-625c-426c-975c-7d875e22f753/",
+        "status": "in progress",
+        "accession": "ENCSR063SBC"
     }
 ]

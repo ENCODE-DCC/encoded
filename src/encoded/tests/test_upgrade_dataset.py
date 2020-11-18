@@ -1,299 +1,18 @@
 import pytest
 
 
-@pytest.fixture
-def experiment_1(root, experiment, file, file_ucsc_browser_composite):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    assert root.get_by_uuid(
-        file['uuid']).properties['dataset'] == str(item.uuid)
-    assert root.get_by_uuid(
-        file_ucsc_browser_composite['uuid']).properties['dataset'] != str(item.uuid)
-    properties.update({
-        'schema_version': '1',
-        'files': [file['uuid'], file_ucsc_browser_composite['uuid']]
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_2():
-    return {
-        'schema_version': '2',
-        'encode2_dbxrefs': ['wgEncodeEH002945'],
-        'geo_dbxrefs': ['GSM99494'],
-    }
-
-
-@pytest.fixture
-def dataset_2():
-    return {
-        'schema_version': '2',
-        'aliases': ['ucsc_encode_db:mm9-wgEncodeCaltechTfbs', 'barbara-wold:mouse-TFBS'],
-        'geo_dbxrefs': ['GSE36024'],
-    }
-
-
-@pytest.fixture
-def experiment_3():
-    return {
-        'schema_version': '3',
-        'status': "DELETED",
-    }
-
-
-@pytest.fixture
-def dataset_3():
-    return {
-        'schema_version': '3',
-        'status': 'CURRENT',
-        'award': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
-    }
-
-
-@pytest.fixture
-def dataset_5(publication):
-    return {
-        'schema_version': '5',
-        'references': [publication['identifiers'][0]],
-    }
-
-
-@pytest.fixture
-def experiment_6():
-    return {
-        'schema_version': '6',
-        'dataset_type': 'experiment',
-    }
-
-
-@pytest.fixture
-def experiment_7(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '7',
-        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
-        'aliases': ['testing:123', 'testing:123']
-    })
-    return properties
-
-
-@pytest.fixture
-def annotation_8(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '8',
-        'annotation_type': 'encyclopedia',
-        'status': 'released'
-    }
-
-
-@pytest.fixture
-def annotation_12(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '12',
-        'annotation_type': 'candidate regulatory regions',
-        'status': 'released'
-    }
-
-
-@pytest.fixture
-def annotation_14(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '14',
-        'annotation_type': 'candidate regulatory regions',
-        'status': 'proposed'
-    }
-
-
-@pytest.fixture
-def experiment_10(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '10',
-        'status': 'in progress',
-        'aliases': [
-            'andrew-fire:my_experiment',
-            'j-michael-cherry:Lib:XZ:20100107:11--ChIP:XZ:20100104:09:AdiposeNuclei:H3K4Me3',
-            'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4||Tue Apr 16 16:10:36 -0500 2013||85822',
-            'encode:[this is]_qu#ite:bad" ',
-            'manuel-garber:10% DMSO for 2 hours',
-            'UCSC_encode_db:Illumina_HiSeq_2000',
-            'encode:Illumina_HiSeq_2000'
-        ]
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_13(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '13',
-        'status': 'proposed',
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_14(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '14',
-        'biosample_type': 'in vitro sample',
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_15(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '15',
-        'biosample_type': 'immortalized cell line'
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_16(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '16',
-        'biosample_type': 'immortalized cell line',
-        'status': 'ready for review'
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_17(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '17',
-        'biosample_type': 'immortalized cell line',
-        'status': 'started'
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_21(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '21',
-        'biosample_type': 'induced pluripotent stem cell line',
-        'status': 'started'
-    })
-    return properties
-
-
-@pytest.fixture
-def annotation_16(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '16',
-        'biosample_type': 'immortalized cell line'
-    }
-
-
-@pytest.fixture
-def annotation_17(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '17',
-        'biosample_type': 'immortalized cell line',
-        'status': 'started'
-    }
-
-
-@pytest.fixture
-def annotation_19(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '19',
-        'biosample_type': 'stem cell',
-        'biosample_term_name': 'mammary stem cell',
-        'status': 'started'
-    }
-
-
-@pytest.fixture
-def experiment_22(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '22',
-        'biosample_type': 'primary cell',
-        'biosample_term_id': 'CL:0000765',
-        'biosample_term_name': 'erythroblast',
-        'internal_tags': ['cre_inputv10', 'cre_inputv11', 'ENCYCLOPEDIAv3'],
-        'status': 'started'
-    })
-    return properties
-
-
-@pytest.fixture
-def experiment_25(root, experiment):
-    item = root.get_by_uuid(experiment['uuid'])
-    properties = item.properties.copy()
-    properties.update({
-        'schema_version': '25',
-        'assay_term_name': 'ISO-seq'
-    })
-    return properties
-
-
-@pytest.fixture
-def annotation_20(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '19',
-        'biosample_type': 'primary cell',
-        'biosample_term_id': 'CL:0000765',
-        'biosample_term_name': 'erythroblast',
-        'internal_tags': ['cre_inputv10', 'cre_inputv11', 'ENCYCLOPEDIAv3']
-    }
-
-@pytest.fixture
-def annotation_21(award, lab):
-    return {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'schema_version': '24',
-        'annotation_type': 'candidate regulatory elements'
-    }
-
-
-def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
+def test_experiment_upgrade(root, upgrader, experiment, experiment_1_0, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('experiment', experiment_1,
+    value = upgrader.upgrade('experiment', experiment_1_0,
                              current_version='1', target_version='2', context=context)
     assert value['schema_version'] == '2'
     assert 'files' not in value
     assert value['related_files'] == [file_ucsc_browser_composite['uuid']]
 
 
-def test_experiment_upgrade_dbxrefs(root, upgrader, experiment_2, threadlocals, dummy_request):
-    value = upgrader.upgrade('experiment', experiment_2,
+def test_experiment_upgrade_dbxrefs(root, upgrader, experiment_2_0, threadlocals, dummy_request):
+    value = upgrader.upgrade('experiment', experiment_2_0,
                              current_version='2', target_version='3')
     assert value['schema_version'] == '3'
     assert 'encode2_dbxrefs' not in value
@@ -302,9 +21,9 @@ def test_experiment_upgrade_dbxrefs(root, upgrader, experiment_2, threadlocals, 
         'UCSC-ENCODE-hg19:wgEncodeEH002945', 'GEO:GSM99494']
 
 
-def test_experiment_upgrade_dbxrefs_mouse(root, upgrader, experiment_2, threadlocals, dummy_request):
-    experiment_2['encode2_dbxrefs'] = ['wgEncodeEM008391']
-    value = upgrader.upgrade('experiment', experiment_2,
+def test_experiment_upgrade_dbxrefs_mouse(root, upgrader, experiment_2_0, threadlocals, dummy_request):
+    experiment_2_0['encode2_dbxrefs'] = ['wgEncodeEM008391']
+    value = upgrader.upgrade('experiment', experiment_2_0,
                              current_version='2', target_version='3')
     assert value['schema_version'] == '3'
     assert 'encode2_dbxrefs' not in value
@@ -609,3 +328,105 @@ def test_upgrade_annotation_24_to_25(upgrader, annotation_21):
     )
     assert value['schema_version'] == '25'
     assert value['annotation_type'] == 'candidate Cis-Regulatory Elements'
+
+
+def test_upgrade_experiment_26_to_27(upgrader, experiment_26):
+    assert experiment_26['schema_version'] == '26'
+    value = upgrader.upgrade('experiment', experiment_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
+    assert value['assay_term_name'] == 'single-nucleus ATAC-seq'
+    experiment_26['schema_version'] = '26'
+    experiment_26['assay_term_name'] = 'HiC'
+    value = upgrader.upgrade('experiment', experiment_26, current_version='26', target_version='27')
+    assert value['schema_version'] == '27'
+    assert value['assay_term_name'] == 'HiC'
+
+def test_upgrade_experiment_27_to_28(upgrader, experiment_27):
+    assert experiment_27['schema_version'] == '27'
+    assert experiment_27['experiment_classification'] == ['functional genomics assay']
+    value = upgrader.upgrade('experiment', experiment_27, current_version='27', target_version='28')
+    assert experiment_27['schema_version'] == '28'
+    assert 'experiment_classification' not in value
+
+
+def test_upgrade_annotation_25_to_26(upgrader, annotation_25):
+    value = upgrader.upgrade(
+        'annotation', annotation_25, current_version='25', target_version='26'
+    )
+    assert value['schema_version'] == '26'
+    assert value['encyclopedia_version'] == 'ENCODE v1'
+
+
+def test_upgrade_annotation_26_to_27(upgrader, annotation_26):
+    value = upgrader.upgrade(
+        'annotation', annotation_26, current_version='26', target_version='27'
+    )
+    assert value['schema_version'] == '27'
+    assert value['dbxrefs'] == ['IHEC:IHECRE00000998']
+
+
+def test_upgrade_reference_epigenome_16_to_17(upgrader, reference_epigenome_16):
+    value = upgrader.upgrade(
+        'reference_epigenome',
+        reference_epigenome_16,
+        current_version='16',
+        target_version='17'
+    )
+    assert value['schema_version'] == '17'
+    assert value['dbxrefs'] == ['IHEC:IHECRE00004643']
+
+
+def test_upgrade_reference_17_to_18(upgrader, dataset_reference_1, dataset_reference_2):
+    value = upgrader.upgrade(
+        'reference', dataset_reference_1, current_version='17', target_version='18'
+    )
+    assert value['schema_version'] == '18'
+    assert value['dbxrefs'] == ['UCSC-ENCODE-hg19:wgEncodeEH000325']
+    value = upgrader.upgrade(
+        'reference', dataset_reference_2, current_version='17', target_version='18'
+    )
+    assert value['schema_version'] == '18'
+    assert 'dbxrefs' not in value
+    assert 'IHEC:IHECRE00004703' in value['notes']
+
+
+def test_upgrade_annotation_27_to_28(upgrader, annotation_27):
+    value = upgrader.upgrade(
+        'annotation', annotation_27, current_version='27', target_version='28'
+    )
+    assert value['schema_version'] == '28'
+    assert value['annotation_type'] == 'representative DNase hypersensitivity sites (rDHSs)'
+
+
+def test_upgrade_reference_18_to_19(upgrader, upgrade_18_19_reference):
+    upgrade_18_19_reference['examined_loci'] = []
+    print(upgrade_18_19_reference['examined_loci'])
+    value = upgrader.upgrade(
+        'reference', upgrade_18_19_reference, current_version='18', target_version='19')
+    assert value['schema_version'] == '19'
+    assert 'examined_loci' not in value
+
+
+def test_upgrade_annotation_28_to_29(upgrader, annotation_28):
+    value = upgrader.upgrade(
+        'annotation', annotation_28, current_version='28', target_version='29'
+    )
+    assert value['notes'] == 'Lorem ipsum. Removed timepoint metadata: 3 stage'
+    assert 'relevant_timepoint' not in value
+    assert 'relevant_timepoint_units' not in value
+
+
+def test_upgrade_experiment_28_to_29(upgrader, experiment_v28):
+    assert experiment_v28['schema_version'] == '28'
+    value = upgrader.upgrade('experiment', experiment_v28, current_version='28', target_version='29')
+    assert experiment_v28['schema_version'] == '29'
+    assert 'pipeline_error_detail' not in value
+    assert 'Previous internal_status' in value['notes']
+    assert value['internal_status'] == 'unreviewed'
+
+
+def test_upgrade_experiment_29_to_30(upgrader, experiment_29):
+    assert experiment_29['schema_version'] == '29'
+    value = upgrader.upgrade('experiment', experiment_29, current_version='29', target_version='30')
+    assert value['schema_version'] == '30'
+    assert value['assay_term_name'] == 'single-cell RNA sequencing assay'

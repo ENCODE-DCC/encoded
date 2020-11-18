@@ -1,28 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import Tooltip from '../libs/bootstrap/tooltip';
+import { encodedURIComponent } from '../libs/query_encoding';
+import { Panel, PanelBody } from '../libs/ui/panel';
+import Tooltip from '../libs/ui/tooltip';
 
 
 const newsUri = '/search/?type=Page&news=true&status=released';
-
+dayjs.extend(utc);
 
 // Convert the selected organisms and assays into an encoded query.
 function generateQuery(selectedOrganisms, selectedAssayCategory) {
     // Make the base query.
-    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=4' : '?type=Patient&status=released';
+    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=ENCODE+v5' : '?type=Experiment&status=released';
 
     // Add the selected assay category, if any (doesn't apply to Computational Predictions).
     if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
-        query += `&assay_slims=${selectedAssayCategory}`;
+        query += `&assay_slims=${encodedURIComponent(selectedAssayCategory)}`;
     }
 
     // Add all the selected organisms, if any
-    if (selectedOrganisms.length) {
+    if (selectedOrganisms.length > 0) {
         const organismSpec = selectedAssayCategory === 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
         const queryStrings = {
             HUMAN: `${organismSpec}Homo+sapiens`, // human
@@ -71,10 +73,10 @@ class EncodeSearch extends React.Component {
                             <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
                                 Search the entire KCE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
                             </Tooltip>
-                            <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
+                            <input id="encode-search" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
                         </div>
                         <div className="site-search__submit">
-                            <button type="submit" aria-label="KCE portal search" title="KCE portal search" disabled={this.state.disabledSearch} className="site-search__submit-element">KCE <i className="icon icon-search" /></button>
+                            <button type="submit" aria-label="KCE portal search" title="KCE portal search" disabled={this.state.disabledSearch} className="btn btn-info btn-sm site-search__submit-element">KCE <i className="icon icon-search" /></button>
                         </div>
                     </fieldset>
                 </form>
@@ -279,7 +281,7 @@ class InputSuggest extends React.Component {
     render() {
         const { items, inputId, placeholder } = this.props;
         const controlId = `${inputId}-list`;
-        const activeDescendant = (this.props.items.length && this.state.selectedItemIndex > -1) ? this.props.items[this.state.selectedItemIndex] : '';
+        const activeDescendant = (this.props.items.length > 0 && this.state.selectedItemIndex > -1) ? this.props.items[this.state.selectedItemIndex] : '';
         return (
             <div className="site-search__input-field" role="combobox" aria-haspopup="listbox" aria-expanded={items.length > 0} aria-controls={controlId} aria-owns={controlId}>
                 <input
@@ -336,8 +338,7 @@ InputSuggest.defaultProps = {
 
 
 // URLS to work the SCREEN site, both for a suggestion list and searches.
-const screenSuggestionsUrl = 'https://api.wenglab.org/screenv10_python_beta/autows/suggestions';
-const screenSearchUrl = 'http://screen.encodeproject.org/api/autows/search';
+const screenSuggestionsUrl = 'https://api.wenglab.org/screen_v13/autows/suggestions';
 
 
 // Render the search form for SCREEN searches, including the search field, search buttons, and
@@ -360,7 +361,6 @@ class ScreenSearch extends React.Component {
         this.startDelayTimer = this.startDelayTimer.bind(this);
         this.searchTermChange = this.searchTermChange.bind(this);
         this.searchTermClick = this.searchTermClick.bind(this);
-        this.submitScreenSearch = this.submitScreenSearch.bind(this);
         this.termSelectHandler = this.termSelectHandler.bind(this);
         this.inputBlur = this.inputBlur.bind(this);
     }
@@ -421,24 +421,6 @@ class ScreenSearch extends React.Component {
         }
     }
 
-    submitScreenSearch() {
-        // Request search results from SCREEN.
-        fetch(screenSearchUrl, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                assembly: 'hg19',
-                userQuery: this.state.currSearchTerm,
-                uuid: '0',
-            }),
-        }).then(response => (
-            response.ok ? response.json() : null
-        ));
-    }
-
     termSelectHandler(term) {
         // Called when user clicks on a term in the drop-down suggestion list.
         this.setState({ currSearchTerm: term, suggestedSearchTerms: [] });
@@ -460,8 +442,8 @@ class ScreenSearch extends React.Component {
         return (
             <div className="site-search__screen">
                 <div className="site-search__reference">
-                    <a href="/data/annotations/" role="button" className="site-search__reference-element">About ENCODE Encyclopedia</a>
-                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+Cis-Regulatory+Elements" role="button" className="site-search__reference-element">candidate Cis-Regulatory Elements</a>
+                    <a href="/data/annotations/" className="btn btn-info btn-sm">About ENCODE Encyclopedia</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=ENCODE+v5&annotation_type=candidate+Cis-Regulatory+Elements" className="btn btn-info btn-sm">candidate Cis-Regulatory Elements</a>
                 </div>
                 <form>
                     <fieldset>
@@ -472,8 +454,7 @@ class ScreenSearch extends React.Component {
                                 <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
                                     Search for candidate Cis-Regulatory Elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
                                 </Tooltip>
-                                <br />
-                                <span className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></span>
+                                <div className="site-search__note">Hosted by <a href="https://screen.wenglab.org/">SCREEN</a></div>
                             </label>
                             <InputSuggest
                                 value={this.state.currSearchTerm}
@@ -487,8 +468,35 @@ class ScreenSearch extends React.Component {
                             />
                         </div>
                         <div className="site-search__submit">
-                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
-                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="site-search__submit-element" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Human GRCh38 search"
+                                title="Human GRCh38 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=GRCh38`}
+                            >
+                                Human GRCh38<i className="icon icon-search" />
+                            </a>
+                            <a
+                                disabled={disabledSearch}
+                                aria-label="Mouse mm10 search"
+                                title="Mouse mm10 search"
+                                className="btn btn-info btn-sm site-search__submit-element"
+                                role="button"
+                                href={`https://screen.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}
+                            >
+                                Mouse mm10 <i className="icon icon-search" />
+                            </a>
+                        </div>
+                        <div className="site-search__link">
+                            <a
+                                aria-label="Human hg19 search"
+                                title="Human hg19 search"
+                                href={`https://screen-v10.wenglab.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}
+                            >
+                                <i className="icon icon-external-link" />Visit hg19 site
+                            </a>
                         </div>
                     </fieldset>
                 </form>
@@ -637,6 +645,7 @@ export default class Home extends React.Component {
         const currentQuery = generateQuery(this.state.organisms, this.state.assayCategory);
 
         return (
+            <Panel>
             <div className="whole-page">
                 <div className="row">
                     <div className="col-xs-12">
@@ -656,7 +665,8 @@ export default class Home extends React.Component {
                         </Panel>
                     </div>
                 </div>
-            </div>
+              </div>
+            </Panel>
         );
     }
 }
@@ -670,7 +680,7 @@ Home.contextTypes = {
 const ChartGallery = props => (
     <PanelBody>
         <div className="view-all">
-            <a href={`/matrix/${props.query}`} className="view-all-button btn btn-info btn-sm" role="button">
+            <a href={`/matrix/${props.query}`} className="btn btn-info">
                 {props.assayCategory !== '' || props.organisms.length > 0 ? 'Filtered ' : ''}
                 Data Matrix
             </a>
@@ -702,111 +712,203 @@ ChartGallery.defaultProps = {
 };
 
 
-// Component to allow clicking boxes on classic image
-class AssayClicking extends React.Component {
-    constructor(props) {
-        super(props);
+// Defines characteristics of the svg rectangles overlaid on the classic image.
+//   queryValue: Used in queries to the server to filter assays.
+//   voice: Text for screen readers to say.
+const assayList = [
+    {
+        queryValue: '3D chromatin structure',
+        voice: '3D chromatin structure',
+    },
+    {
+        queryValue: 'DNA accessibility',
+        voice: 'Chromatin accessibility',
+    },
+    {
+        queryValue: 'DNA binding',
+        voice: 'Chromatin interactions',
+    },
+    {
+        queryValue: 'DNA methylation',
+        voice: 'Methylome',
+    },
+    {
+        queryValue: 'COMPPRED', // Special case; query hardcoded elsewhere
+        voice: 'Chromatin modification',
+    },
+    {
+        queryValue: 'Transcription',
+        voice: 'Transcriptome',
+    },
+    {
+        queryValue: 'RNA binding',
+        voice: 'RNA binding',
+    },
+];
 
-        // Required binding of `this` to component methods or else they can't see `this`.
-        this.sortByAssay = this.sortByAssay.bind(this);
-    }
+
+// Component to allow clicking boxes on classic image
+const AssayClicking = ({ assayCategory, handleAssayCategoryClick }) => {
+    const assayClickHandled = React.useRef(false);
 
     // Properly adds or removes assay category from link
-    sortByAssay(category, e) {
-        function handleClick(cat, ctx) {
+    const sortByAssay = (category, e) => {
+        function handleClick(cat) {
             // Call the Home component's function to record the new assay cateogry
-            ctx.props.handleAssayCategoryClick(cat); // handles assay category click
+            handleAssayCategoryClick(cat); // handles assay category click
         }
 
         if (e.type === 'touchend') {
-            handleClick(category, this);
-            this.assayClickHandled = true;
-        } else if (e.type === 'click' && !this.assayClickHandled) {
-            handleClick(category, this);
+            handleClick(category);
+            assayClickHandled.current = true;
+        } else if (e.type === 'keydown' && (e.keyCode === 13 || e.keyCode === 32)) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClick(category);
+        } else if (e.type === 'click' && !assayClickHandled.current) {
+            handleClick(category);
         } else {
-            this.assayClickHandled = false;
+            assayClickHandled.current = false;
         }
-    }
+    };
 
-    // Renders classic image and svg rectangles
-    render() {
-        const assayList = [
-            '3D+chromatin+structure',
-            'DNA+accessibility',
-            'DNA+binding',
-            'DNA+methylation',
-            'COMPPRED',
-            'Transcription',
-            'RNA+binding',
-        ];
-        const assayCategory = this.props.assayCategory;
+    return (
+        <div>
+            <div className="overall-classic">
+                <h1>ENCODE: Encyclopedia of DNA Elements</h1>
+                <div className="site-banner">
+                    <div className="site-banner-img">
+                        <img src="static/img/classic-image-5290.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />
 
-        return (
-            <div>
-                <div className="overall-classic">
+                        <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" className="classic-svg">
+                            <BannerOverlayButton item={assayList[0]} x="76" y="660" width="260" height="230.95" selected={assayCategory === assayList[0].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayButton item={assayList[1]} x="352" y="660" width="290" height="230.95" selected={assayCategory === assayList[1].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayButton item={assayList[2]} x="658" y="660" width="276" height="230.95" selected={assayCategory === assayList[2].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayButton item={assayList[3]} x="952" y="660" width="271" height="230.95" selected={assayCategory === assayList[3].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayButton item={assayList[4]} x="1241" y="660" width="291" height="230.95" selected={assayCategory === assayList[4].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayButton item={assayList[5]} x="1550" y="660" width="331" height="230.95" selected={assayCategory === assayList[5].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayButton item={assayList[6]} x="1899" y="660" width="294" height="230.95" selected={assayCategory === assayList[6].queryValue} clickHandler={sortByAssay} />
+                            <BannerOverlayLinks
+                                href="/search/?type=Annotation&accession=ENCSR471KRT&accession=ENCSR461KLY&accession=ENCSR770MVN&accession=ENCSR695LYW"
+                                voice="Enhancer-Like Elements"
+                                linkRect={{ x: 280, y: 1037, width: 216, height: 57 }}
+                                linkText={{ x: 120, y: 1133, width: 550, height: 64 }}
+                                linkUnderline={{ x: 139, y: 1194, width: 510, height: 4 }}
+                            />
+                            <BannerOverlayLinks
+                                href="/search/?type=Annotation&accession=ENCSR405FRQ&accession=ENCSR216NPK"
+                                voice="Promoter-Like Elements"
+                                linkRect={{ x: 965, y: 1037, width: 216, height: 57 }}
+                                linkText={{ x: 809, y: 1133, width: 550, height: 64 }}
+                                linkUnderline={{ x: 826, y: 1194, width: 512, height: 4 }}
+                            />
+                        </svg>
+                    </div>
 
-                    <h1>ENCODE: Encyclopedia of DNA Elements</h1>
-                    <div className="site-banner">
-                        <div className="site-banner-img">
-                            <img src="static/img/classic-image.jpg" alt="ENCODE representational diagram with embedded assay selection buttons" />
-
-                            <svg id="site-banner-overlay" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2260 1450" width="2260px" className="classic-svg">
-                                <BannerOverlayButton item={assayList[0]} x="101.03" y="645.8" width="257.47" height="230.95" selected={assayCategory === assayList[0]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[1]} x="386.6" y="645.8" width="276.06" height="230.95" selected={assayCategory === assayList[1]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[2]} x="688.7" y="645.8" width="237.33" height="230.95" selected={assayCategory === assayList[2]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[3]} x="950.83" y="645.8" width="294.65" height="230.95" selected={assayCategory === assayList[3]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[4]} x="1273.07" y="645.8" width="373.37" height="230.95" selected={assayCategory === assayList[4]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[5]} x="1674.06" y="645.8" width="236.05" height="230.95" selected={assayCategory === assayList[5]} clickHandler={this.sortByAssay} />
-                                <BannerOverlayButton item={assayList[6]} x="1937.74" y="645.8" width="227.38" height="230.95" selected={assayCategory === assayList[6]} clickHandler={this.sortByAssay} />
-                            </svg>
-                        </div>
-
-                        <div className="site-banner-intro">
-                            <div className="site-banner-intro-content">
-                                <div className="site-search">
-                                    <EncodeSearch />
-                                    <hr />
-                                    <ScreenSearch />
-                                </div>
-                            </div>
-                        </div>
+                    <div className="site-banner__intro">
+                        <EncodeSearch />
+                        <hr />
+                        <ScreenSearch />
                     </div>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 AssayClicking.propTypes = {
-    assayCategory: PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
+    /** Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically */
+    assayCategory: PropTypes.string.isRequired,
+    /** Called to filter chart results after clicking a classic-image box */
+    handleAssayCategoryClick: PropTypes.func.isRequired,
+};
+
+
+/**
+ * Render links overlaid on the classic image.
+ */
+const BannerOverlayLinks = ({ href, voice, linkRect, linkText, linkUnderline }) => (
+    <g className="classic-img-link">
+        <a href={href} aria-label={voice}>
+            <rect
+                role="link"
+                x={linkRect.x}
+                y={linkRect.y}
+                width={linkRect.width}
+                height={linkRect.height}
+                className="classic-img-link__rect"
+            />
+            <rect
+                role="link"
+                x={linkText.x}
+                y={linkText.y}
+                width={linkText.width}
+                height={linkText.height}
+                className="classic-img-link__text"
+            />
+        </a>
+        <rect x={linkUnderline.x} y={linkUnderline.y} width={linkUnderline.width} height={linkUnderline.height} className="classic-img-link__underline" />
+    </g>
+);
+
+BannerOverlayLinks.propTypes = {
+    /** Link target */
+    href: PropTypes.string.isRequired,
+    /** Screen-reader text */
+    voice: PropTypes.string.isRequired,
+    /** Description of rectangles defining rectangle part of link */
+    linkRect: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+    }).isRequired,
+    /** Description of rectangles defining text part of link */
+    linkText: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+    }).isRequired,
+    /** Description of non-link rectangle defining underline under link text */
+    linkUnderline: PropTypes.shape({
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired,
+        height: PropTypes.number.isRequired,
+    }).isRequired,
 };
 
 
 // Draw an overlay button on the ENCODE banner.
-const BannerOverlayButton = (props) => {
-    const { item, x, y, width, height, selected, clickHandler } = props;
-
-    return (
-        <rect
-            id={item}
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            className={`rectangle-box${selected ? ' selected' : ''}`}
-            onClick={(e) => { clickHandler(item, e); }}
-        />
-    );
-};
+const BannerOverlayButton = ({ item, x, y, width, height, selected, clickHandler }) => (
+    <rect
+        role="button"
+        id={encodedURIComponent(item.queryValue)}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        className={`rectangle-box${selected ? ' selected' : ''}`}
+        onClick={(e) => { clickHandler(item.queryValue, e); }}
+        onKeyDown={(e) => { clickHandler(item.queryValue, e); }}
+        aria-label={item.voice}
+        tabIndex="0"
+    />
+);
 
 BannerOverlayButton.propTypes = {
-    item: PropTypes.string, // ID of button being clicked
+    item: PropTypes.object, // ID of button being clicked
     x: PropTypes.string, // X coordinate of button
     y: PropTypes.string, // Y coordinate of button
-    width: PropTypes.string, // Width of button in pixels
-    height: PropTypes.string, // Height of button in pixels
-    selected: PropTypes.bool, // `true` if button is selected
-    clickHandler: PropTypes.func.isRequired, // Function to call when the button is clicked
+    /** Width of button in pixels */
+    width: PropTypes.string,
+    /** Height of button in pixels */
+    height: PropTypes.string,
+    /** `true` if button is selected */
+    selected: PropTypes.bool,
+    /** Function to call when the button is clicked */
+    clickHandler: PropTypes.func.isRequired,
 };
 
 BannerOverlayButton.defaultProps = {
@@ -816,6 +918,7 @@ BannerOverlayButton.defaultProps = {
     width: '0',
     height: '0',
     selected: false,
+    clickHandler: null,
 };
 
 
@@ -944,7 +1047,7 @@ class HomepageChart extends React.Component {
         if (this.myPieChart) {
             // Existing data updated
             this.updateChart(this.myPieChart, this.facetData);
-        } else if (this.facetData.length) {
+        } else if (this.facetData.length > 0) {
             // Chart existed but was destroyed for lack of data. Rebuild the chart.
             this.createChart(this.facetData);
         }
@@ -1004,9 +1107,9 @@ class HomepageChart extends React.Component {
                                 if (chartData[i]) {
                                     text.push('<li>');
                                     text.push(`<a href="/matrix/${this.props.query}&award.project=${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    text.push(`<span class="chart-legend__chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                     if (chart.data.labels[i]) {
-                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                        text.push(`<span class="chart-legend__label">${chart.data.labels[i]}</span>`);
                                     }
                                     text.push('</a></li>');
                                 }
@@ -1070,8 +1173,8 @@ class HomepageChart extends React.Component {
         if (facets) {
             const projectFacet = facets.find(facet => facet.field === 'award.project');
             this.facetData = projectFacet ? projectFacet.terms : [];
-            const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
-            total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
+            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to? Destroy the existing chart so we can
             // display a no-data message instead.
@@ -1091,9 +1194,9 @@ class HomepageChart extends React.Component {
             <div>
                 <div className="title">
                     Project
-                    <center><hr width="80%" color="blue" /></center>
+                    <center><hr width="80%" /></center>
                 </div>
-                {this.facetData.length && total ?
+                {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-1" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart" />
@@ -1142,7 +1245,7 @@ class HomepageChart2 extends React.Component {
         if (this.myPieChart) {
             // Existing data updated
             this.updateChart(this.myPieChart, this.facetData);
-        } else if (this.facetData.length) {
+        } else if (this.facetData.length > 0) {
             // Chart existed but was destroyed for lack of data. Rebuild the chart.
             this.createChart(this.facetData);
         }
@@ -1200,9 +1303,9 @@ class HomepageChart2 extends React.Component {
                                 if (chartData[i]) {
                                     text.push('<li>');
                                     text.push(`<a href="/matrix/${this.props.query}&biosample_ontology.classification=${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    text.push(`<span class="chart-legend__chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                     if (chart.data.labels[i]) {
-                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                        text.push(`<span class="chart-legend__label">${chart.data.labels[i]}</span>`);
                                     }
                                     text.push('</a></li>');
                                 }
@@ -1272,8 +1375,8 @@ class HomepageChart2 extends React.Component {
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
             const assayFacet = facets.find(facet => facet.field === 'biosample_ontology.classification');
             this.facetData = assayFacet ? assayFacet.terms : [];
-            const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
-            total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
+            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to destroy the existing chart so we can
             // display a no-data message instead.
@@ -1293,9 +1396,9 @@ class HomepageChart2 extends React.Component {
             <div>
                 <div className="title">
                     Biosample Type
-                    <center><hr width="80%" color="blue" /></center>
+                    <center><hr width="80%" /></center>
                 </div>
-                {this.facetData.length && total ?
+                {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-2" className="chart-wrapper">
                         <div className="chart-container">
                             <canvas id="myChart2" />
@@ -1372,7 +1475,7 @@ class HomepageChart3 extends React.Component {
         if (this.myPieChart) {
             // Existing data updated
             this.updateChart(this.myPieChart, this.facetData);
-        } else if (this.facetData.length) {
+        } else if (this.facetData.length > 0) {
             // Chart existed but was destroyed for lack of data. Rebuild the chart.
             this.createChart(this.facetData);
         }
@@ -1492,8 +1595,8 @@ class HomepageChart3 extends React.Component {
         if (facets) {
             const projectFacet = facets.find(facet => facet.field === 'assay_slims');
             this.facetData = projectFacet ? projectFacet.terms : [];
-            const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
-            total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
+            const docCounts = this.facetData.length > 0 ? this.facetData.map(data => data.doc_count) : [];
+            total = docCounts.length > 0 ? docCounts.reduce((prev, curr) => prev + curr) : 0;
 
             // No data with the current selection, but we used to? Destroy the existing chart so we can
             // display a no-data message instead.
@@ -1513,9 +1616,9 @@ class HomepageChart3 extends React.Component {
             <div>
                 <div className="title">
                     Assay Categories
-                    <center><hr width="80%" color="blue" /></center>
+                    <center><hr width="80%" /></center>
                 </div>
-                {this.facetData.length && total ?
+                {this.facetData.length > 0 && total ?
                     <div id="chart-wrapper-3" className="chart-wrapper">
                         <div className="chart-container-assaycat">
                             <canvas id="myChart3" />
@@ -1557,12 +1660,12 @@ class News extends React.Component {
             return (
                 <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
                     {newsSearch['@graph'].map(item =>
-                        <div key={item['@id']} className="news-listing-item">
+                        <div key={item['@id']} className="news-listing__item">
                             <h3>{item.title}</h3>
-                            <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
-                            <div className="news-excerpt">{item.news_excerpt}</div>
-                            <div className="news-listing-readmore">
-                                <a className="btn btn-info btn-sm" href={item['@id']} title={`View news post for ${item.title}`} key={item['@id']}>Read more</a>
+                            <h4>{dayjs.utc(item.date_created).format('MMMM D, YYYY')}</h4>
+                            <div className="news-listing__excerpt">{item.news_excerpt}</div>
+                            <div className="news-listing__readmore">
+                                <a href={item['@id']} aria-label={`View news post for ${item.title}`} key={item['@id']}>Read more</a>
                             </div>
                         </div>
                     )}

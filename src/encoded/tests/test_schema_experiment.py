@@ -2,39 +2,6 @@ import pytest
 from datetime import datetime
 
 
-@pytest.fixture
-def experiment_pipeline_error(testapp, lab, award, cell_free):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'ChIP-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'internal_status': 'pipeline error',
-        'experiment_classification': ['functional genomics assay']
-    }
-    return item
-
-
-@pytest.fixture
-def experiment_no_error(testapp, lab, award, cell_free):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'assay_term_name': 'ChIP-seq',
-        'biosample_ontology': cell_free['uuid'],
-        'internal_status': 'release ready',
-        'experiment_classification': ['functional genomics assay']
-    }
-    return item
-
-@pytest.fixture
-def matched_set(testapp, lab, award):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id']
-    }
-    return item
-
 def test_not_pipeline_error_without_message_ok(testapp, experiment_no_error):
     # internal_status != pipeline error, so an error detail message is not required.
     res = testapp.post_json('/experiment', experiment_no_error, expect_errors=False)
@@ -64,7 +31,6 @@ def test_not_pipeline_error_with_message_bad(testapp, experiment_no_error):
 def test_bad_alias_namespace(testapp, experiment):
     experiment.update({'aliases': ['jobb-dekker:job not jobb', 'encode:these are bad:!%^#@[]']})
     res = testapp.post_json('/experiment', experiment, expect_errors=True)
-    print(experiment)
     assert res.status_code == 422
 
 def test_alt_accession_KCESR_regex(testapp, experiment_no_error):

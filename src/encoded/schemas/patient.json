@@ -151,22 +151,22 @@
             "title": "Tumor Histologic Subtypes"
         },
         "surgery.pathology_report.ajcc_p_stage": {
-            "title": "pT Stage"
+            "title": "pT Stage at Presentation"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage"
+            "title": "pN Stage at Presentation"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage"
+            "title": "pM Stage at Presentation"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site"
         },
         "surgery.pathology_report.metasis_details.type": {
-            "title": "Metasis Type"
+            "title": "Metastasis Type"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " TNM Stage"
+            "title": " TNM Stage at Presentation"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -179,9 +179,6 @@
         },
         "medication_range":{
             "title":"Medication Duration"
-        },
-        "germline_summary": {
-            "title": "Germline Mutation"
         },
         "radiation_summary": {
             "title": "Radiation Treatment Status"
@@ -205,7 +202,7 @@
             "title": "Metastasis Histology Proven"
         },
         "metastasis.site": {
-            "title": "Metastatic Site"
+            "title": "Metastasis Site"
         },
         "metastasis.source": {
             "title": "Metastasis Source"

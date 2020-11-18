@@ -16,7 +16,7 @@ const mockStore = configureStore();
 describe('Experiment Page', () => {
     describe('Minimal Experiment', () => {
         let experiment;
-        let summary;
+        let summarySections;
 
         beforeAll(() => {
             const contextMin = _.clone(context);
@@ -26,11 +26,11 @@ describe('Experiment Page', () => {
                 <Provider store={store}><Experiment context={context} /></Provider>
             );
 
-            summary = experiment.find('.data-display');
+            summarySections = experiment.find('.panel__split-element');
         });
 
         test('has proper links in dbxrefs key-value', () => {
-            const item = summary.at(0).find('[data-test="external-resources"]');
+            const item = summarySections.at(1).find('[data-test="external-resources"]');
             const desc = item.find('dd');
             const dbxrefs = desc.at(0).find('a');
             expect(dbxrefs).toHaveLength(2);
@@ -39,7 +39,7 @@ describe('Experiment Page', () => {
         });
 
         test('has proper release date', () => {
-            const item = summary.at(0).find('[data-test="date-released"]');
+            const item = summarySections.at(1).find('[data-test="date-released"]');
             const desc = item.find('dd');
             expect(desc.at(0).text()).toEqual('October 29, 2011');
         });
@@ -47,7 +47,7 @@ describe('Experiment Page', () => {
 
     describe('Replicate Panels', () => {
         let experiment;
-        let summary;
+        let summarySections;
 
         beforeAll(() => {
             const contextRep = _.clone(context);
@@ -59,25 +59,25 @@ describe('Experiment Page', () => {
             experiment = mount(
                 <Provider store={store}><Experiment context={contextRep} /></Provider>
             );
-            summary = experiment.find('.data-display');
+            summarySections = experiment.find('.panel__split-element');
         });
 
         test('has proper treatment', () => {
-            const item = summary.find('[data-test="treatments"]');
+            const item = summarySections.at(0).find('[data-test="treatments"]');
             const desc = item.find('dd');
-            expect(desc.text()).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hour [1-1]');
+            expect(desc.text()).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hours');
         });
 
         test('has proper strand specificity', () => {
-            const item = summary.find('[data-test="strandspecificity"]');
+            const item = summarySections.find('[data-test="strandspecificity"]');
             const desc = item.find('dd');
             expect(desc.text()).toEqual('Strand-specific');
         });
 
         test('has proper spikeins', () => {
-            const item = summary.find('[data-test="spikeins"]');
+            const item = summarySections.find('[data-test="spikeins"]');
             const desc = item.find('dd');
-            expect(desc.text()).toEqual('ENCSR000AJW [1-1]');
+            expect(desc.text()).toEqual('ENCSR000AJW');
         });
     });
 

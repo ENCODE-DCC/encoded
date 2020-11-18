@@ -1,0 +1,29 @@
+.access-keys {
+    // Header for access key table
+    @at-root #{&}__header {
+        display: flex;
+
+        @at-root #{&}-title {
+            flex: 1 1 auto;
+        }
+
+        @at-root #{&}-control {
+            flex: 0 1 auto;
+            margin: -5px -5px -5px 0;
+        }
+    }
+
+    // Message displayed when no access keys exist
+    @at-root #{&}__empty-message {
+        margin: 10px 0;
+        text-align: center;
+        font-style: italic;
+    }
+
+    @at-root #{&}__actions {
+        button {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
+}

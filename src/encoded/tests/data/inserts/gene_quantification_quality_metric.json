@@ -1,0 +1,12 @@
+[
+    {
+        "status": "released",
+        "lab": "/labs/thomas-gingeras/",
+        "award": "/awards/U54HG007004/",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "aa0a0168-d36d-4c1c-89ff-b85bb45d9f5b",
+        "assay_term_name": "RNA-seq",
+        "quality_metric_of": [ "ENCFF413RGP" ],
+        "number_of_genes_detected": 783
+    }
+]

@@ -109,9 +109,8 @@ describe('Publication', () => {
 
         test('has a supplementary data panel with two items', () => {
             const supdata = publication.find('.type-Publication');
-            const item = supdata.find('[data-test="supplementarydata"]');
-            const itemSection = item.find('section');
-            expect(itemSection).toHaveLength(2);
+            const item = supdata.find('.supplementary-data');
+            expect(item).toHaveLength(2);
         });
     });
 });

@@ -1,18 +1,24 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
+from urllib.parse import (
+    parse_qs,
+    urlencode,
+)
 
 from collections import OrderedDict
 
 from snovault import COLLECTIONS
 
 
-CART_USER_MAX = 30  # Maximum number of non-deleted carts allowed per user
+CART_USER_MAX = 30  # Maximum number of non-deleted carts allowed per non-admin user
+CART_ADMIN_MAX = 200  # Maximum per admin user
 
 
 def includeme(config):
     # config.scan()
     config.add_route('cart-view', '/cohort-view{slash:/?}')
     config.add_route('cart-manager', '/cohort-manager{slash:/?}')
+    config.add_route('search_elements', '/search_elements/{search_params}')
     config.scan(__name__)
 
 
@@ -55,7 +61,8 @@ def cart_view(context, request):
 def cart_manager(context, request):
     '''Cohort manager page context object generation'''
     userid = get_userid(request)
-    blocked_statuses = ['deleted'] if 'group.admin' not in request.effective_principals else []
+    is_admin = 'group.admin' in request.effective_principals
+    blocked_statuses = ['deleted'] if not is_admin else []
     user_carts = get_cart_objects_by_user(request, userid, blocked_statuses)
     # Calculate the element count in each cart, but remove the elements
     # themselves as this list can be huge.
@@ -71,6 +78,16 @@ def cart_manager(context, request):
         'columns': OrderedDict(),
         'notification': '',
         'filters': [],
-        'cart_user_max': CART_USER_MAX
+        'cart_user_max': CART_ADMIN_MAX if is_admin else CART_USER_MAX
     }
     return result
+
+
+@view_config(route_name='search_elements', request_method='POST')
+def search_elements(context, request):
+    '''Same as search but takes JSON payload of search filters'''
+    param_list = parse_qs(request.matchdict['search_params'])
+    param_list.update(request.json_body)
+    path = '/search/?%s' % urlencode(param_list, True)
+    results = request.embed(path, as_user=True)
+    return results

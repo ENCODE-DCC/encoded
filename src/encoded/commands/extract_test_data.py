@@ -2,7 +2,7 @@ import csv
 import loremipsum
 import random
 import re
-from ..loadxl import *
+from encoded.loadxl import *
 
 
 class Anonymizer(object):

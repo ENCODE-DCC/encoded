@@ -18,7 +18,6 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
     "dependencies": {
@@ -42,11 +41,29 @@
                     }
                 }
             ]
+        },
+        "donor": {
+            "comment": "Genome references (such as those from the ENTEx project) may specify a donor.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["genome"]
+                    }
+            }
+        },
+        "examined_loci": {
+            "comment": "The loci whose expression or product is under investigation for the functional characterization experiment.",
+            "required": ["reference_type"],
+            "properties": {
+                "reference_type": {
+                    "enum": ["functional elements"]
+                }
+            }
         }
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "19"
         },
         "reference_type": {
             "title": "Reference type",
@@ -56,7 +73,10 @@
                 "index",
                 "genome",
                 "mappability",
-                "spike-in"
+                "sequence barcodes",
+                "spike-in",
+                "functional elements",
+                "sequence adapters"
             ]
         },
         "organism": {
@@ -64,6 +84,13 @@
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
+        },
+        "donor": {
+            "title": "Donor",
+            "description": "The donor or strain the biosample was originated from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Donor"
         },
         "software_used": {
             "title": "Software used",
@@ -75,6 +102,21 @@
                 "type": "string",
                 "comment": "See software_version.json for available identifiers.",
                 "linkTo": "SoftwareVersion"
+            }
+        },
+        "examined_loci": {
+            "title": "Examined loci",
+            "description": "The loci whose expression or product is under investigation for the functional characterization experiment.",
+            "comment": "See gene.json for available identifiers.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "title": "Gene",
+                "description": "The gene under investigation.",
+                "comment": "see gene.json for available identifiers",
+                "type": "string",
+                "linkTo": "Gene"
             }
         }
     },
@@ -103,7 +145,9 @@
         "month_released": {
             "title": "Month released"
         },
-       
+        "software_used.software.name": {
+            "title": "Software used"
+        },
         "lab.title": {
             "title": "Lab"
         },
@@ -131,6 +175,10 @@
             "title": "Project",
             "type": "string"
         },
+        "donor": {
+            "title": "Donor",
+            "type": "string"
+        },
         "status": {
             "title": "Status",
             "type": "string"
@@ -145,6 +193,7 @@
         "alternate_accessions": 1.0,
         "dbxrefs": 1.0,
         "aliases": 1.0,
+        "donor.accession": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
         "award.name": 1.0,
@@ -158,7 +207,8 @@
         "organism.taxon_id": 1.0,
         "software_used.software.name": 1.0,
         "reference_type": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "description": 1.0
     },
     "changelog": "/profiles/changelogs/reference.md"
 

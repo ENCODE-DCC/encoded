@@ -1,5 +1,74 @@
 ## Changelog for file.json
 
+### Schema version 22
+* bam files with *output_type: subreads* must have a replicate object specified.
+
+### Minor changes since schema version 21
+* The *file_format_type* enum was updated to include *idr_ranked_peak*.
+* Added *chromosome sizes*, *ranked gRNAs*, *enhancers reference*, *promoters reference*, *DHS regions reference*, *merged transcription segment quantifications*, *transcription segment quantifications*, *transcribed region quantifications*, and *smoothed methylation stage at CpG* to the enum list for *output_type*.
+
+### Schema version 21
+* *output_type* list was updated to include the enum *chromosomes reference*, *FDR cut rate*, *footprints*, *hotspots1 reference*, *hotspots2 reference*, *mitochondrial genome index*, and *mitochondrial genome reference*.
+* Added *hotspots_prefix* property.
+* DNase files with *output_type* *enrichment* changed to *output_type* *FDR cut rate*.
+
+### Schema version 20
+* Added upgrade required due to re-implementation of the *run_type* dependency
+
+### Minor changes since schema version 19
+* Added *consensus DNase hypersensitivity sites (cDHSs)* to the enum for *output_type*.
+
+### Schema version 19
+* Updated *representative dnase hypersensitivity sites* to *representative DNase hypersensitivity sites (rDHSs)* in enum for *output_type*.
+
+### Minor changes since schema version 18
+* *output_type* list was updated to include the enum *regulatory elements*.
+* Added *cropped_read_length* property
+* Added *gRNAs* to *output_type* enum list.
+* Added *element quantifications* to *output_type* enum list.
+* Added *cropped_read_length_tolerance* property.
+
+### Schema version 18
+* Added dependency restrictions for files of *output_type* subreads, preventing specification of *assembly* and requiring that *platform* be one of the Pacific Biosciences platforms.
+
+### Schema version 17
+* Added Oxford Nanopore platforms, MinION and PromethION to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on Oxford Nanopore and PacBio platforms.
+
+### Minor changes since schema version 16
+* *output_type* list was updated to include the enum *personalized genome assembly* and *index reads*
+* *index_of* list property was added to allow specification of FASTQ files that are linked to the index file
+* *output_type* list was updated to include the following enums:
+        [
+            "negative control regions",
+            "non-targeting gRNAs",
+            "positive control regions",
+            "safe-targeting gRNAs",
+            "subreads"
+        ]
+
+### Schema version 16
+
+* Added new PacBio platform, PacBio Sequel II to dependency that enforces that *run_type* and *read_length* properties should not be specified for FASTQ files produced on PacBio platform.
+
+### Minor changes since schema version 15
+
+* *output_type* list was updated to include the enum *elements reference*
+* *output_type* list was updated to include the enum *miRNA annotations*
+
+### Schema version 15
+
+* Add *IDR ranked peaks* and *IDR thresholded peaks* for *output_type*
+* Add a new property *preferred_default*
+* Change *output_type* *conservative idr thresholded peaks* to *conservative IDR thresholded peaks*
+* Change *output_type* *optimal idr thresholded peaks* to *optimal IDR thresholded peaks*
+* Change *output_type* *pseudoreplicated idr thresholded peaks* to *pseudoreplicated IDR thresholded peaks*
+
+### Minor changes since schema version 14
+
+* *output_type* list was updated to include the following enums: *transcriptome annotations*, *sequence barcodes* and *sequence adapters*
+* Added *read_structure*
+* Added *matching_md5sum* property, which tracks a list of other files with identical md5 sums.
+
 ### Schema version 14
 
 * Changed *candidate regulatory elements* in *output_type* to *candidate Cis-Regulatory Elements*
@@ -10,8 +79,8 @@
 * *read_count*, *file _size*, *read_length*, *mapped_read_length* were set to have a minimum of 0.
 * *barcode_position* in  *flowcell_details* was set to have a minimum of 1.
 * *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only.
-* added "gene alignments" to *output_type* enum.
-* added idx "file_format" to support kallisto indexes.
+* added *gene alignments* to *output_type* enum.
+* added *idx* to *file_format* to support kallisto indexes.
 * added *txt* to *file_format* enum, added *restriction enzyme site locations* to *output_type* enum, and created *restriction_enzymes* property to specify the restriction enzymes for which a *restriction enzyme site locations* file is applicable
 * added *M21*, *V29*, and *V30* to the list of enums for the *genome_annotation* property.
 * *file_format* was updated to include *database*.
@@ -22,9 +91,9 @@
 
 ### Minor changes since schema version 12
 
-* New enumerations that could be posted only by the DCC were added in output_types: ""redacted alignments" and "redacted unfiltered alignments"; both enumerations are categorized as "alignments".
+* New enumerations that could be posted only by the DCC were added in output_types: *redacted alignments* and *redacted unfiltered alignments*; both enumerations are categorized as *alignments*.
 DNA sequence information was removed from these analyses, since they are based on primary data with restricted public access (such as dbGap).
-* New enumerations were added in output_types: "differential expression quantifications" and "differential splicing quantifications"; both enumerations are categorized as "quantification"
+* New enumerations were added in output_types: *differential expression quantifications* and *differential splicing quantifications*; both enumerations are categorized as *quantification*
 * *fastq_signature* list items (colon separated flowcell, lane, read-end and barcode items) now can include 3 as the read-end portion of the signature item.
 
 
@@ -36,7 +105,7 @@ DNA sequence information was removed from these analyses, since they are based o
 
 * *alternate_accessions* now must match accession format, "ENCFF..." or "TSTFF..."
 * *no_file_available* field was added. The DCC will post this boolean field. Files with no_files_available = true will not be required to specify md5sum and file_size values.
-* *revoke_detail* was added.  The DCC will post this field. The goal is to mkae the reason for file revoke clear.:
+* *revoke_detail* was added.  The DCC will post this field. The goal is to make the reason for file revoke clear:
 
         "revoke_detail": {
             "title": "Revoke error detail",
@@ -69,7 +138,7 @@ DNA sequence information was removed from these analyses, since they are based o
 * *platform* value is now required for files with *file_format* that is one of ["fastq", "rcc", "csfasta", "csqual", "sra", "CEL", "idat"]
 * *assembly* value is required for files with *file_format* that is one of ["bam", "sam", "gtf", "bigWig"]
 * *file_size* value is now required for files with *status* that is one of ["in progress", "released", "archived", "revoked"]
-* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended and forbidden for run_type that is one of ["single-ended", "unknown"]
+* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended and forbidden for *run_type* that is one of ["single-ended", "unknown"]
 * *read_length* value is now required for files with *output_type* = reads and *file_format* that is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
 
 #### Formats and enums are more restrictive for several fields:
@@ -120,7 +189,7 @@ DNA sequence information was removed from these analyses, since they are based o
        
 ### Schema version 5
 
-* *run_type* was migrated from replicate.paired_ended. It will be required for fastq files.  If run_type is paired-ended then "paired_with" will be required as well.:
+* *run_type* was migrated from replicate.paired_ended. It will be required for fastq files.  If *run_type* is paired-ended then *paired_with* will be required as well:
 
            "run_type": {
             "title": "Run type for sequencing files",

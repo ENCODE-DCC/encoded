@@ -1,26 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def ntr_biosample_type(testapp):
-    item = {
-        'term_id': 'NTR:0000022',
-        'term_name': 'heart',
-        'classification': 'single cell',
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def id_nonexist_biosample_type(testapp):
-    item = {
-        'term_id': 'CL:99999999',
-        'term_name': 'heart',
-        'classification': 'single cell',
-    }
-    return testapp.post_json('/biosample-types', item, status=201).json['@graph'][0]
-
-
 def test_audit_none(testapp, biosample_type):
     res = testapp.get(biosample_type['@id'] + '@@index-data')
     assert res.json['audit'] == {}

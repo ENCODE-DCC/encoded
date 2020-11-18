@@ -3,6 +3,9 @@ module.exports = {
     env: {
         browser: true,
     },
+    plugins: [
+        'react-hooks',
+    ],
     parserOptions: {
         ecmaVersion: 6,
         ecmaFeatures: {
@@ -20,7 +23,7 @@ module.exports = {
             imports: 'always-multiline',
             exports: 'always-multiline',
         }],
-        flatTernaryExpressions: false,
+        flatTernaryExpressions: 0,
         'function-paren-newline': 0,
         'global-require': 0,
         indent: ['error', 4, { ignoredNodes: ['ConditionalExpression'] }],
@@ -35,6 +38,7 @@ module.exports = {
         'no-nested-ternary': 0,
         'no-param-reassign': [2, { props: false }],
         'no-underscore-dangle': 0,
+        "no-restricted-globals": 0,
         'no-restricted-properties': 0,
         'object-curly-newline': ['error', {
             ObjectExpression: { consistent: true },
@@ -42,6 +46,8 @@ module.exports = {
         }],
         'prefer-destructuring': 0, // FF
         'react/forbid-prop-types': 0,
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': 'warn',
         'react/jsx-filename-extension': 0,
         'react/jsx-indent': 0,
         'react/jsx-indent-props': [2, 4],

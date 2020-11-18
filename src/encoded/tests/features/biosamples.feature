@@ -1,4 +1,4 @@
-@biosamples @usefixtures(workbook)
+@biosamples @usefixtures(index_workbook)
 Feature: Biosamples
 
     Scenario: Detail page
@@ -15,11 +15,11 @@ Feature: Biosamples
         When I visit "/biosamples/"
         And I wait for the content to load
         When I click the link to "/search/?type=Biosample&organism.scientific_name=Homo+sapiens"
-        Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 25 of 31 results"
+        Then I should see an element with the css selector "div.search-results"
+        And I should see "Showing 25 of 37 results"
 
         When I go back
         And I wait for the content to load
         When I click the link to "/search/?type=Biosample&status=in+progress"
-        Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 25 of 36 results"
+        Then I should see an element with the css selector "div.search-results"
+        And I should see "Showing 25 of 38 results"

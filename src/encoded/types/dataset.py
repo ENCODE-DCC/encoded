@@ -13,14 +13,23 @@ from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssaySlims,
+    CalculatedCategorySlims,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
     CalculatedSeriesTarget,
+    CalculatedObjectiveSlims,
+    CalculatedTypeSlims,
     CalculatedVisualize
 )
+
+from .biosample import construct_biosample_summary
+
+from .shared_biosample import biosample_summary_information
 
 from itertools import chain
 import datetime
@@ -82,7 +91,10 @@ class Dataset(Item):
         'documents.lab',
     ]
     set_status_up = [
-        'documents'
+        'original_files',
+        'replicates',
+        'documents',
+        'target',
     ]
     set_status_down = []
     name_key = 'accession'
@@ -180,12 +192,106 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-    @calculated_property(condition='date_released', schema={
-        "title": "Month released",
+
+@collection(
+    name='transgenic-enhancer-experiments',
+    unique_key='accession',
+    properties={
+        'title': 'Transgenic enhancer experiments',
+        'description': 'Listing of Transgenic Enhancer Experiments',
+    })
+class TransgenicEnhancerExperiment(
+    Dataset,
+    CalculatedAssaySynonyms,
+    CalculatedAssayTermID,
+    CalculatedAssaySlims,
+    CalculatedCategorySlims,
+    CalculatedTypeSlims,
+    CalculatedObjectiveSlims):
+    item_type = 'transgenic_enhancer_experiment'
+    schema = load_schema('encoded:schemas/transgenic_enhancer_experiment.json')
+    embedded = Dataset.embedded + [
+        'biosample_ontology',
+        'biosamples',
+    ]
+    audit_inherit = [
+        'submitted_by',
+        'lab',
+        'award',
+        'documents.lab',
+    ]
+    set_status_up = [
+        'documents'
+    ]
+    set_status_down = []
+    rev = Dataset.rev.copy()
+    rev.update({
+        'superseded_by': ('TransgenicEnhancerExperiment', 'supersedes')
+    })
+
+    @calculated_property(schema={
+        "title": "Superseded by",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "InVivoExperiment.supersedes",
+        },
+        "notSubmittable": True,
+    })
+    def superseded_by(self, request, superseded_by):
+        return paths_filtered_by_status(request, superseded_by)
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
         "type": "string",
     })
-    def month_released(self, date_released):
-        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
+    def biosample_summary(self, request, biosamples=None):
+        drop_age_sex_flag = False
+        dictionaries_of_phrases = []
+        biosample_accessions = set()
+        if biosamples is not None:
+            for bs in biosamples:
+                biosampleObject = request.embed(bs, '@@object')
+                if biosampleObject['status'] == 'deleted':
+                    continue
+                if biosampleObject['accession'] not in biosample_accessions:
+                    biosample_accessions.add(biosampleObject['accession'])
+                    biosample_info = biosample_summary_information(request, biosampleObject)
+                    biosample_summary_dictionary = biosample_info[0]
+                    biosample_drop_age_sex_flag = biosample_info[1]
+                    dictionaries_of_phrases.append(biosample_summary_dictionary)
+                    if biosample_drop_age_sex_flag is True:
+                        drop_age_sex_flag = True
+
+        if drop_age_sex_flag is True:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'phase',
+                'fractionated',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in',
+                'disease_term_name'
+            ]
+        else:
+            sentence_parts = [
+                'strain_background',
+                'experiment_term_phrase',
+                'phase',
+                'fractionated',
+                'sex_stage_age',
+                'synchronization',
+                'modifications_list',
+                'originated_from',
+                'treatments_phrase',
+                'depleted_in',
+                'disease_term_name'
+            ]
+        if len(dictionaries_of_phrases) > 0:
+            return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)
 
 
 class FileSet(Dataset):
@@ -194,7 +300,7 @@ class FileSet(Dataset):
     schema = load_schema('encoded:schemas/file_set.json')
     embedded = Dataset.embedded
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Contributing files",
         "type": "array",
         "items": {
@@ -296,7 +402,7 @@ class Annotation(FileSet, CalculatedVisualize):
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'files.library',
+        'files.library'
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -362,6 +468,54 @@ class Annotation(FileSet, CalculatedVisualize):
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
 
+    @calculated_property(condition='contributing_files', schema={
+        "title": "Biochemical profile inputs",
+        "description": "The input data used to generate a cCRE annotation.",
+        "type": "string",
+        "notSubmittable": True
+    })
+    def biochemical_inputs(
+        self,
+        request,
+        annotation_type,
+        encyclopedia_version=None,
+        contributing_files=None
+    ):
+        # https://encodedcc.atlassian.net/browse/ENCD-5288
+        inputs_set = set()
+        inputs_list = []
+        if encyclopedia_version is not None and \
+            encyclopedia_version in [
+                'ENCODE v4', 'ENCODE v5', 'ENCODE v6'
+                ]:
+            if annotation_type == 'candidate Cis-Regulatory Elements':
+                if contributing_files is not None:
+                    for input_file in contributing_files:
+                        file = request.embed(input_file, '@@object?skip_calculated=true')
+                        if file['output_type'] == 'candidate Cis-Regulatory Elements':
+                            if 'derived_from' in file:
+                                for derived_from_file in file['derived_from']:
+                                    derived_from_file_embedded = request.embed(derived_from_file,
+                                                                               '@@object?skip_calculated=true')
+                                    if derived_from_file_embedded['output_type'] == \
+                                            'representative DNase hypersensitivity sites (rDHSs)':
+                                        inputs_set.add('rDHS')
+                                    if derived_from_file_embedded['output_type'] == \
+                                            'consensus DNase hypersensitivity sites (cDHSs)':
+                                        inputs_set.add('cDHS')
+                        else:
+                            if file['dataset']:
+                                properties = request.embed(file['dataset'], '@@object')
+                                if 'assay_term_name' in properties:
+                                    if properties['assay_term_name'] == 'ChIP-seq':
+                                        target = request.embed(properties['target'],
+                                                               '@@object?skip_calculated=true')
+                                        inputs_set.add(target['label'])
+                                    elif properties['assay_term_name'] == 'DNase-seq':
+                                        inputs_set.add('DNase-seq')
+        inputs_list = sorted(inputs_set)
+        return ((', ').join([str(each) for each in inputs_list]))
+
 
 @collection(
     name='publication-data',
@@ -370,18 +524,13 @@ class Annotation(FileSet, CalculatedVisualize):
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedAssaySynonyms):
+class PublicationData(FileSet):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
     embedded = [
-        'biosample_ontology',
-        'organism',
         'submitted_by',
         'lab',
         'award.pi.lab',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'references'
     ]
 
@@ -396,7 +545,7 @@ class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssa
 class Reference(FileSet):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/reference.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset']
+    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset', 'donor', 'examined_loci']
 
 
 @collection(
@@ -460,6 +609,25 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'files.library',
         'files.replicate.experiment.target',
         'organism'
+    ]
+
+
+@collection(
+    name='computational-models',
+    unique_key='accession',
+    properties={
+        'title': "Computational model file set",
+        'description': 'A set of files that comprise a computational model.',
+    })
+class ComputationalModel(FileSet):
+    item_type = 'computational_model'
+    schema = load_schema('encoded:schemas/computational_model.json')
+    embedded = FileSet.embedded + [
+        'submitted_by',
+        'lab',
+        'award.pi.lab',
+        'software_used',
+        'software_used.software'
     ]
 
 
@@ -558,6 +726,16 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
                 for assembly_from_related_dataset in properties['assembly']:
                     combined_assembly.add(assembly_from_related_dataset)
         return list(combined_assembly)
+
+    @calculated_property(define=True, schema={
+        "title": "Control types",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def control_type(self, request, related_datasets):
+        return request.select_distinct_values('control_type', *related_datasets)
 
 
 @collection(
@@ -684,6 +862,7 @@ class ExperimentSeries(Series):
         'contributing_awards',
         'contributors',
         'organism',
+        'related_datasets.award',
         'related_datasets.lab',
         'related_datasets.replicates.library.biosample',
         'related_datasets.target',
@@ -733,3 +912,39 @@ class ExperimentSeries(Series):
     })
     def contributors(self, request, related_datasets):
         return request.select_distinct_values('lab', *related_datasets)
+
+    @calculated_property(schema={
+        "title": "Biosample summary",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def biosample_summary(self, request, related_datasets):
+        return request.select_distinct_values('biosample_summary', *related_datasets)
+
+
+@collection(
+    name='single-cell-rna-series',
+    unique_key='accession',
+    properties={
+        'title': "Single cell RNA series",
+        'description': 'A series that group single cell RNA experiments sharing a similar cell classification.',
+    })
+class SingleCellRnaSeries(Series):
+    item_type = 'single_cell_rna_series'
+    schema = load_schema('encoded:schemas/single_cell_rna_series.json')
+    embedded = Series.embedded
+
+
+@collection(
+    name='functional-characterization-series',
+    unique_key='accession',
+    properties={
+        'title': "Functional characterization series",
+        'description': 'A series that group functional characterization experiments which should be analyzed and interpreted together.',
+    })
+class FunctionalCharacterizationSeries(Series):
+    item_type = 'functional_characterization_series'
+    schema = load_schema('encoded:schemas/functional_characterization_series.json')
+    embedded = Series.embedded

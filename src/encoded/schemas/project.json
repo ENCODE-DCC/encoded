@@ -45,7 +45,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "17"
         },
         "project_type": {
             "title": "Project type",
@@ -96,9 +96,6 @@
         },
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
-        },
-        "month_released": {
-            "title": "Month released"
         },
         "lab.title": {
             "title": "Lab"
@@ -173,7 +170,7 @@
         "files.replicate.experiment.target.aliases": 1.0,
         "files.replicate.experiment.target.genes.symbol": 1.0,
         "files.replicate.experiment.target.label": 1.0,
-        "files.replicate.experiment.target.dbxref": 1.0,
+        "files.replicate.experiment.target.genes.dbxrefs": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,

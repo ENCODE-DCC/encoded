@@ -1,7 +1,9 @@
 /* global process, __dirname */
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const env = process.env.NODE_ENV;
 
@@ -14,8 +16,6 @@ const PATHS = {
 };
 
 const plugins = [];
-// don't include momentjs locales (large)
-plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
 
 // To get auth0 v11 to build correctly:
 // https://github.com/felixge/node-formidable/issues/337#issuecomment-183388869
@@ -23,10 +23,17 @@ plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
 
 let chunkFilename = '[name].js';
 let styleFilename = './css/[name].css';
+let mode = 'development';
+const optimization = {};
 
 if (env === 'production') {
-    // uglify code for production
-    plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+    optimization.minimize = true;
+    optimization.minimizer = [
+        new TerserPlugin({
+            sourceMap: true,
+        }),
+        new OptimizeCSSAssetsPlugin({}),
+    ];
 
     // Set production version of React
     // https://stackoverflow.com/questions/37311972/react-doesnt-switch-to-production-mode#answer-37311994
@@ -41,32 +48,42 @@ if (env === 'production') {
     // add chunkhash to chunk names for production only (it's slower)
     chunkFilename = '[name].[chunkhash].js';
     styleFilename = './css/[name].[chunkhash].css';
+
+    mode = 'production';
 }
 
-const loaders = [
-    // add babel to load .js files as ES6 and transpile JSX
+const rules = [
     {
         test: /\.js$/,
         include: [
             PATHS.static,
             path.resolve(__dirname, 'node_modules/dagre-d3'),
-            path.resolve(__dirname, 'node_modules/dalliance'),
             path.resolve(__dirname, 'node_modules/superagent'),
         ],
-        loader: 'babel',
-    },
-    {
-        test: /\.json$/,
-        loader: 'json',
+        use: {
+            loader: 'babel-loader',
+            query: { compact: false },
+        },
     },
     {
         test: /\.(jpg|png|gif)$/,
-        loader: 'url?limit=25000',
         include: PATHS.images,
+        use: [
+            {
+                loader: 'url-loader',
+                options: {
+                    limit: 25000,
+                },
+            },
+        ],
     },
     {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('css!sass'),
+        use: [
+            MiniCssExtractPlugin.loader,
+            { loader: 'css-loader', options: { sourceMap: true } },
+            { loader: 'sass-loader', options: { sourceMap: true } },
+        ],
     },
 ];
 
@@ -85,15 +102,16 @@ module.exports = [
             chunkFilename,
         },
         module: {
-            loaders,
+            rules,
         },
         devtool: 'source-map',
+        mode,
+        optimization,
         plugins: plugins.concat(
             // Add a browser-only plugin to extract Sass-compiled styles and place them into an
             // external CSS file
-            new ExtractTextPlugin(styleFilename, {
-                disable: false,
-                allChunks: true,
+            new MiniCssExtractPlugin({
+                filename: styleFilename,
             }),
 
             // Add a browser-only plugin executed when webpack is done with all transforms. it
@@ -108,7 +126,6 @@ module.exports = [
                 });
             }
         ),
-        debug: true,
     },
     // for server-side rendering
     {
@@ -127,9 +144,8 @@ module.exports = [
             'd3',
             'dagre-d3',
             'chart.js',
-            'dalliance',
             // avoid bundling babel transpiler, which is not used at runtime
-            'babel-core/register',
+            '@babel/register',
         ],
         output: {
             path: PATHS.serverbuild,
@@ -139,10 +155,11 @@ module.exports = [
             chunkFilename,
         },
         module: {
-            loaders,
+            rules,
         },
         devtool: 'source-map',
+        mode,
+        optimization,
         plugins,
-        debug: true,
     },
 ];

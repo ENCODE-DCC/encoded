@@ -2,7 +2,7 @@
 
 ### Schema version 10
 
-* The enum "kyoto" was removed from *aliases* and *dbxrefs* namespaces and replaced with "encode" in *aliases* and "DGGR" in *external_ids*
+* The enum *kyoto* was removed from *aliases* and *dbxrefs* namespaces and replaced with *encode* in *aliases* and *DGGR* in *external_ids*
 
 ### Schema version 9
 

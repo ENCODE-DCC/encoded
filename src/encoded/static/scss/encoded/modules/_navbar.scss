@@ -1,188 +1,343 @@
-/* NavBar */
-.navbar-inverse {
-    border: none;
-    border-bottom: 0px solid #4e7294;
-    background: #0a253d;
+//
+// Navbars
+// --------------------------------------------------
 
-    @media print {
-        display: none;
+// Navbar variables copied from Bootstrap 3
+$navbar-height:              40px;
+$navbar-margin-bottom:       20px;
+$navbar-trigger-width:       24px;
+$navbar-trigger-icon-width:  20px;
+$navbar-trigger-icon-height: 20px;
+$navbar-bg-color:            #0a253d;
+
+
+// Wrapper and base class
+//
+// Provide a static navbar from which we expand to create full-width, fixed, and
+// other navbar variations.
+
+.navbar__wrapper {
+    @media screen and (min-width: $screen-md-min) {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
     }
+}
 
-    .navbar-brand {
-        margin-left: -15px;
-        color: #fff;
-        font-size: 1.4rem;
-        font-weight: 200;
-        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 
-        &:hover {
-            text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.8);
+
+/**
+ * Main navigation area.
+ */
+.navbar {
+    width: 100%;
+    background-color: $navbar-bg-color;
+    box-shadow: 0px 6px 12px 0px rgba(0,0,0,0.19);
+
+    // Contains the entire navigation system.
+    @at-root #{&}__container {
+        margin-left: auto;
+        margin-right: auto;
+
+        @media screen and (min-width: $screen-sm-min) {
+            width: $screen-sm-min;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            align-items: center;
+            width: $screen-md-min;
+        }
+
+        @media screen and (min-width: $screen-lg-min) {
+            width: $screen-lg-min;
+        }
+
+        @media screen and (min-width: $screen-xl-min) {
+            width: $screen-xl-min;
         }
     }
 
-    .nav > li > button {
-        position: relative;
-        display: block;
-        padding: 10px 15px;
-        color: #fff;
-        background-color: transparent;
+    // Contains the brand and mobile trigger.
+    @at-root #{&}__header {
+        display: flex;
+        flex: 0 1 auto;
+        height: $navbar-height;
+        justify-content: space-between;
+    }
+
+    // Holds the site logo and home-page link.
+    @at-root #{&}__brand {
+        flex: 1 1 auto;
+        padding: 0;
+        margin-left: 10px;
+        align-self: center;
+    }
+
+    // Mobile trigger
+    @at-root #{&}__trigger {
+        flex: 0 0 $navbar-trigger-width;
+        padding: 0;
+        margin-right: 16px;
         border: none;
+        background-color: transparent;
+        fill: #fff;
 
-        &:focus,
-        &:hover {
-            background-color: #2f4961;
+        svg {
+            width: $navbar-trigger-icon-width;
+            height: $navbar-trigger-icon-height;
         }
 
-        /* Disabled sign-in link */
-        &[disabled] {
-            color: $gray-light;
+        @media screen and (min-width: $screen-md-min) {
+            display: none;
+        }
+    }
 
-            &:focus,
+    // Navbar content area, hidden under hamburger on mobile.
+    @at-root #{&}__content {
+        @media screen and (min-width: $screen-md-min) {
+            display: flex;
+            align-items: center;
+            flex: 1 1 auto;
+            height: $navbar-height;
+            width: auto;
+            justify-content: space-between;
+        }
+
+        &.collapsed {
+            display: none;
+
+            @media screen and (min-width: $screen-md-min) {
+                display: flex;
+            }
+        }
+    }
+}
+
+@mixin nav-title {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 13px 15px 11px;
+    font-size: 1rem;
+    text-align: left;
+    color: #fff;
+    border: none;
+    background-color: transparent;
+    line-height: 1;
+}
+
+
+/**
+ * One nav area within a navbar.
+ */
+.navbar__nav {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex: 0 1 auto;
+        align-items: center;
+    }
+
+    & > li {
+        & > a {
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+
+    .dropdown {
+        position: relative;
+
+        .dropdown__toggle {
+            @include nav-title;        
+
             &:hover {
-                background-color: transparent;
-                color: $gray-light;
-                cursor: default;
+                background-color: #2f4961;
+            }
+
+            &.dropdown__toggle--open {
+                background-color: #2f4961;
+            }
+        }
+
+        .dropdown__menu {
+            display: none;
+        }
+
+        &.open {
+            .dropdown__menu {
+                display: block;
+            }
+        }
+    }
+}
+
+
+// Search box in main navigation
+.navbar__search {
+    display: flex;
+    margin: 3px 10px;
+    padding: 0;
+    border-radius: 14px;
+    background-color: #fff;
+    transition: width 0.1s ease-out;
+	border: none;
+	box-shadow: none;
+	-ms-transition: width 0.3s ease-out;
+	-moz-transition: width 0.3s ease-out;
+	-webkit-transition: width 0.3s ease-out;
+	transition: width 0.3s ease-out;
+
+    > input {
+        flex: 1 1 auto;
+        margin: 0;
+        padding: 5px 10px;
+        width: 180px;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+
+        &:focus {
+            width: 230px;
+            transition: width 0.1s ease-out;
+            background: transparent;
+        }
+    }
+
+    .search-button {
+        flex: 0 1 auto;
+        border: none;
+        background: transparent;
+    }
+}
+
+
+.dropdown__menu {
+    padding: 0;
+    background-color: transparent;
+    list-style: none;
+
+    @media screen and (min-width: $screen-md-min) {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    }
+
+    & > li {
+        position: relative;
+        &>a, &>button, &>span {
+            display: block;
+            padding: 5px 15px 5px 25px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            line-height: 20px;
+            background-color: transparent;
+            border: none;
+            text-decoration: none;
+
+            @media screen and (min-width: $screen-md-min) {
+                font-size: 1.1rem;
             }
         }
     }
 
-    .navbar-nav > li > a {
-        color: #fff;
-    }
-}
-
-.navbar-fixed-top {
-    position: static;
-
-    @media (min-width: $screen-md-min) {
-        position: fixed;
-    }
-}
-
-
-.navbar-toggle {
-    margin-right: 0;
-}
-
-.navbar-main {
-    margin-bottom: 0;
-}
-
-.navbar-collapse {
-    max-height: none;
-}
-
-.test-warning {
-    position: relative;
-    padding: 5px 0 7px;
-    color: #fff;
-    background-color: $brand-danger;
-    background-image: linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%);
-
-    p {
-        margin: 0;
-        width: 90%;
-       font-size: 0.85rem;
-
-        @media screen and (min-width: $screen-md-min) {
-            width: 100%;
-            text-align: center;
-            font-size: 1rem;
-        }
-    }
-}
-
-
-.test-warning-close {
-    position: absolute;
-    width: 23px;
-    height: 22px;
-    top: 50%;
-    right: 5px;
-    margin-top: -13px;
-    font-size: 1.2rem;
-    line-height: 23px !important;
-    color: #fff;
-    vertical-align: top;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-
-    &:hover {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    @media screen and (min-width: $screen-md-min) {
-        position: static;
-        display: inline;
-        margin-top: 0;
-        margin-left: 10px;
-    }
-}
-
-
-.dropdown-menu {
-    background-color: #fff;
-    background-image: linear-gradient(top,  #ffffff 0%,#f0f0f0 100%);
-    overflow: hidden;
-
-    &>li {
-        &>a, &>button, &>span {
-            display: block;
-            padding: 5px 15px 5px 25px;
-            color: white !important;
-            font-weight: 300;
-            line-height: 20px;
-            background-color: transparent;
-            border: none;
-        }
-    }
     .sub-menu {
         padding-left: 40px;
     }
+
+    .icon-container {
+        position: relative;
+        display: inline-block;
+        pointer-events: all;
+    }
+
+    .tooltip-container__trigger {
+        cursor: pointer;
+        pointer-events: all;
+    }
+
+    .icon-question-circle {
+        color: #b3b3b3;
+        pointer-events: all;
+        cursor: pointer;
+        padding: 2px 2px 1px;
+        margin-left: 4px;
+        font-size: 1.1rem;
+    }
+
+    a {
+        color: #444;
+        &:hover {
+            text-decoration: none;
+        }
+        @media screen and (max-width: $screen-md-min) {
+            color: #fff;
+        }
+    }
+
     .disabled-menu-item {
         pointer-events: none;
         font-weight: 400;
-        letter-spacing: 0;
+        position: relative;
+        padding: 2px 30px 2px 20px;
+        font-weight: 400;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        @media screen and (min-width: $screen-md-min) {
+            font-size: 1.1rem;
+        }
     }
 
-    @media screen and (min-width: $grid-float-breakpoint) {
-        left: -1px;
-        margin-top: -1px !important;
+     @media screen and (min-width: $screen-md-min) {
+        position: absolute;
+        top: 100%;
         padding: 10px 0;
+        z-index: 100;
+        border: 1px solid #e0e0e0;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius:  3px;
 
         &>li {
-            &>a, &>button, &>span {
-                display: inline-block;
+            &>a, &>button, &>span, &>div {
+                display: block;
                 width: 100%;
                 margin: 0;
                 padding: 2px 30px 2px 20px;
-                font-size: 1.1rem;
-                color: #444 !important;
+                color: #444;
                 background-color: #fff;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
                 border-left: none;
                 border-right: none;
                 text-align: left;
-                letter-spacing: 1px;
                 font-weight: 300;
                 white-space: nowrap;
                 max-width: 400px;
+                position: relative;
 
-
-                &:hover,&:active {
-                    border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    background-color: $navbar-inverse-link-active-bg;
-                    color: $navbar-inverse-link-active-color !important;
+                &:not(.disabled-menu-item) {
+                    &:hover,&:active {
+                        border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                        border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                        background-color: $navbar-inverse-link-active-bg;
+                        color: #fff;
+                    }
                 }
-            }
 
-            &:last-child {
-                &>a {
-                    border-radius: 0 0 3px 3px;
+                // Dropdown menu separator item
+                &.dropdown-sep {
+                    pointer-events: none;
+                    margin: 5px 0 0;
+                    border-top: 1px solid #c0c0c0;
+                    border-bottom: 1px solid #fff;
                 }
             }
         }
@@ -193,9 +348,140 @@
     }
 }
 
-// Dropdown menu separator item
-.dropdown-sep {
-    margin: 5px 0;
-    border-top: 1px solid #c0c0c0;
-    border-bottom: 1px solid #fff;
+.disabled-menu-item {
+    @media screen and (max-width: $screen-md-min) {
+        font-size: 0.9rem;
+    }
+}
+
+.hoverable {
+    font-weight: 300;
+    letter-spacing: 1px;
+    font-size: 1.1rem;
+    padding: 2px 30px 2px 20px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    @media screen and (min-width: $screen-md-min) {
+        &:hover,&:active {
+            a {
+                color: #fff;
+            }
+            border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
+            border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+            background-color: $navbar-inverse-link-active-bg;
+        }
+    }
+    @media screen and (max-width: $screen-md-min) {
+        &.sub-menu {
+            font-size: 0.9rem;
+        }
+        a {
+            color: #fff;
+        }
+    }
+}
+
+// Wrapper for <GlobalSections> and <CartStatus>
+.navbar__global-cart {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+    }
+}
+
+// Visual appearance of the brand visual that links to the home page.
+.home-brand {
+    margin: 0;
+    padding: 0 5px;
+    font-size: 1.4rem;
+    font-weight: 200;
+    font-family: $brand-font;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    background-color: $navbar-bg-color;
+    transition: background-color 200ms;
+
+    &:hover {
+        background-color: lighten($navbar-bg-color, 20%);
+    }
+}
+
+
+.test-warning {
+    position: relative;
+    color: #fff;
+    background-color: $brand-danger;
+    text-align: left;
+    padding: 10px;
+
+    @media screen and (min-width: $screen-md-min) {
+        width: 100%;
+        height: 30px;
+        padding: 0;
+        z-index: 1;
+
+        .container {
+            padding: 0;
+        }
+    }
+
+    @at-root #{&}__content {
+        display: flex;
+        height: 100%;
+        font-size: 1rem;
+        align-items: center;
+        justify-content: space-between;
+
+        @media screen and (min-width: $screen-md-min) {
+            justify-content: center;
+        }
+    }
+
+    @at-root #{&}__text {
+        flex: 1 1 auto;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 auto;
+        }
+    }
+
+    @at-root #{&}__close {
+        display: block;
+        flex: 0 0 14px;
+        position: relative;
+        width: 14px;
+        height: 14px;
+        margin-left: 5px;
+        margin-right: 10px;
+        font-size: 1.2rem;
+        color: #fff;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 auto;
+            margbin-right: 0;
+        }
+
+        > .icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 14px;
+            height: 14px;
+        }
+    }
+}
+
+// Items specific to each navigation item.
+.navbar__item {
+    // Search box in main navigation.
+    &--search {
+        padding-bottom: 10px;
+
+        @media screen and (min-width: $screen-md-min) {
+            padding-bottom: 0;
+        }
+    }
 }

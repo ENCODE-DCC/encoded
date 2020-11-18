@@ -121,10 +121,10 @@ class EditForm extends React.Component {
                         width: '100%',
                     }}
                 />
-                <div style={{ float: 'right', margin: '10px' }}>
+                <div className="form-edit__save-controls">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
+                    <button onClick={this.save} className="btn btn-info" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
                 <ul style={{ clear: 'both' }}>
                     {error && error.code === 422 ? error.errors.map((err, i) => (
@@ -162,10 +162,8 @@ const ItemEdit = (props) => {
     const url = `${context['@id']}?frame=edit`;
     return (
         <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>Edit {title}</h2>
-                </div>
+            <header>
+                <h2>Edit {title}</h2>
             </header>
             <FetchedData>
                 <Param name="data" url={url} etagName="etag" />

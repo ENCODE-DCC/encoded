@@ -122,10 +122,12 @@
     },
     "boost_values": {
         "genetic_modifications.modified_site_by_target_id.label": 1.0,
-        "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
+        "genetic_modifications.modified_site_by_target_id.genes.dbxrefs": 1.0,
         "genetic_modifications.modified_site_by_target_id.genes.symbol": 1.0,
         "genetic_modifications.modified_site_by_target_id.aliases": 1.0,
-        "parent_strains": 1.0
+        "parent_strains": 1.0,
+        "accession": 1.0,
+        "alternate_accessions": 1.0
     },
     "changelog": "/profiles/changelogs/mouse_donor.md"
 }

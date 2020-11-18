@@ -1,10 +1,20 @@
-// Override Bootstrap default variables:
-
+// Grid breakpoints; using px instead of ems/rems for the same reason Bootstrap 4 gives.
+// https://getbootstrap.com/docs/4.0/layout/grid/#grid-options
+$screen-xs:                                 480px;
+$screen-sm:                                 768px;
 $screen-md:                                 960px;
 $screen-lg:                                 1160px;
+$screen-xl:                                 1716px;
+$screen-xs-min:                             $screen-xs;
+$screen-sm-min:                             $screen-sm;
+$screen-md-min:                             $screen-md;
+$screen-lg-min:                             $screen-lg;
+$screen-xl-min:                             $screen-xl;
+
 $border-radius-base:                        3px;
 $border-radius-large:                       4px;
-$border-radius-small:                       2px;
+$border-radius-small:                       3px;
+$border-color:                              #ced4da;
 $input-border-radius:                       3px;
 $grid-float-breakpoint:                     $screen-md;
 $navbar-height:                             40px;
@@ -14,63 +24,194 @@ $navbar-inverse-toggle-border-color:        #19334b;
 $headings-font-weight:                      bold;
 $grid-gutter-width:                         20px;
 
-$brand-warning: #E59545;
-$brand-success: #4C994C;
-$brand-danger: #B24342;
-$brand-info: #4F689E;
+$padding-base-vertical:     6px !default;
+$padding-base-horizontal:   12px !default;
 
-// Core variables and mixins
-@import "bootstrap/variables";
-@import "bootstrap/mixins";
+$padding-large-vertical:    10px !default;
+$padding-large-horizontal:  16px !default;
 
-// Reset
-@import "bootstrap/normalize";
-//@import "bootstrap/print";
+$padding-small-vertical:    5px !default;
+$padding-small-horizontal:  10px !default;
 
-// Core CSS
-@import "bootstrap/scaffolding";
-@import "bootstrap/type";
-@import "bootstrap/code";
-@import "bootstrap/grid";
-@import "bootstrap/tables";
-@import "bootstrap/forms";
-@import "bootstrap/buttons";
+$padding-xs-vertical:       1px !default;
+$padding-xs-horizontal:     5px !default;
 
-// Components
-@import "bootstrap/component-animations";
-//@import "bootstrap/glyphicons";
-@import "bootstrap/dropdowns";
-@import "bootstrap/button-groups";
-@import "bootstrap/input-groups";
-@import "bootstrap/navs";
-@import "bootstrap/navbar";
-@import "bootstrap/breadcrumbs";
-//@import "bootstrap/pagination";
-//@import "bootstrap/pager";
-@import "bootstrap/labels";
-@import "bootstrap/badges";
-//@import "bootstrap/jumbotron";
-@import "bootstrap/thumbnails";
-@import "bootstrap/alerts";
-//@import "bootstrap/progress-bars";
-//@import "bootstrap/media";
-//@import "bootstrap/list-group";
-@import "bootstrap/panels";
-@import "bootstrap/wells";
-@import "bootstrap/close";
+$line-height-large:         1.33 !default;
+$line-height-small:         1.5 !default;
 
-// Components w/ JavaScript
-@import "bootstrap/modals";
-@import "bootstrap/tooltip";
-//@import "bootstrap/popovers";
-//@import "bootstrap/carousel";
+$border-radius-base:        4px !default;
+$border-radius-large:       6px !default;
+$border-radius-small:       3px !default;
+
+$font-size-base:               16px;
+$font-size-large:              ceil(($font-size-base * 1.25)) !default; // ~18px
+$font-size-small:              ceil(($font-size-base * 0.85)) !default; // ~12px
+$mobile-font-factor:           1.2; // Amount text increases size on mobile
+$print-font-factor:            0.95; // Amount text decreases size when printing
+
+//** Unit-less `line-height` for use in components like buttons.
+$line-height-base:        1.428571429 !default; // 20/14
+//** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+$line-height-computed:    floor(($font-size-base * $line-height-base)) !default; // ~20px
+
+$gray-darker:            lighten(#000, 13.5%) !default; // #222
+$gray-dark:              lighten(#000, 20%) !default;   // #333
+$gray:                   lighten(#000, 33.5%) !default; // #555
+$gray-light:             lighten(#000, 60%) !default;   // #999
+$gray-lighter:           lighten(#000, 93.5%) !default; // #eee
+
+$brand-primary:         #428bca;
+$brand-success:         #4c994c;
+$brand-info:            #4f689e;
+$brand-warning:         #e59545;
+$brand-danger:          #b24342;
+
+
+// Button styles copied from Bootstrap 3
+$btn-font-weight:                normal !default;
+
+$btn-default-color:              #333 !default;
+$btn-default-bg:                 #fff !default;
+$btn-default-border:             #ccc !default;
+
+$btn-primary-color:              #fff !default;
+$btn-primary-bg:                 $brand-primary !default;
+$btn-primary-border:             darken($btn-primary-bg, 5%) !default;
+
+$btn-success-color:              #fff !default;
+$btn-success-bg:                 $brand-success !default;
+$btn-success-border:             darken($btn-success-bg, 5%) !default;
+
+$btn-info-color:                 #fff !default;
+$btn-info-bg:                    $brand-info !default;
+$btn-info-border:                darken($btn-info-bg, 5%) !default;
+
+$btn-warning-color:              #fff !default;
+$btn-warning-bg:                 $brand-warning !default;
+$btn-warning-border:             darken($btn-warning-bg, 5%) !default;
+
+$btn-danger-color:               #fff !default;
+$btn-danger-bg:                  $brand-danger !default;
+$btn-danger-border:              darken($btn-danger-bg, 5%) !default;
+
+$btn-link-disabled-color:        $gray-light !default;
+
+$btn-height:                     36px;
+$btn-height-xs:                  24px;
+$btn-height-sm:                  29px;
+$btn-height-lg:                  46px;
+
+$link-color:                                $brand-primary;
+$link-hover-color:                          darken($link-color, 15%);
+
+// Global mixins
+// Keep images from scaling beyond the width of their parents; copied from Bootstrap 3
+@mixin img-responsive($display: block) {
+  display: $display;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%; // Part 1: Set a maximum relative to the parent
+  height: auto; // Part 2: Scale the height according to the width, otherwise you get stretching
+}
+
+// CSS image replacement
+//
+// Heads up! v3 launched with with only `.hide-text()`, but per our pattern for
+// mixins being reused as classes with the same name, this doesn't hold up. As
+// of v3.0.1 we have added `.text-hide()` and deprecated `.hide-text()`. Note
+// that we cannot chain the mixins together in Less, so they are repeated.
+//
+// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
+
+// Deprecated as of v3.0.1 (will be removed in v4)
+@mixin hide-text() {
+    font: #{0/0} a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+}
+// New mixin to use as of v3.0.1
+@mixin text-hide() {
+    @include hide-text();
+}
+
+@mixin user-select($select) {
+  -webkit-user-select: $select;
+      -ms-user-select: $select;
+          user-select: $select;
+}
+
+// WebKit-style focus
+@mixin tab-focus() {
+    // Default
+    outline: thin dotted;
+    // WebKit
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+
+@mixin box-shadow($shadow...) {
+  -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
+          box-shadow: $shadow;
+}
+
+// Button variants
+// -------------------------
+// Easily pump out default styles, as well as :hover, :focus, :active,
+// and disabled options for all buttons
+@mixin button-variant($color, $background, $border) {
+    color: $color;
+    background-color: $background;
+    border-color: $border;
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+        color: $color;
+        background-color: darken($background, 8%);
+        border-color: darken($border, 12%);
+    }
+    .open & {
+        &.dropdown-toggle {
+            color: $color;
+            background-color: darken($background, 8%);
+            border-color: darken($border, 12%);
+        }
+    }
+    &:active,
+    &.active {
+        background-image: none;
+    }
+    .open & {
+        &.dropdown-toggle {
+            background-image: none;
+        }
+    }
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] & {
+        &,
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+        background-color: $background;
+        border-color: $border;
+    }
+}
+
+.badge {
+    color: $background;
+        background-color: $color;
+    }
+}
+
 
 // ENCODED
 // Font Awesome
 @import "fontawesome/font-awesome";
-
-// react-forms bootstrap theme
-@import "react-forms/index";
 
 // ENCODE Project styles & mixins
 @import "encoded/mixins-custom";
@@ -78,8 +219,8 @@ $brand-info: #4F689E;
 @import "encoded/base";
 @import "encoded/math";
 @import "encoded/layout";
-@import "encoded/bootstrap-lib";
-@import "encoded/modules/breadcrumbs",
+@import "encoded/modules/common_item",
+        "encoded/modules/breadcrumbs",
         "encoded/modules/pager",
         "encoded/modules/forms",
         "encoded/modules/cart",
@@ -94,10 +235,11 @@ $brand-info: #4F689E;
         "encoded/modules/modals",
         "encoded/modules/navbar",
         "encoded/modules/panels",
-        "encoded/modules/signin-box",
         "encoded/modules/tables",
         "encoded/modules/search",
         "encoded/modules/summary",
+        "encoded/modules/body_map",
+        "encoded/modules/body_map_facet",
         "encoded/modules/genome_browser",
         "encoded/modules/characterizations",
         "encoded/modules/audits",
@@ -115,6 +257,7 @@ $brand-info: #4F689E;
         "encoded/modules/home",
         "encoded/modules/blocks",
         "encoded/modules/layout-editor",
+        "encoded/modules/layout",
         "encoded/modules/schema",
         "encoded/modules/faq",
         "encoded/modules/patientChart",
@@ -124,9 +267,6 @@ $brand-info: #4F689E;
 @import "encoded/state";
 @import "encoded/theme";
 
-// Utility classes - Bootstrap 3, keep last
-@import "bootstrap/utilities";
-@import "bootstrap/responsive-utilities";
 
 //moves the help button to the right side
 #walkme-player {
@@ -146,9 +286,8 @@ $brand-info: #4F689E;
     border-radius: 4px;
     opacity: .7;
   }
-  
+
   #scrollUpButton:hover {
     background-color: #555;
   }
   */
-

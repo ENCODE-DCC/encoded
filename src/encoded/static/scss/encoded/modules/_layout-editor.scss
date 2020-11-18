@@ -94,11 +94,30 @@
 }
 
 .layout-toolbar {
+	display: flex;
+	padding: 5px;
+	justify-content: space-between;
+	background-color: #fff;
 	z-index: 1030;
-	.navbar-left .btn {
-		cursor: move;
+
+	@at-root #{&}__tools {
+		flex: 0 1 auto;
+
+		.btn {
+			cursor: move;
+		}
+	}
+
+	@at-root #{&}__controls {
+		display: flex;
+		flex: 0 1 auto;
+
+		.btn {
+			margin-left: 5px;
+		}
 	}
 }
+
 .layout-toolbar.navbar-fixed-top {
 	z-index: 1031;
 	.col-md-12 {

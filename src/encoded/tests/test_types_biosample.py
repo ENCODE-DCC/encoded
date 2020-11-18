@@ -1,26 +1,6 @@
 import pytest
 
 
-@pytest.fixture
-def human_donor(testapp, award, lab, human):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': human['@id'],
-    }
-    return testapp.post_json('/human_donor', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_donor(testapp, award, lab, mouse):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': mouse['@id'],
-    }
-    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
-
-
 def test_undefined_sex_model_organism(testapp, biosample, mouse):
     testapp.patch_json(biosample['@id'], {'organism': mouse['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
@@ -80,17 +60,17 @@ def test_undefined_age_units_mouse_with_model_organism_age_field(testapp, biosam
     assert res.json['object']['age_units'] == 'day'
 
 
-def test_defined_life_stage_human(testapp, biosample, human, human_donor):
+def test_defined_life_stage_human(testapp, biosample, human, human_donor_1):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(human_donor['@id'], {'life_stage': 'embryonic'})
-    testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
+    testapp.patch_json(human_donor_1['@id'], {'life_stage': 'embryonic'})
+    testapp.patch_json(biosample['@id'], {'donor': human_donor_1['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['life_stage'] == 'embryonic'
 
 
-def test_undefined_life_stage_human(testapp, biosample, human, human_donor):
+def test_undefined_life_stage_human(testapp, biosample, human, human_donor_1):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
+    testapp.patch_json(biosample['@id'], {'donor': human_donor_1['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['life_stage'] == 'unknown'
 
@@ -108,10 +88,10 @@ def test_undefined_life_stage_mouse(testapp, biosample, mouse):
     assert res.json['object']['life_stage'] == 'unknown'
 
 
-def test_defined_health_status_human(testapp, biosample, human, human_donor):
+def test_defined_health_status_human(testapp, biosample, human, human_donor_1):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(human_donor['@id'], {'health_status': 'healthy'})
-    testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
+    testapp.patch_json(human_donor_1['@id'], {'health_status': 'healthy'})
+    testapp.patch_json(biosample['@id'], {'donor': human_donor_1['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
     assert res.json['object']['health_status'] == 'healthy'
 
@@ -131,15 +111,19 @@ def test_undefined_health_status_mouse(testapp, biosample, mouse):
 
 def test_biosample_summary(testapp,
                            donor_1,
-                           biosample_1, treatment, liver):
+                           biosample_1, treatment_5, liver):
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             "biosample_ontology": liver['uuid'],
+                                            'disease_term_id': 'DOID:0080600',
                                             "preservation_method": "cryopreservation",
-                                            'treatments': [treatment['@id']]})
+                                            "post_nucleic_acid_delivery_time": 3,
+                                            "post_nucleic_acid_delivery_time_units": "week",
+                                            'treatments': [treatment_5['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == (
-        'Homo sapiens male child (10 days) liver tissue treated with ethanol, preserved by cryopreservation')
+        'Homo sapiens male child (10 days) liver tissue with COVID-19 treated with ethanol,'
+        ' 3 weeks post-nucleic acid delivery time, preserved by cryopreservation')
 
 
 def test_biosample_summary_construct(testapp,
@@ -161,3 +145,137 @@ def test_biosample_summary_construct(testapp,
     assert res.json['object']['summary'] == (
         'Drosophila melanogaster '
         'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')
+
+
+def test_biosample_summary_construct_2(
+    testapp,
+    human,
+    human_donor_1,
+    biosample_1,
+    liver
+):
+    testapp.patch_json(human_donor_1['@id'], {
+        'age': '31',
+        'age_units': 'year',
+        'life_stage': 'adult',
+        'sex': 'female'
+        })
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': human_donor_1['@id'],
+        'biosample_ontology': liver['uuid'],
+        'organism': human['@id'],
+        'disease_term_id': 'DOID:0080600'
+        })
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Homo sapiens female adult (31 years) liver tissue with COVID-19')
+
+
+def test_biosample_summary_construct_3(
+    testapp,
+    human,
+    human_donor_1,
+    biosample_1,
+    liver
+):
+    testapp.patch_json(human_donor_1['@id'], {
+        'age': '1',
+        'age_units': 'month',
+        'life_stage': 'child',
+        'sex': 'female'
+        })
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': human_donor_1['@id'],
+        'biosample_ontology': liver['uuid'],
+        'organism': human['@id']
+        })
+    res = testapp.get(biosample_1['@id']+'@@index-data')
+    assert res.json['object']['summary'] == (
+        'Homo sapiens female child (1 month) liver tissue')
+
+
+def test_perturbed_gm(
+    testapp,
+    biosample_1,
+    interference_genetic_modification,
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'genetic_modifications': [interference_genetic_modification['@id']],
+        }
+    )
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is True
+
+
+def test_perturbed_treatment(
+    testapp,
+    biosample_1,
+    treatment_5,
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'treatments': [treatment_5['@id']],
+        }
+    )
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is True
+
+
+def test_perturbed_treatment_gm(
+    testapp,
+    biosample_1,
+    interference_genetic_modification,
+    treatment_5,
+):
+    testapp.patch_json(
+        biosample_1['@id'],
+        {
+            'treatments': [treatment_5['@id']],
+            'genetic_modifications': [interference_genetic_modification['@id']],
+        }
+    )
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is True
+
+
+def test_perturbed_none(
+    testapp,
+    biosample_1,
+):
+    res = testapp.get(biosample_1['@id'] + '@@index-data')
+    assert res.json['object']['perturbed'] is False
+
+
+def test_undefined_sample_collection_age(
+    testapp,
+    biosample,
+    human,
+    human_donor_1,
+):
+    testapp.patch_json(
+        biosample['@id'],
+        {'organism': human['@id'], 'donor': human_donor_1['@id']}
+    )
+    testapp.patch_json(
+        human_donor_1['@id'],
+        {'age': '30000', 'age_units': 'month', 'life_stage': 'embryonic'}
+    )
+    res = testapp.get(biosample['@id'] + '@@index-data')
+    assert res.json['object']['age'] == '30000'
+    assert res.json['object']['age_units'] == 'month'
+    assert res.json['object']['age_display'] == '30000 months'
+    testapp.patch_json(
+        biosample['@id'],
+        {
+            'organism': human['@id'],
+            'sample_collection_age': '90 or above',
+            'sample_collection_age_units': 'year'
+        }
+    )
+    res = testapp.get(biosample['@id'] + '@@index-data')
+    assert res.json['object']['age'] == '90 or above'
+    assert res.json['object']['age_units'] == 'year'
+    assert res.json['object']['age_display'] == '90 or above years'

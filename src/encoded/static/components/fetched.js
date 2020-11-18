@@ -169,7 +169,7 @@ export class FetchedData extends React.Component {
         }
 
         // If no <Param> components, nothing to render here
-        if (!params.length) {
+        if (params.length === 0) {
             return null;
         }
 
@@ -187,7 +187,7 @@ export class FetchedData extends React.Component {
             .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
         // If we got an error, display the error string on the web page
-        if (errors.length) {
+        if (errors.length > 0) {
             // Render whatever error we got back from the server on the page.
             return (
                 <div className="error done">

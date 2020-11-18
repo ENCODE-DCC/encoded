@@ -1,0 +1,221 @@
+{
+    "title": "ATAC-seq alignment quality metric",
+    "description": "Schema for reporting ATAC-seq alignment quality metrics",
+    "id": "/profiles/atac_alignment_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "processing_stage": {
+            "title": "Processing stage",
+            "type": "string",
+            "description": "The stage of post-mapping processing to which the statistics apply",
+            "enum": [
+                "filtered",
+                "unfiltered"
+            ]
+        },
+        "total_reads": {
+            "title": "Number of total reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "total_reads_qc_failed": {
+            "title": "Number of total reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "duplicate_reads": {
+            "title": "Number of reads with duplicates passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "duplicate_reads_qc_failed": {
+            "title": "Number of reads with duplicates failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mapped_reads": {
+            "title": "Number of mapped reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mapped_reads_qc_failed": {
+            "title": "Number of mapped reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_mapped_reads": {
+            "title": "Percentage of mapped reads passing QC",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "paired_reads": {
+            "title": "Number of paired reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "paired_reads_qc_failed": {
+            "title": "Number of paired reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read1": {
+            "title": "Number of read1 reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read1_qc_failed": {
+            "title": "Number of read1 reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read2": {
+            "title": "Number of read2 reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "read2_qc_failed": {
+            "title": "Number of read2 reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "properly_paired_reads": {
+            "title": "Number of properly paired reads passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "properly_paired_reads_qc_failed": {
+            "title": "Number of properly paired reads failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_properly_paired_reads": {
+            "title": "Percentage of properly paired reads passing QC",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "with_itself": {
+            "title": "Number of reads with itself & mate mapped passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "with_itself_qc_failed": {
+            "title": "Number of reads with itself & mate mapped failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "singletons": {
+            "title": "Number of singletons passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "singletons_qc_failed": {
+            "title": "Number of singletons failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "pct_singletons": {
+            "title": "Percentage of singletons passing QC",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100.0
+        },
+        "diff_chroms": {
+            "title": "Number of reads with mate mapped to different chromosomes passing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "diff_chroms_qc_failed": {
+            "title": "Number of reads with mate mapped to different chromosomes failing QC",
+            "type": "integer",
+            "minimum": 0
+        },
+        "non_mito_reads": {
+            "title": "Number of non-mitochondrial reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "mito_reads": {
+            "title": "Number of mitochondrial reads",
+            "type": "integer",
+            "minimum": 0
+        },
+        "frac_mito_reads": {
+            "title": "Fraction of mitochondrial reads",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "frac_reads_in_nfr": {
+            "title": "Fraction of NFR reads",
+            "description": "Fraction of reads in nucleosome free region (NFR)",
+            "type": "number",
+            "minimum":0,
+            "maximum": 1
+        },
+        "frac_reads_in_nfr_qc_pass": {
+            "title": "Pass quality check on fraction of NFR reads?",
+            "type": "boolean"
+        },
+        "frac_reads_in_nfr_qc_reason": {
+            "title": "Quality check result on fraction of NFR reads",
+            "type": "string",
+            "pattern": "^((OK)|(out of range \\[(-?[\\d.]+|-inf), (-?[\\d.]+|inf)\\]))$"
+        },
+        "nfr_over_mono_nuc_reads": {
+            "title": "Ratio of NFR reads to Mono-Nuc reads",
+            "description": "Ratio of reads in nucleosome free region (NFR) to reads in mononucleosome region (Mono-Nuc).",
+            "type": "number",
+            "minimum": 0
+        },
+        "nfr_over_mono_nuc_reads_qc_pass": {
+            "title": "Pass quality check on ratio of NFR reads to Mono-Nuc reads?",
+            "type": "boolean"
+        },
+        "nfr_over_mono_nuc_reads_qc_reason": {
+            "title": "Quality check result on ratio of NFR reads to Mono-Nuc reads",
+            "type": "string",
+            "pattern": "^((OK)|(out of range \\[(-?[\\d.]+|-inf), (-?[\\d.]+|inf)\\]))$"
+        },
+        "nfr_peak_exists": {
+            "title": "Presence of NFR peak",
+            "type": "boolean"
+        },
+        "mono_nuc_peak_exists": {
+            "title": "Presence of Mono-Nuc peak",
+            "type": "boolean"
+        },
+        "di_nuc_peak_exists": {
+            "title": "Presence of Di-Nuc peak",
+            "description": "Whether there are peaks in dinucleosome regions (Di-Nuc).",
+            "type": "boolean"
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/atac_alignment_quality_metric.md"
+}

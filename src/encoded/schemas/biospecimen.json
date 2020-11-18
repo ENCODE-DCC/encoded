@@ -646,21 +646,21 @@
             "title": "Genomics File Output Type"
         },
         "surgery.pathology_report.t_stage": {
-            "title": "pT Stage"
+            "title": "pT Stage at Presentation"
         },
         "surgery.pathology_report.n_stage": {
-            "title": "pN Stage"
+            "title": "pN Stage at Presentation"
         },
         "surgery.pathology_report.m_stage": {
-            "title": "pM Stage"
+            "title": "pM Stage at Presentation"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage"
+            "title": "TNM Stage at Presentation"
         },
         "species": {
             "title": "Species"
         },
-        
+
         "freeze_thaw_cycles": {
             "title": "Freeze/Thaw Cycles"
         },
