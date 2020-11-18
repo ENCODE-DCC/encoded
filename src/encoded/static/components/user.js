@@ -10,8 +10,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { cartRemoveElements } from './cart';
 import { Form } from './form';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 
 
@@ -266,10 +265,6 @@ AccessKeyTable.contextTypes = {
 
 const User = ({ context }) => {
     const itemClass = globals.itemClass(context, 'view-item');
-    const crumbs = [
-        { id: 'Users' },
-    ];
-    const crumbsReleased = (context.status === 'released');
     const isVerifiedMember = context.groups && context.groups.includes('verified');
     const isAdmin = context.groups && context.groups.includes('admin');
     const hasAccessKeyRights = isVerifiedMember || isAdmin;
@@ -277,7 +272,6 @@ const User = ({ context }) => {
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root="/search/?type=user" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                 <h1>{context.title}</h1>
                 <ItemAccessories item={context} />
             </header>

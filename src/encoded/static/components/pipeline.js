@@ -7,8 +7,7 @@ import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
-import { Breadcrumbs } from './navigation';
-import { PanelLookup, ItemAccessories, AlternateAccession } from './objectutils';
+import { PanelLookup, ItemAccessories, AlternateAccession, TopAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import { softwareVersionList } from './software';
 import Status from './status';
@@ -366,8 +365,6 @@ class PipelineComponent extends React.Component {
             ];
         }
 
-        const crumbsReleased = (context.status === 'released');
-
         const documents = {};
         if (context.documents) {
             context.documents.forEach((doc, i) => {
@@ -393,7 +390,7 @@ class PipelineComponent extends React.Component {
         return (
             <div className={itemClass}>
                 <header>
-                    {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} crumbsReleased={crumbsReleased} /> : null}
+                    {crumbs ? <TopAccessories context={context} crumbs={crumbs} /> : null}
                     <h1>{context.title}</h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />

@@ -7,11 +7,10 @@ import * as encoding from '../libs/query_encoding';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
-import { AlternateAccession, ItemAccessories } from './objectutils';
+import { AlternateAccession, ItemAccessories, TopAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 import { ExperimentTable, BiosampleCharacterizationTable } from './typeutils';
@@ -123,8 +122,6 @@ const LotComponent = (props, reactContext) => {
         { id: geneComponents, query: geneQuery, tip: genes.join(' + ') },
     ];
 
-    const crumbsReleased = (context.status === 'released');
-
     // ENCD-4608 ENCODE4 tag antibodies rely on linked biosample
     // characterizations and antibody characterizations are ignored.
     const isENCODE4tagAb = context.award.rfa === 'ENCODE4' && context.targets.some(target => target.investigated_as.includes('tag') || target.investigated_as.includes('synthetic tag'));
@@ -132,7 +129,7 @@ const LotComponent = (props, reactContext) => {
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header>
-                <Breadcrumbs root="/search/?type=AntibodyLot" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{context.accession}</h1>
                 <div className="replacement-accessions">
                     <AlternateAccession altAcc={context.alternate_accessions} />

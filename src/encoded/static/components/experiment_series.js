@@ -9,8 +9,7 @@ import { FilePanelHeader } from './dataset';
 import { FetchedItems } from './fetched';
 import { DatasetFiles } from './filegallery';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
-import { requestObjects, ItemAccessories, InternalTags } from './objectutils';
+import { requestObjects, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import Status, { getObjectStatuses, sessionToAccessLevel } from './status';
 
@@ -481,7 +480,6 @@ class ExperimentSeriesComponent extends React.Component {
             { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
             { id: 'Experiment Series', uri: '/search/?type=ExperimentSeries&status=released', wholeTip: 'Search for released experiment series' },
         ];
-        const crumbsReleased = (context.status === 'released');
 
         // Calculate the biosample summary from the organism and the biosample ontology.
         let speciesRender = null;
@@ -583,7 +581,7 @@ class ExperimentSeriesComponent extends React.Component {
         return (
             <div className={itemClass}>
                 <header>
-                    <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <TopAccessories context={context} crumbs={crumbs} />
                     <h1>Summary for experiment series {context.accession}</h1>
                     <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'series-audit' }} />
                 </header>

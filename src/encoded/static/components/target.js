@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { RelatedItems } from './item';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { ExperimentTable } from './typeutils';
 
 
@@ -32,12 +31,10 @@ const Target = ({ context }) => {
         });
     }
 
-    const crumbsReleased = (context.status === 'released');
-
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header>
-                <Breadcrumbs root="/search/?type=Target" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{context.label} (<em>{source}</em>)</h1>
                 <ItemAccessories item={context} />
             </header>

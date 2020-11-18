@@ -9,7 +9,7 @@ Feature: Cart
         And I press "/experiments/ENCSR003CON/"
         And I press "/experiments/ENCSR001CON/"
         And I press "/experiments/ENCSR000DZQ/"
-        Then I should see 4 elements with the css selector ".cart__toggle--in-cart"
+        Then I should see 4 elements with the css selector ".cart-toggle--in-cart"
         And I should see an element with the css selector ".cart__nav-button"
 
         When I press "Data"
@@ -18,7 +18,7 @@ Feature: Cart
         Then I should see 11 elements with the css selector ".result-item__cart-control"
 
         When I press "Add all items to cart"
-        Then I should see 11 elements with the css selector ".cart__toggle--in-cart"
+        Then I should see 11 elements with the css selector ".cart-toggle--in-cart"
 
     Scenario: Cart page load
         When I press "cart-control"
