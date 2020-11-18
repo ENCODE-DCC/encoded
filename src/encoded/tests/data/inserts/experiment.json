@@ -1135,5 +1135,27 @@
         "status": "released",
         "submitted_by": "mus.mi@porttitor.molestie",
         "uuid": "ce726926-60ac-434d-a5d4-6bbf54e3ece4"
+    },
+    {
+        "_test": "Capture Hi-C test",
+        "uuid": "051c811d-e582-4038-8c22-0ab46f91ed77",
+        "accession": "ENCSR098VDF",
+        "lab": "/labs/michael-snyder/",
+        "award": "U54HG007010",
+        "status": "released",
+        "date_released": "2015-08-31",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "assay_term_name": "Capture Hi-C"
+    },
+    {
+        "_test": "single-nucleus RNA-seq test",
+        "uuid": "6478af14-38ef-482e-aa5b-3b3cd06f8248",
+        "accession": "ENCSR410JXF",
+        "lab": "/labs/michael-snyder/",
+        "award": "U54HG007010",
+        "status": "released",
+        "date_released": "2015-08-31",
+        "biosample_ontology": "tissue_UBERON_0001891",
+        "assay_term_name": "single-nucleus RNA-seq"
     }
 ]

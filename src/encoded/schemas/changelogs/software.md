@@ -4,7 +4,7 @@
 * Added *CUT&RUN* to *purpose* enum
 * Added *SPRITE-IP* to *purpose* enum
 * Added *CUT&Tag* to *purpose* enum
-
+* Added *Capture Hi-C* and *single-nucleus RNA-seq* to *purpose* enum
 
 ### Schema version 7
 

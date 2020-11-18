@@ -247,6 +247,32 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
+    "NTR:0000626": {
+        "assay": ['3D chromatin structure'],
+        "category": [],
+        "developmental": [],
+        "name": "Capture Hi-C",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000627": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "single-nucleus RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "snRNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
 }
 
 ntr_biosamples = {
