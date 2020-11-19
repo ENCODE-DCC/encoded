@@ -7,8 +7,8 @@ def main():
     Simple wrapper for alembic CLI.
 
     Example usage:
-        1. bin/alembic revision --autogenerate -m 'Migration message here'
-        2. bin/alembic upgrade head
+        1. alembic revision --autogenerate -m 'Migration message here'
+        2. alembic upgrade head
     '''
     alembic.config.main(sys.argv[1:])
 
