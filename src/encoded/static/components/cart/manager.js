@@ -94,7 +94,7 @@ const CurrentCartButton = connect(CurrentCartButtonComponent.mapStateToProps, Cu
  * gets its own mount event that lets us select the <input> contents when the modal appears. Uses a
  * controlled <input>, but the parent component tracks its contents.
  */
-const NameInput = ({ name, label, inputChangeHandler, nonValidMessage, inline }) => {
+const NameInput = ({ name, label, inputChangeHandler, nonValidMessage, inline, placeholder }) => {
     const inputField = React.useRef(null);
 
     React.useEffect(() => {
@@ -115,6 +115,7 @@ const NameInput = ({ name, label, inputChangeHandler, nonValidMessage, inline })
                         className="form-control cart-rename__input"
                         ref={inputField}
                         value={name}
+                        placeholder={placeholder}
                         onChange={inputChangeHandler}
                     />
                     <label htmlFor="new-cart-name" className="non-valid-label">{nonValidMessage}</label>
@@ -135,12 +136,15 @@ NameInput.propTypes = {
     nonValidMessage: PropTypes.string,
     /** True if label and input on the same line */
     inline: PropTypes.bool,
+    /** HTML placeholder content */
+    placeholder: PropTypes,
 };
 
 NameInput.defaultProps = {
     name: '',
     nonValidMessage: '',
     inline: false,
+    placeholder: '',
 };
 
 
@@ -351,6 +355,7 @@ class NameCartButtonComponent extends React.Component {
                                     inputChangeHandler={this.handleNameInputChange}
                                     name={this.state.newName}
                                     label="New name for cart"
+                                    placeholder="Note, cart title is publicly searchable."
                                     nonValidMessage={this.state.nameConflict ? 'Same name as another of your carts' : ''}
                                 />
                                 <p className="cart-rename__explanation" id="name-cart-description" role="document">
