@@ -131,8 +131,6 @@
                 "collecting duct carcinoma(CDC)",
                 "Cystic nephroma",
                 "HLRCC",
-                "Leiomyoma",
-                "Leiomyosarcoma",
                 "Metanephric adenoma",
                 "Mucinous tubular and spindle cell carcinoma",
                 "multilocular cystic renal neoplasm of low malignant potential",
@@ -147,12 +145,9 @@
                 "RON, favor ChRCC",
                 "RON, favor RO",
                 "Sarcomatoid, NOS",
-                "Sarcoma",
                 "MiT family translocation RCC",
                 "Tubulocystic RCC",
                 "Unclassified",
-                "Unclassified RCC",
-                "Nephroblastoma (Wilms tumor)",
                 "Soft tissue neoplasm, NOS",
                 "SDH deficient RCC"
             ]
@@ -633,6 +628,7 @@
     },
     "changelog": "/profiles/changelogs/pathology_report.md"
 }
+
 
 
 
