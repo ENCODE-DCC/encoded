@@ -89,6 +89,7 @@ class Biosample(Item):
         'donor.organism',
         'donor.characterizations',
         'donor.donor_documents',
+        'donor.references',
         'submitted_by',
         'lab',
         'award',
@@ -99,6 +100,7 @@ class Biosample(Item):
         'pooled_from',
         'pooled_from.biosample_ontology',
         'organism',
+        'references',
         'applied_modifications',
         'applied_modifications.modified_site_by_target_id'
     ]
