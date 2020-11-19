@@ -37,7 +37,7 @@ def audit_treatment_time_series_mixed_units(value, system):
             "use inconsistent duration units."
         )
         yield AuditFailure('inconsistent treatment units',
-                           detail, level='WARNING')
+                           detail, level='INTERNAL_ACTION')
         return
 
 
@@ -70,5 +70,5 @@ def audit_treatment_concentration_series_mixed_units(value, system):
             "use inconsistent amount units."
         )
         yield AuditFailure('inconsistent treatment units',
-                           detail, level='WARNING')
+                           detail, level='INTERNAL_ACTION')
         return
