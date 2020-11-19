@@ -91,6 +91,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.star_quality_metric',
     'encoded.tests.fixtures.schemas.target',
     'encoded.tests.fixtures.schemas.treatment_time_series',
+    'encoded.tests.fixtures.schemas.treatment_concentration_series',
     'encoded.tests.fixtures.schemas.treatment',
     'encoded.tests.fixtures.schemas.user',
     'encoded.tests.fixtures.schemas.worm_donor',
