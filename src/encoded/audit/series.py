@@ -34,7 +34,7 @@ def audit_treatment_time_series_mixed_units(value, system):
                                     treatment_duration_units.add(t['duration_units'])
     if len(treatment_duration_units) > 1:
         detail = (f"Treatments associated with series {audit_link(path_to_text(value['@id']), value['@id'])} "
-            "use inconsistent duration units."
+            f"use inconsistent duration units {treatment_duration_units}."
         )
         yield AuditFailure('inconsistent treatment units',
                            detail, level='INTERNAL_ACTION')
@@ -67,7 +67,7 @@ def audit_treatment_concentration_series_mixed_units(value, system):
                                     treatment_amount_units.add(t['amount_units'])
     if len(treatment_amount_units) > 1:
         detail = (f"Treatments associated with series {audit_link(path_to_text(value['@id']), value['@id'])} "
-            "use inconsistent amount units."
+            f"use inconsistent amount units {treatment_amount_units}."
         )
         yield AuditFailure('inconsistent treatment units',
                            detail, level='INTERNAL_ACTION')
