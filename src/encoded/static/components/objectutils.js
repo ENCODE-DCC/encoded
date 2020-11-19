@@ -5,6 +5,7 @@ import url from 'url';
 import * as encoding from '../libs/query_encoding';
 import { CartToggle, cartGetAllowedTypes } from './cart';
 import * as globals from './globals';
+import { Breadcrumbs } from './navigation';
 import { BrowserFeat } from './browserfeat';
 import Tooltip from '../libs/ui/tooltip';
 
@@ -119,7 +120,7 @@ export function requestSearch(query) {
 
 // Do a search of the specific objects whose @ids are listed in the `atIds` parameter. Because we
 // have to specify the @id of each object in the URL of the GET request, the URL can get quite
-// long, so if the number of `atIds` @ids goes beyond the `chunkSize` constant, we break thev
+// long, so if the number of `atIds` @ids goes beyond the `chunkSize` constant, we break the
 // searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
 // then send out all the search GET requests at once, combine them into one array of
 // files returned as a promise.
@@ -404,7 +405,7 @@ export const RestrictedDownloadButton = (props) => {
 
 RestrictedDownloadButton.propTypes = {
     file: PropTypes.object.isRequired, // File containing `href` to use as download link
-    downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
+    downloadComponent: PropTypes.object, // Optional component to render the download button, instead of default
 };
 
 RestrictedDownloadButton.defaultProps = {
@@ -425,13 +426,11 @@ export const DownloadableAccession = (props) => {
 
 DownloadableAccession.propTypes = {
     file: PropTypes.object.isRequired, // File whose accession to render
-    buttonEnabled: PropTypes.bool, // Check if button is enabled
     clickHandler: PropTypes.func, // Function to call when button is clicked
     loggedIn: PropTypes.bool, // True if current user is logged in
 };
 
 DownloadableAccession.defaultProps = {
-    buttonEnabled: true,
     clickHandler: null,
     loggedIn: false,
 };
@@ -710,24 +709,18 @@ DocTypeTitle.contextTypes = {
 /**
  * Display a block of accessory controls on object-display pages, e.g. the audit indicator button.
  */
-export const ItemAccessories = ({ item, audit, hasCartControls }, reactContext) => {
-    const isItemAllowedInCart = item['@type'] && cartGetAllowedTypes().includes(item['@type'][0]);
-    return (
-        <div className="item-accessories">
-            <div className="item-accessories--left">
-                {audit ?
-                    audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
-                : null}
-            </div>
-            <div className="item-accessories--right">
-                <DisplayAsJson />
-                {hasCartControls && isItemAllowedInCart ?
-                    <CartToggle element={item} />
-                : null}
-            </div>
+export const ItemAccessories = ({ item, audit }, reactContext) => (
+    <div className="item-accessories">
+        <div className="item-accessories--left">
+            {audit ?
+                audit.auditIndicators(item.audit, audit.auditId, { session: reactContext.session, sessionProperties: reactContext.session_properties, except: audit.except })
+            : null}
         </div>
-    );
-};
+        <div className="item-accessories--right">
+            <DisplayAsJson />
+        </div>
+    </div>
+);
 
 ItemAccessories.propTypes = {
     /** Object being displayed that needs these accessories */
@@ -738,18 +731,40 @@ ItemAccessories.propTypes = {
         auditId: PropTypes.string, // Audit HTML ID to use for a11y
         except: PropTypes.string, // Don't link any references to this @id
     }),
-    /** True if object has cart controls */
-    hasCartControls: PropTypes.bool,
 };
 
 ItemAccessories.defaultProps = {
     audit: null,
-    hasCartControls: false,
 };
 
 ItemAccessories.contextTypes = {
     session: PropTypes.object,
     session_properties: PropTypes.object,
+};
+
+
+/**
+ * Display the top section containing the breadcrumb links on summary pages.
+ */
+export const TopAccessories = ({ context, crumbs }) => {
+    const type = context['@type'][0];
+    const isItemAllowedInCart = cartGetAllowedTypes().includes(type);
+
+    return (
+        <div className="top-accessories">
+            <Breadcrumbs root={`/search/?type=${type}`} crumbs={crumbs} crumbsReleased={context.status === 'released'} />
+            {isItemAllowedInCart ?
+                <CartToggle element={context} displayName />
+            : null}
+        </div>
+    );
+};
+
+TopAccessories.propTypes = {
+    /** Summary page currently displayed */
+    context: PropTypes.object.isRequired,
+    /** Object with breadcrumb contents */
+    crumbs: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 
@@ -783,7 +798,7 @@ ItemAccessories.contextTypes = {
 export function computeAssemblyAnnotationValue(assembly, annotation) {
     // There are three levels of sorting
     // First level of sorting: most recent assemblies are ordered first (represented by numerical component of assembly)
-    // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimial')
+    // Second level of sorting: assemblies without '-minimal' are sorted before assemblies with '-minimal' at the end (represented by tenths place value which is 5 if there is no '-minimal')
     // Third level of sorting: Annotations within an assembly are ordered with most recent first, with more recent annotations having a higher annotation number (with the exception of "ENSEMBL V65") (represented by the annotation number divided by 10,000, or, the three decimal places after the tenths place)
     let assemblyNumber = +assembly.match(/[0-9]+/g)[0];
     if (assembly.indexOf('minimal') === -1) {
@@ -829,3 +844,15 @@ export const isFileVisualizable = file => (
 export function filterForVisualizableFiles(fileList) {
     return fileList.filter(file => isFileVisualizable(file));
 }
+
+
+/**
+ * Displays an item count intended for the tops of table, normally reflecting a search result count.
+ */
+export const TableItemCount = ({ count }) => (
+    <div className="table-item-count">{count}</div>
+);
+
+TableItemCount.propTypes = {
+    count: PropTypes.string.isRequired,
+};

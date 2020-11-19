@@ -1,5 +1,8 @@
 ## Changelog for file.json
 
+### Schema version 26
+* *output_type* enums *consensus DNase hypersensitivity sites (cDHSs)* and *representative DNase hypersensitivity sites (rDHSs)* was updated to *consensus DNase hypersensitivity sites* and *representative DNase hypersensitivity sites* respectively.
+
 ### Minor changes since schema version 25
 * *file_format* was updated to include *starch*.
 * The *output_type* enum was updated to include *gene stabilities* and *preprocessed alignments*.

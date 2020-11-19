@@ -1882,3 +1882,21 @@ def file_24(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
         "step_run": analysis_step_run_bam['uuid']
     }
     return item
+
+
+@pytest.fixture
+def file_25(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bed3+',
+        'md5sum': 'eeb9325f54a0ec4991c4a3df0ed35f20',
+        'output_type': 'representative DNase hypersensitivity sites (rDHSs)',
+        'assembly': 'hg19',
+        'file_size': 8888,
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'schema_version': '25'
+    }
+    return item

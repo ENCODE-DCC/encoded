@@ -303,7 +303,6 @@ class RegionSearch extends React.Component {
                                         {...this.props}
                                         facets={facets}
                                         filters={filters}
-                                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
                                         onFilter={this.onFilter}
                                     />
                                 </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import Pager from '../libs/ui/pager';
+import * as Pager from '../libs/ui/pager';
 import * as globals from './globals';
 import { requestFiles, AlternateAccession } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -624,7 +624,7 @@ const FileTableHeader = ({ title, currentPage, totalPageCount, control, updateCu
         {title}
         <div className="header-paged-sorttable__controls">
             {control}
-            {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
+            {totalPageCount > 1 ? <Pager.Simple total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
         </div>
     </div>
 );

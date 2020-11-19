@@ -718,3 +718,15 @@ def file_24_25(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-5480
     if value.get('output_type', '') == 'smoothed methylation stage at CpG':
         value['output_type'] = 'smoothed methylation state at CpG'
+
+
+@upgrade_step('file', '25', '26')
+def file_25_26(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5573
+    output_type = value.get('output_type', None)
+
+    if output_type == "representative DNase hypersensitivity sites (rDHSs)":
+        value['output_type'] = 'representative DNase hypersensitivity sites'
+    elif output_type == "consensus DNase hypersensitivity sites (cDHSs)":
+        value['output_type'] = 'consensus DNase hypersensitivity sites'
+    return

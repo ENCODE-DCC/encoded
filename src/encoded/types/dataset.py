@@ -526,10 +526,10 @@ class Annotation(FileSet, CalculatedVisualize):
                                     derived_from_file_embedded = request.embed(derived_from_file,
                                                                                '@@object?skip_calculated=true')
                                     if derived_from_file_embedded['output_type'] == \
-                                            'representative DNase hypersensitivity sites (rDHSs)':
+                                            'representative DNase hypersensitivity sites':
                                         inputs_set.add('rDHS')
                                     if derived_from_file_embedded['output_type'] == \
-                                            'consensus DNase hypersensitivity sites (cDHSs)':
+                                            'consensus DNase hypersensitivity sites':
                                         inputs_set.add('cDHS')
                         else:
                             if file['dataset']:
@@ -701,6 +701,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.library.biosample.organism',
         'related_datasets.replicates.library.biosample.donor.organism',
         'related_datasets.replicates.library.biosample.treatments',
+        'related_datasets.replicates.library.biosample.applied_modifications',
         'related_datasets.replicates.library.spikeins_used',
         'related_datasets.replicates.library.treatments',
         'related_datasets.replicates.libraries',
@@ -709,6 +710,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.libraries.biosample.organism',
         'related_datasets.replicates.libraries.biosample.donor.organism',
         'related_datasets.replicates.libraries.biosample.treatments',
+        'related_datasets.replicates.libraries.biosample.applied_modifications',
         'related_datasets.replicates.libraries.spikeins_used',
         'related_datasets.replicates.libraries.treatments',
         'related_datasets.possible_controls',

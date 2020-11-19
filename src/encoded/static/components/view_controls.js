@@ -229,9 +229,20 @@ BatchDownloadModal.defaultProps = {
  */
 export const BatchDownloadButton = ({ handleDownloadClick, title, additionalContent, disabled, modalText, canDownload }) => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [onbeforeunload, setOnbeforeunload] = React.useState(null);
 
     const openModal = () => { setIsModalOpen(true); };
     const closeModal = () => { setIsModalOpen(false); };
+
+    React.useEffect(() => {
+        if (!onbeforeunload) {
+            // preserve onbeforeunload so it can be restored after modal is closed
+            setOnbeforeunload(() => window.onbeforeunload);
+        }
+
+        // deactivate onbeforeunload if modal is open, restore otherwise
+        window.onbeforeunload = isModalOpen ? null : (window.onbeforeunload || onbeforeunload);
+    }, [isModalOpen, onbeforeunload]);
 
     return (
         <React.Fragment>

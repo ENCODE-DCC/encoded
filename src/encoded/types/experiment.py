@@ -142,10 +142,12 @@ class Experiment(Dataset,
         'replicates',
         'documents',
         'target',
+        'analysis_objects',
     ]
     set_status_down = [
         'original_files',
         'replicates',
+        'analysis_objects',
     ]
     rev = Dataset.rev.copy()
     rev.update({

@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         },
         "step_label": {
             "title": "Step label",
@@ -116,7 +116,7 @@
                     "chromatin interactions",
                     "chromosomes reference",
                     "chromosome sizes",
-                    "consensus DNase hypersensitivity sites (cDHSs)",
+                    "consensus DNase hypersensitivity sites",
                     "conservative IDR thresholded peaks",
                     "control normalized signal",
                     "CpG sites coverage",
@@ -215,7 +215,7 @@
                     "replicated peaks",
                     "replication timing profile",
                     "reporter code counts",
-                    "representative DNase hypersensitivity sites (rDHSs)",
+                    "representative DNase hypersensitivity sites",
                     "RNA-binding protein associated mRNAs",
                     "rRNA reference",
                     "safe-targeting gRNAs",
@@ -270,7 +270,7 @@
                     "chromatin interactions",
                     "chromosomes reference",
                     "chromosome sizes",
-                    "consensus DNase hypersensitivity sites (cDHSs)",
+                    "consensus DNase hypersensitivity sites",
                     "conservative IDR thresholded peaks",
                     "control normalized signal",
                     "CpG sites coverage",
@@ -368,7 +368,7 @@
                     "replicated peaks",
                     "replication timing profile",
                     "reporter code counts",
-                    "representative DNase hypersensitivity sites (rDHSs)",
+                    "representative DNase hypersensitivity sites",
                     "RNA-binding protein associated mRNAs",
                     "rRNA reference",
                     "safe-targeting gRNAs",

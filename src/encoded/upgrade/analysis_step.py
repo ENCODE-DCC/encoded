@@ -260,3 +260,24 @@ def analysis_step_11_12(value, system):
     if 'smoothed methylation stage at CpG' in value.get('output_file_types', []):
         value['output_file_types'].remove('smoothed methylation stage at CpG')
         value['output_file_types'].append('smoothed methylation state at CpG')
+
+
+@upgrade_step('analysis_step', '12', '13')
+def analysis_step_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5573
+    output_file_types = value.get('output_file_types', None)
+    input_file_types = value.get('input_file_types', None)
+
+    if output_file_types and 'consensus DNase hypersensitivity sites (cDHSs)' in output_file_types:
+        output_file_types.remove('consensus DNase hypersensitivity sites (cDHSs)')
+        output_file_types.append('consensus DNase hypersensitivity sites')
+    if output_file_types and 'representative DNase hypersensitivity sites (rDHSs)' in output_file_types:
+        output_file_types.remove('representative DNase hypersensitivity sites (rDHSs)')
+        output_file_types.append('representative DNase hypersensitivity sites')
+    if input_file_types and 'consensus DNase hypersensitivity sites (cDHSs)' in input_file_types:
+        input_file_types.remove('consensus DNase hypersensitivity sites (cDHSs)')
+        input_file_types.append('consensus DNase hypersensitivity sites')
+    if input_file_types and 'representative DNase hypersensitivity sites (rDHSs)' in input_file_types:
+        input_file_types.remove('representative DNase hypersensitivity sites (rDHSs)')
+        input_file_types.append('representative DNase hypersensitivity sites')
+    return

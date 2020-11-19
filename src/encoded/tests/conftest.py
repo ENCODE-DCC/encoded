@@ -2,11 +2,16 @@
 
 http://pyramid.readthedocs.org/en/latest/narr/testing.html
 '''
+import tempfile
+
 import pkg_resources
 import pytest
 from pytest import fixture
 
 from snovault.tests.testappfixtures import _app_settings as sno_settings
+
+
+tempfile.tempdir = '/tmp'
 
 
 pytest_plugins = [
@@ -91,6 +96,7 @@ pytest_plugins = [
     'encoded.tests.fixtures.schemas.star_quality_metric',
     'encoded.tests.fixtures.schemas.target',
     'encoded.tests.fixtures.schemas.treatment_time_series',
+    'encoded.tests.fixtures.schemas.treatment_concentration_series',
     'encoded.tests.fixtures.schemas.treatment',
     'encoded.tests.fixtures.schemas.user',
     'encoded.tests.fixtures.schemas.worm_donor',

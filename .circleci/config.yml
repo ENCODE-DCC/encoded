@@ -7,7 +7,7 @@ executors:
   encoded-executor:
     docker:
       - image: circleci/buildpack-deps:bionic
-    working_directory: /mnt/ramdisk
+    working_directory: ~/encoded
     environment:
       - BASH_ENV: /home/circleci/.bashrc
       - ES_JAVA_OPTS: -Xms2g -Xmx3g
@@ -52,12 +52,11 @@ commands:
             sudo dpkg -i libmagic-dev_5.38-4_amd64.deb
             sudo apt-get install -f
       - run:
-          name: Run buildout
+          name: Install application and run buildout
           command: |
-            sudo pip3 install --upgrade pip setuptools
-            sudo pip3 install zc.buildout redis
-            buildout bootstrap
-            bin/buildout
+            pip3 install --upgrade pip setuptools
+            pip3 install -e ".[dev]"
+            buildout
 jobs:
   bdd:
     executor: encoded-executor
@@ -72,7 +71,7 @@ jobs:
       - run:
           name: Run bdd tests
           command: |
-            bin/test --exitfirst -s -vv -m "bdd" --tb=short \
+            pytest --exitfirst -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait=2 \
               --splinter-webdriver=chrome \
               --splinter-socket-timeout=300 \
@@ -88,7 +87,7 @@ jobs:
       - run:
           name: indexing tests
           command: |
-            bin/test --exitfirst -s -vv -m "indexing"
+            pytest --exitfirst -s -vv -m "indexing"
           no_output_timeout: 5m
   indexer:
     executor: encoded-executor
@@ -98,7 +97,7 @@ jobs:
       - run:
           name: indexer tests
           command: |
-            bin/test --exitfirst -s -vv -m "indexer"
+            pytest --exitfirst -s -vv -m "indexer"
           no_output_timeout: 5m
   not-bdd-non-indexing:
     executor: encoded-executor
@@ -108,7 +107,7 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            bin/test --exitfirst -s -vv -m "not bdd and not indexing and not indexer"
+            pytest --exitfirst -s -vv -m "not bdd and not indexing and not indexer"
   npm:
     executor: encoded-executor
     resource_class: medium

@@ -150,6 +150,18 @@ def analysis_step_chip_encode4(testapp):
 
 
 @pytest.fixture
+def analysis_step_dnase_encode4(testapp):
+    item = {
+        'step_label': 'dnase-seq-star-align-step',
+        'title': 'DNase seq alignment step',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation', 'alignment'],
+        'major_version': 1
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
 def analysis_step_atac_encode4_alignment(testapp):
     item = {
         'step_label': 'atac-seq-alignment-step',
@@ -212,5 +224,19 @@ def analysis_step_11(testapp):
         'analysis_step_types': ['methylation estimation'],
         'input_file_types': ['smoothed methylation stage at CpG'],
         'output_file_types': ['smoothed methylation stage at CpG']
+    }
+    return item
+
+
+@pytest.fixture
+def analysis_step_12(testapp):
+    item = {
+        'schema_version': '12',
+        'step_label': 'rdhs-step',
+        'title': 'rdhs step',
+        'major_version': 1,
+        'analysis_step_types': ['QA calculation'],
+        'input_file_types': ['consensus DNase hypersensitivity sites (cDHSs)'],
+        'output_file_types': ['representative DNase hypersensitivity sites (rDHSs)']
     }
     return item

@@ -2,21 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import _ from 'underscore';
-import { Panel, PanelHeading, PanelBody } from '../libs/ui/panel';
+import { Panel, PanelBody } from '../libs/ui/panel';
 import { auditDecor } from './audit';
-import { DocumentsPanelReq, DocumentsSubpanels } from './doc';
+import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { ProjectBadge } from './image';
-import { Breadcrumbs } from './navigation';
-import { singleTreatment, ItemAccessories, InternalTags } from './objectutils';
+import { singleTreatment, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, ReplacementAccessions, ControllingExperiments, ExperimentTable } from './typeutils';
 import Tooltip from '../libs/ui/tooltip';
+import getNumberWithOrdinal from '../libs/ordinal_suffix';
 
 
 const anisogenicValues = [
@@ -534,7 +534,6 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
         const biosampleTermQuery = `biosample_ontology.term_name=${biosampleTermName}`;
         crumbs.push({ id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName });
     }
-    const crumbsReleased = (context.status === 'released');
 
     // Compile the document list.
     const combinedDocuments = _.uniq(documents.concat(
@@ -556,7 +555,7 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root={`/search/?type=${experimentType}`} crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{displayType} summary for {context.accession}</h1>
                 <ReplacementAccessions context={context} />
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'experiment-audit' }} hasCartControls />
@@ -658,6 +657,26 @@ const ExperimentComponent = ({ context, auditIndicators, auditDetail }, reactCon
                                 <div data-test="biosample-type">
                                     <dt>Biosample Type</dt>
                                     <dd>{context.biosample_ontology.classification}</dd>
+                                </div>
+                            : null}
+
+                            {context.examined_loci && context.examined_loci.length > 0 ?
+                                <div data-test="examined-loci">
+                                    <dt>Examined Loci</dt>
+                                    <dd>
+                                        {/* A user can have a loci repeat. Therefore, uuid alone is not sufficient as an identifier */}
+                                        {context.examined_loci.map((loci, i) => (
+                                            loci.gene ?
+                                                <span key={`${loci.gene.uuid}-${i}`}>
+                                                    {i > 0 ? <span>, </span> : null}
+                                                    <a href={loci.gene['@id']}>{loci.gene.symbol}</a>
+                                                    {/* 0 is falsy but we still want it to display, so 0 is explicitly checked for */}
+                                                    {loci.expression_percentile || loci.expression_percentile === 0 ? <span>{' '}({getNumberWithOrdinal(loci.expression_percentile)} percentile)</span> : null}
+                                                    {(loci.expression_range_maximum && loci.expression_range_minimum) || (loci.expression_range_maximum === 0 || loci.expression_range_minimum === 0) ? <span>{' '}({loci.expression_range_minimum}-{loci.expression_range_maximum}%)</span> : null}
+                                                </span>
+                                            : null
+                                        ))}
+                                    </dd>
                                 </div>
                             : null}
 

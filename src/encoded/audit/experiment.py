@@ -65,6 +65,8 @@ seq_assays = [
     'ATAC-seq',
     'CUT&RUN',
     'CUT&Tag',
+    'Capture Hi-C',
+    'single-nucleus RNA-seq',
 ]
 
 
@@ -523,11 +525,13 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                   'transcriptome_alignments']
     for file_type in file_types:
         for bam_file in files_structure.get(file_type).values():
-            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'):  
-                if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'): 
+                encode4_dnase_pipeline = scanFilesForPipelineTitle_not_chipseq(
+                    [bam_file],['GRCh38', 'mm10'],['DNase-seq pipeline'])
+                if is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dnase_pipeline):
                     assembly_detail = ' '
                     if bam_file.get('assembly'):
-                        assembly_detail = ' for {} assembly '.format(
+                        assembly_detail = ' {} assembly '.format(
                             bam_file['assembly'])
                     detail = ('Experiment {} '
                         '{} file {} mapped to {}'
@@ -1251,20 +1255,21 @@ def check_experiment_long_rna_standards(experiment,
 
     if 'replication_type' not in experiment:
         return
-
-    mad_metrics = get_metrics(gene_quantifications,
-                              'MadQualityMetric',
-                              desired_assembly,
-                              desired_annotation)
-
     if experiment['assay_term_name'] != 'single-cell RNA sequencing assay':
-        yield from check_spearman(
-            mad_metrics, experiment['replication_type'],
-            0.9, 0.8, pipeline_title)
-    # for failure in check_mad(mad_metrics, experiment['replication_type'],
-    #                         0.2, pipeline_title):
-    #    yield failure
-
+        mad_metrics = get_metrics(gene_quantifications,
+                                  'MadQualityMetric',
+                                  desired_assembly,
+                                  desired_annotation)
+        replicates = experiment.get('replicates')
+        if experiment['replication_type'] == 'unreplicated' and len(replicates) > 1:
+            yield from check_spearman_technical_replicates(
+                mad_metrics, pipeline_title, 0.9)
+            return
+        else:
+            yield from check_spearman(
+                mad_metrics, experiment['replication_type'],
+                0.9, 0.8, pipeline_title)
+            return
     return
 
 
@@ -1609,64 +1614,6 @@ def check_idr(metrics, rescue, self_consistency):
     return
 
 
-def check_mad(metrics, replication_type, mad_threshold, pipeline):
-    if replication_type == 'anisogenic':
-        experiment_replication_type = 'anisogenic'
-    elif replication_type == 'isogenic':
-        experiment_replication_type = 'isogenic'
-    else:
-        return
-
-    mad_value = None
-    for m in metrics:
-        if 'MAD of log ratios' in m:
-            mad_value = m['MAD of log ratios']
-            if mad_value > 0.2:
-                file_list = []
-                for f in m['quality_metric_of']:
-                    file_list.append(f['@id'])
-                file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                detail = ('ENCODE processed gene quantification files {} '
-                    'has Median-Average-Deviation (MAD) '
-                    'of replicate log ratios from quantification '
-                    'value of {}.'
-                    ' For gene quantification files from an {}'
-                    ' assay in the {} '
-                    'pipeline, a value <0.2 is recommended, but a value between '
-                    '0.2 and 0.5 is acceptable.'.format(
-                        ', '.join(file_names_links),
-                        mad_value,
-                        experiment_replication_type,
-                        pipeline
-                    )
-                )
-                if experiment_replication_type == 'isogenic':
-                    if mad_value < 0.5:
-                        yield AuditFailure('low replicate concordance', detail,
-                                           level='WARNING')
-                    else:
-                        yield AuditFailure('insufficient replicate concordance', detail,
-                                           level='NOT_COMPLIANT')
-                elif experiment_replication_type == 'anisogenic' and mad_value > 0.5:
-                    file_names_links = [audit_link(path_to_text(file), file) for file in file_list]
-                    detail = ('ENCODE processed gene quantification files {} '
-                        'has Median-Average-Deviation (MAD) '
-                        'of replicate log ratios from quantification '
-                        'value of {}.'
-                        ' For gene quantification files from an {}'
-                        ' assay in the {} '
-                        'pipeline, a value <0.5 is recommended.'.format(
-                            ', '.join(file_names_links),
-                            mad_value,
-                            experiment_replication_type,
-                            pipeline
-                        )
-                    )
-                    yield AuditFailure('low replicate concordance', detail,
-                                       level='WARNING')
-    return
-
-
 def check_experiment_ERCC_spikeins(experiment, pipeline):
     '''
     The assumption in this functon is that the regular audit will catch anything without spikeins.
@@ -1755,6 +1702,30 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                         pipeline,
                         threshold
                     )
+                )
+                yield AuditFailure('low replicate concordance', detail,
+                                   level='WARNING')
+    return
+
+
+def check_spearman_technical_replicates(metrics, pipeline,
+                                        unreplicated_threshold):
+    for m in metrics:
+        if 'Spearman correlation' in m:
+            spearman_correlation = m['Spearman correlation']
+            if spearman_correlation < unreplicated_threshold:
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f)
+                file_names_links = ','.join((audit_link(path_to_text(f), f) for f in file_names))
+                detail = (
+                    f'Replicate concordance in RNA-seq experiments is measured by '
+                    f'calculating the Spearman correlation between gene quantifications '
+                    f'of the replicates. ENCODE processed gene quantification files '
+                    f'{file_names_links} have a Spearman correlation of '
+                    f'{spearman_correlation:.2f} comparing technical replicates. '
+                    f'For isogenic biological replicates analyzed using the {pipeline} pipeline, '
+                    f'ENCODE standards recommend a Spearman correlation value > 0.9.'
                 )
                 yield AuditFailure('low replicate concordance', detail,
                                    level='WARNING')
@@ -5135,7 +5106,7 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+def is_outdated_bams_replicate(bam_file, files_structure, assay_name, encode4_dnase_pipeline):
     # if derived_from contains accessions that were not in
     # original_files and not in contributing files - it is outdated!    
     for file_id in bam_file.get('derived_from'):
@@ -5153,13 +5124,12 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
     # for ChIP-seq we should consider biological replicates
-    # for DNase we should consider technial replicates
-    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq']:
+    # for DNase (ENCODE3) we should consider technial replicates
+    if assay_name not in ['Mint-ChIP-seq', 'ChIP-seq'] and not encode4_dnase_pipeline:
         replicate_type = 'technical_replicates'
     else:
         replicate_type = 'biological_replicates'
     rep = bam_file.get(replicate_type)
-    
     # number of replicates BAM file should belong to have to be one
     # in cases where it is more than one, there probably was replicates 
     # reorganization, that invalidates the analysis    

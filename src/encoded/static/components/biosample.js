@@ -8,8 +8,7 @@ import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
-import { Breadcrumbs } from './navigation';
-import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags } from './objectutils';
+import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession, ItemAccessories, InternalTags, TopAccessories } from './objectutils';
 import pubReferenceList from './reference';
 import Status from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable, ExperimentTable } from './typeutils';
@@ -64,7 +63,7 @@ class BiosampleComponent extends React.Component {
         return (
             <div className={itemClass}>
                 <header>
-                    <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <TopAccessories context={context} crumbs={crumbs} />
                     <h1>{context.accession}{' / '}<span className="sentence-case">{context.biosample_ontology.classification}</span></h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />

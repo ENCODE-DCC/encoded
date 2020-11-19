@@ -4,12 +4,11 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import pubReferenceList from './reference';
 import { PickerActions, resultItemClass } from './search';
 import Status from './status';
 import { auditDecor } from './audit';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { SortTablePanel, SortTable } from './sorttable';
 
 
@@ -26,8 +25,6 @@ const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactConte
             tip: context.software_type && context.software_type.join(' + '),
         },
     ];
-
-    const crumbsReleased = (context.status === 'released');
 
     // See if there’s a version number to highlight
     let highlightVersion;
@@ -49,7 +46,7 @@ const SoftwareComponent = ({ context, auditIndicators, auditDetail }, reactConte
     return (
         <div className={itemClass}>
             <header>
-                <Breadcrumbs root="/search/?type=Software" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                <TopAccessories context={context} crumbs={crumbs} />
                 <h1>{context.title}</h1>
                 <ItemAccessories item={context} audit={{ auditIndicators, auditId: 'software-audit' }} />
             </header>

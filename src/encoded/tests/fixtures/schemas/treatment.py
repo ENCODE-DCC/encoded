@@ -115,3 +115,16 @@ def treatment_10(treatment_0_0, document, lab):
     })
     item['treatment_term_id'] = 'UniprotKB:P03823'
     return item
+
+
+@pytest.fixture
+def treatment_with_duration_amount_units(testapp, organism):
+    item = {
+        'treatment_term_name': 'ethanol',
+        'treatment_type': 'chemical',
+        'duration': 9,
+        'duration_units': 'day',
+        'amount': 100,
+        'amount_units': 'mg'
+    }
+    return testapp.post_json('/treatment', item).json['@graph'][0]

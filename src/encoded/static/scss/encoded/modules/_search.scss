@@ -96,6 +96,7 @@ $form-bg: #f3f3f3;
 
     // Cart control in search results
     @at-root #{&}__cart-control {
+        margin-left: 5px;
         flex: 0 0 35px;
 
         .cart__toggle {
@@ -317,6 +318,17 @@ $form-bg: #f3f3f3;
                 border-bottom-right-radius: $border-radius-base;
                 border-right: 1px solid #c0c0c0;
             }
+        }
+    }
+
+    // /report/ pagination controls
+    @at-root #{&}__pager {
+        margin-bottom: 20px;
+
+        @media screen and (min-width: $screen-lg-min) {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
     }
 

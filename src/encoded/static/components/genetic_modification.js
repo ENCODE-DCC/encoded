@@ -10,7 +10,6 @@ import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
-import { Breadcrumbs } from './navigation';
 import { singleTreatment, requestSearch, ItemAccessories, AlternateAccession } from './objectutils';
 import { PickerActions, resultItemClass } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -532,19 +531,9 @@ class GeneticModificationComponent extends React.Component {
     render() {
         const { context, session, sessionProperties } = this.props;
 
-        // Configure breadcrumbs for the page.
-        const crumbs = [
-            { id: 'Genetic Modifications' },
-            { id: context.target && context.target.label, query: `target.label=${context.target && context.target.label}`, tip: context.target && context.target.label },
-            { id: context.modification_type, query: `modification_type=${context.modification_type}`, tip: context.modification_type },
-        ];
-
-        const crumbsReleased = (context.status === 'released');
-
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
-                    <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} crumbsReleased={crumbsReleased} />
                     <h1>{context.accession}</h1>
                     <div className="replacement-accessions">
                         <AlternateAccession altAcc={context.alternate_accessions} />

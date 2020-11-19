@@ -1,5 +1,8 @@
 ## Changelog for analysis_step.json
 
+### Schema version 13
+* *input_file_types*, *output_file_types* enums *consensus DNase hypersensitivity sites (cDHSs)* and *representative DNase hypersensitivity sites (rDHSs)* was updated to *consensus DNase hypersensitivity sites* and *representative DNase hypersensitivity sites* respectively.
+
 ### Minor changes since schema version 12
 * Added *gene stabilities* and *preprocessed alignments* to the enum list for *input_file_types* and *output_file_types*
 

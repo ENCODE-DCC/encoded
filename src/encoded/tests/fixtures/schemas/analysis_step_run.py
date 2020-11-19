@@ -123,6 +123,15 @@ def analysis_step_run_chip_encode4(testapp, analysis_step_version_chip_encode4):
 
 
 @pytest.fixture
+def analysis_step_run_dnase_encode4(testapp, analysis_step_version_dnase_encode4):
+    item = {
+        'analysis_step_version': analysis_step_version_dnase_encode4['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
 def analysis_step_run_atac_encode4_alignment(testapp, analysis_step_version_atac_encode4_alignment):
     item = {
         'analysis_step_version': analysis_step_version_atac_encode4_alignment['@id'],

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
-import { Breadcrumbs } from './navigation';
 import { DbxrefList, dbxrefHref } from './dbxref';
 import { PickerActions, resultItemClass } from './search';
 import { auditDecor } from './audit';
-import { ItemAccessories } from './objectutils';
+import { ItemAccessories, TopAccessories } from './objectutils';
 import { RelatedItems } from './item';
 import { ExperimentTable } from './typeutils';
 
@@ -71,12 +70,10 @@ class Gene extends React.Component {
             },
         ];
 
-        const crumbsReleased = (context.status === 'released');
-
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header>
-                    <Breadcrumbs root="/search/?type=Gene" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <TopAccessories context={context} crumbs={crumbs} />
                     <h1>{context.symbol} (<em>{context.organism.scientific_name}</em>)</h1>
                     <ItemAccessories item={context} />
                 </header>
