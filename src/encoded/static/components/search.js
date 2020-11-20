@@ -220,11 +220,11 @@ class BiosampleComponent extends React.Component {
                     <div className="result-item__data">
                         <a href={result['@id']} className="result-item__link">
                             {`${result.biosample_ontology.term_name} (`}
-                            <em>{result.organism.scientific_name}</em>
+                            {result.donors ? <em>{result.donors}</em> : null }
                             {`${separator}${lifeStage}${ageDisplay})`}
                         </a>
                         <div className="result-item__data-row">
-                            <div><strong>Type: </strong>{result.biosample_ontology.classification}</div>
+                            <div><strong>Type: </strong>{result.biosample_ontology.term_name}</div>
                             {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
                             {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
                             {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
@@ -233,7 +233,7 @@ class BiosampleComponent extends React.Component {
                             {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
                             {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
                             {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
-                            <div><strong>Source: </strong>{result.source.title}</div>
+                            {result.source ? <div><strong>Source: </strong>{result.source.title}</div> : null }
                         </div>
                     </div>
                     <div className="result-item__meta">

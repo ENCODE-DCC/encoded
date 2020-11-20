@@ -40,7 +40,6 @@ DEFAULT_ITEM_TYPES = [
     'Donor',
     'Page',
     'Publication',
-    'Software',
     'Gene',
     'DataFile',
     'Lab'
