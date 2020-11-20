@@ -143,6 +143,7 @@
             "description": "The method by which cell viability or nuclei integrity was assessed.",
             "type": "string",
             "enum": [
+                "acridine orange and propidium iodide",
                 "trypan blue staining",
                 "calcein-AM green/ethidium homodimer-1 red staining",
                 "free amine staining",
