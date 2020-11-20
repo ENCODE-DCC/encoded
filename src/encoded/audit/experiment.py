@@ -4192,7 +4192,9 @@ def audit_experiment_no_processed_data(value, system, files_structure):
     raw_data = files_structure.get('raw_data')
     processed_data = files_structure.get('processed_data')
 
-    if not raw_data:
+    if not raw_data and not processed_data:
+        detail = 'Experiment {} does not contain any raw or processed data'.format(audit_link(path_to_text(value['@id']), value['@id']))
+        yield AuditFailure('lacking processed data', detail, level='WARNING')
         return
 
     if not processed_data:
