@@ -23,7 +23,8 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
-        {"$ref": "mixins.json#/starting_quantity"}
+        {"$ref": "mixins.json#/starting_quantity"},
+        {"$ref": "mixins.json#/preservation"}
     ],
     "dependencies": {
         "cell_size": ["cell_size_unit"],
@@ -89,6 +90,7 @@
                 "description": "A method by which this object was derived.",
                 "type": "string",
                 "enum": [
+                    "centrifugation",
                     "detergent solubilization",
                     "enzymatic dissociation",
                     "mechanical dissociation",

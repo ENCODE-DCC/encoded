@@ -321,7 +321,8 @@
         "biosample_ontology": "UBERON_0002113",
         "derivation_process": [
             "enzymatic dissociation", 
-            "mechanical dissociation"
+            "mechanical dissociation",
+            "centrifugation"
         ],
         "suspension_type": "nucleus",
         "starting_quantity": "1000",
@@ -373,7 +374,10 @@
         "red_blood_cell_lysis": true,
         "dbxrefs": [
             "GEO:SAMN144234"
-        ]
+        ],
+        "preservation_method": "cryopreservation", 
+        "preservation_time": "5-6",
+        "preservation_time_units": "hour"
     },
     {
         "accession": "LATSU160DDD",

@@ -14,7 +14,7 @@
         "gestational_age": "14",
         "gestational_age_units": "day",
         "theiler_stage": 19,
-        "weight": 50,
+        "weight": "50",
         "weight_unit": "g",
         "documents": [
             "anna-greka:mouse.wgEncodeSydhHist"
@@ -38,7 +38,7 @@
         "gestational_age": "13",
         "gestational_age_units": "day",
         "theiler_stage": 18,
-        "weight": 45,
+        "weight": "45",
         "weight_unit": "g",
         "documents": [
             "anna-greka:mouse.wgEncodeSydhHist"
