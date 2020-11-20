@@ -5,7 +5,6 @@ import url from 'url';
 import { Panel, PanelBody } from '../libs/ui/panel';
 import QueryString from '../libs/query_string';
 import { auditDecor } from './audit';
-import { CartToggle, CartSearchControls } from './cart';
 import FacetRegistry from './facets';
 import * as globals from './globals';
 import { Attachment } from './image';
@@ -390,11 +389,6 @@ const ExperimentComponent = (props, reactContext) => {
                         </React.Fragment>
                     : null}
                 </div>
-                {cartControls && !(reactContext.actions && reactContext.actions.length > 0) ?
-                    <div className="result-item__cart-control">
-                        <CartToggle element={result} />
-                    </div>
-                : null}
                 <PickerActions context={result} />
             </div>
             {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties })}
@@ -973,9 +967,6 @@ export class ResultTable extends React.Component {
                     <div className="search-results__result-list">
                         <h4>Showing {results.length} of {total} {label}</h4>
                         <SearchControls context={context} visualizeDisabledTitle={visualizeDisabledTitle} onFilter={this.onFilter} showResultsToggle />
-                        {!(actions && actions.length > 0) ?
-                            <CartSearchControls searchResults={context} />
-                        : null}
                         <ResultTableList results={results} columns={columns} cartControls />
                     </div>
                 :
