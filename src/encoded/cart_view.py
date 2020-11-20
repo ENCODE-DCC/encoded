@@ -8,6 +8,8 @@ from urllib.parse import (
 from collections import OrderedDict
 
 from snovault import COLLECTIONS
+from snovault.elasticsearch.searches.decorators import assert_something_returned
+from snovault.elasticsearch.searches.parsers import QueryString
 
 
 CART_USER_MAX = 30  # Maximum number of non-deleted carts allowed per non-admin user
@@ -93,3 +95,71 @@ def search_elements(context, request):
     path = '/search/?%s' % urlencode(param_list, True)
     results = request.embed(path, as_user=True)
     return results
+
+
+class Cart:
+    '''
+    Pass either a request with a query string with `?cart=foo&cart=bar` params
+    or a list of uuids (@ids also work):
+    * `cart = Cart(request)` or `cart = Cart(request, uuids=['xyz'])`
+    * `cart.elements` return all elements in the cart(s)
+    * `cart.as_params()` return [('@id', '/elements/xyz')] tuples for use in filters
+    '''
+
+    def __init__(self, request, uuids=None):
+        self.request = request
+        self.query_string = QueryString(request)
+        self.uuids = uuids or []
+        self._elements = []
+
+    def _get_carts_from_params(self):
+        return self.query_string.param_values_to_list(
+            params=self.query_string.get_cart()
+        )
+
+    def _get_cart_object_or_error(self, uuid):
+        return self.request.embed(uuid, '@@object')
+
+    def _try_to_get_cart_object(self, uuid):
+        try:
+            cart = self._get_cart_object_or_error(uuid)
+        except KeyError:
+            cart = {}
+        return cart
+
+    def _try_to_get_elements_from_cart(self, uuid):
+        cart = self._try_to_get_cart_object(uuid)
+        return cart.get('elements', [])
+
+    def _get_elements_from_carts(self):
+        carts = self.uuids or self._get_carts_from_params()
+        for cart in carts:
+            yield from self._try_to_get_elements_from_cart(cart)
+
+    @property
+    def elements(self):
+        if not self._elements:
+            self._elements = list(self._get_elements_from_carts())
+        yield from self._elements
+
+    def as_params(self):
+        return [
+            ('@id', at_id)
+            for at_id in self.elements
+        ]
+
+
+class CartWithElements(Cart):
+    '''
+    Like Cart but raises error if empty or doesn't exist.
+    '''
+
+    def _try_to_get_cart_object(self, uuid):
+        try:
+            return self._get_cart_object_or_error(uuid)
+        except KeyError:
+            raise HTTPBadRequest(explanation=f'Specified cart {uuid} not found')
+
+    @assert_something_returned('Empty cart')
+    def _try_to_get_elements_from_cart(self, uuid):
+        return super()._try_to_get_elements_from_cart(uuid)
