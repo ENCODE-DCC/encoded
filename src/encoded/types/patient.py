@@ -506,14 +506,14 @@ class Patient(Item):
             diagnosis_date = non_mets_dates[0]
             diagnosis_source = "Pathology report"
         elif diagnosis_date_tumor_registry is not None:
-            diagnosis_date = diagnosis_date_tumor_registry   
-            diagnosis_source = "Tumor registry"  
+            diagnosis_date = diagnosis_date_tumor_registry
+            diagnosis_source = "Tumor registry"
         elif len(mets_dates) > 0:
             mets_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
             diagnosis_date = mets_dates[0]
-            diagnosis_source = "Pathology Report"
+            diagnosis_source = "Pathology report"
         elif len(medication) > 0 or len(radiation) > 0:
-            diagnosis_source = "Medication or radiation"
+            diagnosis_source = "Medication or radiation treatment"
             for medication_record in medication:
                 medication_object = request.embed(medication_record, '@@object')
                 non_surgery_dates.append(medication_object['start_date'])
@@ -566,7 +566,7 @@ class Patient(Item):
                     follow_up_duration_range = "0 - 1.5 year"
 
 
-        treatment_dates = []      
+        treatment_dates = []
         first_treatment_date = "Not available"
         #Get the first_treatment_date
         if len(surgery) > 0:
@@ -1004,4 +1004,3 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
-
