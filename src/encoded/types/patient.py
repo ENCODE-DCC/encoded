@@ -74,8 +74,10 @@ def supportive_med_frequency(request, supportive_medication):
     return supportive_meds
 
 
-def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-
+def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery, death_date):
+    if death_date is not None:
+        last_follow_up_date = death_date
+    else:
         all_traced_dates=[]
         if len(vitals) > 0:
             for path in vitals:
@@ -132,7 +134,7 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
         else:
             last_follow_up_date = "Not available"
 
-        return last_follow_up_date
+    return last_follow_up_date
 
 
 @collection(
@@ -181,8 +183,8 @@ class Patient(Item):
         "description": "Calculated last follow-up date,format as YYYY-MM-DD",
         "type": "string",
     })
-    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery):
-        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery)
+    def last_follow_up_date(self, request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery, death_date=None):
+        return last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication,supportive_medication,surgery, death_date)
 
 
     @calculated_property( schema={
@@ -480,49 +482,46 @@ class Patient(Item):
         },
     })
     def diagnosis(self, request, surgery, radiation, medication,labs, vitals,
-                    germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None):
-        nephrectomy_dates = []
-        non_nephrectomy_dates = []
-        surgery_dates = []
+                    germline,ihc, consent,medical_imaging,supportive_medication, diagnosis_date_tumor_registry=None, death_date=None):
+        non_mets_dates = []
+        mets_dates = []
+        non_surgery_dates = []
         diagnosis_date = "Not available"
         diagnosis_source = "Not applicable"
 
-        # Calculate
+        # if there is Path report for Nephretomy or biopsy
         if len(surgery) > 0:
             for surgery_record in surgery:
                 surgery_object = request.embed(surgery_record, '@@object')
                 surgery_path_report = surgery_object['pathology_report']
                 for path_report in surgery_path_report:
                     path_report_obj = request.embed(path_report, '@@object')
-                    if path_report_obj['path_source_procedure'] == "path_nephrectomy":
-                        nephrectomy_dates.append(surgery_object['date'])
-                    elif  path_report_obj['path_source_procedure'] == "path_biopsy" or path_report_obj['path_source_procedure'] == "path_metasis":
-                        non_nephrectomy_dates.append(surgery_object['date'])
+                    if path_report_obj['path_source_procedure'] == "path_nephrectomy" or path_report_obj['path_source_procedure'] == "path_biopsy":
+                        non_mets_dates.append(surgery_object['date'])
+                    elif  path_report_obj['path_source_procedure'] == "path_metasis":
+                        mets_dates.append(surgery_object['date'])
 
-        if len(nephrectomy_dates) > 0 :
-                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-                diagnosis_date = nephrectomy_dates[0]
-                surgery_dates.append(nephrectomy_dates[0])
-
-        if len(non_nephrectomy_dates) > 0:
-            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            # Check if Non-nephrectomy (Biopsy Kidney) comes before the nephrectomy
-            surgery_dates.append(non_nephrectomy_dates[0])
-
-        if len(surgery_dates) > 0:
-            surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            diagnosis_date = surgery_dates[0]
-            diagnosis_source = "Pathology Report"
-
+        if len(non_mets_dates) > 0 :
+            non_mets_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = non_mets_dates[0]
+            diagnosis_source = "Pathology report"
         elif diagnosis_date_tumor_registry is not None:
-             diagnosis_date = diagnosis_date_tumor_registry
-        elif len(medication) > 0:
-            diagnosis_source = "Medication"
+            diagnosis_date = diagnosis_date_tumor_registry
+            diagnosis_source = "Tumor registry"
+        elif len(mets_dates) > 0:
+            mets_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = mets_dates[0]
+            diagnosis_source = "Pathology report"
+        elif len(medication) > 0 or len(radiation) > 0:
+            diagnosis_source = "Medication or radiation treatment"
             for medication_record in medication:
                 medication_object = request.embed(medication_record, '@@object')
-                non_nephrectomy_dates.append(medication_object['start_date'])
-            non_nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            diagnosis_date = non_nephrectomy_dates[0]
+                non_surgery_dates.append(medication_object['start_date'])
+            for radiation_record in radiation:
+                radiation_object = request.embed(radiation_record, '@@object')
+                non_surgery_dates.append(radiation_object['start_date'])
+            non_surgery_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+            diagnosis_date = non_surgery_dates[0]
 
         age_range = "Unknown"
         ageString = "Unknown"
@@ -552,7 +551,7 @@ class Patient(Item):
 
             #Add follow up duration:
             follow_up_start_date = datetime.strptime(diagnosis_date,"%Y-%m-%d")
-            last_follow_up_date = last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication, supportive_medication, surgery)
+            last_follow_up_date = last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiation,medical_imaging,medication, supportive_medication, surgery, death_date)
             if last_follow_up_date != "Not available":
                 follow_up_end_date = datetime.strptime(last_follow_up_date,"%Y-%m-%d")
                 follow_up_duration = (follow_up_end_date-follow_up_start_date).days/365
@@ -567,7 +566,7 @@ class Patient(Item):
                     follow_up_duration_range = "0 - 1.5 year"
 
 
-        treatment_dates = []      
+        treatment_dates = []
         first_treatment_date = "Not available"
         #Get the first_treatment_date
         if len(surgery) > 0:
@@ -654,10 +653,13 @@ class Patient(Item):
                     for path_report in path_reports:
                         path_report_obj = request.embed(path_report, '@@object')
                         if path_report_obj['path_source_procedure'] == 'path_metasis':
+                            site = path_report_obj['metasis_details']['site']
+                            if site == "Lung":
+                                site = "Lung and pleura"
                             record = {
                                 'date': path_report_obj['date'],
                                 'source': 'Pathology report',
-                                'site': path_report_obj['metasis_details']['site'],
+                                'site': site,
                                 'histology_proven': 'Yes'
                             }
                             if record not in records:
@@ -677,7 +679,7 @@ class Patient(Item):
                 elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
                     radiation_site = "Lung and pleura"
                 elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
-                    radiation_site = "Lymph Node"
+                    radiation_site = "Lymph node"
 
                 record = {
                     'date': radiation_object['start_date'],
