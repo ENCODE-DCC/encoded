@@ -498,7 +498,6 @@ const DatasetComponent = (props, reactContext) => {
                     <div className="result-item__data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
                         {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                         { treatments && treatments.length > 0 ?
                                 <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
