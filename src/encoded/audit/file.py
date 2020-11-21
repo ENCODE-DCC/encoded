@@ -103,9 +103,28 @@ def audit_library_protocol_standards(value, system):
                     yield AuditFailure('does not meet protocol standards', detail, level=audit_level)
 
 
+def audit_cellranger_spec(value, system):
+    if 'AnalysisFile' not in value.get('@type'):
+        return
+
+    non_rna_flag = False
+    for l in value.get('libraries'):
+        if l['protocol'].get('library_type') != 'RNA-seq':
+            non_rna_flag = True
+    if non_rna_flag == True and value.get('cellranger_assay_chemistry'):
+        detail = ('File {} of file has {} and derives from at least one non-RNA-seq library'.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            'cellranger_assay_chemistry',
+            )
+        )
+        yield AuditFailure('cellranger spec inconsistent with library_type', detail, level="ERROR")
+        return
+
+
 function_dispatcher = {
     'audit_file_ref_info': audit_file_ref_info,
-    'audit_library_protocol_standards': audit_library_protocol_standards
+    'audit_library_protocol_standards': audit_library_protocol_standards,
+    'audit_cellranger_spec': audit_cellranger_spec
 }
 
 
