@@ -43,7 +43,6 @@
             "type": "string",
             "enum": [
                 "UTSW",
-                "UTSWCopath",
                 "Parkland",
                 "Outside",
                 "Not available"
@@ -57,9 +56,7 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
+        
         "surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
@@ -75,8 +72,14 @@
         "nephr_robotic_assist":{
             "title":"Nephrectomy Robotic Assist"
         },
-        "pathology_report.tumor_size_range": {
-            "title": "Tumor Size"
+        "pathology_report.pathology_report_tumor_range": {
+            "title": "Tumor Size Range"
+        },
+        "pathology_report.histology": {
+            "title": "Histologic Subtype"
+        },
+        "pathology_report.grade": {
+            "title": "Tumor Grade"
         },
         "pathology_report.ajcc_p_stage": {
             "title": "pT Stage"
@@ -93,25 +96,17 @@
         "pathology_report.metasis_details.type": {
             "title": "Metastasis Type"
         },
-        "pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage"
-        },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
+        },
+        "pathology_report.ajcc_tnm_stage": {
+            "title": "TNM Stage"
         },
         "pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-
-        "pathology_report.histology": {
-            "title": "Tumor Histologic Subtypes"
-        },
-
         "pathology_report.focality": {
             "title": "Tumor Focality"
-        },
-        "pathology_report.grade": {
-            "title": "Tumor Grade"
         },
         "pathology_report.sarcomatoid": {
             "title": "Sarcomatoid Change"
@@ -129,25 +124,25 @@
             "title": "Perinephric Infiltration"
         },
         "pathology_report.micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "pathology_report.micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
         "pathology_report.ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
         "pathology_report.ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
 
     },
     "columns": {
         "accession": {
             "title": "Accession"
-        },
-        "status": {
-            "title": "Status"
         },
         "date": {
             "title": "Surgery Procedure"
@@ -161,8 +156,14 @@
         "surgery_procedure.nephrectomy_details.type": {
             "title": "Nephrectomy Type"
         },
-        "pathology_report.tumor_size_range": {
-            "title": "Tumor Size"
+        "pathology_report.pathology_report_tumor_range": {
+            "title": "Tumor Size Range"
+        },
+        "pathology_report.histology": {
+            "title": "Histologic Subtype"
+        },
+        "pathology_report.grade": {
+            "title": "Tumor Grade"
         },
         "pathology_report.ajcc_p_stage": {
             "title": "pT Stage at Presentation"
@@ -179,23 +180,17 @@
         "pathology_report.metasis_details.type": {
             "title": "Metastasis Type"
         },
-        "pathology_report.ajcc_tnm_stage": {
-            "title": "TNM Stage at Presentation"
-        },
         "pathology_report.ajcc_version": {
             "title": "AJCC Version"
+        },
+        "pathology_report.ajcc_tnm_stage": {
+            "title": "TNM Stage at Presentation"
         },
         "pathology_report.laterality": {
             "title": "Tumor Laterality"
         },
-        "pathology_report.histology": {
-            "title": "Tumor Histologic Subtypes"
-        },
         "pathology_report.focality": {
             "title": "Tumor Focality"
-        },
-        "pathology_report.grade": {
-            "title": "Tumor Grade"
         },
         "pathology_report.sarcomatoid": {
             "title": "Sarcomatoid Change"
@@ -206,23 +201,26 @@
         "pathology_report.margins": {
             "title": "Margin Status"
         },
-         "pathology_report.lvi": {
+        "pathology_report.lvi": {
             "title": "Lymphvascular invasion(LVI)"
         },
         "pathology_report.micro_perinephric": {
             "title": "Perinephric Infiltration"
         },
         "pathology_report.micro_vein": {
-            "title": "Renal Vein Involvement (MicroVein)"
+            "title": "Renal Vein Involvement"
         },
         "pathology_report.micro_adrenal": {
-            "title": "Ipsilateral Adrenal Gland Involvement (MicroAdrenal)"
+            "title": "Ipsilateral Adrenal Gland Involvement"
         },
         "pathology_report.ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
         "pathology_report.ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {
@@ -252,3 +250,4 @@
     },
     "changelog": "/profiles/changelogs/surgery.md"
 }
+

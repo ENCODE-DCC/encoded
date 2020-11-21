@@ -653,10 +653,13 @@ class Patient(Item):
                     for path_report in path_reports:
                         path_report_obj = request.embed(path_report, '@@object')
                         if path_report_obj['path_source_procedure'] == 'path_metasis':
+                            site = path_report_obj['metasis_details']['site']
+                            if site == "Lung":
+                                site = "Lung and pleura"
                             record = {
                                 'date': path_report_obj['date'],
                                 'source': 'Pathology report',
-                                'site': path_report_obj['metasis_details']['site'],
+                                'site': site,
                                 'histology_proven': 'Yes'
                             }
                             if record not in records:
@@ -676,7 +679,7 @@ class Patient(Item):
                 elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
                     radiation_site = "Lung and pleura"
                 elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
-                    radiation_site = "Lymph Node"
+                    radiation_site = "Lymph node"
 
                 record = {
                     'date': radiation_object['start_date'],
