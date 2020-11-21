@@ -505,7 +505,7 @@ class Patient(Item):
             "Soft tissue neoplasm, NOS": 5,
             "SDH deficient RCC": 3,
         }
-        
+
         tumors = []
         #collect all tumors info to make a list
         if len(surgery) > 0:
@@ -530,7 +530,7 @@ class Patient(Item):
                             n_stage_rank =  nRanking[n_stage]
                         else:
                             n_stage_rank = -1
-                        if histology: 
+                        if histology:
                             histology_rank =  histologyRanking[histology]
                         else:
                             histology_rank = -1
@@ -551,9 +551,9 @@ class Patient(Item):
                             'surgery_id': surgery_object.get('@id'),
                             'date': date
                         }
-                        
+
                         tumors.append(tumor)
-            
+
             if len(tumors) == 1:
                 dominant_tumor = tumors[0]
             elif len(tumors) > 1:
@@ -573,12 +573,12 @@ class Patient(Item):
                 else:
                     #compare the tumors that have highest pt stage when stage is pt1ab or pt2ab
                     #remove the low pt rank tumors
-                    
+
                     if pt_stage_rank == 2 or pt_stage_rank == 3:
-                        
+
                         hasB = False
                         for tumor in tumors:
-                            
+
                             if tumor['t_stage'].endswith('b'):
                                 hasB = True
                                 break
@@ -614,7 +614,7 @@ class Patient(Item):
                                     tumors.remove(tumor)
                     #now only turely highest pt ranking tumors left
                     if len(tumors) == 1:
-                        dominant_tumor = tumors[0] 
+                        dominant_tumor = tumors[0]
                     else:
                         tumors.sort(key=lambda tumor: (tumor['n_stage_rank'], tumor['histology_rank'], tumor['tumor_size'], tumor['tumor_size']))
                         tumors.sort(key=lambda tumor: tumor.get('date'), reverse=True)
@@ -622,11 +622,11 @@ class Patient(Item):
                         isDuplicated = False
                         if tumors[-1]['n_stage_rank'] == tumors[-2]['n_stage_rank'] and tumors[-1]['t_stage_rank'] == tumors[-2]['t_stage_rank'] and tumors[-1]['histology_rank'] == tumors[-2]['histology_rank'] and tumors[-1]['tumor_size'] == tumors[-2]['tumor_size'] and tumors[-1]['date'] == tumors[-2]['date']:
                             isDuplicated = True
-                        
-                        if not isDuplicated:   
+
+                        if not isDuplicated:
                             dominant_tumor = tumors[-1]
 
-                                
+
         return dominant_tumor
 
     @calculated_property(define=True, schema={
@@ -776,7 +776,7 @@ class Patient(Item):
                     follow_up_duration_range = "0 - 1.5 year"
 
 
-        treatment_dates = []      
+        treatment_dates = []
         first_treatment_date = "Not available"
         #Get the first_treatment_date
         if len(surgery) > 0:
@@ -863,10 +863,13 @@ class Patient(Item):
                     for path_report in path_reports:
                         path_report_obj = request.embed(path_report, '@@object')
                         if path_report_obj['path_source_procedure'] == 'path_metasis':
+                            site = path_report_obj['metasis_details']['site']
+                            if site == "Lung":
+                                site = "Lung and pleura"
                             record = {
                                 'date': path_report_obj['date'],
                                 'source': 'Pathology report',
-                                'site': path_report_obj['metasis_details']['site'],
+                                'site': site,
                                 'histology_proven': 'Yes'
                             }
                             if record not in records:
@@ -886,7 +889,7 @@ class Patient(Item):
                 elif radiation_object['site_general'] == "Lung, right" or radiation_object['site_general'] == "Lung, left" or radiation_object['site_general'] == "Lung":
                     radiation_site = "Lung and pleura"
                 elif radiation_object['site_general'] == "Lymph node, NOS" or radiation_object['site_general'] == "Lymph node, intrathoracic" or radiation_object['site_general'] == "Lymph node, intra abdominal":
-                    radiation_site = "Lymph Node"
+                    radiation_site = "Lymph node"
 
                 record = {
                     'date': radiation_object['start_date'],
@@ -1212,6 +1215,3 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
-
-
-

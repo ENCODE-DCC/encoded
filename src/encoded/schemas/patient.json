@@ -105,7 +105,7 @@
         "diagnosis.follow_up_duration_range": {
             "title": "Follow Up Duration"
         },
-        
+
         "sex": {
             "title": "Sex"
         },
@@ -144,14 +144,11 @@
         "dominant_tumor.histology": {
             "title": "Dominant Tumor"
         },
-        "surgery.pathology_report.tumor_size_range":{
-            "title": "Tumor Size"
-        },
-        "surgery.pathology_report.laterality": {
-            "title": "Tumor Laterality"
+        "surgery.pathology_report.pathology_report_tumor_range":{
+            "title": "Tumor Size Range"
         },
         "surgery.pathology_report.histology": {
-            "title": "Tumor Histologic Subtypes"
+            "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
             "title": "pT Stage at Presentation"
@@ -163,13 +160,16 @@
             "title": "pM Stage at Presentation"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metastasis Site"
+            "title": "Metastasis Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
-            "title": "Metastasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " TNM Stage at Presentation"
+            "title": "TNM Stage at Presentation"
+        },
+        "surgery.pathology_report.laterality": {
+            "title": "Tumor Laterality"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
@@ -253,23 +253,17 @@
         "race": {
             "title": "Race"
         },
-        "status": {
-            "title": "Status"
-        },
         "dominant_tumor.histology": {
             "title": "Dominant Tumor"
         },
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "surgery.pathology_report.tumor_size_range":{
-            "title": "Tumor Size"
-        },
-        "surgery.pathology_report.laterality": {
-            "title": "Tumor Laterality"
+        "surgery.pathology_report.pathology_report_tumor_range":{
+            "title": "Tumor Size Range"
         },
         "surgery.pathology_report.histology": {
-            "title": "Tumor Histologic Subtypes"
+            "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
             "title": "pT Stage"
@@ -281,19 +275,25 @@
             "title": "pM Stage"
         },
         "surgery.pathology_report.metasis_details.site": {
-            "title": "Metasis Site"
+            "title": "Metastasis Site (Pathology)"
         },
         "surgery.pathology_report.metasis_details.type": {
-            "title": "Metasis Type"
+            "title": "Metastasis Type (Pathology)"
         },
         "surgery.pathology_report.ajcc_tnm_stage": {
-            "title": " AJCC TNM Stage"
+            "title": "TNM Stage at Presentation"
+        },
+        "surgery.pathology_report.laterality": {
+            "title": "Tumor Laterality"
         },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
         "ihc.result": {
             "title": "IHC/FISH results"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {
@@ -317,4 +317,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-
