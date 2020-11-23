@@ -11,7 +11,7 @@ from .item import STATUS_LEVEL
 
 
 def audit_file_ref_info(value, system):
-    if 'derived_from' not in value:
+    if 'derived_from' not in value and 'AnalysisFile' not in value.get('@type'):
         return
     for f in value['derived_from']:
         for ref_prop in ['assembly', 'genome_annotation']:
@@ -103,28 +103,35 @@ def audit_library_protocol_standards(value, system):
                     yield AuditFailure('does not meet protocol standards', detail, level=audit_level)
 
 
-def audit_cellranger_spec(value, system):
+def audit_analysis_library_types(value, system):
     if 'AnalysisFile' not in value.get('@type'):
         return
 
-    non_rna_flag = False
+    lib_types = set()
     for l in value.get('libraries'):
-        if l['protocol'].get('library_type') != 'RNA-seq':
-            non_rna_flag = True
-    if non_rna_flag == True and value.get('cellranger_assay_chemistry'):
-        detail = ('File {} of file has {} and derives from at least one non-RNA-seq library'.format(
+        lib_types.add(l['protocol'].get('library_type'))
+    if 'RNA-seq' not in lib_types and value.get('cellranger_assay_chemistry'):
+        detail = ('File {} has {} and does not derive from any RNA-seq library'.format(
             audit_link(path_to_text(value['@id']), value['@id']),
             'cellranger_assay_chemistry',
             )
         )
         yield AuditFailure('cellranger spec inconsistent with library_type', detail, level="ERROR")
+
+    if 'CITE-seq' in lib_types and 'RNA-seq' not in lib_types:
+        detail = ('File {} derives from at least one CITE-seq library but does not derive from any RNA-seq library'.format(
+            audit_link(path_to_text(value['@id']), value['@id']),
+            'cellranger_assay_chemistry',
+            )
+        )
+        yield AuditFailure('no RNA-seq Library with CITE-seq Library', detail, level="ERROR")
         return
 
 
 function_dispatcher = {
     'audit_file_ref_info': audit_file_ref_info,
     'audit_library_protocol_standards': audit_library_protocol_standards,
-    'audit_cellranger_spec': audit_cellranger_spec
+    'audit_analysis_library_types': audit_analysis_library_types
 }
 
 
