@@ -19,33 +19,28 @@ For issues see [Snovault OSX App Installation][] first.
     $ source encoded-venv/bin/activate
     ```
 
-2. Clone the repo and `cd` into it
+1. Clone the repo and install requirements
     ```
-    $ git clone git@github.com:ENCODE-DCC/encoded.git
+    # Make sure you are in the encoded-venv
     $ cd encoded
+    $ pip install -r requirements.osx.txt
     ```
 
-3. Build Application
+1. Build Application
     ```
-    $ make clean && pip install -e '.[dev]' && buildout
-    ```
-
-If you need to develop `snovault` side by side you can use the following commands instead, assuming `encoded` and `snovault` are present at the same level in your filesystem.
-    ```
-    $ cd .. && pip install -e snovault
-    $ cd encoded && make clean && pip install -e '.[dev]' && buildout
+    $ make clean && buildout bootstrap && bin/buildout
     ```
 
-4. Run Application
+1. Run Application
     ```
-    $ dev-servers development.ini --app-name app --clear --init --load
+    $ bin/dev-servers development.ini --app-name app --clear --init --load
     # In a separate terminal, make sure you are in the encoded-venv
-    $ pserve development.ini
+    $ bin/pserve development.ini
     ```
 
-5. Browse to the interface at http://localhost:6543
+1. Browse to the interface at http://localhost:6543
 
-6. Run Tests
+1. Run Tests
     ```
     # Make sure you are in the encoded-venv
     $ ./circle-tests.sh bdd
@@ -53,17 +48,6 @@ If you need to develop `snovault` side by side you can use the following command
     $ ./circle-tests.sh indexer
     $ ./circle-tests.sh not-bdd-non-indexing
     $ ./circle-tests.sh npm
-    ```
-
-You can also invoke `pytest` directly if you need more granular control over which Python tests to run.
-    ```bash
-    # Make sure you are in your venv
-    # Run a specific test in a specific file
-    $ pytest TEST_FILE_PATH::TEST_NAME
-    # Run tests with a name matching the expression
-    $ pytest -k $EXPRESSION
-    # Run tests with the given mark
-    $ pytest -m $PYTEST_MARK
     ```
 
 ## Configuration Installation (In Progress)

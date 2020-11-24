@@ -12,22 +12,22 @@
 ##
 
 if [ "$1" == "bdd" ]; then
-    ES_JAVA_OPTS="-Xms2g -Xmx3g" python -m pytest --exitfirst -s -vv -m "bdd" --tb=short --splinter-implicit-wait=2 --splinter-webdriver=chrome --splinter-socket-timeout=300 --splinter-session-scoped-browser=false --splinter-headless=true --chrome-options "--disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
+    ES_JAVA_OPTS="-Xms2g -Xmx3g" bin/test --exitfirst -s -vv -m "bdd" --tb=short --splinter-implicit-wait=2 --splinter-webdriver=chrome --splinter-socket-timeout=300 --splinter-session-scoped-browser=false --splinter-headless=true --chrome-options "--disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
     exit
 fi
 
 if [ "$1" == "indexing" ]; then
-    ES_JAVA_OPTS="-Xms2g -Xmx3g" python -m pytest --exitfirst -s -vv -m "indexing"
+    ES_JAVA_OPTS="-Xms2g -Xmx3g" bin/test --exitfirst -s -vv -m "indexing"
     exit
 fi
 
 if [ "$1" == "indexer" ]; then
-    ES_JAVA_OPTS="-Xms2g -Xmx3g" python -m pytest --exitfirst -s -vv -m "indexer"
+    ES_JAVA_OPTS="-Xms2g -Xmx3g" bin/test --exitfirst -s -vv -m "indexer"
     exit
 fi
 
 if [ "$1" == "not-bdd-non-indexing" ]; then
-    python -m pytest --exitfirst -s -vv -m "not bdd and not indexing and not indexer"
+    bin/test --exitfirst -s -vv -m "not bdd and not indexing and not indexer"
     exit
 fi
 

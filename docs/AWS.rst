@@ -14,7 +14,7 @@ In ``~/.boto`` configure your default region::
 
 To deploy your currently checked out branch, run::
 
-    $ deploy --instance-type c4.8xlarge
+    $ bin/deploy   --instance-type c4.8xlarge
 
 After a few moments, it will return the domain name of your instance::
 

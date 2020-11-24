@@ -10,20 +10,20 @@ $ git push -u origin v{XX}.0
 
 For a single, combined (ES/Python 1 datanode) instance 
 ===============================
-$ deploy --candidate --instance-type c4.4xlarge --profile-name production -n v{XX}-b v{XX}.0
+$ bin/deploy --candidate --instance-type c4.4xlarge --profile-name production -n v{XX}-b v{XX}.0
 
 "production" must be a key on encode-prod AWS project with valid key/password in .aws/credentials
 
-$ deploy --test --instance-type c4.4xlarge -n v{XX}-test -b v{XX}.0  --- See Last section
+$ bin/deploy --test --instance-type c4.4xlarge -n v{XX}-test -b v{XX}.0  --- See Last section
 
 Or just as a demo instance to avoid the switchover
 
-$ deploy --instance-type c4.4xlarge -n v{XX}-test -b v{XX}.0
+$ bin/deploy --instance-type c4.4xlarge -n v{XX}-test -b v{XX}.0
 
 For a clustered instance - 5 data nodes (current production as of 5/2016)
 ================================
-$ deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 5 --profile-name production --name v{XX}-data --instance-type m4.xlarge
-$ deploy -b v{XX}.0 -n v{XX}-master --cluster-name v{XX}-cluster --profile-name production --candidate --instance-type c4.8xlarge
+$ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 5 --profile-name production --name v{XX}-data --instance-type m4.xlarge
+$ bin/deploy -b v{XX}.0 -n v{XX}-master --cluster-name v{XX}-cluster --profile-name production --candidate --instance-type c4.8xlarge
 
 "production" must be a key on encode-prod AWS project with valid key/password in .aws/credentials
 
@@ -32,13 +32,13 @@ $ curl localhost:9200/_cluster/health?pretty
 
 To make sure any cluster nodes are running correctly, and swap them out if necessary.
 You can create a single node with something like:
-$ deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 1 --profile-name production --name v{XX}-dataX --instance-type m4.xlarge
+$ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-cluster --cluster-size 1 --profile-name production --name v{XX}-dataX --instance-type m4.xlarge
 
 Where X is the node you just terminated.  Note cluster names must match!
 
 and for DEV (non candidate/--test just as demo)
-$ deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-test-cluster --cluster-size 5 --name v{XX}-test-data --instance-type m4.xlarge
-$ deploy -b v{XX}.0 -n v{XX}-test-master --cluster-name v{XX}-test-cluster --instance-type c4.8xlarge
+$ bin/deploy -b v{XX}.0 --elasticsearch yes --cluster-name v{XX}-test-cluster --cluster-size 5 --name v{XX}-test-data --instance-type m4.xlarge
+$ bin/deploy -b v{XX}.0 -n v{XX}-test-master --cluster-name v{XX}-test-cluster --instance-type c4.8xlarge
 
 To set replicas (this should move to automatic installation):
 $ curl -XPUT 'localhost:9200/_all/_settings' -d '{"index": {"number_of_replicas": 2}}'
@@ -128,7 +128,7 @@ Wait for /_indexer snapshot on new instance to match snapshot on old instance
 # - sudo pg_ctlcluster 9.3 main reload
 # - sudo pg_ctlcluster 9.3 main promote
 # - cd /srv/encoded
-# - sudo -i -u encoded batchupgrade production.ini --app-name app
+# - sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 # HALT ON ANY ERRORS
 # - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
 
@@ -154,7 +154,7 @@ $ aws --profile production s3 cp --recursive v{YY} s3://encoded-logs/production/
 Update test server IF it was started as --test; demo mode is already Master
 ===========================================================================
 
-Doing this after batchupgrade on production means no need to do that here too (changes come through postgres replication.)
+Doing this after bin/batchupgrade on production means no need to do that here too (changes come through postgres replication.)
 
 
 # New test instance

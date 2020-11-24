@@ -19,14 +19,16 @@ cd "$ENCD_HOME"
 sudo -H -u encoded git clone "$ENCD_GIT_REPO" "$ENCD_HOME"
 sudo -H -u encoded git checkout -b "$ENCD_GIT_BRANCH" "$ENCD_GIT_REMOTE/$ENCD_GIT_BRANCH"
 
-# Create venv
-sudo -H -u encoded "$ENCD_PY3_PATH" -m venv "${ENCD_VENV_DIR}"
+# Create pyenv
+encd_venv="$ENCD_HOME/.pyvenv"
+sudo -H -u encoded "$ENCD_PY3_PATH" -m venv "$encd_venv"
 
-# Update pip
-source "${ENCD_VENV_DIR}/bin/activate"
-sudo -H -u encoded "$(which pip)" install --upgrade pip
+# Install pre-reqs
+source "$encd_venv/bin/activate"
+sudo -H -u encoded "$encd_venv/bin/pip" install --upgrade pip setuptools
+sudo -H -u encoded "$encd_venv/bin/pip" install -r requirements.txt
 if [ $? -gt 0 ]; then
-    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: could not upgrade pip"
+    echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Penv install failed"
     # Build has failed
     touch "$encd_failed_flag"
     exit 1

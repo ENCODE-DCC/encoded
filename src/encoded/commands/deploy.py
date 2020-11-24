@@ -383,7 +383,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
     build_type = instances_tag_data['build_type']  # template_name
     master_user_data = None
     git_remote = 'origin' if not is_tag else 'tags'
-    home = "/srv/encoded"
     data_insert = {
         'APP_WORKERS': 'notused',
         'BATCHUPGRADE': 'true' if main_args.do_batchupgrade else 'false',
@@ -400,7 +399,7 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'GIT_BRANCH': main_args.branch,
         'GIT_REMOTE': git_remote,
         'GIT_REPO': main_args.git_repo,
-        'HOME': home,
+        'HOME': '/srv/encoded',
         'INDEX_PRIMARY': 'false',
         'INDEX_VIS': 'false',
         'INDEX_REGION': 'true' if main_args.region_indexer else 'false',
@@ -417,7 +416,6 @@ def _get_run_args(main_args, instances_tag_data, config_yaml, is_tag=False):
         'ROLE': main_args.role,
         'S3_AUTH_KEYS': 'addedlater',
         'SCRIPTS_DIR': "{}/run-scripts".format(main_args.conf_dir_remote),
-        "VENV_DIR": "{}/venv".format(home),
         'WALE_S3_PREFIX': main_args.wale_s3_prefix,
     }
     if build_type == 'es-nodes':
