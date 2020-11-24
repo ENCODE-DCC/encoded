@@ -31,7 +31,7 @@
                 "machine": "A00419"
             }
         ],
-        "platform": "Illumina HiSeq 4000",
+        "platform": "MGI DNBSEQ-G400",
         "uuid": "3f5c30e4-f5de-48d2-847f-959f3824931f",
         "dbxrefs": [
             "SRA:SRR11112"
