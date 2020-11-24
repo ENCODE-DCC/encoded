@@ -102,7 +102,7 @@
                 "title": "Database external identifier",
                 "description": "Identifier an from external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(NIH:NIHhESC-[\\d]{2}-[\\d]{4})|(GEO:SAMN\\d+))$"
+                "pattern": "^(GEO:SAMN\\d+)$"
             }
         }
     }

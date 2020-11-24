@@ -20,6 +20,38 @@
             "requestMethod": []
         }
     },
+    "preservation": {
+        "preservation_method": {
+            "title": "Preservation method",
+            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
+            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
+            "type": "string",
+            "enum": [
+                "cryopreservation",
+                "flash-freezing",
+                "n/a (fresh)",
+                "paraffin embedding"
+            ]
+        },
+        "preservation_time": {
+            "title": "Preservation time",
+            "description": "The length of time that the sample was preserved",
+            "type": "string",
+            "pattern": "(^[0-9]+$|^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+        },
+        "preservation_time_units": {
+            "title": "Preservation time units",
+            "description": "The units of time that the sample was preserved",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month"
+            ]
+        }
+    },
     "description": {
         "description": {
             "title": "Description",
@@ -411,17 +443,21 @@
                     "benjamin-humphreys|",
                     "cole-trapnell|",
                     "esti-yeger-lotem|",
+                    "gary-bader|",
                     "harikrishna-nakshatri|",
                     "ido-amit|",
                     "j-michael-cherry|",
                     "jason-spence|",
+                    "jay-shin|",
                     "jimmie-ye|",
                     "jonathan-seidman|",
                     "joshua-sanes|",
                     "kai-kessenbrock|",
                     "kerstin-meyer|",
                     "margaret-deangelis|",
+                    "matthias-kretzler|",
                     "menna-clatworthy|",
+                    "minnie-sarwal|",
                     "nicholas-navin|",
                     "norbert-hübner|",
                     "peter-sims|",
@@ -429,7 +465,11 @@
                     "rahul-satija|",
                     "rui-chen|",
                     "sarah-teichmann|",
+                    "sheng-zhong|",
+                    "shyam-prabhakar|",
                     "sten-linnarsson|",
+                    "thomas-quertermous|",
+                    "woong-yang-park|",
                     "lattice",
                     "):[a-zA-Z\u00C0-\u024F\u1E00-\u1EFFæœ\\d_$.+!*,()'-]+$"
                 ]

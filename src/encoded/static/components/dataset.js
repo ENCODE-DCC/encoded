@@ -548,7 +548,7 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
 
                             <div data-test="award">
                                 <dt>Award</dt>
-                                <dd>{context.award.name}</dd>
+                                <dd><a href={context.award['@id']}>{context.award.name}</a></dd>
                             </div>
 
                             {context.dbxrefs ?

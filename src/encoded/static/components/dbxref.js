@@ -59,35 +59,39 @@ import PropTypes from 'prop-types';
 //
 
 export const dbxrefPrefixMap = {
-    UniProtKB: {
-        pattern: 'http://www.uniprot.org/uniprot/{0}',
+    AR: {
+        pattern: 'http://antibodyregistry.org/search.php?q={0}',
     },
-    HGNC: {
-        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
-        preprocessor: (context) => {
-            // For dbxrefs in targets, use the symbol of the first gene in target.genes instead of the dbxref value.
-            if (context['@type'][0] === 'Target' && context.genes && context.genes.length > 0) {
-                return { altValue: context.genes[0].symbol };
-            }
-            // If a gene displays its dbxrefs, use HGNC URL as NCBI Entrez does.
-            if (context['@type'][0] === 'Gene') {
-                return { altUrlPattern: 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id={0}' };
-            }
-            return {};
-        },
+    ArrayExpress: {
+        pattern: 'https://www.ebi.ac.uk/arrayexpress/experiments/{0}',
+    },
+    BioProject: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/bioproject/{0}',
+    },
+    BioStudies: {
+        pattern: 'https://www.ebi.ac.uk/biostudies/studies/{0}',
+    },
+    Cellosaurus: {
+        pattern: 'https://web.expasy.org/cellosaurus/{0}',
+    },
+    dbGaP: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id={0}',
+    },
+    doi: {
+        pattern: 'https://doi.org/doi:{0}',
+    },
+    EGA: {
+        pattern: 'https://www.ebi.ac.uk/ega/datasets/{0}',
     },
     ENSEMBL: {
         pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
         preprocessor: (context) => {
             // The URL is for human by default for ENSEMBL dbxrefs.
-            if (context.organism && context.organism.scientific_name === 'Mus musculus') {
+            if (context.assembly && context.assembly === 'mm10') {
                 return { altUrlPattern: 'http://www.ensembl.org/Mus_musculus/Gene/Summary?g={0}' };
             }
             return {};
         },
-    },
-    GeneID: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
     },
     GEO: {
         pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}',
@@ -101,161 +105,27 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
-    IHEC: {
-        pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}',
-    },
-    Cellosaurus: {
-        pattern: 'https://web.expasy.org/cellosaurus/{0}',
-    },
-    FactorBook: {
-        pattern: 'https://factorbook.org/experiment/{0}',
-        preprocessor: (context, dbxref) => {
-            // For dbxrefs in targets use an alternate URL for human targets.
-            const value = dbxref.split(':');
-            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Homo sapiens') {
-                return { altUrlPattern: 'https://factorbook.org/tf/human/{0}/function' };
-            }
-            // For dbxrefs in targets use an alternate URL and alternate value for mouse targets.
-            if (context['@type'][0] === 'Target' && context.organism && context.organism.scientific_name === 'Mus musculus') {
-                return { altValue: value[1].charAt(0) + value[1].slice(1).toLowerCase(),
-                    altUrlPattern: 'https://factorbook.org/tf/mouse/{0}/function' };
-            }
-            return {};
-        },
-    },
-    FlyBase: {
-        pattern: 'http://flybase.org/search/symbol/{0}',
-        preprocessor: (context) => {
-            // If a target displays its dbxrefs, use the fly stock URL.
-            if (context['@type'][0] !== 'Target') {
-                return { altUrlPattern: 'http://flybase.org/reports/{0}.html' };
-            }
-            return {};
-        },
-    },
-    BDSC: {
-        pattern: 'http://flystocks.bio.indiana.edu/stocks/{0}',
-    },
-    WormBase: {
-        pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}',
-        preprocessor: (context) => {
-            // If a target or gene displays its dbxrefs, use the worm stock URL.
-            if (context['@type'][0] !== 'Target' && context['@type'][0] !== 'Gene') {
-                return { altUrlPattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}' };
-            }
-            return {};
-        },
-    },
-    CGC: {
-        pattern: 'https://cgc.umn.edu/strain/{0}',
-    },
-    DSSC: {
-        pattern: 'https://stockcenter.ucsd.edu/index.php?action=view&q={0}&table=Species&submit=Search',
-    },
-    'MGI.D': {
-        pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml',
+    HGNC: {
+        pattern: 'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id={0}',
     },
     MGI: {
         pattern: 'http://www.informatics.jax.org/marker/MGI:{0}',
     },
-    RBPImage: {
-        pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',
-        postprocessor: (context, dbxref, urlPattern) => (
-            // Experiments with RBPImage need to replace one urlPattern element with
-            // BiosampleType term_name.
-            (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_ontology.term_name) : urlPattern)
-        ),
-    },
-    RefSeq: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/nuccore/{0}',
-    },
-    JAX: {
-        pattern: 'https://www.jax.org/strain/{0}',
-    },
-    NBRP: {
-        pattern: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
-    },
-    'UCSC-ENCODE-mm9': {
-        pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1={0}',
-    },
-    'UCSC-ENCODE-hg19': {
-        pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1={0}',
-    },
-    'UCSC-ENCODE-cv': {
-        pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=%22{0}%22',
-    },
-    'UCSC-GB-mm9': {
-        pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g={0}',
-    },
-    'UCSC-GB-hg19': {
-        pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g={0}',
+    PMCID: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
     },
     PMID: {
         pattern: 'https://www.ncbi.nlm.nih.gov/pubmed/?term={0}',
     },
-    PMCID: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
-    },
-    doi: {
-        pattern: 'https://doi.org/doi:{0}',
-    },
-    AR: {
-        pattern: 'http://antibodyregistry.org/search.php?q={0}',
-    },
-    NIH: {
-        pattern: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}',
-    },
-    PGP: {
-        pattern: 'https://my.pgp-hms.org/profile_public?hex={0}',
-    },
-    TRiP: {
-        pattern: 'http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname={0}',
-    },
-    DGGR: {
-        pattern: 'https://kyotofly.kit.jp/cgi-bin/stocks/search_res_det.cgi?DB_NUM=1&DG_NUM={0}',
-    },
-    MIM: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/omim/{0}',
-    },
-    Vega: {
-        pattern: 'http://vega.sanger.ac.uk/id/{0}',
-    },
-    miRBase: {
-        pattern: 'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc={0}',
-    },
-    GO: {
-        pattern: 'http://amigo.geneontology.org/amigo/term/GO:{0}',
-    },
-    GOGene: {
-        pattern: 'http://amigo.geneontology.org/amigo/gene_product/{0}',
-    },
-    'IMGT/GENE-DB': {
-        pattern: 'http://www.imgt.org/IMGT_GENE-DB/GENElect?species=Homo+sapiens&query=2+{0}',
+    RefSeq: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/nuccore/{0}',
     },
     SRA: {
-        pattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}',
-    },
-    '4DN': {
-        pattern: 'https://data.4dnucleome.org/experiment-set-replicates/{0}',
-    },
-    DepMap: {
-        pattern: 'https://depmap.org/portal/cell_line/{0}',
-    },
-    GeneCards: {
-        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
-    },
-    VISTA: {
-        pattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=1',
+        pattern: 'https://www.ncbi.nlm.nih.gov/sra?term={0}',
         preprocessor: (context, dbxref) => {
             const value = dbxref.split(':');
-            // Check to see if the first two characters of the VISTA value is "hs"
-            if (value[1] && value[1].substr(0, 2) === 'hs') {
-                return { altValue: value[1].substr(2) };
-            }
-            // If the first two characters of the VISTA value is "mm" then we need to use a
-            // different URL pattern.
-            if (value[1] && value[1].substr(0, 2) === 'mm') {
-                return { altUrlPattern: 'https://enhancer.lbl.gov/cgi-bin/imagedb3.pl?form=presentation&show=1&experiment_id={0}&organism_id=2', altValue: value[1].substr(2) };
+            if (value[1] && value[1].substr(0, 3) === 'SRR') {
+                return { altUrlPattern: 'http://www.ncbi.nlm.nih.gov/Traces/sra/?run={0}' };
             }
             return {};
         },
@@ -272,10 +142,16 @@ export const dbxrefPrefixMap = {
  * @param {string} value - String value you'd normally see after the colon in a dbxref
  * @return {string} - URL that the given prefix and value map to, or null if the mapping table doesn't include the given prefix.
  */
-export function dbxrefHref(prefix, value) {
+export function dbxrefHref(prefix, value, context) {
     const urlProcessor = dbxrefPrefixMap[prefix];
     if (urlProcessor) {
-        return urlProcessor.pattern.replace(/\{0\}/g, encodeURIComponent(value));
+        let urlPattern = urlProcessor.pattern;
+        if (urlProcessor.preprocessor) {
+            const { altUrlPattern, altValue } = urlProcessor.preprocessor(context);
+            urlPattern = altUrlPattern || urlPattern;
+            value = altValue || value;
+        }
+        return urlPattern.replace(/\{0\}/g, encodeURIComponent(value));
     }
     return null;
 }

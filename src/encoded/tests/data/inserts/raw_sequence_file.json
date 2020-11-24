@@ -46,6 +46,7 @@
         "date_created": "2019-08-18T16:46:18.670068+00:00",
         "read_type": "Read 1",
         "file_format": "fastq",
+        "external_uri": "ftp://ftp.ebi.ac.uk/pub/databases/microarray/data/experiment/MTAB/E-MTAB-8221/HT234-Airway_S23_L001_R1_001.fastq.gz",
         "lab": "anna-greka",
         "output_types": [
             "assigned reads"

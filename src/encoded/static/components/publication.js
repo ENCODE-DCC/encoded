@@ -20,71 +20,27 @@ const datasetsColumns = {
         title: 'Accession',
         sorter: false,
     },
-    type: {
-        getValue: dataset => (dataset['@type'] || [''])[0], // only the first matters
-        title: 'Type',
-        sorter: false,
-    },
-    target: {
-        getValue: dataset => (dataset.target ? dataset.target.label : ''),
-        title: 'Target',
-        sorter: false,
-    },
-    assay_term_name: {
-        getValue: (dataset) => {
-            // assay_term_name can be a string or an array
-            if (typeof (dataset.assay_term_name) === 'string') {
-                return dataset.assay_term_name;
-            }
-            return (dataset.assay_term_name || []).join(', ');
-        },
-        title: 'Assay',
-        sorter: false,
-    },
     description: {
         title: 'Description',
         sorter: false,
     },
-    lab: {
-        getValue: dataset => (dataset.lab ? dataset.lab.title : ''),
-        title: 'Lab',
+    assays: {
+        getValue: dataset => (dataset.libraries ? dataset.libraries.assay : ''),
+        title: 'Assay type',
         sorter: false,
     },
-    biosample_summary: {
-        title: 'Biosample Summary',
+    award: {
+        getValue: dataset => (dataset.award ? dataset.award.name : ''),
+        title: 'Award',
+        sorter: false,
+    },
+    project: {
+        getValue: dataset => (dataset.award ? dataset.award.project : ''),
+        title: 'Project',
         sorter: false,
     },
     status: {
         display: dataset => <Status item={dataset.status} badgeSize="small" inline />,
-        title: 'Status',
-        sorter: false,
-    },
-    cart: {
-        title: 'Cart',
-        display: dataset => <CartToggle element={dataset} />,
-        sorter: false,
-    },
-};
-
-
-const publicationDataColumns = {
-    accession: {
-        display: publicationData => <a href={publicationData['@id']}>{publicationData.accession}</a>,
-        title: 'Accession',
-        sorter: false,
-    },
-    fileCount: {
-        getValue: publicationData => (publicationData.files ? publicationData.files.length : 0),
-        title: 'Number of files',
-        sorter: false,
-    },
-    description: {
-        display: publicationData => publicationData.description || <i>No description</i>,
-        title: 'Description',
-        sorter: false,
-    },
-    status: {
-        display: publicationData => <Status item={publicationData} badgeSize="small" inline />,
         title: 'Status',
         sorter: false,
     },
@@ -98,7 +54,6 @@ const DatasetTableHeader = ({ title, elements, currentPage, totalPageCount, upda
     <div className="header-paged-sorttable">
         <h4>{title}</h4>
         <div className="header-paged-sorttable__controls">
-            <CartAddAllElements elements={elements} />
             {totalPageCount > 1 ? <Pager total={totalPageCount} current={currentPage} updateCurrentPage={updateCurrentPage} /> : null}
         </div>
     </div>
@@ -193,35 +148,6 @@ DatasetTable.propTypes = {
 /**
  * Renders a table of PublicationData file sets included in this publication.
  */
-const PublicationDataTable = ({ publicationDataIds }) => {
-    const [publicationData, setPublicationData] = React.useState([]);
-
-    React.useEffect(() => {
-        requestObjects(publicationDataIds, '/search/?type=PublicationData&limit=all&status!=deleted&status!=revoked&status!=replaced&field=accession&field=files&field=description&field=status').then((requestedPublicationData) => {
-            setPublicationData(requestedPublicationData);
-        });
-    }, [publicationDataIds]);
-
-    return (
-        <React.Fragment>
-            {publicationData.length > 0 ?
-                <SortTablePanel
-                    title="File sets"
-                    subheader={<div className="table-paged__count">{`${publicationDataIds.length} file set${publicationDataIds.length === 1 ? '' : 's'}`}</div>}
-                >
-                    <SortTable list={publicationData} columns={publicationDataColumns} />
-                </SortTablePanel>
-            : null}
-        </React.Fragment>
-    );
-};
-
-PublicationDataTable.propTypes = {
-    /** Array of publication_data @ids to display */
-    publicationDataIds: PropTypes.array.isRequired,
-};
-
-
 // Display a publication object.
 const PublicationComponent = (props, reactContext) => {
     const context = props.context;
@@ -256,10 +182,6 @@ const PublicationComponent = (props, reactContext) => {
                         <Abstract context={context} />
                     </PanelBody>
                 </Panel>
-            : null}
-
-            {context.publication_data && context.publication_data.length > 0 ?
-                <PublicationDataTable publicationDataIds={context.publication_data} />
             : null}
 
             {context.datasets && context.datasets.length > 0 ?

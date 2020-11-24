@@ -12,6 +12,15 @@
         "status": "released"
     },
     {
+        "uuid": "ff3240a5-9e2c-467d-81d5-a16f3f3f8ca0",
+        "term_name": "GM06990",
+        "term_id": "EFO:0002783",
+        "status": "released",
+        "dbxrefs": [
+            "Cellosaurus:CVCL_9587"
+        ]
+    },
+    {
         "uuid": "5d0a236f-7128-49a2-a46b-64b1e2ad7219",
         "term_name": "pluripotent stem cell",
         "term_id": "CL:0002248",

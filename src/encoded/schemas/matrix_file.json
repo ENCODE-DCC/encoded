@@ -273,6 +273,12 @@
         "file_format": {
             "title": "File format"
         },
+        "value_scale": {
+            "title": "Scale"
+        },
+        "normalized": {
+            "title": "Normalized"
+        },
         "lab.title": {
             "title": "Lab"
         },

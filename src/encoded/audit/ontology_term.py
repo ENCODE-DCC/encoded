@@ -9,8 +9,6 @@ from .formatter import (
 
 def audit_term(value, system):
     '''
-    The classification, term_id and term_name should all be present.
-    This should be handled by schemas.
     The term_id should be in the ontology.
     The term_name should match the term_id.
     '''
@@ -41,7 +39,7 @@ def audit_term(value, system):
             )
         )
         yield AuditFailure('term_id not in ontology', detail,
-                           level='INTERNAL_ACTION')
+                           level='ERROR')
         return
 
     ontology_term_name = ontology[term_id]['name']

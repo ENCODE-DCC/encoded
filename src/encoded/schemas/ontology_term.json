@@ -25,7 +25,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((Cellosaurus:CVCL_\\w{4})|(DepMap:ACH-[0-9]{6}))$"
+                "pattern": "^(Cellosaurus:CVCL_\\w{4})$"
             }
         },
         "term_id": {

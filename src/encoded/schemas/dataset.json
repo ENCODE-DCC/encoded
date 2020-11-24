@@ -70,7 +70,7 @@
                 "title": "External identifier",
                 "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|BioProject:PRJNA\\d+|BioStudies:\\d+|ArrayExpress:\\d+|dbGaP:phs\\d+|SRA:SRP\\d+|ENA:ERP\\d+|ENA:PRJNA\\d+|EGA:EGAS\\d+)$"
+                "pattern": "^(GEO:(GSM|GSE)|GEO-obsolete:(GSM|GSE)|BioProject:PRJNA|BioStudies:|ArrayExpress:|dbGaP:phs|SRA:SRP|ENA:ERP|EGA:EGAD)[a-zA-Z\\d-]+$"
             }
         },
         "documents": {

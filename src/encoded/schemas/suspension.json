@@ -23,7 +23,8 @@
         {"$ref": "mixins.json#/treatments"},
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
-        {"$ref": "mixins.json#/starting_quantity"}
+        {"$ref": "mixins.json#/starting_quantity"},
+        {"$ref": "mixins.json#/preservation"}
     ],
     "dependencies": {
         "cell_size": ["cell_size_unit"],
@@ -89,6 +90,7 @@
                 "description": "A method by which this object was derived.",
                 "type": "string",
                 "enum": [
+                    "centrifugation",
                     "detergent solubilization",
                     "enzymatic dissociation",
                     "mechanical dissociation",
@@ -111,7 +113,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((GEO:SAMN\\d+)|(SRA:SRS\\d+)|(ENA:(ERS|SAMN)\\d+))$"
+                "pattern": "^((GEO:SAMN\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
             }
         },
         "starting_quantity": {
@@ -141,6 +143,7 @@
             "description": "The method by which cell viability or nuclei integrity was assessed.",
             "type": "string",
             "enum": [
+                "acridine orange and propidium iodide",
                 "trypan blue staining",
                 "calcein-AM green/ethidium homodimer-1 red staining",
                 "free amine staining",

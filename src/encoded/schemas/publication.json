@@ -106,8 +106,14 @@
         "journal": {
             "title": "Journal"
         },
+        "citation": {
+            "title": "Citation"
+        },
         "publication_year": {
             "title": "Publication year"
+        },
+        "datasets": {
+            "title": "Datasets"
         },
         "award.project": {
             "title": "Project"

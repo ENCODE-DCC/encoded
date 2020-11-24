@@ -24,6 +24,7 @@
         {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/starting_quantity"},
+        {"$ref": "mixins.json#/preservation"},
         {"$ref": "biosample.json#/properties"},
         {"$ref": "culture.json#/properties"}
     ],

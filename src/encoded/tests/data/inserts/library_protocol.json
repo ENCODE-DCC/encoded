@@ -34,6 +34,29 @@
                 "start": 17,
                 "end": 26
             }
+        ],
+        "sequence_file_standards": [
+            {
+              "read_type": "Read 1",
+              "sequence_elements": ["cell barcode","UMI"],
+              "demultiplexed_type": "R1",
+              "read_length": 26,
+              "read_length_specification": "minimum"
+            },
+            {
+              "read_type": "Read 2",
+              "sequence_elements": ["5' of molecule"],
+              "demultiplexed_type": "R2",
+              "read_length": 91,
+              "read_length_specification": "ideal"
+            },
+            {
+              "read_type": "i7 index",
+              "sequence_elements": ["sample index"],
+              "demultiplexed_type": "I1",
+              "read_length": 8,
+              "read_length_specification": "exact"
+            }
         ]
     },
     {
@@ -70,6 +93,29 @@
                 "start": 11,
                 "end": 25   
             }
+        ],
+        "sequence_file_standards": [
+            {
+                "read_type": "Read 1",
+                "sequence_elements": ["cell barcode","UMI"],
+                "demultiplexed_type": "R1",
+                "read_length": 26,
+                "read_length_specification": "minimum"
+            },
+            {
+                "read_type": "Read 2N",
+                "sequence_elements": ["feature barcode"],
+                "demultiplexed_type": "R2",
+                "read_length": 25,
+                "read_length_specification": "minimum"
+            },
+            {
+                "read_type": "i7 index",
+                "sequence_elements": ["sample index"],
+                "demultiplexed_type": "I1",
+                "read_length": 8,
+                "read_length_specification": "exact"
+            }
         ]
     },
     {
@@ -97,6 +143,36 @@
                 "located_in_read_type": "Read 1",
                 "start": 1,
                 "end": 16
+            }
+        ],
+        "sequence_file_standards": [
+            {
+                "read_type": "Read 1N",
+                "sequence_elements": ["fragment"],
+                "demultiplexed_type": "R1",
+                "read_length": 50,
+                "read_length_specification": "ideal"
+            },
+            {
+                "read_type": "Read 2N",
+                "sequence_elements": ["fragment"],
+                "demultiplexed_type": "R3",
+                "read_length": 50,
+                "read_length_specification": "ideal"
+            },
+            {
+                "read_type": "i7 index",
+                "sequence_elements": ["sample index"],
+                "demultiplexed_type": "I1",
+                "read_length": 8,
+                "read_length_specification": "exact"
+            },
+            {
+                "read_type": "i5 index",
+                "sequence_elements": ["cell barcode"],
+                "demultiplexed_type": "R2",
+                "read_length": 16,
+                "read_length_specification": "minimum"
             }
         ]
     },
@@ -134,6 +210,29 @@
                 "located_in_read_type": "Read 1",
                 "start": 16,
                 "end": 28
+            }
+        ],
+        "sequence_file_standards": [
+            {
+                "read_type": "Read 1",
+                "sequence_elements": ["cell barcode","UMI"],
+                "demultiplexed_type": "R1",
+                "read_length": 28,
+                "read_length_specification": "minimum"
+            },
+            {
+                "read_type": "Read 2",
+                "sequence_elements": ["3' of molecule"],
+                "demultiplexed_type": "R2",
+                "read_length": 91,
+                "read_length_specification": "ideal"
+            },
+            {
+                "read_type": "i7 index",
+                "sequence_elements": ["sample index"],
+                "demultiplexed_type": "I1",
+                "read_length": 8,
+                "read_length_specification": "exact"
             }
         ]
     }

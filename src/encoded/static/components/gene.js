@@ -76,7 +76,7 @@ class Gene extends React.Component {
                         <div data-test="gene_id">
                             <dt>Ensembl Gene ID</dt>
                             <dd>
-                                <a href={dbxrefHref('Gene ID', context.gene_id)}>{context.gene_id}</a>
+                                <a href={dbxrefHref('ENSEMBL', context.gene_id, context)}>{context.gene_id}</a>
                             </dd>
                         </div>
 

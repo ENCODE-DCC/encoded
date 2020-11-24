@@ -241,10 +241,11 @@ MaybeLink.defaultProps = {
 // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here. Specific
 // term IDs are appended to these after converting ':' to '_'.
 const urlMap = {
+    CL: 'http://purl.obolibrary.org/obo/',
     EFO: 'http://www.ebi.ac.uk/efo/',
-    UBERON: 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
-    CL: 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/',
-    CLO: 'http://www.ontobee.org/ontology/CLO?iri=http://purl.obolibrary.org/obo/',
+    HANCESTRO: 'http://purl.obolibrary.org/obo/',
+    MONDO: 'http://purl.obolibrary.org/obo/',
+    UBERON: 'http://purl.obolibrary.org/obo/',
 };
 
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix

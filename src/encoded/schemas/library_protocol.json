@@ -273,6 +273,78 @@
                 "TSO",
                 "adapter"
             ]
+        },
+        "sequence_file_standards": {
+            "title": "Sequence file standards",
+            "description": "The expected raw sequencing metrics based on the library protocol",
+            "type": "array",
+            "items": {
+                "title": "Standards",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "read_type": {
+                        "title": "Read type",
+                        "description": "Read reference during experimental protocol.",
+                        "type": "string",
+                        "enum": [
+                            "Read 1",
+                            "Read 1N",
+                            "Read 2",
+                            "Read 2N",
+                            "i5 index",
+                            "i7 index"
+                        ]
+                    },
+                    "sequence_elements": {
+                        "title": "Sequence type",
+                        "description": "The biological content of the sequence reads.",
+                        "type": "array",
+                        "items": {
+                            "title": "Sequence type",
+                            "description": "The biological content of the sequence reads.",
+                            "type": "string",
+                            "enum": [
+                                "3' of molecule",
+                                "5' of molecule",
+                                "molecule",
+                                "feature barcode",
+                                "cell barcode",
+                                "sample index",
+                                "UMI",
+                                "fragment"
+                            ]
+                        }
+                    },
+                    "demultiplexed_type": {
+                        "title": "Demultiplexed type",
+                        "description": "The read assignment after sample demultiplexing for fastq files.",
+                        "type": "string",
+                        "enum": [
+                            "R1",
+                            "R2",
+                            "R3",
+                            "I1",
+                            "I2"
+                        ]
+                    },
+                    "read_length": {
+                        "title": "Read length",
+                        "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+                        "type": "integer"
+                    },
+                    "read_length_specification": {
+                        "title": "Read length specification",
+                        "description": "",
+                        "type": "string",
+                        "enum": [
+                            "exact",
+                            "ideal",
+                            "minimum"
+                        ]
+                    }
+                }
+            }
         }
     },
     "facets": {
