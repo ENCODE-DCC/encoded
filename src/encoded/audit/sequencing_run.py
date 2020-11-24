@@ -9,6 +9,10 @@ from .formatter import (
 
 
 def audit_read_counts(value, system):
+    '''
+    All sequence files belonging to a SequencingRun
+    should have the same number of reads.
+    '''
     if value['status'] in ['deleted']:
         return
 

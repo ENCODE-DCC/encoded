@@ -11,6 +11,10 @@ from .item import STATUS_LEVEL
 
 
 def audit_file_ref_info(value, system):
+    '''
+    A file's reference metadata should match the reference
+    metadata of any file it was derived from
+    '''
     if 'derived_from' not in value and 'AnalysisFile' not in value.get('@type'):
         return
     for f in value['derived_from']:
@@ -32,6 +36,10 @@ def audit_file_ref_info(value, system):
 
 
 def audit_library_protocol_standards(value, system):
+    '''
+    We check fastq metadata against the expected values based on the
+    library protocol used to generate the sequence data.
+    '''
     if 'RawSequenceFile' not in value.get('@type'):
         return
 
@@ -104,6 +112,11 @@ def audit_library_protocol_standards(value, system):
 
 
 def audit_analysis_library_types(value, system):
+    '''
+    An AnalysisFile should only have cellranger_assay_chemistry metadata
+    if it is from an RNA-seq library.
+    We expect CITE-seq libraries to be paired with RNA-seq libraries.
+    '''
     if 'AnalysisFile' not in value.get('@type'):
         return
 

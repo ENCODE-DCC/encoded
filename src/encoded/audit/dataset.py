@@ -9,6 +9,10 @@ from .formatter import (
 
 
 def audit_experiment_geo_submission(value, system, excluded_types):
+    '''
+    We will want to know if a released dataset has not been submitted
+    to GEO yet. We may add other archives to this list.
+    '''
     if value['status'] not in ['released']:
         return
     submitted_flag = False
@@ -27,6 +31,9 @@ def audit_experiment_geo_submission(value, system, excluded_types):
 
 
 def audit_experiment_released_with_unreleased_files(value, system, excluded_types):
+    '''
+    A released experiment should not have unreleased files
+    '''
     if value['status'] != 'released':
         return
     if 'original_files' not in value:
