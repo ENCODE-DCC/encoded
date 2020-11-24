@@ -43,7 +43,8 @@
             "enum": [
                 "Illumina NovaSeq 6000",
                 "Illumina HiSeq 4000",
-                "Illumina HiSeq 2500"
+                "Illumina HiSeq 2500",
+                "MGI DNBSEQ-G400"
             ]
         },
         "flowcell_details": {
