@@ -83,7 +83,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "organism": {
             "comment": "Do not submit, value is assigned by the object.",
@@ -135,27 +135,35 @@
         },
         "ethnicity": {
             "title": "Ethnicity",
-            "comment": "We use http://bioportal.bioontology.org/ontologies/SNOMED-Ethnic-Group as a template for the enum list of ethnicities.",
-            "type": "string",
-            "enum": [
-                "African American",
-                "Arab",
-                "Arab Indian",
-                "Asian",
-                "Asian Hawaiian Eskimo",
-                "Black",
-                "Black African",
-                "Caucasian",
-                "Caucasian Hispanic",
-                "Chinese",
-                "Eskimo",
-                "Han Chinese",
-                "Hawaiian",
-                "Hispanic",
-                "Indian",
-                "Japanese",
-                "Yoruba"
-            ]
+            "comment": "We use http://bioportal.bioontology.org/ontologies/HANCESTRO as a template for the enum list of ethnicities.",
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "African American",
+                    "Arab",
+                    "Arab Indian",
+                    "Asian",
+                    "Black",
+                    "Black African",
+                    "Caucasian",
+                    "Chinese",
+                    "Esan",
+                    "Eskimo",
+                    "Gambian",
+                    "Han Chinese",
+                    "Hispanic",
+                    "Indian",
+                    "Japanese",
+                    "Luhya",
+                    "Maasai",
+                    "Mende",
+                    "Native Hawaiian",
+                    "Yoruba"
+                ]
+            }
         },
         "parents": {
             "title": "Parents",

@@ -92,3 +92,11 @@ def test_upgrade_fly_donor_9_10(root, upgrader, fly_donor_9):
     assert 'DGGR' in value['external_ids'][0]
     assert value['schema_version'] == '10'
 
+
+def test_upgrade_human_donor_11_12(root, upgrader, human_donor_11a, human_donor_11b):
+    value = upgrader.upgrade('human_donor', human_donor_11a, current_version='11', target_version='12')
+    assert value['ethnicity'] == ['Caucasian']
+    value = upgrader.upgrade('human_donor', human_donor_11b, current_version='11', target_version='12')
+    assert 'Arab' in value['ethnicity']
+    assert 'Indian' in value['ethnicity']
+    assert 'Arab Indian' not in value['ethnicity']

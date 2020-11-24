@@ -89,10 +89,10 @@ const HumanDonor = (props) => {
                             </div>
                         : null}
 
-                        {context.ethnicity ?
+                        {context.ethnicity && context.ethnicity.length > 0 ?
                             <div data-test="ethnicity">
                                 <dt>Ethnicity</dt>
-                                <dd className="sentence-case">{context.ethnicity}</dd>
+                                <dd className="sentence-case">{context.ethnicity.join(', ')}</dd>
                             </div>
                         : null}
 

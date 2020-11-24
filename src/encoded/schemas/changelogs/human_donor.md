@@ -1,5 +1,32 @@
 ## Changelog for human_donor.json
 
+### Schema version 12
+
+* *ethnicity* property was changed to be an array with the following enum:
+
+        "enum": [
+            "African American",
+            "Arab",
+            "Arab Indian",
+            "Asian",
+            "Black",
+            "Black African",
+            "Caucasian",
+            "Chinese",
+            "Esan",
+            "Eskimo",
+            "Gambian",
+            "Han Chinese",
+            "Hispanic",
+            "Indian",
+            "Japanese",
+            "Luhya",
+            "Maasai",
+            "Mende",
+            "Native Hawaiian",
+            "Yoruba"
+        ]
+
 ### Minor update since Schema version 11
 * AllCells added to *external_ids* namespace.
 

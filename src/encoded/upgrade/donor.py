@@ -243,3 +243,20 @@ def fly_donor_9_10(value, system):
                 value['dbxrefs'].remove(dbxref)
             else:
                 continue
+
+
+@upgrade_step('human_donor', '11', '12')
+def human_donor_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-5586
+    old_to_new = {
+        'Arab Indian': ['Arab', 'Indian'],
+        'Asian Hawaiian Eskimo': ['Asian', 'Native Hawaiian', 'Eskimo'],
+        'Hawaiian': ['Native Hawaiian'],
+        'Caucasian Hispanic': ['Caucasian', 'Hispanic']
+    }
+    if 'ethnicity' in value:
+        old_ethn = value.get('ethnicity')
+        if old_ethn in old_to_new:
+            value['ethnicity'] = old_to_new[old_ethn]
+        else:
+            value['ethnicity'] = [value['ethnicity']]
