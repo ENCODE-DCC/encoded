@@ -376,6 +376,9 @@ def download(context, request):
         if filename != _filename:
             raise HTTPNotFound(_filename)
 
+    if properties.get('external_uri'):
+        raise HTTPTemporaryRedirect(location=properties.get('external_uri'))
+
     if properties.get('s3_uri'):
         conn = boto3.client('s3')
 
