@@ -3873,6 +3873,12 @@ def test_audit_experiment_lacking_processed_data(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(warning['category'] == 'lacking processed data'
         for warning in collect_audit_errors(res))
+    testapp.patch_json(file_fastq['@id'], {
+        'dataset': experiment['@id']
+        })
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(warning['category'] == 'lacking processed data'
+        for warning in collect_audit_errors(res))
 
 
 def test_audit_experiment_control(testapp, base_matched_set, ChIP_experiment, experiment, base_experiment):
