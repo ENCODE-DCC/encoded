@@ -7,7 +7,6 @@
         "enum": [
             "African American",
             "Arab",
-            "Arab Indian",
             "Asian",
             "Black",
             "Black African",
