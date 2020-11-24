@@ -46,7 +46,7 @@ The "peaks" which is essentially an interval in a BED file are kept in a separat
 
 .. code::
     #fileindexer. Configure first to avoid catchall '/'
-    WSGIDaemonProcess encoded-fileindexer user=encoded group=encoded processes=1 threads=1 display-name=encoded-fileindexer python-home=/srv/encoded/venv
+    WSGIDaemonProcess encoded-fileindexer user=encoded group=encoded processes=1 threads=1 display-name=encoded-fileindexer
     WSGIScriptAlias /_fileindexer /srv/encoded/parts/production-fileindexer/wsgi process-group=encoded-indexer application-group=%{GLOBAL}
 
 Which is an instance of encoded.commands.es_file_index_listener (snovault.elasticsearch.indexer with path=index_file).   The listener polls postgres every 60 seconds for new transactions and responds to the API /_fileindexer/ with status.   It POSTs to the /index_file endpoint (defined in encoded.peak_indexer), in a parallel manner to the primary snovault ES indexer.  It is not multi-threaded, just using 1 process.
@@ -79,7 +79,7 @@ Demos generally do not get files posted to them (BED or otherewise), so it's rar
 
 This is overridden by the following line in cloud-config-cluster.yml:
 .. code::
-    - sudo -u encoded LANG=en_US.UTF-8 buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9200
+    - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9200
 
 Since this is only used when a clustered instance is built, the default region-search ES instance will be the one in production.ini
 This is set in encoded.__init__() as config.registry['snp_search'], a Elasticsearch connnection object (aka registry[SNP_SEARCH_ES])
