@@ -22,56 +22,19 @@ import { BrowserSelector } from './vis_defines';
 
 // Should really be singular...
 const types = {
-    annotation: { title: 'Annotation file set' },
     antibody_lot: { title: 'Antibodies' },
-    biosample_type: { title: 'Biosample types' },
     biosample: { title: 'Biosamples' },
-    computational_model: { title: 'Computational model file set' },
-    experiment: { title: 'Experiments' },
     gene: { title: 'Genes' },
-    target: { title: 'Targets' },
     dataset: { title: 'Datasets' },
     image: { title: 'Images' },
-    matched_set: { title: 'Matched set series' },
-    aggregate_series: { title: 'Aggregate series' },
-    functional_characterization_series: { title: 'Functional characterization series' },
-    single_cell_rna_series: { title: 'Single cell RNA series' },
-    organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
-    pipeline: { title: 'Pipeline' },
-    project: { title: 'Project file set' },
-    publication_data: { title: 'Publication file set' },
-    reference: { title: 'Reference file set' },
-    reference_epigenome: { title: 'Reference epigenome series' },
-    replication_timing_series: { title: 'Replication timing series' },
-    software: { title: 'Software' },
-    treatment_concentration_series: { title: 'Treatment concentration series' },
-    treatment_time_series: { title: 'Treatment time series' },
-    ucsc_browser_composite: { title: 'UCSC browser composite file set' },
-    functional_characterization_experiment: { title: 'Functional characterization experiments' },
-    transgenic_enhancer_experiment: { title: 'Transgenic enhancer experiments' },
+    reference_file_set: { title: 'Reference file set' },
 };
 
 const datasetTypes = {
-    Annotation: types.annotation.title,
     Dataset: types.dataset.title,
-    MatchedSet: types.matched_set.title,
-    OrganismDevelopmentSeries: types.organism_development_series.title,
-    Project: types.project.title,
-    PublicationData: types.publication_data.title,
-    Reference: types.reference.title,
-    ComputationalModel: types.computational_model.title,
-    ReferenceEpigenome: types.reference_epigenome.title,
-    ReplicationTimingSeries: types.replication_timing_series.title,
-    TreatmentConcentrationSeries: types.treatment_concentration_series.title,
-    TreatmentTimeSeries: types.treatment_time_series.title,
-    AggregateSeries: types.aggregate_series.title,
-    FunctionalCharacterizationSeries: types.functional_characterization_series.title,
-    SingleCellRnaSeries: types.single_cell_rna_series.title,
-    UcscBrowserComposite: types.ucsc_browser_composite.title,
-    FunctionalCharacterizationExperiment: types.functional_characterization_experiment.title,
-    TransgenicEnhancerExperiment: types.transgenic_enhancer_experiment.title,
+    ReferenceFileSet: types.reference_file_set.title,
 };
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
@@ -184,35 +147,6 @@ class BiosampleComponent extends React.Component {
         const separator = (lifeStage || ageDisplay) ? ',' : '';
         const treatment = (result.treatments && result.treatments.length > 0) ? result.treatments[0].treatment_term_name : '';
 
-        // Calculate genetic modification properties for display.
-        const rnais = [];
-        const constructs = [];
-        const mutatedGenes = [];
-        if (result.applied_modifications && result.applied_modifications.length > 0) {
-            result.applied_modifications.forEach((am) => {
-                // Collect RNAi GM methods.
-                if (am.method === 'RNAi' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
-                    rnais.push(am.modified_site_by_target_id.name);
-                }
-
-                // Collect construct GM methods.
-                if (am.purpose === 'tagging' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
-                    constructs.push(am.modified_site_by_target_id.name);
-                }
-
-                // Collect mutated gene GM methods.
-                if ((am.category === 'deletion' || am.category === 'mutagenesis') && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
-                    mutatedGenes.push(am.modified_site_by_target_id.name);
-                }
-            });
-        }
-
-        // Build the text of the synchronization string
-        let synchText;
-        if (result.synchronization) {
-            synchText = `${result.synchronization}${result.post_synchronization_time ? ` +${ageDisplay}` : ''}`;
-        }
-
         return (
             <li className={resultItemClass(result)}>
                 <div className="result-item">
@@ -225,14 +159,8 @@ class BiosampleComponent extends React.Component {
                         <div className="result-item__data-row">
                             <div><strong>Type: </strong>{result.biosample_ontology.term_name}</div>
                             {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                            {rnais.length > 0 ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
-                            {constructs.length > 0 ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
                             {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                            {mutatedGenes.length > 0 ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
-                            {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
-                            {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
-                            {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
-                            {result.source ? <div><strong>Source: </strong>{result.source.title}</div> : null }
+                            {result.source ? <div><strong>Source: </strong>{result.source}</div> : null }
                         </div>
                     </div>
                     <div className="result-item__meta">
@@ -274,17 +202,15 @@ const ExperimentComponent = (props, reactContext) => {
     let synchronizations;
 
     // Determine whether object is Experiment or FunctionalCharacterizationExperiment.
-    const experimentType = result['@type'][0];
-    const isFunctionalExperiment = experimentType === 'FunctionalCharacterizationExperiment';
-    const displayType = isFunctionalExperiment ? 'Functional Characterization Experiment' : 'Experiment';
+    const displayType = 'Experiment';
 
     // Collect all biosamples associated with the experiment. This array can contain duplicate
     // biosamples, but no null entries.
     let biosamples = [];
     const treatments = [];
 
-    if (result.replicates && result.replicates.length > 0) {
-        biosamples = _.compact(result.replicates.map(replicate => replicate.library && replicate.library.biosample));
+    if (result.libraries && result.libraries.length > 0) {
+        biosamples = _.compact(result.libraries.map(library => library.derived_from));
         // flatten treatment array of arrays
         _.compact(biosamples.map(biosample => biosample.treatments)).forEach(treatment => treatment.forEach(t => treatments.push(t)));
     }
@@ -292,27 +218,10 @@ const ExperimentComponent = (props, reactContext) => {
     // Get all biosample organism names
     const organismNames = biosamples.length > 0 ? BiosampleOrganismNames(biosamples) : [];
 
-    // Collect synchronizations
-    if (result.replicates && result.replicates.length > 0) {
-        synchronizations = _.uniq(result.replicates.filter(replicate =>
-            replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-        ).map((replicate) => {
-            const biosample = replicate.library.biosample;
-            return `${biosample.synchronization}${biosample.post_synchronization_time ? ` + ${biosample.age_display}` : ''}`;
-        }));
-    }
-
     const uniqueTreatments = getUniqueTreatments(treatments);
 
     // Get a map of related datasets, possibly filtering on their status and
     // categorized by their type.
-    let seriesMap = {};
-    if (result.related_series && result.related_series.length > 0) {
-        seriesMap = _.groupBy(
-            result.related_series, series => series['@type'][0]
-        );
-    }
-
     return (
         <li className={resultItemClass(result)}>
             <div className="result-item">
@@ -341,16 +250,8 @@ const ExperimentComponent = (props, reactContext) => {
                         </div>
                     : null}
                     <div className="result-item__data-row">
-                        {result.target && result.target.label ?
-                            <div><strong>Target: </strong>{result.target.label}</div>
-                        : null}
-
                         {mode !== 'cart-view' ?
                             <React.Fragment>
-                                {synchronizations && synchronizations.length > 0 ?
-                                    <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
-                                : null}
-
                                 <div><strong>Lab: </strong>{result.lab.title}</div>
                                 <div><strong>Project: </strong>{result.award.project}</div>
                                 {treatments && treatments.length > 0 ?
@@ -360,21 +261,6 @@ const ExperimentComponent = (props, reactContext) => {
                                         </span>
                                     </div>
                                 : null}
-                                {Object.keys(seriesMap).map(seriesType =>
-                                    <div key={seriesType}>
-                                        <strong>{seriesType.replace(/([A-Z])/g, ' $1')}: </strong>
-                                        {seriesMap[seriesType].map(
-                                            (series, i) => (
-                                                <span key={series.accession}>
-                                                    {i > 0 ? ', ' : null}
-                                                    <a href={series['@id']}>
-                                                        {series.accession}
-                                                    </a>
-                                                </span>
-                                            )
-                                        )}
-                                    </div>
-                                )}
                             </React.Fragment>
                         : null}
                     </div>
@@ -497,8 +383,6 @@ const DatasetComponent = (props, reactContext) => {
                     </a>
                     <div className="result-item__data-row">
                         {result.dataset_type ? <div><strong>Dataset type: </strong>{result.dataset_type}</div> : null}
-                        {targets && targets.length > 0 ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
                         <div><strong>Project: </strong>{result.award.project}</div>
                         { treatments && treatments.length > 0 ?
                                 <div><strong>Treatment{uniqueTreatments.length !== 1 ? 's' : ''}: </strong>
@@ -536,47 +420,6 @@ DatasetComponent.contextTypes = {
 const Dataset = auditDecor(DatasetComponent);
 
 globals.listingViews.register(Dataset, 'Dataset');
-
-
-const TargetComponent = ({ context: result, auditIndicators, auditDetail }, reactContext) => (
-    <li className={resultItemClass(result)}>
-        <div className="result-item">
-            <div className="result-item__data">
-                <a href={result['@id']} className="result-item__link">
-                    {result.label} ({result.organism && result.organism.scientific_name ? <i>{result.organism.scientific_name}</i> : <span>{result.investigated_as[0]}</span>})
-                </a>
-                <div className="result-item__target-external-resources">
-                    <p>External resources:</p>
-                    {result.dbxrefs && result.dbxrefs.length > 0 ?
-                        <DbxrefList context={result} dbxrefs={result.dbxrefs} />
-                    : <em>None submitted</em> }
-                </div>
-            </div>
-            <div className="result-item__meta">
-                <div className="result-item__meta-title">Target</div>
-                {auditIndicators(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, search: true })}
-            </div>
-            <PickerActions context={result} />
-        </div>
-        {auditDetail(result.audit, result['@id'], { session: reactContext.session, sessionProperties: reactContext.session_properties, except: result['@id'], forcedEditLink: true })}
-    </li>
-);
-
-TargetComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Target search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-TargetComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
-    session_properties: PropTypes.object,
-};
-
-const Target = auditDecor(TargetComponent);
-
-globals.listingViews.register(Target, 'Target');
-
 
 const Image = (props) => {
     const result = props.context;

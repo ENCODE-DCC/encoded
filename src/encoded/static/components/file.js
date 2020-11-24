@@ -606,10 +606,12 @@ class ListingComponent extends React.Component {
                         <a href={result['@id']} className="result-item__link">
                             {`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}
                         </a>
+                        {result.lab ?
                         <div className="result-item__data-row">
                             <div><strong>Lab: </strong>{result.lab.title}</div>
                             {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
                         </div>
+                        : null}
                     </div>
                     <PickerActions context={result} />
                 </div>
