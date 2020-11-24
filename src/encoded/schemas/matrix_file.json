@@ -182,9 +182,12 @@
             "type": "string",
             "enum": [
                 "linear",
-                "natural log",
-                "log2",
-                "log10"
+                "log, natural",
+                "log, base 10",
+                "log, base 2",
+                "log1p, natural",
+                "log1p, base 10",
+                "log1p, base 2"
             ]
         },
         "value_units": {
