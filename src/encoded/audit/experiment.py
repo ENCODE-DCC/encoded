@@ -4186,9 +4186,9 @@ def audit_experiment_eclip_queried_RNP_size_range(value, system, excluded_types)
 
 
 def audit_experiment_no_processed_data(value, system, files_structure):
-    '''
-    ENCD-5057: flag experiments that do not have any processed data
-    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
     raw_data = files_structure.get('raw_data')
     processed_data = files_structure.get('processed_data')
 
