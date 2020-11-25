@@ -96,34 +96,31 @@ class CartStatusComponent extends React.Component {
         const { elements, savedCartObj, inProgress, openDropdown, dropdownClick, loggedIn } = this.props;
         const locked = !!(savedCartObj && savedCartObj.locked);
 
-        if (loggedIn || elements.length > 0 || inProgress) {
+        if (loggedIn) {
             // Define the menu items for the Cart Status menu.
-            const cartName = (loggedIn && savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
+            const cartName = (savedCartObj && savedCartObj.name) ? truncateString(savedCartObj.name, 22) : '';
             const menuItems = [];
             const viewCartItem = <a key="view" href="/cart-view/">View cart</a>;
             const clearCartItem = !locked ? <button key="clear" onClick={this.clearCartClick}>Clear cart</button> : null;
             const lockIcon = cartName ? <div className="cart-nav-lock">{svgIcon(locked ? 'lockClosed' : 'lockOpen')}</div> : null;
-            if (loggedIn) {
-                // The href is just to quiet ESLint for the bad href. This code shouldn't do this
-                // but the CSS looks difficult to fix after the tooltip updates.
+
+            // The href is just to quiet ESLint for the bad href. This code shouldn't do this
+            // but the CSS looks difficult to fix after the tooltip updates.
+            menuItems.push(
+                <span key="name" className="disabled-menu-item">
+                    {`Current: ${cartName}`}{lockIcon}
+                </span>,
+                <DropdownMenuSep key="sep-1" />
+            );
+            if (elements.length > 0) {
                 menuItems.push(
-                    <span key="name" className="disabled-menu-item">
-                        {`Current: ${cartName}`}{lockIcon}
-                    </span>,
-                    <DropdownMenuSep key="sep-1" />
+                    viewCartItem,
+                    <button key="share" onClick={this.shareCartClick}>Share cart</button>,
+                    clearCartItem,
+                    <DropdownMenuSep key="sep-2" />
                 );
-                if (elements.length > 0) {
-                    menuItems.push(
-                        viewCartItem,
-                        <button key="share" onClick={this.shareCartClick}>Share cart</button>,
-                        clearCartItem,
-                        <DropdownMenuSep key="sep-2" />
-                    );
-                }
-                menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
-            } else {
-                menuItems.push(viewCartItem, clearCartItem);
             }
+            menuItems.push(<a key="manage" href="/cart-manager/">Cart manager</a>);
 
             return (
                 <NavItem

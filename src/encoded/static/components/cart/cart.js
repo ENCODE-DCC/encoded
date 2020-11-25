@@ -121,8 +121,8 @@ class CartSearchResults extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { currentPage, elements, loggedIn } = this.props;
-        if (prevProps.currentPage !== currentPage || !_.isEqual(prevProps.elements, elements) || (prevProps.loggedIn !== loggedIn)) {
+        const { currentPage, elements } = this.props;
+        if (prevProps.currentPage !== currentPage || !_.isEqual(prevProps.elements, elements)) {
             this.retrievePageElements();
         }
     }
@@ -158,15 +158,12 @@ CartSearchResults.propTypes = {
     currentPage: PropTypes.number,
     /** True if displaying an active cart */
     cartControls: PropTypes.bool,
-    /** True if user has logged in */
-    loggedIn: PropTypes.bool,
 };
 
 CartSearchResults.defaultProps = {
     elements: [],
     currentPage: 0,
     cartControls: false,
-    loggedIn: false,
 };
 
 
@@ -723,7 +720,7 @@ class FileFacets extends React.Component {
             expandedStates[facetField.field] = index === 0;
         });
         this.state = {
-            /** Tracks expanded/nonexpanded states of every facet */
+            /** Tracks expanded/non-expanded states of every facet */
             expanded: expandedStates,
         };
 
@@ -966,9 +963,9 @@ const CartTools = ({ elements, selectedTerms, selectedDatasetType, typeChangeHan
                 />
             : null}
             {cartType === 'OBJECT' ? <CartMergeShared sharedCartObj={sharedCart} viewableDatasets={viewableDatasets} /> : null}
-            {cartType === 'ACTIVE' || cartType === 'MEMORY' ?
+            {cartType === 'ACTIVE' ?
                 <div className="cart-tools-extras">
-                    {cartType !== 'MEMORY' ? <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} /> : null}
+                    <CartLockTrigger savedCartObj={savedCartObj} inProgress={inProgress} />
                     <CartClearButton />
                 </div>
             : null}
@@ -990,7 +987,7 @@ CartTools.propTypes = {
     savedCartObj: PropTypes.object,
     /** Viewable cart element @ids */
     viewableDatasets: PropTypes.array,
-    /** Type of cart: ACTIVE, OBJECT, MEMORY */
+    /** Type of cart: ACTIVE, OBJECT */
     cartType: PropTypes.string.isRequired,
     /** Elements in the shared cart, if that's being displayed */
     sharedCart: PropTypes.object,
@@ -1301,34 +1298,27 @@ CounterTab.defaultProps = {
  * cartType: Type of cart being displayed:
  *           'ACTIVE': Viewing the current cart
  *           'OBJECT': Viewing the cart specified in the URL
- *           'MEMORY': Viewing carts in browser memory (non-logged-in user)
+ * During page load, this function can get called for /cart-view/ but with `savedCartObj` not yet
+ * filled in. Check the returned `cartType` for the empty string to detect this.
  * @param {object} context Cart search results object; often empty depending on cart type
  * @param {object} savedCartObj Cart object in Redux store for active logged-in carts
- * @param {object} elements Elements of the in-memory cart
  *
  * @return {object} -
  * {
- *      {string} cartType - Cart type: OBJECT, MEMORY, ACTIVE
+ *      {string} cartType - Cart type: OBJECT, ACTIVE; '' if undetermined
  *      {string} cartName - Name of cart
  *      {array} cartDatasets - @ids of all datasets in cart
  * }
  */
-const getCartInfo = (context, savedCartObj, elements) => {
-    let cartType;
+const getCartInfo = (context, savedCartObj) => {
+    let cartType = '';
     let cartName;
     let cartDatasets;
-    if (context['@type'][0] === 'cart-view') {
-        // Viewing a current active or memory cart on the /cart-view/ page.
-        if (savedCartObj && Object.keys(savedCartObj).length > 0) {
-            cartType = 'ACTIVE';
-            cartName = savedCartObj.name;
-            cartDatasets = savedCartObj.elements;
-        } else {
-            cartType = 'MEMORY';
-            cartName = 'Cart';
-            cartDatasets = elements;
-        }
-    } else {
+    if (context['@type'][0] === 'cart-view' && savedCartObj && Object.keys(savedCartObj).length > 0) {
+        cartType = 'ACTIVE';
+        cartName = savedCartObj.name;
+        cartDatasets = savedCartObj.elements;
+    } else if (context['@type'][0] === 'Cart') {
         // Viewing a saved cart at its unique path.
         cartType = 'OBJECT';
         cartName = context.name;
@@ -1363,7 +1353,7 @@ const generateFacetTermsTemplate = () => {
  *
  * @return {promise}:
  * {
- *      datasetFiles - Array of all parital file objects in all datasets
+ *      datasetFiles - Array of all partial file objects in all datasets
  *      datasets - Array of all datasets viewable at user's access level; subset of `datasetsIds`
  * }
  */
@@ -1452,13 +1442,11 @@ const calcTotalPageCount = (itemCount, maxCount) => Math.floor(itemCount / maxCo
  *    * context contains items to display (shared cart).
  * 2. ACTIVE (/cart-view/) containing the current cart's contents
  *    * savedCartObj contains items to display (your own logged-in cart)
- * 3. MEMORY (/cart-view/) containing nothing
- *    * this.props.cart contains items to display (logged-out in-memory cart)
  * All files in all cart experiments are kept in an array of partial file objects which contain
  * only the file object properties requested in `requestedFacetFields`. When visualizing a subset
  * of these files, complete file objects get retrieved.
  */
-const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, fetch, session }) => {
+const CartComponent = ({ context, savedCartObj, inProgress, fetch, session }) => {
     // Keeps track of currently selected facet terms keyed by facet fields.
     const [selectedTerms, setSelectedTerms] = React.useState(() => generateFacetTermsTemplate());
     // Currently selected dataset type.
@@ -1478,16 +1466,23 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
     // All partial file objects in the cart datasets. Not affected by currently selected facets.
     const [allFiles, setAllFiles] = React.useState([]);
 
-    // Retrieve current unfiltered cart information regardless of its source (memory, object,
-    // active).
+    // Retrieve current unfiltered cart information regardless of its source (object or active).
     const { cartType, cartName, cartDatasets } = React.useMemo(() => (
-        getCartInfo(context, savedCartObj, elements)
-    ), [context, savedCartObj, elements]);
+        getCartInfo(context, savedCartObj)
+    ), [context, savedCartObj]);
 
-    // Get the cart datasets subject to the dataset-type dropdown.
-    const cartDatasetsForType = React.useMemo(() => (
-        selectedDatasetType === 'all' ? cartDatasets : cartDatasets.filter(datasetAtId => atIdToType(datasetAtId) === selectedDatasetType)
-    ), [selectedDatasetType, cartDatasets]);
+    // Get the cart datasets subject to the dataset-type dropdown. Empty array if cart type not yet
+    // determined.
+    const cartDatasetsForType = React.useMemo(() => {
+        if (cartType) {
+            return (
+                selectedDatasetType === 'all'
+                    ? cartDatasets
+                    : cartDatasets.filter(datasetAtId => atIdToType(datasetAtId) === selectedDatasetType)
+            );
+        }
+        return [];
+    }, [selectedDatasetType, cartDatasets, cartType]);
 
     // Build the facets based on the currently selected facet terms.
     const { facets, selectedFiles } = React.useMemo(() => (
@@ -1650,7 +1645,6 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
                                 selectedFileCount={selectedFiles.length}
                                 visualizableOnly={visualizableOnly}
                                 visualizableOnlyChangeHandler={handleVisualizableOnlyChange}
-                                loggedIn={loggedIn}
                                 facetLoadProgress={facetProgress}
                                 disabled={displayedTab === 'rawdata'}
                             />
@@ -1675,7 +1669,6 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
                                         elements={cartDatasetsForType}
                                         currentPage={pageNumbers.datasets}
                                         cartControls={cartType !== 'OBJECT'}
-                                        loggedIn={loggedIn}
                                     />
                                 </TabPanelPane>
                                 <TabPanelPane key="browser">
@@ -1716,12 +1709,8 @@ const CartComponent = ({ context, elements, savedCartObj, loggedIn, inProgress, 
 CartComponent.propTypes = {
     /** Cart object to display */
     context: PropTypes.object.isRequired,
-    /** In-memory cart contents */
-    elements: PropTypes.array.isRequired,
     /** Cart as it exists in the database */
     savedCartObj: PropTypes.object,
-    /** True if user has logged in */
-    loggedIn: PropTypes.bool,
     /** True if cart operation in progress */
     inProgress: PropTypes.bool,
     /** System fetch function */
@@ -1732,7 +1721,6 @@ CartComponent.propTypes = {
 
 CartComponent.defaultProps = {
     savedCartObj: null,
-    loggedIn: false,
     inProgress: false,
     session: null,
 };
@@ -1743,10 +1731,8 @@ CartComponent.contextTypes = {
 
 
 const mapStateToProps = (state, ownProps) => ({
-    elements: state.elements,
     savedCartObj: state.savedCartObj,
     context: ownProps.context,
-    loggedIn: ownProps.loggedIn,
     inProgress: state.inProgress,
     fetch: ownProps.fetch,
     session: ownProps.session,
@@ -1758,10 +1744,9 @@ const CartInternal = connect(mapStateToProps)(CartComponent);
 /**
  * Wrapper to receive React <App> context and pass it to CartInternal as regular props.
  */
-const Cart = (props, reactContext) => {
-    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
-    return <CartInternal context={props.context} fetch={reactContext.fetch} loggedIn={loggedIn} session={reactContext.session} />;
-};
+const Cart = (props, reactContext) => (
+    <CartInternal context={props.context} fetch={reactContext.fetch} session={reactContext.session} />
+);
 
 Cart.propTypes = {
     /** Cart object from server, either for shared cart or 'cart-view' */

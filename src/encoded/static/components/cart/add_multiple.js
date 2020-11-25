@@ -7,106 +7,79 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import url from 'url';
 import QueryString from '../../libs/query_string';
-import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
 import { atIdToType, truncateString } from '../globals';
 import { requestSearch } from '../objectutils';
+import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
+import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
 import {
-    MaximumElementsLoggedoutModal,
-    CART_MAXIMUM_ELEMENTS_LOGGEDOUT,
     cartGetAllowedTypes,
     cartGetAllowedObjectPathTypes,
-    mergeCarts,
 } from './util';
 
 /**
  * Button to add all qualifying elements to the user's cart.
  */
-class CartAddAllSearchComponent extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            /** True if search results total more than maximum # of elements while not logged in */
-            overMaximumError: false,
-        };
-        this.handleClick = this.handleClick.bind(this);
-        this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
-    }
+const CartAddAllSearchComponent = ({ savedCartObj, searchResults, inProgress, addAllResults, setInProgress, loggedIn }) => {
+    /** Get hooks for the logged-out warning modal */
+    const [warningStates, warningActions] = useLoggedOutWarning(false);
 
     /**
      * Handle a click in the Add All button by doing a search of elements allowed in carts to get
      * all their @ids that we can add to the cart.
      */
-    handleClick() {
-        // Don't use existing search results as they might only include 25 results and we need all
-        // of them. Do the same search but with limit=all and field=@id.
-        const parsedUrl = url.parse(this.props.searchResults['@id']);
-        const query = new QueryString(parsedUrl.query);
-        query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id');
-        const searchQuery = query.format();
+    const handleClick = () => {
+        if (loggedIn) {
+            // Don't use existing search results as they might only include 25 results and we need all
+            // of them. Do the same search but with limit=all and field=@id.
+            const parsedUrl = url.parse(searchResults['@id']);
+            const query = new QueryString(parsedUrl.query);
+            query.replaceKeyValue('limit', 'all').addKeyValue('field', '@id');
+            const searchQuery = query.format();
 
-        // With the updated query string, perform the search of all @ids matching the current
-        // search.
-        this.props.setInProgress(true);
-        requestSearch(searchQuery).then((results) => {
-            this.props.setInProgress(false);
-            if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
-                const loggedIn = !!(this.props.session && this.props.session['auth.userid']);
-                const allowedTypes = cartGetAllowedTypes();
+            // With the updated query string, perform the search of all @ids matching the current
+            // search.
+            setInProgress(true);
+            requestSearch(searchQuery).then((results) => {
+                setInProgress(false);
+                if (Object.keys(results).length > 0 && results['@graph'].length > 0) {
+                    const allowedTypes = cartGetAllowedTypes();
 
-                // Get all elements from results that qualify to exist in carts.
-                const elementsForCart = results['@graph'].filter(result => allowedTypes.includes(result['@type'][0])).map(result => result['@id']);
-                if (elementsForCart.length > 0) {
-                    // We should always have elements qualified to exist in a cart because we
-                    // wouldn't have shown the "Add all items to cart" button if we didn't know we
-                    // had qualfied elements in the search results, but just in case.
-                    if (!loggedIn) {
-                        // Not logged in, so test whether the merged new and existing carts would have
-                        // more elements than allowed in a logged-out cart. Display an error modal if
-                        // that happens.
-                        const mergedCarts = mergeCarts(this.props.elements, elementsForCart);
-                        if (mergedCarts.length > CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
-                            this.setState({ overMaximumError: true });
-                            return;
-                        }
+                    // Get all elements from results that qualify to exist in carts.
+                    const elementsForCart = results['@graph'].filter(result => allowedTypes.includes(result['@type'][0])).map(result => result['@id']);
+                    if (elementsForCart.length > 0) {
+                        // We should always have elements qualified to exist in a cart because we
+                        // wouldn't have shown the "Add all items to cart" button if we didn't know we
+                        // had qualified elements in the search results, but just in case.
+                        addAllResults(elementsForCart);
                     }
-                    this.props.addAllResults(elementsForCart);
                 }
-            }
-        });
-    }
+            });
+        } else {
+            warningActions.setIsWarningVisible(true);
+        }
+    };
 
-    /**
-     * Called when user clicks the close button on the error modal.
-     */
-    handleErrorModalClose() {
-        this.setState({ overMaximumError: false });
-    }
-
-    render() {
-        const { savedCartObj, inProgress } = this.props;
-        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+    if (savedCartObj) {
+        const cartName = Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '';
         return (
             <div className="cart-add-all">
-                {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
+                {savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
                 <button
                     disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
-                    onClick={this.handleClick}
+                    onClick={handleClick}
                     title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
                 >
                     Add all items to cart
                 </button>
-                {this.state.overMaximumError ?
-                    <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
-                : null}
+                {warningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={warningActions.handleCloseWarning} /> : null}
             </div>
         );
     }
-}
+    return null;
+};
 
 CartAddAllSearchComponent.propTypes = {
-    /** Existing cart contents before adding new items */
-    elements: PropTypes.array.isRequired,
     /** Current cart saved object */
     savedCartObj: PropTypes.object,
     /** Search result object of elements to add to cart */
@@ -117,14 +90,13 @@ CartAddAllSearchComponent.propTypes = {
     addAllResults: PropTypes.func.isRequired,
     /** Function to indicate cart operation in progress */
     setInProgress: PropTypes.func.isRequired,
-    /** Logged-in user information */
-    session: PropTypes.object,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool.isRequired,
 };
 
 CartAddAllSearchComponent.defaultProps = {
     inProgress: false,
     savedCartObj: null,
-    session: null,
 };
 
 CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
@@ -132,17 +104,17 @@ CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     searchResults: ownProps.searchResults,
-    session: ownProps.session,
+    loggedIn: ownProps.loggedIn,
 });
 CartAddAllSearchComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.fetch)),
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
 });
 
 const CartAddAllSearchInternal = connect(CartAddAllSearchComponent.mapStateToProps, CartAddAllSearchComponent.mapDispatchToProps)(CartAddAllSearchComponent);
 
 export const CartAddAllSearch = (props, reactContext) => (
-    <CartAddAllSearchInternal searchResults={props.searchResults} session={reactContext.session} fetch={reactContext.fetch} />
+    <CartAddAllSearchInternal searchResults={props.searchResults} fetch={reactContext.fetch} loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])} />
 );
 
 CartAddAllSearch.propTypes = {
@@ -151,28 +123,35 @@ CartAddAllSearch.propTypes = {
 };
 
 CartAddAllSearch.contextTypes = {
-    session: PropTypes.object,
     fetch: PropTypes.func,
+    session: PropTypes.object,
 };
 
 
 /**
  * Renders a button to add all elements from an array of dataset objects to the current cart.
  */
-const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAllResults }) => {
+const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAllResults, loggedIn }) => {
+    /** Get hooks for the logged-out warning modal */
+    const [warningStates, warningActions] = useLoggedOutWarning(false);
+
     /**
      * Handle a click in the button to add all datasets from a list to the current cart.
      */
     const handleClick = () => {
-        // Filter the added elements to those allowed in carts.
-        const allowedPathTypes = cartGetAllowedObjectPathTypes();
-        const allowedElements = elements.filter(element => (
-            allowedPathTypes.includes(atIdToType(element))
-        ));
+        if (loggedIn) {
+            // Filter the added elements to those allowed in carts.
+            const allowedPathTypes = cartGetAllowedObjectPathTypes();
+            const allowedElements = elements.filter(element => (
+                allowedPathTypes.includes(atIdToType(element))
+            ));
 
-        // Add the allowed elements to the cart.
-        if (allowedElements.length > 0) {
-            addAllResults(allowedElements);
+            // Add the allowed elements to the cart.
+            if (allowedElements.length > 0) {
+                addAllResults(allowedElements);
+            }
+        } else {
+            warningActions.setIsWarningVisible(true);
         }
     };
 
@@ -181,13 +160,14 @@ const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAl
         <div className="cart-add-all">
             {savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
             <button
-                disabled={inProgress || savedCartObj.locked}
+                disabled={inProgress || (savedCartObj && savedCartObj.locked)}
                 className="btn btn-info btn-sm"
                 onClick={handleClick}
                 title={`Add all related experiments to cart${cartName ? `: ${cartName}` : ''}`}
             >
                 Add all items to cart
             </button>
+            {warningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={warningActions.handleCloseWarning} /> : null}
         </div>
     );
 };
@@ -201,6 +181,8 @@ CartAddAllElementsComponent.propTypes = {
     inProgress: PropTypes.bool.isRequired,
     /** Function to call when Add All clicked */
     addAllResults: PropTypes.func.isRequired,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool.isRequired,
 };
 
 CartAddAllElementsComponent.defaultProps = {
@@ -211,10 +193,11 @@ CartAddAllElementsComponent.mapStateToProps = (state, ownProps) => ({
     savedCartObj: state.savedCartObj,
     elements: ownProps.elements,
     inProgress: state.inProgress,
+    loggedIn: ownProps.loggedIn,
 });
 
 CartAddAllElementsComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    addAllResults: elements => dispatch(addMultipleToCartAndSave(elements, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    addAllResults: elements => dispatch(addMultipleToCartAndSave(elements, ownProps.fetch)),
 });
 
 const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateToProps, CartAddAllElementsComponent.mapDispatchToProps)(CartAddAllElementsComponent);
@@ -222,7 +205,7 @@ const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateT
 
 // Public component used to bind to context properties.
 export const CartAddAllElements = ({ elements }, reactContext) => (
-    <CartAddAllElementsInternal elements={elements} session={reactContext.session} fetch={reactContext.fetch} />
+    <CartAddAllElementsInternal elements={elements} fetch={reactContext.fetch} loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])} />
 );
 
 CartAddAllElements.propTypes = {

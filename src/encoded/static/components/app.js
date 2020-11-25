@@ -12,11 +12,7 @@ import origin from '../libs/origin';
 import { BrowserFeat } from './browserfeat';
 import cartStore, {
     cartCacheSaved,
-    cartCreateAutosave,
     cartIsUnsaved,
-    cartMergeElements,
-    cartRetrieve,
-    cartSave,
     cartSetOperationInProgress,
     cartGetSettings,
     cartSetSettingsCurrent,
@@ -28,7 +24,6 @@ import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
 import jsonldFormatter from '../libs/jsonld';
-import { requestSearch } from './objectutils';
 import newsHead from './page';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 
@@ -333,7 +328,7 @@ class App extends React.Component {
         this.signup = this.signup.bind(this);
     }
 
-    // Data for child components to subscrie to.
+    // Data for child components to subscribe to.
     getChildContext() {
         return {
             listActionsFor: this.listActionsFor,
@@ -412,7 +407,7 @@ class App extends React.Component {
             }
         });
 
-        // Initialize browesr history mechanism
+        // Initialize browser history mechanism
         if (this.constructor.historyEnabled()) {
             const data = this.props.context;
             try {
@@ -619,7 +614,7 @@ class App extends React.Component {
     }
 
     /**
-    * Login with exisiting user or bring up account-creation modal
+    * Login with existing user or bring up account-creation modal
     *
     * @param {object} authResult- Authorization information
     * @param {boolean} retrying- Attempt to retry login or not
@@ -746,48 +741,16 @@ class App extends React.Component {
     // collected in the cart while logged out. Retrieve the cart contents for the current logged-
     // in user.
     initializeCartFromSessionProperties(sessionProperties) {
-        // If the newly logged-in user has an in-memory cart, find or create the user's auto-save
-        // cart (has a "disabled" status) and add the in-memory cart items to it.
-        let autosaveCartPromise;
-        cartSetOperationInProgress(true, cartStore.dispatch);
-        if (cartIsUnsaved()) {
-            // The user has an in-memory cart that needs to be saved to the auto-save cart,
-            // so get the auto-save cart with a search.
-            autosaveCartPromise = requestSearch(`type=Cart&submitted_by=${sessionProperties.user['@id']}&status=disabled`).then((cartSearchResults) => {
-                if (Object.keys(cartSearchResults).length === 0) {
-                    // User has no auto-save cart, so create one.
-                    return cartCreateAutosave(this.fetch).then(autosaveCartAtId => (
-                        // Creating a cart returns its @id, so retrieve the auto-save cart object.
-                        cartRetrieve(autosaveCartAtId, this.fetch)
-                    ));
-                }
-
-                // User should never have more than one signed-out cart, but if they do, get the
-                // first one returned.
-                return cartSearchResults['@graph'][0];
-            }).then((autosaveCart) => {
-                // We now have the auto-save cart object, new or existing. Merge the in-memory cart
-                // with it and write it back to the DB.
-                const memoryCartElements = cartStore.getState().elements;
-                const mergedCart = cartMergeElements(autosaveCart, memoryCartElements);
-                return cartSave(mergedCart.elements, mergedCart, this.fetch);
-            });
-        } else {
-            // Nothing in the in-memory cart, so just pass null downstream.
-            autosaveCartPromise = Promise.resolve(null);
-        }
-
         // Retrieve the logged-in user's carts. If the user has never logged in before, an initial
         // empty cart gets created and returned here.
         cartCacheSaved({}, cartStore.dispatch);
-        autosaveCartPromise.then(() => (
-            this.fetch('/carts/@@get-cart', {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                },
-            })
-        )).then((response) => {
+        cartSetOperationInProgress(true, cartStore.dispatch);
+        this.fetch('/carts/@@get-cart', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
             cartSetOperationInProgress(false, cartStore.dispatch);
             if (response.ok) {
                 return response.json();
@@ -824,7 +787,11 @@ class App extends React.Component {
         const nativeEvent = event.nativeEvent;
 
         // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
-        while (target && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))) {
+        while (
+            target
+            && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))
+            && (target.tagName.toLowerCase() !== 'button' || !target.getAttribute('data-trigger'))
+        ) {
             target = target.parentElement;
         }
         if (!target) {
@@ -1116,7 +1083,7 @@ class App extends React.Component {
 
         // Set up new properties for the page after a navigation click. First disable slow now that we've
         // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
-        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+        // the data for a Network Request Error. Don't render that, but clear the requestAborted flag.
         // Otherwise we have good page data to render.
         const newState = { slow: false };
         if (!this.requestAborted) {

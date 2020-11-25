@@ -70,13 +70,13 @@ CartClearModalComponent.mapStateToProps = state => ({
 });
 
 CartClearModalComponent.mapDispatchToProps = (dispatch, ownProps) => ({
-    onClearCartClick: elements => dispatch(removeMultipleFromCartAndSave(elements, !!(ownProps.session && ownProps.session['auth.userid']), ownProps.fetch)),
+    onClearCartClick: elements => dispatch(removeMultipleFromCartAndSave(elements, ownProps.fetch)),
 });
 
 const CartClearModalInternal = connect(CartClearModalComponent.mapStateToProps, CartClearModalComponent.mapDispatchToProps)(CartClearModalComponent);
 
-export const CartClearModal = ({ closeClickHandler }, { session, fetch }) => (
-    <CartClearModalInternal closeClickHandler={closeClickHandler} session={session} fetch={fetch} />
+export const CartClearModal = ({ closeClickHandler }, { fetch }) => (
+    <CartClearModalInternal closeClickHandler={closeClickHandler} fetch={fetch} />
 );
 
 CartClearModal.propTypes = {
@@ -85,7 +85,6 @@ CartClearModal.propTypes = {
 };
 
 CartClearModal.contextTypes = {
-    session: PropTypes.object,
     fetch: PropTypes.func,
 };
 

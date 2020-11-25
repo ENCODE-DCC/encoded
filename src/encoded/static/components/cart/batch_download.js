@@ -227,7 +227,7 @@ const CartBatchDownloadComponent = (
 };
 
 CartBatchDownloadComponent.propTypes = {
-    /** Type of cart, ACTIVE, OBJECT, MEMORY */
+    /** Type of cart: ACTIVE, OBJECT */
     cartType: PropTypes.string.isRequired,
     /** Cart elements */
     elements: PropTypes.array,
