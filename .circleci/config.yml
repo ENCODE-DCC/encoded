@@ -72,6 +72,7 @@ jobs:
       - run:
           name: Run bdd tests
           command: |
+            mkdir -p test-results/pytest-bdd
             bin/test --exitfirst -s -vv -m "bdd" --tb=short \
               --splinter-implicit-wait=2 \
               --splinter-webdriver=chrome \
@@ -91,6 +92,7 @@ jobs:
       - run:
           name: indexing tests
           command: |
+            mkdir -p test-results/pytest-indexing
             bin/test --exitfirst -s -vv \
               -m "indexing" \
               --junitxml=test-results/pytest-indexing/junit.xml
@@ -105,6 +107,7 @@ jobs:
       - run:
           name: indexer tests
           command: |
+            mkdir -p test-results/pytest-indexer
             bin/test --exitfirst -s -vv \
               -m "indexer" \
               --junitxml=test-results/pytest-indexer/junit.xml
@@ -119,6 +122,7 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
+            mkdir -p test-results/pytest-not-bdd-not-indexer
             bin/test --exitfirst -s -vv \
               -m "not bdd and not indexing and not indexer" \
               --junitxml=test-results/pytest-not-bdd-not-indexer/junit.xml
@@ -132,6 +136,7 @@ jobs:
       - run:
           name: npm tests
           command: |
+            mkdir -p test-results/npm
             npm run circleci-test
           environment:
               JEST_JUNIT_OUTPUT: "~/encoded/test-results/npm/junit.xml"
