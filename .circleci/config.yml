@@ -79,7 +79,7 @@ jobs:
               --splinter-socket-timeout=300 \
               --splinter-session-scoped-browser=false \
               --splinter-headless=true \
-              --chrome-options "--disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
+              --chrome-options "--disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080" \
               --junitxml=test-results/pytest-bdd/junit.xml
           no_output_timeout: 30m
       - store_test_results:
