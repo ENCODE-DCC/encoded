@@ -79,7 +79,10 @@ jobs:
               --splinter-session-scoped-browser=false \
               --splinter-headless=true \
               --chrome-options "--disable-gpu --no-sandbox --disable-dev-shm-usage --disable-extensions --whitelisted-ips --window-size=1920,1080"
+              --junitxml=test-results/pytest-bdd/junit.xml
           no_output_timeout: 30m
+      - store_test_results:
+          path: test-results
   indexing:
     executor: encoded-executor
     resource_class: large
@@ -88,8 +91,12 @@ jobs:
       - run:
           name: indexing tests
           command: |
-            bin/test --exitfirst -s -vv -m "indexing"
+            bin/test --exitfirst -s -vv \
+              -m "indexing" \
+              --junitxml=test-results/pytest-indexing/junit.xml
           no_output_timeout: 5m
+      - store_test_results:
+          path: test-results
   indexer:
     executor: encoded-executor
     resource_class: large
@@ -98,8 +105,12 @@ jobs:
       - run:
           name: indexer tests
           command: |
-            bin/test --exitfirst -s -vv -m "indexer"
+            bin/test --exitfirst -s -vv \
+              -m "indexer" \
+              --junitxml=test-results/pytest-indexer/junit.xml
           no_output_timeout: 5m
+      - store_test_results:
+          path: test-results
   not-bdd-non-indexing:
     executor: encoded-executor
     resource_class: medium
@@ -108,7 +119,11 @@ jobs:
       - run:
           name: non bdd non indexing tests
           command: |
-            bin/test --exitfirst -s -vv -m "not bdd and not indexing and not indexer"
+            bin/test --exitfirst -s -vv \
+              -m "not bdd and not indexing and not indexer" \
+              --junitxml=test-results/pytest-not-bdd-not-indexer/junit.xml
+      - store_test_results:
+          path: test-results
   npm:
     executor: encoded-executor
     resource_class: medium
@@ -118,6 +133,10 @@ jobs:
           name: npm tests
           command: |
             npm run circleci-test
+          environment:
+              JEST_JUNIT_OUTPUT: "~/encoded/test-results/npm/junit.xml"
+      - store_test_results:
+          path: test-results
 
 workflows:
   version: 2
