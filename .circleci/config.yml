@@ -61,7 +61,7 @@ commands:
 jobs:
   bdd:
     executor: encoded-executor
-    resource_class: large
+    resource_class: xlarge
     steps:
       - buildout
       # orb dependencies
@@ -138,8 +138,7 @@ jobs:
           command: |
             mkdir -p test-results/npm
             npm run circleci-test
-          environment:
-              JEST_JUNIT_OUTPUT: "~/encoded/test-results/npm/junit.xml"
+            cp junit.xml test-results/npm
       - store_test_results:
           path: test-results
 
