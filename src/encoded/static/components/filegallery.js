@@ -11,12 +11,13 @@ import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
 import * as globals from './globals';
 import { Graph, JsonGraph, GraphException } from './graph';
-import { requestFiles, DownloadableAccession, computeAssemblyAnnotationValue, filterForVisualizableFiles } from './objectutils';
+import { requestFiles, DownloadableAccession, computeAssemblyAnnotationValue, filterForVisualizableFiles, useMount } from './objectutils';
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { visOpenBrowser, visFilterBrowserFiles, visFileSelectable, visSortBrowsers, visMapBrowserName } from './vis_defines';
+import { Breadcrumbs } from './navigation';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -2177,6 +2178,36 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
             // No selected pipeline lab analyses, but if we have at least one qualifying one,
             // automatically select the first one.
             handleAnalysesSelection(0);
+        }
+    });
+
+    /**
+     * Selects certain awards as the default if listed.
+    */
+    useMount(() => {
+        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Lab custom']; // ordered in decreasing precidence
+        const analysesAwarded = analyses.filter(analysis => awardSuffix.some(award => analysis.title.includes(award)));
+
+        // a bit hacky, removes text and use number to determine sorting
+        const sortedAnalysesAwarded = analysesAwarded.sort((a, b) => {
+            // remove text
+            const numbersInTitle1 = a.title.replace(/\D/g, '');
+            const numbersInTitle2 = b.title.replace(/\D/g, '');
+
+            // add numbers so ones with version have the same number of digits as non-versioned ones
+            const number1 = numbersInTitle1.padEnd ? numbersInTitle1.padEnd(8, 0) : numbersInTitle1;
+            const number2 = numbersInTitle2.padEnd ? numbersInTitle2.padEnd(8, 0) : numbersInTitle2;
+
+            // sort
+            return parseInt(number2, 10) - parseInt(number1, 10);
+        });
+
+        // search for the analysis based on precidence and get the index (imagine nested loops if easier)
+        const selectedAnalysis = sortedAnalysesAwarded.find(analysis => awardSuffix.find(award => analysis.title.includes(award)));
+        const selectedIndex = analyses.findIndex(a => a.title === selectedAnalysis.title);
+
+        if (selectedIndex !== -1) {
+            handleAnalysesSelection(selectedIndex);
         }
     });
 
