@@ -2,7 +2,7 @@
 
 ### Schema version 12
 
-* *ethnicity* property was changed to be an array with the following enum:
+* *ethnicity* property was changed to be an array using the HANCESTRO ontology as a guide for the following enum:
 
         "enum": [
             "African American",
