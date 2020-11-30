@@ -70,10 +70,10 @@ Object.freeze(ViewControlTypes);
  * the matrix view control button.
  */
 const viewPathMap = {
-    Search: { path: 'search', icon: 'search', label: 'View results as a list' },
-    Report: { path: 'report', icon: 'table', label: 'View tabular report' },
-    Matrix: { path: 'matrix', icon: 'matrix', label: 'View summary matrix' },
-    Summary: { path: 'summary', icon: 'summary', label: 'View summary report' },
+    Search: { path: 'search', icon: 'search', name: "List", label: 'View results as a list' },
+    Report: { path: 'report', icon: 'table', name: "Report", label: 'View tabular report' },
+    Matrix: { path: 'matrix', icon: 'matrix', name: "Matrix", label: 'View summary matrix' },
+    Summary: { path: 'summary', icon: 'summary', name: "Summary", label: 'View summary report' },
 };
 
 
@@ -168,6 +168,9 @@ class ViewControl {
         if (!parentTypes.includes(resultType)) {
             // Add report view if object type has no child types.
             defaultViewControlTypes.types.push(ViewControlTypes.REPORT);
+        }
+        if (resultType == "Patient") {
+            defaultViewControlTypes.types.push(ViewControlTypes.MATRIX);
         }
         return defaultViewControlTypes;
     }
@@ -279,6 +282,8 @@ export const ViewControls = ({ results, filterTerm, activeFilters, alternativeNa
                     return (
                         <a key={buttonData.path} href={`/${buttonData.path}/?${queryString}`} role="button" className="btn btn-info btn-sm" data-test={buttonData.path} aria-label={buttonData.label}>
                             {svgIcon(buttonData.icon)}
+                            <span>&nbsp;</span>
+                            {buttonData.name}
                         </a>
                     );
                 })}
@@ -489,3 +494,4 @@ BatchDownloadControls.defaultProps = {
     modalText: modalDefaultText,
     canDownload: true,
 };
+
