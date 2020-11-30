@@ -25,7 +25,7 @@ sudo -H -u encoded "$ENCD_PY3_PATH" -m venv "$encd_venv"
 
 # Install pre-reqs
 source "$encd_venv/bin/activate"
-sudo -H -u encoded "$encd_venv/bin/pip" install --upgrade pip setuptools
+sudo -H -u encoded "$encd_venv/bin/pip" install --upgrade pip==20.2.4 setuptools
 sudo -H -u encoded "$encd_venv/bin/pip" install -r requirements.txt
 if [ $? -gt 0 ]; then
     echo -e "\n\t$ENCD_INSTALL_TAG $(basename $0) ENCD FAILED: Penv install failed"
