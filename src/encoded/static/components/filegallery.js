@@ -2185,7 +2185,7 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
      * Selects certain awards as the default if listed.
     */
     useMount(() => {
-        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Lab custom']; // ordered in decreasing precidence
+        const awardSuffix = ['ENCODE4', 'ENCODE3', 'ENCODE2', 'Mixed', 'Lab custom']; // ordered in decreasing precedence
         const analysesAwarded = analyses.filter(analysis => awardSuffix.some(award => analysis.title.includes(award)));
 
         // a bit hacky, removes text and use number to determine sorting
@@ -2202,8 +2202,20 @@ const AnalysesSelector = ({ analyses, selectedAnalysesIndex, handleAnalysesSelec
             return parseInt(number2, 10) - parseInt(number1, 10);
         });
 
-        // search for the analysis based on precidence and get the index (imagine nested loops if easier)
-        const selectedAnalysis = sortedAnalysesAwarded.find(analysis => awardSuffix.find(award => analysis.title.includes(award)));
+        // search for the analysis based on precedence and get the index
+        let selectedAnalysis = null;
+
+        awardSuffix.every((award) => {
+            sortedAnalysesAwarded.every((analysis) => {
+                selectedAnalysis = analysis.title.includes(award) ? analysis : null;
+
+                return !selectedAnalysis; // kills loop if this evaluates to true
+            });
+
+            return !selectedAnalysis; // kills loop if this evaluates to true
+        });
+
+        selectedAnalysis = selectedAnalysis || analyses[0];
         const selectedIndex = analyses.findIndex(a => a.title === selectedAnalysis.title);
 
         if (selectedIndex !== -1) {
