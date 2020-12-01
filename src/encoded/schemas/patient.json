@@ -105,7 +105,7 @@
         "diagnosis.follow_up_duration_range": {
             "title": "Follow Up Duration"
         },
-        
+
         "sex": {
             "title": "Sex"
         },
@@ -317,4 +317,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-
