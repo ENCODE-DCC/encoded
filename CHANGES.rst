@@ -1,5 +1,30 @@
 Changes
 =======
+110.0 (released) snovault 1.0.51
+--------------------------------
+1.	ENCD-5645-pin-pip-version (#3644)
+2.	ENCD-5636-missing-processed-data-audit (#3639)
+3.	ENCD-5638-add-LRGASP-labs-to-alias-regex (#3640)
+4.	VALIS-26-enable-plotting-of-ENCD-bigbed-types (#3583)
+5.	ENCD-5631 Add audit for treatment series for mixed units (#3631)
+6.	ENCD-5595-avoid-inheriting-references-audits (#3637)
+7.	ENCD-5596-Valis-deploy-sprint-11-09-2020 (#3635)
+8.	ENCD-5356-add-examined-loci-on-FCC-experiments (#3624)
+9.	ENCD-5632 preserve coordinate on tab out (#3630)
+10.	ENCD-5573-unify-file-output-types (#3629)
+11.	ENCD-4525-cart-improvements (#3632)
+12.	ENCD-5600-add-Capture-Hi-C-and-snRNA-seq (#3626)
+13.	ENCD-5444 Rewrite the report page (#3616)
+14.	ENCD-5570-audit-outdated-analysis-update (#3633)
+15.	ENCD-5625-series-schema-pages-updates (#3625)
+16.	ENCD-5599-adjust-madqc-auditing-for-technical-replicates (#3617)
+17.	ENCD-5539 analysis set status (#3621)
+18.	ENCD-4660-hide-leave-modal-on-download (#3613)
+19.	ENCD-5619-fix-terser-circleci (#3622)
+20.	ENCD-5616-update-ckeditor (#3618)
+21.	ENCD-5566 fix cropped tooltips (#3588)
+22.	ENCD-5608-embed-Gene-in-examined-loci (#3614)
+
 109.0 (released) snovault 1.0.51
 --------------------------------
 1. update-snovault-1.0.51 (#3609)
