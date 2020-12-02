@@ -141,7 +141,7 @@
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
-        "dominant_tumor.histology": {
+        "dominant_tumor.histology_filter": {
             "title": "Dominant Tumor"
         },
         "surgery.pathology_report.pathology_report_tumor_range":{

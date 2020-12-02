@@ -17,6 +17,7 @@ from .base import (
     SharedItem,
     paths_filtered_by_status,
 )
+from .histology_filters import histology_filters
 from snovault.resource_views import item_view_object
 from snovault.util import expand_path
 from collections import defaultdict
@@ -447,6 +448,11 @@ class Patient(Item):
                     "description": "The histology of tumor",
                     "type": "string",
                 },
+                "histology_filter": {
+                    "title": "Histology",
+                    "description": "The histology of tumor",
+                    "type": "string",
+                },
                 "tumor_size": {
                     "title": "Tumor Size",
                     "description": "Greatest dimension of tumor was recorded in cm. ",
@@ -473,39 +479,36 @@ class Patient(Item):
         nRanking = {"Not applicable": 0, "Not available": 1, "pNX": 1, "pN0": 2, "pN1": 3, "pN2": 4}
         #non-RCC is ranked at -1, but we assume that we will not handle non-RCC data for now
         histologyRanking = {
-            "Acquired cystic disease-associated RCC": 3,
+            "Acquired cystic disease-associated renal cell carcinoma": 3,
             "Angiomyolipoma": 0,
-            "ccPRCC": 1,
-            "ccRCC": 5,
-            "ChRCC": 2,
-            "ChRCC, hybrid type": 2,
-            "collecting duct carcinoma(CDC)": 6,
+            "Chromophobe renal cell carcinoma": 2,
+            "Chromophobe renal cell carcinoma, hybrid type": 2,
+            "Chromophobe renal cell carcinoma, classic": 2,
+            "Chromophobe renal cell carcinoma, eosinophilic": 2,
+            "Clear cell papillary renal cell carcinoma": 1,
+            "Clear cell renal cell carcinoma": 5,
+            "Collecting duct carcinoma": 6,
             "Cystic nephroma": 0,
-            "HLRCC": 6,
-            "Leiomyoma": -1,
-            "Leiomyosarcoma": -1,
+            "Hereditary leiomyomatosis and RCC-associated RCC": 6,
             "Metanephric adenoma": 0,
+            "MiT family translocation renal cell carcinoma": 4,
             "Mucinous tubular and spindle cell carcinoma": 3,
-            "multilocular cystic renal neoplasm of low malignant potential": 1,
-            "PRCC, no type given": 3,
-            "PRCC, type 1": 3,
-            "PRCC, type 2": 4,
+            "Multilocular cystic renal neoplasm of low malignant potential": 1,
+            "Oncocytic renal neoplasm, not further classified": 2,
+            "Oncocytic renal neoplasm, favor RO": 0,
+            "Oncocytic renal neoplasm, favor ChRCC": 2,
+            "Oncocytoma": 0,
             "Poorly differentiated malignancy": 5,
-            "Renal medullary carcinoma": 6,
-            "Renal Cell Carcinoma, NOS": 5,
-            "RO": 0,
-            "RON": 2,
-            "RON, favor ChRCC": 2,
-            "RON, favor RO": 0,
             "Sarcomatoid, NOS": 5,
-            "Sarcoma": -1,
-            "MiT family translocation RCC": 4,
-            "Tubulocystic RCC": 4,
-            "Unclassified": 5,
+            "Papillary renal cell carcinoma": 3,
+            "Papillary renal cell carcinoma, type 1": 3,
+            "Papillary renal cell carcinoma, type 2": 4,
+            "Renal cell carcinoma, not further classified": 5,
+            "Renal medullary carcinoma": 6,
+            "SDH deficient renal cell carcinoma": 3,
+            "Tubulocystic renal cell carcinoma": 4,
             "Unclassified RCC": 5,
-            "Nephroblastoma (Wilms tumor)": -1,
-            "Soft tissue neoplasm, NOS": 5,
-            "SDH deficient RCC": 3,
+
         }
 
         tumors = []
@@ -537,6 +540,7 @@ class Patient(Item):
                         else:
                             histology_rank = -1
                         histology = path_report_obj.get('histology')
+                        histology_filter = histology_filters.get(histology)
                         tumor = {
                             't_stage': t_stage,
                             't_stage_rank': t_stage_rank,
@@ -544,6 +548,7 @@ class Patient(Item):
                             'n_stage_rank': n_stage_rank,
                             'm_stage': m_stage,
                             'histology': histology,
+                            'histology_filter': histology_filter,
                             'histology_rank': histology_rank,
                             'tumor_size': path_report_obj.get('tumor_size'),
                             'tumor_size_units': path_report_obj.get('tumor_size_units'),
