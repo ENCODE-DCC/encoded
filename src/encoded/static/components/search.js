@@ -825,7 +825,7 @@ TextFilter.propTypes = {
 
 // Displays the entire list of facets. It contains a number of <Facet> components.
 export const FacetList = (props) => {
-    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable, seriesFlag } = props;
+    const { context, facets, filters, mode, orientation, hideTextFilter, addClasses, docTypeTitleSuffix, supressTitle, onFilter, isExpandable, hideDocType } = props;
 
     const [expandedFacets, setExpandFacets] = React.useState(new Set());
 
@@ -944,7 +944,7 @@ export const FacetList = (props) => {
                 <div className={`orientation${orientation === 'horizontal' ? ' horizontal' : ''}`} data-test="facetcontainer">
                     {(!supressTitle || clearButton) ?
                         <div className="search-header-control">
-                            {!(seriesFlag) ?
+                            {!(hideDocType) ?
                                 <DocTypeTitle searchResults={context} wrapper={children => <h1>{children} {docTypeTitleSuffix}</h1>} />
                             : null}
                             {context.clear_filters ?
@@ -1002,6 +1002,7 @@ FacetList.propTypes = {
     filters: PropTypes.array.isRequired,
     mode: PropTypes.string,
     orientation: PropTypes.string,
+    hideDocType: PropTypes.bool,
     hideTextFilter: PropTypes.bool,
     docTypeTitleSuffix: PropTypes.string,
     addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
@@ -1016,6 +1017,7 @@ FacetList.propTypes = {
 FacetList.defaultProps = {
     mode: '',
     orientation: 'vertical',
+    hideDocType: false,
     hideTextFilter: false,
     addClasses: '',
     docTypeTitleSuffix: 'search',

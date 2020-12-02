@@ -863,7 +863,7 @@ class ChIPSeqMatrixPresentation extends React.Component {
                 <div className="matrix__presentation-content">
                     <div className="matrix__label matrix__label--vert"><div>{svgIcon('largeArrow')}{context.matrix.y.label}</div></div>
                     {showOrganismRequest ? <SelectOrganismModal /> : null }
-                    <ChIPSeqTabPanel tabList={tabLevel1} selectedTab={selectedTabLevel1}>
+                    <ChIPSeqTabPanel tabList={tabLevel1} selectedTab={selectedTabLevel1} navCss="organism-tab">
                         <ChIPSeqTabPanel tabList={filteredTabLevel2} selectedTab={selectedTabLevel2}>
                             <ChIPSeqTabPanel tabList={subTabsHeaders} selectedTab={selectedTabLevel3} handleTabClick={this.subTabClicked}>
                                 {chIPSeqData && chIPSeqData.headerRow && chIPSeqData.headerRow.length !== 0 && chIPSeqData.dataRow && chIPSeqData.dataRow.length !== 0 ?

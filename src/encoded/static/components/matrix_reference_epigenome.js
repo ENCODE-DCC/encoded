@@ -696,7 +696,12 @@ class MatrixPresentation extends React.Component {
                     </div>
                 </div>
                 <div className="results-count">Showing <b className="bold-total">{rowCount(context.matrix)}</b> result{rowCount(context.matrix) > 1 ? 's' : ''}.</div>
-                <TabPanel tabs={organismTabs} selectedTab={this.initialSelectedTab} handleTabClick={this.handleTabClick} tabPanelCss="matrix__data-wrapper">
+                <TabPanel
+                    tabs={organismTabs}
+                    selectedTab={this.initialSelectedTab}
+                    handleTabClick={this.handleTabClick}
+                    tabPanelCss="matrix__data-wrapper epigenome-tabs"
+                >
                     {(this.initialSelectedTab === 'Homo sapiens') ?
                         <React.Fragment>
                             <div className="header-clear-links">

@@ -16,7 +16,6 @@ $tab-color: #a8a8a8;
     display: flex;
     margin: 0;
     padding: 5px 5px 0;
-    align-items: flex-end;
     position: relative;
     list-style: none;
     z-index: 1;
@@ -30,8 +29,13 @@ $tab-color: #a8a8a8;
         display: block;
         flex: 0 1 auto;
 
-        a, a:focus {
-            display: block;
+        &.tab-button {
+            a {
+                padding: 0;
+            }
+        }
+
+        a {
             text-decoration: none;
             margin: 0;
             padding: 5px 10px;
@@ -62,8 +66,6 @@ $tab-color: #a8a8a8;
 }
 
 .tab-container, .tab-nav {
-    display: flex;
-    flex-wrap: wrap;
     background-color: white;
 }
 
@@ -80,8 +82,22 @@ $tab-color: #a8a8a8;
 .tab-container {
     &.body-map {
         .tab-button {
-            padding: 10px 20px;
+            padding: 0;
             flex: 0 1 auto;
+            &:hover:not(.active) {
+                background: #efefef;
+            }
+            a {
+                padding: 10px 20px;
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                cursor: default;
+                &:hover:not([disabled]):not(.active) {
+                    background: #E2E2E2;
+                    cursor: pointer;
+                }
+            }
         }
     }
 }
@@ -90,30 +106,30 @@ $tab-color: #a8a8a8;
     .tab-nav {
         overflow: visible;
         margin-bottom: 1px;
-    }
-}
-
-.tab-button {
-    flex: 0 1 calc(33% - 10px);
-    font-family: 'Oswald';
-    @media screen and (min-width: $series-wrap-width) {
-        flex: 0 1 13%;
-    }
-    @media screen and (min-width: $series-narrow-width) {
-        flex: 0 1 214px;
+        .organism-tab {
+            font-family: 'Oswald';
+            font-weight: 300;
+        }
     }
 }
 
 .nav-tabs {
-    flex: 0 1 auto;
+    flex-wrap: wrap;
     top: 0;
     &:after {
         border-bottom: 1px solid $tab-color;
     }
-}
-
-.tab-nav {
-    margin-bottom: 10px;
+    .tab-button {
+        flex: 0 1 calc(33% - 10px);
+        font-family: 'Oswald';
+        text-align: center;
+        @media screen and (min-width: $series-wrap-width) {
+            flex: 0 1 13%;
+        }
+        @media screen and (min-width: $series-narrow-width) {
+            flex: 0 1 214px;
+        }
+    }
 }
 
 .matrix__data-wrapper {
@@ -137,6 +153,7 @@ $tab-color: #a8a8a8;
         padding-top: 10px;
         border: 0;
         @media screen and (min-width: $series-wrap-width) {
+            border-top: 0;
             border-bottom: 1px solid $tab-color;
             border-right: 1px solid $tab-color;
             border-left: 1px solid $tab-color;
@@ -152,6 +169,7 @@ $tab-color: #a8a8a8;
         border: 0;
         padding: 0;
         @media screen and (min-width: $series-wrap-width) {
+            border-top: 0;
             border-bottom: 1px solid $tab-color;
             border-right: 1px solid $tab-color;
             border-left: 1px solid $tab-color;
@@ -169,12 +187,19 @@ $tab-color: #a8a8a8;
     }
 }
 
-.tab-button, .nav-tabs li {
+.series-tabs .nav-tabs li, .epigenome-tabs .nav-tabs li, .cart__display-content .tab-nav .nav-tabs li {
     padding: 0;
+    a {
+        display: inline-block;
+    }
+}
+
+.nav-tabs li {
+    padding: 5px 10px;
     margin: 5px;
     border-radius: 3px;
     color: #000;
-    margin: 5px 5px 0px 5px;
+    margin: 5px 3px 0px 3px;
     background: #efefef;
     border: 1px solid #efefef;
     @media screen and (min-width: $series-wrap-width) {
@@ -184,6 +209,14 @@ $tab-color: #a8a8a8;
     }
     &:hover {
         background: #E2E2E2;
+    }
+    .disabled {
+        background: #efefef;
+        opacity: 0.3;
+        cursor: default;
+        &:hover {
+            background: #efefef;
+        }
     }
     a {
         position: relative;
@@ -269,7 +302,7 @@ $tab-color: #a8a8a8;
     @media screen and (min-width: $series-wrap-width) {
         border: 1px solid $tab-color;
         padding: 0 20px;
-        margin-top: -2px;
+        margin-top: -1px;
     }
 }
 
