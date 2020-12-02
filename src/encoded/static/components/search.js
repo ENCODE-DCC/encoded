@@ -2142,14 +2142,12 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 }
 
             </div>
-
-    );
-
+    );   
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
                 <ViewControls results={context} activeFilters={activeFilters} />
-                {resultsToggle}
+                {Boolean(context['title'] == "Search") && resultsToggle}
                 {showDownloadButton ? <BatchDownloadControls results={context} modalText={modalText} canDownload={canDownload} /> : ''}
                 {!hideBrowserSelector ?
                     <BrowserSelector results={context} disabledTitle={visualizeDisabledTitle} activeFilters={activeFilters} />
