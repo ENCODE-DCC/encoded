@@ -25,41 +25,21 @@ import { BrowserSelector } from './vis_defines';
 
 // Should really be singular...
 const types = {
+    patient: { title: 'Patients' },
+    surgery: { title: 'Surgery and Pathology Reports' },
     annotation: { title: 'Annotation file set' },
-    antibody_lot: { title: 'Antibodies' },
-    biosample_type: { title: 'Biosample types' },
-    biosample: { title: 'Biosamples' },
-    computational_model: { title: 'Computational model file set' },
-    experiment: { title: 'Experiments' },
-    bioexperiment: { title: 'Bioexperiments' },
-    bioseries: { title: 'Bioserieses' },
-    biofileSet: { title: 'BiofileSets' },
-    bioexperimentSeries:{title:'BioexperimentSereieses'},
-    gene: { title: 'Genes' },
-    target: { title: 'Targets' },
-    dataset: { title: 'Datasets' },
-    biodataset: { title: 'Biodatasets' },
+    biospecimen: { title: 'Biospecimens' },
+    bioexperiment: { title: 'Experiments' },
+    bioseries: { title: 'Series File set' },
+    biofileSet: { title: 'File set' },
+    bioexperimentSeries: { title: 'Experiment Series'},
+    biodataset: { title: 'Datasets' },
     image: { title: 'Images' },
-    matched_set: { title: 'Matched set series' },
-    aggregate_series: { title: 'Aggregate series' },
-    functional_characterization_series: { title: 'Functional characterization series' },
-    single_cell_rna_series: { title: 'Single cell RNA series' },
-    organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
-    pipeline: { title: 'Pipeline' },
-    project: { title: 'Project file set' },
-    bioproject: { title: 'Bioproject file set' },
+    bioproject: { title: 'Project file set' },
     publication_data: { title: 'Publication file set' },
-    reference: { title: 'Reference file set' },
-    bioreference: { title: 'Bioreference file set' },
-    reference_epigenome: { title: 'Reference epigenome series' },
-    replication_timing_series: { title: 'Replication timing series' },
-    software: { title: 'Software' },
-    treatment_concentration_series: { title: 'Treatment concentration series' },
-    treatment_time_series: { title: 'Treatment time series' },
-    ucsc_browser_composite: { title: 'UCSC browser composite file set' },
-    patient: { title: 'Patients' },
+    bioreference: { title: 'Reference file set' },
 };
 
 const datasetTypes = {
@@ -2142,7 +2122,7 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 }
 
             </div>
-    );   
+    );
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
