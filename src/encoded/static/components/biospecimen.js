@@ -91,10 +91,6 @@ class Biospecimen extends React.Component {
                                 <dt>OpenSpecimen ID</dt>
                                 <dd>{context.openspecimen_id}</dd>
                             </div>
-                            <div data-test="internal_ID">
-                                <dt>Internal ID</dt>
-                                <dd>{context.internal_id}</dd>
-                            </div>
                             <div data-test="patient">
                                 <dt>Patient</dt>
                                 <dd><a href={context.patient}>{context.patient.split("/")[2]}</a></dd>
@@ -121,10 +117,6 @@ class Biospecimen extends React.Component {
                                 <dt>Originated From</dt>
                                 <dd><a href={context.originated_from}>{context.originated_from.split("/")[2]}</a></dd>
                             </div>}
-                            {context.path_ID && <div data-test="path_ID">
-                                <dt>Path Report</dt>
-                                <dd>{context.path_ID}</dd>
-                            </div>}
                             {context.tissue_type && <div data-test="tissue_type">
                                 <dt>Tissue Type</dt>
                                 <dd>{context.tissue_type}</dd>
@@ -137,12 +129,6 @@ class Biospecimen extends React.Component {
                                 <dt>Primary Site</dt>
                                 <dd>{context.primary_site}</dd>
                             </div>}
-
-                            <div data-test="distributed">
-                                <dt>Distributed</dt>
-                                <dd>{context.distributed}</dd>
-                            </div>
-
                             </dl>
                         </div>
                         {context.surgery && <div className="flexcol-sm-6">

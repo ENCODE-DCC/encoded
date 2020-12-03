@@ -45,6 +45,7 @@
         "accession": "KCEBS087RNA",
         "internal_id":"utminimsed",
         "award": "Kidney-SPORE",
+        "sample_type": "Tissue",
         "openspecimen_id":"ut",
         "patient":"KCEPT139SOR",
         "collection_date":"2013-02-09",
