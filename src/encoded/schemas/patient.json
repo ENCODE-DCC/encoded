@@ -147,7 +147,7 @@
         "surgery.pathology_report.pathology_report_tumor_range":{
             "title": "Tumor Size Range"
         },
-        "surgery.pathology_report.histology": {
+        "surgery.pathology_report.histology_filter": {
             "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
@@ -317,3 +317,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
