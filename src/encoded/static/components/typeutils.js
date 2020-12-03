@@ -211,7 +211,6 @@ BiospecimenTable.columns = {
         title: 'Processing type',
         getValue: biospecimen => biospecimen.processing_type,
     },
-
     tissue_type: {
         title: 'Tissue type',
         getValue: biospecimen => biospecimen.tissue_type,
@@ -219,11 +218,7 @@ BiospecimenTable.columns = {
     anatomic_site: {
         title: 'Anatomic site',
         getValue: biospecimen => biospecimen.anatomic_site,
-    },
-    distributed: {
-        title: 'Distributed?',
-        getValue: biospecimen => biospecimen.distributed,
-    },
+    }
 };
 
 
