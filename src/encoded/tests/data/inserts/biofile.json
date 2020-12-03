@@ -1,14 +1,5 @@
 [
     {
-        "accession": "KCEFF398REF",
-        "biodataset": "KCEBE000REF",
-        "file_format": "tsv",
-        "md5sum": "95be74b6e11515393507f4ebfa66d78d",
-        "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
-        "status": "released",
-        "uuid": "bea0dc64-c96b-4a25-b5a4-7b2fc4b425bd"
-    },
-    {
         "accession": "KCEFF398MYM",
         "bioreplicate": "18a45454-8f13-4bf2-842b-64a75613136a",
         "biodataset": "KCEBE000AES",
@@ -20,6 +11,7 @@
         "read_length": 50,
         "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
         "status": "released",
+        "sequencing_replicate_number": 1,
         "uuid": "f6c125ca-2cc3-4c63-a62a-d326ccfa2f30"
     },
     {
@@ -35,6 +27,7 @@
         "paired_end": "1",
         "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
         "status": "released",
+        "sequencing_replicate_number": 1,
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
         "uuid": "6713196b-8bda-42db-b676-8c7a6ad07e23"
     },
@@ -52,36 +45,35 @@
         "paired_with": "KCEFF287RDC",
         "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
         "status": "released",
+        "sequencing_replicate_number": 1,
         "uuid": "6869a7b9-260d-4aa9-9cd2-74e056f6eded"
     },
     {
         "accession": "KCEFF894MWZ",
         "bioreplicate": "ceb403d7-a51b-45eb-a220-643b2d12ecbf",
-        "biodataset":"KCEBE000AER",
+        "biodataset": "KCEBE000AER",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "99be74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
-        "biolibrary": "KCELB012FAA",
-        "status": "released",
-        "assembly": "GRCh38",
         "uuid": "016f5f73-ccd0-4b23-963d-1a41064e72ac"
     },
     {
         "accession": "KCEFF173MWZ",
         "bioreplicate": "2fd08d63-cb83-421a-8454-a9505da559c4",
-        "biodataset":"KCEBE000AER",
+        "biodataset": "KCEBE000AER",
         "file_format": "bam",
         "file_size": 20,
         "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
         "output_type": "alignments",
-        "biolibrary": "KCELB745FAA",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
         "status": "released",
         "assembly": "GRCh38",
         "uuid": "52475ff9-ba44-4e5f-8fe8-6db1cfe45cdc"
     },
     {
         "accession": "KCEFF173MWA",
+        "bioreplicate": "2fd08d63-cb83-421a-8454-a9505da559c4",
         "biodataset": "KCEBE000AJW",
         "file_format": "bam",
         "file_size": 20,
@@ -91,5 +83,32 @@
         "status": "released",
         "assembly": "GRCh38",
         "uuid": "d17a30c1-41fd-4d34-85b0-718c833019ad"
+    },
+    {
+        "_test": "revoked file",
+        "accession": "KCEFF173MWB",
+        "bioreplicate": "2fd08d63-cb83-421a-8454-a9505da559c4",
+        "biodataset": "KCEBE000AJW",
+        "file_format": "bam",
+        "file_size": 20,
+        "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
+        "output_type": "alignments",
+        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
+        "status": "revoked",
+        "assembly": "GRCh38",
+        "uuid": "7ddd59fe-7c2c-4dd0-8bb3-810243ab74b0"
+    },
+    {
+        "_test": "in progress file",
+        "accession": "KCEFF173MWC",
+        "bioreplicate": "2fd08d63-cb83-421a-8454-a9505da559c4",
+        "biodataset": "KCEBE000AJW",
+        "file_format": "bam",
+        "file_size": 20,
+        "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
+        "output_type": "alignments",
+        "status": "in progress",
+        "assembly": "GRCh38",
+        "uuid": "2e9c28b5-0366-4649-b250-52809fb47724"
     }
 ]

@@ -64,9 +64,7 @@
     },
     "boost_values": {
         "biolibrary.accession": 1.0,
-        "biolibrary.biospecimen.accession": 1.0,
-        "biolibrary.biospecimen.alternate_accessions": 1.0,
-        "biolibrary.biospecimen.aliases": 1.0
+        "biolibrary.biospecimen.accession": 1.0
     },
     "changelog": "/profiles/changelogs/bioreplicate.md"
 }

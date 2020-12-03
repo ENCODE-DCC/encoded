@@ -2,7 +2,7 @@
     {
         "award": "Kidney-SPORE",
         "aliases": [
-            "thomas-gingeras:RNA extraction protocol from Qiagen"
+            "kce:RNA extraction protocol from Qiagen"
         ],
         "description": "RNA extraction protocol from Qiagen",
         "document_type": "extraction protocol",
@@ -15,7 +15,7 @@
     {
         "award": "Kidney-SPORE",
         "aliases": [
-            "thomas-gingeras:ChIPSeq_protocol-Abcam"
+            "kce:ChIPSeq_protocol-Abcam"
         ],
         "description": "ChIPSeq_protocol from Abcam",
         "attachment": "ChIPSeq_protocol.pdf",
@@ -28,7 +28,7 @@
     {
         "award": "Kidney-SPORE",
         "aliases": [
-            "thomas-gingeras:Kidney biopsy collection from patient"
+            "kce:Kidney biopsy collection from patient"
         ],
         "description": "Kidney biopsy collection from patient",
         "document_type": "general protocol",
@@ -40,7 +40,7 @@
     {
         "award": "Kidney-SPORE",
         "aliases": [
-            "thomas-gingeras:Chip-seq protocol-general"
+            "kce:Chip-seq protocol-general"
         ],
         "description": "Chip-seq protocol",
         "attachment": "ChIPSeq_protocol.pdf",
@@ -54,7 +54,7 @@
     {
         "attachment": "PathologyImage_CMU-1.svs",
         "aliases": [
-            "thomas-gingeras:Example of high resolution pathology image in SVS format"
+            "kce:Example of high resolution pathology image in SVS format"
         ],
         "award": "ENCODE2",
         "description": "Example of high resolution pathology image in SVS format",

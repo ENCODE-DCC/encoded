@@ -142,7 +142,6 @@
         "accession": 1.0,
         "biospecimen.internal_id": 1.0,
         "biospecimen.accession": 1.0,
-        "biospecimen.patient.accession": 1.0,
         "sequencing_id": 1.0
     },
     "changelog": "/profiles/changelogs/biolibrary.md"

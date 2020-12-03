@@ -1,16 +1,15 @@
 [
     {
-        "_test": "spikes",
         "accession": "KCEBE000REF",
         "lab": "thomas-gingeras",
         "award": "U54HG006998",
         "organism": "Human",
         "documents": [
-            "thomas-gingeras:ChIPSeq_protocol-Abcam",
-            "thomas-gingeras:RNA extraction protocol from Qiagen",
-            "kevin-white:K562_BAC_transfection_White_protocol",
-            "thomas-gingeras:Example of high resolution pathology image in SVS format"
-            
+            "kce:ChIPSeq_protocol-Abcam",
+            "kce:RNA extraction protocol from Qiagen",
+            "kce:K562_BAC_transfection_White_protocol",
+            "kce:Example of high resolution pathology image in SVS format"
+
         ],
         "references": [
             "d6eec3a0-ffa7-4d71-b07e-7004bc2787bd"
@@ -18,38 +17,31 @@
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset",
         "status": "released",
-        "internal_tags": [
-            "dbGaP"
-        ],
         "dbxrefs": [
             "GEO:GSM798327",
             "GEO:GSE32218"
         ],
         "aliases": [
-            "robert-waterston:experiment_RB884_80_1"
+            "kce:experiment_RB884_80_1"
         ],
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b21ab921-03e0-436d-9aff-08f587cb632e",
         "date_released": "2016-01-01"
     },
     {
-        "_test": "spikes2",
         "accession": "KCEBE001AES",
         "lab": "thomas-gingeras",
 
         "award": "ENCODE2",
         "organism": "Human",
         "documents": [
-            "thomas-gingeras:ChIPSeq_protocol-Abcam",
-            "thomas-gingeras:RNA extraction protocol from Qiagen",
-            "kevin-white:K562_BAC_transfection_White_protocol"
+            "kce:ChIPSeq_protocol-Abcam",
+            "kce:RNA extraction protocol from Qiagen",
+            "kce:K562_BAC_transfection_White_protocol"
         ],
         "reference_type": "spike-in",
         "description": "RNA Working Group Spike-ins Dataset 2",
         "status": "released",
-        "internal_tags": [
-            "Kidney SPORE"
-        ],
         "dbxrefs": [
             "GEO:GSM1010811"
         ],
@@ -58,19 +50,15 @@
         "date_released": "2016-01-01"
     },
     {
-        "_test": "RAMPAGE spike-ins",
         "accession": "KCEBE001ADH",
         "lab": "thomas-gingeras",
 
         "award": "U54HG007005",
         "organism": "Mouse",
         "documents": [
-            "thomas-gingeras:ChIPSeq_protocol-Abcam"
+            "kce:ChIPSeq_protocol-Abcam"
         ],
         "reference_type": "spike-in",
-        "internal_tags": [
-            "Kidney SPORE"
-        ],
         "description": "Spike-ins used in RAMPAGE experiments from CSHL",
         "status": "released",
         "dbxrefs": [

@@ -26,12 +26,10 @@ class Bioreplicate(Item):
     }
 
     embedded = [
-        'bioexperiment'
+        'bioexperiment',
         'biolibrary',
         'biolibrary.biospecimen',
         'biolibrary.biospecimen.patient.accession',
-        'biolibrary.biospecimen.donor',
-        'biolibrary.biospecimen.donor.organism',
         'biofile'
     ]
     audit_inherit = [

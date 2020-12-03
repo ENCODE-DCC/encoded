@@ -41,6 +41,8 @@ ORDER = [
     'radiation',
     'medical_imaging',
     'cart',
+    #'lab_results',
+    #'vital_results'
 ]
 
 IS_ATTACHMENT = [
