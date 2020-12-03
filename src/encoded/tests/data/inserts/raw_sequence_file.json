@@ -20,10 +20,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
         ],
@@ -53,11 +49,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
         ],
@@ -85,10 +76,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "2a12eb7b-ed78-466a-9552-7512bdd7f45f"
         ],
@@ -115,10 +102,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "3f5c30e4-f5de-48d2-847f-959f3824931f"
         ],
@@ -144,11 +127,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "3f5c30e4-f5de-48d2-847f-959f3824931f"
         ],
@@ -175,10 +153,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "3f5c30e4-f5de-48d2-847f-959f3824931f"
         ],
@@ -205,10 +179,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "6ca560bd-5278-441d-8256-06f3e3c16e35"
         ],
@@ -235,11 +205,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "6ca560bd-5278-441d-8256-06f3e3c16e35"
         ],
@@ -266,10 +231,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "6ca560bd-5278-441d-8256-06f3e3c16e35"
         ],
@@ -296,10 +257,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
         ],
@@ -326,11 +283,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
         ],
@@ -357,10 +309,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "4b503f3d-73fb-448b-a2a7-c4c9a2e3e9f7"
         ],
@@ -387,10 +335,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "6a0ee005-4d3e-418b-bf47-498547ba3c53"
         ],
@@ -417,11 +361,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "6a0ee005-4d3e-418b-bf47-498547ba3c53"
         ],
@@ -448,10 +387,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "6a0ee005-4d3e-418b-bf47-498547ba3c53"
         ],
@@ -478,10 +413,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
         ],
@@ -508,11 +439,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
         ],
@@ -539,10 +465,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "7f3577cf-29dd-4c1c-8328-d82f01e0bc69"
         ],
@@ -569,10 +491,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
         ],
@@ -599,11 +517,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
         ],
@@ -630,10 +543,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "681d29a4-6058-4a9b-a946-f5a0e19a6e1e"
         ],
@@ -660,10 +569,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
         ],
@@ -690,11 +595,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
         ],
@@ -721,10 +621,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "d25b4ce3-6a01-4e01-8c96-d1cf4e9fb08c"
         ],
@@ -751,10 +647,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "aecf582a-3fb4-4262-9cfb-76b92847119c"
         ],
@@ -781,11 +673,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "aecf582a-3fb4-4262-9cfb-76b92847119c"
         ],
@@ -812,10 +699,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "aecf582a-3fb4-4262-9cfb-76b92847119c"
         ],
@@ -842,10 +725,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
         ],
@@ -872,11 +751,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
         ],
@@ -903,10 +777,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "8aafdc5b-11bc-42cc-a002-34fbf1fdd970"
         ],
@@ -933,10 +803,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "0629dab5-2389-4153-a010-165fc8414344"
         ],
@@ -963,11 +829,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "0629dab5-2389-4153-a010-165fc8414344"
         ],
@@ -994,10 +855,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "0629dab5-2389-4153-a010-165fc8414344"
         ],
@@ -1024,10 +881,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "7083435b-9c6d-4296-be7d-768d71584320"
         ],
@@ -1054,11 +907,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "7083435b-9c6d-4296-be7d-768d71584320"
         ],
@@ -1085,10 +933,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "7083435b-9c6d-4296-be7d-768d71584320"
         ],
@@ -1115,10 +959,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
         ],
@@ -1145,10 +985,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
         ],
@@ -1175,10 +1011,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
         ],
@@ -1205,10 +1037,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "908a258c-d674-4311-84c0-ad5e15717c19"
         ],
@@ -1235,10 +1063,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
         ],
@@ -1265,10 +1089,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
         ],
@@ -1295,10 +1115,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
         ],
@@ -1325,10 +1141,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "ce4a4b84-efc4-4402-aee2-3ca67483aa7e"
         ],
@@ -1355,10 +1167,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
         ],
@@ -1385,10 +1193,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
         ],
@@ -1415,10 +1219,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
         ],
@@ -1445,10 +1245,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "b244ad71-1ae3-45b8-b87c-67e244e03dda"
         ],
@@ -1475,10 +1271,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
         ],
@@ -1505,10 +1297,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
         ],
@@ -1535,10 +1323,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
         ],
@@ -1565,10 +1349,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "543d528c-2a00-47f3-8b7f-17a7780dc2cf"
         ],
@@ -1595,10 +1375,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
         ],
@@ -1625,11 +1401,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
         ],
@@ -1656,10 +1427,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "15c1b20e-e47e-4f89-8155-0bb3186a6acf"
         ],
@@ -1686,10 +1453,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
         ],
@@ -1716,11 +1479,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
         ],
@@ -1747,10 +1505,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "fe0c497e-305b-4722-8a29-c67fbd7f25a6"
         ],
@@ -1777,10 +1531,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
         ],
@@ -1807,11 +1557,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
         ],
@@ -1838,10 +1583,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "c59d40d6-10dc-4951-b8e7-d123124cb2b0"
         ],
@@ -1868,10 +1609,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "e99de6aa-4ffe-4380-95aa-43077129b3c0"
         ],
@@ -1898,11 +1635,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "e99de6aa-4ffe-4380-95aa-43077129b3c0"
         ],
@@ -1929,10 +1661,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "e99de6aa-4ffe-4380-95aa-43077129b3c0"
         ],
@@ -1959,10 +1687,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
         ],
@@ -1989,11 +1713,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
         ],
@@ -2020,10 +1739,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "79e5a7be-4a4f-470b-9f65-fec95d3ff1e4"
         ],
@@ -2050,10 +1765,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "089da0b8-d3de-4437-b9af-9ba9f888fda4"
         ],
@@ -2080,11 +1791,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "089da0b8-d3de-4437-b9af-9ba9f888fda4"
         ],
@@ -2111,10 +1817,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "089da0b8-d3de-4437-b9af-9ba9f888fda4"
         ],
@@ -2141,10 +1843,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "44574a0a-e41c-4100-a666-3f60882bc23b"
         ],
@@ -2171,11 +1869,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "44574a0a-e41c-4100-a666-3f60882bc23b"
         ],
@@ -2202,10 +1895,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "44574a0a-e41c-4100-a666-3f60882bc23b"
         ],
@@ -2232,10 +1921,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
         ],
@@ -2262,11 +1947,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
         ],
@@ -2293,10 +1973,6 @@
         "file_size": 5000000,
         "read_length": 98,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "b8bd8ecb-ba42-4c8d-8faa-8ea5201475f0"
         ],
@@ -2323,10 +1999,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
         ],
@@ -2353,10 +2025,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
         ],
@@ -2383,10 +2051,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
         ],
@@ -2413,10 +2077,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "213bf1b5-796d-4825-b7fd-c399fac7fffe"
         ],
@@ -2443,10 +2103,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
         ],
@@ -2473,10 +2129,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
         ],
@@ -2503,10 +2155,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
         ],
@@ -2533,10 +2181,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "748bf468-5b46-4012-b842-671442460650"
         ],
@@ -2563,10 +2207,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
         ],
@@ -2593,10 +2233,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
         ],
@@ -2623,10 +2259,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
         ],
@@ -2653,10 +2285,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "ee94a6b7-2663-41c2-a1fd-185bdad9241d"
         ],
@@ -2683,10 +2311,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
         ],
@@ -2713,10 +2337,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
         ],
@@ -2743,10 +2363,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
         ],
@@ -2773,10 +2389,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "e99740a7-59c6-46ac-b284-d3137af5cc18"
         ],
@@ -2803,10 +2415,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
         ],
@@ -2833,11 +2441,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
         ],
@@ -2864,10 +2467,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "6ff9e510-4cd2-41eb-96e9-60d84736d9a2"
         ],
@@ -2894,10 +2493,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "a074eba7-31cf-41db-9675-d81d869345a9"
         ],
@@ -2924,11 +2519,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "a074eba7-31cf-41db-9675-d81d869345a9"
         ],
@@ -2955,10 +2545,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "a074eba7-31cf-41db-9675-d81d869345a9"
         ],
@@ -2985,10 +2571,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "f2342e08-61e6-4b4a-923f-db5c0507136f"
         ],
@@ -3015,11 +2597,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "f2342e08-61e6-4b4a-923f-db5c0507136f"
         ],
@@ -3046,10 +2623,6 @@
         "file_size": 5000000,
         "read_length": 918,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "f2342e08-61e6-4b4a-923f-db5c0507136f"
         ],
@@ -3076,10 +2649,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
         ],
@@ -3106,11 +2675,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
         ],
@@ -3137,10 +2701,6 @@
         "file_size": 5000000,
         "read_length": 91,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "08c14aaf-ae61-4173-ae4e-b8aed2e1142c"
         ],
@@ -3167,10 +2727,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
         ],
@@ -3197,11 +2753,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
         ],
@@ -3228,10 +2779,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "a246c9ed-c2b0-4e7e-947e-17f1924e2c74"
         ],
@@ -3258,10 +2805,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "caa2e548-8160-4758-a58b-46aaffe4373b"
         ],
@@ -3288,11 +2831,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "caa2e548-8160-4758-a58b-46aaffe4373b"
         ],
@@ -3319,10 +2857,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "caa2e548-8160-4758-a58b-46aaffe4373b"
         ],
@@ -3349,10 +2883,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
         ],
@@ -3379,11 +2909,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
         ],
@@ -3410,10 +2935,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "a08dac9a-5e04-4105-86e1-e5b05bce9e9b"
         ],
@@ -3440,10 +2961,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "fd4b7148-7209-48e5-944e-2613c50e00d7"
         ],
@@ -3470,11 +2987,6 @@
         "file_size": 5000000,
         "read_length": 26,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "fd4b7148-7209-48e5-944e-2613c50e00d7"
         ],
@@ -3501,10 +3013,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "feature barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "fd4b7148-7209-48e5-944e-2613c50e00d7"
         ],
@@ -3531,10 +3039,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "38eecbc9-d0db-4a78-aa8c-292010afefb9"
         ],
@@ -3561,11 +3065,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "38eecbc9-d0db-4a78-aa8c-292010afefb9"
         ],
@@ -3592,10 +3091,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "38eecbc9-d0db-4a78-aa8c-292010afefb9"
         ],
@@ -3622,10 +3117,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
         ],
@@ -3652,11 +3143,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
         ],
@@ -3683,10 +3169,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "cc50396d-d60e-4239-9d8a-ed107b0fa81e"
         ],
@@ -3713,10 +3195,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
         ],
@@ -3743,11 +3221,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
         ],
@@ -3774,10 +3247,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "9e302e08-3485-4cb8-9fbb-307bae67ca1a"
         ],
@@ -3804,10 +3273,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
         ],
@@ -3834,11 +3299,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
         ],
@@ -3865,10 +3325,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "5' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "36bfd7cf-9970-4aeb-be6f-ba109e1c1149"
         ],
@@ -3895,10 +3351,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
         ],
@@ -3925,10 +3377,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
         ],
@@ -3955,10 +3403,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
         ],
@@ -3985,10 +3429,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "fe496b5d-32ce-4d9d-8b72-2ea150d149a7"
         ],
@@ -4015,10 +3455,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
         ],
@@ -4045,10 +3481,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
         ],
@@ -4075,10 +3507,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
         ],
@@ -4105,10 +3533,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "10e7e579-1921-488d-9de3-9bc5fe5b6009"
         ],
@@ -4135,10 +3559,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
         ],
@@ -4165,10 +3585,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
         ],
@@ -4195,10 +3611,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
         ],
@@ -4225,10 +3637,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "2651c433-d313-44fe-9fca-fe460d7a226c"
         ],
@@ -4255,10 +3663,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
         ],
@@ -4285,10 +3689,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
         ],
@@ -4315,10 +3715,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
         ],
@@ -4345,10 +3741,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "ffb0d705-d0f1-4c64-8d25-93e25c4b1a7e"
         ],
@@ -4375,10 +3767,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
         ],
@@ -4405,10 +3793,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
         ],
@@ -4435,10 +3819,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
         ],
@@ -4465,10 +3845,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "f36014ab-40c7-400b-9b48-3090ab545f6f"
         ],
@@ -4495,10 +3871,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
         ],
@@ -4525,10 +3897,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
         ],
@@ -4555,10 +3923,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
         ],
@@ -4585,10 +3949,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "78965e22-cd6f-4d0b-9c97-0a5d39fb616a"
         ],
@@ -4615,10 +3975,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
         ],
@@ -4645,10 +4001,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
         ],
@@ -4675,10 +4027,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
         ],
@@ -4705,10 +4053,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "3ca06fb5-7648-48b4-97ff-ca84fa24d3a4"
         ],
@@ -4735,10 +4079,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
         ],
@@ -4765,10 +4105,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
         ],
@@ -4795,10 +4131,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
         ],
@@ -4825,10 +4157,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "31c3f789-5355-494d-9028-08258437fb2c"
         ],
@@ -4855,10 +4183,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
         ]
@@ -4884,10 +4208,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
         ],
@@ -4914,10 +4234,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
         ],
@@ -4944,10 +4260,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "d6cbc5f9-d546-4917-9268-7b48b40a93ca"
         ],
@@ -4974,10 +4286,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
         ],
@@ -5004,10 +4312,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
         ],
@@ -5034,10 +4338,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
         ],
@@ -5064,10 +4364,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "a460d195-735f-4776-963d-8e8bc18cdd24"
         ],
@@ -5094,10 +4390,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
         ],
@@ -5124,10 +4416,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
         ],
@@ -5154,10 +4442,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
         ],
@@ -5184,10 +4468,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "78c30d8c-ae6b-4f1a-901b-f64024de7e83"
         ],
@@ -5214,10 +4494,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
         ],
@@ -5244,10 +4520,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
         ],
@@ -5274,10 +4546,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
         ],
@@ -5304,10 +4572,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "ff73f9a8-2137-41db-9a5f-2711874c93ed"
         ],
@@ -5334,10 +4598,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
         ],
@@ -5364,10 +4624,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
         ],
@@ -5394,10 +4650,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
         ],
@@ -5424,10 +4676,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "8a2f8e13-6e37-4020-a3f0-92f797a7d8df"
         ],
@@ -5454,10 +4702,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
         ],
@@ -5484,10 +4728,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
         ],
@@ -5514,10 +4754,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
         ],
@@ -5544,10 +4780,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "d5830cc6-21f1-495d-a0a1-2187365db146"
         ],
@@ -5574,10 +4806,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
         ],
@@ -5604,10 +4832,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
         ],
@@ -5634,10 +4858,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
         ],
@@ -5664,10 +4884,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "72482854-d67c-4e38-aa4d-c8eb0f5c31d3"
         ],
@@ -5694,10 +4910,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
         ],
@@ -5724,10 +4936,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
         ],
@@ -5754,10 +4962,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
         ],
@@ -5784,10 +4988,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "31914fbd-df87-4a6e-8145-cc70504c9469"
         ],
@@ -5814,10 +5014,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R1",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
         ],
@@ -5844,10 +5040,6 @@
         "file_size": 5000000,
         "read_length": 16,
         "read_count": 1000000,
-        "sequence_elements": [
-            "cell barcode"
-        ],
-        "demultiplexed_type": "R2",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
         ],
@@ -5874,10 +5066,6 @@
         "file_size": 5000000,
         "read_length": 50,
         "read_count": 1000000,
-        "sequence_elements": [
-            "fragment"
-        ],
-        "demultiplexed_type": "R3",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
         ],
@@ -5904,10 +5092,6 @@
         "file_size": 5000000,
         "read_length": 8,
         "read_count": 1000000,
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "derived_from": [
             "f14a9538-c3e1-422e-a11c-d7d853512f4a"
         ],
@@ -5946,11 +5130,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191896"
         ],
@@ -5992,10 +5171,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191897"
         ],
@@ -6037,10 +5212,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191898"
         ],
@@ -6082,11 +5253,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191899"
         ],
@@ -6128,10 +5294,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191810"
         ],
@@ -6173,10 +5335,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191811"
         ],
@@ -6218,11 +5376,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191812"
         ],
@@ -6264,10 +5417,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191813"
         ],
@@ -6309,10 +5458,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191814"
         ],
@@ -6354,11 +5499,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191815"
         ],
@@ -6400,10 +5540,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191816"
         ],
@@ -6445,10 +5581,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191817"
         ],
@@ -6490,11 +5622,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191818"
         ],
@@ -6536,10 +5663,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191819"
         ],
@@ -6581,10 +5704,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191820"
         ],
@@ -6626,11 +5745,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191821"
         ],
@@ -6672,10 +5786,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191822"
         ],
@@ -6717,10 +5827,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191823"
         ],
@@ -6762,11 +5868,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191824"
         ],
@@ -6808,10 +5909,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191825"
         ],
@@ -6853,10 +5950,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191826"
         ],
@@ -6898,11 +5991,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191827"
         ],
@@ -6944,10 +6032,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191828"
         ],
@@ -6989,10 +6073,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191829"
         ],
@@ -7034,11 +6114,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "cell barcode",
-            "UMI"
-        ],
-        "demultiplexed_type": "R1",
         "dbxrefs": [
             "SRA:SRR7191830"
         ],
@@ -7080,10 +6155,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "3' of molecule"
-        ],
-        "demultiplexed_type": "R2",
         "dbxrefs": [
             "SRA:SRR7191831"
         ],
@@ -7125,10 +6196,6 @@
             "lane_id_location": 1,
             "barcode_location": 3
         },
-        "sequence_elements": [
-            "sample index"
-        ],
-        "demultiplexed_type": "I1",
         "dbxrefs": [
             "SRA:SRR7191832"
         ],
