@@ -109,9 +109,6 @@
         "assembly": {
             "title": "Genome assembly"
         },
-        "bioreplicate.biolibrary.biospecimen.donor.organism": {
-            "title": "Organism"
-        },
         "bioreplicate.biolibrary.biospecimen.sample_type": {
             "title": "Biospecimen sample name",
             "type": "typeahead",
@@ -186,12 +183,6 @@
         },
         "bioreplicate.biolibrary.biospecimen.species": {
             "title": "Species"
-        },
-        "bioreplicate.biolibrary.biospecimen.age": {
-            "title": "Age"
-        },
-        "bioreplicate.biolibrary.biospecimen.age_units": {
-            "title": "Age units"
         },
         "bioreplicate.@id": {
             "title": "Bioreplicate"

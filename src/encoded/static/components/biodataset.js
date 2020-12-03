@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import DropdownButton from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { Panel, PanelBody } from '../libs/ui/panel';
+import DropdownButton from '../libs/ui/button';
+import { DropdownMenu } from '../libs/ui/dropdown-menu';
 import { CartToggle, CartAddAllElements } from './cart';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';

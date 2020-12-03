@@ -29,7 +29,6 @@ class Bioreplicate(Item):
         'bioexperiment',
         'biolibrary',
         'biolibrary.biospecimen',
-        'biolibrary.biospecimen.patient.accession',
         'biofile'
     ]
     audit_inherit = [

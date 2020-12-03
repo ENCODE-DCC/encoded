@@ -9,7 +9,6 @@ import { CartToggle, CartSearchControls } from './cart';
 import FacetRegistry from './facets';
 import * as globals from './globals';
 import {
-    BrowserSelector,
     DisplayAsJson,
     BiosampleType,
     requestSearch,
