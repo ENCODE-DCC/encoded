@@ -1092,7 +1092,7 @@ def _parse_args():
     # Set AMI per build type
     ami_map = {
         # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
-        'default': 'ami-0d1cd67c26f5fca19',
+        'default': 'ami-0782a518ecda55164',
         'arm_default': 'ami-003b90277095b7a42',
 
         # Private AMIs: Add comments to each build
