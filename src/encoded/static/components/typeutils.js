@@ -30,7 +30,8 @@ export function BiosampleSummaryString(biosample, supressOrganism) {
 export function BiosampleOrganismNames(biosamples) {
     return _.uniq(biosamples.map(biosample => biosample.organism.scientific_name));
 }
-// Some biosample-specific utilities
+
+// Some biospecimmen-specific utilities
 //   Return an array of biosample scientific names from the given array of biosamples.
 export function BiospecimenOrganismNames(biosamples) {
     return _.uniq(biosamples.map(biospecimen => biospecimen.species));

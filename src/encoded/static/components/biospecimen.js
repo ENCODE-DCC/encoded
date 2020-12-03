@@ -89,11 +89,11 @@ class Biospecimen extends React.Component {
                             </div>
                             <div data-test="openspecimen_ID">
                                 <dt>OpenSpecimen ID</dt>
-                                <dd>{context.openspecimen_ID}</dd>
+                                <dd>{context.openspecimen_id}</dd>
                             </div>
                             <div data-test="internal_ID">
                                 <dt>Internal ID</dt>
-                                <dd>{context.internal_ID}</dd>
+                                <dd>{context.internal_id}</dd>
                             </div>
                             <div data-test="patient">
                                 <dt>Patient</dt>

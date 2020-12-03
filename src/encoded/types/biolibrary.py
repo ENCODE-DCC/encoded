@@ -22,7 +22,7 @@ class Biolibrary(Item):
     schema = load_schema('encoded:schemas/biolibrary.json')
     name_key = 'accession'
     rev = {
-        'biofile': ('Biofile', 'biolibrary'),
+        'biofile': ('biofile', 'biolibrary'),
         'bioreplicate': ('bioreplicate', 'biolibrary'),
     }
     embedded = [

@@ -25,7 +25,7 @@
     "dependencies": {
         "nucleic_acid_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_quantity": ["nucleic_acid_starting_quantity_units"],
-        "source": ["sequencing_ID"],
+        "source": ["sequencing_id"],
         "sequencing_ID": ["source"]
     },
     "properties": {
@@ -58,7 +58,7 @@
         },
         "nucleic_acid_term_name": {
             "title": "Library material",
-            "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
+            "description": "The molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
             "enum": [
                 "DNA",
@@ -98,137 +98,18 @@
             "type": "string",
             "format": "date"
         },
-        "sequencing_ID": {
+        "sequencing_id": {
             "title": "Sequecing ID",
             "description": "Sequecing ID from the company.",
             "type": "string"
-        },
-        "construction_platform": {
-            "title": "Platform",
-            "description": "The device used to construct the library.",
-            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
-            "type": "string",
-            "linkTo": "Platform"
         },
         "source": {
             "title": "Source",
             "description": "The vendor, sequencing.",
             "type": "string"
         },
-
         "documents": {
             "description": "Protocols or other documents that describe library construction and sample treatment before sequencing."
-        },
-        "extraction_method": {
-            "title": "Extraction method",
-            "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
-            "type": "string",
-            "XXXenum": [
-                "Ambion mirVana",
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "n/a",
-                "Qiagen #74204",
-                "QIAGEN DNeasy Blood & Tissue Kit",
-                "see document",
-                "Trizol (LifeTech cat#: 15596-018)"
-            ],
-            "format": "semi-controlled"
-        },
-        "fragmentation_methods": {
-            "title": "Fragmentation methods",
-            "type": "array",
-            "uniqueItems": true,
-            "description": "A list of nucleic acid fragmentation methods and restriction enzymes used in library preparation.",
-            "items":{
-                "title": "Fragmentation method",
-                "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation.",
-                "type": "string",
-                "enum": [
-                    "chemical (DNaseI)",
-                    "chemical (DpnII restriction)",
-                    "chemical (generic)",
-                    "chemical (HindIII restriction)",
-                    "chemical (HindIII/DpnII restriction)",
-                    "chemical (Illumina TruSeq)",
-                    "chemical (MboI restriction)",
-                    "chemical (micrococcal nuclease)",
-                    "chemical (NcoI restriction)",
-                    "chemical (Nextera tagmentation)",
-                    "chemical (RNase III)",
-                    "chemical (Tn5 transposase)",
-                    "chemical (MseI restriction)",
-                    "chemical (CviAII restriction)",
-                    "chemical (Csp6I restriction)",
-                    "n/a",
-                    "none",
-                    "see document",
-                    "shearing (Covaris generic)",
-                    "shearing (Covaris LE Series)",
-                    "shearing (Covaris S2)",
-                    "shearing (generic)",
-                    "sonication (Bioruptor generic)",
-                    "sonication (Bioruptor Pico)",
-                    "sonication (Bioruptor Plus)",
-                    "sonication (Bioruptor Twin)",
-                    "sonication (Branson Sonifier 250)",
-                    "sonication (Branson Sonifier 450)",
-                    "sonication (generic microtip)",
-                    "sonication (generic)",
-                    "sonication (Sonics VCX130)"
-               ]
-
-            }
-        },
-        "fragmentation_date":{
-            "title": "Fragmentation date",
-            "description": "The date that the nucleic acid was fragmented. The date applies to all fragmentation methods specified.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
-            "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
-        },
-        "library_size_selection_method": {
-            "title": "Size selection method",
-            "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
-            "type": "string",
-            "XXXenum": [
-                "Agencourt AMPure XP",
-                "BluePippin",
-                "gel",
-                "see document",
-                "SPRI beads"
-            ],
-            "format": "semi-controlled"
-        },
-        "lysis_method": {
-            "title": "Lysis method",
-            "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
-            "type": "string",
-            "XXXenum": [
-                "Ambion mirVana",
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "n/a",
-                "Qiagen #74204",
-                "QIAGEN DNeasy Blood & Tissue Kit",
-                "see document",
-                "Trizol (LifeTech cat#: 15596-018)"
-            ],
-            "format": "semi-controlled"
-        },
-        "size_range": {
-            "title": "Size range",
-            "description": "The measured size range of the purified nucleic acid, in bp.",
-            "type": "string",
-            "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
-        },
-        "rna_integrity_number": {
-            "title": "RNA integrity number",
-            "description": "The RNA integrity number (RIN) value.",
-            "type": "number",
-            "minimum": 1,
-            "maximum": 10
         },
         "strand_specificity": {
             "title": "Strand specific",
@@ -241,7 +122,6 @@
         "accession": {
             "title": "Accession"
         },
-
         "biospecimen.sample_type": {
             "title": "Sample Type"
         },
@@ -260,10 +140,10 @@
     },
     "boost_values": {
         "accession": 1.0,
-        "internal_ID": 1.0,
+        "biospecimen.internal_id": 1.0,
         "biospecimen.accession": 1.0,
-        "biospecimen.patient": 1.0,
-        "sequencing_ID": 1.0
+        "biospecimen.patient.accession": 1.0,
+        "sequencing_id": 1.0
     },
     "changelog": "/profiles/changelogs/biolibrary.md"
 }

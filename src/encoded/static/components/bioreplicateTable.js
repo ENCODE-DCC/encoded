@@ -18,6 +18,7 @@ class BioreplicateTable extends React.Component {
             "Library summary": i.biolibrary.nucleic_acid_term_name,
             "Biospecimen": i.biolibrary.biospecimen.accession,
             "Biolibrary": i.biolibrary.accession,
+            "Patient": i.biolibrary.biospecimen.patient.accession,
 
         }));
         console.log("bioreplicateFilters", this.bioreplicateFilters);
@@ -40,11 +41,12 @@ class BioreplicateTable extends React.Component {
                 },
                 "Biospecimen": {
                     title: 'Biospecimen',
-
                 },
                 "Biolibrary": {
                     title: 'Biolibrary',
-
+                },
+                "Patient": {
+                    title: 'Patient',
                 },
             };
             console.log("biolibrary",this.bioreplicateFilters.biolibrary);

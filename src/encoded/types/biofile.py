@@ -50,48 +50,19 @@ class Biofile(Item):
     item_type = 'biofile'
     schema = load_schema('encoded:schemas/biofile.json')
     name_key = 'accession'
-
     rev = {
-
         'paired_with': ('Biofile', 'paired_with'),
         'superseded_by': ('Biofile', 'supersedes'),
-
     }
-
     embedded = [
-        'biolibrary',
         'platform',
         'award',
-        # 'award.pi',
-        # 'award.pi.lab',
         'bioreplicate',
         'bioreplicate.bioexperiment',
-        'bioreplicate.bioexperiment.lab',
-        # 'bioreplicate.bioexperiment.target',
-        # 'bioreplicate.biolibrary',
-        'lab',
+        'bioreplicate.biolibrary',
         'submitted_by',
-        # 'analysis_step_version.analysis_step',
-        # 'analysis_step_version.analysis_step.pipelines',
-        # 'analysis_step_version.software_versions',
-        # 'analysis_step_version.software_versions.software',
-        # 'quality_metrics',
-        # 'step_run',
-
     ]
     audit_inherit = [
-        'bioreplicate',
-        'bioreplicate.experiment',
-        # 'bioreplicate.experiment.target',
-        # 'bioreplicate.biolibrary',
-        'biolibrary',
-        'lab',
-        'submitted_by',
-        # 'analysis_step_version.analysis_step',
-        # 'analysis_step_version.analysis_step.pipelines',
-        # 'analysis_step_version.analysis_step.versions',
-        # 'analysis_step_version.software_versions',
-        # 'analysis_step_version.software_versions.software'
     ]
     set_status_up = [
         'platform',
@@ -123,21 +94,3 @@ class Biofile(Item):
             return None
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
-
-
-    # @calculated_property(schema={
-    #     "title": "Output category",
-    #     "description": "The overall catagory of the file content.",
-    #     "comment": "Do not submit.  This field is calculated from output_type_output_category.",
-    #     "type": "string",
-    #     "enum": [
-    #         "raw data",
-    #         "alignment",
-    #         "signal",
-    #         "annotation",
-    #         "quantification",
-    #         "reference"
-    #     ]
-    # })
-    # def output_category(self, output_type):
-    #     return self.schema['output_type_output_category'].get(output_type)

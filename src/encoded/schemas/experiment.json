@@ -314,6 +314,9 @@
             "title": "Perturbation",
             "open_on_load": true
         },
+        "target.investigated_as": {
+            "title": "Target category"
+        },
         "target.label": {
             "title": "Target of assay",
             "type": "typeahead",
@@ -395,7 +398,7 @@
         },
         "replication_type": {
             "title": "Replication type"
-        } 
+        }
     },
     "columns": {
         "accession": {
@@ -484,7 +487,7 @@
         },
         "replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units"
-        },       
+        },
         "replicates.@id": {
             "title": "Replicates"
         }

@@ -23,7 +23,7 @@
         },
         "patient": {
             "title": "Patient",
-            "description": "The patient the lab was conducted for.",
+            "description": "The patient the surgery was conducted for.",
             "type": "string",
             "linkTo": "Patient"
         },
@@ -39,7 +39,7 @@
             ]
         },
         "hospital_location": {
-            "title": "Surgery hospital Location",
+            "title": "Hospital Location",
             "type": "string",
             "enum": [
                 "UTSW",
@@ -67,10 +67,10 @@
             "title": "Nephrectomy Type"
         },
         "surgery_procedure.nephrectomy_details.approach": {
-            "title": " Nephrectomy Approach"
+            "title": "Nephrectomy Approach"
         },
         "nephr_robotic_assist":{
-            "title":"Nephrectomy Robotic Assist"
+            "title": "Nephrectomy Robotic Assist"
         },
         "pathology_report.pathology_report_tumor_range": {
             "title": "Tumor Size Range"

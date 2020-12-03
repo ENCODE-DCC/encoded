@@ -41,8 +41,6 @@ ORDER = [
     'radiation',
     'medical_imaging',
     'cart',
-    'lab_results',
-    'vital_results'
 ]
 
 IS_ATTACHMENT = [
@@ -602,10 +600,10 @@ PHASE1_PIPELINES = {
     ],
     'biofile': [
         remove_keys('paired_with')
-],
+    ],
     'bioexperiment': [
         remove_keys('possible_controls'),
-    ],
+    ]
 
 }
 

@@ -49,7 +49,6 @@ export const DocumentsPanel = (props) => {
         });
         allDocs = allDocs.concat(spec.documents);
     });
-    // console.log("documentSpecsMapped", documentSpecsMapped);
     // Sort documents by attachment download name.
     const sortedDocs = globals.sortDocs(allDocs);
 
@@ -86,18 +85,12 @@ DocumentsPanel.defaultProps = {
 
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
-    console.log("props-docsearch", props);
-
-    console.log("graph", documents)
 
     if (documents && documents.length) {
         return <DocumentsPanel documentSpecs={[{ documents }]} />;
     }
     return null;
 };
-// console.log('props', props);
-// console.log("docgraph", documents);
-// console.log('documentSpecs',documentSpecs);
 
 DocumentsPanelRenderer.propTypes = {
     documentSearch: PropTypes.object, // Search result object; this uses its @graph to get the documents,
@@ -112,8 +105,7 @@ DocumentsPanelRenderer.defaultProps = {
 // display the resulting documents in a documents panel.
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
-    // console.log('this.documents', this.props.documents);
-    console.log('documents', documents );
+
     if (documents && documents.length) {
         return (
 
@@ -125,8 +117,7 @@ export const DocumentsPanelReq = (props) => {
 
         );
     }
-    console.log('Param',param);
-    console.log('FetchedData',FetchedData);
+
     return null;
 };
 
@@ -180,7 +171,6 @@ export class Document extends React.Component {
 
     render() {
         const context = this.props.context;
-        console.log('context', context);
 
         // Set up rendering components
         const DocumentHeaderView = globals.documentViews.header.lookup(context);

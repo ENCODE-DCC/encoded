@@ -52,41 +52,27 @@
         }
     },
     "facets": {
-       
-       
         "assay_titles": {
             "title": "Assay title"
         },
         "assay_slims": {
             "title": "Assay type"
         },
-        "contributors.title": {
-            "title": "Contributing Labs"
-        },
         "date_released": {
             "title": "Date released"
         },
-       
         "status": {
             "title": "Status"
         }
-       
+
     },
     "columns": {
         "accession": {
             "title": "Accession"
         },
-       
         "assay_title": {
             "title": "Assay title"
         },
-        "contributors.title": {
-            "title": "Contributing Labs"
-        },
-        "contributing_awards.project": {
-            "title": "Project"
-        },
-        
         "related_datasets.status": {
             "title": "Related dataset status",
             "type": "string"
@@ -99,23 +85,14 @@
             "title": "Sample Type",
             "type": "array"
         },
-        
         "status": {
             "title": "Status"
         }
-       
     },
     "boost_values": {
         "accession": 1.0,
         "aliases": 1.0,
-        "contributing_awards.title": 1.0,
-        "contributing_awards.project": 1.0,
-        "contributing_awards.name": 1.0,
-        "contributors.institute_name": 1.0,
-        "contributors.institute_label": 1.0,
-        "contributors.title": 1.0,
         "notes": 1.0
-       
     },
     "changelog": "/profiles/changelogs/bioexperiment_series.md"
 }

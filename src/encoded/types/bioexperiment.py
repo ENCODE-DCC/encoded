@@ -48,11 +48,8 @@ class Bioexperiment(Biodataset,
         'bioreplicate.biolibrary',
         'bioreplicate.biolibrary.documents',
         'bioreplicate.biolibrary.biospecimen',
-        'bioreplicate.biolibrary.biospecimen.donor',
-        'bioreplicate.biolibrary.biospecimen.donor.organism',
         'bioreplicate.biolibrary.biospecimen.part_of',
         'bioreplicate.biolibrary.biospecimen.part_of',
-        'bioreplicate.biolibrary.biospecimen.part_of.donor',
         'possible_controls',
         'bioreplicate.biolibrary.biospecimen.documents',
         "references",
@@ -115,9 +112,7 @@ class Bioexperiment(Biodataset,
             "type": "object",
         }
     })
-    def biospecimen_summary(self,
-                            request,
-                            bioreplicate=None):
+    def biospecimen_summary(self, request, bioreplicate=None):
         biospecimen_summary_list = []
 
         biospecimen_summary_dict = {
@@ -195,9 +190,6 @@ class Bioexperiment(Biodataset,
             if tech_rep_num < bio_rep_dict[bio_rep_num]['technical_replicate_number']:
                 bio_rep_dict[bio_rep_num] = replicate_object
 
-        # Compare the biosamples to see if for humans they are the same donor and for
-        # model organisms if they are sex-matched and age-matched
-        biospecimen_donor_list = []
         biospecimen_number_list = []
 
         for replicate_object in bio_rep_dict.values():
@@ -207,23 +199,12 @@ class Bioexperiment(Biodataset,
 
                 if 'biospecimen' in biolibraryObject:
                     biospecimen_object = request.embed(biolibraryObject['biospecimen'], '@@object')
-                    biospecimen_donor_list.append(
-                        biospecimen_object.get('donor')
-                    )
                     biospecimen_number_list.append(
                         replicate_object.get('biological_replicate_number')
                     )
                     biospecimen_species = biospecimen_object.get('species')
                     biospecimen_type = biospecimen_object.get('sample_type'),
 
-                else:
-                    # special treatment for "RNA Bind-n-Seq" they will be called unreplicated
-                    # untill we change our mind
-                    if assay_term_name == 'RNA Bind-n-Seq':
-                        return 'unreplicated'
-                    # If I have a library without a biosample,
-                    # I cannot make a call about replicate structure
-                    return None
             else:
                 # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
                 # If I have a replicate without a library,
@@ -237,20 +218,7 @@ class Bioexperiment(Biodataset,
         if biospecimen_type == 'cell line':
             return 'isogenic'
 
-        # Since we are not looking for model organisms here, we likely need audits
-        if biospecimen_species != 'human':
-            if len(set(biospecimen_donor_list)) == 1:
-                return 'isogenic'
-            else:
-                return 'anisogenic'
 
-        if len(set(biospecimen_donor_list)) == 0:
-            return None
-        if len(set(biospecimen_donor_list)) == 1:
-            if None in biospecimen_donor_list:
-                return None
-            else:
-                return 'isogenic'
 
         return 'anisogenic'
 

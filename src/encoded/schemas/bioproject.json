@@ -4,50 +4,21 @@
     "id": "/profiles/bioproject.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [
-        "award",
-        "lab"
-    ],
-    "identifyingProperties": [
-        "uuid",
-        "accession",
-        "aliases"
-    ],
+    "required": [ "award", "lab"],
+    "identifyingProperties": [ "uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        {
-            "$ref": "mixins.json#/schema_version"
-        },
-        {
-            "$ref": "mixins.json#/uuid"
-        },
-        {
-            "$ref": "mixins.json#/accession"
-        },
-        {
-            "$ref": "mixins.json#/aliases"
-        },
-        {
-            "$ref": "mixins.json#/attribution"
-        },
-        {
-            "$ref": "mixins.json#/submitted"
-        },
-        {
-            "$ref": "mixins.json#/references"
-        },
-        {
-            "$ref": "mixins.json#/notes"
-        },
-        {
-            "$ref": "mixins.json#/documents"
-        },
-        {
-            "$ref": "biodataset.json#/properties"
-        },
-        {
-            "$ref": "biofile_set.json#/properties"
-        }
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents"},
+        { "$ref": "biodataset.json#/properties"},
+        { "$ref": "biofile_set.json#/properties" }
     ],
     "dependencies": {
         "status": {
@@ -82,7 +53,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "1"
         },
         "project_type": {
             "title": "Project type",
@@ -121,15 +92,6 @@
         },
         "month_released": {
             "title": "Month released"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
         }
     },
     "columns": {
@@ -168,32 +130,13 @@
         "description": {
             "title": "Description",
             "type": "string"
-        },
-        "lab.title": {
-            "title": "Lab"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
         }
     },
     "boost_values": {
         "accession": 1.0,
         "assay_term_name": 1.0,
         "dbxrefs": 1.0,
-        "award.title": 1.0,
-        "award.project": 1.0,
-        "award.name": 1.0,
-        "submitted_by.email": 1.0,
-        "submitted_by.first_name": 1.0,
-        "submitted_by.last_name": 1.0,
-        "lab.institute_name": 1.0,
-        "lab.institute_label": 1.0,
-        "lab.title": 1.0,
-        "project_type": 1.0,
-        "internal_tags": 1.0
+        "project_type": 1.0
     },
     "changelog": "/profiles/changelogs/bioproject.md"
 }

@@ -130,6 +130,9 @@
         "assembly": {
             "title": "Genome assembly"
         },
+        "organism.scientific_name": {
+          "title": "Organism"
+       },
         "files.file_type": {
             "title": "Available file types"
         },
@@ -141,9 +144,6 @@
         },
         "files.mapped_read_length": {
             "title": "Mapped read length (nt)"
-        },
-        "month_released": {
-            "title": "Month released"
         },
         "software_used.software.name": {
             "title": "Software used"

@@ -1,9 +1,9 @@
 [
     {
         "accession": "KCEBS708IJT",
-        "internal_ID":"nisiad",
+        "internal_id":"nisiad",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"nulla ",
+        "openspecimen_id":"nulla ",
         "patient":"KCEPT708IJT",
         "sample_type":"Tissue",
         "collection_date":"1941-02-16",
@@ -13,17 +13,16 @@
         "uuid": "29bf20ad-7942-44d3-9d89-53febc8829fc",
         "status": "released",
         "host": "Mouse",
-        "species": "Mouse",
-
+        "species": "Human",
         "primary_site": "Kidney",
         "collection_type": "solid tissue",
         "surgery": "KCESX708FIJ"
     },
     {
         "accession": "KCEBS000AAB",
-        "internal_ID":"quiscillum",
+        "internal_id":"quiscillum",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"minimcommodo",
+        "openspecimen_id":"minimcommodo",
         "patient":"KCEPT708IJT",
         "sample_type":"Tissue",
         "collection_type": "solid tissue",
@@ -38,15 +37,15 @@
 
         "primary_site": "Kidney",
         "documents": [
-            "kevin-white:K562_BAC_transfection_White_protocol"
+            "kce:K562_BAC_transfection_White_protocol"
         ],
         "surgery": "KCESX708FIJ"
     },
     {
         "accession": "KCEBS087RNA",
-        "internal_ID":"utminimsed",
+        "internal_id":"utminimsed",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"ut",
+        "openspecimen_id":"ut",
         "patient":"KCEPT139SOR",
         "collection_date":"2013-02-09",
         "tissue_derivatives":"FF",
@@ -54,7 +53,7 @@
         "anatomic_site":"Liver",
         "uuid": "c58dd4d7-418a-4482-84c8-4d5ee6f29ea5",
         "documents": [
-            "encode:EPC_Stam_protocol"
+            "kce:EPC_Stam_protocol"
         ],
         "collection_type":"solid tissue",
         "status": "released",
@@ -64,9 +63,9 @@
     },
     {
         "accession": "KCEBS356AAA",
-        "internal_ID":"deserunt",
+        "internal_id":"deserunt",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"veniam",
+        "openspecimen_id":"veniam",
         "patient":"KCEPT026PGS",
         "collection_date":"2003-11-09",
         "sample_type":"Blood",
@@ -77,14 +76,13 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney"
 
     },
     {
         "accession": "KCEBS024AAA",
-        "internal_ID":"reprehenderit",
-        "openspecimen_ID":"et",
+        "internal_id":"reprehenderit",
+        "openspecimen_id":"et",
         "award": "Kidney-SPORE",
         "patient":"KCEPT925TMI",
         "collection_date":"1991-08-20",
@@ -96,15 +94,14 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney",
         "collection_type":"solid tissue"
     },
     {
         "accession": "KCEBS026KCE",
-        "internal_ID":"doaliqua",
+        "internal_id":"doaliqua",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"inmagnaident",
+        "openspecimen_id":"inmagnaident",
         "patient":"KCEPT480NBU",
         "collection_date":"1990-01-13",
         "sample_type":"Blood",
@@ -115,14 +112,13 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney"
     },
     {
         "accession": "KCEBS026FDC",
-        "internal_ID":"sintanimau",
+        "internal_id":"sintanimau",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"Duissint",
+        "openspecimen_id":"Duissint",
         "patient":"KCEPT873QVK",
         "collection_date":"2012-06-15",
         "sample_type":"Tissue",
@@ -133,15 +129,14 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney",
         "collection_type":"solid tissue"
     },
     {
         "accession": "KCEBS039ENC",
-        "internal_ID":"nostrudquiu",
+        "internal_id":"nostrudquiu",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"sitani",
+        "openspecimen_id":"sitani",
         "patient":"KCEPT802XRB",
         "collection_date":"2005-02-04",
         "sample_type":"Tissue",
@@ -152,16 +147,15 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney",
         "surgery": "KCESX802XRB",
         "collection_type":"solid tissue"
     },
     {
         "accession": "KCEBS044ANI",
-        "internal_ID":"laborumincidid",
+        "internal_id":"laborumincidid",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"exercitation",
+        "openspecimen_id":"exercitation",
         "patient":"KCEPT802XRB",
         "collection_date":"1980-03-15",
         "sample_type":"Tissue",
@@ -172,16 +166,15 @@
         "uuid": "651493ea-8d40-41f3-911a-81ed25074af9",
         "status": "released",
         "host": "Mouse",
-        "species": "Mouse",
-
+        "species": "Human",
         "primary_site": "Kidney",
         "collection_type":"solid tissue"
     },
     {
         "accession": "KCEBS057AAA",
-        "internal_ID":"aute",
+        "internal_id":"aute",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"dolore",
+        "openspecimen_id":"dolore",
         "patient":"KCEPT186NZW",
         "collection_date":"1997-08-16",
         "sample_type":"Tissue",
@@ -192,15 +185,14 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney",
         "collection_type":"solid tissue"
     },
     {
         "accession": "KCEBS088RNA",
-        "internal_ID":"officia consequat ut nisi",
+        "internal_id":"officia consequat ut nisi",
         "award": "Kidney-SPORE",
-        "openspecimen_ID":"qui",
+        "openspecimen_id":"qui",
         "patient":"KCEPT873QVK",
         "collection_date":"1976-03-28",
         "sample_type":"Tissue",
@@ -211,7 +203,6 @@
         "status": "released",
         "host": "Human",
         "species": "Human",
-
         "primary_site": "Kidney",
         "collection_type":"solid tissue"
     }

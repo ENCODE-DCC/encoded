@@ -292,7 +292,7 @@ class Bioproject(BiofileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample,
     embedded = BiofileSet.embedded + [
         'files.biodataset',
         'files.bioreplicate.biolibrary',
-        'files.biolibrary',
+        'files.bioreplicate.biolibrary',
         'files.bioreplicate.bioexperiment',
         'award',
         'lab'

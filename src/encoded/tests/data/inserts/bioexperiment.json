@@ -20,7 +20,7 @@
       "GEO:GSM935375"
     ],
     "aliases": [
-      "James-Brugarolas:experiment_RB884_680_1"
+      "james-brugarolas:experiment_RB884_680_1"
     ],
     "possible_controls":["KCEBE000AES"],
     "submitter_comment": "The lab tissue was FFPE fixed and be put in room temperature for 30min."
@@ -48,7 +48,7 @@
       "GEO:GSM1010811"
     ],
     "aliases": [
-      "Payal-Kapur:experiment_RB884_880_1"
+      "payal-kapur:experiment_RB884_880_1"
     ],
     "submitter_comment": "There may have been additional \"treatment\" stemming from the tech's constant sneezing."
   },
@@ -71,7 +71,7 @@
       "5a4ffbb9-2a6f-4620-8196-7bfb1b441051"
     ],
     "aliases": [
-      "James-Brugarolas:experiment_RB884_681_1"
+      "james-brugarolas:experiment_RB884_681_1"
     ]
   }
 ]

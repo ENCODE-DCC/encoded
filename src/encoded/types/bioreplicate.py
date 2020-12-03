@@ -13,33 +13,30 @@ import re
 
 @collection(
     name='bioreplicates',
-    # acl=ALLOW_SUBMITTER_ADD,
-    unique_key='accession',
+    acl=ALLOW_SUBMITTER_ADD,
     properties={
-        'title': 'bioreplicates',
-        'description': 'listing of bioreplicates',
+        'title': 'Bioreplicates',
+        'description': 'Listing of BioReplicates',
     })
 class Bioreplicate(Item):
     item_type = 'bioreplicate'
     schema = load_schema('encoded:schemas/bioreplicate.json')
     rev = {
         'biofile': ('Biofile', 'bioreplicate'),
-
     }
 
     embedded = [
-        # 'bioexperiment'
+        'bioexperiment'
         'biolibrary',
         'biolibrary.biospecimen',
-        "biolibrary.biospecimen.donor",
-        "biolibrary.biospecimen.donor.organism",
+        'biolibrary.biospecimen.patient.accession',
+        'biolibrary.biospecimen.donor',
+        'biolibrary.biospecimen.donor.organism',
         'biofile'
-
     ]
     audit_inherit = [
     ]
     set_status_up = [
-
     ]
     set_status_down = []
 

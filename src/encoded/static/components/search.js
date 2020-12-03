@@ -648,11 +648,12 @@ class PathologyComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>
-                        <div><strong>Laterality: </strong>{result.laterality}</div>
-                        <div><strong>Histology: </strong>{result.histology}</div>
-                        <div><strong>Pathological T stage: </strong>{result.ajcc_p_stage}</div>
+                        <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
+                        <div><strong>Histologic Subtype: </strong>{result.histology}</div>
+                        <div><strong>Tumor Grade: </strong>{result.grade}</div>
+                        <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
                         <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
+                        <div><strong>Laterality: </strong>{result.laterality}</div>
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}

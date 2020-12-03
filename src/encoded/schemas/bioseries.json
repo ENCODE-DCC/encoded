@@ -33,11 +33,11 @@
                 "title": "Biodataset",
                 "comment": "See biodataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "Bioexperiment"
+                "linkTo": "Biodataset"
             }
         }
     },
     "boost_values": {
         "internal_tags": 1.0
-    }   
+    }
 }

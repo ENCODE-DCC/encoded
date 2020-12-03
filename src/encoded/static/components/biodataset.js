@@ -96,14 +96,7 @@ class BioreferenceComponent extends React.Component {
                                         </div>
                                         : null}
 
-                                    {context.organism ?
-                                        <div data-test="organism">
-                                            <dt>Organism</dt>
-                                            <dd>{context.organism}</dd>
-                                        </div>
-                                    : null}
 
-                                   
                                 </dl>
                             </div>
 
@@ -197,7 +190,7 @@ class BioprojectComponent extends React.Component {
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
-        
+
 
         // Set up the breadcrumbs
         const datasetType = context['@type'][1];
@@ -219,7 +212,7 @@ class BioprojectComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} crumbsReleased={crumbsReleased} />
                         <h2>Summary for project file set {context.accession}</h2>
-                        
+
                         {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
                         <DisplayAsJson />
                     </div>
@@ -263,7 +256,7 @@ class BioprojectComponent extends React.Component {
                                         : null}
                                     {context.assay_term_name ?
                                         <div data-test="assay_term_name">
-                                            <dt>Biospecimen term name </dt>
+                                            <dt>Assay term name </dt>
                                             <dd>{_.uniq(context.assay_term_name)}</dd>
                                         </div>
                                         : null}
@@ -542,7 +535,7 @@ export class BioseriesComponent extends React.Component {
                                         </div>
                                         : null}
 
-                                   
+
                                 </dl>
                             </div>
 

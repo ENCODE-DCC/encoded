@@ -150,7 +150,7 @@ class Bioexperiment extends React.Component {
         super(props);
         this.libraryValues = {
             nucleic_acid_term_name: { values: {}, value: undefined, component: {}, title: 'Nucleic acid type', test: 'nucleicacid' },
-            rna_integrity_number: { values: {}, value: undefined, component: {}, title: 'RNA integrity number', test: 'rnaintegritynumber' },
+            integrity_number: { values: {}, value: undefined, component: {}, title: 'DNA/RNA integrity number', test: 'nucleicacidintegritynumber' },
             nucleic_acid_starting_quantity: { values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity' },
             size_range: { values: {}, value: undefined, component: {}, title: 'Size range', test: 'sizerange' },
             lysis_method: { values: {}, value: undefined, component: {}, title: 'Lysis method', test: 'lysismethod' },
@@ -175,7 +175,7 @@ class Bioexperiment extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         const replicates = context.bioreplicate && context.bioreplicate.length ? context.bioreplicate : [];
         if (replicates.length) {
-     
+
 
             // Collect all replicate libraries into one array of library objects.
             const libraries = replicates.reduce((libraryAcc, bioreplicate) => (bioreplicate.biolibrary ? libraryAcc.concat([bioreplicate.biolibrary]) : libraryAcc), []);
