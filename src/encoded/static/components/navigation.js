@@ -219,7 +219,7 @@ const GlobalSections = (props, context) => {
                         if (childAction.id.substring(0, 4) === 'sep-') {
                             return <DropdownMenuSep key={childAction.id} />;
                         }
-                        const glossaryMatch = glossary.find(def => def.term === childAction.title);
+                        const glossaryMatch = glossary.find(def => def.term.toLowerCase() === childAction.title.toLowerCase());
                         if (glossaryMatch) {
                             return (
                                 <div
