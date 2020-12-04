@@ -88,9 +88,9 @@ class Biospecimen(Item):
         'x': {
             'facets': [
                 
-                'surgery.pathology_report.histology',
+                'surgery.pathology_report.histology_filter',
             ],
-            'group_by': 'surgery.pathology_report.histology',
+            'group_by': 'surgery.pathology_report.histology_filter',
             'label': 'histology',
         },
     }
