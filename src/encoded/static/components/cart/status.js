@@ -137,7 +137,7 @@ class CartStatusComponent extends React.Component {
                     <DropdownMenu label="cart-control">
                         {menuItems}
                     </DropdownMenu>
-                    {this.state.shareModalOpen ? <CartShare disableFooterSubmitBtn={inProgress} userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
+                    {this.state.shareModalOpen ? <CartShare userCart={savedCartObj} closeShareCart={this.closeShareCart} /> : null}
                     {this.state.clearModalOpen ? <CartClearModal closeClickHandler={this.closeClearCart} /> : null}
                 </NavItem>
             );
