@@ -91,30 +91,18 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "assay_term_name": {
             "title": "Assay name"
-        },
-        "award.project": {
-            "title": "Project"
-        },
-        "award.rfa": {
-            "title": "RFA"
-        },
-        "lab.title": {
-            "title": "Lab"
         },
         "assembly": {
             "title": "Genome assembly"
         },
         "bioreplicate.biolibrary.biospecimen.sample_type": {
-            "title": "Biospecimen sample name",
+            "title": "Biospecimen sample type",
             "type": "typeahead",
             "length": "long"
         },
-        "files.file_type": {
+        "files.file_format": {
             "title": "Available file types"
         },
         "files.platform.term_name": {
@@ -126,12 +114,6 @@
         "files.read_length": {
             "title": "Read length (nt)"
         },
-        "files.mapped_read_length": {
-            "title": "Mapped read length (nt)"
-        },
-        "bioreplicate.biolibrary.size_range": {
-            "title": "Library fragment size (nt)"
-        },
         "bioreplicate.biolibrary.nucleic_acid_term_name": {
             "title": "Library material"
         },
@@ -141,11 +123,11 @@
         "date_submitted": {
             "title": "Date submitted"
         },
-        "internal_status": {
-            "title": "Internal status"
-        },
         "replication_type": {
             "title": "Replication type"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -181,12 +163,6 @@
         "bioreplicate.technical_replicate_number": {
             "title": "Technical replicate"
         },
-        "bioreplicate.biolibrary.biospecimen.species": {
-            "title": "Species"
-        },
-        "bioreplicate.@id": {
-            "title": "Bioreplicate"
-        }
     },
     "boost_values": {
         "accession": 1.0,

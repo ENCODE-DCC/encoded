@@ -880,8 +880,6 @@ const BioexperimentComponent = (props, reactContext) => {
                             }
                         </a>
                     </div>
-                    <div><strong>Lab: </strong>{result.lab.title}</div>
-                    <div><strong>Project: </strong>{result.award.project}</div>
 
             </div>
             {cartControls ?
