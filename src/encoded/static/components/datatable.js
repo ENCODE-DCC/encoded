@@ -158,16 +158,12 @@ const DataTable = ({ tableData }) => {
                                 const cellStyle = (cell && cell.style) || null;
                                 if (cellColSpan > 1) {
                                     if (cell && cell.header) {
-                                        console.log(cellContent);
-                                        console.log(cell.header);
                                         let title = Tooltips[cellContent.props.children];
                                         return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle} title={title}>{cellContent}</th>;
                                     }
                                     return <td key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</td>;
                                 }
                                 if (cell && cell.header) {
-                                    console.log(cellContent);
-                                    console.log(cell.header);
                                     let title = Tooltips[cellContent.props.children];
                                     return <th key={colIndex} className={cellCss} style={cellStyle} title={title}>{cellContent}</th>;
                                 }
