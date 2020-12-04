@@ -196,8 +196,8 @@
         "surgery.surgery_procedure.procedure_type": {
             "title": "Surgery Procedure"
         },
-        "surgery.pathology_report.histology": {
-            "title": "Tumor Histologic Subtype"
+        "surgery.pathology_report.histology_filter": {
+            "title": "Histologic Subtype"
         },
         "biolibrary.nucleic_acid_term_name": {
             "title": "Library Material"

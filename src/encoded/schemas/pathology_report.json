@@ -458,7 +458,7 @@
         "pathology_report_tumor_range": {
             "title": "Tumor Size Range"
         },
-        "histology": {
+        "histology_filter": {
             "title": "Histologic Subtype"
         },
         "grade": {
