@@ -934,10 +934,9 @@ class Patient(Item):
         },
         'x': {
             'facets': [
-
-                'surgery.pathology_report.histology',
+                'surgery.pathology_report.histology_filter',
             ],
-            'group_by': 'surgery.pathology_report.histology',
+            'group_by': 'surgery.pathology_report.histology_filter',
             'label': 'histology',
         },
     }
@@ -1219,6 +1218,7 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
 
 
