@@ -271,13 +271,21 @@ GlobalSections.contextTypes = {
 };
 
 
-const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }) => (
-    <Nav>
-        <Search />
-        {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
-        <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
-    </Nav>
-);
+const SecondarySections = ({ isHomePage, openDropdown, dropdownClick }, context) => {
+    const session = context.session;
+    const disabled = !session;
+    const userActionRender = !(session && session['auth.userid']) ?
+        <a href="#!" className="dropdown__toggle" data-trigger="login" disabled={disabled}>Sign in/ Create Account</a> :
+        null;
+
+    return (
+        <Nav>
+            <Search />
+            {isHomePage ? null : <ContextActions openDropdown={openDropdown} dropdownClick={dropdownClick} />}
+            <UserActions openDropdown={openDropdown} dropdownClick={dropdownClick} />
+            <li className="dropdown" id="user-actions-footer">{userActionRender}</li>
+        </Nav>);
+};
 
 SecondarySections.propTypes = {
     /** True if current page is home page */
@@ -286,6 +294,10 @@ SecondarySections.propTypes = {
     openDropdown: PropTypes.string,
     /** Function to call when dropdown clicked */
     dropdownClick: PropTypes.func,
+};
+
+SecondarySections.contextTypes = {
+    session: PropTypes.object, // Login session information
 };
 
 SecondarySections.defaultProps = {
