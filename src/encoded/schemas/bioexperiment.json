@@ -162,7 +162,7 @@
         },
         "bioreplicate.technical_replicate_number": {
             "title": "Technical replicate"
-        },
+        }
     },
     "boost_values": {
         "accession": 1.0,
