@@ -2077,7 +2077,7 @@ const TabPanelFacets = (props) => {
     });
 
     // Create objects for non-Assembly facets
-    const fileType = createFacetObject('file_type', fileList, filters);
+    const fileType = createFacetObject('file_format', fileList, filters);
     const outputType = createFacetObject('output_types', fileList, filters);
     let replicate;
     if (experimentType !== 'Annotation') {
@@ -2104,11 +2104,8 @@ const TabPanelFacets = (props) => {
                     <span> Clear all filters</span>
                 </button>
             : null }
-            <FileFacet facetTitle={'File format'} facetObject={fileType} filterFiles={filterFiles} facetKey={'file_type'} selectedFilters={filters} currentTab={currentTab} />
+            <FileFacet facetTitle={'File format'} facetObject={fileType} filterFiles={filterFiles} facetKey={'file_format'} selectedFilters={filters} currentTab={currentTab} />
             <FileFacet facetTitle={'Output type'} facetObject={outputType} filterFiles={filterFiles} facetKey={'output_types'} selectedFilters={filters} currentTab={currentTab} />
-            {replicate ?
-                <FileFacet facetTitle={'Replicates'} facetObject={replicate} filterFiles={filterFiles} facetKey={'biological_replicates'} selectedFilters={filters} currentTab={currentTab} />
-            : null}
         </div>
     );
 };
