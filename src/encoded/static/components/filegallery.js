@@ -331,8 +331,11 @@ FileTable.procTableColumns = {
         },
         objSorter: (a, b) => fileAccessionSort(a, b),
     },
-    file_type: { title: 'File type' },
-    output_type: { title: 'Output type' },
+    file_format: { title: 'File format' },
+    output_types: {
+        title: 'Output types',
+        getValue: item => (item.output_types.join(', ')),
+    },
     assembly: { title: 'Mapping assembly' },
     genome_annotation: {
         title: 'Genome annotation',
@@ -378,8 +381,11 @@ FileTable.refTableColumns = {
         },
         objSorter: (a, b) => fileAccessionSort(a, b),
     },
-    file_type: { title: 'File type' },
-    output_type: { title: 'Output type' },
+    file_format: { title: 'File format' },
+    output_types: {
+        title: 'Output types',
+        getValue: item => (item.output_types.join(', ')),
+    },
     mapped_read_length: {
         title: 'Mapped read length',
         hide: list => _(list).all(file => file.mapped_read_length === undefined),
@@ -3160,8 +3166,11 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
                         {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
                     </span>,
             },
-            file_type: { title: 'File type' },
-            output_types: { title: 'Output type' },
+            file_format: { title: 'File Format' },
+            output_types: {
+                title: 'Output types',
+                getValue: item => (item.output_types.join(', ')),
+            },
             assembly: { title: 'Mapping assembly' },
             genome_annotation: {
                 title: 'Genome annotation',
