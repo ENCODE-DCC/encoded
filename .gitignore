@@ -48,3 +48,4 @@ initial-indexing-times*
 .viminfo
 
 .dev-config.ini
+venv
