@@ -20,7 +20,7 @@ export default class RichTextBlockView extends React.Component {
     componentDidMount() {
         const $script = require('scriptjs');
         if (this.context.editable) {
-            $script('./node_modules/ckeditor4/ckeditor.js', this.setupEditor);
+            $script("ckeditor/ckeditor.js", this.setupEditor);
         }
         // Polyfill for 'closest' for IE
         const elementPrototype = window.Element.prototype;
@@ -46,9 +46,9 @@ export default class RichTextBlockView extends React.Component {
     }
 
     setupEditor() {
-        const ck = require('ckeditor4');
-        ck.disableAutoInline = true;
-        this.editor = ck.inline(this.domNode, {
+        require('ckeditor4');
+        CKEDITOR.disableAutoInline = true;
+        this.editor = CKEDITOR.inline(this.domNode, {
             language: 'en',
             toolbar: [
                 { name: 'basicstyles', groups: ['basicstyles', 'cleanup'], items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
