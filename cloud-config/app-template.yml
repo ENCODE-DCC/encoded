@@ -1,6 +1,9 @@
 #cloud-config
 ssh_authorized_keys:
 %(ssh_auth_keys)s
+bootcmd:
+  - set -ex
+  - echo "Booting."
 power_state:
   mode: poweroff
 output:
