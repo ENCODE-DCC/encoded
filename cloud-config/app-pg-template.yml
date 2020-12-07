@@ -1,17 +1,6 @@
 #cloud-config
 ssh_authorized_keys:
 %(ssh_auth_keys)s
-apt_sources:
-%(apt_srcs_pg)s
-bootcmd:
-%(bootcmd)s
-%(bootcmd_pg)s
-%(bootcmd_node)s
-packages:
-%(packages_all)s
-%(packages_app)s
-%(packages_pg)s
-%(packages_node)s
 power_state:
   mode: reboot
 output:
