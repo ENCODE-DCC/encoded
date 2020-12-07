@@ -123,6 +123,9 @@
         "principal_investigators.title": {
             "title": "PIs"
         },
+        "collaborators.title": {
+            "title": "Collaborators"
+        },
         "focus": {
             "title": "Focus"
         },

@@ -453,7 +453,7 @@ class DataFile(File):
         'superseded_by': ('DataFile', 'supersedes'),
         'quality_metrics': ('Metrics', 'quality_metric_of'),
     }
-    embedded = []
+    embedded = File.embedded + ['lab', 'award']
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
@@ -512,7 +512,7 @@ class AnalysisFile(DataFile):
     item_type = 'analysis_file'
     base_types = ['AnalysisFile'] + DataFile.base_types
     schema = load_schema('encoded:schemas/analysis_file.json')
-    embedded = DataFile.embedded + ['lab', 'award']
+    embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
@@ -558,7 +558,7 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    embedded = DataFile.embedded + ['lab', 'award']
+    embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
@@ -598,4 +598,4 @@ class MatrixFile(AnalysisFile):
 class ReferenceFile(File):
     item_type = 'reference_file'
     schema = load_schema('encoded:schemas/reference_file.json')
-    embedded = DataFile.embedded + ['organism']
+    embedded = File.embedded + ['organism']

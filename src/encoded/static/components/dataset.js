@@ -475,8 +475,6 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
         return null;
     }
 
-    const library_titles = libraryProtocolList(context.libraries, 'title');
-
     function libraryList(values, field) {
         if (values && values.length > 0) {
             return Array.from(new Set(values.map(function(value) { return value[field] }))).join(", ");
@@ -485,6 +483,7 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
     }
 
     const library_types  = libraryList(context.libraries, 'assay');
+    const library_titles = libraryList(context.libraries, 'protocol_title');
 
     return (
         <div className={itemClass}>
@@ -525,7 +524,7 @@ const DatasetComponent = ({ context, auditIndicators, auditDetail }, reactContex
 
                             {library_titles ?
                                 <div data-test="library_titles">
-                                    <dt>Protocols</dt>
+                                    <dt>Library protocols</dt>
                                     <dd>{library_titles}</dd>
                                 </div>
                             : null}

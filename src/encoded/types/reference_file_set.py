@@ -42,9 +42,7 @@ def calculate_refver(request, files_list, status):
 class ReferenceFileSet(Item):
     item_type = 'reference_file_set'
     schema = load_schema('encoded:schemas/reference_file_set.json')
-    embedded = [
-        'files'
-    ]
+    embedded = []
     name_key = 'accession'
     rev = {
         'original_files': ('ReferenceFile', 'fileset'),
