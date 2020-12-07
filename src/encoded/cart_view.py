@@ -14,6 +14,7 @@ from snovault.elasticsearch.searches.parsers import QueryString
 
 CART_USER_MAX = 30  # Maximum number of non-deleted carts allowed per non-admin user
 CART_ADMIN_MAX = 200  # Maximum per admin user
+MAX_CART_ELEMENTS = 8000 # Max total elements from multiple carts
 
 
 def includeme(config):
@@ -104,12 +105,15 @@ class Cart:
     * `cart = Cart(request)` or `cart = Cart(request, uuids=['xyz'])`
     * `cart.elements` return all elements in the cart(s)
     * `cart.as_params()` return [('@id', '/elements/xyz')] tuples for use in filters
+    Can use max_cart_elements to limit total number of elements allowed in carts.
+    Default is no limit.
     '''
 
-    def __init__(self, request, uuids=None):
+    def __init__(self, request, uuids=None, max_cart_elements=None):
         self.request = request
         self.query_string = QueryString(request)
         self.uuids = uuids or []
+        self.max_cart_elements = max_cart_elements
         self._elements = []
 
     def _get_carts_from_params(self):
@@ -136,10 +140,20 @@ class Cart:
         for cart in carts:
             yield from self._try_to_get_elements_from_cart(cart)
 
+    def _validate_cart_size(self):
+        if self.max_cart_elements is not None and len(self._elements) > self.max_cart_elements:
+            raise HTTPBadRequest(
+                explanation=(
+                    f'Too many elements in cart '
+                    f'(total {len(self._elements)} > max {self.max_cart_elements})'
+                )
+            )
+
     @property
     def elements(self):
         if not self._elements:
-            self._elements = list(self._get_elements_from_carts())
+            self._elements = sorted(set(self._get_elements_from_carts()))
+        self._validate_cart_size()
         yield from self._elements
 
     def as_params(self):
@@ -152,7 +166,13 @@ class Cart:
 class CartWithElements(Cart):
     '''
     Like Cart but raises error if empty or doesn't exist.
+    cart elements to prevent triggering of max ES clauses.
+    We set default MAX_CART_ELEMENTS to avoid exceeding
+    `indices.query.bool.max_clause_count`.
     '''
+
+    def __init__(self, *args, max_cart_elements=MAX_CART_ELEMENTS, **kwargs):
+        super().__init__(*args, **kwargs, max_cart_elements=max_cart_elements)
 
     def _try_to_get_cart_object(self, uuid):
         try:

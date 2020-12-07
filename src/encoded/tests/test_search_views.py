@@ -799,13 +799,13 @@ def test_search_views_cart_search_view_with_cart_filter(index_workbook, testapp)
     )[1].get(
         'terms', {}
     ).get('embedded.@id')
-    assert at_id_filters == [
+    assert at_id_filters == sorted([
         '/experiments/ENCSR000AER/',
         '/experiments/ENCSR000AEM/',
         '/experiments/ENCSR000ADH/',
         '/experiments/ENCSR002CON/',
         '/experiments/ENCSR706IDL/',
-    ]
+    ])
     assert 'columns' in r.json
     assert 'sort' in r.json
     testapp.get(

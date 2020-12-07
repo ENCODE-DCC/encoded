@@ -96,7 +96,8 @@ def test_cart_object_init(dummy_request):
     cart = Cart(dummy_request)
     assert isinstance(cart, Cart)
     assert cart.request == dummy_request
-    assert cart .uuids == []
+    assert cart.uuids == []
+    assert cart.max_cart_elements == None
 
 
 def test_cart_object_get_carts_from_params(dummy_request):
@@ -169,6 +170,25 @@ def test_cart_object_get_elements_from_carts(cart, submitter, experiment, dummy_
     assert elements == []
 
 
+def test_cart_object_validate_cart_size(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    from pyramid.exceptions import HTTPBadRequest
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import Cart
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["@id"]}'
+    )
+    c = Cart(dummy_request)
+    c._elements = [experiment['@id']]
+    c._validate_cart_size()
+    c = Cart(dummy_request, max_cart_elements=0)
+    c._elements = [experiment['@id']]
+    with pytest.raises(HTTPBadRequest):
+        c._validate_cart_size()
+
+
 def test_cart_object_elements(cart, submitter, experiment, dummy_request, threadlocals, testapp):
     testapp.patch_json(
         cart['@id'],
@@ -179,7 +199,7 @@ def test_cart_object_elements(cart, submitter, experiment, dummy_request, thread
         f'cart={cart["uuid"]}'
     )
     c = Cart(dummy_request)
-    assert list(c.elements) == [experiment['@id'], experiment['@id']]
+    assert list(c.elements) == [experiment['@id']]
 
 
 def test_cart_object_as_params(cart, submitter, experiment, dummy_request, threadlocals, testapp, mocker):
@@ -194,10 +214,10 @@ def test_cart_object_as_params(cart, submitter, experiment, dummy_request, threa
     )
     c = Cart(dummy_request)
     assert dummy_request.embed.call_count == 0
-    assert c.as_params() == [('@id', experiment['@id']), ('@id', experiment['@id'])]
+    assert c.as_params() == [('@id', experiment['@id'])]
     assert dummy_request.embed.call_count == 1
     # Cache value
-    assert c.as_params() == [('@id', experiment['@id']), ('@id', experiment['@id'])]
+    assert c.as_params() == [('@id', experiment['@id'])]
     assert dummy_request.embed.call_count == 1
 
 
@@ -231,20 +251,28 @@ def test_cart_object_two_carts(cart, submitter, experiment, dummy_request, threa
     c = Cart(dummy_request)
     assert dummy_request.embed.call_count == 0
     assert c.as_params() == [
-        ('@id', experiment['@id']),
-        ('@id', experiment['@id']),
-        ('@id', experiment['@id']),
         ('@id', experiment['@id'])
     ]
     assert dummy_request.embed.call_count == 2
     # Cache value
     assert c.as_params() == [
-        ('@id', experiment['@id']),
-        ('@id', experiment['@id']),
-        ('@id', experiment['@id']),
         ('@id', experiment['@id'])
     ]
     assert dummy_request.embed.call_count == 2
+
+
+def test_cart_with_elements_object_init(dummy_request):
+    from encoded.cart_view import CartWithElements
+    cart = CartWithElements(dummy_request)
+    assert isinstance(cart, CartWithElements)
+    assert cart.request == dummy_request
+    assert cart.uuids == []
+    assert cart.max_cart_elements == 8000
+    cart = CartWithElements(
+        dummy_request,
+        max_cart_elements=5
+    )
+    cart.max_cart_elements == 5
 
 
 def test_cart_with_elements_object_try_to_get_cart_object(cart, submitter, experiment, dummy_request, threadlocals, testapp):
@@ -267,6 +295,7 @@ def test_cart_with_elements_object_try_to_get_elements_from_cart(cart, submitter
     )
     from encoded.cart_view import CartWithElements
     c = CartWithElements(dummy_request, uuids=[cart['uuid']])
+    assert c.max_cart_elements == 8000
     assert c.uuids == [cart['uuid']]
     elements = c._try_to_get_elements_from_cart(cart['uuid'])
     assert elements == [experiment['@id']]
@@ -276,3 +305,22 @@ def test_cart_with_elements_object_try_to_get_elements_from_cart(cart, submitter
     )
     with pytest.raises(HTTPBadRequest):
         c._try_to_get_elements_from_cart(cart['uuid'])
+
+
+def test_cart_with_object_validate_cart_size(cart, submitter, experiment, dummy_request, threadlocals, testapp):
+    from pyramid.exceptions import HTTPBadRequest
+    testapp.patch_json(
+        cart['@id'],
+        {'elements': [experiment['@id']]}
+    )
+    from encoded.cart_view import CartWithElements
+    dummy_request.environ['QUERY_STRING'] = (
+        f'cart={cart["@id"]}'
+    )
+    c = CartWithElements(dummy_request, max_cart_elements=3)
+    c._elements = [experiment['@id']]
+    assert c.max_cart_elements == 3
+    c._validate_cart_size()
+    c._elements = ['a', 'b', 'c', 'd']
+    with pytest.raises(HTTPBadRequest):
+        c._validate_cart_size()
