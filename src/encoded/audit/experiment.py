@@ -4094,7 +4094,7 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
     '''
     # Only check ENCODE4 experiments. 
     award = value.get('award', {})
-    if award.get('rfa') != 'ENCODE4' or award.get('component') == 'functional characterization':
+    if award.get('rfa') != 'ENCODE4' or award.get('component') in ('functional characterization', 'computational analysis'):
         return
     # Build up list of human biosamples missing NIC used in experiment. 
     human_biosamples_missing_hic = {
