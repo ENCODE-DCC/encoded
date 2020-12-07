@@ -15,6 +15,7 @@ const webpackOnBuild = done => (err, stats) => {
     }
     log(stats.toString({
         colors: true,
+    excludeAssets: [/.*ckeditor.*/]
     }));
     if (done) {
         done(err);

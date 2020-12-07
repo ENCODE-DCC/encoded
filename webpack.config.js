@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const env = process.env.NODE_ENV;
 
@@ -13,6 +14,8 @@ const PATHS = {
     serverbuild: path.resolve(__dirname, 'src/encoded/static/build-server'),
     fonts: path.resolve(__dirname, 'src/encoded/static/font'),
     images: path.resolve(__dirname, 'src/encoded/static/img'),
+    ckeditor_source: path.resolve(__dirname, "node_modules/ckeditor4"),
+    ckeditor_dest: path.resolve(__dirname, "src/encoded/static/build/ckeditor"),
 };
 
 const plugins = [];
@@ -20,6 +23,18 @@ const plugins = [];
 // To get auth0 v11 to build correctly:
 // https://github.com/felixge/node-formidable/issues/337#issuecomment-183388869
 plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
+plugins.push(
+    new CopyPlugin({
+        patterns: [
+            {
+                // Adapted from https://github.com/ckeditor/ckeditor4-webpack-template/blob/master/webpack.config.js
+                from: '{ckeditor.js,config.js,contents.css,styles.js,adapters/**/*,lang/**/*,plugins/**/*,skins/**/*,vendor/**/*}',
+                to: PATHS.ckeditor_dest,
+                context: PATHS.ckeditor_source,
+            },
+        ],
+  }),
+);
 
 let chunkFilename = '[name].js';
 let styleFilename = './css/[name].css';
