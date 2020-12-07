@@ -21,7 +21,6 @@
         {"$ref": "mixins.json#/source"},
         {"$ref": "mixins.json#/dbxrefs"},
         {"$ref": "mixins.json#/treatments"},
-        {"$ref": "mixins.json#/diseases"},
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/starting_quantity"},
         {"$ref": "mixins.json#/preservation"}
@@ -104,9 +103,6 @@
         "treatments": {
             "description": "A list of treatments applied to the biosample.",
             "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified."
-        },
-        "diseases": {
-            "description": "Known diseases of the specific sample"
         },
         "dbxrefs": {
             "items": {
@@ -336,9 +332,6 @@
         "biosample_ontology.term_name": {
             "title": "Biosample term name"
         },
-        "summary": {
-            "title": "Summary"
-        },
         "description": {
             "title": "Description"
         },
@@ -350,6 +343,18 @@
         },
         "biosample_ontology.cell_slims": {
             "title": "Cell"
+        },
+        "donors.age_display": {
+            "title": "Age"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
         },
         "derived_from": {
             "title": "Derived from"
