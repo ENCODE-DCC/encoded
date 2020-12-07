@@ -5,7 +5,6 @@
 - cloud-init-per once conf-git-repo sudo -u ubuntu git clone git@github.com:ENCODE-DCC/encode-private-config.git /home/ubuntu/encode-private-config
 - cloud-init-per once conf-git-branch sudo -u ubuntu git -C /home/ubuntu/encode-private-config checkout -b encode-private-config origin/master
 
-- cloud-init-per once nagios-monitor-install /usr/bin/sudo /usr/bin/apt-get -y install nagios-nrpe-plugin monitoring-plugins nagios-nrpe-server libjson-perl libmonitoring-plugin-perl liblwp-useragent-determined-perl sysstat
 - cloud-init-per once nagios-files-s3 aws s3 cp --region=us-west-2 --recursive s3://encoded-conf-prod/nagios-plugins /home/ubuntu/nagios-plugins
 - cloud-init-per once nagios-mv-conf mv /home/ubuntu/nagios-plugins/nrpe_local.cfg /etc/nagios/nrpe.d/nrpe_local.cfg
 - cloud-init-per once nagios-plugins-permission chmod -R 0755 /home/ubuntu/nagios-plugins
