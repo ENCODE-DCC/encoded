@@ -1092,34 +1092,34 @@ def _parse_args():
     # Set AMI per build type
     ami_map = {
         # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
-        'default': 'ami-0782a518ecda55164',
-        'arm_default': 'ami-003b90277095b7a42',
+        'default': 'ami-03830cb12cf0006cc',
+        'arm_default': 'ami-03830cb12cf0006cc',
 
         # Private AMIs: Add comments to each build
 
         # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
-        'demo': 'ami-02ee743e10e6bca42',
+        'demo': 'ami-03830cb12cf0006cc',
         # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
-        'es-wait-head': 'ami-04637560d9b9c4cb9',
+        'es-wait-head': 'ami-03830cb12cf0006cc',
         # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
-        'es-wait-node': 'ami-03c53286feed8040f',
+        'es-wait-node': 'ami-03830cb12cf0006cc',
         #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head': None,
-        'es-elect-node': None,
+        'es-elect-head': 'ami-03830cb12cf0006cc',
+        'es-elect-node': 'ami-03830cb12cf0006cc',
         # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
-        'frontend': 'ami-004367e4b7cdfc264',
+        'frontend': 'ami-03830cb12cf0006cc',
 
         # Production Private AMIs: Add comments to each build
 
         # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
-        'es-wait-head-prod': 'ami-03530bdf05c08bf32',
+        'es-wait-head-prod': 'ami-03830cb12cf0006cc',
         # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
-        'es-wait-node-prod': 'ami-0de906a6f1894057b',
+        'es-wait-node-prod': 'ami-03830cb12cf0006cc',
         #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head-prod': None,
-        'es-elect-node-prod': None,
+        'es-elect-head-prod': 'ami-03830cb12cf0006cc',
+        'es-elect-node-prod': 'ami-03830cb12cf0006cc',
         # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
-        'frontend-prod': 'ami-0e13a1f4c36d19ac1',
+        'frontend-prod': 'ami-03830cb12cf0006cc',
     }
     if not args.image_id:
         # Select ami by build type.  
