@@ -3607,8 +3607,7 @@ def test_audit_fcc_experiment_nih_consent(
     )
 
 
-def test_audit_experiment_computational_award_nih_consent(testapp, experiment, replicate,
-                                                                 library, biosample, encode4_award):
+def test_audit_experiment_computational_award_nih_consent(testapp, experiment, encode4_award):
     testapp.patch_json(encode4_award['@id'], {'component': 'computational analysis'})
     testapp.patch_json(experiment['@id'], {'award': encode4_award['@id']})
     r = testapp.get(experiment['@id'] + '@@index-data')

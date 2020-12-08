@@ -106,6 +106,7 @@ def encode4_award(testapp):
         'project': 'ENCODE',
         'title': 'A Generic ENCODE4 Award',
         'viewing_group': 'ENCODE4',
+        'component': 'mapping',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
