@@ -274,7 +274,10 @@ $navbar-bg-color:            #0a253d;
     }
 
     a {
-        color: #444;
+        color: #696969;
+        font-weight: 400;
+        font-size: 1.1em;
+
         &:hover {
             text-decoration: none;
         }
@@ -288,11 +291,12 @@ $navbar-bg-color:            #0a253d;
         font-weight: 400;
         position: relative;
         padding: 2px 30px 2px 20px;
-        font-weight: 400;
         letter-spacing: 1px;
         font-size: 0.9rem;
         @media screen and (min-width: $screen-md-min) {
             font-size: 1.1rem;
+            color: #696969;
+            font-weight: 400;
         }
     }
 
@@ -311,14 +315,14 @@ $navbar-bg-color:            #0a253d;
                 width: 100%;
                 margin: 0;
                 padding: 2px 30px 2px 20px;
-                color: #444;
+                color: #000;
                 background-color: #fff;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
                 border-left: none;
                 border-right: none;
                 text-align: left;
-                font-weight: 300;
+                font-weight: 400;
                 white-space: nowrap;
                 max-width: 400px;
                 position: relative;
