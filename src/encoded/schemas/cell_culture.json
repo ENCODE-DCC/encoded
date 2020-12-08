@@ -50,6 +50,7 @@
                 "description": "A donor or sample from which this object was directly derived.",
                 "type": "string",
                 "linkTo": [
+                    "Donor",
                     "Suspension",
                     "CellCulture",
                     "Tissue"
