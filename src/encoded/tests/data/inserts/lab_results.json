@@ -14532,7 +14532,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "ALBUMIN",
         "patient": "KCEPT396JUN",
         "reference_flag": "High",
@@ -14544,7 +14544,7 @@
         "value_units": "g/dl"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "CALCIUM",
         "patient": "KCEPT396JUN",
         "reference_flag": "Low",
@@ -14556,7 +14556,7 @@
         "value_units": "mg/dl"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "CREATININE",
         "patient": "KCEPT396JUN",
         "reference_flag": "High",
@@ -14568,7 +14568,7 @@
         "value_units": "mg/dl"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "HEMOGLOBIN",
         "patient": "KCEPT396JUN",
         "reference_flag": "Low",
@@ -14580,7 +14580,7 @@
         "value_units": "g/dl"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "NEUTROPHILS",
         "patient": "KCEPT396JUN",
         "reference_flag": "Normal",
@@ -14592,7 +14592,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "PLATELETS",
         "patient": "KCEPT396JUN",
         "reference_flag": "Normal",
@@ -14604,7 +14604,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "SODIUM",
         "patient": "KCEPT396JUN",
         "reference_flag": "High",
@@ -14616,7 +14616,7 @@
         "value_units": "mmol/l"
     },
     {
-        "date": "1869-08-08",
+        "date": "1870-04-01",
         "lab": "WBC",
         "patient": "KCEPT396JUN",
         "reference_flag": "Normal",
@@ -14628,7 +14628,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "ALBUMIN",
         "patient": "KCEPT396JUN",
         "reference_flag": "High",
@@ -14640,7 +14640,7 @@
         "value_units": "g/dl"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "CALCIUM",
         "patient": "KCEPT396JUN",
         "reference_flag": "Low",
@@ -14652,7 +14652,7 @@
         "value_units": "mg/dl"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "CREATININE",
         "patient": "KCEPT396JUN",
         "reference_flag": "High",
@@ -14664,7 +14664,7 @@
         "value_units": "mg/dl"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "HEMOGLOBIN",
         "patient": "KCEPT396JUN",
         "reference_flag": "Low",
@@ -14676,7 +14676,7 @@
         "value_units": "g/dl"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "NEUTROPHILS",
         "patient": "KCEPT396JUN",
         "reference_flag": "Normal",
@@ -14688,7 +14688,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "PLATELETS",
         "patient": "KCEPT396JUN",
         "reference_flag": "Normal",
@@ -14700,7 +14700,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1869-10-25",
+        "date": "1870-04-10",
         "lab": "SODIUM",
         "patient": "KCEPT396JUN",
         "reference_flag": "High",
@@ -14714,7 +14714,7 @@
     {
         "date": "1869-10-25",
         "lab": "WBC",
-        "patient": "KCEPT396JUN",
+        "patient": "KCEPT398JLK",
         "reference_flag": "Normal",
         "reference_high": 11,
         "reference_low": 4,
@@ -14820,7 +14820,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "ALBUMIN",
         "patient": "KCEPT398JLK",
         "reference_flag": "Normal",
@@ -14832,7 +14832,7 @@
         "value_units": "g/dl"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "CALCIUM",
         "patient": "KCEPT398JLK",
         "reference_flag": "Low",
@@ -14844,7 +14844,7 @@
         "value_units": "mg/dl"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "CREATININE",
         "patient": "KCEPT398JLK",
         "reference_flag": "High",
@@ -14856,7 +14856,7 @@
         "value_units": "mg/dl"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "HEMOGLOBIN",
         "patient": "KCEPT398JLK",
         "reference_flag": "High",
@@ -14868,7 +14868,7 @@
         "value_units": "g/dl"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "NEUTROPHILS",
         "patient": "KCEPT398JLK",
         "reference_flag": "Normal",
@@ -14880,7 +14880,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "PLATELETS",
         "patient": "KCEPT398JLK",
         "reference_flag": "Normal",
@@ -14892,7 +14892,7 @@
         "value_units": "x10(3)/ul"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "SODIUM",
         "patient": "KCEPT398JLK",
         "reference_flag": "Low",
@@ -14904,7 +14904,7 @@
         "value_units": "mmol/l"
     },
     {
-        "date": "1847-09-26",
+        "date": "1847-04-11",
         "lab": "WBC",
         "patient": "KCEPT398JLK",
         "reference_flag": "Normal",
