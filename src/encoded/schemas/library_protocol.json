@@ -342,6 +342,12 @@
                             "ideal",
                             "minimum"
                         ]
+                    },
+                    "required": {
+                        "title": "Required",
+                        "description": "If true, we require this file to be present for the given protocol, likely for DCP pipeline processing.",
+                        "type": "boolean",
+                        "default": false
                     }
                 }
             }
