@@ -41,10 +41,7 @@ class Dataset(Item):
     name_key = 'accession'
     embedded = [
         'libraries',
-        'libraries.protocol',
-        'libraries.derived_from',
         'award',
-        'files',
         'references'
     ]
     rev = {

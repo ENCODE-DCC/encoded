@@ -104,7 +104,7 @@
         "libraries.assay": {
             "title": "Assay type"
         },
-        "libraries.protocol.name": {
+        "libraries.protocol_title": {
             "title": "Library protocol"
         },
         "award.project": {
@@ -115,9 +115,6 @@
         },
         "assembly": {
             "title": "Genome assembly"
-        },
-        "files.file_format": {
-            "title": "Available file types"
         },
         "date_released": {
             "title": "Date released",
@@ -140,7 +137,7 @@
         "status": {
             "title": "Status"
         },
-        "libraries.protocol.name": {
+        "libraries.protocol_title": {
             "title": "Library protocol"
         },
         "libraries.assay": {

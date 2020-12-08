@@ -27,9 +27,6 @@
         "reference_version": {
             "title": "Reference version"
         },
-        "files.file_format": {
-            "title": "Available file types"
-        },
         "status": {
             "title": "Status"
         }
