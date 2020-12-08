@@ -297,11 +297,8 @@
         "suspension_type": {
             "title": "Suspension type"
         },
-        "organisms": {
-            "title": "Organism"
-        },
-        "sex": {
-            "title": "Sex"
+        "donors.sex": {
+            "title": "Donor sex"
         },
         "life_stage": {
             "title": "Life stage"
@@ -323,6 +320,15 @@
         },
         "status": {
             "title": "Status"
+        },
+        "donors.life_stage": {
+            "title": "Donor life stage"
+        },
+        "donors.diseases.term_name": {
+            "title": "Donor diseases"
+        },
+        "donors.ethnicity.term_name": {
+            "title": "Donor ethnicity"
         }
     },
     "columns": {
@@ -345,7 +351,10 @@
             "title": "Cell"
         },
         "donors.age_display": {
-            "title": "Age"
+            "title": "Donor age"
+        },
+        "donors.sex": {
+            "title": "Donor sex"
         },
         "donors.diseases.term_name": {
             "title": "Donor diseases"
