@@ -1122,6 +1122,85 @@ class Patient(Item):
 
         return records
 
+    @calculated_property(schema={
+        "title": "Medical Imaging Records",
+        "description": "Medical imaging type within <90 days of every nephrectomy",
+        "type": "array",
+        "items": {
+            "title": "Medical Imaging",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "date": {
+                    "title": "Date of Medical Imaging",
+                    "description": "Date of Medical Imaging",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "Type of Medical Imaging",
+                    "type": "string"
+                }
+
+            },
+        }
+    })
+    def medical_imaging_before_nephrectomy(self, request, surgery, medical_imaging):
+        #find all the nephrectomy dates
+        nephrectomy_dates = []
+        records = []
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_procedures = surgery_object['surgery_procedure']                
+                if len(surgery_procedures) > 0:
+                    for surgery_procedure in surgery_procedures:
+                        surgery_procedure_obj = request.embed(surgery_procedure, '@@object')
+                        if surgery_procedure_obj['procedure_type'] == "Nephrectomy":
+                            nephrectomy_dates.append(datetime.strptime(surgery_object['date'], '%Y-%m-%d'))
+                            
+
+        #check imaging only if there is nephrectomy dates
+        if len(nephrectomy_dates) > 0 and len(medical_imaging) > 0:
+            imagings = []
+            ct_list = []
+            mr_list = []
+            pet_list = []
+            for nephrectomy_date in nephrectomy_dates:
+                for path in medical_imaging:
+                    imaging = request.embed(path, '@@object?skip_calculated=true')
+                    med_img_date_string = imaging.get("procedure_date")
+                    #compare the date
+                    med_img_date = datetime.strptime(med_img_date_string, '%Y-%m-%d')
+                    if (nephrectomy_date - med_img_date).days <90 and (nephrectomy_date - med_img_date).days >= 0:
+                        imaging_obj = {
+                            "date": med_img_date_string,
+                            "type": imaging.get("type")                  
+                        }
+                        if imaging.get("type") == "CT Abdomen":
+                            ct_list.append(imaging_obj)
+                        elif imaging.get("type") == "MR Abdomen":
+                            mr_list.append(imaging_obj)
+                        else:
+                            pet_list.append(imaging_obj)
+                #sort to get the closest img
+                if len(ct_list) > 0:
+                    ct_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    ct_obj = ct_list[-1]
+                    imagings.append(ct_obj)
+                if len(mr_list) > 0:
+                    mr_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    mr_obj = mr_list[-1]
+                    imagings.append(mr_obj)
+                if len(pet_list) > 0:
+                    pet_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    pet_obj = pet_list[-1]
+                    imagings.append(pet_obj)
+                if len(imagings)> 0:
+                    records = records + imagings        
+                        
+
+        return records
+
 
     matrix = {
         'y': {
@@ -1434,4 +1513,5 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 

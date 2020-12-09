@@ -119,7 +119,7 @@
             "title": "Vital Status"
         },
 
-        "medical_imaging.type" : {
+        "medical_imaging_before_nephrectomy.type" : {
           "title": "Medical Imaging"
         },
 
@@ -347,5 +347,6 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
+
 
 
