@@ -606,7 +606,7 @@ class ShareCartButtonComponent extends React.Component {
     }
 
     render() {
-        const { cart } = this.props;
+        const { cart, inProgress } = this.props;
         let disabledTooltip;
         if (cart.status === 'deleted') {
             disabledTooltip = 'Cannot share a deleted cart';
@@ -622,7 +622,7 @@ class ShareCartButtonComponent extends React.Component {
                             title={disabledTooltip}
                         />
                     : null}
-                    <button className="btn btn-info btn-sm btn-inline" onClick={this.handleShareClick} disabled={!!disabledTooltip}>Share</button>
+                    <button className="btn btn-info btn-sm btn-inline" onClick={this.handleShareClick} disabled={!!disabledTooltip || inProgress}>Share</button>
                 </div>
                 {this.state.modalOpen ?
                     <CartShare userCart={cart} closeShareCart={this.closeShareCart} />
@@ -635,10 +635,17 @@ class ShareCartButtonComponent extends React.Component {
 ShareCartButtonComponent.propTypes = {
     /** Cart being shared */
     cart: PropTypes.object.isRequired,
+    /** True if a data is being processed, false otherwise */
+    inProgress: PropTypes.bool,
+};
+
+ShareCartButtonComponent.defaultProps = {
+    inProgress: false,
 };
 
 ShareCartButtonComponent.mapStateToProps = (state, ownProps) => ({
     cart: ownProps.cart,
+    inProgress: state.inProgress,
 });
 
 const ShareCartButton = connect(ShareCartButtonComponent.mapStateToProps)(ShareCartButtonComponent);

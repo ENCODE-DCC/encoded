@@ -40,7 +40,7 @@ class CartShareComponent extends React.Component {
     }
 
     render() {
-        const { userCart, locationHref, closeShareCart } = this.props;
+        const { userCart, locationHref, closeShareCart, inProgress } = this.props;
 
         // Generate the shared cart URL.
         const parsedUrl = url.parse(locationHref);
@@ -67,7 +67,7 @@ class CartShareComponent extends React.Component {
                 <ModalFooter
                     closeModal={closeShareCart}
                     cancelTitle="Close"
-                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info" href={sharableUrl}>Visit sharable cart</a>}
+                    submitBtn={<a data-bypass="true" disabled={inProgress} target="_self" className="btn btn-info" href={sharableUrl}>Visit sharable cart</a>}
                     closeId="share-cart-close"
                 />
             </Modal>
@@ -82,15 +82,19 @@ CartShareComponent.propTypes = {
     locationHref: PropTypes.string,
     /** Function to close the modal */
     closeShareCart: PropTypes.func.isRequired,
+    /** True if global cart operation in progress */
+    inProgress: PropTypes.bool,
 };
 
 CartShareComponent.defaultProps = {
     locationHref: '',
+    inProgress: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
     userCart: ownProps.userCart,
     locationHref: ownProps.locationHref,
+    inProgress: state.inProgress,
     closeShareCart: ownProps.closeShareCart,
 });
 
