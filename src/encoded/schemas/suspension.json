@@ -109,7 +109,7 @@
                 "title": "External identifier",
                 "description": "An identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((GEO:SAMN\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
+                "pattern": "^((GEO:SAM(E|N|D)(A|G)?\\d+)|(SRA:SRS\\d+)|(ENA:ERS\\d+))$"
             }
         },
         "starting_quantity": {
