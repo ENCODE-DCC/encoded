@@ -70,7 +70,7 @@
             "lattice:cellranger_gex_mm10_2020-A"
         ],
         "uuid": "e877b293-e2c2-4aca-ab02-84a30f45bb42",
-        "organism": "human",
+        "organism": "mouse",
         "file_size": 3000000,
         "fileset": "lattice:mouse-references",
         "file_format": "tar",

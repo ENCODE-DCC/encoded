@@ -79,6 +79,18 @@ def property_closure_by_prop(request, propname, root_uuid, defining_property):
     return desired_list
 
 
+def inherit_protcol_prop(request, seqrun_id, propname, read_type):
+    seqrun_obj = request.embed(seqrun_id, '@@object?skip_calculated=true')
+    lib_id = seqrun_obj.get('derived_from')
+    lib_obj = request.embed(lib_id, '@@object?skip_calculated=true')
+    libprot_id = lib_obj.get('protocol')
+    libprot_obj = request.embed(libprot_id, '@@object?skip_calculated=true')
+    standards = libprot_obj.get('sequence_file_standards')
+    for s in standards:
+        if s.get('read_type') == read_type:
+            return s.get(propname)
+
+
 ENCODE_PROCESSING_PIPELINE_UUID = 'a558111b-4c50-4b2e-9de8-73fd8fd3a67d'
 RAW_OUTPUT_TYPES = ['reads', 'rejected reads', 'raw data', 'reporter code counts', 'intensity values', 'idat red channel', 'idat green channel']
 
@@ -453,7 +465,7 @@ class DataFile(File):
         'superseded_by': ('DataFile', 'supersedes'),
         'quality_metrics': ('Metrics', 'quality_metric_of'),
     }
-    embedded = []
+    embedded = File.embedded + ['lab', 'award']
     public_s3_statuses = ['released', 'archived']
     private_s3_statuses = ['in progress', 'replaced', 'deleted', 'revoked']
 
@@ -512,7 +524,7 @@ class AnalysisFile(DataFile):
     item_type = 'analysis_file'
     base_types = ['AnalysisFile'] + DataFile.base_types
     schema = load_schema('encoded:schemas/analysis_file.json')
-    embedded = DataFile.embedded + ['lab', 'award']
+    embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
@@ -558,7 +570,7 @@ class SequenceAlignmentFile(AnalysisFile):
 class RawSequenceFile(DataFile):
     item_type = 'raw_sequence_file'
     schema = load_schema('encoded:schemas/raw_sequence_file.json')
-    embedded = DataFile.embedded + ['lab', 'award']
+    embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
@@ -573,6 +585,31 @@ class RawSequenceFile(DataFile):
     def libraries(self, request):
         all_libs = property_closure_by_prop(request, 'derived_from', self.uuid, 'protocol')
         return sorted(all_libs)
+
+
+    @calculated_property(define=True,
+                         schema={"title": "Sequence elements",
+                                 "description": "The biological content of the sequence reads.",
+                                 "comment": "Do not submit. This is a calculated property",
+                                 "type": "array",
+                                 "items": {
+                                    "type": "string"
+                                    }
+                                })
+    def sequence_elements(self, request, derived_from=None, read_type=None):
+        seqrun_id = derived_from[0]
+        return inherit_protcol_prop(request, seqrun_id, 'sequence_elements', read_type)
+
+
+    @calculated_property(define=True,
+                         schema={"title": "Demultiplexed type",
+                                 "description": "The read assignment after sample demultiplexing for fastq files.",
+                                 "comment": "Do not submit. This is a calculated property",
+                                 "type": "string"
+                                })
+    def demultiplexed_type(self, request, derived_from=None, read_type=None):
+        seqrun_id = derived_from[0]
+        return inherit_protcol_prop(request, seqrun_id, 'demultiplexed_type', read_type)
 
 
 @collection(
@@ -598,4 +635,4 @@ class MatrixFile(AnalysisFile):
 class ReferenceFile(File):
     item_type = 'reference_file'
     schema = load_schema('encoded:schemas/reference_file.json')
-    embedded = DataFile.embedded + ['organism']
+    embedded = File.embedded + ['organism']

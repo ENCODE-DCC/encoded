@@ -17,19 +17,6 @@ def includeme(config):
 
 
 @collection(
-    name='library-protocols',
-    unique_key='library_protocol:name',
-    properties={
-        'title': 'Library protocols',
-        'description': 'Listing of Library protocols',
-    })
-class LibraryProtocol(Item):
-    item_type = 'library_protocol'
-    schema = load_schema('encoded:schemas/library_protocol.json')
-    name_key = 'name'
-
-
-@collection(
     name='labs',
     unique_key='lab:name',
     properties={
@@ -111,7 +98,3 @@ class AntibodyLot(Item):
     item_type = 'antibody_lot'
     schema = load_schema('encoded:schemas/antibody_lot.json')
     name_key = 'accession'
-    rev = {}
-    embedded = [
-        'host_organism'
-    ]

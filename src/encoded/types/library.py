@@ -40,14 +40,12 @@ class Library(Item):
     embedded = [
         'derived_from',
         'derived_from.biosample_ontology',
-        'protocol',
-        'dataset',
         'award',
         'lab'
     ]
 
 
-    @calculated_property(condition='derived_from', schema={
+    @calculated_property(condition='protocol', schema={
         "title": "Assay",
         "description": "The general assay used for this Library.",
         "comment": "Do not submit. This is a calculated property",
@@ -66,7 +64,7 @@ class Library(Item):
         protocolObject = request.embed(protocol, '@@object')
         if protocolObject.get('library_type') in ['CITE-seq']:
             return protocolObject.get('library_type')
-        else:
+        elif derived_from:
             derfrObject = request.embed(derived_from[0], '@@object')
             if derfrObject.get('suspension_type') == 'cell':
                 mat_type = 'sc'
@@ -75,6 +73,19 @@ class Library(Item):
             else:
                 mat_type = 'bulk '
             return mat_type + protocolObject.get('library_type')
+        else:
+            return protocolObject.get('library_type')
+
+
+    @calculated_property(condition='protocol', schema={
+        "title": "Protocol title",
+        "description": "The title of the protocol used for this Library.",
+        "comment": "Do not submit. This is a calculated property",
+        "type": "string"
+    })
+    def protocol_title(self, request, protocol):
+        protocolObject = request.embed(protocol, '@@object')
+        return protocolObject.get('title')
 
 
     @calculated_property(condition='derived_from', schema={

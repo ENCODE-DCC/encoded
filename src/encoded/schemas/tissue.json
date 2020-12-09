@@ -91,6 +91,7 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "biopsy",
                     "dissection",
                     "resection",
                     "blood draw",

@@ -109,7 +109,7 @@ DEFAULT_REGION_NAME = 'us-west-1'  # N. California
 DEFAULT_AVAILABILITY_ZONE = 'us-west-1b'
 INSTANCE_TYPE_ES_DATA = 't3.xlarge'
 INSTANCE_TYPE_ES_HEAD = 't3.xlarge'
-INSTANCE_TYPE_FRONTEND = 'c5.9xlarge'
+INSTANCE_TYPE_FRONTEND = 't3.large'
 
 AMI_MAP = {
     # AWS Launch wizard: Ubuntu Server 18.04 LTS (HVM), SSD Volume Type

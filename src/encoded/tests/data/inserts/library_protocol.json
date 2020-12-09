@@ -37,25 +37,27 @@
         ],
         "sequence_file_standards": [
             {
-              "read_type": "Read 1",
-              "sequence_elements": ["cell barcode","UMI"],
-              "demultiplexed_type": "R1",
-              "read_length": 26,
-              "read_length_specification": "minimum"
+                "read_type": "Read 1",
+                "sequence_elements": ["cell barcode","UMI"],
+                "demultiplexed_type": "R1",
+                "read_length": 26,
+                "read_length_specification": "minimum",
+                "required": true
             },
             {
-              "read_type": "Read 2",
-              "sequence_elements": ["5' of molecule"],
-              "demultiplexed_type": "R2",
-              "read_length": 91,
-              "read_length_specification": "ideal"
+                "read_type": "Read 2",
+                "sequence_elements": ["5' of molecule"],
+                "demultiplexed_type": "R2",
+                "read_length": 91,
+                "read_length_specification": "ideal",
+                "required": true
             },
             {
-              "read_type": "i7 index",
-              "sequence_elements": ["sample index"],
-              "demultiplexed_type": "I1",
-              "read_length": 8,
-              "read_length_specification": "exact"
+                "read_type": "i7 index",
+                "sequence_elements": ["sample index"],
+                "demultiplexed_type": "I1",
+                "read_length": 8,
+                "read_length_specification": "exact"
             }
         ]
     },
@@ -100,14 +102,16 @@
                 "sequence_elements": ["cell barcode","UMI"],
                 "demultiplexed_type": "R1",
                 "read_length": 26,
-                "read_length_specification": "minimum"
+                "read_length_specification": "minimum",
+                "required": true
             },
             {
                 "read_type": "Read 2N",
                 "sequence_elements": ["feature barcode"],
                 "demultiplexed_type": "R2",
                 "read_length": 25,
-                "read_length_specification": "minimum"
+                "read_length_specification": "minimum",
+                "required": true
             },
             {
                 "read_type": "i7 index",
@@ -151,14 +155,16 @@
                 "sequence_elements": ["fragment"],
                 "demultiplexed_type": "R1",
                 "read_length": 50,
-                "read_length_specification": "ideal"
+                "read_length_specification": "ideal",
+                "required": true
             },
             {
                 "read_type": "Read 2N",
                 "sequence_elements": ["fragment"],
                 "demultiplexed_type": "R3",
                 "read_length": 50,
-                "read_length_specification": "ideal"
+                "read_length_specification": "ideal",
+                "required": true
             },
             {
                 "read_type": "i7 index",
@@ -218,14 +224,16 @@
                 "sequence_elements": ["cell barcode","UMI"],
                 "demultiplexed_type": "R1",
                 "read_length": 28,
-                "read_length_specification": "minimum"
+                "read_length_specification": "minimum",
+                "required": true
             },
             {
                 "read_type": "Read 2",
                 "sequence_elements": ["3' of molecule"],
                 "demultiplexed_type": "R2",
                 "read_length": 91,
-                "read_length_specification": "ideal"
+                "read_length_specification": "ideal",
+                "required": true
             },
             {
                 "read_type": "i7 index",

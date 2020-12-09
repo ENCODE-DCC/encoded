@@ -11,7 +11,6 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal'
 import Pager from '../../libs/ui/pager';
 import { Panel, PanelBody, PanelHeading, TabPanel, TabPanelPane } from '../../libs/ui/panel';
 import { tintColor, isLight } from '../datacolors';
-import GenomeBrowser from '../genome_browser';
 import { itemClass } from '../globals';
 import { requestObjects, ItemAccessories, isFileVisualizable, computeAssemblyAnnotationValue, filterForVisualizableFiles } from '../objectutils';
 import { ResultTableList } from '../search';
@@ -171,7 +170,6 @@ const CartBrowser = ({ files, assembly, pageNumber }) => {
             setPageFiles([]);
         }
     }, [files, assembly, pageNumber]);
-    return <GenomeBrowser files={pageFiles} label={'cart'} assembly={assembly} expanded />;
 };
 
 CartBrowser.propTypes = {

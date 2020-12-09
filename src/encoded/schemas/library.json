@@ -139,6 +139,7 @@
                 "pg",
                 "μg",
                 "cells/μl",
+                "cells/ml",
                 "nuclei/μl"
             ]
         },
@@ -189,8 +190,8 @@
         "assay": {
             "title": "Assay type"
         },
-        "protocol.name": {
-            "title": "Library protocols"
+        "protocol_title": {
+            "title": "Library protocol"
         },
         "derived_from.biosample_ontology.term_name": {
             "title": "Biosample term name",
@@ -221,13 +222,13 @@
         }
     },
     "columns": {
-        "dataset.accession": {
+        "dataset": {
             "title": "Dataset"
         },
         "assay": {
             "title": "Assay type"
         },
-        "protocol.name": {
+        "protocol_title": {
             "title": "Library protocol"
         },
         "award.project": {
