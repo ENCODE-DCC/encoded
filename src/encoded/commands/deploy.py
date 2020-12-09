@@ -865,6 +865,11 @@ def _parse_args():
                 "%r is an invalid hostname, only [a-z0-9] and hyphen allowed." % value)
         return value
 
+    def get_ami_id():
+        """#TODO decide how this will be handled 
+        """
+        return 'ami-03830cb12cf0006cc'
+
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
     )
@@ -1048,72 +1053,9 @@ def _parse_args():
         )
     )
     args = parser.parse_args()
-    # Set AMI per build type
-    ami_map = {
-        # AWS Launch wizard: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112
-        'default': 'ami-03830cb12cf0006cc',
-        'arm_default': 'ami-03830cb12cf0006cc',
-
-        # Private AMIs: Add comments to each build
-
-        # encdami-demo build on 2020-05-18 09:18:40.053861: encdami-demo-2020-05-18_091840
-        'demo': 'ami-03830cb12cf0006cc',
-        # encdami-es-wait-head build on 2020-05-18 15:11:07.352104: encdami-es-wait-head-2020-05-18_151107
-        'es-wait-head': 'ami-03830cb12cf0006cc',
-        # encdami-es-wait-node build on 2020-05-18 15:11:07.352073: encdami-es-wait-node-2020-05-18_151107
-        'es-wait-node': 'ami-03830cb12cf0006cc',
-        #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head': 'ami-03830cb12cf0006cc',
-        'es-elect-node': 'ami-03830cb12cf0006cc',
-        # encdami-frontend build on 2020-05-19 06:03:16.286725: encdami-frontend-2020-05-19_060316
-        'frontend': 'ami-03830cb12cf0006cc',
-
-        # Production Private AMIs: Add comments to each build
-
-        # encdami-es-wait-head build on 2020-05-19 06:23:26.382876: encdami-es-wait-head-2020-05-19_062326
-        'es-wait-head-prod': 'ami-03830cb12cf0006cc',
-        # encdami-es-wait-node build on 2020-05-19 06:23:32.339883: encdami-es-wait-node-2020-05-19_062332
-        'es-wait-node-prod': 'ami-03830cb12cf0006cc',
-        #  ES elect builds were not bulit since we rarely use them
-        'es-elect-head-prod': 'ami-03830cb12cf0006cc',
-        'es-elect-node-prod': 'ami-03830cb12cf0006cc',
-        # encdami-frontend build on 2020-05-19 06:32:47.400206: encdami-frontend-2020-05-19_063247
-        'frontend-prod': 'ami-03830cb12cf0006cc',
-    }
+    # If needed, get ami.
     if not args.image_id:
-        # Select ami by build type.  
-        if args.full_build:
-            # Full builds from scratch
-            # should start from base ubutnu image
-            args.image_id = ami_map['default']
-            args.eshead_image_id = ami_map['default']
-        elif args.cluster_name:
-            # Cluster builds have three prebuilt priviate amis
-            if args.es_wait:
-                if args.profile_name == 'production':
-                    args.eshead_image_id = ami_map['es-wait-head-prod']
-                    args.image_id = ami_map['es-wait-node-prod']
-                else:
-                    args.eshead_image_id = ami_map['es-wait-head']
-                    args.image_id = ami_map['es-wait-node']
-            elif args.es_elect and args.profile_name != 'production':
-                if args.profile_name == 'production':
-                    args.eshead_image_id = ami_map['es-elect-head-prod']
-                    args.image_id = ami_map['es-elect-node-prod']
-                else:
-                    args.eshead_image_id = ami_map['es-elect-head']
-                    args.image_id = ami_map['es-elect-node']
-            else:
-                if args.profile_name == 'production':
-                    args.image_id = ami_map['frontend-prod']
-                else:
-                    args.image_id = ami_map['frontend']
-        else:
-            args.image_id = ami_map['demo']
-    elif args.arm_image_id:
-        args.image_id = ami_map['arm_default']
-    else:
-        args.image_id = ami_map['default']
+        args.image_id = get_ami_id()
     # Aws instance size.  If instance type is not specified, choose based on build type
     if not args.instance_type:
         if args.es_elect or args.es_wait:
