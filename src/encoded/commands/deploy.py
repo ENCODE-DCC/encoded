@@ -107,8 +107,8 @@ DEFAULT_IAM_ROLE = 'latticed-instance'
 DEFAULT_KEY_PAIR_NAME = 'lattice_ec2'
 DEFAULT_REGION_NAME = 'us-west-1'  # N. California
 DEFAULT_AVAILABILITY_ZONE = 'us-west-1b'
-INSTANCE_TYPE_ES_DATA = 'm5.xlarge'
-INSTANCE_TYPE_ES_HEAD = 'c5.9xlarge'
+INSTANCE_TYPE_ES_DATA = 't3.xlarge'
+INSTANCE_TYPE_ES_HEAD = 't3.xlarge'
 INSTANCE_TYPE_FRONTEND = 'c5.9xlarge'
 
 AMI_MAP = {
@@ -1175,7 +1175,7 @@ def _parse_args():
             # datanode
             args.instance_type = INSTANCE_TYPE_ES_DATA
             # Head node
-            args.eshead_instance_type = 'm5.xlarge'
+            args.eshead_instance_type = 't3.xlarge'
         elif args.arm_image_id:
             # Type/Size for arm architecture
             args.instance_type = 'm6g.4xlarge'
