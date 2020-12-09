@@ -14,7 +14,7 @@
             "cell isolation", "differentiation", "expansion"
         ],
         "biosample_ontology": "CL_0002248",
-        "passage_number": 10,
+        "passage_number": "10",
         "is_immortalized": false,
         "mycoplasma_testing_method": "qPCR",
         "mycoplasma_testing_results": "negative",
@@ -41,7 +41,7 @@
             "cell isolation", "differentiation", "expansion"
         ],
         "biosample_ontology": "CL_0002248",
-        "passage_number": 9,
+        "passage_number": "9",
         "is_immortalized": false,
         "mycoplasma_testing_method": "qPCR",
         "mycoplasma_testing_results": "negative",
@@ -74,7 +74,7 @@
         "growth_medium": "3F media",
         "post_differentiation_time": 1,
         "post_differentiation_time_units": "day",
-        "passage_number": 5,
+        "passage_number": "5",
         "is_immortalized": false
     },
     {
@@ -98,7 +98,7 @@
         "growth_medium": "3F media",
         "post_differentiation_time": 1,
         "post_differentiation_time_units": "day",
-        "passage_number": 5,
+        "passage_number": "5",
         "is_immortalized": false
     },
     {
@@ -122,7 +122,7 @@
         "growth_medium": "3F media",
         "post_differentiation_time": 1,
         "post_differentiation_time_units": "day",
-        "passage_number": 5,
+        "passage_number": "5",
         "is_immortalized": false
     }
 ]
