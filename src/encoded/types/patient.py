@@ -40,7 +40,6 @@ USER_DELETED = [
     (Deny, Everyone, 'visible_for_edit')
 ] + ONLY_ADMIN_VIEW_DETAILS
 
-MAX_DAYS = 300000
 def group_values_by_lab(request, labs):
     values_by_key = defaultdict(list)
     for path in labs:
@@ -136,7 +135,7 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
 
     return last_follow_up_date
 
-def getLabsAndVitalsRange(value, low, high, normal, lowRange, highRange, normalRange):
+def getLabsAndVitalsRange(value, low, high, normal, lowRange, normalRange, highRange):
     if value <= low:
         if lowRange == "default":
             return "Below (Below " + str(low) + ")"
@@ -624,7 +623,7 @@ class Patient(Item):
         "properties":{
             "first_Nephrectomy_date_string": {
                 "title": "Date of First Nephrectomy",
-                "type": "string",
+                "type": "string"
             },
             "BMI": {
                 "title": "BMI",
@@ -637,6 +636,14 @@ class Patient(Item):
                     'Obese (>30)'
                 ]
             },
+            "BMIValue": {
+                "title": "BMI Value",
+                "type": "number"
+            },
+            "BMIDate": {
+                "title": "Date of BMI",
+                "type": "string"
+            },
             "BP_Systolic": {
                 "title": "BP_Systolic",
                 "description": "Most recent BP_Systolic value Within 30 days prior to Date of Nephrectomy",
@@ -646,6 +653,14 @@ class Patient(Item):
                     'PreHypertension (121 - 139 mmHg)',
                     'Hypertension (Above 140 mmHg)'
                 ]
+            },
+            "BP_SystolicValue": {
+                "title": "BP_Systolic Value",
+                "type": "number"
+            },
+            "BP_SystolicDate": {
+                "title": "Date of BP_Systolic",
+                "type": "string"
             },
             "BP_Diastolic": {
                 "title": "BP_Diastolic",
@@ -657,6 +672,14 @@ class Patient(Item):
                     'Hypertension (Above 90)'
                 ]
             },
+            "BP_DiastolicValue": {
+                "title": "BP_Diastolic Value",
+                "type": "number"
+            },
+            "BP_DiastolicDate": {
+                "title": "Date of BP_Diastolic",
+                "type": "string"
+            },
             "Hemoglobin": {
                 "title": "Hemoglobin",
                 "description": "Most recent Hemoglobin value Within 30 days prior to Date of Nephrectomy",
@@ -666,6 +689,14 @@ class Patient(Item):
                     'Normal (12.4-17.3 g/dL)',
                     'Above (Above 17.4)'
                 ]
+            },
+            "HemoglobinValue": {
+                "title": "Hemoglobin Value",
+                "type": "number"
+            },
+            "HemoglobinDate": {
+                "title": "Date of Hemoglobin",
+                "type": "string"
             },
             "Platelets": {
                 "title": "Platelets",
@@ -677,6 +708,14 @@ class Patient(Item):
                     'Above (Above 450)'
                 ]
             },
+            "PlateletsValue": {
+                "title": "Platelets Value",
+                "type": "number"
+            },
+            "PlateletsDate": {
+                "title": "Date of Platelets",
+                "type": "string"
+            },
             "WBC": {
                 "title": "WBC",
                 "description": "Most recent WBC value Within 30 days prior to Date of Nephrectomy",
@@ -686,6 +725,14 @@ class Patient(Item):
                     'Normal Range (4-10.9 10^3/ul)',
                     'Above (Above 11)'
                 ]
+            },
+            "WBCValue": {
+                "title": "WBC Value",
+                "type": "number"
+            },
+            "WBCDate": {
+                "title": "Date of WBC",
+                "type": "string"
             },
             "Neutrophils": {
                 "title": "Neutrophils",
@@ -697,6 +744,14 @@ class Patient(Item):
                     'Above ( Above 7.4)'
                 ]
             },
+            "NeutrophilsValue": {
+                "title": "Neutrophils Value",
+                "type": "number"
+            },
+            "NeutrophilsDate": {
+                "title": "Date of Neutrophils",
+                "type": "string"
+            },
             "Creatinine": {
                 "title": "Creatinine",
                 "description": "Most recent Creatinine value Within 30 days prior to Date of Nephrectomy",
@@ -706,6 +761,14 @@ class Patient(Item):
                     'Normal Range (0.67-1.16 mg/dL)',
                     'Above (Above 1.17)'
                 ]
+            },
+            "CreatinineValue": {
+                "title": "Creatinine Value",
+                "type": "number"
+            },
+            "CreatinineDate": {
+                "title": "Date of Creatinine",
+                "type": "string"
             },
             "Calcium": {
                 "title": "Calcium",
@@ -717,6 +780,14 @@ class Patient(Item):
                     'Above (Above 10.2)'
                 ]
             },
+            "CalciumValue": {
+                "title": "Calcium Value",
+                "type": "number"
+            },
+            "CalciumDate": {
+                "title": "Date of Calcium",
+                "type": "string"
+            },
             "Albumin": {
                 "title": "Albumin",
                 "description": "Most recent Albumin value Within 30 days prior to Date of Nephrectomy",
@@ -726,6 +797,14 @@ class Patient(Item):
                     'Normal Range (3.5-5.2 g/dL)',
                     'Above (5.3)'
                 ]
+            },
+            "AlbuminValue": {
+                "title": "Albumin Value",
+                "type": "number"
+            },
+            "AlbuminDate": {
+                "title": "Date of Albumin",
+                "type": "string"
             },
             "Sodium": {
                 "title": "Sodium",
@@ -737,6 +816,14 @@ class Patient(Item):
                     'Above (146)'
                 ]
             },
+            "SodiumValue": {
+                "title": "Sodium Value",
+                "type": "number"
+            },
+            "SodiumDate": {
+                "title": "Date of Sodium",
+                "type": "string"
+            },
             "LDH": {
                 "title": "LDH",
                 "description": "Most recent LDH value Within 30 days prior to Date of Nephrectomy",
@@ -746,6 +833,14 @@ class Patient(Item):
                     'Normal Range (135-225 U/L)',
                     'Above (225)'
                 ]
+            },
+            "LDHValue": {
+                "title": "LDH Value",
+                "type": "number"
+            },
+            "LDHDate": {
+                "title": "Date of LDH",
+                "type": "string"
             }
 
         },
@@ -778,124 +873,157 @@ class Patient(Item):
                     surgery_procedure_obj = request.embed(surgery_procedure, '@@object')
                     if surgery_procedure_obj['procedure_type'] == "Nephrectomy":
                         nephrectomy_dates.append(surgery_object['date'])
-            #compare the date to get the first date
-            nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
-            first_Nephrectomy_date_string = nephrectomy_dates[0]
-            first_Nephrectomy_date = datetime.strptime(first_Nephrectomy_date_string, '%Y-%m-%d')
-            labs_and_vitals['first_Nephrectomy_date_string'] = first_Nephrectomy_date_string
+            #compare the date to get the first date if there is nephrectomy_dates
+            if len(nephrectomy_dates)> 0:
+                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                first_Nephrectomy_date_string = nephrectomy_dates[0]
+                first_Nephrectomy_date = datetime.strptime(first_Nephrectomy_date_string, '%Y-%m-%d')
+                labs_and_vitals['first_Nephrectomy_date_string'] = first_Nephrectomy_date_string
 
-            #find dates Within 30 days prior to Date of Nephrectomy
-            if len(labs)>0:             
-                albuminList = []                
-                calciumList = []
-                creatinineList = []
-                hemoglobinList = []
-                ldhList = []
-                neutrophilsList = []
-                plateletsList = []
-                sodiumList = []
-                wbcList = []
+                #find dates Within 30 days prior to Date of Nephrectomy
+                if len(labs)>0:             
+                    albuminList = []                
+                    calciumList = []
+                    creatinineList = []
+                    hemoglobinList = []
+                    ldhList = []
+                    neutrophilsList = []
+                    plateletsList = []
+                    sodiumList = []
+                    wbcList = []
 
-                for path in labs:
-                    properties = request.embed(path, '@@object?skip_calculated=true')
-                    lab_date_string = properties.get("date")
-                    #compare the date
-                    lab_date = datetime.strptime(lab_date_string, '%Y-%m-%d')
-                    if (first_Nephrectomy_date - lab_date).days < MAX_DAYS and (first_Nephrectomy_date - lab_date).days >= 0:
-                        lab_type = properties.get("lab")
-                        lab_value = properties.get("value")
-                        lab = {
-                            "date": lab_date_string,
-                            "value": lab_value
-                        }
-                        if lab_type == "ALBUMIN":
-                            albuminList.append(lab)              
-                        elif lab_type == "CALCIUM":
-                            calciumList.append(lab)
-                        elif lab_type == "CREATININE":
-                            creatinineList.append(lab)
-                        elif lab_type == "HEMOGLOBIN":
-                            hemoglobinList.append(lab)
-                        elif lab_type == "LACTATE_DE":
-                            ldhList.append(lab)
-                        elif lab_type == "NEUTROPHILS":
-                            neutrophilsList.append(lab)
-                        elif lab_type == "PLATELETS":
-                            plateletsList.append(lab)
-                        elif lab_type == "SODIUM":
-                            sodiumList.append(lab)
+                    for path in labs:
+                        properties = request.embed(path, '@@object?skip_calculated=true')
+                        lab_date_string = properties.get("date")
+                        #compare the date
+                        lab_date = datetime.strptime(lab_date_string, '%Y-%m-%d')
+                        if (first_Nephrectomy_date - lab_date).days < 30 and (first_Nephrectomy_date - lab_date).days >= 0:
+                            lab_type = properties.get("lab")
+                            lab_value = properties.get("value")
+                            lab = {
+                                "date": lab_date_string,
+                                "value": lab_value
+                            }
+                            if lab_type == "ALBUMIN":
+                                albuminList.append(lab)              
+                            elif lab_type == "CALCIUM":
+                                calciumList.append(lab)
+                            elif lab_type == "CREATININE":
+                                creatinineList.append(lab)
+                            elif lab_type == "HEMOGLOBIN":
+                                hemoglobinList.append(lab)
+                            elif lab_type == "LACTATE_DE":
+                                ldhList.append(lab)
+                            elif lab_type == "NEUTROPHILS":
+                                neutrophilsList.append(lab)
+                            elif lab_type == "PLATELETS":
+                                plateletsList.append(lab)
+                            elif lab_type == "SODIUM":
+                                sodiumList.append(lab)
+                            else:
+                                wbcList.append(lab)
+                    if len(albuminList) > 0:
+                        albuminList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        albuminLab = albuminList[-1]  
+                        labs_and_vitals["Albumin"] = getLabsAndVitalsRange(albuminLab["value"], 3.4, 5.3, "3.5-5.2 g/dL", "default", "default", "default") 
+                        labs_and_vitals["AlbuminValue"] = albuminLab["value"]
+                        labs_and_vitals["AlbuminDate"] = albuminLab["date"]
+                    if len(calciumList) > 0:
+                        calciumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        calciumLab = calciumList[-1]  
+                        labs_and_vitals["Calcium"] = getLabsAndVitalsRange(calciumLab["value"], 8.7, 10.2, "8.8-10.1 mg/dL", "default", "default", "default")    
+                        labs_and_vitals["CalciumValue"] = calciumLab["value"]
+                        labs_and_vitals["CalciumDate"] = calciumLab["date"]
+                    if len(creatinineList) > 0:
+                        creatinineList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        creatinineLab = creatinineList[-1] 
+                        labs_and_vitals["Creatinine"] = getLabsAndVitalsRange(creatinineLab["value"], 0.66, 1.17, "0.67-1.16 mg/dL", "default", "default", "default")
+                        labs_and_vitals["CreatinineValue"] = creatinineLab["value"]
+                        labs_and_vitals["CreatinineDate"] = creatinineLab["date"]
+                    if len(hemoglobinList) > 0:
+                        hemoglobinList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        hemoglobinLab = hemoglobinList[-1]
+                        labs_and_vitals["Hemoglobin"] = getLabsAndVitalsRange(hemoglobinLab["value"], 12.3, 17.4, "12.4-17.3 g/dL", "default", "default", "default")
+                        labs_and_vitals["HemoglobinValue"] = hemoglobinLab["value"]
+                        labs_and_vitals["HemoglobinDate"] = hemoglobinLab["date"]
+                    if len(ldhList) > 0:
+                        ldhList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        ldhLab = ldhList[-1]
+                        labs_and_vitals["LDH"] = getLabsAndVitalsRange(ldhLab["value"], 134, 225, "135-224 U/L", "default", "default", "default")
+                        labs_and_vitals["LDHValue"] = ldhLab["value"]
+                        labs_and_vitals["LDHDate"] = ldhLab["date"]
+                    if len(neutrophilsList) > 0:
+                        neutrophilsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        neutrophilsLab = neutrophilsList[-1]
+                        labs_and_vitals["Neutrophils"] = getLabsAndVitalsRange(neutrophilsLab["value"], 1.4, 7.4, "1.5-7.3 10^3/ul", "default", "default", "default")
+                        labs_and_vitals["NeutrophilsValue"] = neutrophilsLab["value"]
+                        labs_and_vitals["NeutrophilsDate"] = neutrophilsLab["date"]
+                    if len(plateletsList) > 0:
+                        plateletsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        plateletsLab = plateletsList[-1]
+                        labs_and_vitals["Platelets"] = getLabsAndVitalsRange(plateletsLab["value"], 139, 449, "140-450 10^3/ul", "default", "default", "default")
+                        labs_and_vitals["PlateletsValue"] = plateletsLab["value"]
+                        labs_and_vitals["PlateletsDate"] = plateletsLab["date"]
+                    if len(sodiumList) > 0:
+                        sodiumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        sodiumLab = sodiumList[-1]
+                        labs_and_vitals["Sodium"] = getLabsAndVitalsRange(sodiumLab["value"], 134, 146, "135-145 mmol/L", "default", "default", "default")
+                        labs_and_vitals["SodiumValue"] = sodiumLab["value"]
+                        labs_and_vitals["SodiumDate"] = sodiumLab["date"]
+                    if len(wbcList) > 0:
+                        wbcList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        wbcLab = wbcList[-1]
+                        labs_and_vitals["WBC"] = getLabsAndVitalsRange(wbcLab["value"], 3.9, 11, "4-10.9 10^3/ul", "default", "default", "default")
+                        labs_and_vitals["WBCValue"] = wbcLab["value"]
+                        labs_and_vitals["WBCDate"] = wbcLab["date"]
+                if len(vitals)>0 :
+                    bmiList = []
+                    bp_SystolicList = []
+                    bp_DiastolicList = []
+                    for path in vitals:
+                        properties = request.embed(path, '@@object?skip_calculated=true')
+                        vital_date_string = properties.get("date")
+                        #compare the date
+                        vital_date = datetime.strptime(vital_date_string, '%Y-%m-%d')
+                        if (first_Nephrectomy_date - vital_date).days <30 and (first_Nephrectomy_date - vital_date).days >= 0:
+                            vital_type = properties.get("vital")
+                            vital_value = properties.get("value")
+                            vital = {
+                                "date": vital_date_string,
+                                "value": vital_value
+                            }
+
+                            if vital_type == "BMI":
+                                bmiList.append(vital)              
+                            elif vital_type == "BP_DIAS":
+                                bp_DiastolicList.append(vital)
+                            elif vital_type == "BP_SYS":
+                                bp_SystolicList.append(vital)    
+                    if len(bmiList) > 0:     
+                        bmiList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bmiVital = bmiList[-1]
+                        labs_and_vitals["BMIValue"] = bmiVital["value"]
+                        labs_and_vitals["BMIDate"] = bmiVital["date"] 
+                        if bmiVital["value"] <= 18.4:
+                            labs_and_vitals["BMI"] = "Underweight (Below 18.4)"
+                        elif bmiVital["value"] <= 24.9:
+                            labs_and_vitals["BMI"] = "Normal (18.5-24.9)"
+                        elif bmiVital["value"] <= 29.9:
+                            labs_and_vitals["BMI"] = "Overweight (25-29.9)"
                         else:
-                            wbcList.append(lab)
-                albuminList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                albuminLab = albuminList[-1]  
-                labs_and_vitals["Albumin"] = getLabsAndVitalsRange(albuminLab["value"], 3.4, 5.3, "3.5-5.2 g/dL", "default", "default", "default") 
-                calciumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                calciumLab = calciumList[-1]  
-                labs_and_vitals["Calcium"] = getLabsAndVitalsRange(calciumLab["value"], 8.7, 10.2, "8.8-10.1 mg/dL", "default", "default", "default")    
-                creatinineList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                creatinineLab = creatinineList[-1] 
-                labs_and_vitals["Creatinine"] = getLabsAndVitalsRange(creatinineLab["value"], 0.66, 1.17, "0.67-1.16 mg/dL", "default", "default", "default")
-                hemoglobinList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                hemoglobinLab = hemoglobinList[-1]
-                labs_and_vitals["Hemoglobin"] = getLabsAndVitalsRange(hemoglobinLab["value"], 12.3, 17.4, "12.4-17.3 g/dL", "default", "default", "default")
-                ldhList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                ldhLab = calciumList[-1]
-                labs_and_vitals["LDH"] = getLabsAndVitalsRange(ldhLab["value"], 134, 225, "135-224 U/L", "default", "default", "default")
-                neutrophilsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                eutrophilsLab = calciumList[-1]
-                labs_and_vitals["Neutrophils"] = getLabsAndVitalsRange(eutrophilsLab["value"], 1.4, 7.4, "1.5-7.3 10^3/ul", "default", "default", "default")
-                plateletsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                plateletsLab = calciumList[-1]
-                labs_and_vitals["Platelets"] = getLabsAndVitalsRange(plateletsLab["value"], 139, 449, "140-450 10^3/ul", "default", "default", "default")
-                sodiumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                sodiumLab = calciumList[-1]
-                labs_and_vitals["Sodium"] = getLabsAndVitalsRange(sodiumLab["value"], 134, 146, "135-145 mmol/L", "default", "default", "default")
-                wbcList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                wbcLab = wbcList[-1]
-                labs_and_vitals["WBC"] = getLabsAndVitalsRange(wbcLab["value"], 3.9, 11, "4-10.9 10^3/ul", "default", "default", "default")
-            
-            if len(vitals)>0 :
-                bmiList = []
-                bp_SystolicList = []
-                bp_DiastolicList = []
-                for path in vitals:
-                    properties = request.embed(path, '@@object?skip_calculated=true')
-                    vital_date_string = properties.get("date")
-                    #compare the date
-                    vital_date = datetime.strptime(vital_date_string, '%Y-%m-%d')
-                    if (first_Nephrectomy_date - vital_date).days <MAX_DAYS and (first_Nephrectomy_date - vital_date).days >= 0:
-                        vital_type = properties.get("vital")
-                        vital_value = properties.get("value")
-                        vital = {
-                            "date": vital_date_string,
-                            "value": vital_value
-                        }
-
-                        if vital_type == "BMI":
-                            bmiList.append(vital)              
-                        elif lab_type == "BP_DIAS":
-                            bp_DiastolicList.append(vital)
-                        elif lab_type == "BP_SYS":
-                            bp_SystolicList.append(vital)    
-                        
-                bmiList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                bmiLab = bmiList[-1] 
-                if bmiLab["value"] <= 18.4:
-                    labs_and_vitals["BMI"] = "Underweight (Below 18.4)"
-                elif bmiLab["value"] <= 24.9:
-                    labs_and_vitals["BMI"] = "Normal (18.5-24.9)"
-                elif bmiLab["value"] <= 29.9:
-                    labs_and_vitals["BMI"] = "Overweight (25-29.9)"
-                else:
-                    labs_and_vitals["BMI"] = "Obese (Above 30)"
-                bp_SystolicList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                bp_SystolicLab = bmiList[-1] 
-                labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicLab["value"], 120, 140, "121 - 139 mmHg", 'Normal (Below 120)', 'PreHypertension (121 - 139 mmHg)', 'Hypertension (Above 140)')
-
-                bp_DiastolicList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
-                bp_DiastolicLab = bmiList[-1]  
-                labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicLab["value"], 80, 90, "81 - 89 mmHg", 'Normal (Below 80)', 'PreHypertension (81 - 89 mmHg)', 'Hypertension (Above 90)')
-                
+                            labs_and_vitals["BMI"] = "Obese (Above 30)"
+                    if len(bp_SystolicList) > 0:
+                        bp_SystolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bp_SystolicVital = bp_SystolicList[-1] 
+                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 120, 140, "121 - 139 mmHg", 'Normal (Below 120)', 'PreHypertension (121 - 139 mmHg)', 'Hypertension (Above 140)')
+                        labs_and_vitals["BP_SystolicValue"] = bp_SystolicVital["value"]
+                        labs_and_vitals["BP_SystolicDate"] = bp_SystolicVital["date"] 
+                    if len(bp_DiastolicList) > 0:
+                        bp_DiastolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bp_DiastolicVital = bp_DiastolicList[-1]  
+                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 80, 90, "81 - 89 mmHg", 'Normal (Below 80)', 'PreHypertension (81 - 89 mmHg)', 'Hypertension (Above 90)')
+                        labs_and_vitals["BP_DiastolicValue"] = bp_DiastolicVital["value"]
+                        labs_and_vitals["BP_DiastolicDate"] = bp_DiastolicVital["date"] 
 
         return labs_and_vitals
 
@@ -1306,3 +1434,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
