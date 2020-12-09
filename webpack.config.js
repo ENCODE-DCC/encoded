@@ -33,7 +33,7 @@ plugins.push(
                 context: PATHS.ckeditor_source,
             },
         ],
-  }),
+    })
 );
 
 let chunkFilename = '[name].js';
