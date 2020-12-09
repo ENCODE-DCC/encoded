@@ -789,54 +789,25 @@ def main():
     helper_vars = []
     if 'demo' in instances_info:
         instance_info = instances_info['demo']
-        if main_args.build_ami:
-            print('AMI Build: Demo deploying:', instance_info['name'])
-            print('instance_id:', instance_info['instance_id'])
-            print(
-                'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} demo {} --profile-name {}".format(
-                    instances_tag_data['username'],
-                    instance_info['instance_id'],
-                    main_args.profile_name,
-                )
-            )
-        else:
-            print('Deploying Demo({}): {}'.format(
-                instance_info['private_ip'],
-                instance_info['url']
-            ))
-            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print('Deploying Demo({}): {}'.format(
+            instance_info['private_ip'],
+            instance_info['url']
+        ))
+        print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print("ssh and tail:\n ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
     elif 'cluster_master' in instances_info and main_args.es_wait:
         instance_info = instances_info['cluster_master']
-        if main_args.build_ami:
-            print('AMI Build: Wait ES cluster deploying:', instance_info['name'])
-            print('instance_id:', instance_info['instance_id'])
-            arg_name = 'es-wait-head'
-            if main_args.es_elect:
-                arg_name = 'es-elect'
-            print(
-                'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} {} {} --profile-name {}".format(
-                    instances_tag_data['username'],
-                    arg_name,
-                    instance_info['instance_id'],
-                    main_args.profile_name,
-                )
-            )
-        else:
-            print('Deploying Head ES Node({}): {}'.format(
-                instance_info['private_ip'],
-                instance_info['name']
-            ))
-            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print('Deploying Head ES Node({}): {}'.format(
+            instance_info['private_ip'],
+            instance_info['name']
+        ))
+        print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print('\nRun the following command to view es head deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         print('')
         helper_vars.append("datam='{}'".format(instance_info['instance_id']))
         for index in range(main_args.cluster_size):
-            str_index = str(index)
-            key_name = 'cluster_node_' + str_index
+            key_name = 'cluster_node_{}'.format(index)
             node_info = instances_info[key_name]
             helper_vars.append("data{}='{}'  # {}".format(index, node_info['instance_id'], key_name))
             if index == 0:
@@ -855,30 +826,18 @@ def main():
                 print("ES node{} ssh:\n ssh ubuntu@{}".format(index, node_info['public_dns']))
     elif 'frontend' in instances_info:
         instance_info = instances_info['frontend']
-        if main_args.build_ami:
-            print('AMI Build: Deploying Frontend:', instance_info['name'])
-            print('instance_id:', instance_info['instance_id'])
-            print(
-                'After it builds, create the ami: '
-                "python ./cloud-config/create-ami.py {} frontend {} --profile-name {}".format(
-                    instances_tag_data['username'],
-                    instance_info['instance_id'],
-                    main_args.profile_name,
-                )
-            )
-        else:
-            print('Deploying Frontend({}): {}'.format(
-                instance_info['private_ip'],
-                instance_info['url'],
-            ))
-            print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
+        print('Deploying Frontend({}): {}'.format(
+            instance_info['private_ip'],
+            instance_info['url'],
+        ))
+        print(" ssh ubuntu@{}".format(instance_info['instance_id_domain']))
         print('\n\nRun the following command to view the deployment log.')
         print("ssh ubuntu@{}{}".format(instance_info['public_dns'], tail_cmd))
         helper_vars.append("frontend='{}'".format(instance_info['instance_id']))
     else:
         print('Warning: Unknown instance info')
         print(instances_info)
-    if main_args.role == 'candidate' or main_args.build_ami:
+    if main_args.role == 'candidate':
         print('')
         # helps vars for release and building amis
         for helper_var in helper_vars:
@@ -1123,14 +1082,7 @@ def _parse_args():
     }
     if not args.image_id:
         # Select ami by build type.  
-        if args.build_ami:
-            # Building new amis or making full builds from scratch
-            # should start from base ubutnu image
-            args.image_id = ami_map['default']
-            args.eshead_image_id = ami_map['default']
-            # We only need one es node to make an ami
-            args.cluster_size = 1
-        elif args.full_build:
+        if args.full_build:
             # Full builds from scratch
             # should start from base ubutnu image
             args.image_id = ami_map['default']
