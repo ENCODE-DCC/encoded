@@ -71,8 +71,8 @@
             "title": "Passage number",
             "description": "Number of passages including the passages from the source.",
             "comment": "In calculating passage number, include passages from the source.",
-            "type": "integer",
-            "minimum": 0
+            "type": "string",
+            "pattern": "(^[<>]?[0-9]+$)|(^[0-9]+-[0-9]+$)"
         },
         "is_immortalized": {
             "title": "Immortalization state",
