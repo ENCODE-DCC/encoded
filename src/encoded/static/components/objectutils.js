@@ -856,3 +856,10 @@ export const TableItemCount = ({ count }) => (
 TableItemCount.propTypes = {
     count: PropTypes.string.isRequired,
 };
+
+/**
+ * Call react useEffect just once
+ *
+ * @param {function} fn
+ */
+export const useMount = fn => React.useEffect(fn, []);
