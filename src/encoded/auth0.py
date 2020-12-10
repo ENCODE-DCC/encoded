@@ -152,11 +152,13 @@ def _get_user_info(user_data):
     """
     if not user_data:
         raise ValidationError('No user data provided')
+    if not user_data.get('email') or not user_data.get('email').strip():
+        raise ValidationError('No e-mail provided')
     first_name, last_name = _get_first_and_last_names_from_name(user_data.get('name'))
     return {
         'email': user_data['email'],
         'first_name': user_data.get('given_name') or user_data.get('first_name') or first_name,
-        'last_name': user_data.get('family_name') or user_data.get('last_name') or last_name or user_data['email'],
+        'last_name': user_data.get('family_name') or user_data.get('last_name') or last_name or user_data.get('email').split('@')[0],
     }
 
 
