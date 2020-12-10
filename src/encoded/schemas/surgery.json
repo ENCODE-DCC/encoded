@@ -75,7 +75,7 @@
         "pathology_report.pathology_report_tumor_range": {
             "title": "Tumor Size Range"
         },
-        "pathology_report.histology": {
+        "pathology_report.histology_filter": {
             "title": "Histologic Subtype"
         },
         "pathology_report.grade": {
