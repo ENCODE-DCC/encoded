@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
 import { BrowserFeat } from './browserfeat';
 import { requestFiles } from './objectutils';
@@ -543,9 +544,11 @@ export class Graph extends React.Component {
 
     handleDlClick() {
         // Collect CSS styles that apply to the graph and insert them into the given SVG element
-        function attachStyles(el) {
+        const extractStyles = (el) => {
             let stylesText = '';
-            const sheets = document.styleSheets;
+            const sheets = Array.from(document.styleSheets).filter(styleSheet => (
+                styleSheet.href && styleSheet.href.startsWith(window.location.origin)
+            ));
 
             // Search every style in the style sheet(s) for those applying to graphs.
             // Note: Not using ES5 looping constructs because these aren’t real arrays.
@@ -570,17 +573,10 @@ export class Graph extends React.Component {
                     }
                 }
             }
+            return stylesText;
+        };
 
-            // Insert the collected SVG styles into a new style element
-            const styleEl = document.createElement('style');
-            styleEl.setAttribute('type', 'text/css');
-            styleEl.innerHTML = `/* <![CDATA[ */\n${stylesText}\n/* ]]> */`;
-
-            // Insert the new style element into the beginning of the given SVG element
-            el.insertBefore(styleEl, el.firstChild);
-        }
-
-        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
+        // Going to be manipulating the SVG node, so make a clone.`
         const svgNode = this.cv.savedSvg.node().cloneNode(true);
 
         // Reset the SVG's size to its natural size
@@ -588,32 +584,33 @@ export class Graph extends React.Component {
         svgNode.setAttribute('width', viewBox[2]);
         svgNode.setAttribute('height', viewBox[3]);
 
-        // Attach graph CSS to SVG node clone
-        attachStyles(svgNode);
+        // Attach graph CSS to SVG node clone.
+        const extractedStyles = extractStyles(svgNode);
+        const style = document.createElement('style');
+        style.setAttribute('type', 'text/css');
+        const textNode = document.createTextNode(extractedStyles);
+        style.appendChild(textNode);
+        svgNode.appendChild(style);
 
-        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
+
+        // Turn SVG node clone into a string and attach to a new Image object. This begins "loading" the image.
         const serializer = new XMLSerializer();
         const svgXml = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">${serializer.serializeToString(svgNode)}`;
-        const img = new Image();
-        img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
 
-        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
-        img.onload = function onload() {
-            // Make a new memory-based canvas and draw the image into it.
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const context = canvas.getContext('2d');
-            context.drawImage(img, 0, 0, img.width, img.height);
+        // Convert svg source to URI data scheme.
+        // const dataScheme = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgXml)}`;
+        const dataScheme = svgXml;
 
-            // Make the image download by making a fake <a> and pretending to click it.
-            const a = document.createElement('a');
-            a.download = this.props.graph.id ? `${this.props.graph.id}.png` : 'graph.png';
-            a.href = canvas.toDataURL('image/png');
-            a.setAttribute('data-bypass', 'true');
-            document.body.appendChild(a);
-            a.click();
-        }.bind(this);
+        const svgBlob = new Blob([dataScheme], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+
+        // Make the image download by making a fake <a> and pretending to click it.
+        const a = document.createElement('a');
+        a.download = this.props.graph.id ? `${this.props.graph.id}.svg` : 'graph.svg';
+        a.href = svgUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     }
 
     rangeChange(e) {
@@ -729,6 +726,7 @@ Graph.defaultProps = {
 };
 
 Graph.contextTypes = {
+    location_href: PropTypes.string,
     session: PropTypes.object,
     session_properties: PropTypes.object,
 };
