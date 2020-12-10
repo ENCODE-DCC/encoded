@@ -221,6 +221,20 @@ class DataFile(File):
         return paths_filtered_by_status(request, superseded_by)
 
 
+@abstract_collection(
+    name='analysis-files',
+    unique_key='accession',
+    properties={
+        'title': "Analysis Files",
+        'description': "",
+    })
+class AnalysisFile(DataFile):
+    item_type = 'analysis_file'
+    base_types = ['AnalysisFile'] + DataFile.base_types
+    schema = load_schema('encoded:schemas/analysis_file.json')
+    embedded = DataFile.embedded + []
+
+
     @calculated_property(schema={
         "title": "Quality metrics",
         "description": "The list of QC metric objects associated with this file.",
@@ -235,19 +249,6 @@ class DataFile(File):
     def quality_metrics(self, request, quality_metrics):
         return paths_filtered_by_status(request, quality_metrics)
 
-
-@abstract_collection(
-    name='analysis-files',
-    unique_key='accession',
-    properties={
-        'title': "Analysis Files",
-        'description': "",
-    })
-class AnalysisFile(DataFile):
-    item_type = 'analysis_file'
-    base_types = ['AnalysisFile'] + DataFile.base_types
-    schema = load_schema('encoded:schemas/analysis_file.json')
-    embedded = DataFile.embedded + []
 
     @calculated_property(define=True,
                          schema={"title": "Libraries",
