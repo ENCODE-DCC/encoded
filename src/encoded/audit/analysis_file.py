@@ -10,6 +10,21 @@ from .formatter import (
 from .item import STATUS_LEVEL
 
 
+def audit_validated(value, system):
+    '''
+    We check fastq metadata against the expected values based on the
+    library protocol used to generate the sequence data.
+    '''
+    if value.get('validated') != True and value.get('file_format') in ['hdf5'] \
+        and (value.get('s3_uri') or value.get('external_uri')):
+        detail = ('File {} has not been validated.'.format(
+            audit_link(path_to_text(value['@id']), value['@id'])
+            )
+        )
+        yield AuditFailure('file not validated', detail, level='ERROR')
+        return
+
+
 def audit_file_ref_info(value, system):
     '''
     A file's reference metadata should match the reference
@@ -66,6 +81,7 @@ def audit_analysis_library_types(value, system):
 
 
 function_dispatcher = {
+    'audit_validated': audit_validated,
     'audit_file_ref_info': audit_file_ref_info,
     'audit_analysis_library_types': audit_analysis_library_types
 }
