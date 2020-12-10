@@ -489,7 +489,7 @@
         "term": "transcriptome alignments",
         "section": "File output types",
         "file_formats": "bam",
-        "definition": "The overlap produced by mapping reads to the transcriptome."
+        "definition": "The mapping locations of input reads with respect to the transcriptome."
     },
     {
         "term": "transcriptome index",
@@ -507,6 +507,6 @@
         "term": "unfiltered alignments",
         "section": "File output types",
         "file_formats": "bam",
-        "definition": "The overlap produced by mapping reads to the genome or other provided reference without any filtering (such as removing duplicates)."
+        "definition": "The mapping locations of input reads with respect to a genome or other provided reference without any filtering (such as removing duplicates)."
     }
 ]
