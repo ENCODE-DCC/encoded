@@ -44,6 +44,8 @@ def get_cart_objects_by_user(request, userid, blocked_statuses=[]):
 
 @view_config(route_name='cart-view', request_method='GET', permission='search')
 def cart_view(context, request):
+    # 400 error if not logged in.
+    get_userid(request)
     result = {
         '@id': '/cart-view/',
         '@type': ['cart-view'],

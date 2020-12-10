@@ -7,8 +7,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 import { addMultipleToCartAndSave } from './actions';
-import { MaximumElementsLoggedoutModal, CART_MAXIMUM_ELEMENTS_LOGGEDOUT } from './util';
-
 
 class CartMergeSharedComponent extends React.Component {
     constructor() {
@@ -16,12 +14,9 @@ class CartMergeSharedComponent extends React.Component {
         this.state = {
             /** True if modal for merging a shared cart displayed */
             mergeCartDisplayed: false,
-            /** True if shared cart has more than maximum number of elements while not logged in */
-            overMaximumError: false,
         };
         this.handleMergeButtonClick = this.handleMergeButtonClick.bind(this);
         this.handleMergeModalClose = this.handleMergeModalClose.bind(this);
-        this.handleErrorModalClose = this.handleErrorModalClose.bind(this);
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -31,12 +26,7 @@ class CartMergeSharedComponent extends React.Component {
      * in a logged-out user's cart than allowed.
      */
     handleMergeButtonClick() {
-        const { viewableDatasets, loggedIn } = this.props;
-        if (loggedIn || viewableDatasets.length <= CART_MAXIMUM_ELEMENTS_LOGGEDOUT) {
-            this.setState({ mergeCartDisplayed: true });
-        } else {
-            this.setState({ overMaximumError: true });
-        }
+        this.setState({ mergeCartDisplayed: true });
     }
 
     /**
@@ -47,14 +37,6 @@ class CartMergeSharedComponent extends React.Component {
     }
 
     /**
-     * Called when the user want to close the modal warning that merging carts would result in more
-     * items in their cart than allowed for logged-out users.
-     */
-    handleErrorModalClose() {
-        this.setState({ overMaximumError: false });
-    }
-
-    /**
      * Called when the user confirms they want to merge the shared cart into their own.
      */
     handleClick() {
@@ -62,11 +44,11 @@ class CartMergeSharedComponent extends React.Component {
     }
 
     render() {
-        const { sharedCartObj, savedCartObj, viewableDatasets } = this.props;
+        const { sharedCartObj, savedCartObj, viewableDatasets, loggedIn } = this.props;
 
         // Show the "Add to current cart" button if the shared cart has elements and we're not looking
         // at our own shared cart.
-        if ((viewableDatasets && viewableDatasets.length > 0) && (sharedCartObj['@id'] !== savedCartObj['@id'])) {
+        if (loggedIn && (viewableDatasets && viewableDatasets.length > 0) && (sharedCartObj['@id'] !== savedCartObj['@id'])) {
             const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
             return (
                 <div className="cart-merge">
@@ -87,9 +69,6 @@ class CartMergeSharedComponent extends React.Component {
                             />
                         </Modal>
                     : null}
-                    {this.state.overMaximumError ?
-                        <MaximumElementsLoggedoutModal closeClickHandler={this.handleErrorModalClose} />
-                    : null}
                 </div>
             );
         }
@@ -109,28 +88,26 @@ CartMergeSharedComponent.propTypes = {
     onMergeCartClick: PropTypes.func.isRequired,
     /** True if cart updating operation is in progress */
     inProgress: PropTypes.bool.isRequired,
-    /** True if user is logged in */
-    loggedIn: PropTypes.bool,
+    /** True if user has logged in */
+    loggedIn: PropTypes.bool.isRequired,
 };
 
 CartMergeSharedComponent.defaultProps = {
     sharedCartObj: {},
     savedCartObj: null,
     viewableDatasets: null,
-    loggedIn: false,
 };
 
 const mapStateToProps = (state, ownProps) => ({
-    elements: state.elements,
     savedCartObj: state.savedCartObj,
     inProgress: state.inProgress,
     sharedCartObj: ownProps.sharedCartObj,
     viewableDatasets: ownProps.viewableDatasets,
-    adminUser: ownProps.adminUser,
+    loggedIn: !!(ownProps.session && ownProps.session['auth.userid']),
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.loggedIn, ownProps.fetch)),
+    onMergeCartClick: elementAtIds => dispatch(addMultipleToCartAndSave(elementAtIds, ownProps.fetch)),
 });
 
 const CartMergeSharedInternal = connect(mapStateToProps, mapDispatchToProps)(CartMergeSharedComponent);
@@ -143,8 +120,7 @@ const CartMergeShared = ({ sharedCartObj, viewableDatasets }, reactContext) => (
     <CartMergeSharedInternal
         sharedCartObj={sharedCartObj}
         viewableDatasets={viewableDatasets}
-        loggedIn={!!(reactContext.session && reactContext.session['auth.userid'])}
-        sessionProperties={reactContext.session_properties}
+        session={reactContext.session}
         fetch={reactContext.fetch}
     />
 );
@@ -162,7 +138,6 @@ CartMergeShared.defaultProps = {
 
 CartMergeShared.contextTypes = {
     session: PropTypes.object,
-    session_properties: PropTypes.object,
     fetch: PropTypes.func,
 };
 

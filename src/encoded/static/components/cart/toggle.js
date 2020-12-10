@@ -6,54 +6,52 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { svgIcon } from '../../libs/svg-icons';
 import { addToCartAndSave, removeFromCartAndSave } from './actions';
+import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
 import { truncateString } from '../globals';
-import { CART_MAXIMUM_ELEMENTS_LOGGEDOUT } from './util';
 
 
-class CartToggleComponent extends React.Component {
-    constructor() {
-        super();
-        this.handleClick = this.handleClick.bind(this);
-    }
+const CartToggleComponent = ({ elements, elementAtId, savedCartObj, displayName, css, onRemoveFromCartClick, onAddToCartClick, loggedIn, inProgress }) => {
+    /** Get hooks for the logged-out warning modal */
+    const [warningStates, warningActions] = useLoggedOutWarning(false);
 
     /**
      * Called when user clicks a toggle button. Depending on whether the element is already in the
      * cart, call the Redux action either to remove from or add to the cart.
      */
-    handleClick() {
-        const { elements, elementAtId, onRemoveFromCartClick, onAddToCartClick } = this.props;
-        const onClick = (elements.indexOf(elementAtId) !== -1) ? onRemoveFromCartClick : onAddToCartClick;
-        onClick();
-    }
+    const handleClick = () => {
+        if (loggedIn) {
+            const onClick = (elements.indexOf(elementAtId) !== -1) ? onRemoveFromCartClick : onAddToCartClick;
+            onClick();
+        } else {
+            warningActions.setIsWarningVisible(true);
+        }
+    };
 
-    render() {
-        const { elements, elementAtId, savedCartObj, displayName, css, loggedIn, inProgress } = this.props;
-        const inCart = elements.indexOf(elementAtId) > -1;
-        const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
-        const cartAtLimit = !loggedIn && elements.length >= CART_MAXIMUM_ELEMENTS_LOGGEDOUT;
-        const inCartToolTip = `${inCart ? 'Remove item from cart' : 'Add item to cart'}${cartName ? `: ${cartName}` : ''}`;
-        const inProgressToolTip = inProgress ? 'Cart operation in progress' : '';
-        const cartAtLimitToolTip = cartAtLimit ? `Cart can contain a maximum of ${CART_MAXIMUM_ELEMENTS_LOGGEDOUT} items` : '';
-        const locked = savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.locked : false;
+    // Non-logged in users see no toggle.
+    const inCart = elements.indexOf(elementAtId) > -1;
+    const cartName = (savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.name : '');
+    const inCartToolTip = `${inCart ? 'Remove item from cart' : 'Add item to cart'}${cartName ? `: ${cartName}` : ''}`;
+    const inProgressToolTip = inProgress ? 'Cart operation in progress' : '';
+    const locked = savedCartObj && Object.keys(savedCartObj).length > 0 ? savedCartObj.locked : false;
 
-        // "name" attribute needed for BDD test targeting.
-        return (
-            <div className={`cart-toggle${inCart ? ' cart-toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}>
-                {displayName && savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
-                <button
-                    onClick={this.handleClick}
-                    disabled={inProgress || locked || (!loggedIn && !inCart && cartAtLimit)}
-                    title={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
-                    aria-pressed={inCart}
-                    aria-label={cartAtLimitToolTip || inProgressToolTip || inCartToolTip}
-                    name={elementAtId}
-                >
-                    {svgIcon('cart')}
-                </button>
-            </div>
-        );
-    }
-}
+    // "name" attribute needed for BDD test targeting.
+    return (
+        <div className={`cart-toggle${inCart ? ' cart-toggle--in-cart' : ''}${css ? ` ${css}` : ''}`}>
+            {displayName && savedCartObj && savedCartObj.name ? <div className="cart-toggle__name">{truncateString(savedCartObj.name, 22)}</div> : null}
+            <button
+                onClick={handleClick}
+                disabled={inProgress || locked}
+                title={inProgressToolTip || inCartToolTip}
+                aria-pressed={inCart}
+                aria-label={inProgressToolTip || inCartToolTip}
+                name={elementAtId}
+            >
+                {svgIcon('cart')}
+            </button>
+            {warningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={warningActions.handleCloseWarning} /> : null}
+        </div>
+    );
+};
 
 CartToggleComponent.propTypes = {
     /** Current contents of cart; array of @ids */
@@ -94,8 +92,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.loggedIn, ownProps.fetch)),
-    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.loggedIn, ownProps.fetch)),
+    onAddToCartClick: () => dispatch(addToCartAndSave(ownProps.element['@id'], ownProps.fetch)),
+    onRemoveFromCartClick: () => dispatch(removeFromCartAndSave(ownProps.element['@id'], ownProps.fetch)),
 });
 
 const CartToggleInternal = connect(mapStateToProps, mapDispatchToProps)(CartToggleComponent);

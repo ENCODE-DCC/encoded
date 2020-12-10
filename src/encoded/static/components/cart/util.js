@@ -1,9 +1,6 @@
 /**
  * Small, general components and functions needed by other cart modules.
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../../libs/ui/modal';
 
 
 /**
@@ -23,29 +20,6 @@ export const allowedDatasetTypes = {
  */
 export const defaultDatasetType = {
     all: { title: 'All dataset types' },
-};
-
-
-/** Maximum number of elements allowed in cart while not logged in */
-export const CART_MAXIMUM_ELEMENTS_LOGGEDOUT = 4000;
-
-
-/**
- * Displays a modal to tell the logged-out user that there are too many datasets than can be added.
- */
-export const MaximumElementsLoggedoutModal = ({ closeClickHandler }) => (
-    <Modal>
-        <ModalHeader title="Too many experiments selected" closeModal={closeClickHandler} />
-        <ModalBody>
-            <p>You can add a maximum of {CART_MAXIMUM_ELEMENTS_LOGGEDOUT} experiments to a cart if you have not logged in.</p>
-        </ModalBody>
-        <ModalFooter closeModal={closeClickHandler} />
-    </Modal>
-);
-
-MaximumElementsLoggedoutModal.propTypes = {
-    /** Callback when user closes the modal */
-    closeClickHandler: PropTypes.func.isRequired,
 };
 
 

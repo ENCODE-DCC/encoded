@@ -8,9 +8,8 @@
  * shared - The cart in a user's `carts` object referenced by "/carts/<uuid>"
  * saved - The cart contents in a user's `carts` object
  *
- * "active" carts hold saved (if logged in) and unsaved (if logged out) elements. "shared" carts
- * hold saved elements. Users who aren't logged in can only have an "active" cart. "shared" carts,
- * when displayed with the cart's uuid, can be shared with others.
+ * "active" carts hold the current cart contents that users add new elements to. "shared" carts are
+ * contents of a cart object from the database and can be shared with others.
  */
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -170,16 +169,6 @@ const initializeCart = () => {
  * Create the cart store at page load.
  */
 const cartStore = initializeCart();
-
-
-/**
- * Determine if the cart in the Redux store isn't saved to the database.
- * @return {bool} True if cart hasn't been saved.
- */
-export const cartIsUnsaved = () => {
-    const cartState = cartStore.getState();
-    return !!(cartState.elements.length > 0 && Object.keys(cartState.savedCartObj).length === 0);
-};
 
 
 // Include any symbols needed outside the "cart" directory.
