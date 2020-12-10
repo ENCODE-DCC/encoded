@@ -134,3 +134,25 @@ def donor_2(testapp, lab, award, organism):
         'organism': organism['uuid']
     }
     return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def human_donor_11a(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '11',
+        'ethnicity': 'Caucasian'
+    })
+    return properties
+
+
+@pytest.fixture
+def human_donor_11b(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '11',
+        'ethnicity': 'Arab Indian'
+    })
+    return properties
