@@ -137,7 +137,7 @@ NameInput.propTypes = {
     /** True if label and input on the same line */
     inline: PropTypes.bool,
     /** HTML placeholder content */
-    placeholder: PropTypes,
+    placeholder: PropTypes.string,
 };
 
 NameInput.defaultProps = {
