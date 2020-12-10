@@ -264,10 +264,10 @@ class AnalysisFile(DataFile):
         all_libs = set()
         for f in derived_from:
             obj = request.embed(f, '@@object')
-            if obj.get('libraries'):
+            if 'Library' in obj.get('@type'):
+                all_libs.add(obj.get('@id'))
+            elif obj.get('libraries'):
                 all_libs.update(obj.get('libraries'))
-            elif obj.get('protocol'):
-                all_libs.add(obj.get('accession'))
         return sorted(all_libs)
 
 
@@ -306,8 +306,11 @@ class RawSequenceFile(DataFile):
                                     "linkTo": "Library"
                                     }
                                 })
-    def libraries(self, request):
-        all_libs = property_closure_by_prop(request, 'derived_from', self.uuid, 'protocol')
+    def libraries(self, request, derived_from):
+        all_libs = set()
+        for f in derived_from:
+            seqrun_obj = request.embed(f, '@@object?skip_calculated=true')
+            all_libs.add(seqrun_obj.get('derived_from'))
         return sorted(all_libs)
 
 
