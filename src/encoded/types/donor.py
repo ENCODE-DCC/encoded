@@ -49,7 +49,7 @@ class Donor(Item):
             if gestational_age == 'unknown':
                 return 'unknown'
             else:
-                return u'{}'.format(pluralize(gestational_age, gestational_age_units))
+                return u'{} (gestational)'.format(pluralize(gestational_age, gestational_age_units))
         else:
             return None
 
