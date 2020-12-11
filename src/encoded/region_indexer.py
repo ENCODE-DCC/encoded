@@ -33,7 +33,7 @@ from snovault.elasticsearch.interfaces import (
     INDEXER,
 )
 
-log = logging.getLogger(__name__)
+log = logging.getLogger('snovault.elasticsearch.es_index_listener')
 
 
 # Region indexer 2.0
@@ -348,7 +348,6 @@ def index_regions(request):
     # keeping track of state
     state = RegionIndexerState(encoded_es,encoded_INDEX)
     result = state.get_initial_state()
-
     (uuids, force) = state.get_one_cycle(request)
     state.log_reindex_init_state()
     # Note: if reindex=all_uuids then maybe we should delete the entire index
@@ -400,7 +399,7 @@ class RegionIndexer(Indexer):
             if error is not None:
                 errors.append(error)
             if (i + 1) % 1000 == 0:
-                log.info('Indexing %d', i + 1)
+                log.info('Region Indexing %d', i + 1)
         return errors
 
     def update_object(self, request, dataset_uuid, force):
