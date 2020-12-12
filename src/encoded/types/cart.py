@@ -59,7 +59,7 @@ class Cart(Item):
 def _create_cart(request, user, name=None, identifier=None, status=None):
     carts = request.registry[COLLECTIONS]['cart']
     user_props = request.embed(request.resource_path(user), '@@object')
-    cart_name = name or '{} cart'.format(user_props['title'])
+    cart_name = name or 'Default Cart'
     initial_cart = {
         'submitted_by': str(user.uuid),
         'status': status or 'current',
