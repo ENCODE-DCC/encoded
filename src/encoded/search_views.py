@@ -1,5 +1,13 @@
 from pyramid.view import view_config
 
+from encoded.cart_view import CartWithElements
+from encoded.searches.fields import CartSearchWithFacetsResponseField
+from encoded.searches.fields import CartReportWithFacetsResponseField
+from encoded.searches.fields import CartMatrixWithFacetsResponseField
+from encoded.searches.fields import CartFiltersResponseField
+from encoded.searches.fields import ClearFiltersResponseFieldWithCarts
+from encoded.searches.fields import TypeOnlyClearFiltersResponseFieldWithCarts
+
 from snovault.elasticsearch.searches.interfaces import AUDIT_TITLE
 from snovault.elasticsearch.searches.interfaces import MATRIX_TITLE
 from snovault.elasticsearch.searches.interfaces import REPORT_TITLE
@@ -49,6 +57,9 @@ def includeme(config):
     config.add_route('encore-rna-seq-matrix', '/encore-rna-seq-matrix{slash:/?}')
     config.add_route('summary', '/summary{slash:/?}')
     config.add_route('audit', '/audit{slash:/?}')
+    config.add_route('cart-search', '/cart-search{slash:/?}')
+    config.add_route('cart-report', '/cart-report{slash:/?}')
+    config.add_route('cart-matrix', '/cart-matrix{slash:/?}')
     config.scan(__name__)
 
 
@@ -478,6 +489,104 @@ def audit(context, request):
             NotificationResponseField(),
             FiltersResponseField(),
             TypeOnlyClearFiltersResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='cart-search', request_method='GET', permission='search')
+def cart_search(context, request):
+    '''
+    Like search but takes cart params.
+    '''
+    # Note the order of rendering matters for some fields, e.g. AllResponseField and
+    # NotificationResponseField depend on results from CartSearchWithFacetsResponseField.
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Cart search'
+            ),
+            TypeResponseField(
+                at_type=[SEARCH_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            CartSearchWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                cart=CartWithElements(request),
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            CartFiltersResponseField(),
+            ClearFiltersResponseFieldWithCarts(),
+            ColumnsResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='cart-report', request_method='GET', permission='search')
+def cart_report(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Cart report'
+            ),
+            TypeResponseField(
+                at_type=[REPORT_TITLE]
+            ),
+            IDResponseField(),
+            ContextResponseField(),
+            CartReportWithFacetsResponseField(
+                cart=CartWithElements(request)
+            ),
+            AllResponseField(),
+            NotificationResponseField(),
+            CartFiltersResponseField(),
+            TypeOnlyClearFiltersResponseFieldWithCarts(),
+            ColumnsResponseField(),
+            NonSortableResponseField(),
+            SortResponseField(),
+            DebugQueryResponseField()
+        ]
+    )
+    return fr.render()
+
+
+@view_config(route_name='cart-matrix', request_method='GET', permission='search')
+def cart_matrix(context, request):
+    fr = FieldedResponse(
+        _meta={
+            'params_parser': ParamsParser(request)
+        },
+        response_fields=[
+            TitleResponseField(
+                title='Cart matrix'
+            ),
+            TypeResponseField(
+                at_type=[MATRIX_TITLE]
+            ),
+            IDResponseField(),
+            SearchBaseResponseField(
+                search_base='/cart-search/'
+            ),
+            ContextResponseField(),
+            CartMatrixWithFacetsResponseField(
+                default_item_types=DEFAULT_ITEM_TYPES,
+                cart=CartWithElements(request),
+            ),
+            NotificationResponseField(),
+            CartFiltersResponseField(),
+            TypeOnlyClearFiltersResponseFieldWithCarts(),
             DebugQueryResponseField()
         ]
     )

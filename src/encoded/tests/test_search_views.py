@@ -676,3 +676,223 @@ def test_search_views_entex_matrix_response(index_workbook, testapp):
     assert len(
         r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]['biosample_ontology.term_name']['buckets']
     ) > 0
+
+
+def test_search_views_cart_search_view_filters(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    )
+    assert r.json['title'] == 'Cart search'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['accession'] == 'ENCSR000ADI'
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-search/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Search']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-search/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert 'sort' in r.json
+
+
+
+def test_search_views_cart_report_view(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    )
+    assert r.json['title'] == 'Cart report'
+    assert len(r.json['@graph']) == 1
+    assert r.json['@graph'][0]['accession'] == 'ENCSR000ADI'
+    assert r.json['@graph'][0]['status'] == 'released'
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-report/?type=Experiment&award.@id=/awards/ENCODE2-Mouse/&accession=ENCSR000ADI&status=released'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 1
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 4
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-report/?type=Experiment'
+    assert 'debug' not in r.json
+    assert 'columns' in r.json
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+
+
+def test_search_views_cart_matrix_response(index_workbook, testapp):
+    r = testapp.get('/cart-matrix/?type=Experiment')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Cart matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/cart-matrix/?type=Experiment'
+    assert len(r.json['filters']) == 1
+    assert r.json['@id'] == '/cart-matrix/?type=Experiment'
+    assert r.json['total'] >= 22
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Cart matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
+    assert 'buckets' in r.json['matrix']['y']['biosample_ontology.classification']
+    assert 'key' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'search_base' in r.json
+    assert r.json['search_base'] == '/cart-search/?type=Experiment'
+
+
+def test_search_views_cart_search_view_with_cart_filter(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    )
+    assert r.json['title'] == 'Cart search'
+    assert len(r.json['@graph']) == 5
+    actual_at_ids = {
+        x.get('@id')
+        for x in r.json['@graph']
+    }
+    expected_at_ids = set(
+         [
+             "/experiments/ENCSR000AER/",
+             "/experiments/ENCSR000AEM/",
+             "/experiments/ENCSR000ADH/",
+             "/experiments/ENCSR002CON/",
+             "/experiments/ENCSR706IDL/",
+         ]
+    )
+    assert actual_at_ids == expected_at_ids
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Search']
+    assert r.json['total'] == 5
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 2
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303'
+    assert 'debug' in r.json
+    assert 'post_filter' in r.json['debug']['raw_query']
+    at_id_filters = r.json.get(
+        'debug', {}
+    ).get(
+        'raw_query', {}
+    ).get(
+        'post_filter', {}
+    ).get(
+        'bool', {}
+    ).get(
+        'must'
+    )[1].get(
+        'terms', {}
+    ).get('embedded.@id')
+    assert at_id_filters == sorted([
+        '/experiments/ENCSR000AER/',
+        '/experiments/ENCSR000AEM/',
+        '/experiments/ENCSR000ADH/',
+        '/experiments/ENCSR002CON/',
+        '/experiments/ENCSR706IDL/',
+    ])
+    assert 'columns' in r.json
+    assert 'sort' in r.json
+    testapp.get(
+        '/cart-search/?type=Experiment&cart=abc123',
+        status=400
+    )
+    testapp.patch_json('/carts/d8850d88-946b-43e0-9199-efee2c8f5303/', {'elements': []})
+    r = testapp.get(
+        '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303',
+        status=400
+    )
+
+
+def test_search_views_cart_report_view_with_cart_filter(index_workbook, testapp):
+    r = testapp.get(
+        '/cart-report/?type=Experiment&cart=/carts/d8850d88-946b-43e0-9199-efee2c8f5303/&debug=true'
+    )
+    assert r.json['title'] == 'Cart report'
+    assert len(r.json['@graph']) == 5
+    actual_at_ids = {
+        x.get('@id')
+        for x in r.json['@graph']
+    }
+    expected_at_ids = set(
+         [
+             "/experiments/ENCSR000AER/",
+             "/experiments/ENCSR000AEM/",
+             "/experiments/ENCSR000ADH/",
+             "/experiments/ENCSR002CON/",
+             "/experiments/ENCSR706IDL/",
+         ]
+    )
+    assert 'Experiment' in r.json['@graph'][0]['@type']
+    assert len(r.json['facets']) >= 30
+    assert r.json['@id'] == '/cart-report/?type=Experiment&cart=/carts/d8850d88-946b-43e0-9199-efee2c8f5303/&debug=true'
+    assert r.json['@context'] == '/terms/'
+    assert r.json['@type'] == ['Report']
+    assert r.json['total'] == 5
+    assert r.json['notification'] == 'Success'
+    assert len(r.json['filters']) == 2
+    assert r.status_code == 200
+    assert r.json['clear_filters'] == '/cart-report/?type=Experiment&cart=%2Fcarts%2Fd8850d88-946b-43e0-9199-efee2c8f5303%2F'
+    assert 'debug' in r.json
+    assert 'columns' in r.json
+    assert 'non_sortable' in r.json
+    assert 'sort' in r.json
+    testapp.get(
+        '/cart-report/?type=Experiment&cart=abc123',
+        status=400
+    )
+    testapp.patch_json('/carts/d8850d88-946b-43e0-9199-efee2c8f5303/', {'elements': []})
+    testapp.get(
+        '/cart-report/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303',
+        status=400
+    )
+
+
+def test_search_views_cart_matrix_response_with_cart_filter(index_workbook, testapp):
+    r = testapp.get('/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true')
+    assert 'aggregations' not in r.json
+    assert 'facets' in r.json
+    assert 'total' in r.json
+    assert r.json['title'] == 'Cart matrix'
+    assert r.json['@type'] == ['Matrix']
+    assert r.json['clear_filters'] == '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303'
+    assert len(r.json['filters']) == 2
+    assert r.json['@id'] == '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    assert r.json['total'] >= 5
+    assert r.json['notification'] == 'Success'
+    assert r.json['title'] == 'Cart matrix'
+    assert 'facets' in r.json
+    assert r.json['@context'] == '/terms/'
+    assert 'matrix' in r.json
+    assert r.json['matrix']['x']['group_by'] == 'assay_title'
+    assert r.json['matrix']['y']['group_by'] == [
+        'biosample_ontology.classification',
+        'biosample_ontology.term_name'
+    ]
+    assert 'buckets' in r.json['matrix']['y']['biosample_ontology.classification']
+    assert 'key' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'biosample_ontology.term_name' in r.json['matrix']['y']['biosample_ontology.classification']['buckets'][0]
+    assert 'search_base' in r.json
+    assert 'debug' in r.json
+    assert r.json['search_base'] == '/cart-search/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true'
+    testapp.get('/cart-matrix/?type=Experiment&cart=abc123', status=400)
+    testapp.patch_json('/carts/d8850d88-946b-43e0-9199-efee2c8f5303/', {'elements': []})
+    testapp.get(
+        '/cart-matrix/?type=Experiment&cart=d8850d88-946b-43e0-9199-efee2c8f5303&debug=true',
+        status=400
+    )

@@ -1,5 +1,6 @@
 from collections import defaultdict
 from collections import OrderedDict
+from encoded.cart_view import CartWithElements
 from encoded.reports.constants import ANNOTATION_METADATA_COLUMN_TO_FIELDS_MAPPING
 from encoded.reports.constants import METADATA_ALLOWED_TYPES
 from encoded.reports.constants import METADATA_COLUMN_TO_FIELDS_MAPPING
@@ -136,17 +137,14 @@ class MetadataReport:
         self.param_list['@id'] = self.param_list.get('@id', [])
 
     def _maybe_add_cart_elements_to_param_list(self):
-        cart_uuids = self.param_list.get('cart', [])
-        if cart_uuids:
-            try:
-                cart = self.request.embed(cart_uuids[0], '@@object')
-                del self.param_list['cart']
-            except KeyError:
-                raise HTTPBadRequest(explanation='Specified cart does not exist.')
-            else:
-                self.param_list['@id'].extend(
-                    cart.get('elements', [])
-                )
+        # Don't need to limit max_cart_elements here since
+        # search is batched.
+        cart = CartWithElements(
+            self.request,
+            max_cart_elements=None
+        )
+        self.param_list['@id'].extend(cart.elements)
+        self.param_list.pop('cart', None)
 
     def _get_json_elements_or_empty_list(self):
         try:
