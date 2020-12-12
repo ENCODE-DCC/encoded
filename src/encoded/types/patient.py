@@ -135,22 +135,26 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
 
     return last_follow_up_date
 
-def getLabsAndVitalsRange(value, low, high, normal, lowRange, normalRange, highRange):
-    if value <= low:
+def getLabsAndVitalsRange(value, low, high, unit, lowRange, normalRange, highRange):
+    if value < low:
         if lowRange == "default":
-            return "Below (Below " + str(low) + ")"
+            return "Below (< " + str(low) + ")"
         else:
             return lowRange
     elif value >= high:
         if highRange == "default":
-            return "Above (Above " + str(high) + ")"
+            return "Above (" + str(high) + " >=)"
         else:
             return highRange        
     else:
         if normalRange == "default":
-            return "Normal Range (" + normal + ")"
+            if unit == "":
+                return "Normal Range (" + str(low) + " >= and < " + str(high) +")"
+            else:
+                return "Normal Range (" + str(low) + " >= and < " + str(high) + " " + unit +")"
         else: 
             return normalRange
+        
 
 
 @collection(
@@ -925,55 +929,55 @@ class Patient(Item):
                     if len(albuminList) > 0:
                         albuminList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         albuminLab = albuminList[-1]  
-                        labs_and_vitals["Albumin"] = getLabsAndVitalsRange(albuminLab["value"], 3.4, 5.3, "3.5-5.2 g/dL", "default", "default", "default") 
+                        labs_and_vitals["Albumin"] = getLabsAndVitalsRange(albuminLab["value"], 3.5, 5.3, "g/dL", "default", "default", "default") 
                         labs_and_vitals["AlbuminValue"] = albuminLab["value"]
                         labs_and_vitals["AlbuminDate"] = albuminLab["date"]
                     if len(calciumList) > 0:
                         calciumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         calciumLab = calciumList[-1]  
-                        labs_and_vitals["Calcium"] = getLabsAndVitalsRange(calciumLab["value"], 8.7, 10.2, "8.8-10.1 mg/dL", "default", "default", "default")    
+                        labs_and_vitals["Calcium"] = getLabsAndVitalsRange(calciumLab["value"], 8.8, 10.2, "mg/dL", "default", "default", "default")    
                         labs_and_vitals["CalciumValue"] = calciumLab["value"]
                         labs_and_vitals["CalciumDate"] = calciumLab["date"]
                     if len(creatinineList) > 0:
                         creatinineList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         creatinineLab = creatinineList[-1] 
-                        labs_and_vitals["Creatinine"] = getLabsAndVitalsRange(creatinineLab["value"], 0.66, 1.17, "0.67-1.16 mg/dL", "default", "default", "default")
+                        labs_and_vitals["Creatinine"] = getLabsAndVitalsRange(creatinineLab["value"], 0.67, 1.17, "mg/dL", "default", "default", "default")
                         labs_and_vitals["CreatinineValue"] = creatinineLab["value"]
                         labs_and_vitals["CreatinineDate"] = creatinineLab["date"]
                     if len(hemoglobinList) > 0:
                         hemoglobinList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         hemoglobinLab = hemoglobinList[-1]
-                        labs_and_vitals["Hemoglobin"] = getLabsAndVitalsRange(hemoglobinLab["value"], 12.3, 17.4, "12.4-17.3 g/dL", "default", "default", "default")
+                        labs_and_vitals["Hemoglobin"] = getLabsAndVitalsRange(hemoglobinLab["value"], 12.4, 17.4, "g/dL", "default", "default", "default")
                         labs_and_vitals["HemoglobinValue"] = hemoglobinLab["value"]
                         labs_and_vitals["HemoglobinDate"] = hemoglobinLab["date"]
                     if len(ldhList) > 0:
                         ldhList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         ldhLab = ldhList[-1]
-                        labs_and_vitals["LDH"] = getLabsAndVitalsRange(ldhLab["value"], 134, 225, "135-224 U/L", "default", "default", "default")
+                        labs_and_vitals["LDH"] = getLabsAndVitalsRange(ldhLab["value"], 135, 226, "U/L", "default", "default", "default")
                         labs_and_vitals["LDHValue"] = ldhLab["value"]
                         labs_and_vitals["LDHDate"] = ldhLab["date"]
                     if len(neutrophilsList) > 0:
                         neutrophilsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         neutrophilsLab = neutrophilsList[-1]
-                        labs_and_vitals["Neutrophils"] = getLabsAndVitalsRange(neutrophilsLab["value"], 1.4, 7.4, "1.5-7.3 10^3/ul", "default", "default", "default")
+                        labs_and_vitals["Neutrophils"] = getLabsAndVitalsRange(neutrophilsLab["value"], 1.5, 7.4, "10^3/ul", "default", "default", "default")
                         labs_and_vitals["NeutrophilsValue"] = neutrophilsLab["value"]
                         labs_and_vitals["NeutrophilsDate"] = neutrophilsLab["date"]
                     if len(plateletsList) > 0:
                         plateletsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         plateletsLab = plateletsList[-1]
-                        labs_and_vitals["Platelets"] = getLabsAndVitalsRange(plateletsLab["value"], 139, 449, "140-450 10^3/ul", "default", "default", "default")
+                        labs_and_vitals["Platelets"] = getLabsAndVitalsRange(plateletsLab["value"], 141, 451, "10^3/ul", "default", "default", "default")
                         labs_and_vitals["PlateletsValue"] = plateletsLab["value"]
                         labs_and_vitals["PlateletsDate"] = plateletsLab["date"]
                     if len(sodiumList) > 0:
                         sodiumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         sodiumLab = sodiumList[-1]
-                        labs_and_vitals["Sodium"] = getLabsAndVitalsRange(sodiumLab["value"], 134, 146, "135-145 mmol/L", "default", "default", "default")
+                        labs_and_vitals["Sodium"] = getLabsAndVitalsRange(sodiumLab["value"], 135, 146, "mmol/L", "default", "default", "default")
                         labs_and_vitals["SodiumValue"] = sodiumLab["value"]
                         labs_and_vitals["SodiumDate"] = sodiumLab["date"]
                     if len(wbcList) > 0:
                         wbcList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
                         wbcLab = wbcList[-1]
-                        labs_and_vitals["WBC"] = getLabsAndVitalsRange(wbcLab["value"], 3.9, 11, "4-10.9 10^3/ul", "default", "default", "default")
+                        labs_and_vitals["WBC"] = getLabsAndVitalsRange(wbcLab["value"], 4, 11, "10^3/ul", "default", "default", "default")
                         labs_and_vitals["WBCValue"] = wbcLab["value"]
                         labs_and_vitals["WBCDate"] = wbcLab["date"]
                 if len(vitals)>0 :
@@ -1004,24 +1008,24 @@ class Patient(Item):
                         bmiVital = bmiList[-1]
                         labs_and_vitals["BMIValue"] = bmiVital["value"]
                         labs_and_vitals["BMIDate"] = bmiVital["date"] 
-                        if bmiVital["value"] <= 18.4:
-                            labs_and_vitals["BMI"] = "Underweight (Below 18.4)"
-                        elif bmiVital["value"] <= 24.9:
-                            labs_and_vitals["BMI"] = "Normal (18.5-24.9)"
-                        elif bmiVital["value"] <= 29.9:
-                            labs_and_vitals["BMI"] = "Overweight (25-29.9)"
+                        if bmiVital["value"] < 18.5:
+                            labs_and_vitals["BMI"] = "Underweight (< 18.5)"
+                        elif bmiVital["value"] < 25:
+                            labs_and_vitals["BMI"] = "Normal (18.5 >= and < 25)"
+                        elif bmiVital["value"] < 30:
+                            labs_and_vitals["BMI"] = "Overweight (25 >= and < 30)"
                         else:
-                            labs_and_vitals["BMI"] = "Obese (Above 30)"
+                            labs_and_vitals["BMI"] = "Obese (>= 30)"
                     if len(bp_SystolicList) > 0:
                         bp_SystolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
                         bp_SystolicVital = bp_SystolicList[-1] 
-                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 120, 140, "121 - 139 mmHg", 'Normal (Below 120)', 'PreHypertension (121 - 139 mmHg)', 'Hypertension (Above 140)')
+                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 121, 140, "mmHg", 'Normal (< 121)', 'PreHypertension (121 >= and <140 mmHg)', 'Hypertension (>= 140)')
                         labs_and_vitals["BP_SystolicValue"] = bp_SystolicVital["value"]
                         labs_and_vitals["BP_SystolicDate"] = bp_SystolicVital["date"] 
                     if len(bp_DiastolicList) > 0:
                         bp_DiastolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
                         bp_DiastolicVital = bp_DiastolicList[-1]  
-                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 80, 90, "81 - 89 mmHg", 'Normal (Below 80)', 'PreHypertension (81 - 89 mmHg)', 'Hypertension (Above 90)')
+                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 81, 90, "mmHg", 'Normal (< 81)', 'PreHypertension (81 >= and < 90 mmHg)', 'Hypertension (>= 90)')
                         labs_and_vitals["BP_DiastolicValue"] = bp_DiastolicVital["value"]
                         labs_and_vitals["BP_DiastolicDate"] = bp_DiastolicVital["date"] 
 
@@ -1513,5 +1517,6 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
+
 
 
