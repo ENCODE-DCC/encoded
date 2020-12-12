@@ -3607,6 +3607,19 @@ def test_audit_fcc_experiment_nih_consent(
     )
 
 
+def test_audit_experiment_computational_award_nih_consent(testapp, experiment, encode4_award):
+    testapp.patch_json(encode4_award['@id'], {'component': 'computational analysis'})
+    testapp.patch_json(experiment['@id'], {'award': encode4_award['@id']})
+    r = testapp.get(experiment['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert not any(
+        [
+            detail['category'] == 'missing nih_institutional_certification'
+            for audit in audits.values() for detail in audit
+        ]
+    )
+
+
 def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment):
     from encoded.audit.experiment import is_matching_biosample_control
     exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
