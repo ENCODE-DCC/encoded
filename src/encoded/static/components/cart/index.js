@@ -23,6 +23,7 @@ import {
     REPLACE_CART,
     CACHE_SAVED_CART,
     CART_OPERATION_IN_PROGRESS,
+    DISPLAY_ALERT,
     SET_CURRENT,
     SET_NAME,
     SET_IDENTIFIER,
@@ -31,6 +32,7 @@ import {
     NO_ACTION,
 } from './actions';
 import cartAddElements from './add_elements';
+import CartAlert from './cart_alert';
 import { CartAddAllSearch, CartAddAllElements } from './add_multiple';
 import cartCacheSaved from './cache_saved';
 import CartBatchDownload from './batch_download';
@@ -48,7 +50,14 @@ import CartShare from './share';
 import CartStatus from './status';
 import switchCart from './switch';
 import CartToggle from './toggle';
-import { mergeCarts, cartGetAllowedTypes, cartGetAllowedObjectPathTypes } from './util';
+import {
+    cartGetAllowedObjectPathTypes,
+    cartGetAllowedTypes,
+    getCartSearchTypes,
+    getIsCartSearch,
+    mergeCarts,
+    CART_MAX_ELEMENTS,
+} from './util';
 
 
 /**
@@ -99,6 +108,8 @@ const cartModule = (state, action = { type: NO_ACTION }) => {
             });
         case CART_OPERATION_IN_PROGRESS:
             return Object.assign({}, state, { inProgress: action.inProgress });
+        case DISPLAY_ALERT:
+            return Object.assign({}, state, { alert: action.alert });
         case SET_NAME:
             return Object.assign({}, state, { name: action.name });
         case SET_IDENTIFIER:
@@ -160,6 +171,8 @@ const initializeCart = () => {
         savedCartObj: {},
         /** Indicates cart operations currently in progress */
         inProgress: false,
+        /** React component of alert to display */
+        alert: null,
     };
     return createStore(cartModule, initialCart, applyMiddleware(thunk));
 };
@@ -175,6 +188,7 @@ const cartStore = initializeCart();
 export {
     CartAddAllSearch,
     CartAddAllElements,
+    CartAlert,
     CartBatchDownload,
     cartCacheSaved,
     CartClear,
@@ -200,6 +214,9 @@ export {
     CartManager,
     cartGetAllowedTypes,
     cartGetAllowedObjectPathTypes,
+    getCartSearchTypes,
+    getIsCartSearch,
+    CART_MAX_ELEMENTS,
 };
 
 

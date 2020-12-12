@@ -2,6 +2,15 @@
  * Small, general components and functions needed by other cart modules.
  */
 
+import _ from 'underscore';
+import url from 'url';
+
+
+/**
+ * Maximum number of items allowed in a cart.
+ */
+export const CART_MAX_ELEMENTS = 8000;
+
 
 /**
  * List of dataset types allowed in carts. Maps from collection names to corresponding data:
@@ -24,7 +33,7 @@ export const defaultDatasetType = {
 
 
 /**
- * Get a mutatable array of dataset types allowed in carts, i.e. an array of types on the right-
+ * Get a mutable array of dataset types allowed in carts, i.e. an array of types on the right-
  * hand side of "type=<dataset type>" in a query string.
  * @return {array} Copy of `allowedCartTypes` global
  */
@@ -34,7 +43,7 @@ export const cartGetAllowedTypes = () => (
 
 
 /**
- * Get a mutatable array of object path types allowed in carts, i.e. the part in an object path:
+ * Get a mutable array of object path types allowed in carts, i.e. the part in an object path:
  * /{object path type}/{accession}/ e.g. /experiments/ENCSR000AAA/
  * @return {array} Copy of `allowedCartTypes` global
  */
@@ -67,11 +76,34 @@ export const isAllowedElementsPossible = (resultFilters) => {
 
 /**
  * Return a new array containing the merged contents of two carts with no duplicates. Contains odd
- * ES6 syntax to merge, clone, and dedupe arrays in one operation.
+ * ES6 syntax to merge, clone, and de-dupe arrays in one operation.
  * https://stackoverflow.com/questions/1584370/how-to-merge-two-arrays-in-javascript-and-de-duplicate-items#answer-38940354
  * @param {array} cart0AtIds Array of @ids in one cart
  * @param {array} cart1AtIds Array of @ids to merge with `cart0AtIds`
  */
 export const mergeCarts = (cart0AtIds, cart1AtIds) => (
     [...new Set([...cart0AtIds, ...cart1AtIds])]
+);
+
+
+/**
+ * Determine whether the given search results is for a cart search or not.
+ * @param {object} context Search-results object
+ *
+ * @return {boolean} True if search results are for a cart search.
+ */
+const cartSearchPaths = ['/cart-search/', '/cart-matrix/', '/cart-report/'];
+export const getIsCartSearch = (context) => {
+    const pathName = url.parse(context['@id']).pathname;
+    return cartSearchPaths.includes(pathName);
+};
+
+/**
+ * Get array of @types of objects that exist in the given cart search results.
+ * @param {object} context /cart-search/ results
+ *
+ * @return {array} @types of all elements in the cart search results, de-duped.
+ */
+export const getCartSearchTypes = context => (
+    _.uniq(context['@graph'].map(result => result['@type'][0]))
 );

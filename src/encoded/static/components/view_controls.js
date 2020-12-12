@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import * as encoding from '../libs/query_encoding';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/ui/modal';
 import { svgIcon } from '../libs/svg-icons';
+import { getIsCartSearch } from './cart';
 
 
 /**
@@ -77,7 +78,7 @@ const modalDefaultText = (
 
 /**
  * Generate a query string from the elements of the `filters` property of search results. All
- * "type" queries come first, followed by other fields, followed by "searchTerm" quries.
+ * "type" queries come first, followed by other fields, followed by "searchTerm" queries.
  * @param {array} filters From `filters` property of search results
  *
  * @return {string} Ampersand-separated query string, not including initial question mark.
@@ -95,6 +96,11 @@ const getQueryFromFilters = (filters) => {
  * Displays view control buttons appropriate for the given search results.
  */
 export const ViewControls = ({ results, additionalFilters }) => {
+    // Don't render view controls for cart searches.
+    if (getIsCartSearch(results)) {
+        return null;
+    }
+
     const filters = results.filters.concat(additionalFilters);
     const searchPageType = getSearchPageType(results);
 

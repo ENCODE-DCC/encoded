@@ -11,6 +11,7 @@ import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
 import { BrowserFeat } from './browserfeat';
 import cartStore, {
+    CartAlert,
     cartCacheSaved,
     cartIsUnsaved,
     cartSetOperationInProgress,
@@ -1242,6 +1243,7 @@ class App extends React.Component {
                                     </div>
                                     {errors}
                                     <div id="layout-footer" />
+                                    <CartAlert />
                                 </div>
                             </Provider>
                             {this.state.eulaModalVisibility ?

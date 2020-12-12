@@ -9,19 +9,30 @@ import url from 'url';
 import QueryString from '../../libs/query_string';
 import { atIdToType, truncateString } from '../globals';
 import { requestSearch } from '../objectutils';
-import { addMultipleToCartAndSave, cartOperationInProgress } from './actions';
+import { addMultipleToCartAndSave, cartOperationInProgress, triggerAlert } from './actions';
 import CartLoggedOutWarning, { useLoggedOutWarning } from './loggedout_warning';
+import CartMaxElementsWarning from './max_elements_warning';
 import {
     cartGetAllowedTypes,
     cartGetAllowedObjectPathTypes,
+    CART_MAX_ELEMENTS,
+    mergeCarts,
 } from './util';
 
 /**
  * Button to add all qualifying elements to the user's cart.
  */
-const CartAddAllSearchComponent = ({ savedCartObj, searchResults, inProgress, addAllResults, setInProgress, loggedIn }) => {
+const CartAddAllSearchComponent = ({
+    savedCartObj,
+    searchResults,
+    inProgress,
+    addAllResults,
+    setInProgress,
+    loggedIn,
+    showMaxElementsWarning,
+}) => {
     /** Get hooks for the logged-out warning modal */
-    const [warningStates, warningActions] = useLoggedOutWarning(false);
+    const [loggedOutWarningStates, loggedOutWarningActions] = useLoggedOutWarning(false);
 
     /**
      * Handle a click in the Add All button by doing a search of elements allowed in carts to get
@@ -46,16 +57,21 @@ const CartAddAllSearchComponent = ({ savedCartObj, searchResults, inProgress, ad
 
                     // Get all elements from results that qualify to exist in carts.
                     const elementsForCart = results['@graph'].filter(result => allowedTypes.includes(result['@type'][0])).map(result => result['@id']);
-                    if (elementsForCart.length > 0) {
-                        // We should always have elements qualified to exist in a cart because we
-                        // wouldn't have shown the "Add all items to cart" button if we didn't know we
-                        // had qualified elements in the search results, but just in case.
+
+                    // Check whether the final cart would have more elements than allowed by doing a
+                    // trial merge. If the merged cart fits under the limit, add the new elements
+                    // to the cart.
+                    const mergedElements = mergeCarts(savedCartObj.elements, elementsForCart);
+                    if (mergedElements.length > CART_MAX_ELEMENTS) {
+                        showMaxElementsWarning();
+                    } else if (elementsForCart.length > 0) {
                         addAllResults(elementsForCart);
                     }
                 }
             });
         } else {
-            warningActions.setIsWarningVisible(true);
+            // The user hasn't logged in, so show a modal that allows them to.
+            loggedOutWarningActions.setIsWarningVisible(true);
         }
     };
 
@@ -68,11 +84,11 @@ const CartAddAllSearchComponent = ({ savedCartObj, searchResults, inProgress, ad
                     disabled={inProgress || savedCartObj.locked}
                     className="btn btn-info btn-sm"
                     onClick={handleClick}
-                    title={`Add all experiments in search results to cart${cartName ? `: ${cartName}` : ''}`}
+                    title={`Add all datasets in search results to cart${cartName ? `: ${cartName}` : ''}`}
                 >
                     Add all items to cart
                 </button>
-                {warningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={warningActions.handleCloseWarning} /> : null}
+                {loggedOutWarningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={loggedOutWarningActions.handleCloseWarning} /> : null}
             </div>
         );
     }
@@ -84,7 +100,7 @@ CartAddAllSearchComponent.propTypes = {
     savedCartObj: PropTypes.object,
     /** Search result object of elements to add to cart */
     searchResults: PropTypes.object.isRequired,
-    /** True if cart updating operation is in progress */
+    /** True if cart-updating operation is in progress */
     inProgress: PropTypes.bool,
     /** Function to call when Add All clicked */
     addAllResults: PropTypes.func.isRequired,
@@ -92,6 +108,8 @@ CartAddAllSearchComponent.propTypes = {
     setInProgress: PropTypes.func.isRequired,
     /** True if user has logged in */
     loggedIn: PropTypes.bool.isRequired,
+    /** Call to show the max elements warning alert */
+    showMaxElementsWarning: PropTypes.func.isRequired,
 };
 
 CartAddAllSearchComponent.defaultProps = {
@@ -109,6 +127,7 @@ CartAddAllSearchComponent.mapStateToProps = (state, ownProps) => ({
 CartAddAllSearchComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     addAllResults: elementsForCart => dispatch(addMultipleToCartAndSave(elementsForCart, ownProps.fetch)),
     setInProgress: enable => dispatch(cartOperationInProgress(enable)),
+    showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 
 const CartAddAllSearchInternal = connect(CartAddAllSearchComponent.mapStateToProps, CartAddAllSearchComponent.mapDispatchToProps)(CartAddAllSearchComponent);
@@ -131,9 +150,16 @@ CartAddAllSearch.contextTypes = {
 /**
  * Renders a button to add all elements from an array of dataset objects to the current cart.
  */
-const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAllResults, loggedIn }) => {
+const CartAddAllElementsComponent = ({
+    savedCartObj,
+    elements,
+    inProgress,
+    addAllResults,
+    loggedIn,
+    showMaxElementsWarning,
+}) => {
     /** Get hooks for the logged-out warning modal */
-    const [warningStates, warningActions] = useLoggedOutWarning(false);
+    const [loggedOutWarningStates, loggedOutWarningActions] = useLoggedOutWarning(false);
 
     /**
      * Handle a click in the button to add all datasets from a list to the current cart.
@@ -148,10 +174,19 @@ const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAl
 
             // Add the allowed elements to the cart.
             if (allowedElements.length > 0) {
-                addAllResults(allowedElements);
+                // Check whether the final cart would have more elements than allowed by doing a
+                // trial merge. If the merged cart fits under the limit, add the new elements to
+                // the cart.
+                const mergedElements = mergeCarts(savedCartObj.elements, allowedElements);
+                if (mergedElements.length > CART_MAX_ELEMENTS) {
+                    showMaxElementsWarning();
+                } else {
+                    addAllResults(allowedElements);
+                }
             }
         } else {
-            warningActions.setIsWarningVisible(true);
+            // The user hasn't logged in, so show a modal that allows them to.
+            loggedOutWarningActions.setIsWarningVisible(true);
         }
     };
 
@@ -167,7 +202,7 @@ const CartAddAllElementsComponent = ({ savedCartObj, elements, inProgress, addAl
             >
                 Add all items to cart
             </button>
-            {warningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={warningActions.handleCloseWarning} /> : null}
+            {loggedOutWarningStates.isWarningVisible ? <CartLoggedOutWarning closeModalHandler={loggedOutWarningActions.handleCloseWarning} /> : null}
         </div>
     );
 };
@@ -183,6 +218,8 @@ CartAddAllElementsComponent.propTypes = {
     addAllResults: PropTypes.func.isRequired,
     /** True if user has logged in */
     loggedIn: PropTypes.bool.isRequired,
+    /** Call to show the max elements warning alert */
+    showMaxElementsWarning: PropTypes.func.isRequired,
 };
 
 CartAddAllElementsComponent.defaultProps = {
@@ -198,6 +235,7 @@ CartAddAllElementsComponent.mapStateToProps = (state, ownProps) => ({
 
 CartAddAllElementsComponent.mapDispatchToProps = (dispatch, ownProps) => ({
     addAllResults: elements => dispatch(addMultipleToCartAndSave(elements, ownProps.fetch)),
+    showMaxElementsWarning: () => dispatch(triggerAlert(<CartMaxElementsWarning />)),
 });
 
 const CartAddAllElementsInternal = connect(CartAddAllElementsComponent.mapStateToProps, CartAddAllElementsComponent.mapDispatchToProps)(CartAddAllElementsComponent);

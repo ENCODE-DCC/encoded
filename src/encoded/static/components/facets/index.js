@@ -17,6 +17,7 @@ import './internal_status';
 import './organism';
 import './perturbed';
 import './status';
+import './supressed';
 import './type';
 
 
