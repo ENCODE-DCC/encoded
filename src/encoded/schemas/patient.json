@@ -105,7 +105,7 @@
         "diagnosis.follow_up_duration_range": {
             "title": "Follow Up Duration"
         },
-        
+
         "sex": {
             "title": "Sex"
         },
@@ -141,10 +141,13 @@
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
+        "dominant_tumor.histology_filter": {
+            "title": "Dominant Tumor"
+        },
         "surgery.pathology_report.pathology_report_tumor_range":{
             "title": "Tumor Size Range"
         },
-        "surgery.pathology_report.histology": {
+        "surgery.pathology_report.histology_filter": {
             "title": "Histologic Subtype"
         },
         "surgery.pathology_report.ajcc_p_stage": {
@@ -286,6 +289,9 @@
         "race": {
             "title": "Race"
         },
+        "dominant_tumor.histology": {
+            "title": "Dominant Tumor"
+        },
         "surgery.nephr_robotic_assist":{
             "title": "Nephrectomy Robotic Assist"
         },
@@ -315,7 +321,7 @@
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
-        },
+        },:
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
@@ -347,6 +353,4 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-
-
 

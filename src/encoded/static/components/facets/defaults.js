@@ -5,7 +5,7 @@ import _ from 'underscore';
 import url from 'url';
 import QueryString from '../../libs/query_string';
 import FacetRegistry from './registry';
-
+import {tooltips as Tooltips} from '../tooltips';
 
 /**
  * All the default facet rendering components reside in this file, including ones that aren't
@@ -748,7 +748,7 @@ export const DefaultTerm = ({ term, facet, results, mode, relevantFilters, pathn
     return (
         <li className="facet-term">
             <a href={href} onClick={mode === 'picker' ? onFilter : null} className={`facet-term__item${termCss}`}>
-                <div className="facet-term__text">
+                <div className="facet-term__text" title={Tooltips[term.key]}>
                     <TermNameComponent
                         termName={term.key}
                         selected={!!selectedTermFilter}
@@ -1108,3 +1108,4 @@ DefaultFacet.defaultProps = {
     handleKeyDown: () => {},
     isExpandable: true,
 };
+

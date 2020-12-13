@@ -87,6 +87,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import {tooltips as Tooltips} from './tooltips';
 
 
 /**
@@ -157,12 +158,14 @@ const DataTable = ({ tableData }) => {
                                 const cellStyle = (cell && cell.style) || null;
                                 if (cellColSpan > 1) {
                                     if (cell && cell.header) {
-                                        return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                        let title = Tooltips[cellContent.props.children];
+                                        return <th key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle} title={title}>{cellContent}</th>;
                                     }
                                     return <td key={colIndex} colSpan={cellColSpan} className={cellCss} style={cellStyle}>{cellContent}</td>;
                                 }
                                 if (cell && cell.header) {
-                                    return <th key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</th>;
+                                    let title = Tooltips[cellContent.props.children];
+                                    return <th key={colIndex} className={cellCss} style={cellStyle} title={title}>{cellContent}</th>;
                                 }
                                 return <td key={colIndex} className={cellCss} style={cellStyle}>{cellContent}</td>;
                             })}
