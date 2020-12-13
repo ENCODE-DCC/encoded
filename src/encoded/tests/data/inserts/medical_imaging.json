@@ -80,6 +80,23 @@
         "uuid": "e3532d32-4094-464e-9e09-714bb0ead9f0"
     },
     {
+        "patient": "KCEPT398JLK",
+        "cpt": "CPT:74170",
+        "procedure_date": "1847-03-09",
+        "status": "released",
+        "type": "PET",
+        "uuid": "6a48805c-7e49-4544-b71a-15e0d4a2b6e2"
+    },
+    {
+        "patient": "KCEPT398JLK",
+        "cpt": "CPT:74170",
+        "procedure_date": "1847-04-01",
+        "status": "released",
+        "type": "PET",
+        "uuid": "27c39e61-e29e-46c3-bbd9-d4b4d0687519"
+    },
+    
+    {
         "patient": "KCEPT805NRD",
         "cpt": "CPT:74160",
         "procedure_date": "1843-05-26",
@@ -160,3 +177,4 @@
         "uuid": "16432126-ccc9-4f6e-ad13-7c5980a543d1"
     }
 ]
+

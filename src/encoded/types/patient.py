@@ -41,7 +41,6 @@ USER_DELETED = [
     (Deny, Everyone, 'visible_for_edit')
 ] + ONLY_ADMIN_VIEW_DETAILS
 
-
 def group_values_by_lab(request, labs):
     values_by_key = defaultdict(list)
     for path in labs:
@@ -136,6 +135,27 @@ def last_follow_up_date_fun(request, labs, vitals, germline,ihc, consent,radiati
             last_follow_up_date = "Not available"
 
     return last_follow_up_date
+
+def getLabsAndVitalsRange(value, low, high, unit, lowRange, normalRange, highRange):
+    if value < low:
+        if lowRange == "default":
+            return "Below (< " + str(low) + ")"
+        else:
+            return lowRange
+    elif value >= high:
+        if highRange == "default":
+            return "Above (" + str(high) + " >=)"
+        else:
+            return highRange        
+    else:
+        if normalRange == "default":
+            if unit == "":
+                return "Normal Range (" + str(low) + " >= and < " + str(high) +")"
+            else:
+                return "Normal Range (" + str(low) + " >= and < " + str(high) + " " + unit +")"
+        else: 
+            return normalRange
+        
 
 
 @collection(
@@ -814,6 +834,420 @@ class Patient(Item):
 
 
     @calculated_property(schema={
+        "title": "Labs and Vitals",
+        "description": "Infomation related to Biometrics and Blood Work Within 30 days prior to Date of Nephrectomy",
+        "type": "object",
+        "additionalProperties": False,
+        "properties":{
+            "first_Nephrectomy_date_string": {
+                "title": "Date of First Nephrectomy",
+                "type": "string"
+            },
+            "BMI": {
+                "title": "BMI",
+                "description": "Most recent BMI value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Underweight (<18.4 kg/m2)',
+                    'Normal (18.5-24.9 kg/m2)',
+                    'Overweight (25-29.9 kg/m2)',
+                    'Obese (>30 kg/m2)'
+                ]
+            },
+            "BMIValue": {
+                "title": "BMI Value",
+                "type": "number"
+            },
+            "BMIDate": {
+                "title": "Date of BMI",
+                "type": "string"
+            },
+            "BP_Systolic": {
+                "title": "BP_Systolic",
+                "description": "Most recent BP_Systolic value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Normal (Below 120 mmHg)',
+                    'PreHypertension (121 - 139 mmHg)',
+                    'Hypertension (Above 140 mmHg)'
+                ]
+            },
+            "BP_SystolicValue": {
+                "title": "BP_Systolic Value",
+                "type": "number"
+            },
+            "BP_SystolicDate": {
+                "title": "Date of BP_Systolic",
+                "type": "string"
+            },
+            "BP_Diastolic": {
+                "title": "BP_Diastolic",
+                "description": "Most recent BP_Diastolic value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Normal (Below 80 mmHg)',
+                    'PreHypertension (81 - 89 mmHg)',
+                    'Hypertension (Above 90 mmHg)'
+                ]
+            },
+            "BP_DiastolicValue": {
+                "title": "BP_Diastolic Value",
+                "type": "number"
+            },
+            "BP_DiastolicDate": {
+                "title": "Date of BP_Diastolic",
+                "type": "string"
+            },
+            "Hemoglobin": {
+                "title": "Hemoglobin",
+                "description": "Most recent Hemoglobin value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (12.3 g/dL)',
+                    'Normal (12.4-17.3 g/dL)',
+                    'Above (Above 17.4 g/dL)'
+                ]
+            },
+            "HemoglobinValue": {
+                "title": "Hemoglobin Value",
+                "type": "number"
+            },
+            "HemoglobinDate": {
+                "title": "Date of Hemoglobin",
+                "type": "string"
+            },
+            "Platelets": {
+                "title": "Platelets",
+                "description": "Most recent Platelets value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (140 10^3/ul)',
+                    'Normal Range (141-450 10^3/ul)',
+                    'Above (Above 451 10^3/ul)'
+                ]
+            },
+            "PlateletsValue": {
+                "title": "Platelets Value",
+                "type": "number"
+            },
+            "PlateletsDate": {
+                "title": "Date of Platelets",
+                "type": "string"
+            },
+            "WBC": {
+                "title": "WBC",
+                "description": "Most recent WBC value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (3.9 10^3/ul)',
+                    'Normal Range (4.0-10.9 10^3/ul)',
+                    'Above (11.0 10^3/ul)'
+                ]
+            },
+            "WBCValue": {
+                "title": "WBC Value",
+                "type": "number"
+            },
+            "WBCDate": {
+                "title": "Date of WBC",
+                "type": "string"
+            },
+            "Neutrophils": {
+                "title": "Neutrophils",
+                "description": "Most recent Neutrophils value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (1.4 10^3/ul)',
+                    'Normal Range (1.5-7.3 10^3/ul)',
+                    'Above (7.4 10^3/ul)'
+                ]
+            },
+            "NeutrophilsValue": {
+                "title": "Neutrophils Value",
+                "type": "number"
+            },
+            "NeutrophilsDate": {
+                "title": "Date of Neutrophils",
+                "type": "string"
+            },
+            "Creatinine": {
+                "title": "Creatinine",
+                "description": "Most recent Creatinine value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (0.66 mg/dL)',
+                    'Normal Range (0.67-1.16 mg/dL)',
+                    'Above (1.17 mg/dL)'
+                ]
+            },
+            "CreatinineValue": {
+                "title": "Creatinine Value",
+                "type": "number"
+            },
+            "CreatinineDate": {
+                "title": "Date of Creatinine",
+                "type": "string"
+            },
+            "Calcium": {
+                "title": "Calcium",
+                "description": "Most recent Calcium value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (8.7 mg/dL)',
+                    'Normal Range (8.8-10.1 mg/dL)',
+                    'Above (10.2 mg/dL)'
+                ]
+            },
+            "CalciumValue": {
+                "title": "Calcium Value",
+                "type": "number"
+            },
+            "CalciumDate": {
+                "title": "Date of Calcium",
+                "type": "string"
+            },
+            "Albumin": {
+                "title": "Albumin",
+                "description": "Most recent Albumin value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (3.4 g/dL)',
+                    'Normal Range (3.5-5.2 g/dL)',
+                    'Above (5.3 g/dL)'
+                ]
+            },
+            "AlbuminValue": {
+                "title": "Albumin Value",
+                "type": "number"
+            },
+            "AlbuminDate": {
+                "title": "Date of Albumin",
+                "type": "string"
+            },
+            "Sodium": {
+                "title": "Sodium",
+                "description": "Most recent Sodium value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (134 mmol/L)',
+                    'Normal Range (135-145 mmol/L)',
+                    'Above (146 mmol/L)'
+                ]
+            },
+            "SodiumValue": {
+                "title": "Sodium Value",
+                "type": "number"
+            },
+            "SodiumDate": {
+                "title": "Date of Sodium",
+                "type": "string"
+            },
+            "LDH": {
+                "title": "LDH",
+                "description": "Most recent LDH value Within 30 days prior to Date of Nephrectomy",
+                "type": "string",
+                "enum": [
+                    'Below (134 U/L)',
+                    'Normal Range (135-225 U/L)',
+                    'Above (226 U/L)'
+                ]
+            },
+            "LDHValue": {
+                "title": "LDH Value",
+                "type": "number"
+            },
+            "LDHDate": {
+                "title": "Date of LDH",
+                "type": "string"
+            }
+
+        },
+    })
+    def labs_and_vitals(self, request, surgery,labs, vitals):
+        nephrectomy_dates = []
+        first_Nephrectomy_date_string = "Not Available"
+        labs_and_vitals = {
+            'first_Nephrectomy_date_string': "Not Available",
+            'BMI': "Not Available",
+            'BP_Systolic': "Not Available",
+            'BP_Diastolic': "Not Available",
+            'Hemoglobin': "Not Available",
+            'Platelets': "Not Available",
+            'WBC': "Not Available",
+            'Neutrophils': "Not Available",
+            'Creatinine': "Not Available",
+            'Calcium': "Not Available",
+            'Albumin': "Not Available",
+            'Sodium': "Not Available",
+            'LDH': "Not Available"
+        }
+        labs_and_vitals['first_Nephrectomy_date_string'] = first_Nephrectomy_date_string
+        # find the first Nephrectomy 
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_procedures = surgery_object['surgery_procedure']
+                for surgery_procedure in surgery_procedures:
+                    surgery_procedure_obj = request.embed(surgery_procedure, '@@object')
+                    if surgery_procedure_obj['procedure_type'] == "Nephrectomy":
+                        nephrectomy_dates.append(surgery_object['date'])
+            #compare the date to get the first date if there is nephrectomy_dates
+            if len(nephrectomy_dates)> 0:
+                nephrectomy_dates.sort(key = lambda date: datetime.strptime(date, '%Y-%m-%d'))
+                first_Nephrectomy_date_string = nephrectomy_dates[0]
+                first_Nephrectomy_date = datetime.strptime(first_Nephrectomy_date_string, '%Y-%m-%d')
+                labs_and_vitals['first_Nephrectomy_date_string'] = first_Nephrectomy_date_string
+
+                #find dates Within 30 days prior to Date of Nephrectomy
+                if len(labs)>0:             
+                    albuminList = []                
+                    calciumList = []
+                    creatinineList = []
+                    hemoglobinList = []
+                    ldhList = []
+                    neutrophilsList = []
+                    plateletsList = []
+                    sodiumList = []
+                    wbcList = []
+
+                    for path in labs:
+                        properties = request.embed(path, '@@object?skip_calculated=true')
+                        lab_date_string = properties.get("date")
+                        #compare the date
+                        lab_date = datetime.strptime(lab_date_string, '%Y-%m-%d')
+                        if (first_Nephrectomy_date - lab_date).days < 30 and (first_Nephrectomy_date - lab_date).days >= 0:
+                            lab_type = properties.get("lab")
+                            lab_value = properties.get("value")
+                            lab = {
+                                "date": lab_date_string,
+                                "value": lab_value
+                            }
+                            if lab_type == "ALBUMIN":
+                                albuminList.append(lab)              
+                            elif lab_type == "CALCIUM":
+                                calciumList.append(lab)
+                            elif lab_type == "CREATININE":
+                                creatinineList.append(lab)
+                            elif lab_type == "HEMOGLOBIN":
+                                hemoglobinList.append(lab)
+                            elif lab_type == "LACTATE_DE":
+                                ldhList.append(lab)
+                            elif lab_type == "NEUTROPHILS":
+                                neutrophilsList.append(lab)
+                            elif lab_type == "PLATELETS":
+                                plateletsList.append(lab)
+                            elif lab_type == "SODIUM":
+                                sodiumList.append(lab)
+                            else:
+                                wbcList.append(lab)
+                    if len(albuminList) > 0:
+                        albuminList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        albuminLab = albuminList[-1]  
+                        labs_and_vitals["Albumin"] = getLabsAndVitalsRange(albuminLab["value"], 3.5, 5.3, "g/dL", "default", "default", "default") 
+                        labs_and_vitals["AlbuminValue"] = albuminLab["value"]
+                        labs_and_vitals["AlbuminDate"] = albuminLab["date"]
+                    if len(calciumList) > 0:
+                        calciumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        calciumLab = calciumList[-1]  
+                        labs_and_vitals["Calcium"] = getLabsAndVitalsRange(calciumLab["value"], 8.8, 10.2, "mg/dL", "default", "default", "default")    
+                        labs_and_vitals["CalciumValue"] = calciumLab["value"]
+                        labs_and_vitals["CalciumDate"] = calciumLab["date"]
+                    if len(creatinineList) > 0:
+                        creatinineList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        creatinineLab = creatinineList[-1] 
+                        labs_and_vitals["Creatinine"] = getLabsAndVitalsRange(creatinineLab["value"], 0.67, 1.17, "mg/dL", "default", "default", "default")
+                        labs_and_vitals["CreatinineValue"] = creatinineLab["value"]
+                        labs_and_vitals["CreatinineDate"] = creatinineLab["date"]
+                    if len(hemoglobinList) > 0:
+                        hemoglobinList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        hemoglobinLab = hemoglobinList[-1]
+                        labs_and_vitals["Hemoglobin"] = getLabsAndVitalsRange(hemoglobinLab["value"], 12.4, 17.4, "g/dL", "default", "default", "default")
+                        labs_and_vitals["HemoglobinValue"] = hemoglobinLab["value"]
+                        labs_and_vitals["HemoglobinDate"] = hemoglobinLab["date"]
+                    if len(ldhList) > 0:
+                        ldhList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        ldhLab = ldhList[-1]
+                        labs_and_vitals["LDH"] = getLabsAndVitalsRange(ldhLab["value"], 135, 226, "U/L", "default", "default", "default")
+                        labs_and_vitals["LDHValue"] = ldhLab["value"]
+                        labs_and_vitals["LDHDate"] = ldhLab["date"]
+                    if len(neutrophilsList) > 0:
+                        neutrophilsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        neutrophilsLab = neutrophilsList[-1]
+                        labs_and_vitals["Neutrophils"] = getLabsAndVitalsRange(neutrophilsLab["value"], 1.5, 7.4, "10^3/ul", "default", "default", "default")
+                        labs_and_vitals["NeutrophilsValue"] = neutrophilsLab["value"]
+                        labs_and_vitals["NeutrophilsDate"] = neutrophilsLab["date"]
+                    if len(plateletsList) > 0:
+                        plateletsList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        plateletsLab = plateletsList[-1]
+                        labs_and_vitals["Platelets"] = getLabsAndVitalsRange(plateletsLab["value"], 141, 451, "10^3/ul", "default", "default", "default")
+                        labs_and_vitals["PlateletsValue"] = plateletsLab["value"]
+                        labs_and_vitals["PlateletsDate"] = plateletsLab["date"]
+                    if len(sodiumList) > 0:
+                        sodiumList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        sodiumLab = sodiumList[-1]
+                        labs_and_vitals["Sodium"] = getLabsAndVitalsRange(sodiumLab["value"], 135, 146, "mmol/L", "default", "default", "default")
+                        labs_and_vitals["SodiumValue"] = sodiumLab["value"]
+                        labs_and_vitals["SodiumDate"] = sodiumLab["date"]
+                    if len(wbcList) > 0:
+                        wbcList.sort(key = lambda lab: datetime.strptime(lab["date"], '%Y-%m-%d')) 
+                        wbcLab = wbcList[-1]
+                        labs_and_vitals["WBC"] = getLabsAndVitalsRange(wbcLab["value"], 4, 11, "10^3/ul", "default", "default", "default")
+                        labs_and_vitals["WBCValue"] = wbcLab["value"]
+                        labs_and_vitals["WBCDate"] = wbcLab["date"]
+                if len(vitals)>0 :
+                    bmiList = []
+                    bp_SystolicList = []
+                    bp_DiastolicList = []
+                    for path in vitals:
+                        properties = request.embed(path, '@@object?skip_calculated=true')
+                        vital_date_string = properties.get("date")
+                        #compare the date
+                        vital_date = datetime.strptime(vital_date_string, '%Y-%m-%d')
+                        if (first_Nephrectomy_date - vital_date).days <30 and (first_Nephrectomy_date - vital_date).days >= 0:
+                            vital_type = properties.get("vital")
+                            vital_value = properties.get("value")
+                            vital = {
+                                "date": vital_date_string,
+                                "value": vital_value
+                            }
+
+                            if vital_type == "BMI":
+                                bmiList.append(vital)              
+                            elif vital_type == "BP_DIAS":
+                                bp_DiastolicList.append(vital)
+                            elif vital_type == "BP_SYS":
+                                bp_SystolicList.append(vital)    
+                    if len(bmiList) > 0:     
+                        bmiList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bmiVital = bmiList[-1]
+                        labs_and_vitals["BMIValue"] = bmiVital["value"]
+                        labs_and_vitals["BMIDate"] = bmiVital["date"] 
+                        if bmiVital["value"] < 18.5:
+                            labs_and_vitals["BMI"] = "Underweight (< 18.5)"
+                        elif bmiVital["value"] < 25:
+                            labs_and_vitals["BMI"] = "Normal (18.5 >= and < 25)"
+                        elif bmiVital["value"] < 30:
+                            labs_and_vitals["BMI"] = "Overweight (25 >= and < 30)"
+                        else:
+                            labs_and_vitals["BMI"] = "Obese (>= 30)"
+                    if len(bp_SystolicList) > 0:
+                        bp_SystolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bp_SystolicVital = bp_SystolicList[-1] 
+                        labs_and_vitals["BP_Systolic"] = getLabsAndVitalsRange(bp_SystolicVital["value"], 121, 140, "mmHg", 'Normal (< 121)', 'PreHypertension (121 >= and <140 mmHg)', 'Hypertension (>= 140)')
+                        labs_and_vitals["BP_SystolicValue"] = bp_SystolicVital["value"]
+                        labs_and_vitals["BP_SystolicDate"] = bp_SystolicVital["date"] 
+                    if len(bp_DiastolicList) > 0:
+                        bp_DiastolicList.sort(key = lambda vital: datetime.strptime(vital["date"], '%Y-%m-%d')) 
+                        bp_DiastolicVital = bp_DiastolicList[-1]  
+                        labs_and_vitals["BP_Diastolic"] = getLabsAndVitalsRange(bp_DiastolicVital["value"], 81, 90, "mmHg", 'Normal (< 81)', 'PreHypertension (81 >= and < 90 mmHg)', 'Hypertension (>= 90)')
+                        labs_and_vitals["BP_DiastolicValue"] = bp_DiastolicVital["value"]
+                        labs_and_vitals["BP_DiastolicDate"] = bp_DiastolicVital["date"] 
+
+        return labs_and_vitals
+
+
+
+    @calculated_property(schema={
         "title": "Metastasis",
         "description": "Infomation related to Metastasis",
         "type": "array",
@@ -903,6 +1337,85 @@ class Patient(Item):
                 }
                 if record not in records:
                     records.append(record)
+
+        return records
+
+    @calculated_property(schema={
+        "title": "Medical Imaging Records",
+        "description": "Medical imaging type within <90 days of every nephrectomy",
+        "type": "array",
+        "items": {
+            "title": "Medical Imaging",
+            "type": "object",
+            "additionalProperties": False,
+            "properties":{
+                "date": {
+                    "title": "Date of Medical Imaging",
+                    "description": "Date of Medical Imaging",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "Type of Medical Imaging",
+                    "type": "string"
+                }
+
+            },
+        }
+    })
+    def medical_imaging_before_nephrectomy(self, request, surgery, medical_imaging):
+        #find all the nephrectomy dates
+        nephrectomy_dates = []
+        records = []
+        if len(surgery) > 0:
+            for surgery_record in surgery:
+                surgery_object = request.embed(surgery_record, '@@object')
+                surgery_procedures = surgery_object['surgery_procedure']                
+                if len(surgery_procedures) > 0:
+                    for surgery_procedure in surgery_procedures:
+                        surgery_procedure_obj = request.embed(surgery_procedure, '@@object')
+                        if surgery_procedure_obj['procedure_type'] == "Nephrectomy":
+                            nephrectomy_dates.append(datetime.strptime(surgery_object['date'], '%Y-%m-%d'))
+                            
+
+        #check imaging only if there is nephrectomy dates
+        if len(nephrectomy_dates) > 0 and len(medical_imaging) > 0:
+            imagings = []
+            ct_list = []
+            mr_list = []
+            pet_list = []
+            for nephrectomy_date in nephrectomy_dates:
+                for path in medical_imaging:
+                    imaging = request.embed(path, '@@object?skip_calculated=true')
+                    med_img_date_string = imaging.get("procedure_date")
+                    #compare the date
+                    med_img_date = datetime.strptime(med_img_date_string, '%Y-%m-%d')
+                    if (nephrectomy_date - med_img_date).days <90 and (nephrectomy_date - med_img_date).days >= 0:
+                        imaging_obj = {
+                            "date": med_img_date_string,
+                            "type": imaging.get("type")                  
+                        }
+                        if imaging.get("type") == "CT Abdomen":
+                            ct_list.append(imaging_obj)
+                        elif imaging.get("type") == "MR Abdomen":
+                            mr_list.append(imaging_obj)
+                        else:
+                            pet_list.append(imaging_obj)
+                #sort to get the closest img
+                if len(ct_list) > 0:
+                    ct_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    ct_obj = ct_list[-1]
+                    imagings.append(ct_obj)
+                if len(mr_list) > 0:
+                    mr_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    mr_obj = mr_list[-1]
+                    imagings.append(mr_obj)
+                if len(pet_list) > 0:
+                    pet_list.sort(key = lambda x: datetime.strptime(x["date"], '%Y-%m-%d'))
+                    pet_obj = pet_list[-1]
+                    imagings.append(pet_obj)
+                if len(imagings)> 0:
+                    records = records + imagings        
+                        
 
         return records
 
@@ -1218,7 +1731,4 @@ def patient_basic_view(context, request):
         except KeyError:
             pass
     return filtered
-
-
-
 
