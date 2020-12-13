@@ -634,10 +634,10 @@ class Patient(Item):
                 "description": "Most recent BMI value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Underweight (<18.4)',
-                    'Normal (18.5-24.9)',
-                    'Overweight (25-29.9)',
-                    'Obese (>30)'
+                    'Underweight (<18.4 kg/m2)',
+                    'Normal (18.5-24.9 kg/m2)',
+                    'Overweight (25-29.9 kg/m2)',
+                    'Obese (>30 kg/m2)'
                 ]
             },
             "BMIValue": {
@@ -672,8 +672,8 @@ class Patient(Item):
                 "type": "string",
                 "enum": [
                     'Normal (Below 80 mmHg)',
-                    'PreHypertension (81 - 89)',
-                    'Hypertension (Above 90)'
+                    'PreHypertension (81 - 89 mmHg)',
+                    'Hypertension (Above 90 mmHg)'
                 ]
             },
             "BP_DiastolicValue": {
@@ -689,9 +689,9 @@ class Patient(Item):
                 "description": "Most recent Hemoglobin value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (9-12.3)',
+                    'Below (12.3 g/dL)',
                     'Normal (12.4-17.3 g/dL)',
-                    'Above (Above 17.4)'
+                    'Above (Above 17.4 g/dL)'
                 ]
             },
             "HemoglobinValue": {
@@ -707,9 +707,9 @@ class Patient(Item):
                 "description": "Most recent Platelets value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (12-140)',
-                    'Normal Range (140-450 10^3/ul)',
-                    'Above (Above 450)'
+                    'Below (140 10^3/ul)',
+                    'Normal Range (141-450 10^3/ul)',
+                    'Above (Above 451 10^3/ul)'
                 ]
             },
             "PlateletsValue": {
@@ -725,9 +725,9 @@ class Patient(Item):
                 "description": "Most recent WBC value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (3.9)',
-                    'Normal Range (4-10.9 10^3/ul)',
-                    'Above (Above 11)'
+                    'Below (3.9 10^3/ul)',
+                    'Normal Range (4.0-10.9 10^3/ul)',
+                    'Above (11.0 10^3/ul)'
                 ]
             },
             "WBCValue": {
@@ -743,9 +743,9 @@ class Patient(Item):
                 "description": "Most recent Neutrophils value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (1.4)',
+                    'Below (1.4 10^3/ul)',
                     'Normal Range (1.5-7.3 10^3/ul)',
-                    'Above ( Above 7.4)'
+                    'Above (7.4 10^3/ul)'
                 ]
             },
             "NeutrophilsValue": {
@@ -761,9 +761,9 @@ class Patient(Item):
                 "description": "Most recent Creatinine value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (0.66)',
+                    'Below (0.66 mg/dL)',
                     'Normal Range (0.67-1.16 mg/dL)',
-                    'Above (Above 1.17)'
+                    'Above (1.17 mg/dL)'
                 ]
             },
             "CreatinineValue": {
@@ -779,9 +779,9 @@ class Patient(Item):
                 "description": "Most recent Calcium value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (8.7)',
+                    'Below (8.7 mg/dL)',
                     'Normal Range (8.8-10.1 mg/dL)',
-                    'Above (Above 10.2)'
+                    'Above (10.2 mg/dL)'
                 ]
             },
             "CalciumValue": {
@@ -797,9 +797,9 @@ class Patient(Item):
                 "description": "Most recent Albumin value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (3.4)',
+                    'Below (3.4 g/dL)',
                     'Normal Range (3.5-5.2 g/dL)',
-                    'Above (5.3)'
+                    'Above (5.3 g/dL)'
                 ]
             },
             "AlbuminValue": {
@@ -815,9 +815,9 @@ class Patient(Item):
                 "description": "Most recent Sodium value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (134)',
+                    'Below (134 mmol/L)',
                     'Normal Range (135-145 mmol/L)',
-                    'Above (146)'
+                    'Above (146 mmol/L)'
                 ]
             },
             "SodiumValue": {
@@ -833,9 +833,9 @@ class Patient(Item):
                 "description": "Most recent LDH value Within 30 days prior to Date of Nephrectomy",
                 "type": "string",
                 "enum": [
-                    'Below (134)',
+                    'Below (134 U/L)',
                     'Normal Range (135-225 U/L)',
-                    'Above (225)'
+                    'Above (226 U/L)'
                 ]
             },
             "LDHValue": {
