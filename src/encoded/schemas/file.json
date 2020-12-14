@@ -2,7 +2,7 @@
     "title": "File",
     "description": "Schema for submitting metadata for a file.",
     "comment": "This object type is abstract. These properties are inherited by other object types",
-    "id": "/profiles/data_file.json",
+    "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "mixinProperties": [],
