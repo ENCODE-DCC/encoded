@@ -45,6 +45,18 @@ class Library(Item):
     ]
 
 
+    @calculated_property(schema={
+        "title": "Award",
+        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Award"
+    })
+    def award(self, request, dataset):
+        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
+        return dataset_obj.get('award')
+
+
     @calculated_property(condition='protocol', schema={
         "title": "Assay",
         "description": "The general assay used for this Library.",

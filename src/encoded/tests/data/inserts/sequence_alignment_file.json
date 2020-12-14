@@ -32,7 +32,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "d710e450cdf4ced7ba333ae35bfafa97",
         "validated": true,
         "cellranger_assay_chemistry": "SC5P-R1"
@@ -69,8 +68,7 @@
         ],
         "software": [
             "cellranger count 4.0"
-        ],
-        "award": "CZI001KID"
+        ]
     },
     {
         "aliases": [
@@ -105,7 +103,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "d3f1a2b3780d7428589f6ce679564d36"
     },
     {
@@ -141,7 +138,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "fa67385271ff6e1793b80b423525f2ce"
     },
     {
@@ -177,7 +173,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "850d15056ab6a750b536154b1911e81f"
     },
     {
@@ -213,7 +208,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "3e40f71dd5c6a56f53fa4bd467d4b4f0"
     },
     {
@@ -249,7 +243,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "f9880a385f9b490061324f77d36edf8a"
     },
     {
@@ -285,7 +278,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "8f93c1da29bf4b4f98da071b6db84890"
     },
     {
@@ -321,7 +313,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "7301b524ebcd90ed583e83718955f6c9"
     },
     {
@@ -357,7 +348,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "77dfc4f6e4c0b5ef16eb42d1d71b56cb"
     },
     {
@@ -393,7 +383,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "c9d57c620e3cf119d9e7b0e1793dc13a"
     },
     {
@@ -429,7 +418,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "738c263df3021979a7e58796b6766a84"
     },
     {
@@ -465,7 +453,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "30ceb59e5bbaccf1c0cbc9a75d87edd5"
     },
     {
@@ -501,7 +488,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "9f5ad2e33fe4fffb3ea3115b2e58a312"
     },
     {
@@ -537,7 +523,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "36e58259e4b77008ff9cb7c42cc84c54"
     },
     {
@@ -573,7 +558,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "454e32fce9fdc66280a5baf89b2e315a"
     },
     {
@@ -609,7 +593,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "b8dcab1528c69fc887b451321618e7ce",
         "validated": true
     },
@@ -646,7 +629,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "a3862944335b1b2eda86194d9197f3d5"
     },
     {
@@ -682,7 +664,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "3f36a6841df33067452bbc9346fc0739"
     },
     {
@@ -718,7 +699,6 @@
         "software": [
             "cellranger count 4.0"
         ],
-        "award": "CZI001KID",
         "md5sum": "636840065919a7c81ccacda1c4d1e2b0"
     },
     {
@@ -754,7 +734,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "95039e4ae68cb53bee06f842393f1543"
     },
     {
@@ -790,7 +769,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "2634f2e8ab5da6681f6156b5dbcf80f1"
     },
     {
@@ -826,7 +804,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "06940d7e0f7e854d6b905a42e59da5f0"
     },
     {
@@ -862,7 +839,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "22bdb7a3167d2e585127196c125b14a4"
     },
     {
@@ -898,7 +874,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "fc78b0e4de10b775908f4cb12c670245"
     },
     {
@@ -934,7 +909,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "916dab17b7d4087534f3866c34f32077"
     },
     {
@@ -970,7 +944,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "90768557ce117101a9871925b0b6b031"
     },
     {
@@ -1006,7 +979,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "add684abe92eb744160bbf0316c5cd52"
     },
     {
@@ -1042,7 +1014,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "a15bd45a72fccd0fb885bdea6308592d"
     },
     {
@@ -1078,7 +1049,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "4a2281c9153fc24a1dcb54ef98cda999"
     },
     {
@@ -1114,7 +1084,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "9d16d3c9b1a68bdd34b1a9d2a4a9ff29"
     },
     {
@@ -1150,7 +1119,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "3af8c99dfcad32ea7bcaac374756d5cd"
     },
     {
@@ -1186,7 +1154,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "f3afa9ed1ceaaba9a16c83beda43db4c"
     },
     {
@@ -1222,7 +1189,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "a35a8d08abde0706231f1143a1b8873b"
     },
     {
@@ -1258,7 +1224,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "ae7e6aa83fc277b426c11389a7cfb129"
     },
     {
@@ -1294,7 +1259,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI001KID",
         "md5sum": "84fb929cbebac8cf3c43dec2db21c462"
     },
     {
@@ -1330,7 +1294,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "91294896870d57f1d5667985d8cd701b"
     },
     {
@@ -1366,7 +1329,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "d55701f2eabc5ebcb247dae0f171469d"
     },
     {
@@ -1402,7 +1364,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "d3e80bf7edb8cc4bec5d53acbff5b8b3"
     },
     {
@@ -1438,7 +1399,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "a913b91468d26cc65120447ef288e8a8"
     },
     {
@@ -1474,7 +1434,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "e242d13955546b80d8d7f20281178261"
     },
     {
@@ -1510,7 +1469,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "b30c50ffd37afc86be4bd326969a0a96"
     },
     {
@@ -1546,7 +1504,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "05699d0ea74d668013c9f3e75c992c8b"
     },
     {
@@ -1582,7 +1539,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "731b000ee5f72da78aeeacbe788564df"
     },
     {
@@ -1618,7 +1574,6 @@
         "software": [
             "cellranger-atac count 1.2"
         ],
-        "award": "CZI021IMM",
         "md5sum": "5ba455ff633979b09222c316cb664574"
     },
     {
@@ -1660,7 +1615,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "5997f9cdb0018a4a5fc5c3500e8775c5"
     },
     {
@@ -1702,7 +1656,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "5410b9a1f2604422eb710618aad14734"
     },
     {
@@ -1744,7 +1697,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "7a16f95a651de0baf358bf9365a58f42"
     },
     {
@@ -1786,7 +1738,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "25da9eff3eead0080b0e4d5ec0a9a62a"
     },
     {
@@ -1828,7 +1779,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "36c34640c7aed47495fcbcc7bc2bd7a2"
     },
     {
@@ -1870,7 +1820,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "fa19a542db064972e546827ccbca1d38"
     },
     {
@@ -1912,7 +1861,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "bcc1775d78cd7d2ade92862ff27ba0e3"
     },
     {
@@ -1954,7 +1902,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "843b6e229d4e59864125cb9634f48d0e"
     },
     {
@@ -1996,7 +1943,6 @@
         "software": [
             "cellranger count 3.1"
         ],
-        "award": "CZI004LIV",
         "md5sum": "31c8bd8d7213be4eaa6605829cab9197"
     }
 ]
