@@ -79,24 +79,12 @@
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The datasets(s) that this experiment supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                    "comment": "See experiment.json for a list of available identifiers.",
-                    "type": "string",
-                    "linkTo": "Dataset"
-            }
-        },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "To be removed in a future release after data cleanup.",
-            "type": "array",
-            "permission": "import_items",
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
                 "type": "string",
-                "linkTo": "DataFile"
+                "linkTo": "Dataset"
             }
         }
     },
@@ -133,6 +121,9 @@
         },
         "award.name": {
             "title": "Award name"
+        },
+        "references.citation": {
+            "title": "References"
         },
         "status": {
             "title": "Status"
