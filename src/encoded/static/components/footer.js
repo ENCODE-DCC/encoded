@@ -43,7 +43,6 @@ const Footer = ({ version }, reactContext) => {
                         </div>
                         <p className="copy-notice">&copy;{new Date().getFullYear()} The University of Texas Southwestern Medical Center</p>
                     </div>
-                    <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University</p>
                 </div>
             </div>
         </footer>
