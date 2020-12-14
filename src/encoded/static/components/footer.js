@@ -26,7 +26,7 @@ const Footer = ({ version }, reactContext) => {
                                 <ul className="footer-links">
                                     <li><a href="/help/citing-kce">Citing KCE</a></li>
                                     <li><a href="https://www.utsouthwestern.edu/legal/privacy-policy.html">Privacy</a></li>
-                                    <li><a href="mailto:BICF@UTSouthwestern.edu">Contact</a></li>
+                                    <li><a href="mailto:kce@UTSouthwestern.edu">Contact</a></li>
                                 </ul>
                                 <ul className="footer-links">
                                     <li id="user-actions-footer">{userActionRender}</li>
@@ -42,8 +42,6 @@ const Footer = ({ version }, reactContext) => {
                             </div>
                         </div>
                         <p className="copy-notice">&copy;{new Date().getFullYear()} The University of Texas Southwestern Medical Center</p>
-                    </div>
-                    <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University</p>
                 </div>
             </div>
         </footer>
