@@ -205,6 +205,19 @@ class DataFile(File):
         if read_length is not None or mapped_read_length is not None:
             return "nt"
 
+
+    @calculated_property(schema={
+        "title": "Award",
+        "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
+        "comment": "Do not submit. This is a calculated property.",
+        "type": "string",
+        "linkTo": "Award"
+    })
+    def award(self, request, dataset):
+        dataset_obj = request.embed(dataset, '@@object?skip_calculated=true')
+        return dataset_obj.get('award')
+
+
     @calculated_property(schema={
         "title": "Superseded by",
         "description": "The file(s) that supersede this file (i.e. are more preferable to use).",

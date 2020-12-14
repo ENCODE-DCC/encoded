@@ -4,7 +4,6 @@
             "anna-greka:donorA1_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "6ef4d912-1166-4ccf-b836-8bb5e369ecaf",
         "submitted_file_name": "donorA1_raw_feature_bc_matrix/",
         "file_format": "mex",
@@ -19,8 +18,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -56,7 +61,6 @@
             "anna-greka:donorA1_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "63c1cd1a-48eb-4c9b-b037-0b384609708c",
         "submitted_file_name": "donorA1_raw_feature_bc_matrix.rds",
         "file_format": "rds",
@@ -71,8 +75,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 11323,
         "dataset": "anna-greka:large_test_dataset",
@@ -109,7 +119,6 @@
             "anna-greka:donorA2_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "5668e31f-01cb-43a5-bc3c-00bb663d1878",
         "submitted_file_name": "donorA2_raw_feature_bc_matrix.tsv",
         "file_format": "tsv",
@@ -124,8 +133,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -160,7 +175,6 @@
             "anna-greka:donorA2_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "5b86a967-77f6-4164-815d-0857ded882d4",
         "submitted_file_name": "donorA2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -175,8 +189,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 15234,
         "dataset": "anna-greka:large_test_dataset",
@@ -212,7 +232,6 @@
             "anna-greka:donorB1_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "a340d8bc-762b-4147-8882-4bb602ba6c6a",
         "submitted_file_name": "donorB1_raw_feature_bc_matrix/",
         "file_format": "mtx",
@@ -227,8 +246,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -263,7 +288,6 @@
             "anna-greka:donorB1_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "29b5b02c-854a-4f45-a19d-41b8ada2ff70",
         "submitted_file_name": "donorB1_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -278,8 +302,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 10425,
         "dataset": "anna-greka:large_test_dataset",
@@ -315,7 +345,6 @@
             "anna-greka:donorB2_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "f817c3e8-44e3-4f87-a83e-4cec9ea6f36e",
         "submitted_file_name": "donorB2_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -330,8 +359,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -366,7 +401,6 @@
             "anna-greka:donorB2_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "19e88d59-9c49-44ba-bce1-1aa25329f9b6",
         "submitted_file_name": "donorB2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -381,8 +415,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 11938,
         "dataset": "anna-greka:large_test_dataset",
@@ -418,7 +458,6 @@
             "anna-greka:snATAC_donorA1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "35377ad4-e49e-45e0-8161-dde762e89410",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -432,7 +471,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 239104}
+            {
+                "feature_type": "peak",
+                "feature_count": 239104
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -463,7 +505,6 @@
             "anna-greka:snATAC_donorA1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e485bd06-b3a3-4d53-9ccb-d7cf5dca0893",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -477,7 +518,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 129394}
+            {
+                "feature_type": "peak",
+                "feature_count": 129394
+            }
         ],
         "observation_count": 20334,
         "dataset": "anna-greka:large_test_dataset",
@@ -509,7 +553,6 @@
             "anna-greka:snATAC_donorA1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "12e3a600-39ac-405f-8ad3-a752407f0bbe",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -523,7 +566,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 20332,
         "dataset": "anna-greka:large_test_dataset",
@@ -555,7 +601,6 @@
             "anna-greka:snATAC_donorA2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "09de0dec-39f1-4ab7-bfe1-1e85c144a23b",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -569,7 +614,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 265435}
+            {
+                "feature_type": "peak",
+                "feature_count": 265435
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -600,7 +648,6 @@
             "anna-greka:snATAC_donorA2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "4988556b-6c27-4456-b316-d8734d3c8d3a",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -614,7 +661,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 121134}
+            {
+                "feature_type": "peak",
+                "feature_count": 121134
+            }
         ],
         "observation_count": 10323,
         "dataset": "anna-greka:large_test_dataset",
@@ -646,7 +696,6 @@
             "anna-greka:snATAC_donorA2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "aa3ebbec-bf3e-4c72-8321-9e612ea74a91",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -660,7 +709,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 654}
+            {
+                "feature_type": "peak",
+                "feature_count": 654
+            }
         ],
         "observation_count": 10655,
         "dataset": "anna-greka:large_test_dataset",
@@ -691,7 +743,6 @@
             "anna-greka:snATAC_donorB1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "ee32db1c-932d-4931-9240-dba7a85cb6b6",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -705,7 +756,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 254644}
+            {
+                "feature_type": "peak",
+                "feature_count": 254644
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -736,7 +790,6 @@
             "anna-greka:snATAC_donorB1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "92e9859b-402f-4dce-ab49-5f5fec8b82c1",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -750,7 +803,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 103241}
+            {
+                "feature_type": "peak",
+                "feature_count": 103241
+            }
         ],
         "observation_count": 100239,
         "dataset": "anna-greka:large_test_dataset",
@@ -782,7 +838,6 @@
             "anna-greka:snATAC_donorB1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "bbcbd9d1-f9b0-4757-84b9-5617181581a8",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -796,7 +851,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 544}
+            {
+                "feature_type": "peak",
+                "feature_count": 544
+            }
         ],
         "observation_count": 9387,
         "dataset": "anna-greka:large_test_dataset",
@@ -827,7 +885,6 @@
             "anna-greka:snATAC_donorB2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "bee1457d-dceb-481f-b3fe-827c97021b54",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -841,7 +898,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 267755}
+            {
+                "feature_type": "peak",
+                "feature_count": 267755
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -872,7 +932,6 @@
             "anna-greka:snATAC_donorB2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e5c4c026-7520-4106-b78c-de10e1749f72",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -886,7 +945,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 103400}
+            {
+                "feature_type": "peak",
+                "feature_count": 103400
+            }
         ],
         "observation_count": 11858,
         "dataset": "anna-greka:large_test_dataset",
@@ -918,7 +980,6 @@
             "anna-greka:snATAC_donorB2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "f0347a86-a428-4b81-b489-b9911ae3be54",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -932,7 +993,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 590}
+            {
+                "feature_type": "peak",
+                "feature_count": 590
+            }
         ],
         "observation_count": 9833,
         "dataset": "anna-greka:large_test_dataset",
@@ -963,7 +1027,6 @@
             "anna-greka:snATAC_donorC1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "63cc3027-d329-4746-b245-c67e709200fd",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -977,7 +1040,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 266211}
+            {
+                "feature_type": "peak",
+                "feature_count": 266211
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1008,7 +1074,6 @@
             "anna-greka:snATAC_donorC1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "7620f84d-9946-4e44-9e24-3486bd771083",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1022,7 +1087,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 102311}
+            {
+                "feature_type": "peak",
+                "feature_count": 102311
+            }
         ],
         "observation_count": 12596,
         "dataset": "anna-greka:large_test_dataset",
@@ -1054,7 +1122,6 @@
             "anna-greka:snATAC_donorC1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "faddd31b-e1b1-4857-ae92-3dfe64826a11",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1068,7 +1135,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 511}
+            {
+                "feature_type": "peak",
+                "feature_count": 511
+            }
         ],
         "observation_count": 8342,
         "dataset": "anna-greka:large_test_dataset",
@@ -1099,7 +1169,6 @@
             "anna-greka:snATAC_donorC2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e129ec02-49ed-42b3-aaf9-393e7c30202a",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1113,7 +1182,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1144,7 +1216,6 @@
             "anna-greka:snATAC_donorC2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "67fd3665-cd65-4d04-aa17-eb0b0c90d336",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1158,7 +1229,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 11239,
         "dataset": "anna-greka:large_test_dataset",
@@ -1190,7 +1264,6 @@
             "anna-greka:snATAC_donorC2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "3bb7f59b-67c0-4d12-8b2a-ddfed688d770",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1204,7 +1277,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 9283,
         "dataset": "anna-greka:large_test_dataset",
@@ -1235,7 +1311,6 @@
             "anna-greka:snATAC_donorD1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e564638f-4b32-478d-9b72-080beb1a83dd",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1249,7 +1324,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1280,7 +1358,6 @@
             "anna-greka:snATAC_donorD1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "21f0d1ce-9763-459a-bf58-6ca0458524f6",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1294,7 +1371,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 12985,
         "dataset": "anna-greka:large_test_dataset",
@@ -1326,7 +1406,6 @@
             "anna-greka:snATAC_donorD1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "d93da0b0-f426-47b2-b11e-322cbaa74c7a",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1340,7 +1419,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 9284,
         "dataset": "anna-greka:large_test_dataset",
@@ -1371,7 +1453,6 @@
             "anna-greka:snATAC_donorD2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "97a3c63e-00bc-4c47-8e23-48c967313c9e",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1385,7 +1466,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1416,7 +1500,6 @@
             "anna-greka:snATAC_donorD2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "5b03312f-783e-48ee-a342-fc77096434e9",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1430,7 +1513,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 10484,
         "dataset": "anna-greka:large_test_dataset",
@@ -1462,7 +1548,6 @@
             "anna-greka:snATAC_donorD2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "84ddb908-59cc-4af8-a1df-e0f6b6ca77c8",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1476,7 +1561,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 9838,
         "dataset": "anna-greka:large_test_dataset",
@@ -1507,7 +1595,6 @@
             "anna-greka:snATAC_donorE1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "795f22f1-d772-4110-8137-52f6d311fd79",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1521,7 +1608,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1552,7 +1642,6 @@
             "anna-greka:snATAC_donorE1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "3748c8d0-de00-4b64-a85c-fba128acd87d",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1566,7 +1655,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 11831,
         "dataset": "anna-greka:large_test_dataset",
@@ -1598,7 +1690,6 @@
             "anna-greka:snATAC_donorE1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "7e7cf72e-1d75-47e9-99be-47eb4778e372",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1612,7 +1703,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 8234,
         "dataset": "anna-greka:large_test_dataset",
@@ -1643,7 +1737,6 @@
             "anna-greka:snATAC_donorE2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "cd04924c-c4ca-4ee2-93a6-74c36a6376b8",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1657,7 +1750,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1688,7 +1784,6 @@
             "anna-greka:snATAC_donorE2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "91638f70-ad49-42d5-a502-d92a556c447b",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1702,7 +1797,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 12993,
         "dataset": "anna-greka:large_test_dataset",
@@ -1734,7 +1832,6 @@
             "anna-greka:snATAC_donorE2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "8c25b599-dfff-4219-a24d-4aa860bc0a36",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1748,7 +1845,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 8431,
         "dataset": "anna-greka:large_test_dataset",
@@ -1779,7 +1879,6 @@
             "anna-greka:snATAC_donorF1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "171bf956-2f3e-422a-a831-3c165cfa1a4b",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1793,7 +1892,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1824,7 +1926,6 @@
             "anna-greka:snATAC_donorF1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "854fdf73-c531-4602-9e8f-df3edda3a02c",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1838,7 +1939,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 13982,
         "dataset": "anna-greka:large_test_dataset",
@@ -1870,7 +1974,6 @@
             "anna-greka:snATAC_donorF1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "3f01af1a-5082-4557-a0bf-3f72c1ee03ba",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1884,7 +1987,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 9210,
         "dataset": "anna-greka:large_test_dataset",
@@ -1915,7 +2021,6 @@
             "anna-greka:snATAC_donorF2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "feb5f062-ab3b-4fc8-b97a-4b9211a3e08e",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1929,7 +2034,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -1960,7 +2068,6 @@
             "anna-greka:snATAC_donorF2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "d8d78050-39a2-47f2-b872-35a3c2be87ec",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -1974,7 +2081,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 14982,
         "dataset": "anna-greka:large_test_dataset",
@@ -2006,7 +2116,6 @@
             "anna-greka:snATAC_donorF2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e1e4a3df-4fda-4601-b41c-552a2bb15284",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2020,7 +2129,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 600}
+            {
+                "feature_type": "peak",
+                "feature_count": 600
+            }
         ],
         "observation_count": 8837,
         "dataset": "anna-greka:large_test_dataset",
@@ -2051,7 +2163,6 @@
             "anna-greka:snATAC_donorG1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "f2f51ac7-3282-4035-8445-77695609a2d8",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2065,7 +2176,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2096,7 +2210,6 @@
             "anna-greka:snATAC_donorG1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "04ad895b-95e5-44ea-b0b7-57bbc5bb2391",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2110,7 +2223,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100000}
+            {
+                "feature_type": "peak",
+                "feature_count": 100000
+            }
         ],
         "observation_count": 14872,
         "dataset": "anna-greka:large_test_dataset",
@@ -2142,7 +2258,6 @@
             "anna-greka:snATAC_donorG1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "9e4d5236-15dd-43e6-a0bd-c2aaf1503f9c",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2156,7 +2271,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 612}
+            {
+                "feature_type": "peak",
+                "feature_count": 612
+            }
         ],
         "observation_count": 723,
         "dataset": "anna-greka:large_test_dataset",
@@ -2187,7 +2305,6 @@
             "anna-greka:snATAC_donorG2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "86b297bf-561c-43d3-aa70-8208272181aa",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2201,7 +2318,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 294882}
+            {
+                "feature_type": "peak",
+                "feature_count": 294882
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2232,7 +2352,6 @@
             "anna-greka:snATAC_donorG2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "ab18e031-b5c4-4d6b-a432-68f3f5aa4bb1",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2246,7 +2365,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 119204}
+            {
+                "feature_type": "peak",
+                "feature_count": 119204
+            }
         ],
         "observation_count": 18273,
         "dataset": "anna-greka:large_test_dataset",
@@ -2278,7 +2400,6 @@
             "anna-greka:snATAC_donorG2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "577e83de-be37-4d99-98ac-61992051246a",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2292,7 +2413,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 620}
+            {
+                "feature_type": "peak",
+                "feature_count": 620
+            }
         ],
         "observation_count": 8772,
         "dataset": "anna-greka:large_test_dataset",
@@ -2323,7 +2447,6 @@
             "anna-greka:snATAC_donorH1_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "6358704e-8b12-4467-b2db-065ebad7f40f",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2337,7 +2460,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 293848}
+            {
+                "feature_type": "peak",
+                "feature_count": 293848
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2368,7 +2494,6 @@
             "anna-greka:snATAC_donorH1_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "96913af6-1979-4c0b-9cc3-cfdf77946ef8",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2382,7 +2507,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 119393}
+            {
+                "feature_type": "peak",
+                "feature_count": 119393
+            }
         ],
         "observation_count": 18476,
         "dataset": "anna-greka:large_test_dataset",
@@ -2414,7 +2542,6 @@
             "anna-greka:snATAC_donorH1_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "7924162c-bd22-4bd6-816b-e98880f6c3f7",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2428,7 +2555,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 593}
+            {
+                "feature_type": "peak",
+                "feature_count": 593
+            }
         ],
         "observation_count": 9282,
         "dataset": "anna-greka:large_test_dataset",
@@ -2459,7 +2589,6 @@
             "anna-greka:snATAC_donorH2_raw_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "9e385fc4-c48c-430f-a2cd-d86e8bc216bd",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2473,7 +2602,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 200831}
+            {
+                "feature_type": "peak",
+                "feature_count": 200831
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2504,7 +2636,6 @@
             "anna-greka:snATAC_donorH2_filtered_peak_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "dfeb6a2d-bf5c-4b7d-acab-f97e87a92a46",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2518,7 +2649,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 102011}
+            {
+                "feature_type": "peak",
+                "feature_count": 102011
+            }
         ],
         "observation_count": 16283,
         "dataset": "anna-greka:large_test_dataset",
@@ -2550,7 +2684,6 @@
             "anna-greka:snATAC_donorH2_filtered_tf_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "09af3bba-700b-4a2d-8442-d1eb398093cc",
         "no_file_available": false,
         "file_format": "hdf5",
@@ -2564,7 +2697,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 548}
+            {
+                "feature_type": "peak",
+                "feature_count": 548
+            }
         ],
         "observation_count": 9281,
         "dataset": "anna-greka:large_test_dataset",
@@ -2595,7 +2731,6 @@
             "anna-greka:donorC1a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "137b653f-0f4a-4a8c-9a5b-8a34387c1a2e",
         "submitted_file_name": "donorC1a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2608,7 +2743,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2637,7 +2775,6 @@
             "anna-greka:donorC1a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "483b5896-f67e-4689-8eec-e7c239d8c3f5",
         "submitted_file_name": "donorC1a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2650,7 +2787,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 19387,
         "dataset": "anna-greka:large_test_dataset",
@@ -2680,7 +2820,6 @@
             "anna-greka:donorC1b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "42a2cdbc-24f4-4930-a7be-b53021ce0ea8",
         "submitted_file_name": "donorC1b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2693,7 +2832,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2722,7 +2864,6 @@
             "anna-greka:donorC1b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "621195f7-7dab-49fb-9426-85f965f567fb",
         "submitted_file_name": "donorC1b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2735,7 +2876,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 19844,
         "dataset": "anna-greka:large_test_dataset",
@@ -2765,7 +2909,6 @@
             "anna-greka:donorC2a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "583b93d0-ddde-4927-b65d-6e219d5f4ec9",
         "submitted_file_name": "donorC2a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2778,7 +2921,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2807,7 +2953,6 @@
             "anna-greka:donorC2a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "f6258fad-4cf1-4829-ad63-bf796c70a089",
         "submitted_file_name": "donorC2a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2820,7 +2965,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 18746,
         "dataset": "anna-greka:large_test_dataset",
@@ -2850,7 +2998,6 @@
             "anna-greka:donorC2b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "f1c5eff4-ae0f-4fec-9050-4265d41fab65",
         "submitted_file_name": "donorC2b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2863,7 +3010,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2892,7 +3042,6 @@
             "anna-greka:donorC2b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "4d29239d-5b37-4f72-a13a-37760db2dd4c",
         "submitted_file_name": "donorC2b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2905,7 +3054,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 16253,
         "dataset": "anna-greka:large_test_dataset",
@@ -2935,7 +3087,6 @@
             "anna-greka:donorD1a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "12659f9f-884c-45c0-bf00-6536ad31e289",
         "submitted_file_name": "donorD1a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2948,7 +3099,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -2977,7 +3131,6 @@
             "anna-greka:donorD1a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "705bf2bf-dd50-4d21-af14-930b2063ed09",
         "submitted_file_name": "donorD1a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -2990,7 +3143,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 12949,
         "dataset": "anna-greka:large_test_dataset",
@@ -3020,7 +3176,6 @@
             "anna-greka:donorD1b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e5a3aa14-c7ac-4ad3-b905-b034322277d5",
         "submitted_file_name": "donorD1b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3033,7 +3188,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3062,7 +3220,6 @@
             "anna-greka:donorD1b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "d448900a-d4ce-4d5c-9ba5-b9ca12b02674",
         "submitted_file_name": "donorD1b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3075,7 +3232,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 20384,
         "dataset": "anna-greka:large_test_dataset",
@@ -3105,7 +3265,6 @@
             "anna-greka:donorD2a_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "7aa35b79-f1c9-4562-8e65-84bd00619ce5",
         "submitted_file_name": "donorD2a_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3118,7 +3277,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3147,7 +3309,6 @@
             "anna-greka:donorD2a_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "51ab68dc-d061-49b4-89bf-f3193781cb01",
         "submitted_file_name": "donorD2a_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3160,7 +3321,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 29332,
         "dataset": "anna-greka:large_test_dataset",
@@ -3190,7 +3354,6 @@
             "anna-greka:donorD2b_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e297abd2-5d99-4e0f-a89d-43ee4683881e",
         "submitted_file_name": "donorD2b_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3203,7 +3366,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3232,7 +3398,6 @@
             "anna-greka:donorD2b_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "93ccc741-19b6-4731-b9b8-e58efa82e97c",
         "submitted_file_name": "donorD2b_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3245,7 +3410,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 17363,
         "dataset": "anna-greka:large_test_dataset",
@@ -3275,7 +3443,6 @@
             "anna-greka:donorCD1_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "86299715-1de5-45d8-a7d7-5e2c2040a5bd",
         "submitted_file_name": "donorCD1_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3288,7 +3455,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3320,7 +3490,6 @@
             "anna-greka:donorCD1_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "592b07a8-fd47-46cd-94b3-f8d58c1d4bc9",
         "submitted_file_name": "donorCD1_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3333,7 +3502,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 13922,
         "dataset": "anna-greka:large_test_dataset",
@@ -3366,7 +3538,6 @@
             "anna-greka:donorCD2_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "607e0255-f94f-471c-9791-7ef6e5f39587",
         "submitted_file_name": "donorCD2_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3379,7 +3550,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3411,7 +3585,6 @@
             "anna-greka:donorCD2_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "d45b8a67-826a-446b-8601-5ec43ca8c2cb",
         "submitted_file_name": "donorCD2_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3424,7 +3597,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33000}
+            {
+                "feature_type": "gene",
+                "feature_count": 33000
+            }
         ],
         "observation_count": 19388,
         "dataset": "anna-greka:large_test_dataset",
@@ -3457,7 +3633,6 @@
             "anna-greka:donorE_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "7898e294-d0ae-416f-acda-b55d9c545b61",
         "submitted_file_name": "donorE_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3472,8 +3647,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3505,7 +3686,6 @@
             "anna-greka:donorE_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "269e21a2-a716-4f3b-a43c-e83b713a36c1",
         "submitted_file_name": "donorE_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3520,8 +3700,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 29488,
         "dataset": "anna-greka:large_test_dataset",
@@ -3554,7 +3740,6 @@
             "anna-greka:donorF_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e9ca3672-33f6-4c8c-ad2b-0c1290ddbb08",
         "submitted_file_name": "donorF_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3569,8 +3754,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3602,7 +3793,6 @@
             "anna-greka:donorF_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "11158457-33f4-448c-b39b-fddecab48fe5",
         "submitted_file_name": "donorF_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3617,8 +3807,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 12191,
         "dataset": "anna-greka:large_test_dataset",
@@ -3651,7 +3847,6 @@
             "anna-greka:donorG_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "435fda57-bad6-4af2-98eb-0a995336ee3c",
         "submitted_file_name": "donorG_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3666,8 +3861,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3699,7 +3900,6 @@
             "anna-greka:donorG_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "6cfb273d-a72c-4d8a-adc4-e8449ffa118a",
         "submitted_file_name": "donorG_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3714,8 +3914,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 10472,
         "dataset": "anna-greka:large_test_dataset",
@@ -3748,7 +3954,6 @@
             "anna-greka:donorH_raw_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "068acabe-032f-4335-8f4c-e750768536bf",
         "submitted_file_name": "donorH_raw_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3763,8 +3968,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 7000000,
         "dataset": "anna-greka:large_test_dataset",
@@ -3796,7 +4007,6 @@
             "anna-greka:donorH_filtered_feature_bc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "07413a49-5c41-445f-a8c6-1f3bafd5db95",
         "submitted_file_name": "donorH_filtered_feature_bc_matrix.h5",
         "file_format": "hdf5",
@@ -3811,8 +4021,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 18283,
         "dataset": "anna-greka:large_test_dataset",
@@ -3845,7 +4061,6 @@
             "anna-greka:donorAB_merged_sc_citeseq_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "c9174f45-9558-4f60-99a7-f87f1dc489b8",
         "submitted_file_name": "donorAB_merged_sc_citeseq_matrix.mtx/",
         "file_format": "mtx",
@@ -3860,8 +4075,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 20192,
         "dataset": "anna-greka:large_test_dataset",
@@ -3913,7 +4134,6 @@
             "anna-greka:donorCD_merged_sc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "89ea961f-45ef-4079-afad-ee2e9bade386",
         "submitted_file_name": "donorCD_merged_sc_matrix.mtx/",
         "file_format": "mtx",
@@ -3926,7 +4146,10 @@
             "gene symbol"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            }
         ],
         "observation_count": 82379,
         "dataset": "anna-greka:large_test_dataset",
@@ -3982,7 +4205,6 @@
             "anna-greka:donorCD_pooled_merged_sc_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "a1343e3d-1ab0-440b-b0de-61b353566d87",
         "submitted_file_name": "donorCD_pooled_merged_sc_matrix.mtx/",
         "file_format": "mtx",
@@ -3995,7 +4217,10 @@
             "gene symbol"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            }
         ],
         "observation_count": 18293,
         "dataset": "anna-greka:large_test_dataset",
@@ -4045,7 +4270,6 @@
             "anna-greka:donorEF_merged_sc_citeseq_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "14d82127-6d99-4c53-bf95-ff25dcb3d14a",
         "submitted_file_name": "donorEF_merged_sc_citeseq_matrix.mtx/",
         "file_format": "mtx",
@@ -4060,8 +4284,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 18722,
         "dataset": "anna-greka:large_test_dataset",
@@ -4111,7 +4341,6 @@
             "anna-greka:donorGH_merged_sc_citeseq_matrix"
         ],
         "status": "released",
-        "award": "CZI001KID",
         "uuid": "e7caa3e4-fc3b-47be-8b8f-dcaa5db245e3",
         "submitted_file_name": "donorGH_merged_sc_citeseq_matrix.mtx/",
         "file_format": "mtx",
@@ -4126,8 +4355,14 @@
             "antibody target"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 329950},
-            {"feature_type": "antibody capture", "feature_count": 50}
+            {
+                "feature_type": "gene",
+                "feature_count": 329950
+            },
+            {
+                "feature_type": "antibody capture",
+                "feature_count": 50
+            }
         ],
         "observation_count": 29292,
         "dataset": "anna-greka:large_test_dataset",
@@ -4177,7 +4412,6 @@
             "jimmie-ye:filtered_tf_matrix_1a"
         ],
         "accession": "LATDF400ABA",
-        "award": "CZI021IMM",
         "uuid": "aa861f79-0d95-45e5-8433-30d90bef5723",
         "no_file_available": false,
         "status": "in progress",
@@ -4192,7 +4426,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 540}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 540
+            }
         ],
         "observation_count": 5399,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4223,7 +4460,6 @@
             "jimmie-ye:filtered_tf_matrix_1b"
         ],
         "accession": "LATDF401ABA",
-        "award": "CZI021IMM",
         "uuid": "a5f415ca-d81a-429f-8e5f-2acb78c7501b",
         "no_file_available": false,
         "status": "in progress",
@@ -4238,7 +4474,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 540}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 540
+            }
         ],
         "observation_count": 4939,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4269,7 +4508,6 @@
             "jimmie-ye:filtered_tf_matrix_1c"
         ],
         "accession": "LATDF402ABA",
-        "award": "CZI021IMM",
         "uuid": "0d03d2fd-d58b-4cf1-9da4-40cd6e6ee8a7",
         "no_file_available": false,
         "status": "in progress",
@@ -4284,7 +4522,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 540}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 540
+            }
         ],
         "observation_count": 5533,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4315,7 +4556,6 @@
             "jimmie-ye:filtered_tf_matrix_2a"
         ],
         "accession": "LATDF403ABA",
-        "award": "CZI021IMM",
         "uuid": "806b21f1-39a2-4596-8698-56f601199fb7",
         "no_file_available": false,
         "status": "in progress",
@@ -4330,7 +4570,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 540}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 540
+            }
         ],
         "observation_count": 7238,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4361,7 +4604,6 @@
             "jimmie-ye:filtered_tf_matrix_2b"
         ],
         "accession": "LATDF404ABA",
-        "award": "CZI021IMM",
         "uuid": "4b53cda1-908a-4558-a167-56984e8da25e",
         "no_file_available": false,
         "status": "in progress",
@@ -4376,7 +4618,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 540}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 540
+            }
         ],
         "observation_count": 5122,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4407,7 +4652,6 @@
             "jimmie-ye:filtered_tf_matrix_2c"
         ],
         "accession": "LATDF405ABA",
-        "award": "CZI021IMM",
         "uuid": "834d44f0-56bc-4329-971f-f303d8ef5881",
         "no_file_available": false,
         "status": "in progress",
@@ -4422,7 +4666,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 610}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 610
+            }
         ],
         "observation_count": 4992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4453,7 +4700,6 @@
             "jimmie-ye:filtered_tf_matrix_3a"
         ],
         "accession": "LATDF406ABA",
-        "award": "CZI021IMM",
         "uuid": "3d224856-34f6-41ea-8e6c-fa1ac17c7157",
         "no_file_available": false,
         "status": "in progress",
@@ -4468,7 +4714,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 540}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 540
+            }
         ],
         "observation_count": 6331,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4499,7 +4748,6 @@
             "jimmie-ye:filtered_tf_matrix_3b"
         ],
         "accession": "LATDF407ABA",
-        "award": "CZI021IMM",
         "uuid": "1cd5cfa7-5aba-493f-b4a0-b6cac1abf52d",
         "no_file_available": false,
         "status": "in progress",
@@ -4514,7 +4762,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 521}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 521
+            }
         ],
         "observation_count": 5100,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4545,7 +4796,6 @@
             "jimmie-ye:filtered_tf_matrix_3c"
         ],
         "accession": "LATDF408ABA",
-        "award": "CZI021IMM",
         "uuid": "febbed57-50a6-4115-bfcd-9ae2143f7d43",
         "no_file_available": false,
         "status": "in progress",
@@ -4560,7 +4810,10 @@
             "motif ID"
         ],
         "feature_counts": [
-            {"feature_type": "transcription factor", "feature_count": 542}
+            {
+                "feature_type": "transcription factor",
+                "feature_count": 542
+            }
         ],
         "observation_count": 4992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4591,7 +4844,6 @@
             "jimmie-ye:filtered_peak_matrix_1a"
         ],
         "accession": "LATDF300ABA",
-        "award": "CZI021IMM",
         "uuid": "85d4d147-e5bd-44fb-9e17-2b03b7bca925",
         "no_file_available": false,
         "status": "in progress",
@@ -4606,7 +4858,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 99231}
+            {
+                "feature_type": "peak",
+                "feature_count": 99231
+            }
         ],
         "observation_count": 9818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4638,7 +4893,6 @@
             "jimmie-ye:filtered_peak_matrix_1b"
         ],
         "accession": "LATDF301ABA",
-        "award": "CZI021IMM",
         "uuid": "e1dcf8d2-eed1-448e-9065-8cf888838e9e",
         "no_file_available": false,
         "status": "in progress",
@@ -4653,7 +4907,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 99231}
+            {
+                "feature_type": "peak",
+                "feature_count": 99231
+            }
         ],
         "observation_count": 9818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4685,7 +4942,6 @@
             "jimmie-ye:filtered_peak_matrix_1c"
         ],
         "accession": "LATDF302ABA",
-        "award": "CZI021IMM",
         "uuid": "ad18750c-608d-4682-b635-0186da1cd842",
         "no_file_available": false,
         "status": "in progress",
@@ -4700,7 +4956,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 99231}
+            {
+                "feature_type": "peak",
+                "feature_count": 99231
+            }
         ],
         "observation_count": 10292,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4732,7 +4991,6 @@
             "jimmie-ye:filtered_peak_matrix_2a"
         ],
         "accession": "LATDF303ABA",
-        "award": "CZI021IMM",
         "uuid": "b5f32dfb-f615-460e-8ad0-f021f1c805e6",
         "no_file_available": false,
         "status": "in progress",
@@ -4747,7 +5005,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100122}
+            {
+                "feature_type": "peak",
+                "feature_count": 100122
+            }
         ],
         "observation_count": 9118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4779,7 +5040,6 @@
             "jimmie-ye:filtered_peak_matrix_2b"
         ],
         "accession": "LATDF304ABA",
-        "award": "CZI021IMM",
         "uuid": "81ade3a8-4ccd-4130-a647-3b9b27a1fa5f",
         "no_file_available": false,
         "status": "in progress",
@@ -4794,7 +5054,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 110332}
+            {
+                "feature_type": "peak",
+                "feature_count": 110332
+            }
         ],
         "observation_count": 10211,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4826,7 +5089,6 @@
             "jimmie-ye:filtered_peak_matrix_2c"
         ],
         "accession": "LATDF305ABA",
-        "award": "CZI021IMM",
         "uuid": "010b2039-43b3-45b0-b259-26b0529c5e90",
         "no_file_available": false,
         "status": "in progress",
@@ -4841,7 +5103,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 100211}
+            {
+                "feature_type": "peak",
+                "feature_count": 100211
+            }
         ],
         "observation_count": 9981,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4873,7 +5138,6 @@
             "jimmie-ye:filtered_peak_matrix_3a"
         ],
         "accession": "LATDF306ABA",
-        "award": "CZI021IMM",
         "uuid": "fcf0bbf6-f7cb-4bbd-9507-06156a9a3856",
         "no_file_available": false,
         "status": "in progress",
@@ -4888,7 +5152,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 120042}
+            {
+                "feature_type": "peak",
+                "feature_count": 120042
+            }
         ],
         "observation_count": 9811,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4920,7 +5187,6 @@
             "jimmie-ye:filtered_peak_matrix_3b"
         ],
         "accession": "LATDF307ABA",
-        "award": "CZI021IMM",
         "uuid": "67ef279a-3445-47a2-8db4-e9ae2c5beec8",
         "no_file_available": false,
         "status": "in progress",
@@ -4935,7 +5201,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 150399}
+            {
+                "feature_type": "peak",
+                "feature_count": 150399
+            }
         ],
         "observation_count": 9118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -4967,7 +5236,6 @@
             "jimmie-ye:filtered_peak_matrix_3c"
         ],
         "accession": "LATDF308ABA",
-        "award": "CZI021IMM",
         "uuid": "b365d44d-e124-4362-89cb-35a8e0d7c6eb",
         "no_file_available": false,
         "status": "in progress",
@@ -4982,7 +5250,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 142921}
+            {
+                "feature_type": "peak",
+                "feature_count": 142921
+            }
         ],
         "observation_count": 7818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5014,7 +5285,6 @@
             "jimmie-ye:raw_peak_matrix_1a"
         ],
         "accession": "LATDF200ABA",
-        "award": "CZI021IMM",
         "uuid": "5c0c595a-990c-4d0f-9584-978bc9429da2",
         "no_file_available": false,
         "status": "in progress",
@@ -5029,7 +5299,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 221022}
+            {
+                "feature_type": "peak",
+                "feature_count": 221022
+            }
         ],
         "observation_count": 12992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5060,7 +5333,6 @@
             "jimmie-ye:raw_peak_matrix_1b"
         ],
         "accession": "LATDF201ABA",
-        "award": "CZI021IMM",
         "uuid": "d2092404-2c54-41d8-86a6-4975ea98e187",
         "no_file_available": false,
         "status": "in progress",
@@ -5075,7 +5347,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 201829}
+            {
+                "feature_type": "peak",
+                "feature_count": 201829
+            }
         ],
         "observation_count": 13992,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5106,7 +5381,6 @@
             "jimmie-ye:raw_peak_matrix_1c"
         ],
         "accession": "LATDF202ABA",
-        "award": "CZI021IMM",
         "uuid": "016fb3ac-a626-45fe-b27b-657a4ac58768",
         "no_file_available": false,
         "status": "in progress",
@@ -5121,7 +5395,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 200120}
+            {
+                "feature_type": "peak",
+                "feature_count": 200120
+            }
         ],
         "observation_count": 12885,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5152,7 +5429,6 @@
             "jimmie-ye:raw_peak_matrix_2a"
         ],
         "accession": "LATDF203ABA",
-        "award": "CZI021IMM",
         "uuid": "b1a923ed-195c-450e-8f8d-a91869f5933c",
         "no_file_available": false,
         "status": "in progress",
@@ -5167,7 +5443,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 210231}
+            {
+                "feature_type": "peak",
+                "feature_count": 210231
+            }
         ],
         "observation_count": 12818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5198,7 +5477,6 @@
             "jimmie-ye:raw_peak_matrix_2b"
         ],
         "accession": "LATDF204ABA",
-        "award": "CZI021IMM",
         "uuid": "4d412e77-cb21-43b4-be35-c6579a7c0f3e",
         "no_file_available": false,
         "status": "in progress",
@@ -5213,7 +5491,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 200231}
+            {
+                "feature_type": "peak",
+                "feature_count": 200231
+            }
         ],
         "observation_count": 12818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5244,7 +5525,6 @@
             "jimmie-ye:raw_peak_matrix_2c"
         ],
         "accession": "LATDF205ABA",
-        "award": "CZI021IMM",
         "uuid": "2e5bd897-f518-42f0-961b-ec613f020764",
         "no_file_available": false,
         "status": "in progress",
@@ -5259,7 +5539,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 211231}
+            {
+                "feature_type": "peak",
+                "feature_count": 211231
+            }
         ],
         "observation_count": 11818,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5290,7 +5573,6 @@
             "jimmie-ye:raw_peak_matrix_3a"
         ],
         "accession": "LATDF206ABA",
-        "award": "CZI021IMM",
         "uuid": "fb557d3a-deca-49fd-9d0d-cb77ed5785ce",
         "no_file_available": false,
         "status": "in progress",
@@ -5305,7 +5587,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 220231}
+            {
+                "feature_type": "peak",
+                "feature_count": 220231
+            }
         ],
         "observation_count": 13118,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5336,7 +5621,6 @@
             "jimmie-ye:raw_peak_matrix_3b"
         ],
         "accession": "LATDF207ABA",
-        "award": "CZI021IMM",
         "uuid": "b80409f6-f580-43d6-93b2-8b5f6a07bd53",
         "no_file_available": false,
         "status": "in progress",
@@ -5351,7 +5635,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 200312}
+            {
+                "feature_type": "peak",
+                "feature_count": 200312
+            }
         ],
         "observation_count": 12991,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5382,7 +5669,6 @@
             "jimmie-ye:raw_peak_matrix_3c"
         ],
         "accession": "LATDF208ABA",
-        "award": "CZI021IMM",
         "uuid": "5888757c-9564-4a96-9db1-17ee8e502c81",
         "no_file_available": false,
         "status": "in progress",
@@ -5397,7 +5683,10 @@
             "genomic coordinates"
         ],
         "feature_counts": [
-            {"feature_type": "peak", "feature_count": 268231}
+            {
+                "feature_type": "peak",
+                "feature_count": 268231
+            }
         ],
         "observation_count": 11318,
         "dataset": "jimmie-ye:snATACseq_atac_dataset",
@@ -5428,7 +5717,6 @@
             "peter-sims:postnatal_1a_matrix"
         ],
         "accession": "LATDF100AAA",
-        "award": "CZI004LIV",
         "uuid": "77e45170-df3e-11ea-87d0-0242ac130003",
         "no_file_available": false,
         "status": "released",
@@ -5443,7 +5731,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5472,7 +5763,6 @@
             "peter-sims:postnatal_1b_matrix"
         ],
         "accession": "LATDF101AAA",
-        "award": "CZI004LIV",
         "uuid": "425a21cd-ad72-49fb-9c9a-cd80d93ea5b4",
         "no_file_available": false,
         "status": "released",
@@ -5487,7 +5777,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5516,7 +5809,6 @@
             "peter-sims:postnatal_1c_matrix"
         ],
         "accession": "LATDF102AAA",
-        "award": "CZI004LIV",
         "uuid": "2f280832-e0ce-11ea-87d0-0242ac130003",
         "no_file_available": false,
         "status": "released",
@@ -5531,7 +5823,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5560,7 +5855,6 @@
             "peter-sims:prenatal_2a_matrix"
         ],
         "accession": "LATDF103AAA",
-        "award": "CZI004LIV",
         "uuid": "28fc5d7c-e0cf-11ea-87d0-0242ac130003",
         "no_file_available": false,
         "status": "released",
@@ -5575,7 +5869,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5604,7 +5901,6 @@
             "peter-sims:prenatal_2b_matrix"
         ],
         "accession": "LATDF104AAA",
-        "award": "CZI004LIV",
         "uuid": "98527040-e1d1-4c89-a354-47a0f0fe738f",
         "no_file_available": false,
         "status": "released",
@@ -5619,7 +5915,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5648,7 +5947,6 @@
             "peter-sims:prenatal_2c_matrix"
         ],
         "accession": "LATDF105AAA",
-        "award": "CZI004LIV",
         "uuid": "b9996519-e6f0-497e-a4ed-c19ea0ca5a1e",
         "no_file_available": false,
         "status": "released",
@@ -5663,7 +5961,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5692,7 +5993,6 @@
             "peter-sims:prenatal_3a_matrix"
         ],
         "accession": "LATDF106AAA",
-        "award": "CZI004LIV",
         "uuid": "f29c27f1-1b93-4650-bf83-5ba8fb898318",
         "no_file_available": false,
         "status": "released",
@@ -5707,7 +6007,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5736,7 +6039,6 @@
             "peter-sims:prenatal_3b_matrix"
         ],
         "accession": "LATDF107AAA",
-        "award": "CZI004LIV",
         "uuid": "3b7039d8-e0cf-11ea-87d0-0242ac130003",
         "no_file_available": false,
         "status": "released",
@@ -5751,7 +6053,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5780,7 +6085,6 @@
             "peter-sims:prenatal_3c_matrix"
         ],
         "accession": "LATDF108AAA",
-        "award": "CZI004LIV",
         "uuid": "32c7e05a-62fa-42ae-a524-0f4d02dc9b47",
         "no_file_available": false,
         "status": "released",
@@ -5795,7 +6099,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 737911,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5824,7 +6131,6 @@
             "peter-sims:postnatal_1a_filtered_matrix"
         ],
         "accession": "LATDF109AAA",
-        "award": "CZI004LIV",
         "uuid": "e40c90d2-af36-40d0-a947-e872fa5a0e7d",
         "no_file_available": false,
         "status": "released",
@@ -5839,7 +6145,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 20991,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5869,7 +6178,6 @@
             "peter-sims:postnatal_1b_filtered_matrix"
         ],
         "accession": "LATDF110AAA",
-        "award": "CZI004LIV",
         "uuid": "059785ef-9e3c-4014-80d3-16248064fdcc",
         "no_file_available": false,
         "status": "released",
@@ -5884,7 +6192,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 19282,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5914,7 +6225,6 @@
             "peter-sims:postnatal_1c_filtered_matrix"
         ],
         "accession": "LATDF111AAA",
-        "award": "CZI004LIV",
         "uuid": "be473115-9e5d-4094-9f22-9a8125d3aa68",
         "no_file_available": false,
         "status": "released",
@@ -5929,7 +6239,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 21882,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -5959,7 +6272,6 @@
             "peter-sims:prenatal_2a_filtered_matrix"
         ],
         "accession": "LATDF112AAA",
-        "award": "CZI004LIV",
         "uuid": "8ae541d4-541b-4a3d-99a4-98e97e3206f3",
         "no_file_available": false,
         "status": "released",
@@ -5974,7 +6286,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 18727,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6004,7 +6319,6 @@
             "peter-sims:prenatal_2b_filtered_matrix"
         ],
         "accession": "LATDF113AAA",
-        "award": "CZI004LIV",
         "uuid": "a4f7cbb1-9fec-471c-8daf-e475978fe0d3",
         "no_file_available": false,
         "status": "released",
@@ -6019,7 +6333,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 17882,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6049,7 +6366,6 @@
             "peter-sims:prenatal_2c_filtered_matrix"
         ],
         "accession": "LATDF114AAA",
-        "award": "CZI004LIV",
         "uuid": "08c6b1da-11b5-4cc9-a1d5-86105d162fd1",
         "no_file_available": false,
         "status": "released",
@@ -6064,7 +6380,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 16222,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6094,7 +6413,6 @@
             "peter-sims:prenatal_3a_filtered_matrix"
         ],
         "accession": "LATDF115AAA",
-        "award": "CZI004LIV",
         "uuid": "117d7566-4586-4675-b359-73ee0351ac3b",
         "no_file_available": false,
         "status": "released",
@@ -6109,7 +6427,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 14829,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6139,7 +6460,6 @@
             "peter-sims:prenatal_3b_filtered_matrix"
         ],
         "accession": "LATDF116AAA",
-        "award": "CZI004LIV",
         "uuid": "e363e2cf-2ab5-4e2c-91b4-4ac4a65e69e8",
         "no_file_available": false,
         "status": "released",
@@ -6154,7 +6474,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 12992,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6184,7 +6507,6 @@
             "peter-sims:prenatal_3c_filtered_matrix"
         ],
         "accession": "LATDF117AAA",
-        "award": "CZI004LIV",
         "uuid": "97c7a401-f6a8-4315-9d81-e12d84b79a80",
         "no_file_available": false,
         "status": "released",
@@ -6199,7 +6521,10 @@
             "Ensembl gene ID"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 33029}
+            {
+                "feature_type": "gene",
+                "feature_count": 33029
+            }
         ],
         "observation_count": 18823,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6229,7 +6554,6 @@
             "peter-sims:postnatal_merged_matrix"
         ],
         "accession": "LATDF118AAA",
-        "award": "CZI004LIV",
         "uuid": "1b5f2d6d-8dd0-4463-abd9-722bb2bd11a7",
         "no_file_available": false,
         "status": "released",
@@ -6244,7 +6568,10 @@
             "gene symbol"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 20919}
+            {
+                "feature_type": "gene",
+                "feature_count": 20919
+            }
         ],
         "observation_count": 18292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6295,7 +6622,6 @@
             "peter-sims:prenatal_merged_matrix"
         ],
         "accession": "LATDF119AAA",
-        "award": "CZI004LIV",
         "uuid": "2ee5eb27-2a8c-4124-8f2e-e26faff81cbc",
         "no_file_available": false,
         "status": "released",
@@ -6310,7 +6636,10 @@
             "gene symbol"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 20919}
+            {
+                "feature_type": "gene",
+                "feature_count": 20919
+            }
         ],
         "observation_count": 50292,
         "dataset": "peter-sims:scRNAseq_test_dataset",
@@ -6364,7 +6693,6 @@
             "peter-sims:unconsented_matrix"
         ],
         "uuid": "4f72ed00-38c1-468d-a29a-000a2eb14c70",
-        "award": "CZI004LIV",
         "no_file_available": false,
         "status": "released",
         "file_format": "mtx",
@@ -6377,7 +6705,10 @@
             "gene symbol"
         ],
         "feature_counts": [
-            {"feature_type": "gene", "feature_count": 23213}
+            {
+                "feature_type": "gene",
+                "feature_count": 23213
+            }
         ],
         "observation_count": 50292,
         "dataset": "peter-sims:scRNAseq_test_dataset",

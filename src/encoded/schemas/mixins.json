@@ -1,14 +1,6 @@
  {
     "title": "Mixin properties",
     "description": "Schema for properties that are shared across multiple object types.",
-    "award": {
-        "award": {
-            "title": "Award",
-            "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
-            "type": "string",
-            "linkTo": "Award"
-        }
-    },
     "schema_version": {
         "schema_version": {
             "title": "Schema version",
