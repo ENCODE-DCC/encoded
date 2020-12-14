@@ -50,14 +50,12 @@
         "dataset": {
             "title": "Dataset",
             "description": "The dataset the library belongs to.",
-            "comment": "See dataset.json for available identifiers.",
             "type": "string",
             "linkTo": "Dataset"
         },
         "protocol": {
             "title": "Protocol",
             "description": "The protocol used to make the library.",
-            "comment": "See library_protocol.json for available identifiers.",
             "type": "string",
             "linkTo": "LibraryProtocol"
         },
@@ -70,7 +68,6 @@
         "derived_from": {
             "title": "Derived from",
             "description": "The biosamples that nucleic acid was isolated from to generate the library.",
-            "comment": "See biosample.json for available identifiers.",
             "type": "array",
             "items": {
                 "title": "Derived from",
@@ -173,7 +170,6 @@
             "items" : {
                 "title": "A spike-ins dataset.",
                 "description": "A specific spike-ins type dataset",
-                "comment": "See dataset.json for available identifiers.",
                 "type": "string",
                 "linkTo": "ReferenceFileSet"
             }

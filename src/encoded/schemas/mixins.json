@@ -5,7 +5,6 @@
         "award": {
             "title": "Award",
             "description": "The HCA Seed Network or HCA Pilot Project award used to fund this data generation.",
-            "comment": "Required. See award.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Award"
         }
@@ -24,7 +23,6 @@
         "preservation_method": {
             "title": "Preservation method",
             "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
-            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.",
             "type": "string",
             "enum": [
                 "cryopreservation",
@@ -75,7 +73,7 @@
         "uuid": {
             "title": "UUID",
             "description":"The unique identifier associated with every object.",
-            "comment":  "Do not submit. The uuid is set by the server.",
+            "comment":  "Do not submit. The server will assign a value.",
             "type": "string",
             "format": "uuid",
             "serverDefault": "uuid4",
@@ -87,7 +85,7 @@
         "accession": {
             "title": "Accession",
             "description": "A unique identifier to be used to reference the object prefixed with LAT.",
-            "comment": "Do not submit. The accession is assigned by the server.",
+            "comment": "Do not submit. The server will assign a value.",
             "type": "string",
             "format": "accession",
             "serverDefault": "accession",
@@ -108,7 +106,7 @@
             "permission": "import_items",
             "default": "in progress",
             "description": "The status of the metadata object.",
-            "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
+            "comment": "Do not submit.  The server will assign a default value.",
             "enum": [
                 "in progress",
                 "released",
@@ -125,6 +123,7 @@
             "type": "string",
             "default": "in progress",
             "description": "The status of the metadata object.",
+            "comment": "Do not submit.  The server will assign a default value.",
             "permission": "import_items",
             "enum" : [
                 "deleted",
@@ -139,6 +138,7 @@
             "type": "string",
             "default": "current",
             "description": "The status of the metadata object.",
+            "comment": "Do not submit. The server will assign a default value.",
             "enum" : [
                 "current",
                 "deleted",
@@ -151,7 +151,7 @@
             "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
             "description": "The date the object was created.",
-            "comment": "Do not submit. The date the object is created is assigned by the server.",
+            "comment": "Do not submit. The server will assign a value.",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
@@ -164,7 +164,7 @@
             "rdfs:subPropertyOf": "dc:creator",
             "title": "Submitted by",
             "description": "The user that originally generated this metadata object.",
-            "comment": "Do not submit. The user that created the object is assigned by the server.",
+            "comment": "Do not submit. The server will assign a value.",
             "type": "string",
             "linkTo": "User",
             "serverDefault": "userid",
@@ -189,7 +189,6 @@
         "lab": {
             "title": "Lab",
             "description": "Lab associated with the submission.",
-            "comment": "Required. See lab.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Lab",
             "linkSubmitsFor": true
@@ -274,7 +273,6 @@
         "notes": {
             "title": "Notes",
             "description": "Lattice internal notes.",
-            "comment": "Do not submit. A place for the DCC to keep information that does not have a place in the schema.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items",
@@ -316,7 +314,6 @@
                 "title": "Document",
                 "description": "A document that provides additional information (not data file).",
                 "type": "string",
-                "comment": "See document.json for available identifiers.",
                 "linkTo": "Document"
             }
         }
@@ -328,7 +325,6 @@
             "uniqueItems": true,
             "items": {
                 "title": "Treatment",
-                "comment": "See treatment.json for available identifiers.",
                 "type": "string",
                 "linkTo": "Treatment"
             }
@@ -349,7 +345,6 @@
     "diseases": {
         "diseases": {
             "title": "Diseases",
-            "comment": "See ontology_term.json for available identifiers.",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -365,7 +360,6 @@
             "description": "The expression matrix file from which the gene expression metrics was generated.",
             "type": "string",
             "uniqueItems": true,
-            "comment": "See file.json for a list of available identifiers.",
             "linkTo": "MatrixFile"
         }
     },

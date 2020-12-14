@@ -43,21 +43,19 @@
         "corresponding_contributor": {
             "title": "Corresponding contributor",
             "description": "The user who is the primary external contact for the dataset.",
-            "comment": "",
             "type": "string",
             "linkTo": "User"
         },
         "internal_contact": {
             "title": "Internal contact",
             "description": "The Lattice contact for questions about the details of the experiment and/or analysis.",
-            "comment": "",
             "type": "string",
             "linkTo": "User"
         },
         "date_released": {
             "title": "Date released",
             "description": "Date when dataset was released",
-            "comment": "Do not submit, value is assigned whe the object is releaesd.",
+            "comment": "Do not submit. The server will assign a value.",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},

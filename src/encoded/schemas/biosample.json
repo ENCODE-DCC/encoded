@@ -29,7 +29,6 @@
         "biosample_ontology": {
             "title": "Biosample ontology",
             "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
-            "comment": "See ontology_term.json for available identifiers.",
             "type": "string",
             "linkTo": "OntologyTerm"
         },

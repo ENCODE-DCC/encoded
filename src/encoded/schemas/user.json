@@ -38,7 +38,6 @@
         "lab": {
             "title": "Lab",
             "description": "The lab that the user is primarily associated with.",
-            "comment": "See lab.json for available identifiers.",
             "permission": "import-items",
             "type": "string",
             "linkTo": "Lab"
@@ -51,7 +50,6 @@
             "permission": "import-items",
             "items": {
                 "description": "A lab user is authorized to submit for.",
-                "comment": "See lab.json for available identifiers.",
                 "type": "string",
                 "linkTo": "Lab"
             }

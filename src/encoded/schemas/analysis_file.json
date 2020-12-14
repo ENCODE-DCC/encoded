@@ -10,7 +10,6 @@
         "assembly": {
             "title": "Genome assembly",
             "description": "Genome assembly that files were mapped to.",
-            "comment": "Required property for bam, sam, gtf, idx, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
             "type": "string",
             "enum": [
                 "GRCh38",
@@ -21,7 +20,6 @@
         "genome_annotation": {
             "title": "Genome annotation",
             "description": "Genome annotation that file was generated with.",
-            "comment": "Applies to files created using annotations.",
             "type": "string",
             "enum": [
                 "GENCODE 32",

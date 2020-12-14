@@ -39,12 +39,10 @@
         "principal_investigators": {
             "title": "Principal Investigators",
             "description": "Principal Investigators of the grant.",
-            "comment": "See user.json for available identifiers.",
             "type": "array",
             "uniqueItems": true,
             "items": {
                 "title": "User",
-                "comment": "See user.json for available identifiers.",
                 "type": "string",
                 "linkTo": "User"
             }
@@ -52,12 +50,10 @@
         "collaborators": {
             "title": "Collaborators",
             "description": "Collaborators of the grant.",
-            "comment": "See user.json for available identifiers.",
             "type": "array",
             "uniqueItems": true,
             "items": {
                 "title": "User",
-                "comment": "See user.json for available identifiers.",
                 "type": "string",
                 "linkTo": "User"
             }

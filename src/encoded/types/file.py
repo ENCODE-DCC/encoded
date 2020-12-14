@@ -39,7 +39,6 @@ import time
 
 from urllib.parse import urlparse
 
-from encoded.upload_credentials import UploadCredentials
 from snovault.util import ensure_list_and_filter_none
 from snovault.util import take_one_or_return_none
 from snovault.util import try_to_get_field_from_item_with_skip_calculated_first
@@ -117,7 +116,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Download URL",
         "description": "The download path for S3 to obtain the actual file.",
-        "comment": "Do not submit. This is issued by the server.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def href(self, request, file_format, accession=None, external_accession=None):
@@ -196,7 +195,7 @@ class DataFile(File):
     @calculated_property(schema={
         "title": "Read length units",
         "description": "The units for read length.",
-        "comment": "Do not submit. This is a fixed value.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
         "enum": [
             "nt"
@@ -209,7 +208,7 @@ class DataFile(File):
     @calculated_property(schema={
         "title": "Superseded by",
         "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
-        "comment": "Do not submit. Values in the list are reverse links of a file that supersedes.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "array",
         "items": {
             "type": ['string', 'object'],

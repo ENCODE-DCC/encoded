@@ -33,7 +33,6 @@
         "principal_investigators": {
             "title": "Principal Investigators",
             "description": "Principal Investigators of the lab.",
-            "comment": "See user.json for available identifiers.",
             "type": "array",
             "items": {
                 "description": "A Principal Investigators of the lab",

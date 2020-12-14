@@ -72,7 +72,6 @@
         "mating_status": {
             "title": "mating status",
             "description": "The mating status of the animal.",
-            "comment": "The value is not available for human biosamples.",
             "type": "string",
             "enum": [
                 "mated",

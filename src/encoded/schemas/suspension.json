@@ -60,7 +60,6 @@
         "biosample_ontology": {
             "title": "Biosample ontology",
             "description": "An embedded property for linking to biosample type which describes the ontology of the biosample.",
-            "comment": "See ontology_term.json for available identifiers.",
             "type": "string",
             "linkTo": "OntologyTerm"
         },
@@ -287,7 +286,6 @@
             "items": {
                 "title": "Feature antibodies",
                 "description": "Antibodies used for cell surface protein detection in Feature Barcoding technologies (aka: CITEseq) during biosample preparation",
-                "comment": "See antibody_lot.json for available identifiers.",
                 "type": "string",
                 "linkTo": "AntibodyLot"
             }

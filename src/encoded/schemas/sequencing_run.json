@@ -32,7 +32,6 @@
         "derived_from": {
             "title": "Derived from",
             "description": "The experimental library designation for the file.",
-            "comment": "This field is required for sra and fastq files. See library.json for available identifiers.",
             "type": "string",
             "linkTo": "Library"
         },
