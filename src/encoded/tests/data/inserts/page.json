@@ -525,6 +525,39 @@
           }
     },
     {
+      "name": "data-standards",
+      "title": "Data standards",
+      "status": "released",
+      "lab": "venkat-malladi",
+      "submitted_by": "dignissim.euismod@amet.habitant",
+      "uuid": "6189dbf8-a36a-4ddb-a2cb-e563ae44d298",
+      "layout": {
+        "rows": [
+          {"cols": [
+            {
+              "blocks": [
+                "#block1",
+                "#block2"
+              ]
+            }
+          ]
+        }
+      ],
+      "blocks": [
+        {
+          "@id": "#block1",
+          "body": "<center>\n<h1>Data Standards</h1>\n</center>\n\n<p>The KCE team uses several different molecular assays, shown below. We will continue to update and expand this list in order to appropriately capture experimental methods as their use grows.</p>\n",
+          "@type": ["richtextblock", "block"]
+        },
+        {
+          "@id": "#block2",
+          "body": "<center>\n<h1>Assays and Molecular data</h1>\n</center>\n<table class=\"info-table\" style=\"width:100%;\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td>\n\t\t\t<h4>DNA sequencing</h4>\n\n\t\t\t<ul>\n\t\t\t\t<li>\n\t\t\t\t<p><strong>Whole Exome Sequencing (WXS)</strong></p>\n\t\t\t\t</li>\n\t\t\t\t<li>\n\t\t\t\t<p><strong>Whole Genome Sequencing (WGS)</strong></p>\n\t\t\t\t</li>\n\t\t\t<li>\n\t\t\t\t<p><strong>Mitochondria seqencing</strong></p>\n\t\t\t\t</li>\n\t\t\t\t</ul>\n\n\t\t\t<h4>DNA Methylation</h4>\n\n\t\t\t<ul>\n\t\t\t\t<li><strong>Methylation Array</strong></li>\n\t\t\t</ul>\n\n\t\t\t<h4>RNA sequencing</h4>\n\n\t\t\t<ul>\n\t\t\t\t<li><strong>RNA-seq</strong> (calculated experssion per gene, exon, isoform)</li></ul>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n</center>\n\n",
+          "@type": ["richtextblock", "block"]
+        }
+      ]
+    }
+    },
+    {
         "name": "about",
         "title": "About",
         "lab": "thomas-gingeras",
