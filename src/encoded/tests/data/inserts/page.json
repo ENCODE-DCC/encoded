@@ -220,7 +220,7 @@
               },
               {
                 "@id": "#block2",
-                "body": "<center>\n<h4>Project Overview | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>",
+                "body": "<center>\n<h4>Project Overview | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/help/dictionary/\">Data Dictionary/Definitions</a></h4>\n</center>",
                 "@type": [
                   "richtextblock",
                   "block"
@@ -265,7 +265,7 @@
                   "block"
                 ],
                 "@id": "#block2",
-                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | Using the Portal | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>\n"
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | Using the Portal | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/help/dictionary/\">Data Dictionary/Definitions</a></h4>\n</center>\n"
               },
               {
                 "@type": [
@@ -327,7 +327,7 @@
               },
               {
                 "@id": "#block3",
-                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | REST API | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | REST API | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/help/dictionary/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
                 "@type": [
                   "richtextblock",
                   "block"
@@ -502,7 +502,7 @@
               },
               {
                 "@id": "#block2",
-                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | Data Organization | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | Data Organization | <a href=\"/help/dictionary/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
                 "@type": [
                   "richtextblock",
                   "block"
@@ -523,6 +523,47 @@
             ]
           }
     },
+    {
+      "parent": "/help",
+      "name": "dictionary",
+      "title": "Dictionary",
+      "status": "released",
+      "lab": "venkat-malladi",
+      "submitted_by": "dignissim.euismod@amet.habitant",
+      "uuid": "8642b9ec-bf5b-4491-be2c-29930cc4e98f",
+      "layout": {
+          "blocks": [
+            {
+              "@id": "#block1",
+              "body": "<h2>Metadata</h2>\n\n<p>The KCE project has defined a set of metadata used to describe the patients, biosamples, and genomics.</p>\n\n<h3>Data model</h3>\n\n<p>Metadata for experimental assays and computational analyses are organized as <a href=\"https://www.json.org/\">JSON objects</a>. Each object represents a specific component of the assay or analysis. A schema profile for each object type outlines the set of properties for a given object of that type. For example, a patient is represented by a Patient object, the sample collected from a patient is represented by a Biospecimen object. For a complete list of these schemas, click &quot;Materials &amp; Methods&quot; -&gt; &quot;<a href=\"/profiles/?\">Schemas</a>&quot; at the top of any page.</p>\n\n<p>A property for a given object can &ldquo;link&rdquo; or &ldquo;point&rdquo; to another object on the KCE Portal. For example, an Patient object has the property <em>surgery</em>, a list containing the Surgery objects associated with that patient. The properties of each Surgery object are embedded directly in the patient JSON. Each Surgery has properties of additional objects embedded within it as well, including the surgery_procedure, and pathology_report objects associated with that Surgery(Figure 1). These object relationships form the basis of the core data model for the KCE Portal. For details on viewing the JSON of objects on the Portal and accessing properties of objects programmatically, please see the introduction to our <a href=\"/help/rest-api/\">REST API</a>.</p>\n\n<pre style=\"width:50%;margin-left:25%\">\n{\n<font color=\"#4B7EE5\">    surgery:[\n&nbsp;       {\n&nbsp;           hospital_location&quot;: &quot;UTSW&quot;,\n&nbsp;           date&quot;: &quot;1862-02-03&quot;,\n&nbsp;           status&quot;: &quot;released&quot;,</font>\n            <font color=\"#F45128\">surgery_procedure: {\n                procedure_type: &quot;Nephrectomy&quot;,\n                nephrectomy_details: {\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;     &nbsp;     type: &quot;Partial&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;         approach: &quot;Laparoscopic&quot;,\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;         robotic_assist: false\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;       }\n&nbsp;            }</font>\n             <font color=\"#25af29\">pathology_report: {\n&nbsp;               histology: &quot;Metanephric adenoma&quot;,\n&nbsp;               t_stage: &quot;pT4&quot;,\n                ​tumor_size: 5,\n</font>\n            <font color=\"#25af29\">}</font>\n            \n        <font color=\"#4B7EE5\">},\n        {...}\n    ]</font>\n}\n</pre>\n\n<center>\n<p style=\"font-size:9pt; color:gray\">Figure 1. Embedded properties of an example patient JSON describing associated surgery, surgery_procedure, and pathology_report objects.</p>\n</center>\n\n<h3>Accessions</h3>\n\n<p>The KCE creates accessions for metadata that can be reused to ensure that the exact patient or biospecimen is being referred to when being discussed or analyzed. Below are some examples of accessions given to certain types of metadata:</p>\n\n<ul>\n\t<li><strong>Patient</strong>: Every patient is given a patient accession. This accession allows multiple biospecimens obtained from a single patient to be grouped together.</li>\n\t<li><strong>Surgery:</strong>&nbsp;Every surgery is given a surgery accecction. This accesssion&nbsp;ensures the correct surgeries are associated with the correct patient.&nbsp;</li>\n\t<li><strong>Pathology Report</strong>: A&nbsp;pathology report accession refers to the medical document that is generated after a sugery procedure to give&nbsp;information about a diagnosis.&nbsp; This accession ensures the correct pathology report is associated with the correct surgery.</li>\n\t<li><strong>A biospecimen</strong>: An biospecimen accession refers to a tube or sample of that biological material used in an assay. For example, the following would each be given a biospecimen accession: (1) a batch of a cell line grown on a specific day, (2) the isolation of a primary cell culture on a specific day, or (3) the dissection of a tissue sample on a specific day.</li>\n\t<li><strong>Library</strong>: Each unique library that can be resequenced is given an accession. This accession ensures the correct files are associated with the nucleic acid material created from the biospecimen.</li>\n\t<li><strong>File</strong>: Each data file available for download is given an accession. The file accession and file format are included in the name of the file itself.</li>\n</ul>\n\n<h3>&nbsp;</h3>\n",
+              "@type": [
+                "richtextblock",
+                "block"
+              ]
+            },
+            {
+              "@id": "#block2",
+              "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | Data Organization | <a href=\"/help/dictionary/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
+              "@type": [
+                "richtextblock",
+                "block"
+              ]
+            }
+          ],
+          "rows": [
+            {
+              "cols": [
+                {
+                  "blocks": [
+                    "#block2",
+                    "#block1"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+  },
     {
       "name": "data-standards",
       "title": "Data standards",
