@@ -4,7 +4,7 @@ import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { RelatedItems } from './item';
-import { DisplayAsJson } from './objectutils';
+import { ItemAccessories } from './objectutils';
 import formatMeasurement from './../libs/formatMeasurement';
 import { CartToggle } from './cart';
 import Status from './status';
@@ -164,10 +164,11 @@ class Patient extends React.Component {
           <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" ></script>
           <div className="col-sm-12">
             <Breadcrumbs root="/search/?type=Patient" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-            <h2>{context.accession}</h2>
             <div className="cart__toggle--header">
               <CartToggle element={context} />
             </div>
+            <h2>{context.accession}</h2>
+            <ItemAccessories item={context}/>
           </div>
         </header>
 
@@ -283,4 +284,3 @@ Patient.defaultProps = {
 };
 
 globals.contentViews.register(Patient, 'Patient');
-
