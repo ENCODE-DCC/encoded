@@ -321,7 +321,7 @@
         },
         "surgery.pathology_report.laterality": {
             "title": "Tumor Laterality"
-        },:
+        },
         "ihc.antibody": {
             "title": "IHC/FISH (Clinical lab)"
         },
@@ -353,4 +353,3 @@
         },
     "changelog": "/profiles/changelogs/patient.md"
 }
-

@@ -220,7 +220,7 @@
               },
               {
                 "@id": "#block2",
-                "body": "<center>\n<h4>Project overview | <a href=\"/help/getting-started/\">Using the portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data organization</a> </h4>\n</center>",
+                "body": "<center>\n<h4>Project Overview | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>",
                 "@type": [
                   "richtextblock",
                   "block"
@@ -265,7 +265,7 @@
                   "block"
                 ],
                 "@id": "#block2",
-                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project overview</a> | Using the portal | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data organization</a>  | <a href=\"/help/submission/\">Data submission</a> | <a href=\"/data/annotations/\">Encyclopedia</a></h4>\n</center>\n"
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | Using the Portal | <a href=\"/help/rest-api/\">REST API</a> | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>\n"
               },
               {
                 "@type": [
@@ -327,7 +327,7 @@
               },
               {
                 "@id": "#block3",
-                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project overview</a> | <a href=\"/help/getting-started/\">Using the portal</a> | REST API | <a href=\"/help/data-organization\">Data organization</a> | <a href=\"/help/submission/\">Data submission</a>  | <a href=\"/data/annotations/\">Encyclopedia</a></h4>\n</center>\n",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | REST API | <a href=\"/help/data-organization\">Data Organization</a> | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
                 "@type": [
                   "richtextblock",
                   "block"
@@ -503,7 +503,7 @@
               },
               {
                 "@id": "#block2",
-                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project overview</a> | <a href=\"/help/getting-started/\">Using the portal</a> | <a href=\"/help/rest-api/\">REST API</a> | Data organization</h4>\n</center>\n",
+                "body": "<center>\n<h4><a href=\"/help/project-overview/\">Project Overview</a> | <a href=\"/help/getting-started/\">Using the Portal</a> | <a href=\"/help/rest-api/\">REST API</a> | Data Organization | <a href=\"/data/annotations/\">Data Dictionary/Definitions</a></h4>\n</center>\n",
                 "@type": [
                   "richtextblock",
                   "block"
