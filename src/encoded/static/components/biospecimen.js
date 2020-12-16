@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
-import { ItemAccessories, Breadcrumbs } from './navigation';
+import { ItemAccessories } from './objectutils';
+import { Breadcrumbs } from './navigation';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 import { PanelLookup } from './objectutils';
@@ -87,7 +88,7 @@ class Biospecimen extends React.Component {
                                 <dt>Status</dt>
                                 <dd><Status item={context} inline /></dd>
                             </div>
-                            <div data-test="openspecimen_ID">
+                            <div data-test="openspecimen_id">
                                 <dt>OpenSpecimen ID</dt>
                                 <dd>{context.openspecimen_id}</dd>
                             </div>
