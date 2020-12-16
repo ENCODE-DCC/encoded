@@ -610,6 +610,7 @@
         "ajcc_p_stage": 1.0,
         "n_stage": 1.0,
         "m_stage": 1.0,
+        "metasis_details.site": 1.0,
         "metasis_details.type": 1.0,
         "ajcc_tnm_stage": 1.0,
         "ajcc_version": 1.0,

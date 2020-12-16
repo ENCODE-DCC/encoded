@@ -4,34 +4,18 @@
     "description": "Schema for describing the IHC results.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    
     "anyOf": [
         {"required": ["pathology_report"]},
         {"required": ["biospecimen"]}
     ],
-    "required": [
-        "patient",
-        "service_date",
-        "antibody",
-        "result"
-    ],
-    "identifyingProperties": [
-        "uuid","pathology_report","biospecimen","patient"
-    ],
+    "required": [ "patient", "service_date", "antibody", "result" ],
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
-        {
-            "$ref": "mixins.json#/schema_version"
-        },
-        {
-            "$ref": "mixins.json#/uuid"
-        },
-        {
-            "$ref": "mixins.json#/submitted"
-        },
-        {
-            "$ref": "mixins.json#/standard_status"
-        }
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/standard_status" }
     ],
     "properties": {
         "schema_version": {
@@ -44,24 +28,22 @@
             "linkTo": "Patient"
         },
         "pathology_report": {
-            "title": "Pathology Report Tumor Accession",
-            "description": "Need any of surgery accession or biospecimen accession to submit data",
-            "comment": "link to surgery information with surgery accession. ",
+            "title": "Pathology Report",
+            "description": "The Pathology report directly connected to the IHC assay.",
             "type": "string",
             "permission": "import_items",
             "linkTo": "PathologyReport"
         },
         "biospecimen": {
-            "title": "Biospecimen Accession",
-            "description": "Need any of surgery accession or biospecimen accession to submit data",
-            "comment": "link to biospecimen information with biospecimen accession.",
+            "title": "Biospecimen",
+            "description": "The biospecimen report directly connected to the IHC assay.",
             "type": "string",
             "permission": "import_items",
             "linkTo": "Biospecimen"
         },
         "path_id": {
             "title": "Pathology ID",
-            "comment": "KCE personnel are allowed to set this value.",
+            "comment": "Admins  are allowed to set this value.",
             "type": "string",
             "permission": "import_items"
         },
@@ -124,10 +106,8 @@
         "result": {
             "title": "IHC/FISH results"
         }
-       
     },
     "columns": {
-        
         "pathology_report": {
             "title": "Accession"
         },
@@ -144,7 +124,6 @@
             "title": "IHC/FISH results"
         }
     },
-
     "boost_values": {
         "antibody": 1.0,
         "patient": 1.0,

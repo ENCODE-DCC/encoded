@@ -12,7 +12,10 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/submitter_comment" }
+
     ],
     "facets": {
         "status": {
@@ -22,8 +25,8 @@
     "dependencies": {
         "nucleic_acid_quantity_units": ["nucleic_acid_starting_quantity"],
         "nucleic_acid_quantity": ["nucleic_acid_starting_quantity_units"],
-        "source": ["sequencing_ID"],
-        "sequencing_ID": ["source"]
+        "source": ["sequencing_id"],
+        "sequencing_id": ["source"]
     },
     "properties": {
         "schema_version": {
@@ -31,12 +34,6 @@
         },
         "accession": {
             "accessionType": "LB"
-        },
-        "internal_ID": {
-            "title": "Internal ID",
-            "description": "ID used internally to identify this biospecimen.",
-            "comment": "Only admins are allowed to set or update this value.",
-            "type": "string"
         },
         "biospecimen": {
             "title": "biospecimen",
@@ -61,7 +58,7 @@
         },
         "nucleic_acid_term_name": {
             "title": "Library material",
-            "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
+            "description": "The molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
             "enum": [
                 "DNA",
@@ -101,29 +98,30 @@
             "type": "string",
             "format": "date"
         },
-        "sequencing_ID": {
+        "sequencing_id": {
             "title": "Sequecing ID",
             "description": "Sequecing ID from the company.",
             "type": "string"
         },
-        "construction_platform": {
-            "title": "Platform",
-            "description": "The device used to construct the library.",
-            "comment": "Use in cases of automated/proprietary library preparation (Fluidigm, 10X, etc.)",
-            "type": "string",
-            "linkTo": "Platform"
-        },
         "source": {
             "title": "Source",
-            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA).",
+            "description": "The vendor, sequencing.",
             "type": "string"
+        },
+        "documents": {
+            "description": "Protocols or other documents that describe library construction and sample treatment before sequencing."
+        },
+        "strand_specificity": {
+            "title": "Strand specific",
+            "description": "The preparation of the library uses a strand-specific protocol.",
+            "type": "boolean",
+            "default": false
         }
     },
     "columns": {
         "accession": {
             "title": "Accession"
         },
-        
         "biospecimen.sample_type": {
             "title": "Sample Type"
         },
@@ -142,10 +140,9 @@
     },
     "boost_values": {
         "accession": 1.0,
-        "internal_ID": 1.0,
+        "biospecimen.internal_id": 1.0,
         "biospecimen.accession": 1.0,
-        "biospecimen.patient": 1.0,
-        "sequencing_ID": 1.0
+        "sequencing_id": 1.0
     },
     "changelog": "/profiles/changelogs/biolibrary.md"
 }

@@ -131,8 +131,8 @@
             "title": "Genome assembly"
         },
         "organism.scientific_name": {
-            "title": "Organism"
-        },
+          "title": "Organism"
+       },
         "files.file_type": {
             "title": "Available file types"
         },

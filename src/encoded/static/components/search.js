@@ -10,6 +10,8 @@ import FacetRegistry from './facets';
 import * as globals from './globals';
 import {
     DisplayAsJson,
+    BiosampleType,
+    requestSearch,
     DocTypeTitle,
     singleTreatment,
 } from './objectutils';
@@ -22,38 +24,39 @@ import { BrowserSelector } from './vis_defines';
 
 // Should really be singular...
 const types = {
+    patient: { title: 'Patients' },
+    surgery: { title: 'Surgery and Pathology Reports' },
     annotation: { title: 'Annotation file set' },
-    antibody_lot: { title: 'Antibodies' },
-    biosample_type: { title: 'Biosample types' },
-    biosample: { title: 'Biosamples' },
-    computational_model: { title: 'Computational model file set' },
-    experiment: { title: 'Experiments' },
-    gene: { title: 'Genes' },
-    target: { title: 'Targets' },
-    dataset: { title: 'Datasets' },
+    biospecimen: { title: 'Biospecimens' },
+    // bioexperiment: { title: 'Bioexperiments' },
+    // bioseries: { title: 'Series File set' },
+    // biofileSet: { title: 'File set' },
+    // bioexperimentSeries: { title: 'Experiment Series'},
+    biodataset: { title: 'Biodatasets' },
+    bioexperiment: { title: 'Bioexperiments' },
+    bioseries: { title: 'Bioserieses' },
+    biofileSet: { title: 'BiofileSets' },
+    bioexperimentSeries:{title:'BioexperimentSereieses'},
     image: { title: 'Images' },
-    matched_set: { title: 'Matched set series' },
-    aggregate_series: { title: 'Aggregate series' },
-    functional_characterization_series: { title: 'Functional characterization series' },
-    single_cell_rna_series: { title: 'Single cell RNA series' },
-    organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
-    pipeline: { title: 'Pipeline' },
-    project: { title: 'Project file set' },
+    bioproject: { title: 'Project file set' },
     publication_data: { title: 'Publication file set' },
-    reference: { title: 'Reference file set' },
-    reference_epigenome: { title: 'Reference epigenome series' },
-    replication_timing_series: { title: 'Replication timing series' },
-    software: { title: 'Software' },
-    treatment_concentration_series: { title: 'Treatment concentration series' },
-    treatment_time_series: { title: 'Treatment time series' },
-    ucsc_browser_composite: { title: 'UCSC browser composite file set' },
-    patient: { title: 'Patients' },
+    bioreference: { title: 'Reference file set' },
 };
 
 const datasetTypes = {
 };
+
+const biodatasetTypes = {
+    Biodataset: types.biodataset.title,
+    Bioproject: types.bioproject.title,
+    Bioreference: types.bioreference.title,
+    Bioseries: types.bioseries.title,
+    BiofileSet: types.biofileSet.title,
+    BioexperimentSeries:types.bioexperimentSeries.title
+
+}
 
 const getUniqueTreatments = treatments => _.uniq(treatments.map(treatment => singleTreatment(treatment)));
 
@@ -597,7 +600,7 @@ class PatientComponent extends React.Component {
                     <div className="accession">
                         <a href={result['@id']}>
                             {`${result.accession}`}
-                            {hasAge &&`(${age}${ageUnit})`}
+                            {hasAge && `(${age}${ageUnit})`}
                         </a>
                     </div>
                     <div className="data-row">
@@ -648,11 +651,12 @@ class PathologyComponent extends React.Component {
                         </a>
                     </div>
                     <div className="data-row">
-                    {result.tumor_size && result.tumor_size !== 'unknown'&&<div data-test="tumor_size"><strong>Tumor Size:</strong>{result.tumor_size}{result.tumor_size_units}</div>}
-                    {result.laterality && <div><strong>Laterality: </strong>{result.laterality}</div>}
-                    {result.histology && <div><strong>Histology: </strong>{result.histology}</div>}
-                    {result.ajcc_p_stage && <div><strong>Pathological T stage: </strong>{result.ajcc_p_stage}</div>}
-                    {result.ajcc_tnm_stage && <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>}
+                        <div><strong>Tumor Size Range:</strong>{result.tumor_size}{result.tumor_size_units}</div>
+                        <div><strong>Histologic Subtype: </strong>{result.histology}</div>
+                        <div><strong>Tumor Grade: </strong>{result.grade}</div>
+                        <div><strong>pT stage: </strong>{result.ajcc_p_stage}</div>
+                        <div><strong>AJCC TNM Stage: </strong>{result.ajcc_tnm_stage}</div>
+                        <div><strong>Laterality: </strong>{result.laterality}</div>
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -857,8 +861,133 @@ Image.propTypes = {
 globals.listingViews.register(Image, 'Image');
 
 
+
+const BioexperimentComponent = (props, reactContext) => {
+    const { cartControls } = props;
+    const result = props.context;
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Bioexperiment</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {result.assay_term_name ?
+                                <span>{result.assay_term_name}</span> : null
+                            }
+                        </a>
+                    </div>
+
+            </div>
+            {cartControls ?
+                <div className="result-item__cart-control">
+                    <CartToggle element={result} />
+                </div>
+                : null}
+            </div>
+            { props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true }) }
+        </li >
+    );
+};
+
+BioexperimentComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Experiment search results
+    cartControls: PropTypes.bool, // True if displayed in active cart
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired,
+};
+
+BioexperimentComponent.defaultProps = {
+    cartControls: false,
+};
+
+BioexperimentComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Bioexperiment = auditDecor(BioexperimentComponent);
+
+globals.listingViews.register(Bioexperiment, 'Bioexperiment');
+
+const BiodatasetComponent = (props, reactContext) => {
+    const result = props.context;
+    let biosampleTerm;
+
+    // Determine whether the dataset is a series or not
+    const seriesDataset = result['@type'].indexOf('Bioseries') >= 0;
+console.log("seriesDataset", seriesDataset);
+    // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+    if (seriesDataset) {
+        biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
+        // biosampleTerm = (result.biospecimen && Array.isArray(result.biospecimen) && result.biospecimen.length === 1 && result.biospecimen[0].sample_type) ? result.biospecimen[0].sample_type : ((result.biospecimen && result.biospecimen.sample_type) ? result.biospecimen.sample_type : '');
+
+
+    }
+
+    const haveSeries = result['@type'].indexOf('Bioseries') >= 0;
+    const haveFileSet = result['@type'].indexOf('BiofileSet') >= 0;
+    console.log("haveSeries", result['@type'].indexOf('Bioseries'));
+
+    return (
+        <li>
+            <div className="result-item">
+                <div className="result-item__data">
+                    <PickerActions {...props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">{haveSeries ? 'Bioseries' : (haveFileSet ? 'BiofileSet' : 'Biodataset')}</p>
+                        <p className="type">{` ${result.accession}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
+                        {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                            {biodatasetTypes[result['@type'][0]]}
+                            {seriesDataset ?
+                                <span>
+                                    {biosampleTerm ? <span>{` in ${biosampleTerm}`}</span> : null}
+
+                                </span>
+                                :
+                                <span>{result.description ? <span>{`: ${result.description}`}</span> : null}</span>
+                            }
+                        </a>
+                    </div>
+                    <div className="data-row">
+                        {/* <div><strong>Lab: </strong>{result.lab.title}</div>
+                        <div><strong>Project: </strong>{result.award.project}</div> */}
+                    </div>
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
+
+BiodatasetComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiodatasetComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biodataset = auditDecor(BiodatasetComponent);
+
+globals.listingViews.register(Biodataset, 'Biodataset');
+
+
+/* eslint-disable react/prefer-stateless-function */
 /**
-<<<<<<< HEAD
+ *
  * If the given term within the facet is selected, either as a selected term or a negated term,
  * return the href for the term. Don't pass any terms from facets generated by the back end
  * specifically for negation, because they don't get rendered anyway.
@@ -1516,7 +1645,7 @@ class Facet extends React.Component {
                             <div className="filter-hed">Selected filters:</div>
                             {selectedTerms.map(filter =>
                                 <a href={filter.remove} key={filter.term} className={(filter.field.indexOf('!') !== -1) ? 'negation-filter' : ''}><div className="filter-link">
-                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'}/> {filter.term}</div></a>
+                                    <i className="icon icon-times-circle" className={(filter.field.indexOf('!') !== -1) ? 'icon icon-times-circle' : 'icon icon-check-circle'} /> {filter.term}</div></a>
                             )}
                         </div>
                         : null}
@@ -1950,11 +2079,11 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
     const buttonStyle = {
         marginRight: '5px',
     };
-    
+
 
 
     resultsToggle = (
-            
+
             <div className="btn-attached">
                 {results > 25 &&
                 <a
@@ -1993,11 +2122,10 @@ export const SearchControls = ({ context, visualizeDisabledTitle, showResultsTog
                 >
                     View All
                 </a>
-                } 
-                
-            </div>
+                }
 
-    );   
+            </div>
+    );
     return (
         <div className="results-table-control">
             <div className="results-table-control__main">
@@ -2220,5 +2348,3 @@ Search.lastRegion = {
 };
 
 globals.contentViews.register(Search, 'Search');
-
-

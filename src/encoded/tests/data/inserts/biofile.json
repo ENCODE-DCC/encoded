@@ -1,57 +1,42 @@
 [
     {
         "accession": "KCEFF398MYM",
+        "bioreplicate": "18a45454-8f13-4bf2-842b-64a75613136a",
+        "biodataset": "KCEBE000AES",
         "run_type": "single-ended",
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
         "md5sum": "95be74b6e11515393507f4ebfa66d78d",
-        "content_md5sum": "96be74b6e11515393507f4ebfa66d78d",
         "output_type": "reads",
         "file_size": 20,
         "read_length": 50,
         "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
-        "biolibrary": "KCELB038EAA",
         "status": "released",
+        "sequencing_replicate_number": 1,
         "uuid": "f6c125ca-2cc3-4c63-a62a-d326ccfa2f30"
     },
     {
-
         "accession": "KCEFF287RDC",
+        "bioreplicate": "454c26c2-4252-49d7-a904-4ae479eb6743",
+        "biodataset": "KCEBE000ADH",
         "file_format": "fastq",
         "file_size": 20,
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
         "md5sum": "97b452ae74c7d279706c88141155a00c",
         "output_type": "reads",
         "read_length": 50,
         "run_type": "paired-ended",
         "paired_end": "1",
         "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
-        "biolibrary": "KCELB987EAA",
         "status": "released",
+        "sequencing_replicate_number": 1,
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
         "uuid": "6713196b-8bda-42db-b676-8c7a6ad07e23"
     },
-
     {
         "accession": "KCEFF365RCT",
+        "bioreplicate": "1d8d4a65-1db6-4400-ba95-6db3d98fb55f",
+        "biodataset": "KCEBE000ADH",
         "file_size": 20,
         "file_format": "fastq",
-        "flowcell_details":
-        [{
-            "flowcell": "C1WA6ACXX",
-            "lane": "3",
-            "machine": "HWI-ST382"
-        }],
         "md5sum": "3ced82e44cea82a4784493c2f640ba12",
         "output_type": "reads",
         "read_length": 50,
@@ -59,34 +44,8 @@
         "paired_end": "2",
         "paired_with": "KCEFF287RDC",
         "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
-        "biolibrary": "KCELB987EAA",
         "status": "released",
+        "sequencing_replicate_number": 1,
         "uuid": "6869a7b9-260d-4aa9-9cd2-74e056f6eded"
-    },
-    {
-        "accession": "KCEFF894MWZ",
-        "file_format": "bam",
-        "file_size": 20,
-        "md5sum": "99be74b6e11515393507f4ebfa66d78d",
-        "output_type": "alignments",
-        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
-        "biolibrary": "KCELB012FAA",
-        "status": "released",
-        "assembly": "hg19",
-        "uuid": "016f5f73-ccd0-4b23-963d-1a41064e72ac"
-    },
-    {
-        "accession": "KCEFF173MWZ",
-        "file_format": "bam",
-        "file_size": 20,
-        "md5sum": "91ae74b6e11515393507f4ebfa66d78d",
-        "output_type": "alignments",
-        "platform": "c7564b38-ab4f-4c42-a401-3de48689a998",
-        "biolibrary": "KCELB745FAA",
-        "status": "released",
-        "assembly": "hg19",
-        "uuid": "52475ff9-ba44-4e5f-8fe8-6db1cfe45cdc"
     }
-
 ]
-
