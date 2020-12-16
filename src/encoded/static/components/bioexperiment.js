@@ -354,7 +354,7 @@ class Bioexperiment extends React.Component {
             biosampleDocs,
             libraryDocs
         ));
-        combinedDocuments=combinedDocuments.map(i=>i['@id']);
+        combinedDocuments = combinedDocuments.map(i => i['@id']);
 
         const experimentsUrl = `/search/?type=Bioexperiment&possible_controls.accession=${context.accession}`;
 
@@ -375,167 +375,167 @@ class Bioexperiment extends React.Component {
 
         return (
             <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=Bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
-                        <h2>Experiment summary for {context.accession}</h2>
-                        <ReplacementAccessions context={context} />
-                        <div className="cart__toggle--header">
-                            <CartToggle element={context} />
-                        </div>
-                        <DisplayAsJson />
+                <header>
+                    {/* <div className="col-sm-12"> */}
+                    <Breadcrumbs root="/search/?type=Bioexperiment" crumbs={crumbs} crumbsReleased={crumbsReleased} />
+                    <h2>Experiment summary for {context.accession}</h2>
+                    <ReplacementAccessions context={context} />
+                    <div className="cart__toggle--header">
+                        <CartToggle element={context} />
                     </div>
+                    <DisplayAsJson />
+                    {/* </div> */}
                 </header>
-                <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Summary</h4>
-                                </div>
-                                <dl className="key-value">
-                                    <div data-test="status">
-                                        <dt>Status</dt>
-                                        <dd>
-                                            <Status item={context} css="dd-status" title="Experiment status" inline />
+                <Panel >
+                    <PanelBody addClasses="panel__split">
+                        <div className="panel__split-element">
+                            {/* <div className="col-sm-6"> */}
+                            <div className="panel__split-heading panel__split-heading--experiment">
+                                <h4>Summary</h4>
+                            </div>
+                            <dl className="key-value">
+                                <div data-test="status">
+                                    <dt>Status</dt>
+                                    <dd>
+                                        <Status item={context} css="dd-status" title="Experiment status" inline />
 
+                                    </dd>
+                                </div>
+
+                                <div data-test="assay">
+                                    <dt>Assay</dt>
+                                    <dd>
+                                        {context.assay_term_name}
+                                    </dd>
+                                </div>
+
+                                {show_specimen_summary}
+
+                                {context.biospecimen_summary.tissue_type ?
+                                    <div data-test="biosample-type">
+                                        <dt>Biospecimen Type</dt>
+                                        <dd>{context.biospecimen_summary.tissue_type}</dd>
+                                    </div>
+                                    : null}
+
+                                {context.replication_type ?
+                                    <div data-test="replicationtype">
+                                        <dt>Replication type</dt>
+                                        <dd>{context.replication_type}</dd>
+                                    </div>
+                                    : null}
+
+                                {context.experiment_description ?
+                                    <div data-test="experiment_description">
+                                        <dt>Description</dt>
+                                        <dd>{context.experiment_description}</dd>
+                                    </div>
+                                    : null}
+
+                                {AssayDetails(replicates, this.libraryValues, librarySpecials, libraryComponents)}
+
+                                {Object.keys(platforms).length ?
+                                    <div data-test="platform">
+                                        <dt>Platform</dt>
+                                        <dd>
+                                            {Object.keys(platforms).map((platformId, i) =>
+                                                <span key={platformId}>
+                                                    {i > 0 ? <span>, </span> : null}
+                                                    <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                                </span>
+                                            )}
                                         </dd>
                                     </div>
+                                    : null}
 
-                                    <div data-test="assay">
-                                        <dt>Assay</dt>
+                                {context.possible_controls && context.possible_controls.length ?
+                                    <div data-test="possible-controls">
+                                        <dt>Controls</dt>
                                         <dd>
-                                            {context.assay_term_name}
+                                            <ul>
+                                                {context.possible_controls.map(control => (
+                                                    <li key={control['@id']} className="multi-comma">
+                                                        <a href={control['@id']}>
+                                                            {control.accession}
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </dd>
                                     </div>
-
-                                    {show_specimen_summary}
-
-                                    {context.biospecimen_summary.tissue_type ?
-                                        <div data-test="biosample-type">
-                                            <dt>Biospecimen Type</dt>
-                                            <dd>{context.biospecimen_summary.tissue_type}</dd>
-                                        </div>
-                                        : null}
-
-                                    {context.replication_type ?
-                                        <div data-test="replicationtype">
-                                            <dt>Replication type</dt>
-                                            <dd>{context.replication_type}</dd>
-                                        </div>
-                                        : null}
-
-                                    {context.experiment_description ?
-                                        <div data-test="experiment_description">
-                                            <dt>Description</dt>
-                                            <dd>{context.experiment_description}</dd>
-                                        </div>
-                                        : null}
-
-                                    {AssayDetails(replicates, this.libraryValues, librarySpecials, libraryComponents)}
-
-                                    {Object.keys(platforms).length ?
-                                        <div data-test="platform">
-                                            <dt>Platform</dt>
-                                            <dd>
-                                                {Object.keys(platforms).map((platformId, i) =>
-                                                    <span key={platformId}>
-                                                        {i > 0 ? <span>, </span> : null}
-                                                        <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
-                                                    </span>
-                                                )}
-                                            </dd>
-                                        </div>
-                                        : null}
-
-                                    {context.possible_controls && context.possible_controls.length ?
-                                        <div data-test="possible-controls">
-                                            <dt>Controls</dt>
-                                            <dd>
-                                                <ul>
-                                                    {context.possible_controls.map(control => (
-                                                        <li key={control['@id']} className="multi-comma">
-                                                            <a href={control['@id']}>
-                                                                {control.accession}
-                                                            </a>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </dd>
-                                        </div>
-                                        : null}
-                                </dl>
-                            </div>
-
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Attribution</h4>
-                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
-                                </div>
-                                <dl className="key-value">
-                                    <div data-test="lab">
-                                        <dt>Lab</dt>
-                                        <dd>{context.lab.title}</dd>
-                                    </div>
-
-                                    <AwardRef context={context} />
-
-                                    <div data-test="project">
-                                        <dt>Project</dt>
-                                        <dd>{context.award.project}</dd>
-                                    </div>
-
-                                    {context.dbxrefs.length ?
-                                        <div data-test="external-resources">
-                                            <dt>External resources</dt>
-                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
-                                        </div>
-                                        : null}
-
-                                    {references ?
-                                        <div data-test="references">
-                                            <dt>References</dt>
-                                            <dd>{references}</dd>
-                                        </div>
-                                        : null}
-
-                                    {context.aliases.length ?
-                                        <div data-test="aliases">
-                                            <dt>Aliases</dt>
-                                            <dd>{context.aliases.join(', ')}</dd>
-                                        </div>
-                                        : null}
-
-                                    {context.date_submitted ?
-                                        <div data-test="date-submitted">
-                                            <dt>Date submitted</dt>
-                                            <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
-                                        </div>
-                                        : null}
-
-                                    {context.date_released ?
-                                        <div data-test="date-released">
-                                            <dt>Date released</dt>
-                                            <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
-                                        </div>
-                                        : null}
-                                    {seriesList.length ?
-                                        <div data-test="relatedseries">
-                                            <dt>Related datasets</dt>
-                                            <dd><RelatedSeriesList seriesList={seriesList} /></dd>
-                                        </div>
-                                        : null}
-
-                                    {context.submitter_comment ?
-                                        <div data-test="submittercomment">
-                                            <dt>Submitter comment</dt>
-                                            <dd>{context.submitter_comment}</dd>
-                                        </div>
-                                        : null}
-                                    {libSubmitterComments}
-                                </dl>
-                            </div>
+                                    : null}
+                            </dl>
+                            {/* </div> */}
                         </div>
+                        <div className="panel__split-element">
+                            <div className="panel__split-heading panel__split-heading--experiment">
+                                <h4>Attribution</h4>
+                                <ProjectBadge award={context.award} addClasses="badge-heading" />
+                            </div>
+                            <dl className="key-value">
+                                <div data-test="lab">
+                                    <dt>Lab</dt>
+                                    <dd>{context.lab.title}</dd>
+                                </div>
+
+                                <AwardRef context={context} />
+
+                                <div data-test="project">
+                                    <dt>Project</dt>
+                                    <dd>{context.award.project}</dd>
+                                </div>
+
+                                {context.dbxrefs.length ?
+                                    <div data-test="external-resources">
+                                        <dt>External resources</dt>
+                                        <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                                    </div>
+                                    : null}
+
+                                {references ?
+                                    <div data-test="references">
+                                        <dt>References</dt>
+                                        <dd>{references}</dd>
+                                    </div>
+                                    : null}
+
+                                {context.aliases.length ?
+                                    <div data-test="aliases">
+                                        <dt>Aliases</dt>
+                                        <dd>{context.aliases.join(', ')}</dd>
+                                    </div>
+                                    : null}
+
+                                {context.date_submitted ?
+                                    <div data-test="date-submitted">
+                                        <dt>Date submitted</dt>
+                                        <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
+                                    </div>
+                                    : null}
+
+                                {context.date_released ?
+                                    <div data-test="date-released">
+                                        <dt>Date released</dt>
+                                        <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
+                                    </div>
+                                    : null}
+                                {seriesList.length ?
+                                    <div data-test="relatedseries">
+                                        <dt>Related datasets</dt>
+                                        <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                                    </div>
+                                    : null}
+
+                                {context.submitter_comment ?
+                                    <div data-test="submittercomment">
+                                        <dt>Submitter comment</dt>
+                                        <dd>{context.submitter_comment}</dd>
+                                    </div>
+                                    : null}
+                                {libSubmitterComments}
+                            </dl>
+                        </div>
+
                     </PanelBody>
                 </Panel>
                 {<BioreplicateTable data={context.bioreplicate} tableTitle="Bioreplicates summary"></BioreplicateTable>}
