@@ -53,29 +53,29 @@ class Biofile extends React.Component {
                             <dd>{context.output_type}</dd>
                         </div>
 
-                        <div data-test="biolibrary">
+                        {/* <div data-test="biolibrary">
                             <dt>Library</dt>
                             <dd>{context.biolibrary.accession}</dd>
-                        </div>
+                        </div> */}
 
-                        <div data-test="biospecimen">
+                        {/* <div data-test="biospecimen">
                             <dt>Biospecimen</dt>
                             <dd><a href={context.biolibrary.biospecimen}>{context.biolibrary.biospecimen.split("/")[2]}</a></dd>
-                        </div>
+                        </div> */}
 
                         <div data-test="md5sum">
                             <dt>MD5sum</dt>
                             <dd>{context.md5sum}</dd>
                         </div>
 
-                        {context.biolibrary.biological_replicate_number && <div data-test="biological_replicate_number">
+                        {/* {context.biolibrary.biological_replicate_number && <div data-test="biological_replicate_number">
                             <dt>Biological replicate number</dt>
                             <dd>{context.biolibrary.biological_replicate_number}</dd>
                         </div>}
                         {context.biolibrary.technical_replicate_number && <div data-test="technical_replicate_number">
                             <dt>Technical replicate number</dt>
                             <dd>{context.biolibrary.technical_replicate_number}</dd>
-                        </div>}
+                        </div>} */}
                         {context.sequencing_replicate_number && <div data-test="sequencing_replicate_number">
                             <dt>Sequencing replicate number</dt>
                             <dd>{context.sequencing_replicate_number}</dd>

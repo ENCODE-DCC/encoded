@@ -28,11 +28,15 @@ const types = {
     surgery: { title: 'Surgery and Pathology Reports' },
     annotation: { title: 'Annotation file set' },
     biospecimen: { title: 'Biospecimens' },
-    bioexperiment: { title: 'Experiments' },
-    bioseries: { title: 'Series File set' },
-    biofileSet: { title: 'File set' },
-    bioexperimentSeries: { title: 'Experiment Series'},
-    biodataset: { title: 'Datasets' },
+    // bioexperiment: { title: 'Bioexperiments' },
+    // bioseries: { title: 'Series File set' },
+    // biofileSet: { title: 'File set' },
+    // bioexperimentSeries: { title: 'Experiment Series'},
+    biodataset: { title: 'Biodatasets' },
+    bioexperiment: { title: 'Bioexperiments' },
+    bioseries: { title: 'Bioserieses' },
+    biofileSet: { title: 'BiofileSets' },
+    bioexperimentSeries:{title:'BioexperimentSereieses'},
     image: { title: 'Images' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
@@ -918,7 +922,7 @@ const BiodatasetComponent = (props, reactContext) => {
 
     // Determine whether the dataset is a series or not
     const seriesDataset = result['@type'].indexOf('Bioseries') >= 0;
-
+console.log("seriesDataset", seriesDataset);
     // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
     if (seriesDataset) {
         biosampleTerm = (result.assay_term_name) ? result.assay_term_name : '';
@@ -929,6 +933,7 @@ const BiodatasetComponent = (props, reactContext) => {
 
     const haveSeries = result['@type'].indexOf('Bioseries') >= 0;
     const haveFileSet = result['@type'].indexOf('BiofileSet') >= 0;
+    console.log("haveSeries", result['@type'].indexOf('Bioseries'));
 
     return (
         <li>
@@ -955,8 +960,8 @@ const BiodatasetComponent = (props, reactContext) => {
                         </a>
                     </div>
                     <div className="data-row">
-                        <div><strong>Lab: </strong>{result.lab.title}</div>
-                        <div><strong>Project: </strong>{result.award.project}</div>
+                        {/* <div><strong>Lab: </strong>{result.lab.title}</div>
+                        <div><strong>Project: </strong>{result.award.project}</div> */}
                     </div>
                 </div>
             </div>
