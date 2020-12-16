@@ -16,7 +16,7 @@ class BiospecimenTable extends React.Component {
                     title: 'Accession',
                     display: biospecimen => <a href={biospecimen['@id']}>{biospecimen.accession}</a>,
                 },
-                openspecimen_ID: {
+                openspecimen_id: {
                     title: 'OpenSpecimen ID',
                 },
                 sample_type: {

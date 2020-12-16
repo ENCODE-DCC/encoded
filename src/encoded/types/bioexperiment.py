@@ -117,7 +117,7 @@ class Bioexperiment(Biodataset,
 
         biospecimen_summary_dict = {
             "accession": "",
-            "openspecimen_ID": "",
+            "openspecimen_id": "",
             "patient": "",
             "collection_type": "",
             "processing_type": "",
@@ -145,8 +145,8 @@ class Bioexperiment(Biodataset,
                             biospecimen_summary_dict['accession'] = biospecimenObject['accession']
                         if 'patient' in biospecimenObject:
                             biospecimen_summary_dict['patient'] = biospecimenObject['patient']
-                        if 'openspecimen_ID' in biospecimenObject:
-                            biospecimen_summary_dict['openspecimen_ID'] = biospecimenObject['openspecimen_ID']
+                        if 'openspecimen_id' in biospecimenObject:
+                            biospecimen_summary_dict['openspecimen_id'] = biospecimenObject['openspecimen_id']
                         if 'collection_type' in biospecimenObject:
                             biospecimen_summary_dict['collection_type'] = biospecimenObject['collection_type']
                         if "anatomic_site" in biospecimenObject:
