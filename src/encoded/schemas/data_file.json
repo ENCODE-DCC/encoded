@@ -22,6 +22,13 @@
                 "pattern": "^(LATDF\\d{3}[A-Z]{3})$"
             }
         },
+        "dataset": {
+            "title": "Dataset",
+            "description": "The experiment or dataset the file belongs to.",
+            "comment": "Required. See dataset.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Dataset"
+        },
          "validated": {
             "title": "Validated",
             "description": "If true, then the metadata has been validated against the data file which it representes.",
