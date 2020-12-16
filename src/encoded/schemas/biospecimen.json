@@ -441,9 +441,6 @@
         ]
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "sample_type": {
             "title": "Sample Type"
         },
@@ -521,6 +518,9 @@
         },
         "part_of": {
             "title": "Separated from"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "columns": {
@@ -530,7 +530,7 @@
         "internal_id": {
             "title": "Internal ID"
         },
-        "openspecimen_ID": {
+        "openspecimen_id": {
             "title": "OpenSpecimen ID"
         },
         "sample_type": {
