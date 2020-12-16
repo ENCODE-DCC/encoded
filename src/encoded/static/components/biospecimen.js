@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, PanelBody, PanelHeading } from '../libs/ui/panel';
 import * as globals from './globals';
-import { ItemAccessories } from './navigation';
+import { ItemAccessories, Breadcrumbs } from './navigation';
 import Status from './status';
 import CollapsiblePanel from './collapsiblePanel';
 import { PanelLookup } from './objectutils';
