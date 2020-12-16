@@ -68,7 +68,6 @@ class BioreferenceComponent extends React.Component {
                 {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel__split">
-                        {/* <div className="flexrow"> */}
                             <div className="panel__split-element">
                                 <div className="panel__split-heading panel__split-heading--reference"><h4>Summary</h4></div>
                                 <dl className="key-value">
@@ -146,7 +145,6 @@ class BioreferenceComponent extends React.Component {
                                         : null}
                                 </dl>
                             </div>
-                        {/* </div> */}
                     </PanelBody>
                 </Panel>
 
@@ -220,7 +218,6 @@ class BioprojectComponent extends React.Component {
                 {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel__split">
-                        {/* <div className="flexrow"> */}
                             <div className="panel__split-element">
                                 <div className="panel__split-heading panel__split-heading--project"><h4>Summary</h4></div>
                                 <dl className="key-value">
@@ -303,7 +300,6 @@ class BioprojectComponent extends React.Component {
 
                                 </dl>
                             </div>
-                        {/* </div> */}
                     </PanelBody>
                 </Panel>
 
@@ -507,7 +503,6 @@ export class BioseriesComponent extends React.Component {
                 {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel__split">
-                        {/* <div className="flexrow"> */}
                             <div className="panel__split-element">
                                 <div className="panel__split-heading panel__split-heading--series"><h4>Summary</h4></div>
                                 <dl className="key-value">
@@ -595,7 +590,6 @@ export class BioseriesComponent extends React.Component {
                                         : null}
                                 </dl>
                             </div>
-                        {/* </div> */}
                     </PanelBody>
                 </Panel>
 

@@ -389,7 +389,6 @@ class Bioexperiment extends React.Component {
                 <Panel >
                     <PanelBody addClasses="panel__split">
                         <div className="panel__split-element">
-                            {/* <div className="col-sm-6"> */}
                             <div className="panel__split-heading panel__split-heading--experiment">
                                 <h4>Summary</h4>
                             </div>
@@ -465,7 +464,6 @@ class Bioexperiment extends React.Component {
                                     </div>
                                     : null}
                             </dl>
-                            {/* </div> */}
                         </div>
                         <div className="panel__split-element">
                             <div className="panel__split-heading panel__split-heading--experiment">
