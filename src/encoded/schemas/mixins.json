@@ -4,7 +4,7 @@
         "schema_version": {
             "title": "Schema version",
             "description": "The version of the JSON schema that the server uses to validate the object.",
-            "comment":  "Do not submit. The version used to validate the object is set by the server. The default should be set to the current version.",
+            "comment": "Do not submit. The version used to validate the object is set by the server. The default should be set to the current version.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)*$",
             "requestMethod": []
@@ -13,8 +13,8 @@
     "uuid": {
         "uuid": {
             "title": "UUID",
-            "description":"The unique identifier associated with every object.",
-            "comment":  "Do not submit. The uuid is set by the server.",
+            "description": "The unique identifier associated with every object.",
+            "comment": "Do not submit. The uuid is set by the server.",
             "type": "string",
             "format": "uuid",
             "serverDefault": "uuid4",
@@ -37,7 +37,7 @@
         "alternate_accessions": {
             "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
-	        "comment": "Do not submit. Only admins are allowed to set or update this value.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "default": [],
             "permission": "import_items",
@@ -63,7 +63,7 @@
                 "title": "Lab alias",
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
-                "type":  "string",
+                "type": "string",
                 "pattern": "^(?:kce|james-brugarolas|payal-kapur):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
             }
         }
@@ -91,7 +91,7 @@
             "type": "string",
             "default": "in progress",
             "permission": "import_items",
-            "enum" : [
+            "enum": [
                 "deleted",
                 "in progress",
                 "released"
@@ -103,7 +103,7 @@
             "title": "Status",
             "type": "string",
             "default": "current",
-            "enum" : [
+            "enum": [
                 "current",
                 "deleted",
                 "disabled"
@@ -118,8 +118,12 @@
             "comment": "Do not submit. The date the object is created is assigned by the server.",
             "type": "string",
             "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
+                {
+                    "format": "date-time"
+                },
+                {
+                    "format": "date"
+                }
             ],
             "serverDefault": "now",
             "permission": "import_items"
@@ -143,8 +147,11 @@
             "dependencies": {
                 "status": {
                     "oneOf": [
-                         {
-                            "required": ["lab", "reviewed_by"],
+                        {
+                            "required": [
+                                "lab",
+                                "reviewed_by"
+                            ],
                             "properties": {
                                 "status": {
                                     "enum": [
@@ -184,7 +191,7 @@
                     "title": "Review status",
                     "description": "The current state of review.",
                     "type": "string",
-                    "enum" : [
+                    "enum": [
                         "compliant",
                         "not compliant",
                         "exempt from standards",
@@ -319,20 +326,20 @@
         }
     },
     "lot_id": {
-        "lot_id":{
-    	    "title": "Lot ID",
-    	    "description": "The lot identifier provided by the originating lab or vendor.",
-    	    "type": "string",
+        "lot_id": {
+            "title": "Lot ID",
+            "description": "The lot identifier provided by the originating lab or vendor.",
+            "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         }
     },
     "source": {
         "source": {
             "title": "Source",
-    	    "description": "The originating lab or vendor.",
-    	    "comment": "See source.json for available identifiers.",
-    	    "type": "string",
-	        "linkTo": "Source"
+            "description": "The originating lab or vendor.",
+            "comment": "See source.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Source"
         }
     },
     "notes": {
@@ -397,7 +404,7 @@
                 "title": "Genetic modification",
                 "description": "Genetic modification(s).",
                 "comment": "See genetic_modification.json for available identifiers.",
-                "type":  "string",
+                "type": "string",
                 "linkTo": "GeneticModification"
             }
         }
@@ -407,15 +414,11 @@
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
-            "oneOf": [
-                {
-                    "enum": [
-                        "DNA methylation profiling by array assay",
-                        "RNA-seq",
-                        "whole genome sequencing assay",
-                        "whole-genome shotgun bisulfite sequencing"
-                    ]
-                }
+            "enum": [
+                "DNA methylation profiling by array assay",
+                "RNA-seq",
+                "whole genome sequencing assay",
+                "whole-genome shotgun bisulfite sequencing"
             ]
         }
     },
@@ -447,7 +450,7 @@
         "treatment_term_name": {
             "title": "Biosample treatment",
             "description": "Ontology term describing a component in the treatment.",
-            "type":  "string"
+            "type": "string"
         }
     },
     "url": {
